@@ -11,13 +11,12 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Models\Tenant;
 use Modules\Mall\Domain\Models\Voucher;
+use Modules\Mall\Ledger\MallAccounts;
 
 class SettleVouchersAction
 {
@@ -36,18 +35,7 @@ class SettleVouchersAction
      */
     public function execute(?int $tenantId = null): array
     {
-        $mallVoucherLiability = LedgerAccount::firstOrCreate(
-            ['code' => 'liability:mall:voucher:IDR'],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'Kewajiban Voucher Belanja Mall',
-                'asset_code' => 'IDR',
-                'kind' => AccountKind::LIABILITY->value,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
+        $mallVoucherLiability = MallAccounts::voucherLiabilityAccount();
 
         $settledCount = 0;
         $totalSettledAmount = 0;
@@ -103,7 +91,8 @@ class SettleVouchersAction
                     ->first();
 
                 if ($existingSettlement !== null) {
-                    $replaySettlementId = $existingSettlement->meta['settlement_id'] ?? null;
+                    $meta = is_array($existingSettlement->meta) ? $existingSettlement->meta : json_decode($existingSettlement->meta, true);
+                    $replaySettlementId = $meta['settlement_id'] ?? null;
 
                     foreach ($items as $item) {
                         $item->update([

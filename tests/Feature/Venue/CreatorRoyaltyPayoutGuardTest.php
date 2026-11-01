@@ -34,7 +34,7 @@ class CreatorRoyaltyPayoutGuardTest extends TestCase
     {
         // Kontrak dibuat sekarang dengan hold window 14 hari
         $contract = $this->service->createRightsContract($this->creator, 70.0, 14);
-        $this->service->accrueStreamRevenue($contract, 10_000_000);
+        $this->service->accrueStreamRevenue($contract, 10_000_000, 'guard-accrue-test-1');
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Payout hold active: Cannot release royalties before claim dispute window of 14 days expires');
@@ -46,7 +46,7 @@ class CreatorRoyaltyPayoutGuardTest extends TestCase
     public function test_payout_succeeds_when_hold_window_has_passed(): void
     {
         $contract = $this->service->createRightsContract($this->creator, 70.0, 14);
-        $this->service->accrueStreamRevenue($contract, 10_000_000);
+        $this->service->accrueStreamRevenue($contract, 10_000_000, 'guard-accrue-test-2');
 
         // Simulasikan waktu kontrak sudah lewat 15 hari
         $contract->created_at = now()->subDays(15);
@@ -62,7 +62,7 @@ class CreatorRoyaltyPayoutGuardTest extends TestCase
     public function test_payout_rejected_when_contract_is_disputed(): void
     {
         $contract = $this->service->createRightsContract($this->creator, 70.0, 14);
-        $this->service->accrueStreamRevenue($contract, 10_000_000);
+        $this->service->accrueStreamRevenue($contract, 10_000_000, 'guard-accrue-test-3');
 
         // Window sudah lewat tetapi status DISPUTED
         $contract->created_at = now()->subDays(20);

@@ -58,6 +58,7 @@ class ReconcileDetectsOneUnitTest extends TestCase
             ->where('account_id', $clearing->id)
             ->firstOrFail();
 
+        DB::statement('DROP TRIGGER IF EXISTS prevent_bank_ledger_entries_update');
         DB::table('bank_ledger_entries')
             ->where('id', $clearingEntry->id)
             ->update(['amount' => '-999999']);
@@ -101,6 +102,7 @@ class ReconcileDetectsOneUnitTest extends TestCase
             ->minus('0.000000000000000001')
             ->__toString();
 
+        DB::statement('DROP TRIGGER IF EXISTS prevent_bank_ledger_entries_update');
         DB::table('bank_ledger_entries')
             ->where('id', $clearingEntry->id)
             ->update(['amount' => $sabotagedAmount]);

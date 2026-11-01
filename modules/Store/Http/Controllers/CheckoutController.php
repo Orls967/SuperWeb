@@ -56,6 +56,11 @@ class CheckoutController extends Controller
 
     public function process(Request $request): RedirectResponse|JsonResponse
     {
+        $headerKey = $request->header('Idempotency-Key');
+        if (! empty($headerKey) && empty($request->input('idempotency_key'))) {
+            $request->merge(['idempotency_key' => $headerKey]);
+        }
+
         $request->validate([
             'recipient_name' => 'required|string|max:255',
             'phone' => 'required|string|max:30',
@@ -63,6 +68,7 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
             'pin' => 'required|string|size:6',
+            'idempotency_key' => 'required|string|max:255',
         ]);
 
         $shippingAddress = [
@@ -79,7 +85,8 @@ class CheckoutController extends Controller
             $order = $this->checkoutService->checkout(
                 $request->user(),
                 $shippingAddress,
-                $pin
+                $pin,
+                $request->input('idempotency_key')
             );
 
             if ($request->wantsJson()) {

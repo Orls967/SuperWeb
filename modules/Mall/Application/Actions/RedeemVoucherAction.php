@@ -5,21 +5,20 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Exceptions\InsufficientPointsException;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\Voucher;
 use Modules\Mall\Domain\Models\VoucherTemplate;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class RedeemVoucherAction
 {
@@ -31,10 +30,34 @@ class RedeemVoucherAction
      * Tukarkan Duta Points dengan Voucher Belanja Mall.
      *
      * @throws InsufficientPointsException
+     * @throws InvalidArgumentException
      */
     public function execute(User $user, VoucherTemplate $template, ?string $idempotencyKey = null): Voucher
     {
-        return DB::transaction(function () use ($user, $template, $idempotencyKey) {
+        $rawKey = $idempotencyKey;
+        if ($rawKey === null && app()->bound('request')) {
+            $rawKey = request()?->header('Idempotency-Key')
+                ?? request()?->input('idempotency_key')
+                ?? request()?->input('request_id');
+        }
+
+        $cleanKey = is_string($rawKey) ? trim($rawKey) : '';
+        if ($cleanKey === '') {
+            throw new InvalidArgumentException('Idempotency key wajib diisi untuk penukaran voucher.');
+        }
+
+        $pointsKey = 'pts_redeem_'.$cleanKey;
+        $voucherKey = 'vch_issue_'.$cleanKey;
+
+        return DB::transaction(function () use ($user, $template, $pointsKey, $voucherKey) {
+            if (LedgerTransaction::query()->where('idempotency_key', $pointsKey)->exists()) {
+                return Voucher::query()
+                    ->where('user_id', $user->id)
+                    ->where('template_id', $template->id)
+                    ->latest('id')
+                    ->firstOrFail();
+            }
+
             $batches = PointBatch::query()
                 ->where('user_id', $user->id)
                 ->where('is_expired', false)
@@ -50,40 +73,14 @@ class RedeemVoucherAction
                 throw new InsufficientPointsException("Poin tidak mencukupi (Tersedia: {$currentPoints} PTS, Diperlukan: {$template->points_required} PTS).");
             }
 
-            $batchIds = $batches->pluck('id')->sort()->implode('_');
-            $sourceKey = $idempotencyKey ?? implode('_', [$user->id, $batchIds, $template->code, $template->points_required, $template->nominal_value]);
-            $pointsKey = 'pts_redeem_'.$sourceKey;
-            $voucherKey = 'vch_issue_'.$sourceKey;
-
-            if (LedgerTransaction::query()->where('idempotency_key', $pointsKey)->exists()) {
-                return Voucher::query()
-                    ->where('user_id', $user->id)
-                    ->where('template_id', $template->id)
-                    ->latest('id')
-                    ->firstOrFail();
-            }
-            // 1. Double-Entry Posting untuk aset PTS (Kredit akun user, Debit kewajiban mall)
+            // 1. Double-Entry Posting untuk aset PTS (Model C: debit dompet user, kredit revenue redeemed)
             $userPointsAccount = $user->pointsAccount();
+            $revenueRedeemedAccount = MallAccounts::pointsRedeemedAccount();
 
-            $mallPtsLiability = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:points:PTS'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                    'asset_code' => 'PTS',
-                    'kind' => AccountKind::CLEARING->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
-
-            $ptsBd = BigDecimal::of($template->points_required);
-
-            $ptsEntries = [
-                PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
-                PostingEntryDTO::forAccount($mallPtsLiability->id, 'PTS', $ptsBd),
-            ];
+            $ptsEntries = Posting::lines()
+                ->debit($userPointsAccount->id, $template->points_required, 'PTS')
+                ->credit($revenueRedeemedAccount->id, $template->points_required, 'PTS')
+                ->toEntries('PTS');
 
             $dtoPts = new PostingDTO(
                 type: TransactionType::LOYALTY_REDEEM->value,
@@ -103,40 +100,15 @@ class RedeemVoucherAction
 
             $this->ledger->post($dtoPts);
 
-            // 2. Double-Entry Posting untuk aset IDR (Penerbitan Liabilitas Voucher Mall)
-            $mallExpense = LedgerAccount::firstOrCreate(
-                ['code' => 'expense:mall:loyalty:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Beban Promosi & Loyalitas Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::EXPENSE->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            // 2. Double-Entry Posting untuk aset IDR (Penerbitan Liabilitas Voucher Mall via MallAccounts helper)
+            $mallExpense = MallAccounts::loyaltyExpenseAccount();
+            $mallVoucherLiability = MallAccounts::voucherLiabilityAccount();
 
-            $mallVoucherLiability = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:voucher:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Voucher Belanja Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::LIABILITY->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
-
-            $valBd = BigDecimal::of($template->nominal_value);
-
-            // Liabilitas voucher mall (+idr), Beban promosi (-idr)
-            $idrEntries = [
-                PostingEntryDTO::forAccount($mallExpense->id, 'IDR', $valBd->negated()),
-                PostingEntryDTO::forAccount($mallVoucherLiability->id, 'IDR', $valBd),
-            ];
+            // Beban promosi (debit), Liabilitas voucher mall (kredit)
+            $idrEntries = Posting::lines()
+                ->debit($mallExpense->id, $template->nominal_value, 'IDR')
+                ->credit($mallVoucherLiability->id, $template->nominal_value, 'IDR')
+                ->toEntries('IDR');
 
             $dtoIdr = new PostingDTO(
                 type: TransactionType::VOUCHER_ISSUE->value,

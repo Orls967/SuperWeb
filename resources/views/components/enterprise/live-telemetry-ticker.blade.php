@@ -93,10 +93,10 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            <span class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Live Telemetry 6 Command Center (SSE Stream)</span>
+            <span class="text-xs font-bold text-slate-200 uppercase tracking-wider font-mono">Live Telemetry 6 Command Center (SSE Stream) (demo)</span>
         </div>
         <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
-            <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-indigo-300">Protoc text/event-stream</span>
+            <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-indigo-300">Protoc text/event-stream (demo)</span>
             <span class="text-emerald-400" x-text="lastPulse"></span>
         </div>
     </div>

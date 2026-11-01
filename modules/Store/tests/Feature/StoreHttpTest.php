@@ -36,7 +36,7 @@ class StoreHttpTest extends TestCase
         app(SetPinAction::class)->execute($user, $pin);
 
         if ($balance > 0) {
-            app(TopUpAction::class)->execute($user, $balance);
+            app(TopUpAction::class)->execute($user, $balance, 'store_http_topup_'.$user->id.'_'.uniqid());
         }
 
         return $user;
@@ -166,6 +166,7 @@ class StoreHttpTest extends TestCase
             'city' => 'Jakarta Barat',
             'postal_code' => '11530',
             'pin' => '123456',
+            'idempotency_key' => 'store-http-checkout-1',
         ]);
 
         $order = Order::latest()->first();
@@ -192,6 +193,7 @@ class StoreHttpTest extends TestCase
             'city' => 'Jakarta',
             'postal_code' => '12345',
             'pin' => '123456',
+            'idempotency_key' => 'store-http-checkout-2',
         ]);
 
         $order = Order::latest()->first();
@@ -226,6 +228,7 @@ class StoreHttpTest extends TestCase
             'city' => 'Jakarta',
             'postal_code' => '123',
             'pin' => '123456',
+            'idempotency_key' => 'store-http-checkout-3',
         ]);
         $order = Order::latest()->first();
 

@@ -1867,3 +1867,119 @@
 
 
 
+
+<a id="2026-10-30-pagar-sertifikasi-massal"></a>
+## 2026-10-30: Pagar Integritas Anti-Sertifikasi Massal dan Tata Kelola Verifikasi Fase (K-8)
+- **Anchor:** `2026-10-30-pagar-sertifikasi-massal`
+- **Context:**
+  - Audit forensik 2026-10-30 menemukan praktik anti-pola sertifikasi massal, di mana commit `b359587a` menandai 75 fase lama sekaligus menjadi `✅ TERVERIFIKASI` (1465 item dicentang tanpa pengujian substantif). Selain itu, 46 commit historis menandai fase ✅ tanpa prefix `docs(verifikasi-` atau menyentuh kode di luar `docs/`.
+- **Decision:**
+  1. Diberlakukan pagar `MassCertificationGuard` yang memblokir setiap commit yang menyentuh `docs/PROGRESS.md`:
+     - Menambah $> 15$ centang (`[ ]` $	o$ `[x]`) dalam 1 commit tanpa anchor `DECISIONS.md#...` di commit message.
+     - Mengubah status $> 1$ fase menjadi `✅` dalam 1 commit tanpa anchor `DECISIONS.md#...` di commit message.
+     - Mengubah status fase menjadi `✅` tetapi menyentuh file di luar `docs/**` ATAU commit message tidak berawalan `docs(verifikasi-`.
+  2. Sebanyak 46 commit historis sebelum tanggal 2026-10-30 dicatat dalam ratchet baseline `tests/Architecture/baselines/mass-certification.json` dengan anchor ini dan dilarang bertambah.
+- **Reason:**
+  - Mencegah sertifikasi palsu/massal dan menegakkan prinsip pemisahan peran bahwa verifikasi independen harus terisolasi di dokumen gate saja.
+- **Verification:**
+  - `tests/Architecture/MassCertificationGuardTest.php` PASS.
+
+
+<a id="2026-10-30-pemulihan-baseline"></a>
+## 2026-10-30: Pemulihan Baseline Arsitektur dan Tata Kelola Allowlist Config Modules (K-2)
+- **Anchor:** `2026-10-30-pemulihan-baseline`
+- **Context:**
+  - Audit forensik 2026-10-30 (F-06, K-2) menemukan bahwa `config/modules.php` telah membengkak dari 131 baris menjadi 643 baris. Sebanyak 34 tabel berprefiks modular dimasukkan secara ilegal ke `legacy_tables` untuk mematikan aturan A2, 304 kolom foreign key internal (intra-modul) dimasukkan ke `cross_module_columns` untuk mematikan aturan A12, dan model Eloquent `Modules\Core\Domain\Models\Vehicle` dimasukkan ke `shared_kernel_namespaces` untuk mematikan aturan A1.
+- **Decision:**
+  1. Membersihkan `config/modules.php`:
+     - Menghapus 34 entri ilegal dari `legacy_tables`, mengembalikan ke 22 tabel legacy murni.
+     - Menghapus 304 entri kolom intra-modul dari `cross_module_columns`, menyisakan 172 entri referensi lintas-modul nyata.
+     - Menghapus model `Modules\Core\Domain\Models\Vehicle` dari `shared_kernel_namespaces`.
+  2. Mengakui 12 namespace kernel yang sah (murni Contracts, DTOs, Enums, Exceptions, dan Events) di `shared_kernel_namespaces`:
+     - `Modules\Banking\Contracts\` (kontrak antar-modul)
+     - `Modules\Banking\Application\DTOs\` (DTO transaksi moneter)
+     - `Modules\Core\Domain\Enums\` (enum domain inti)
+     - `Modules\Banking\Domain\Exceptions\` (eksepsi moneter perbankan)
+     - `Modules\Inventory\Domain\Enums\` (enum status inventaris)
+     - `Modules\Inventory\Domain\Exceptions\` (eksepsi kontrol stok)
+     - `Modules\Payment\Domain\Enums\` (enum transaksi pembayaran)
+     - `Modules\Store\Domain\Enums\` (enum status pemesanan)
+     - `Modules\Core\Domain\Events\` (event domain inti)
+     - `Modules\Store\Domain\Events\` (event transaksi store)
+     - `Modules\Crypto\Domain\Events\` (event perdagangan kripto)
+     - `Modules\Telematics\Domain\Events\` (event telemetri mobilitas)
+  3. Mengakui 172 kolom `cross_module_columns` yang sah dan 5 entri bridge di `shared_tables` dalam `tests/Architecture/baselines/config-allowlists.json` ber-anchor keputusan ini.
+  4. Menetapkan kenaikan baseline nyata arch-scan (A1, A2, A12) dalam `tests/Architecture/baselines/arch-scan.json` via `--allow-new="DECISIONS.md#2026-10-30-pemulihan-baseline"` sehingga transparansi arsitektur pulih tanpa manipulasi config.
+- **Reason:**
+  - Menghentikan penyembunyian utang teknis arsitektur di file konfigurasi dan memastikan baseline arch-scan mencerminkan realitas kode produksi.
+- **Verification:**
+  - `tests/Architecture/ConfigAllowlistGovernanceTest.php` PASS.
+  - `php artisan arch:scan` PASS terhadap baseline nyata yang disetujui.
+
+
+<a id="2026-10-31-model-poin-mall"></a>
+## 2026-10-31: Model Poin Loyalitas Mall (K-9 Opsi C — EXPENSE / REVENUE)
+- **Anchor:** `2026-10-31-model-poin-mall`
+- **Context:**
+  - Pada master, akun PTS sisi pengguna sudah benar (kredit bertambah positif). Namun akun penyeimbangnya, `liability:mall:points:PTS`, sebelumnya diklasifikasikan sebagai CLEARING bersaldo negatif. Pada branch pemulihan awal, sisi akun pengguna sempat dibalik menjadi debit-normal disertai pemanggilan `abs()`, yang melanggar prinsip buku besar perbankan KONSEP §A2.1.
+- **Decision:**
+  1. Menetapkan Model C (K-9 Opsi C) untuk seluruh siklus poin loyalitas Mall (PTS):
+     - `points:user:{id}:PTS` (AccountKind::POINTS) dikembalikan ke sisi normal kredit (saldo $\ge 0$, `allow_negative = false`, tanpa `abs()`).
+     - `expense:mall:points_issued:PTS` (AccountKind::EXPENSE, debit-normal, saldo bertambah negatif $-\text{PTS}$) sebagai beban operasional program loyalitas saat penerbitan poin.
+     - `revenue:mall:points_redeemed:PTS` (AccountKind::REVENUE, kredit-normal, saldo bertambah positif $+\text{PTS}$) sebagai pendapatan saat penukaran poin dengan voucher.
+     - `revenue:mall:points_breakage:PTS` (AccountKind::REVENUE, kredit-normal, saldo bertambah positif $+\text{PTS}$) sebagai pendapatan kedaluwarsa poin.
+     - Menghapus akun dan kode `liability:mall:points:PTS` secara permanen dari kode produksi. Modul Mall tidak lagi memiliki akun PTS berjenis CLEARING atau LIABILITY.
+  2. Arah posting double-entry buku besar:
+     - Klaim $n$ PTS: Debit `expense:mall:points_issued:PTS`, Kredit `points:user:{id}:PTS`.
+     - Redeem $n$ PTS: Debit `points:user:{id}:PTS`, Kredit `revenue:mall:points_redeemed:PTS`.
+     - Kedaluwarsa $n$ PTS: Debit `points:user:{id}:PTS`, Kredit `revenue:mall:points_breakage:PTS`. Satu posting per batch, dengan kunci deterministik `mall:pts_expire:{batch_id}` (KONSEP §A2.5).
+     - Seluruh posting menggunakan `Posting::lines()->debit(...)->credit(...)` tanpa manipulasi tanda negatif manual.
+  3. Buku lot & FIFO:
+     - `PointBatch` tetap menjadi buku lot pelacakan kedaluwarsa secara FIFO dengan `lockForUpdate`.
+     - Redeem mengonsumsi lot aktif secara atomik; jika saldo tidak mencukupi, permintaan ditolak sebelum posting buku besar dibuat.
+     - Saldo dompet diakses murni melalui `cached_balance` tanpa pemanggilan fungsi `abs()`.
+  4. Audit & Rekonsiliasi:
+     - Diperluas pada `mall:audit-billing`:
+       - Per user: Saldo `points:user:{id}:PTS` $=$ $\sum$ sisa lot aktif $=$ `current_points`.
+       - Global: $\sum$ saldo dompet pengguna $=$ $-$saldo issued $-$ saldo redeemed $-$ saldo breakage.
+- **Reason:**
+  - Mematuhi KONSEP §A2.1 bahwa akun berjenis POINTS memiliki saldo normal kredit $\ge 0$ (seperti dompet/simpanan pelanggan).
+  - Mengakui biaya program loyalitas sebagai beban (EXPENSE) saat poin diterbitkan dan merealisasikannya sebagai pendapatan (REVENUE) saat ditukar voucher belanja atau kedaluwarsa.
+  - Menghindari akun liar jenis CLEARING yang rawan saldo terbalik.
+- **Data Lama & Rencana:**
+  - Lingkungan pengembangan (dev/test): Cukup lakukan `php artisan migrate:fresh --seed`.
+  - Lingkungan non-dev/produksi: Dilakukan posting koreksi penyeimbang append-only dari akun lama ke akun Model C.
+  - Buku lot `PointBatch` direncanakan diekstraksi menjadi registry lot ekosistem bersama saat lini bisnis lain di luar Mall mulai menerbitkan unit PTS.
+- **Verification:**
+  - `tests/Audit/MallPointsLiabilityTest.php` ditulis ulang lebih ketat dan PASS.
+  - `modules/Mall/tests/Feature/MallPointsModelCTest.php` PASS.
+  - `tests/Architecture/LedgerNormalBalanceTest.php` dan `LedgerAccountRegistryTest.php` PASS.
+  - `git grep -n "abs("` pada jalur poin bernilai 0.
+
+<a id="2026-10-31-idempotency-key-kategori-dua"></a>
+## 2026-10-31: Penegakan Kunci Idempotensi K-3 (Kategori i Wajib, Kategori ii Entitas Tunggal)
+- **Anchor:** `2026-10-31-idempotency-key-kategori-dua`
+- **Context:**
+  - Audit menemukan 13 file dengan fallback idempotency key bawaan yang berpotensi menghasilkan replay berbahaya atau collision bila dibentuk dari nominal/waktu/hitungan/acak (Kategori i).
+  - Aksi-aksi Kategori (i) wajib mewajibkan key dari permintaan (header `Idempotency-Key` atau input request); tanpa key ditolak dengan 422 / `InvalidArgumentException`.
+  - Sebaliknya, aksi-aksi yang fallback-nya bersumber dari identitas entitas tunggal yang mewakili tepat satu kejadian bisnis (Kategori ii) diizinkan mempertahankan fallback tersebut selama terdokumentasi dan terbukti menghasilkan posting terpisah untuk dua kejadian sah berbeda.
+- **Decision:**
+  1. **Klasifikasi Kategori (i) — Kunci Wajib dari Permintaan (6 File):**
+     - `Finance AddCollateralAction`: Sebelumnya membentuk key dari nominal `$addition`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+     - `Finance OpenLoanAction`: Sebelumnya membentuk key acak `Str::uuid()`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+     - `Mall AllocatePaymentAction`: Sebelumnya membentuk key dari nominal tagihan `$paymentAmount` dan hitungan `$paid_amount`. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Mall RedeemVoucherAction`: Sebelumnya membentuk key dari poin & nominal `$template->points_required` / `$template->nominal_value`. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Store CheckoutService`: Sebelumnya membentuk key dari cart reusable `store:checkout:{user->id}:cart{cart->id}` yang berisiko tabrakan saat cart digunakan kembali. Kini wajib `idempotency_key` (422 jika kosong).
+     - `Venue VenueCreatorEconomyService::accrueStreamRevenue`: Sebelumnya membentuk key dari nominal `$streamGrossRevenueIdr`. Kini wajib `idempotency_key` / `Idempotency-Key` header (422 jika kosong).
+  2. **Klasifikasi Kategori (ii) — Entitas Tunggal Mewakili Tepat Satu Kejadian Bisnis (7 File):**
+     - `AutoServe ApproveEstimateAction`: Default `'estimate_hold_'.$estimate->uuid`. UUID estimasi mewakili satu kali persetujuan pengerjaan servis dan penahanan dana hold escrow secara atomik.
+     - `Core OutboxBusService`: Default `outbox:{eventType}:{aggType}:{aggId}`. Pasangan event dan aggregate ID mewakili domain event tunggal aggregate tersebut pada transactional outbox.
+     - `Finance PayInstallmentAction`: Default `'loan_inst_'.$loan->uuid.'_'.$lockedInstallment->sequence`. Baris angsuran ke-$n$ pinjaman hanya dapat dilunasi tepat satu kali.
+     - `Mall SettleParkingSessionAction`: Default `'mall:parking:settle:'.$session->uuid`. Sesi tiket parkir fisik hanya memiliki satu kali siklus keluar gerbang dan pelunasan.
+     - `Payment PaymentGatewayService`: Default `'tx_cap_'.$locked->id`, `'tx_rel_'.$locked->id`, dan `'refund:'.$trimmedRefundId`. Intent ID dan Refund ID mewakili status akhir atau transaksi pengembalian tunggal.
+     - `Proptech ProptechService::ingestSensorReading`: Default `hash('sha256', "{$zone->id}:{$sensorCode}:{$sensorType}:{$recordedAt->toIso8601String()}")`. Sampel telemetri fisik sensor pada koordinat dan stempel waktu `recordedAt` adalah observasi fisik unik yang tidak digerakkan oleh HTTP request pengguna.
+     - `Store PurchaseC2cVehicleAction`: Default `'order_'.$fresh->id`. Order mobil bekas C2C unik per unit kendaraan dan pembeli.
+- **Verification:**
+  - `tests/Feature/Banking/IdempotencyCategoryOneContractTest.php` memverifikasi seluruh 6 aksi Kategori (i): tanpa key $\to$ ditolak (422/exception), key sama $\to$ 1 efek, key berbeda $\to$ 2 efek.
+  - `tests/Feature/Banking/IdempotencyCategoryTwoContractTest.php` memverifikasi bahwa dua kejadian bisnis berbeda menghasilkan dua entitas/posting terpisah pada aksi Kategori (ii).
+  - `git grep -l "idempotencyKey ??\|idempotency_key ??" -- modules` berkurang dari 13 file menjadi tepat 7 file Kategori (ii).

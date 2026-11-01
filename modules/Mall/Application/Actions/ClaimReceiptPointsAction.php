@@ -5,24 +5,21 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\ReceiptClaimStatus;
 use Modules\Mall\Domain\Exceptions\DuplicateReceiptClaimException;
 use Modules\Mall\Domain\Models\LoyaltyMember;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\ReceiptClaim;
-use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class ClaimReceiptPointsAction
 {
@@ -86,32 +83,18 @@ class ClaimReceiptPointsAction
                 $pointsEarned = 1;
             }
 
-            // 4. Double-Entry Posting Ledger untuk aset PTS
+            // 4. Double-Entry Posting Ledger untuk aset PTS (Model C: debit expense:mall:points_issued:PTS, kredit points:user:{id}:PTS)
             if ($pointsEarned > 0) {
                 $userPointsAccount = $user->pointsAccount();
+                $expenseAccount = MallAccounts::pointsIssuedAccount();
 
-                $mallLiabilityAccount = LedgerAccount::firstOrCreate(
-                    ['code' => 'liability:mall:points:PTS'],
-                    [
-                        'uuid' => (string) Str::uuid(),
-                        'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                        'asset_code' => 'PTS',
-                        'kind' => AccountKind::CLEARING->value,
-                        'allow_negative' => true,
-                        'cached_balance' => '0',
-                        'is_frozen' => false,
-                    ]
-                );
+                // Entri seimbang model C tanpa negated() manual (KONSEP §A2.1)
+                $entries = Posting::lines()
+                    ->debit($expenseAccount->id, $pointsEarned, 'PTS')
+                    ->credit($userPointsAccount->id, $pointsEarned, 'PTS')
+                    ->toEntries('PTS');
 
-                $ptsBd = BigDecimal::of($pointsEarned);
-
-                // Entri seimbang: Debit akun user (+pts), Kredit kewajiban mall (-pts)
-                $entries = [
-                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd),
-                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd->negated()),
-                ];
-
-                // Kunci deterministik dari nomor struk agar retry tidak men-posting ganda
+                // Kunci deterministik dari nomor struk agar retry tidak men-posting ganda (§A2.5)
                 $txKey = 'pts_claim_'.$receiptNumber;
 
                 if (LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {

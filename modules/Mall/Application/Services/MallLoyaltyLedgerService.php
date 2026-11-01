@@ -5,14 +5,9 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Services;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Application\Actions\ClaimReceiptPointsAction;
 use Modules\Mall\Application\Actions\UseVoucherAction;
@@ -22,6 +17,8 @@ use Modules\Mall\Domain\Exceptions\InsufficientPointsException;
 use Modules\Mall\Domain\Exceptions\InvalidVoucherException;
 use Modules\Mall\Domain\Models\PointBatch;
 use Modules\Mall\Domain\Models\Tenant;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class MallLoyaltyLedgerService implements LoyaltyLedger
 {
@@ -131,26 +128,14 @@ class MallLoyaltyLedgerService implements LoyaltyLedger
                 $needed -= $take;
             }
 
-            // 2. Double-Entry Posting untuk PTS
+            // 2. Double-Entry Posting untuk PTS (Model C: debit user, kredit revenue redeemed)
             $userPointsAccount = $user->pointsAccount();
-            $mallPointsLiability = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:points:PTS'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                    'asset_code' => 'PTS',
-                    'kind' => AccountKind::CLEARING->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            $mallRevenueRedeemed = MallAccounts::pointsRedeemedAccount();
 
-            $ptsBd = BigDecimal::of($pointsToRedeem);
-            $ptsEntries = [
-                PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
-                PostingEntryDTO::forAccount($mallPointsLiability->id, 'PTS', $ptsBd),
-            ];
+            $ptsEntries = Posting::lines()
+                ->debit($userPointsAccount->id, $pointsToRedeem, 'PTS')
+                ->credit($mallRevenueRedeemed->id, $pointsToRedeem, 'PTS')
+                ->toEntries('PTS');
 
             $ptsRef = $referenceId ? (string) $referenceId : ('usr_'.$user->id.'_pts_'.$pointsToRedeem);
 
@@ -165,38 +150,14 @@ class MallLoyaltyLedgerService implements LoyaltyLedger
                 postedAt: now(),
             ));
 
-            // 3. Double-Entry Moneter untuk Diskon IDR
-            $expenseAccount = LedgerAccount::firstOrCreate(
-                ['code' => 'expense:mall:loyalty:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Beban Promosi Loyalitas Duta Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::EXPENSE->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            // 3. Double-Entry Moneter untuk Diskon IDR via helper MallAccounts
+            $expenseAccount = MallAccounts::loyaltyExpenseAccount();
+            $voucherLiabilityAccount = MallAccounts::voucherLiabilityAccount();
 
-            $voucherLiabilityAccount = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:voucher:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Voucher & Diskon Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::LIABILITY->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
-
-            $idrBd = BigDecimal::of($discountAmountIdr);
-            $idrEntries = [
-                PostingEntryDTO::forAccount($expenseAccount->id, 'IDR', $idrBd->negated()),
-                PostingEntryDTO::forAccount($voucherLiabilityAccount->id, 'IDR', $idrBd),
-            ];
+            $idrEntries = Posting::lines()
+                ->debit($expenseAccount->id, $discountAmountIdr, 'IDR')
+                ->credit($voucherLiabilityAccount->id, $discountAmountIdr, 'IDR')
+                ->toEntries('IDR');
 
             $this->ledger->post(new PostingDTO(
                 type: TransactionType::VOUCHER_ISSUE->value,

@@ -25,14 +25,10 @@ class OpenLoanRequest extends FormRequest
             return;
         }
 
-        $userId = $this->user()?->getAuthIdentifier() ?? 'guest';
-        $key = sprintf(
-            'fin:loan_open:%s:%s',
-            $userId,
-            sha1((string) $this->input('product_id').':'.(string) $this->input('down_payment').':'.(string) $this->input('tenor_months'))
-        );
-
-        $this->merge(['idempotency_key' => $key]);
+        $headerKey = $this->header('Idempotency-Key');
+        if (! empty($headerKey)) {
+            $this->merge(['idempotency_key' => $headerKey]);
+        }
     }
 
     /**

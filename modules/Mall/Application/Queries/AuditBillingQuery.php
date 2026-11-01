@@ -11,6 +11,8 @@ use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Mall\Domain\Enums\InvoiceLineType;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Models\Invoice;
+use Modules\Mall\Domain\Models\PointBatch;
+use Modules\Mall\Ledger\MallAccounts;
 
 class AuditBillingQuery
 {
@@ -121,6 +123,41 @@ class AuditBillingQuery
         $globalIdrSum = LedgerEntry::where('asset_code', 'IDR')->sum('amount');
         if (abs((float) $globalIdrSum) > 0.0001) {
             $discrepancies[] = "Global IDR ledger balance is unbalanced! SUM(amount) = {$globalIdrSum}";
+        }
+
+        // 5. Audit integritas poin loyalitas Mall (Model C PTS - Task A4f)
+        $userPointsAccounts = LedgerAccount::where('code', 'like', 'points:user:%:PTS')->get();
+        $totalUserWalletBalance = 0;
+
+        foreach ($userPointsAccounts as $userAcc) {
+            $userBalance = BigDecimal::of($userAcc->cached_balance ?: '0')->toInt();
+            $totalUserWalletBalance += $userBalance;
+
+            if (preg_match('/^points:user:(\d+):PTS$/', (string) $userAcc->code, $m)) {
+                $uid = (int) $m[1];
+                $activeLotSum = (int) PointBatch::where('user_id', $uid)
+                    ->where('is_expired', false)
+                    ->where('points_remaining', '>', 0)
+                    ->sum('points_remaining');
+
+                if ($userBalance !== $activeLotSum) {
+                    $discrepancies[] = "User #{$uid} Points discrepancy: wallet balance ({$userBalance}) != active lots sum ({$activeLotSum})";
+                }
+            }
+        }
+
+        // Global reconciliation: Σ saldo dompet = −saldo issued − saldo redeemed − saldo breakage
+        $issuedAcc = LedgerAccount::where('code', MallAccounts::EXPENSE_POINTS_ISSUED_PTS)->first();
+        $redeemedAcc = LedgerAccount::where('code', MallAccounts::REVENUE_POINTS_REDEEMED_PTS)->first();
+        $breakageAcc = LedgerAccount::where('code', MallAccounts::REVENUE_POINTS_BREAKAGE_PTS)->first();
+
+        $issuedBal = $issuedAcc ? BigDecimal::of($issuedAcc->cached_balance ?: '0')->toInt() : 0;
+        $redeemedBal = $redeemedAcc ? BigDecimal::of($redeemedAcc->cached_balance ?: '0')->toInt() : 0;
+        $breakageBal = $breakageAcc ? BigDecimal::of($breakageAcc->cached_balance ?: '0')->toInt() : 0;
+
+        $expectedWalletSum = -$issuedBal - $redeemedBal - $breakageBal;
+        if ($totalUserWalletBalance !== $expectedWalletSum) {
+            $discrepancies[] = "Global PTS reconciliation failed: sum of user wallets ({$totalUserWalletBalance}) != -issued ({$issuedBal}) - redeemed ({$redeemedBal}) - breakage ({$breakageBal}) = expected {$expectedWalletSum}";
         }
 
         return [

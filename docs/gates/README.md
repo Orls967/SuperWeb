@@ -102,3 +102,28 @@ Di GitHub, *Settings → Branches → Branch protection rules* untuk `master`:
 - **Require review from Code Owners** (`.github/CODEOWNERS`): GitHub tidak mengizinkan penulis PR menyetujui PR-nya sendiri. Bila semua commit agent di-push dengan akun pemilik, review code owner tidak bisa dipenuhi. Pilihannya: (a) agent memakai akun/bot terpisah sehingga pemilik bisa me-review, atau (b) pemilik memakai hak admin untuk merge setelah verifikasi silang tercatat di §5.
 
 Status pengaturan ini dicatat di `docs/BLOCKERS.md` (B-01) sampai selesai.
+
+---
+
+## 7. Pagar CI Merge Guard (`scripts/merge-guard.sh`)
+
+Untuk mencegah anti-pola F-01 (14 PR di-merge saat CI merah), diberlakukan pagar CLI `scripts/merge-guard.sh`:
+
+```bash
+./scripts/merge-guard.sh <nomor-PR>
+```
+
+### Mekanisme Kerja:
+1. Mengambil SHA commit HEAD dari PR via `gh api`.
+2. Mengambil seluruh `check-runs` dari commit HEAD tersebut.
+3. Mencetak tabel status check-runs (`Nama Check | Status | Conclusion`).
+4. **Validasi Ketat:**
+   - Bila belum ada check-run sama sekali $\to$ **Exit 1** (merge diblokir).
+   - Bila terdapat check-run yang belum selesai (`status != completed`) atau gagal/dibatalkan (`conclusion != success/skipped/neutral`) $\to$ **Exit 1** (merge diblokir).
+5. Bila seluruh check-run hijau (100% lulus), skrip mencetak instruksi manual:
+   ```bash
+   gh pr merge <nomor-PR> --merge
+   ```
+   *(Peringatan: skrip tidak pernah mengeksekusi merge secara otomatis tanpa izin pemilik repo).*
+6. Kontrak skrip diuji otomatis oleh [`tests/Unit/Quality/MergeGuardTest.php`](../../tests/Unit/Quality/MergeGuardTest.php).
+

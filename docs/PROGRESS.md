@@ -544,7 +544,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R0-26~~ | R0.2 | ~~Laporan gate docs/gates/fase-r0.md di repository belum disinkronkan dengan artefak CI commit 8724437 (masih mencatat commit 48b5529 dan 2.588 test)~~ | ~~Laporan quality gate lokal tidak mencerminkan commit kode terakhir~~ | ~~P2~~ | Tuntas (laporan disinkronkan dari artefak CI PR #12 run #38698698291 pada commit d58263a, 2.595 test / 11.492 asersi lulus) |
 
 ### FASE R1 — LEDGER & UANG (P0)
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R0 ✅.
 
 #### DoR Fase R1 — Ledger & uang
 - Disetujui pemilik: [x] 2026-10-16 (chat) — D1–D8 sesuai prompt 9
@@ -631,8 +631,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Unit/Quality/Ledger/PostingHelperTest.php
     - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it maps every AccountKind to its correct normal side
     - test: tests/Unit/Quality/Ledger/PostingHelperTest.php::it enforces single sign convention with debit as negative and credit as positive
-- [x] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
-  Bukti:
+- [ ] R1.2 **Perbaiki posting terbalik** (K-10) di: Hospital (Clinical trial, Medical tourism, Lab/Imaging, e-Pharmacy, Revenue cycle), Mining (HSE/kontraktor, royalti, reklamasi, lingkungan), Egy, Hotel, Venue, Ret, Tlx, Med, Edu, CloudKitchen, Vending, Proptech, EnterpriseFinance (`ConglomerateCapitalAndGovernanceService`), Logistics `ReverseLogisticsService`, Trade `AiBiddingAgentService`, dan seluruh service Integration yang memposting. Perbaiki test yang mengunci tanda salah (mis. `ClinicalTrialAndResearchTest` meng-assert revenue negatif) — dicatat sebagai `keputusan:` di Bukti (X17).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 184e6de
     - commit: 01de149
@@ -684,7 +685,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/LedgerNormalBalanceTest.php::it keeps accounts with inverted normal balances within the ratchet baseline
     - minus: M-R0-6
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 - [x] R1.3 **Chart of accounts sebagai kode** (K-11): `modules/{M}/Ledger/{M}Accounts.php` (konstanta + definisi kind/aset/allow_negative/normal side) untuk setiap modul yang memposting; `LedgerAccountsSeeder` memprovisi semuanya secara idempoten; hapus `LedgerAccount::create` dari 44 file test (ganti `$this->seed(LedgerAccountsSeeder::class)`).
   Bukti:
     - jenis: tooling
@@ -696,9 +697,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - minus: M-R0-5
     - minus: M-R0-8
-- [x] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
+- [ ] R1.4 **Guard `LedgerService`** (K-13, K-19): (1) tolak entri yang `asset_code`-nya ≠ aset akun; (2) simpan `payload_hash` di `bank_ledger_transactions` dan tolak key sama-payload beda (`IdempotencyConflictException`); (3) tangkap unique violation → kembalikan transaksi pemenang; (4) migrasi `restrictOnDelete` + model `LedgerEntry`/`LedgerTransaction` melempar exception pada `updating`/`deleting`; (5) `type` wajib dari `TransactionType` (atau registry per modul) dan ≤ 32 karakter — perbaiki 12 type yang terlalu panjang (baseline `arch:scan` A5 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: satu test per guard; test konkurensi dua koneksi (grup `db-portability`).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 8a40eb3
     - commit: c081ba5
@@ -727,9 +729,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/TransactionTypeRegistryUniqueTest.php::it ensures all transaction type values are unique across all module registries
     - test: tests/Feature/Banking/LedgerConcurrencyTest.php::two database connections racing same idempotency key return winner without double posting
     - test: tests/Feature/Banking/LedgerConcurrencyTest.php::ledger service locks accounts in deterministic ascending id order to prevent deadlock
-- [x] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+- [ ] R1.5 **Idempotency key deterministik** (K-12): ganti 27 lokasi `Str::uuid()/Str::random()/now()` dengan key identitas bisnis (baseline `arch:scan` A4 = 0); perbaiki `FleetLeasingService::amortizeMonthly()` (kunci kontrak, marker per bulan, akumulasi hanya bila posting baru).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: per lokasi, panggil dua kali → satu transaksi ledger & state tidak bergeser.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 0c75647
     - commit: 4d89235
@@ -813,7 +816,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d3-alter-decimal-idr-to-bigint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d5-integer-arithmetic-half-up
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d9-a3-integration-freeze
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 - [x] R1.9 **Presisi & rekonsiliasi portabel** (K-14, K-18): tentukan penyimpanan aset non-IDR (integer minor unit per aset **atau** DB produksi MySQL/PostgreSQL dengan `DECIMAL(36,18)` eksak) dan catat di DECISIONS; `bank:reconcile` tanpa `group_concat` (SUM native di MySQL/PostgreSQL, `chunkById` + BigDecimal di SQLite) dan mendukung checkpoint inkremental.
   - Test wajib: nilai 18 desimal bertahan utuh pulang-pergi DB (grup `db-portability`); reconcile mendeteksi selisih 1 unit terkecil.
   Bukti:
@@ -835,13 +838,14 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::reconcile detects one atto unit 1e minus 18 discrepancy on crypto ledger
     - test: tests/Feature/Banking/ReconcileDetectsOneUnitTest.php::incremental reconcile detects stale or corrupted checkpoint
     - keputusan: docs/DECISIONS.md#2026-10-16-r1-d1-non-idr-minor-units
-    - gate: docs/gates/fase-r1.md
-- [x] R1.10 Quality gate Fase R1 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r1.md
+- [ ] R1.10 Quality gate Fase R1 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 4ff89eb
     - file: docs/gates/fase-r1.md
-    - gate: docs/gates/fase-r1.md
+    - (dibatalkan) gate: docs/gates/fase-r1.md
 
 #### Register Minus Fase R1
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
@@ -854,9 +858,12 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | ~~M-R1-6~~ | R1.9 | ~~Test wajib DoR presisi 18 desimal (`DecimalRoundTripTest`), fixture selisih 1 unit terkecil ($10^{-18}$), dan fixture checkpoint basi belum dibuat; sabotase $10^{-18}$ di SQLite lolos deteksi~~ | ~~Presisi aset non-IDR/kripto (18 desimal) rentan terpotong diam-diam di SQLite tanpa terdeteksi rekonsiliasi~~ | ~~P0~~ | Tuntas (commit `7674520`: migrasi afinitas text SQLite 18 desimal, suite DecimalRoundTripTest, dan ReconcileDetectsOneUnitTest dengan deteksi 1 unit dan checkpoint basi) |
 | ~~M-R1-7~~ | R1.2 | ~~Blok `Bukti:` R1.2 tidak mencantumkan `keputusan: docs/DECISIONS.md#2026-10-16-r1-d4-test-tanda-salah` dan hanya memuat 1 file baseline (mengabaikan 18 commit modul)~~ | ~~Pelacakan audit bukti mesin (P2/C1/X17) tidak lengkap untuk puluhan test yang diubah~~ | ~~P1~~ | Tuntas (blok `Bukti:` R1.2 dilengkapi seluruh 19 commit modul, file terkait, rujukan DECISIONS D4, dan minus M-R0-6 sesuai aturan X17/P2) |
 | ~~M-R1-8~~ | R1.10 | ~~Laporan gate `docs/gates/fase-r1.md` basi (mencatat commit `f17b6f1`, bukan HEAD `4f287a1`)~~ | ~~Laporan quality gate lokal tidak mencerminkan HEAD commit repositori~~ | ~~P2~~ | Tuntas (laporan quality gate docs/gates/fase-r1.md digenerate ulang dan disinkronkan dengan commit HEAD terakhir) |
+| M-R1-9 | R1.2 | Temuan F-04: Akun Kewajiban Poin Mall sempat berstatus CLEARING | Berpotensi salah saji ekuitas mall | P0 | Diperbaiki di III.2 (K-1): kind kembali LIABILITY via MallAccounts, trigger DB terpasang |
+| M-R1-10 | R1.5 | Temuan F-05: Kunci top-up banking:topup:{user}:{amount} tanpa request key | Transaksi kedua nominal sama ditolak keliru | P0 | Diperbaiki di III.3 (K-3): wajib Idempotency-Key eksplisit di header/parameter |
+| M-R1-11 | R1.4 | Temuan F-10: Tabel buku besar tidak memiliki append-only trigger di DB | Query builder update/delete tanpa halangan | P1 | Diperbaiki di III.4 (C3): DB triggers SQLite, MySQL, Postgres terpasang |
 
 ### FASE R2 — BUG FUNGSIONAL TERVERIFIKASI
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R1 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R1 🔵.
 
 #### DoR Fase R2 — Bug fungsional terverifikasi
 - Disetujui pemilik: [x]   2026-10-14 (DECISIONS.md#2026-10-14-p9-minus-dialihkan) — DoR mencakup perbaikan bug fungsional K-16, K-22, K-29, serta perluasan lingkup untuk bug HTTP 500 modul Contract (M-R0-10 & M-R0-11) sesuai adendum M-R0-25.
@@ -925,7 +932,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::memperbarui diskon pada hitung tagihan ulang hanya mengubah grand total tanpa efek samping stok atau ledger
     - test: modules/Resto/tests/Feature/HidangBillIdempotencyTest.php::endpoint kalkulasi tagihan pos resto oleh role berhak dan tidak berhak
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [x] R2.2 **Tender benar-benar tersegel** (K-22): skema commit–reveal atau isi penawaran terenkripsi sampai `openBids()`; perbaiki `TenderBid::isSealIntact()` (formula hash sama dengan saat menyegel) dan panggil saat pembukaan; tolak bid yang segelnya tidak cocok.
   - Test wajib: isi penawaran tidak terbaca sebelum dibuka; manipulasi isi setelah segel → ditolak saat open.
   Bukti:
@@ -941,10 +948,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Procurement/tests/Feature/BlindTenderSealTest.php::manipulasi isi penawaran atau seal hash setelah segel ditolak saat open bids
     - akses: route POST /procurement/tenders/{tender}/seal [role: admin,procurement,supplier]
     - akses: route POST /procurement/tenders/{tender}/open [role: admin,procurement]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.3 **Jalur galat controller** (K-29): ganti 15 `back()->errors()->add()` di Pricing/Agency/Distribution dengan `back()->withErrors([...])->withInput()` (baseline `arch:scan` A13 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: test HTTP per jalur galat → redirect + session error (bukan 500).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 4d55b93
     - file: modules/Agency/Http/Controllers/AgencyController.php
@@ -962,7 +970,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-11
     - akses: route GET /contracts/clauses/create [role: admin,contract_manager,legal]
     - akses: route GET /contracts/reports [role: admin,contract_manager,legal]
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 - [x] R2.4 **Inventory benar-benar append-only** (K-24): `commit()`/`release()` membuat movement baru yang menautkan reservasi (tanpa mengubah baris lama); unique index `(outlet_id, ingredient_id)` + upsert atomik; akses tabel `resto_*` dipindah ke Contract milik Resto.
   Bukti:
     - jenis: fitur
@@ -979,10 +987,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::model stock movement menolak update dan delete secara langsung
     - test: modules/Inventory/tests/Feature/InventoryAppendOnlyAndContractTest.php::deduct ingredient dan add ingredient bekerja secara atomik lewat kontrak resto dengan unique constraint outlet id dan ingredient id
     - akses: route POST /resto/pos/session/{session}/bill [role: admin,cashier,outlet_manager]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.5 **Outbox yang benar** (K-08, K-23, K-31): status dispatch per subscriber (retry hanya yang gagal); klaim pesan atomik antar-worker; target non-webhook dieksekusi lewat handler terdaftar (bukan ditandai sukses); allowlist host + tolak IP privat/link-local; `IntegrationService::dispatchWebhook()` lewat outbox nyata (atau diganti status `simulated_*`).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: subscriber A sukses + B gagal → retry hanya ke B; dua worker paralel → satu pengiriman; URL `http://169.254.169.254` ditolak.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 41ffd7c
     - file: modules/Core/Application/Services/OutboxBusService.php
@@ -993,9 +1002,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_url_webhook_privat_localhost_dan_cloud_metadata_169_254_169_254_ditolak_oleh_guard_anti_ssrf
     - test: modules/Core/tests/Feature/OutboxReliabilityAndSsrfTest.php::test_target_subscriber_non_webhook_dieksekusi_lewat_handler_terdaftar_dan_gagal_jika_handler_tidak_ditemukan
     - akses: route GET /integration/webhooks [role: admin]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.6 **Telematics** (K-26, K-30): baseline rolling 7 hari dari tick nyata; hanya DTC dari daftar kritis yang `critical`/`grounded`; event domain dipancarkan `afterCommit` dan dedup per jam sama seperti publish spine.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 39f9a2f
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
@@ -1005,9 +1015,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_seven_day_rolling_baseline_calculated_from_actual_historical_ticks
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::test_anomaly_event_dispatched_after_commit_and_deduplicated_hourly
     - akses: route GET /logistics/fleet [role: admin,auditor,dispatcher,hub_operator,logistics_admin]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.7 **ESG faktor emisi**: `recordEmission()` menolak jenis aktivitas tak dikenal (sekarang diam-diam faktor 1.0); nomor dokumen lewat `DocumentNumberingInterface` (bukan `Str::random`).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bc0f475
     - file: modules/Esg/Application/Services/EsgService.php
@@ -1018,10 +1029,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_web_index_accessible
     - akses: route GET /esg [role: admin,esg_officer,auditor]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.8 **Status sukses palsu** (K-31, X9): `IntegrationService::dispatchWebhook()` & `processEdiMessage()`, outbox target non-webhook, `EnterpriseDigitalTrustService::publishClaim()`, dan seluruh status serupa (cari literal `'delivered'`, `'accepted'`, `'published_verified'`, `'HEALTHY'`) hanya diisi dari hasil aksi nyata atau berganti `simulated_*`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Test wajib: adapter gagal → status gagal tercatat (bukan sukses).
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d1ec63
     - file: modules/Integration/Application/Services/IntegrationService.php
@@ -1032,9 +1044,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_without_evidence_attachment_is_marked_simulated_unverified
     - test: modules/Integration/tests/Feature/FakeStatusEliminationTest.php::test_claim_with_persisted_evidence_document_is_published_verified
     - akses: route GET /integration [role: admin]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.9 **Nilai default diam-diam** (X25): hapus default yang menutupi data hilang — `HcmService::registerEmployee()` (gaji 5 jt, rekening, bank default), `TelematicsIngestService` (suhu oli 90 °C, tegangan 12,6 V, BBM 100%), faktor emisi 1.0 (R2.7) — ganti validasi eksplisit 422.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 556f804
     - file: modules/Hcm/Application/Services/HcmService.php
@@ -1045,18 +1058,20 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/SilentDefaultEliminationTest.php::test_esg_record_emission_rejects_unknown_activity_without_silent_default_factor
     - test: tests/Feature/SilentDefaultEliminationTest.php::test_explicit_valid_payloads_create_records_cleanly_without_hidden_defaults
     - akses: route GET /hcm [role: admin,hcm_manager]
-    - gate: docs/gates/fase-r2.md
-- [x] R2.10 Quality gate Fase R2 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r2.md
+- [ ] R2.10 Quality gate Fase R2 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 58f3b65
     - file: docs/gates/fase-r2.md
-    - gate: docs/gates/fase-r2.md
+    - (dibatalkan) gate: docs/gates/fase-r2.md
 
 #### Register Minus Fase R2
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R2.1 s/d R2.9 serta minus masuk M-R0-10 & M-R0-11 tuntas 100%) | - | - | - |
+| M-R2-1 | R2.3 / R2.5 | Temuan F-02: 26 pelanggaran disembunyikan oleh pelemahan nama test scanner lama | Pelanggaran fungsional dan error path berpotensi lolos | P1 | Diperbaiki di Bagian II (pagar dipulihkan ketat); ditargetkan tuntas verifikasi mandiri |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Selesai & Terbukti.
@@ -1313,7 +1328,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
 
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R3 ✅.
 
 #### DoR Fase R4 — Batas Modul & Kepemilikan Data
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1335,9 +1350,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `ModelFillableIntegrityTest`
 - Jalan pintas yang dihindari: menaikkan baseline tanpa keputusan pemilik, mengabaikan reverse dependencies dengan allowlist liar, mass-assignment bypass tanpa fillable eksplisit, strict_types dilewati pada file baru/modifikasi.
 
-- [x] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
+- [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
-  Bukti:
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: d55dc03
     - file: tests/Architecture/StrictTypesComplianceTest.php
@@ -1345,7 +1361,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/StrictTypesComplianceTest.php::it enforces declare(strict_types=1) across all module PHP files excluding migrations and tests
     - test: tests/Architecture/ModuleBoundariesTest.php::domain does not depend on Http
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 - [x] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
   Bukti:
     - jenis: konfigurasi
@@ -1355,9 +1371,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it ensures table prefixes are well-formed and unique
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it resolves specific disambiguated prefixes correctly
     - test: tests/Architecture/ModulePrefixRegistryTest.php::it flags foreign table access via ForeignTablePrefixRule
-    - gate: docs/gates/fase-r4.md
-- [x] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2ed527b
     - file: modules/Shared/Application/SearchRegistry.php
@@ -1365,9 +1382,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: modules/Store/Contracts/StoreProductStockPort.php
     - file: tests/Architecture/KernelZeroBusinessDependencyTest.php
     - test: tests/Architecture/KernelZeroBusinessDependencyTest.php::it enforces that kernel modules (Shared, Core) have zero dependencies on business modules (A9 = 0)
-    - gate: docs/gates/fase-r4.md
-- [x] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 279af36
     - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
@@ -1379,18 +1397,20 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it ensures docs/INTEGRATION_SERVICES_CLASSIFICATION.md exists and documents all 345 services
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it confirms Integration services auto-resolve seamlessly via service container
     - minus: M-R1-1
-    - gate: docs/gates/fase-r4.md
-- [x] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: konfigurasi
     - commit: 3f47c92
     - file: config/modules.php
     - file: docs/DECISIONS.md
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
-    - gate: docs/gates/fase-r4.md
-- [x] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 35ea47e
     - file: app/Quality/ArchScan/Rules/MissingForeignKeyRule.php
@@ -1399,22 +1419,24 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ModelFillableIntegrityTest.php::it enforces that no module model uses unguarded array
     - test: tests/Architecture/ModelFillableIntegrityTest.php::it verifies arch-scan baseline locks A10 at zero
-    - gate: docs/gates/fase-r4.md
-- [x] R4.7 Quality gate Fase R4 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r4.md
+- [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 269e964
     - file: docs/gates/fase-r4.md
-    - gate: docs/gates/fase-r4.md
+    - (dibatalkan) gate: docs/gates/fase-r4.md
 
 #### Register Minus Fase R4
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R4.1 s/d R4.7 tuntas 100%) | - | - | - |
+| M-R4-1 | R4.1 / R4.3 | Temuan F-06: config/modules.php dimanipulasi dengan 5.777 pengecualian palsu | Pelanggaran arsitektur tersembunyi | P0 | Diperbaiki di III.5 (K-2): 304 kolom dan 34 tabel palsu dihapus, baseline nyata dipulihkan |
 
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-16) · Prasyarat: R0 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R4 🔵.
 
 #### DoR Fase R5 — Dokumentasi, audit & test yang jujur
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1433,17 +1455,19 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `TestHygieneTest`
 - Jalan pintas yang dihindari: fixture palsu yang tidak memicu failure pada command audit, asersi kosong / `assertTrue(true)` baru, skipping test tanpa blocker sah, klaim status sehat tanpa verifikasi DB nyata.
 
-- [x] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
-  Bukti:
+- [ ] R5.1 **CODEBASE otomatis** (K-03): `php artisan docs:inventory` menghasilkan bagian faktual `CODEBASE.md` (modul, prefiks, jumlah tabel, rute per modul + middleware, command & jadwal, akun ledger per modul); test gagal bila hasil generate ≠ isi file.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 4407dcb
     - file: app/Console/Commands/DocsInventoryCommand.php
     - file: tests/Architecture/CodebaseInventorySyncTest.php
     - file: docs/CODEBASE.md
     - test: tests/Architecture/CodebaseInventorySyncTest.php::it ensures php artisan docs:inventory passes and verifies synchronization with CODEBASE.md
-    - gate: docs/gates/fase-r5.md
-- [x] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r5.md
+- [ ] R5.2 **Fixture korupsi untuk semua audit** (K-02): baseline `AuditCommandContractTest` = 0 — setiap `*:audit` terdaftar membandingkan dua sumber dan punya fixture yang membuatnya gagal.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 6824e6f
     - file: tests/Architecture/AuditCommandContractTest.php
@@ -1452,9 +1476,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditCommandContractTest.php::it keeps audit commands without corruption fixtures within the ratchet baseline
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms bank:reconcile passes on clean state and fails when data is corrupted
     - test: tests/Architecture/AuditCommandContractTest.php::it confirms api:audit passes on clean state and fails when signature is corrupted
-    - gate: docs/gates/fase-r5.md
-- [x] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r5.md
+- [ ] R5.3 **`super:health-check` jujur**: hanya melaporkan pilar yang benar-benar dicek; tambahkan pilar baru hanya bersama audit dua-sumbernya.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ccea63b
     - file: modules/Core/Application/Services/SystemHealthService.php
@@ -1465,9 +1490,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the ledger pillar is corrupted
     - test: tests/Feature/Quality/HonestSuperHealthCheckTest.php::it fails honestly when the mall billing pillar is corrupted
     - akses: command super:health-check
-    - gate: docs/gates/fase-r5.md
-- [x] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r5.md
+- [ ] R5.4 **Format gate di AUDIT.md**: hanya tautan ke `docs/gates/fase-N.md` hasil `gate:report`; entri lama yang hanya sub-suite diberi catatan "tidak representatif".
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: a230e54
     - file: docs/AUDIT.md
@@ -1475,9 +1501,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that docs/AUDIT.md exists and contains the unrepresentative note for pre-R0 entries
     - test: tests/Architecture/AuditDocGateFormatTest.php::it verifies that all official gate reports referenced in docs/AUDIT.md physically exist
     - test: tests/Architecture/AuditDocGateFormatTest.php::it ensures all completed R phase gates are referenced in docs/AUDIT.md
-    - gate: docs/gates/fase-r5.md
-- [x] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r5.md
+- [ ] R5.5 **Higiene test** (K-27): baseline `TestHygieneTest` = 0; setiap modul yang punya rute memiliki test HTTP (role berhak & tak berhak); setiap fitur uang punya test (c) retry dan (d) invarian.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 9a40940
     - file: tests/Architecture/TestHygieneTest.php
@@ -1488,22 +1515,24 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Unauthorized role is forbidden from asset index
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Asset manager can access asset index
     - test: modules/Asset/tests/Feature/AssetHttpAuthorizationTest.php::Admin can access asset create
-    - gate: docs/gates/fase-r5.md
-- [x] R5.6 Quality gate Fase R5 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r5.md
+- [ ] R5.6 Quality gate Fase R5 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: a445d88
     - file: docs/CODEBASE.md
     - file: docs/gates/fase-r5.md
-    - gate: docs/gates/fase-r5.md
+    - (dibatalkan) gate: docs/gates/fase-r5.md
 
 #### Register Minus Fase R5
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R5.1 s/d R5.6 serta minus warisan M-R0-4, M-R0-14, M-R0-15, M-R0-16 tuntas 100%) | - | - | - |
+| M-R5-1 | R5.1 s/d R5.6 | Temuan F-01: CI master merah dan laporan verifikator template palsu | Integritas laporan gate diragukan | P1 | Diperbaiki di Bagian II & III: inventaris disinkronkan, gate dites penuh |
 
 ### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R5 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R5 🔵.
 
 #### DoR Fase R6 — Verifikasi Ulang Item Fase 26–63
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1517,20 +1546,23 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `Modules\Core\tests\Feature\SimulationKernelTest`, `Modules\Hospital\tests\Feature\ClinicalTrialAndResearchTest`, `Modules\Plm\tests\Feature\PlmTest`, `Modules\Fleet\tests\Feature\FleetTest`, `Modules\Telematics\tests\Feature\TelematicsTest`, `Modules\Hcm\tests\Feature\HcmTest`, `Modules\Esg\tests\Feature\EsgTest`, `Modules\B2b\tests\Feature\B2bTest`, `Modules\Agri\tests\Feature\AgriTest`, `Modules\Epc\tests\Feature\EpcTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
 
-- [x] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
-  Bukti:
+- [ ] R6.1 Untuk setiap item fase 26–46 bertanda ✅: tambahkan blok `Bukti:` (P2). Item yang ternyata tidak terbukti → `[ ]` + Register Minus.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
-    - gate: docs/gates/fase-r6.md
-- [x] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r6.md
+- [ ] R6.2 Untuk fase 🟡 (41, 47–54, 56, 57, 57B, 59–63): verifikasi per item; lengkapi yang kurang sebagai vertical slice atau turunkan klaim item lewat P10.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13afdcc
     - file: docs/DECISIONS.md
-    - gate: docs/gates/fase-r6.md
-- [x] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r6.md
+- [ ] R6.3 Kerjakan ulang Fase 55 (API v2, webhook nyata, EDI parser minimal, scoping multi-entitas) dan Fase 58 (HCM: shift & absensi, payroll dengan aturan pajak/BPJS yang dinyatakan eksplisit, jurnal payroll & alokasi biaya ke Manufaktur) sesuai item aslinya.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 556f804
     - file: modules/Hcm/Application/Services/HcmService.php
@@ -1538,38 +1570,42 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_register_employee_and_generate_payroll
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_can_allocate_labor_cost_to_production
     - test: modules/Hcm/tests/Feature/HcmTest.php::test_hcm_audit_passes_with_zero_discrepancy
-    - gate: docs/gates/fase-r6.md
-- [x] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r6.md
+- [ ] R6.4 Lengkapi integrasi uang 60–63: ESG (akun inventaris kredit karbon), B2B (escrow via ledger/PaymentGateway), Agri (payout petani via ledger), EPC (CIP di ledger + kapitalisasi lewat Contract modul Asset).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: bc0f475
     - file: modules/Esg/Application/Services/EsgService.php
     - file: modules/Esg/tests/Feature/EsgTest.php
     - test: modules/Esg/tests/Feature/EsgTest.php::test_can_purchase_and_retire_carbon_credits
     - test: modules/Esg/tests/Feature/EsgTest.php::test_esg_audit_passes_cleanly
-    - gate: docs/gates/fase-r6.md
-- [x] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r6.md
+- [ ] R6.5 **Koreksi kebenaran domain** (K-30): setiap klaim berikut diimplementasikan sesuai definisi **atau** diturunkan lewat P10 — randomisasi blok uji klinis (sekarang paritas `crc32 % 2`), gate review PLM (sekarang bisa lompat tahap), "PSAK 73" sewa armada (sekarang tanpa PV/ROU), klasifikasi DTC kritis Telematics, aturan pajak/BPJS HCM (R6.3).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 43e2ba7
     - file: modules/Core/Application/Services/SimClockService.php
     - file: modules/Core/tests/Feature/SimulationKernelTest.php
     - test: modules/Core/tests/Feature/SimulationKernelTest.php::test_simulation_clock_advancement_is_deterministic
-    - gate: docs/gates/fase-r6.md
-- [x] R6.6 Quality gate Fase R6 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r6.md
+- [ ] R6.6 Quality gate Fase R6 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5de4e45
     - file: docs/gates/fase-r6.md
-    - gate: docs/gates/fase-r6.md
+    - (dibatalkan) gate: docs/gates/fase-r6.md
 
 #### Register Minus Fase R6
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R6.1 s/d R6.6 tuntas 100%, A8=0) | - | - | - |
+| M-R6-1 | R6.1 s/d R6.6 | Temuan F-02: ProgressIntegrityScanner dilemahkan ($allPhasesInScope=false, $hasSubsequentActivePhase) | Pelanggaran di fase non-aktif terabaikan | P0 | Diperbaiki di Bagian II (B1): dikembalikan ketat dan diuji di ScannerScopeContractTest |
 
 ### FASE R7 — VERTICAL SLICE LINI GELOMBANG 1 (67–94)
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R1–R6 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R6 🔵.
 
 #### DoR Fase R7 — Vertical Slice Lini Gelombang 1
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1586,44 +1622,49 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `ClinicalTrialAndResearchTest`, `HotelPmsAndOperationsTest`, `BeachClubAndVenueOperationsTest`, `MiningResourceCommandTest`, `ProptechSmartBuildingTest`, `IntegrationServicesClassificationTest`, `IntegrationFreezeTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang melemahkan test, dilarang silent default, dilarang modifikasi teks item tanpa P10).
 
-- [x] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
-  Bukti:
+- [ ] R7.1 Per lini: rute + controller + view minimal + menu + role (dari `KONSEP.md` xF), chart of accounts + seeder T1, `{prefix}:audit` dua-sumber + fixture korupsi, test HTTP (a)–(e). Centang ulang item fase 87–94 / 68–86 yang terpenuhi dengan blok bukti.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: d55dc03
     - file: modules/Hospital/Application/Services/ClinicalTrialAndResearchService.php
     - file: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php
     - test: modules/Hospital/tests/Feature/ClinicalTrialAndResearchTest.php::test_106_6_a_duplicate_subject_enrollment_in_same_study_is_rejected
-    - gate: docs/gates/fase-r7.md
-- [x] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r7.md
+- [ ] R7.2 Pindahkan service lini tersebut yang masih di `Integration` ke modulnya (R4.4), ditulis ulang mengikuti template `KONSEP.md` §A15 (X21).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 279af36
     - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
     - file: tests/Architecture/IntegrationServicesClassificationTest.php
     - test: tests/Architecture/IntegrationServicesClassificationTest.php::it classifies all 345 services in modules/Integration/Application/Services
-    - gate: docs/gates/fase-r7.md
-- [x] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r7.md
+- [ ] R7.3 Verifikasi silang per lini (P7) — lini tidak dianggap selesai sebelum ✅.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: c5a0c75
     - file: docs/DECISIONS.md
     - file: tests/Architecture/ModuleBoundariesTest.php
     - test: tests/Architecture/ModuleBoundariesTest.php::controllers do not use DB facade directly
-    - gate: docs/gates/fase-r7.md
-- [x] R7.4 Quality gate per lini.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r7.md
+- [ ] R7.4 Quality gate per lini.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b86cd9f
     - file: docs/gates/fase-r7.md
-    - gate: docs/gates/fase-r7.md
+    - (dibatalkan) gate: docs/gates/fase-r7.md
 
 #### Register Minus Fase R7
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R7.1 s/d R7.4 tuntas 100%) | - | - | - |
+| M-R7-1 | R7.1 s/d R7.4 | Temuan F-12: Vite manifest tidak ditemukan pada runtime test view | Crash 500 pada HTTP view test | P1 | Diperbaiki di III.9: symlink node_modules dan npm run build diverifikasi |
 
 ### FASE R8 — EVENT SPINE & SIMULATION KERNEL NYATA
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-17) · Prasyarat: R2.5, R4 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R7 🔵.
 
 #### DoR Fase R8 — Event Spine & Simulation Kernel Nyata
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1640,53 +1681,59 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `EventCatalogContractTest`, `EventSpineConsumerGroupTest`, `ClockInterfaceHygieneTest`, `SimulationDeterministicRunTest`, `SimulationKernelTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
 
-- [x] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
-  Bukti:
+- [ ] R8.1 **Katalog event** (`KONSEP.md` §A4): nama ber-versi, skema payload, produsen, konsumen; test katalog gagal bila ada event lintas modul tanpa konsumen nyata.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b349885
     - file: modules/Core/Domain/Events/EventCatalog.php
     - file: tests/Architecture/EventCatalogContractTest.php
     - test: tests/Architecture/EventCatalogContractTest.php::test_all_catalog_events_follow_versioned_naming_and_have_producers_and_consumers
-    - gate: docs/gates/fase-r8.md
-- [x] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r8.md
+- [ ] R8.2 **Consumer group & replay**: worker `core:consume-spine {group}` dengan offset tersimpan; replay dari offset N idempoten.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: bd8439e
     - file: modules/Core/Console/Commands/ConsumeSpineCommand.php
     - file: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php
     - test: modules/Core/tests/Feature/EventSpineConsumerGroupTest.php::test_consumer_group_consumes_and_commits_offset
-    - gate: docs/gates/fase-r8.md
-- [x] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r8.md
+- [ ] R8.3 **ClockInterface** (K-09): semua action peka waktu memakai jam terinjeksi; hapus `Carbon::setTestNow()` dari kode produksi (baseline `arch:scan` A8 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 28b0f25
     - file: modules/Core/Contracts/ClockInterface.php
     - file: tests/Architecture/ClockInterfaceHygieneTest.php
     - test: tests/Architecture/ClockInterfaceHygieneTest.php::test_clock_interface_is_bound_and_resolvable
-    - gate: docs/gates/fase-r8.md
-- [x] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r8.md
+- [ ] R8.4 **`sim:run --days=N --resume`**: loop per hari virtual menjalankan *tick handler* terdaftar (depresiasi, cicilan, tagihan, expiry poin/voucher, MRP, D&D, royalti) dengan checkpoint; test: dua run identik → hash state identik.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b5faa1a
     - file: modules/Core/Console/Commands/RunSimulationCommand.php
     - file: modules/Core/tests/Feature/SimulationDeterministicRunTest.php
     - test: modules/Core/tests/Feature/SimulationDeterministicRunTest.php::test_two_identical_simulation_runs_produce_identical_state_hash
-    - gate: docs/gates/fase-r8.md
-- [x] R8.5 Quality gate Fase R8 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r8.md
+- [ ] R8.5 Quality gate Fase R8 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 42be624
     - file: docs/gates/fase-r8.md
-    - gate: docs/gates/fase-r8.md
+    - (dibatalkan) gate: docs/gates/fase-r8.md
 
 #### Register Minus Fase R8
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R8.1 s/d R8.5 tuntas 100%) | - | - | - |
+| M-R8-1 | R8.1 s/d R8.5 | Temuan F-09: Live telemetry ticker memuat nilai konstan (demo) | Metrik real-time tidak merefleksikan DB sesungguhnya | P1 | Diperbaiki di III.7 (K-7): dilabeli (demo) di UI, dikeluarkan dari klaim PROGRESS |
 
 
 ### FASE R9 — SKALA BERTINGKAT & BENCHMARK
-> **Status audit:** ✅ TERVERIFIKASI (2026-10-18) · Prasyarat: R1–R8 ✅.
+> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R8 🔵.
 
 #### DoR Fase R9 — Skala Bertingkat & Benchmark
 - Disetujui pemilik: [x] 2026-10-17 (chat)
@@ -1704,41 +1751,46 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - Daftar test wajib: `ScaleProvisionerTest`, `PlatformBenchmarkTest`, `K32ScalabilityRefactorTest`.
 - Jalan pintas yang dihindari: X1–X25 (dilarang mock kosong, dilarang modifikasi teks item tanpa P10).
 
-- [x] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
-  Bukti:
+- [ ] R9.1 Seeder T1 (demo ribuan baris) per lini yang ✅; seeder T2 (ratusan ribu–jutaan) dengan chunk + checkpoint, hanya dijalankan di MySQL/PostgreSQL.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 15f46b7
     - file: modules/Core/Console/Commands/ScaleProvisionCommand.php
     - file: modules/Core/tests/Feature/ScaleProvisionerTest.php
     - test: modules/Core/tests/Feature/ScaleProvisionerTest.php::test_dry_run_does_not_modify_database
-    - gate: docs/gates/fase-r9.md
-- [x] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r9.md
+- [ ] R9.2 Benchmark: waktu seed, p95 halaman kritis, durasi `bank:reconcile` & audit utama; hasil dilampirkan oleh `gate:report`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 35cee83
     - file: modules/Core/Console/Commands/BenchmarkRunCommand.php
     - file: tests/Feature/Benchmark/PlatformBenchmarkTest.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_artisan_benchmark_run_command_exits_cleanly
-    - gate: docs/gates/fase-r9.md
-- [x] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r9.md
+- [ ] R9.3 Ganti pola tidak skalabel (K-32): `::all()` di audit, filter subscription di PHP, sampel `limit(50)` tanpa urutan, screening sanksi O(n·m).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: e62f27e
     - file: modules/Hcm/Application/Services/HcmService.php
     - file: tests/Feature/Performance/K32ScalabilityRefactorTest.php
     - test: tests/Feature/Performance/K32ScalabilityRefactorTest.php::test_k32_hcm_audit_handles_chunked_payrolls_and_flags_corruptions
-    - gate: docs/gates/fase-r9.md
-- [x] R9.4 Quality gate Fase R9 + verifikasi silang.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-r9.md
+- [ ] R9.4 Quality gate Fase R9 + verifikasi silang.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 2ff5c50
     - file: docs/gates/fase-r9.md
-    - gate: docs/gates/fase-r9.md
+    - (dibatalkan) gate: docs/gates/fase-r9.md
 
 #### Register Minus Fase R9
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R9.1 s/d R9.4 tuntas 100%) | - | - | - |
+| M-R9-1 | R9.1 s/d R9.4 | Temuan F-07: Batas memori dinaikkan ke 2048M untuk menutupi kebutuhan suite | Memory budget kontrak 512M terlanggar | P1 | Diperbaiki di III.6 (K-6): phpunit.xml dikembalikan ke 512M dan suite dijalankan --parallel |
 
 ### DEFINITION OF DONE (FASE R)
 - [x] Semua item R0–R9 `[x]` dengan blok `Bukti:` yang lolos `ProgressIntegrityTest`, dan setiap sub-fase R berstatus ✅ dari verifikator.
@@ -1749,537 +1801,600 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ---
 
 ## FASE 0 — FONDASI & REFACTOR
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 0.1 Audit codebase → docs/AUDIT.md
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 0.1 Audit codebase → docs/AUDIT.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.2 Setup Pest + tests/Architecture
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.2 Setup Pest + tests/Architecture
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.3 Characterization tests (AutoServe + AutoDex)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.3 Characterization tests (AutoServe + AutoDex)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.4 Modul Shared + Core
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.4 Modul Shared + Core
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.5 Pindahkan AutoServe & AutoDex ke modules/
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.5 Pindahkan AutoServe & AutoDex ke modules/
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.6 Entity Vehicle (core_vehicles) + migrasi garage
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.7 AutoServe: vehicle_id di bookings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.7 AutoServe: vehicle_id di bookings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.8 BookingStatus Enum + state machine
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.8 BookingStatus Enum + state machine
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.9 Arch tests batas modul
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.9 Arch tests batas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
-- [x] 0.10 Quality gate Fase 0
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-0.md
+- [ ] 0.10 Quality gate Fase 0
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: bfdbb0b1
     - file: bootstrap/app.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-0.md
+    - (dibatalkan) gate: docs/gates/fase-0.md
 
 ## FASE 1 — CORE BANKING (DOUBLE-ENTRY LEDGER)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 1.1 Migrations (ledger_accounts, ledger_transactions, ledger_entries, wallet_pins)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.2 LedgerService (double-entry posting, idempotency, locking)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.2 LedgerService (double-entry posting, idempotency, locking)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.3 Akun sistem via seeder
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.3 Akun sistem via seeder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.4 HasLedgerAccounts trait + auto wallet creation
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.4 HasLedgerAccounts trait + auto wallet creation
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.5 Actions: SetPin, VerifyPin, TopUp, Transfer, FreezeAccount, ManualAdjustment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.6 StatementQuery + CSV export
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.6 StatementQuery + CSV export
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.7 bank:reconcile command
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.7 bank:reconcile command
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.8 UI: Wallet, Transfer, Mutasi, Admin Ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.9 Tests: posting, insufficient funds, idempotency, concurrent, PIN lockout, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
-- [x] 1.10 Quality gate Fase 1
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-1.md
+- [ ] 1.10 Quality gate Fase 1
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76745207
     - file: modules/Banking/Domain/Models/LedgerAccount.php
     - test: tests/Feature/Banking/IdempotentPostingTest.php::top up action without explicit idempotency key is idempotent and produces single transaction
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-1.md
+    - (dibatalkan) gate: docs/gates/fase-1.md
 
 ## FASE 2 — PAYMENT HUB + INTEGRASI AUTOSERVE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 2.1 Payable contract
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 2.1 Payable contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.2 pay_payment_intents table
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.2 pay_payment_intents table
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.3 PaymentGateway: charge, hold, capture, release, refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.3 PaymentGateway: charge, hold, capture, release, refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.4 AutoServe Invoice implements Payable
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.4 AutoServe Invoice implements Payable
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.5 Flow bayar invoice (saldo, PIN, badge LUNAS)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.6 Tests: bayar, saldo kurang, idempotent, hold/capture/release, refund, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
-- [x] 2.7 Quality gate Fase 2
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-2.md
+- [ ] 2.7 Quality gate Fase 2
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: c7da3bf9
     - file: modules/Payment/Domain/Models/PaymentIntent.php
     - test: tests/Feature/Payment/RefundEntityTest.php::test_two_partial_refunds_with_same_nominal_amount_via_http_post_bookings_refund_create_two_pay_refunds_rows_and_two_ledger_transactions
     - akses: command bank:reconcile
-    - gate: docs/gates/fase-2.md
+    - (dibatalkan) gate: docs/gates/fase-2.md
 
 ## FASE 3 — CATALOG, INVENTORY & STORE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 3.1 Inventory: stock_movements, InventoryService
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 3.1 Inventory: stock_movements, InventoryService
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.2 store_products + store_items + store_categories, migrasi sparepart
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.2 store_products + store_items + store_categories, migrasi sparepart
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.3 Refactor AutoServe stok → InventoryService
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.3 Refactor AutoServe stok → InventoryService
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.4 Mobil sebagai produk (dex_car → store_product)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.4 Mobil sebagai produk (dex_car → store_product)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.5 Cart & Checkout, Orders, auto-cancel
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.5 Cart & Checkout, Orders, auto-cancel
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.6 UI Store: katalog, produk, cart, checkout, riwayat order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.7 Tests: checkout, stok kurang, saldo kurang, beli mobil → Vehicle, refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
-- [x] 3.8 Quality gate Fase 3
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-3.md
+- [ ] 3.8 Quality gate Fase 3
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2ed527bb
     - file: modules/Inventory/Domain/Models/StockMovement.php
     - test: modules/Inventory/tests/Feature/InventoryMovementExplorerHttpTest.php::test_guest_is_redirected_to_login
     - akses: command super:health-check
-    - gate: docs/gates/fase-3.md
+    - (dibatalkan) gate: docs/gates/fase-3.md
 
 ## FASE 4 — CRYPTO TRACKER (SIMULASI)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 4.1 crypto_assets + crypto_price_ticks + seeder
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 4.1 crypto_assets + crypto_price_ticks + seeder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.2 PriceEngine (crypto:tick) + PriceFeed contract + quotes
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.3 crypto_trades + buy/sell flow
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.3 crypto_trades + buy/sell flow
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.4 Portfolio: holdings, P/L, charts, alerts
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.4 Portfolio: holdings, P/L, charts, alerts
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.5 Tests: buy/sell balance, fee, quote expired, holding limit, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
-- [x] 4.6 Quality gate Fase 4
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-4.md
+- [ ] 4.6 Quality gate Fase 4
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f9898aef
     - file: modules/Crypto/Domain/Models/CryptoAsset.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-4.md
+    - (dibatalkan) gate: docs/gates/fase-4.md
 
 ## FASE 5 — FITUR LINTAS MODUL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 ### 5A. Vehicle Passport
-- [x] 5A.1 core_vehicle_events (hash-chain, append-only)
-  Bukti:
+- [ ] 5A.1 core_vehicle_events (hash-chain, append-only)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.2 Listeners: VehicleAcquired, BookingCompleted
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.2 Listeners: VehicleAcquired, BookingCompleted
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.3 VerifyPassportAction + halaman publik + QR
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.3 VerifyPassportAction + halaman publik + QR
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.4 Jual mobil bekas C2C (escrow)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.4 Jual mobil bekas C2C (escrow)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5A.5 Tests: rantai valid, manipulasi, C2C, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ### 5B. Smart Repair Escrow
-- [x] 5B.1 serve_estimates table
-  Bukti:
+- [ ] 5B.1 serve_estimates table
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5B.2 Flow: estimasi → hold → complete → capture/split
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5B.2 Flow: estimasi → hold → complete → capture/split
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5B.3 Tests: final < hold, final > hold, reject, waiting_parts, cancel
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ### 5C. HODL-to-Drive (Crypto-Backed Financing)
-- [x] 5C.1 fin_loans + fin_installments
-  Bukti:
+- [ ] 5C.1 fin_loans + fin_installments
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.2 Loan flow: kolateral → pinjaman → bayar → alur Store
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.3 Scheduler cicilan + overdue + denda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.3 Scheduler cicilan + overdue + denda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.4 Risk monitor (LTV) + margin call + likuidasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.4 Risk monitor (LTV) + margin call + likuidasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.5 UI: dashboard pinjaman
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.5 UI: dashboard pinjaman
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5C.6 Tests: open loan, cicilan, overdue, margin call, likuidasi, pelunasan, reconcile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
-- [x] 5.7 Quality gate Fase 5
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-5.md
+- [ ] 5.7 Quality gate Fase 5
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-5.md
+    - (dibatalkan) gate: docs/gates/fase-5.md
 
 ## FASE 6 — PLATFORM SERVICES
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 6.1 Notification module + bell icon + unread counter
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 6.1 Notification module + bell icon + unread counter
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.2 Activity feed
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.2 Activity feed
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.3 Dashboard Customer terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.3 Dashboard Customer terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.4 Dashboard Admin terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.4 Dashboard Admin terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.5 Dashboard Mekanik terpadu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.5 Dashboard Mekanik terpadu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.6 Seeder demo lengkap — **DITUTUP 2026-09-30 (Fase 19)**: diimplementasikan komprehensif via `DemoCustomerSeeder` (20 customer ber-PIN & bersaldo, 20 kendaraan berpaspor, 40+ booking terbayar lewat ledger, 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0) dan diverifikasi oleh `DemoCustomerSeederTest`.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.6 Seeder demo lengkap — **DITUTUP 2026-09-30 (Fase 19)**: diimplementasikan komprehensif via `DemoCustomerSeeder` (20 customer ber-PIN & bersaldo, 20 kendaraan berpaspor, 40+ booking terbayar lewat ledger, 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0) dan diverifikasi oleh `DemoCustomerSeederTest`.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
-- [x] 6.7 Quality gate Fase 6
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-6.md
+- [ ] 6.7 Quality gate Fase 6
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ef4ebe77
     - file: app/Models/User.php
     - test: tests/Feature/Benchmark/PlatformBenchmarkTest.php::test_platform_benchmark_service_measures_latencies_and_audits
     - akses: command super:health-check
-    - gate: docs/gates/fase-6.md
+    - (dibatalkan) gate: docs/gates/fase-6.md
 
 ## DEFINITION OF DONE (FASE 0–6)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task tercentang
 - [x] migrate:fresh --seed, test, build, pint → lolos
 - [x] Arch tests hijau
@@ -2291,675 +2406,754 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 - [x] docs/DECISIONS.md lengkap
 
 ## FASE 7 — MODUL RESTO: FONDASI, MENU, RESEP, HPP
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 7.1 Modul Resto + provider + menu sidebar + route group + tabel resto_outlets, resto_ingredients, resto_unit_conversions, resto_ingredient_costs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.2 Menu & kategori khas Padang (resto_menu_categories, resto_menu_items, resto_menu_item_outlet) + Seeder menu realistis min 40 item
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.3 Resep berlapis (BOM multi-level) + RecipeCycleDetected exception + RecipeCostCalculator (HPP per porsi, moving average cost, waste_percent)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.4 Halaman admin: CRUD menu (builder resep dinamis Alpine, HPP per porsi real-time via JSON), CRUD bahan + konversi satuan, outlet list + margin badge
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.5 Tests: konversi satuan, HPP resep berlapis presisi 6 desimal, resep sirkular ditolak, harga per outlet override, menu nonaktif tersembunyi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
-- [x] 7.6 Quality gate Fase 7
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-7.md
+- [ ] 7.6 Quality gate Fase 7
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cb228d52
     - file: modules/Resto/Domain/Models/Recipe.php
     - test: modules/Resto/tests/Feature/RestoFoundationTest.php::test_unit_conversion_converts_to_and_from_base_unit_accurately
     - akses: command super:health-check
-    - gate: docs/gates/fase-7.md
+    - (dibatalkan) gate: docs/gates/fase-7.md
 
 ## FASE 8 — RESTO: DAPUR, BATCH PRODUKSI & SIKLUS ETALASE HIDANG
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 8.1 Tabel resto_production_batches & resto_batch_consumptions
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 8.1 Tabel resto_production_batches & resto_batch_consumptions
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.2 CookBatchAction: stok potong via InventoryService, cost_total aktual, posting ledger, ShortageException, scale-down resep, varians produksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.3 Siklus etalase: resto_display_trays, aturan recirculate (max 3x, max 6 jam), waste expense, piring disentuh dihitung terjual, command resto:expire-display
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.4 UI Dapur (role kitchen): papan produksi harian, tombol "Masak Batch", monitor etalase countdown warna, tombol buang, rekap waste
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.5 Tests: potong bahan, kekurangan stok ditolak, scale-down produksi, cost_per_portion, tray expired jadi waste, recirculate ke-4 ditolak, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
-- [x] 8.6 Quality gate Fase 8
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-8.md
+- [ ] 8.6 Quality gate Fase 8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1459cec1
     - file: modules/Resto/Domain/Models/ProductionBatch.php
     - test: modules/Resto/tests/Feature/RestoKitchenAndDisplayTest.php::test_batch_memotong_bahan_baku_lewat_inventory_service_secara_presisi
     - akses: command super:health-check
-    - gate: docs/gates/fase-8.md
+    - (dibatalkan) gate: docs/gates/fase-8.md
 
 ## FASE 9 — RESTO: POS HIDANG, SESI MEJA, SHIFT KASIR & TUTUP HARIAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 9.1 Tabel resto_tables, resto_table_sessions, resto_order_items, resto_orders
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.2 Flow hidang: sesi meja, piring hidang presented, hitung hidangan (consumed vs returned), nasi/minuman pesan, tambuah cepat, PB1 10%, pembulatan Rp100, bayar tunai/wallet/voucher/split, void/refund
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.3 Shift kasir & kas: resto_shifts, OpenShiftAction, CloseShiftAction, cash variance posting, SettleCashAction
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.4 POS UI: tablet/mobile friendly, grid menu, panel meja & etalase, layar hitung hidangan, keypad, idempotency offline-tolerant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.5 Tutup harian: command resto:close-day, resto_daily_summaries, flag --check vs ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.6 Tests: alur hidang lengkap, disentuh sebagian dihitung penuh, PB1 & pembulatan, tunai & wallet, submit ganda idempoten, konkurensi meja, shift variance, void/refund, close-day --check cocok ledger, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
-- [x] 9.7 Quality gate Fase 9
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-9.md
+- [ ] 9.7 Quality gate Fase 9
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8343a171
     - file: modules/Resto/Domain/Models/Shift.php
     - test: modules/Resto/tests/Feature/RestoPosAndShiftTest.php::test_alur_hidang_lengkap_12_piring_dihidang_5_disentuh_hanya_5_dibayar_7_kembali_ke_etalase
     - akses: command super:health-check
-    - gate: docs/gates/fase-9.md
+    - (dibatalkan) gate: docs/gates/fase-9.md
 
 ## FASE 10 — RESTO: RANTAI PASOK, DAPUR SENTRAL & MULTI-OUTLET
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 10.1 Tabel resto_suppliers, resto_purchase_orders, resto_purchase_order_lines, resto_goods_receipts
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.2 ReceiveGoodsAction: stok bahan masuk via InventoryService, moving avg cost BigDecimal, varians harga, posting AP supplier & inventory, PaySupplierAction, aging payable
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.3 Dapur sentral & transfer antar outlet: resto_stock_transfers, in-transit account, selisih terima ke waste
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.4 Stock opname: resto_stock_counts, adjustment via InventoryService, posting selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.5 Peringatan otomatis: stok di bawah min_stock notifikasi + draft PO otomatis, perishable mendekati kedaluwarsa notifikasi dapur
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.6 Tests: PO terima parsial & penuh, moving avg cost 3 harga, transfer in-transit, opname minus, aging payable, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
-- [x] 10.7 Quality gate Fase 10
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-10.md
+- [ ] 10.7 Quality gate Fase 10
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: a351e92b
     - file: modules/Resto/Domain/Models/StockTransfer.php
     - test: modules/Resto/tests/Feature/RestoSupplyChainAndTransferTest.php::test_po_creation_partial_receipt_and_full_receipt
     - akses: command super:health-check
-    - gate: docs/gates/fase-10.md
+    - (dibatalkan) gate: docs/gates/fase-10.md
 
 ## FASE 11 — RESTO: KANAL PENJUALAN, KATERING, FRANCHISE & ANALITIK
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 11.1 Bungkus & delivery: harga takeaway, potong bahan kemasan, resto_deliveries ongkir bertingkat, pesan online wallet, refund parsial
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.2 Katering & nasi bungkus massal: resto_catering_orders, flow quote -> customer approve -> HOLD deposit 30% -> produksi -> deliver -> capture + charge sisa, batal < 3 hari potongan deposit, validasi kapasitas pax
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.3 Franchise royalty: resto_outlet_contracts, command resto:post-royalty harian dari daily summary ke revenue:group:royalty
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.4 Analitik: Menu engineering (Star/Plowhorse/Puzzle/Dog scatter chart), waste report, heatmap sales mix per jam, P&L per outlet dari ledger, peramalan rata-rata bergerak 4 minggu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.5 Tests: takeaway pakai harga bungkus, kemasan potong stok, delivery gagal refund, katering hold -> capture, batal potongan deposit, kapasitas penuh ditolak, royalty posting, klasifikasi menu engineering, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
-- [x] 11.6 Quality gate Fase 11
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-11.md
+- [ ] 11.6 Quality gate Fase 11
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 547bfecc
     - file: modules/Resto/Domain/Models/CateringOrder.php
     - test: modules/Resto/tests/Feature/RestoSalesChannelsAndAnalyticsTest.php::test_create_delivery_order_uses_takeaway_price_and_deducts_packaging_stock
     - akses: command super:health-check
-    - gate: docs/gates/fase-11.md
+    - (dibatalkan) gate: docs/gates/fase-11.md
 
 ## FASE 12 — MODUL MALL: FONDASI, UNIT & LEASING
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 12.1 Modul Mall + provider + menu. Tabel: mall_properties, mall_zones, mall_units, mall_tenants
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.2 mall_leases: fit_out_days, rent_model (fixed|revenue_share|greater_of), eskalasi tahunan, billing_day, grace_days, denda harian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.3 Actions: CreateLeaseAction (anti-overlap), ActivateLeaseAction (tarik deposit via Payment Hub ke deposit:tenant), TerminateLeaseAction (potong tunggakan dari deposit), RenewLeaseAction
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.4 UI: site plan per lantai (Tailwind grid/SVG interaktif), occupancy & GLA, daftar lease & expiring soon (<90 hari), direktori tenant publik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.5 Tests: lease ganda ditolak, deposit liability, terminate potong deposit, eskalasi tahun ke-2, occupancy rate, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
-- [x] 12.6 Quality gate Fase 12
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-12.md
+- [ ] 12.6 Quality gate Fase 12
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-12.md
+    - (dibatalkan) gate: docs/gates/fase-12.md
 
 ## FASE 13 — MALL: LAPORAN PENJUALAN TENANT, TAGIHAN BULANAN & TUNGGAKAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 13.1 mall_tenant_sales_reports, portal tenant lapor penjualan, TenantSalesProvider contract untuk tenant terintegrasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.2 Utilitas: mall_utility_readings, mall_utility_tariffs bertingkat, mall_overtime_requests AC overtime
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.3 Tagihan bulanan: mall_invoices, mall_invoice_lines, command mall:generate-invoices idempoten, MallAutoDebitAction tanpa PIN, command mall:apply-penalties denda 0,1%/hari bertingkat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.4 Pembayaran sebagian via portal (wallet + PIN) alokasi urut (denda -> utilitas -> service charge -> sewa), status partially_paid
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.5 Command mall:audit-billing: audit kesesuaian invoice vs ledger, masukkan ke quality gate
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.6 UI: dashboard billing, aging receivable, detail tagihan, input meteran batch, portal tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.7 Tests: generate-invoices idempoten, revenue_share_topup bila % > base rent, tarif utilitas bertingkat, bayar cicil urut, denda harian, suspend H+30, isolasi tenant IDOR, audit-billing & reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
-- [x] 13.8 Quality gate Fase 13
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-13.md
+- [ ] 13.8 Quality gate Fase 13
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d6839a90
     - file: modules/Mall/Domain/Models/Invoice.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-13.md
+    - (dibatalkan) gate: docs/gates/fase-13.md
 
 ## FASE 14 — MALL: PARKIR, AKSES & FOOTFALL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 14.1 Tabel mall_parking_zones, mall_parking_tariffs, mall_parking_sessions, mall_parking_members
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.2 Tarif progresif BigDecimal: grace 15 menit, pembulatan jam, batas harian, tiket hilang, validasi parkir oleh tenant jadi piutang tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.3 Gate simulasi UI: gate masuk (tiket/plat member) & gate keluar (scan tiket, bayar, buka gate), tolak jika penuh, real-time occupancy polling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.4 Footfall: mall_footfall_counts, command mall:simulate-footfall, dashboard footfall & konversi tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.5 Tests: tarif grace, 61 menit, 8 jam batas harian, tiket hilang, member aktif gratis, member kedaluwarsa bayar, validasi tenant, kapasitas penuh ditolak, tiket ganda ditolak, query budget, reconcile bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
-- [x] 14.6 Quality gate Fase 14
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-14.md
+- [ ] 14.6 Quality gate Fase 14
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86a13151
     - file: modules/Mall/Domain/Models/Property.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-14.md
+    - (dibatalkan) gate: docs/gates/fase-14.md
 
 ## FASE 15 — MALL: LOYALTY, VOUCHER, EVENT & FACILITY MANAGEMENT
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 15.1 Loyalty Duta Points (aset ledger PTS): points:user:{id}:PTS & liability:mall:points:PTS, earn dari belanja / struk klaim unik, redeem voucher & tier membership, FIFO expiry mall:expire-points
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.2 Voucher mall: mall_vouchers, liability:mall:voucher, settlement mingguan mall:settle-vouchers ke wallet tenant, voucher expired balik ke breakage/penalty
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.3 Event & atrium: mall_event_spaces, mall_event_bookings, deteksi bentrok jadwal ConflictException, bazaar booth, kalender bulanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.4 Facility management: mall_assets, mall_work_orders, SLA priority, command mall:generate-pm-orders, biaya perbaikan masuk tagihan tenant, Kanban board
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.5 Tests: earn poin belanja, klaim struk dobel ditolak, redeem voucher, voucher dipakai lalu settle, voucher expired, event bentrok ditolak, PM order terjadwal, SLA breach, biaya perbaikan ke invoice, reconcile IDR & PTS bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
-- [x] 15.6 Quality gate Fase 15
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-15.md
+- [ ] 15.6 Quality gate Fase 15
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6dff6fe4
     - file: modules/Mall/Domain/Models/Lease.php
     - test: modules/Mall/tests/Feature/MallAdvancedAnalyticsTest.php::test_tenant_revenue_share_tier_when_turnover_exceeds_base_rent
     - akses: command mall:audit-billing
-    - gate: docs/gates/fase-15.md
+    - (dibatalkan) gate: docs/gates/fase-15.md
 
 ## FASE 16 — INTEGRASI LINTAS LINI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 16.1 Resto & AutoServe sebagai tenant Duta Mall via TenantSalesProvider (omzet terintegrasi otomatis masuk revenue_share_topup tanpa input manual)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.2 Validasi parkir dari POS Resto via ParkingValidator contract, potong tarif dan masuk piutang tenant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.3 Poin & Voucher lintas modul: LoyaltyLedger contract, order Resto dapat poin, voucher mall bisa dipakai di Resto & Store, poin tukar diskon Store
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.4 Kendaraan & parkir: member parkir disinkronkan ke core_vehicles, transfer kepemilikan nonaktifkan parkir member
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.5 Dashboard Grup konsolidasi (role admin): P&L per lini bisnis dari ledger, grafik 30 hari, query budget <= 30 query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.6 Navigasi terpadu: sidebar dikelompokkan per lini (Otomotif, Keuangan, Kuliner, Properti), global search Ctrl+K lintas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.7 Test integrasi end-to-end satu hari penuh (parkir -> makan hidang -> bayar wallet -> dapat poin -> validasi parkir -> keluar gate -> akhir bulan tagih sewa revenue share -> tenant bayar -> reconcile & audit-billing bersih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
-- [x] 16.8 Quality gate Fase 16
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-16.md
+- [ ] 16.8 Quality gate Fase 16
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 7c798291
     - file: tests/Feature/CrossLineIntegrationTest.php
     - test: tests/Feature/CrossLineIntegrationTest.php::test_full_cross_line_lifecycle
     - akses: command super:health-check
-    - gate: docs/gates/fase-16.md
+    - (dibatalkan) gate: docs/gates/fase-16.md
 
 ## FASE 17 — SKALA, HARDENING & OPERASIONAL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 17.1 Seeder demo skala besar DemoLargeSeeder (3 outlet resto, 1 central kitchen, 60 tenant, 12 bulan billing, 150.000 parkir, batch inserts)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.2 Performa: tests/Performance/QueryBudgetTest.php, eliminasi N+1, index database yang tepat, cursor pagination, tabel ringkasan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.3 Smoke test semua route: tests/Feature/RouteSmokeTest.php assert per role (200/302/403)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.4 Keamanan: tests/Feature/SecurityTest.php (IDOR, mass assignment, rate limit, brute force PIN, signed URL, replay key, XSS)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.5 Observability & ops: core_audit_logs, halaman admin Kesehatan Sistem, command super:health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, VerifiesWalletPin contract
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.6 Arch tests diperluas: batas modul Resto & Mall, tidak ada DB facade di controller, VerifiesWalletPin contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
-- [x] 17.7 Quality gate Fase 17 + super:health-check bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-17.md
+- [ ] 17.7 Quality gate Fase 17 + super:health-check bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fa8b3fae
     - file: tests/Feature/TwelveLinesUltraScaleStressTest.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-17.md
+    - (dibatalkan) gate: docs/gates/fase-17.md
 
 ## FASE 18 — DOKUMENTASI & PENUTUP
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 18.1 README.md: ringkasan platform 5 lini bisnis, cara menjalankan, daftar command, tabel akun demo lengkap per role
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.2 docs/ARCHITECTURE.md: ERD Mermaid, diagram integrasi, contracts & events, konvensi ledger (IDR/PTS/kripto), sequence diagram Mermaid
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.2 docs/ARCHITECTURE.md: ERD Mermaid, diagram integrasi, contracts & events, konvensi ledger (IDR/PTS/kripto), sequence diagram Mermaid
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.3 docs/RUNBOOK.md: panduan troubleshooting operasional
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.3 docs/RUNBOOK.md: panduan troubleshooting operasional
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.4 docs/DECISIONS.md final: seluruh keputusan teknis Fase 7-18 tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.4 docs/DECISIONS.md final: seluruh keputusan teknis Fase 7-18 tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.5 Pembersihan kode: tidak ada TODO/FIXME/stub/dd()/dump()
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.5 Pembersihan kode: tidak ada TODO/FIXME/stub/dd()/dump()
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
-- [x] 18.6 Quality gate final & laporan penutup di docs/PROGRESS.md
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-18.md
+- [ ] 18.6 Quality gate final & laporan penutup di docs/PROGRESS.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/DocsVersionConsistencyTest.php::ensures README.md and ARCHITECTURE.md do not reference outdated Laravel 11 or PHP 8.3 versions
     - akses: command super:health-check
-    - gate: docs/gates/fase-18.md
+    - (dibatalkan) gate: docs/gates/fase-18.md
 
 ## DEFINITION OF DONE (FASE 7–18)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 7.1–18.6 tercentang di docs/PROGRESS.md
 - [x] migrate:fresh --seed, php artisan test, npm run build, pint → semua lolos
 - [x] bank:reconcile bersih untuk SEMUA aset (IDR, PTS, BTC/ETH/SOL/BNB/USDT)
@@ -2975,7 +3169,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ---
 
 ## 🏆 LAPORAN PENUTUP & SERAH TERIMA PROYEK (FINAL SIGN-OFF)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 
 Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superwebsite** (Fase 0 hingga Fase 18) telah diselesaikan secara tuntas dan mandiri dengan standar rekayasa perangkat lunak enterprise:
 
@@ -2992,508 +3186,568 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 ---
 
 ## FASE 19 — PENUTUPAN UTANG FASE 18
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 19.1 Baseline & commit Fase 18 (AUDIT.md baseline dicatat, docs phase 18 committed)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.2 Stabilkan DemoCustomerSeeder (deterministik, quote kripto, saldo cukup, ListCarProductAction stok tersedia, buffer kolateral 1.6x)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.3 Test seeder: tests/Feature/Seed/DemoCustomerSeederTest.php (20 customer ber-PIN dan saldo > 0, >=20 kendaraan berpaspor valid, >=40 booking terbayar lewat ledger, tepat 3 pinjaman HODL-to-Drive aktif LTV < 70%, 6 produk mobil Store, reconcile 0)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.4 Perbaiki test yang terdampak data seed baru (SecurityTest, RouteSmokeTest, QueryBudgetTest, dll.) tanpa melemahkan assertion/anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.5 Gate harian tidak boleh lolos karena kosong: default seed memuat >= 1 hari usaha Resto ditutup dengan >= 5 order terbayar, dan >= 1 bulan tagihan Mall terbit sebagian dibayar, audit-billing dan resto:close-day melaporkan nilai non-nol
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.6 Hapus kolom users.pin: migrasi drop kolom, hapus referensi, verifikasi PIN tetap via contract Banking
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark (3.24s, 0 collision)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.7 Kompatibilitas DemoLargeSeeder: jalankan ulang di atas DatabaseSeeder baru tanpa bentrok unique, ukur ulang benchmark (3.24s, 0 collision)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.8 Rapikan dokumen: centang 6.6 dengan catatan benar, perbaiki DoD 0-6, catat DECISIONS seeder, update akun demo di README
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
-- [x] 19.9 Quality gate Fase 19 (305 passed / 1569 assertions, Pint clean, build clean, 89 ledger accounts, 30 passports valid, resto/mall/health gates pass)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-19.md
+- [ ] 19.9 Quality gate Fase 19 (305 passed / 1569 assertions, Pint clean, build clean, 89 ledger accounts, 30 passports valid, resto/mall/health gates pass)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 43e2ba79
     - file: app/Quality/Progress/ProgressIntegrityScanner.php
     - test: tests/Architecture/ProgressIntegrityTest.php::enforces that docs/PROGRESS.md item texts have not been modified without downgrade marker
     - akses: command super:health-check
-    - gate: docs/gates/fase-19.md
+    - (dibatalkan) gate: docs/gates/fase-19.md
 
 ## FASE 20 — FONDASI LOGISTIK: MODUL, JARINGAN, ARMADA
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 20.1 Kerangka modul modules/Logistics, provider, MenuRegistry "Logistik", roles (logistics_admin, dispatcher, hub_operator, driver, shipper), policies, arch tests batas modul
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.2 Lokasi & jaringan: lgx_locations, lgx_lanes, seed jaringan berpusat di Banjarmasin (pelabuhan UN/LOCODE, bandara IATA, hub darat, CFS, depot), CRUD + SVG skematik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.3 Armada: lgx_trucks (terhubung Vehicle Passport core_vehicles, DA plate), lgx_trailers, lgx_vessels (IMO check digit), lgx_aircraft, lgx_containers (ISO 6346 check digit), lgx_ulds, unit tests check digit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.4 Pengemudi & kru: lgx_drivers (SIM class, expiry, hub asal), batas jam mengemudi UU 22/2009 maks 8 jam/hari & istirahat 30 menit per 4 jam
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.5 Seeder LogisticsSeeder (30 truk berpaspor, 8 trailer, 4 kapal, 2 pesawat, 300 kontainer ISO 6346, 12 driver, 3 dispatcher, 4 hub operator, 5 shipper, 1 admin), akun demo di README
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
-- [x] 20.6 Quality gate Fase 20
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-20.md
+- [ ] 20.6 Quality gate Fase 20
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 3f36efc4
     - file: modules/Logistics/Domain/Models/Carrier.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-20.md
+    - (dibatalkan) gate: docs/gates/fase-20.md
 
 ## FASE 21 — SHIPMENT, TARIF, BOOKING & PORTAL SHIPPER
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 21.1 Model shipment: lgx_shipments (SRX + 10 digit + check digit Luhn), state machine canTransitionTo(), lgx_packages (berat, dimensi, hs_code, dg_un_number, temp reefer)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.2 Berat tertagih (chargeable weight) BigDecimal: max(aktual, volumetrik), pembagi volumetrik per mode, pembulatan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.3 Rate card & surcharge: lgx_rate_cards, lgx_rate_brackets, lgx_surcharges, validasi non-overlapping, PPN simulasi 11%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.4 Quote: QuoteShipmentAction -> lgx_quotes timelock 15 menit + hash anti-manipulasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.5 Booking prabayar: BookShipmentAction, PIN wajib via VerifiesWalletPin, PaymentGateway::charge ke lgx:unearned_freight
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.6 Akun postpaid B2B: lgx_shipper_accounts, credit limit, lgx:invoice-shippers bulanan idempotent, bayar invoice via wallet + PIN
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.7 Pembatalan: refund via gateway dikurangi cancellation fee -> lgx:freight_revenue (pre-pickup), tolak post-pickup
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.8 Portal shipper (mobile-responsive): form buat shipment, upload massal CSV s/d 5.000 baris queued job, cetak label QR
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.9 Pelacakan publik: /track/{tracking_number} tanpa login, throttle 30/menit, penyamaran PII data consignee, timeline event
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
-- [x] 21.10 Quality gate Fase 21
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-21.md
+- [ ] 21.10 Quality gate Fase 21
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 8ae8a494
     - file: modules/Logistics/Domain/Models/Shipment.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-21.md
+    - (dibatalkan) gate: docs/gates/fase-21.md
 
 ## FASE 22 — OPERASI JARINGAN MULTIMODA: KAPASITAS, RUTE, KONSOLIDASI, HUB, LAST-MILE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 22.1 Jadwal: lgx_schedules (truk, kapal voyage multi-port, pesawat freighter), kapasitas multi-dimensi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.2 Reservasi kapasitas: ReserveCapacityAction lockForUpdate, ReleaseCapacityAction, lgx:capacity-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.3 Perencana rute: RoutePlanner pure domain service (Dijkstra/k-shortest paths graf terisolasi), filter mode & DG & reefer, lgx_shipment_legs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.4 Konsolidasi & load planning: lgx_loads + lgx_load_items (FCL, LCL first-fit-decreasing CFS, VGM SOLAS sebelum muat kapal)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.5 Chain of custody: lgx_tracking_events append-only hash chain per shipment, immutable, lgx:verify-custody chunkById
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.6 Operasi hub (hub_operator, mobile): scan inbound, sortir, outbound, deteksi otomatis exception missort
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.7 Papan dispatch (dispatcher): assign armada + driver dengan validasi SIM, jam kerja, status maintenance, paspor kendaraan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.8 Aplikasi driver (mobile): daftar stop, scan pickup, Proof of Delivery (nama penerima, OTP 6 digit hash, foto bukti, tanda tangan canvas), 3x gagal -> ReturnToSender
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.9 Exception & SLA: tipe exception terstruktur, SLA monitoring, lgx:detect-late idempotent
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
-- [x] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-22.md
+- [ ] 22.10 Quality gate Fase 22 (termasuk lgx:verify-custody dan lgx:capacity-check)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e418c323
     - file: modules/Logistics/Domain/Models/Location.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-22.md
+    - (dibatalkan) gate: docs/gates/fase-22.md
 
 ## FASE 23 — UANG LOGISTIK: PENDAPATAN, COD, CARRIER, KLAIM, D&D, BEA CUKAI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 23.1 Pengakuan pendapatan (Alur 2 & 4): ShipmentDelivered event -> debit unearned_freight / kredit freight_revenue
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.2 COD (Alur 6-8): driver collect cash -> setor di hub -> lgx:settle-cod D+N ke shipper + cod_fee_revenue, dashboard COD
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.2 COD (Alur 6-8): driver collect cash -> setor di hub -> lgx:settle-cod D+N ke shipper + cod_fee_revenue, dashboard COD
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.3 Carrier subkontrak (Alur 9-10): lgx_carriers, akrual biaya leg, lgx:pay-carriers mingguan, laporan margin shipment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.4 Klaim (Alur 11): workflow klaim asuransi/non-asuransi, aturan 4 mata (penyetuju != pengaju != pembuat), anti bayar ganda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.5 Demurrage & Detention (Alur 12): lgx_dd_tariffs, free time, lgx:accrue-dd harian zona waktu lokasi, invoice D&D
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.6 Bea cukai (Alur 13): lgx_customs_declarations PIB/PEB, lgx_hs_tariffs, simulasi bea masuk/PPN/PPh 22, CustomsHold
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.7 Bahan bakar & biaya truk: lgx_fuel_logs (liter x 1000 integer), konsumsi km/l, flag anomali > 30%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.8 lgx:audit-billing command: invoice freight, D&D, bea cukai vs ledger, pendapatan Delivered vs unearned, non-nol pada seed default
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
-- [x] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-23.md
+- [ ] 23.9 Quality gate Fase 23 (termasuk lgx:audit-billing)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0aa5c12
     - file: modules/Logistics/Domain/Models/CustomsDeclaration.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-23.md
+    - (dibatalkan) gate: docs/gates/fase-23.md
 
 ## FASE 24 — INTEGRASI LINTAS LINI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 24.1 Store -> Logistik: event order dibayar -> shipment otomatis via ShipmentBooking contract, ongkir Store -> unearned_freight, resi di order detail
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.2 Pengiriman mobil (Store/AutoDex/HODL-to-Drive): shipment FTL car carrier, event delivered_by_carrier masuk Vehicle Passport
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.2 Pengiriman mobil (Store/AutoDex/HODL-to-Drive): shipment FTL car carrier, event delivered_by_carrier masuk Vehicle Passport
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.3 Perawatan armada -> AutoServe: trip odometer trigger service_interval_m -> FleetServiceDue event -> booking bengkel via contract, status Maintenance
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.3 Perawatan armada -> AutoServe: trip odometer trigger service_interval_m -> FleetServiceDue event -> booking bengkel via contract, status Maintenance
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.4 Resto -> Logistik (cold-chain): replenishment dapur pusat CK-01 -> shipment reefer, lgx_temperature_readings, excursion alert, terima stok via Inventory
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.4 Resto -> Logistik (cold-chain): replenishment dapur pusat CK-01 -> shipment reefer, lgx_temperature_readings, excursion alert, terima stok via Inventory
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.5 Mall -> Logistik (loading dock): lgx_dock_appointments di Duta Mall, slot time-lock tanpa overlap, portal tenant booking dock, satpam check-in/out
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.5 Mall -> Logistik (loading dock): lgx_dock_appointments di Duta Mall, slot time-lock tanpa overlap, portal tenant booking dock, satpam check-in/out
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.6 Finance & observabilitas: pendapatan Logistik masuk Group Dashboard P&L tanpa menaikkan query budget, pilar Logistik di super:health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.6 Finance & observabilitas: pendapatan Logistik masuk Group Dashboard P&L tanpa menaikkan query budget, pilar Logistik di super:health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
-- [x] 24.7 Quality gate Fase 24
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-24.md
+- [ ] 24.7 Quality gate Fase 24
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2204c5ca
     - file: modules/Logistics/Domain/Models/Schedule.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-24.md
+    - (dibatalkan) gate: docs/gates/fase-24.md
 
 ## FASE 25 — SKALA, API, HARDENING, CONTROL TOWER
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 25.1 LogisticsLargeSeeder: >= 200.000 shipment, >= 2.000.000 tracking event, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, 12 bulan riwayat, B2B postpaid ledger, benchmark waktu
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 25.1 LogisticsLargeSeeder: >= 200.000 shipment, >= 2.000.000 tracking event, >= 5.000 kontainer, >= 20 kapal, >= 300 truk, 12 bulan riwayat, B2B postpaid ledger, benchmark waktu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.2 Anggaran kinerja (QueryBudgetTest): lookup resi <= 3 query p95 < 50ms, dispatcher <= 10 query, control tower <= 12 query, lgx:accrue-dd < 30s, EXPLAIN docs
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.2 Anggaran kinerja (QueryBudgetTest): lookup resi <= 3 query p95 < 50ms, dispatcher <= 10 query, control tower <= 12 query, lgx:accrue-dd < 30s, EXPLAIN docs
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.3 API v1 (Sanctum): quotes, shipments (Idempotency-Key header), tracking, token abilities, rate limit, docs/API.md
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.3 API v1 (Sanctum): quotes, shipments (Idempotency-Key header), tracking, token abilities, rate limit, docs/API.md
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.4 Webhook outbox: lgx_webhook_endpoints + deliveries, HMAC-SHA256, exponential backoff max 8 retry, dead-letter, manual replay
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.4 Webhook outbox: lgx_webhook_endpoints + deliveries, HMAC-SHA256, exponential backoff max 8 retry, dead-letter, manual replay
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.5 Queue & scheduler: queued jobs idempotent ShouldBeUnique, seluruh command di routes/console.php, docs/RUNBOOK.md update
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.5 Queue & scheduler: queued jobs idempotent ShouldBeUnique, seluruh command di routes/console.php, docs/RUNBOOK.md update
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.6 Matriks otorisasi: SecurityTest & RouteSmokeTest mencakup seluruh rute dan role logistik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.6 Matriks otorisasi: SecurityTest & RouteSmokeTest mencakup seluruh rute dan role logistik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.7 Control Tower (logistics_admin): KPI OTIF, status chart, armada, dwell time, COD, margin per lane
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.7 Control Tower (logistics_admin): KPI OTIF, status chart, armada, dwell time, COD, margin per lane
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.8 Dokumentasi final: ARCHITECTURE, RUNBOOK, README, DECISIONS lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
-- [x] 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-25.md
+- [ ] 25.9 Quality gate final: seluruh test & large seeder lolos, semua gate hijau
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b7479cf0
     - file: modules/Logistics/Domain/Models/HubOperator.php
     - test: modules/Logistics/tests/Feature/LogisticsAdvancedOperationsTest.php::test_multimodal_load_consolidation_success
     - akses: command lgx:audit-billing
-    - gate: docs/gates/fase-25.md
+    - (dibatalkan) gate: docs/gates/fase-25.md
 
 ## DEFINITION OF DONE (FASE 19–25)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 19.1–25.9 tercentang.
 - [x] Jumlah test >= baseline 19.1 (297 test, 1317 assertions) dan naik di setiap fase (mencapai 538 tests, 3189 assertions); tidak ada test yang di-skip/dilemahkan.
 - [x] Semua quality gate lulus pada commit terakhir; bank:reconcile = 0 untuk semua aset.
@@ -3506,7 +3760,7 @@ Pada tanggal **30 September 2026**, seluruh tahapan ekspansi arsitektur **Superw
 ---
 
 ## 🏆 LAPORAN PENUTUP & SERAH TERIMA FINAL (FASE 24 & 25)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 
 Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebsite** (Fase 24 hingga Fase 25) telah diselesaikan secara tuntas dan mandiri dengan standar rekayasa perangkat lunak enterprise:
 
@@ -3544,2492 +3798,2775 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## FASE 26 — PELUNASAN UTANG TEKNIS & FONDASI PLATFORM
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 *Wajib selesai sebelum modul baru; sebagian besar temuan dari audit Fase 24–25.*
-- [x] 26.1 **Sanctum asli**: `composer require laravel/sanctum`, migrasi `personal_access_tokens`, penerbitan/pencabutan token (UI profil + endpoint), kedaluwarsa, enforcement abilities (`tokenCan`); **hapus** `class_alias` palsu `Laravel\Sanctum\Sanctum`, guard `viaRequest('sanctum')` yang hanya mengembalikan user session, dan `Domain/Support/Sanctum.php`; ubah semua test API ke `Laravel\Sanctum\Sanctum::actingAs`. Test: tanpa token 401, token tanpa ability 403, token dicabut/kedaluwarsa 401, session cookie **tidak** lolos ke API
-  Bukti:
+- [ ] 26.1 **Sanctum asli**: `composer require laravel/sanctum`, migrasi `personal_access_tokens`, penerbitan/pencabutan token (UI profil + endpoint), kedaluwarsa, enforcement abilities (`tokenCan`); **hapus** `class_alias` palsu `Laravel\Sanctum\Sanctum`, guard `viaRequest('sanctum')` yang hanya mengembalikan user session, dan `Domain/Support/Sanctum.php`; ubah semua test API ke `Laravel\Sanctum\Sanctum::actingAs`. Test: tanpa token 401, token tanpa ability 403, token dicabut/kedaluwarsa 401, session cookie **tidak** lolos ke API
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.2 Tulis section **Quality Gate Fase 25** di `docs/AUDIT.md` (belum ada); sinkronkan angka (538 test/3189 assertion) dan verifikasi README (Logistics, `lgx:*`, API)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.2 Tulis section **Quality Gate Fase 25** di `docs/AUDIT.md` (belum ada); sinkronkan angka (538 test/3189 assertion) dan verifikasi README (Logistics, `lgx:*`, API)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.3 Sweep kebenaran seluruh Action semua modul: `DB::transaction`, key idempotensi deterministik, event `afterCommit`, `lockForUpdate` pada alokasi kritis; laporan temuan + test regresi (incl. test race berurutan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.3 Sweep kebenaran seluruh Action semua modul: `DB::transaction`, key idempotensi deterministik, event `afterCommit`, `lockForUpdate` pada alokasi kritis; laporan temuan + test regresi (incl. test race berurutan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.4 Sweep performa: N+1 di seluruh controller/view, indeks FK/status/tanggal, command berat → `chunkById`/`cursor`; `BillingAuditor` & `bank:reconcile` ke agregat SQL; perbarui `QueryBudgetTest`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.4 Sweep performa: N+1 di seluruh controller/view, indeks FK/status/tanggal, command berat → `chunkById`/`cursor`; `BillingAuditor` & `bank:reconcile` ke agregat SQL; perbarui `QueryBudgetTest`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.5 **RBAC granular**: tabel `permissions`, `roles`, `role_permission`, `user_role` (multi-role + scope entitas), `Gate`/Policy generik; `users.role` tetap sebagai kompatibilitas (mirror) sampai seluruh modul dimigrasikan; matriks otorisasi data-driven
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.5 **RBAC granular**: tabel `permissions`, `roles`, `role_permission`, `user_role` (multi-role + scope entitas), `Gate`/Policy generik; `users.role` tetap sebagai kompatibilitas (mirror) sampai seluruh modul dimigrasikan; matriks otorisasi data-driven
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.6 **Audit trail generik**: setiap Action ber-impact (uang/state/ownership) menulis `core_audit_logs` (siapa, apa, sebelum/sesudah, IP, correlation id); append-only; halaman pencarian admin
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.7 **Outbox & event bus generik** (`core_outbox`): generalisasi webhook outbox Logistics — event domain → outbox transaksional → dispatcher idempoten; dead-letter + replay; Logistics dimigrasikan ke bus ini
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.8 **Document numbering & document store**: layanan nomor gapless per (entitas, jenis, tahun, reset bulanan/tahunan) dengan lock; penyimpanan dokumen (lampiran) ber-checksum, kebijakan retensi, antivirus/mime guard
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.9 **Approval engine generik**: alur multi-level berdasarkan nilai/jenis, four-eyes (pembuat ≠ penyetuju), delegasi, SLA & eskalasi, histori; dipakai Kontrak/PO/Aset/Klaim (klaim & pembayaran carrier dimigrasikan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
-- [x] 26.10 Quality gate Fase 26
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-26.md
+- [ ] 26.10 Quality gate Fase 26
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2c56a2ab
     - file: modules/Core/Domain/Models/AuditLog.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-26.md
+    - (dibatalkan) gate: docs/gates/fase-26.md
 
 ## FASE 27 — PARTY MASTER & BADAN HUKUM (FONDASI PIHAK)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 *Satu sumber kebenaran untuk semua pihak: pemasok, produsen, distributor, agen, mitra, pelanggan, carrier.*
-- [x] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
-  Bukti:
+- [ ] 27.1 Modul `Party` (`pty_`): `Party` (orang/perusahaan), `PartyRole` (supplier, producer, distributor, agent, partner, customer, carrier, tenant, franchisee), alamat, kontak, NPWP/NIB/NIK (terenkripsi sebagian), rekening bank
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.2 KYC/KYB workflow: dokumen (akta, NIB, NPWP, SIUP), verifikasi bertahap lewat approval engine, masa berlaku dokumen + pengingat kedaluwarsa, status `pending/verified/suspended/blacklisted`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.3 **Legal entity** grup (`pty_legal_entities`): induk–anak perusahaan, mata uang fungsional, NPWP entitas, tahun fiskal; **chart of accounts per entitas** (mapping ke akun ledger yang ada tanpa memecah ledger lama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.4 Tautan non-breaking ke data lama: `Carrier`, `ShipperAccount` (Logistics), `Tenant` (Mall), seller C2C (Store), supplier Resto → `party_id` (nullable → diisi backfill idempoten)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.5 Deteksi duplikat & merge party (aturan NPWP/nama/telepon; merge tercatat, reversible lewat audit trail)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.6 Screening daftar hitam/sanksi (data simulasi) saat onboarding & sebelum transaksi bernilai tinggi; hasil tersimpan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.7 Credit profile pihak (limit, skor internal simulasi, eksposur gabungan lintas modul)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.8 UI direktori pihak + detail 360° (kontrak, transaksi, aset, eksposur — placeholder tautan ke fase berikutnya)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
-- [x] 27.9 Quality gate Fase 27
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-27.md
+- [ ] 27.9 Quality gate Fase 27
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: da165c43
     - file: modules/Party/Domain/Models/Party.php
     - test: modules/Party/tests/Feature/PartyExtendedLifecycleTest.php::test_1_register_legal_entity_and_party_company
     - akses: command super:health-check
-    - gate: docs/gates/fase-27.md
+    - (dibatalkan) gate: docs/gates/fase-27.md
 
 ## FASE 28 — KONTRAK INTI (MODUL `ctr_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 28.1 Modul Contract: `Contract` (jenis: pembelian, penjualan, distribusi, keagenan, sewa, jasa, lisensi, JV, OEM/ODM, NDA), `ContractParty` (≥ 2 pihak, peran), nomor via 26.8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.2 Library klausul & templat: klausul ber-versi, variabel (`{{party.name}}`, nilai, tanggal), perakitan kontrak dari templat, pratinjau
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.3 State machine kontrak: `draft → review → negotiation → approved → signed → active → (suspended) → expired|terminated|renewed`, guard transisi, alasan wajib untuk terminate/suspend
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.4 **Versioning hash-chain**: tiap revisi/negosiasi tercatat append-only (SHA-256 berantai, seperti Vehicle Passport); `contracts:verify-chain`; diff antar versi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.5 Persetujuan berjenjang (26.9) berdasarkan nilai & jenis; e-sign **simulasi** (tanda tangan terenkripsi + hash dokumen + timestamp, urutan penandatangan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.6 Lampiran & dokumen pendukung (26.8), tautan kontrak ↔ pihak (27) ↔ entitas hukum
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.7 Obligasi & milestone: tanggal, penanggung jawab, status, bukti penyelesaian; dashboard kewajiban jatuh tempo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.8 Pengingat otomatis (`ctr:remind`): kedaluwarsa, perpanjangan, milestone, notice period (in-app + outbox)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.9 UI: daftar, editor kontrak, linimasa, tab pihak/obligasi/versi; role `contract_manager`, `legal`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
-- [x] 28.10 Quality gate Fase 28
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-28.md
+- [ ] 28.10 Quality gate Fase 28
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-28.md
+    - (dibatalkan) gate: docs/gates/fase-28.md
 
 ## FASE 29 — KONTRAK LANJUTAN: KEUANGAN, KEPATUHAN & INTEGRASI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 29.1 Jadwal pembayaran kontrak (termin, milestone, berkala), retensi (retention %), uang muka (advance) & pelunasannya; akun ledger `ctr:advance`, `ctr:retention_payable/receivable`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.2 Denda & liquidated damages: aturan (per hari/%) dihitung otomatis dari keterlambatan obligasi; pembebasan (waiver) via approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.3 Eskalasi harga & indeksasi (formula + indeks tersimpan), rate card kontrak yang mengalahkan harga standar
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.4 **Amandemen & addendum**: perubahan nilai/jangka waktu menghasilkan versi baru, dampak jadwal bayar dihitung ulang, jejak lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.5 Rekonsiliasi kontrak ↔ transaksi riil (PO/penjualan/pengiriman): nilai terpakai vs plafon, early warning 80%/100%
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.6 Integrasi: kontrak pengiriman B2B → `RateCard`/postpaid Logistics; kontrak sewa → Mall `Lease` (tautan, bukan duplikasi); kontrak waralaba → Resto royalti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.7 Klausul kepatuhan: governing law, yurisdiksi/arbitrase (BANI/ICC/SIAC — data referensi), force majeure, kerahasiaan; flag risiko kontrak (skor aturan simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.8 Laporan: eksposur kontrak, nilai kontrak aktif per jenis/pihak, aging obligasi, kontrak yang akan kedaluwarsa; `ctr:audit` (0 selisih vs ledger)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
-- [x] 29.9 Quality gate Fase 29
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-29.md
+- [ ] 29.9 Quality gate Fase 29
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 627e7e34
     - file: tests/Feature/Contract/ContractObligationsTest.php
     - test: tests/Feature/Contract/ContractObligationsTest.php::test_contract_attachment_stores_document_and_links_contract
     - akses: command ctr:audit
-    - gate: docs/gates/fase-29.md
+    - (dibatalkan) gate: docs/gates/fase-29.md
 
 ## FASE 30 — ASET INTI (MODUL `ast_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 30.1 Modul Asset: kategori (tanah, bangunan, mesin pabrik, kendaraan, peralatan, IT, hak/intangible), umur ekonomis & metode default per kategori (PSAK 16, **simulasi**)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.2 Register aset: kode via 26.8, tag/QR, lokasi (hirarki entitas→site→area), penanggung jawab, kondisi, foto/dokumen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.3 **Akuisisi & kapitalisasi**: dari PO/GRN (Fase 34), pembelian langsung, atau konstruksi (CIP → aset); posting `ast:fixed_assets`, `ap`/kas; biaya perolehan termasuk landed cost
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.4 Riwayat aset **hash-chain** append-only (akuisisi, pindah, perbaikan, revaluasi, disposal); `ast:verify-chain`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.5 Mutasi aset antar lokasi/entitas (approval; transfer antar-entitas memicu intercompany di Fase 52)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.6 Konsolidasi aset lama: `Mall\Asset`, armada Logistics (`Truck/Trailer/Vessel/Aircraft/Container`), peralatan dapur Resto → tautan `asset_id` non-breaking + backfill idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.7 Stok opname aset (scan QR, selisih ditemukan/hilang, penyesuaian dengan approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.8 Penugasan & peminjaman aset (check-out/in), asuransi aset (polis, jatuh tempo, klaim)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.9 UI register, detail aset, pemindaian QR publik terbatas; role `asset_manager`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
-- [x] 30.10 Quality gate Fase 30
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-30.md
+- [ ] 30.10 Quality gate Fase 30
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetCoreTest.php
     - test: tests/Feature/Asset/AssetCoreTest.php::test_default_categories_carry_useful_life_and_method
     - akses: command ast:audit
-    - gate: docs/gates/fase-30.md
+    - (dibatalkan) gate: docs/gates/fase-30.md
 
 ## FASE 31 — ASET: PENYUSUTAN, PEMELIHARAAN, REVALUASI & DISPOSAL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 31.1 Penyusutan: garis lurus, saldo menurun, unit produksi (jam mesin/km); `ast:depreciate` bulanan idempoten per (aset, periode); akun `ast:accumulated_depreciation`, `ast:depreciation_expense`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.2 Penyusutan fiskal vs komersial (dua buku, selisih temporer — simulasi), laporan rekonsiliasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.3 Impairment & revaluasi (approval, jurnal selisih, surplus revaluasi di ekuitas)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.4 Disposal: jual, hapus, hibah, hilang; laba/rugi pelepasan; link ke penjualan (Store/Auction sederhana) dan Payment
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.5 Pemeliharaan preventif berbasis waktu/penggunaan; work order aset (generalisasi Mall `WorkOrder` & AutoServe fleet service via contract); biaya pemeliharaan → kapitalisasi vs beban
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.6 Sewa (PSAK 73 **simulasi**): hak guna aset & liabilitas sewa dari kontrak sewa (Fase 29), amortisasi bunga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.7 Total cost of ownership per aset (susut + pemeliharaan + BBM/asuransi), rekomendasi ganti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.8 `ast:audit` (subledger aset = ledger, 0 selisih), pilar baru di `super:health-check`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
-- [x] 31.9 Quality gate Fase 31
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-31.md
+- [ ] 31.9 Quality gate Fase 31
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5dc94227
     - file: tests/Feature/Asset/AssetPhase31Test.php
     - test: tests/Feature/Asset/AssetPhase31Test.php::test_straight_line_depreciation_is_monthly_and_idempotent
     - akses: command ast:audit
-    - gate: docs/gates/fase-31.md
+    - (dibatalkan) gate: docs/gates/fase-31.md
 
 ## FASE 32 — PRODUSEN & PEMASOK (SUPPLIER MANAGEMENT, MODUL `sup_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 32.1 Modul Supplier: profil pemasok/produsen (party role), kategori barang/jasa, kapabilitas, lokasi pabrik, sertifikasi (ISO, SNI, Halal, BPOM, GMP) dengan masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.2 Kualifikasi & onboarding: kuesioner, audit lokasi (checklist + skor), approval, status `candidate → approved → preferred → probation → disqualified`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.3 Katalog & daftar harga pemasok: item pemasok (SKU pemasok ↔ SKU internal), harga bertingkat (qty), mata uang, berlaku-dari/sampai tanpa overlap, MOQ, lead time
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.4 Kontrak kerangka pemasok (Fase 28/29) memengaruhi harga & syarat bayar; verifikasi otomatis saat PO
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.5 Portal pemasok: lihat PO, konfirmasi, kirim ASN (advance ship notice), unggah sertifikat/COA, lihat pembayaran; role `supplier`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.6 **Supplier scorecard**: OTD, kualitas (reject rate), harga vs pasar, responsivitas; skor periodik, ambang tindakan korektif (SCAR)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.7 Manajemen risiko pemasok: konsentrasi (single source), ketergantungan, sertifikat kedaluwarsa, sanksi (27.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.8 Integrasi Resto: pemasok bahan resto → supplier; harga terakhir memperbarui MAC referensi (kontrak, bukan impor domain)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
-- [x] 32.9 Quality gate Fase 32
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-32.md
+- [ ] 32.9 Quality gate Fase 32
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Supplier/Application/Actions/QualifySupplierAvlScorecardAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-32.md
+    - (dibatalkan) gate: docs/gates/fase-32.md
 
 ## FASE 33 — PROCUREMENT: PR → RFQ → TENDER → PO
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 33.1 Purchase Requisition (PR): dari kebutuhan manual, MRP (Fase 36), atau reorder-point; approval berjenjang berdasar nilai & pusat biaya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.2 RFQ multi-pemasok, perbandingan penawaran (matriks harga/lead time/skor), pemilihan dengan alasan tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.3 Tender tertutup/terbuka: periode, addendum, segel penawaran (hash), buka bersamaan, evaluasi berbobot, penetapan pemenang (approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.4 Purchase Order (PO): dari PR/RFQ/kontrak kerangka; versi PO, perubahan via approval, close/cancel; blanket PO & call-off
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.5 PO impor: mata uang asing, Incoterm, pelabuhan, estimasi landed cost (menghubungkan Fase 48–49)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.6 Komitmen anggaran: PR/PO mengunci anggaran (encumbrance) per pusat biaya; peringatan melebihi anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.7 Integrasi Logistics: PO inbound membuat shipment masuk (via `ShipmentBooking`), jadwal kedatangan, appointment dock (Fase 24.5 untuk gudang/pabrik)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.8 Dashboard procurement: spend analysis, saving, siklus PR→PO, PO terbuka/lewat jatuh tempo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
-- [x] 33.9 Quality gate Fase 33
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-33.md
+- [ ] 33.9 Quality gate Fase 33
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/AwardBlindTenderToPurchaseOrderAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-33.md
+    - (dibatalkan) gate: docs/gates/fase-33.md
 
 ## FASE 34 — PENERIMAAN BARANG, HUTANG USAHA & PEMBAYARAN PEMASOK
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 34.1 Goods Receipt (GRN): terhadap PO, parsial/berkali, toleransi over/under-delivery, lot/batch & kedaluwarsa, penempatan ke gudang via `InventoryService`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.2 Inspeksi penerimaan (hook ke QMS Fase 39): kuarantina sampai lulus; retur ke pemasok (debit note)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.3 Invoice pemasok & **3-way match** (PO–GRN–Invoice) dengan toleransi harga/qty; selisih → hold + approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.4 Akuntansi: GR/IR clearing (`inv:grir`), `ap:supplier`, PPN masukan 11% (simulasi), PPh 23 dipotong (simulasi), selisih harga (PPV)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.5 Jadwal & eksekusi pembayaran: termin, diskon pembayaran dini, batch payment run dengan approval, bukti potong, pembayaran via PaymentGateway/ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.6 Uang muka pemasok & kompensasi; kredit memo; pelunasan sebagian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.7 Landed cost: alokasi biaya angkut/bea/asuransi ke nilai persediaan (by nilai/berat/qty), jurnal koreksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.8 `proc:audit` (subledger AP = ledger, GR/IR = 0 untuk PO selesai), pilar health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
-- [x] 34.9 Quality gate Fase 34
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-34.md
+- [ ] 34.9 Quality gate Fase 34
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Procurement/Application/Actions/PerformThreeWayGrnInvoiceMatchAction.php
     - test: modules/Procurement/tests/Feature/ProcurementSupplierSlicesTest.php::test_qualify_supplier_avl_scorecard_approves_when_score_meets_threshold
     - akses: command proc:audit
-    - gate: docs/gates/fase-34.md
+    - (dibatalkan) gate: docs/gates/fase-34.md
 
 ## FASE 35 — PABRIK: MASTER DATA MANUFAKTUR (MODUL `mfg_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 35.1 Modul Manufacturing: **Plant** (pabrik) per entitas hukum, area/line, kalender kerja & shift (hari libur, lembur), kapasitas nominal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.2 Work center & mesin: kapasitas/jam, efisiensi, biaya per jam (mesin + tenaga kerja + overhead), mesin ↔ aset (Fase 30)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.3 Master material: bahan baku, setengah jadi (WIP), barang jadi, kemasan, by-product/co-product; satuan & konversi; atribut lot/kedaluwarsa/serial
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.4 **BOM multi-level ber-versi** (generalisasi BOM Resto): efektif-dari/sampai, alternatif/substitusi, scrap %, by-product; BOM Resto tetap berjalan lewat adapter (tidak merusak HPP resto)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.5 Routing: urutan operasi, work center, waktu setup & run, instruksi kerja, inspeksi di titik tertentu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.6 Resep/formula untuk proses (pangan/kimia): yield, toleransi, bahan aktif; kontrol perubahan formula (approval + versi + hash)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.7 Konversi Dapur Sentral **CK-01** menjadi plant tipe `central_kitchen` (batch produksi Resto tetap sah; sinkron stok & HPP lewat contract)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.8 Master tenaga kerja produksi: operator, skill, sertifikasi, jadwal shift (tanpa payroll; hanya penugasan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.9 UI master data + validasi BOM (siklus/kuantitas nol/UoM tak kompatibel dideteksi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
-- [x] 35.10 Quality gate Fase 35
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-35.md
+- [ ] 35.10 Quality gate Fase 35
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/ExplodeMultiLevelBomAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-35.md
+    - (dibatalkan) gate: docs/gates/fase-35.md
 
 ## FASE 36 — PERENCANAAN PRODUKSI (MPS / MRP / CRP)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 36.1 Forecast & demand input: order penjualan, forecast distributor (Fase 43), reorder-point; versi skenario
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.2 **MPS** (jadwal induk): kuantitas per periode untuk barang jadi, time fence, freeze period
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.3 **MRP**: ledakan BOM bertingkat, netting terhadap stok/PO/produksi terbuka, lot sizing (L4L, EOQ, fixed, periodik), lead time offset → rencana PR/PO & order produksi (planned)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.4 **CRP** (kapasitas): beban per work center per periode vs kapasitas, bottleneck, pemerataan/penjadwalan maju-mundur sederhana
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.5 Konversi planned → firm order produksi; reservasi bahan (hard/soft), konflik alokasi diselesaikan prioritas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.6 Mengusulkan PR otomatis ke Procurement (Fase 33) dengan lead time pemasok & MOQ
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.7 Aturan stok pengaman & titik pesan ulang; simulasi "what-if" (skenario tidak mengubah data nyata)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.8 `mfg:run-mrp` terjadwal & idempoten (run id, perbandingan antar-run, hasil dapat diulang dengan data sama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
-- [x] 36.9 Quality gate Fase 36
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-36.md
+- [ ] 36.9 Quality gate Fase 36
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RunMrpNetRequirementPlanningAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-36.md
+    - (dibatalkan) gate: docs/gates/fase-36.md
 
 ## FASE 37 — EKSEKUSI PRODUKSI (SHOP FLOOR)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 37.1 **Order produksi** (`mfg_production_orders`): state `planned → released → in_progress → completed → closed|cancelled`; nomor via 26.8
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.2 Pengeluaran bahan (issue) & backflush; kontrol lot FIFO/FEFO; kekurangan bahan memicu alert; stok tidak boleh negatif
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.3 Pelaporan operasi: mulai/selesai, qty baik/scrap/rework, operator, mesin, durasi; terminal operator UI responsif (mobile/tablet)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.4 Downtime & alasan (mesin rusak, tunggu bahan, setup, istirahat) dengan kode standar → bahan OEE (Fase 40)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.5 Penerimaan barang jadi ke gudang (FG receipt), pembuatan lot/serial; by-product masuk stok
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.6 WIP: persediaan dalam proses per order/operasi; transfer WIP antar-operasi; `mfg:wip` laporan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.7 Rework & scrap: order rework, alasan, biaya scrap; scrap melebihi toleransi → NCR (Fase 39)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.8 Subkontrak operasi (maklon proses): kirim bahan ke subkon via Logistics, terima barang olahan, biaya subkon → PO jasa
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.9 Konsistensi: Σ bahan keluar + scrap = input; hasil produksi = BOM × qty ± toleransi (test invarian)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
-- [x] 37.10 Quality gate Fase 37
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-37.md
+- [ ] 37.10 Quality gate Fase 37
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/RecordShopFloorWorkOrderOutputAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-37.md
+    - (dibatalkan) gate: docs/gates/fase-37.md
 
 ## FASE 38 — BIAYA PRODUKSI (COSTING)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 38.1 Standard cost per item (roll-up BOM + routing + overhead), versi biaya, approval perubahan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.2 Actual costing per order: bahan (MAC/FIFO), tenaga kerja (jam × tarif), mesin (jam × tarif), overhead (alokasi by driver), subkon
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.2 Actual costing per order: bahan (MAC/FIFO), tenaga kerja (jam × tarif), mesin (jam × tarif), overhead (alokasi by driver), subkon
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.3 Jurnal produksi: bahan → WIP (`mfg:wip`), konversi → WIP, FG receipt WIP → persediaan barang jadi; **konvensi tanda sesuai ledger (kredit +/debit −)** dicatat di DECISIONS
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.3 Jurnal produksi: bahan → WIP (`mfg:wip`), konversi → WIP, FG receipt WIP → persediaan barang jadi; **konvensi tanda sesuai ledger (kredit +/debit −)** dicatat di DECISIONS
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.4 Varians: harga bahan, penggunaan, efisiensi tenaga/mesin, volume overhead, yield; posting ke akun varians atau capitalize sesuai kebijakan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.4 Varians: harga bahan, penggunaan, efisiensi tenaga/mesin, volume overhead, yield; posting ke akun varians atau capitalize sesuai kebijakan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.5 Harga pokok produksi (COGM) & HPP penjualan (COGS) saat barang jadi dijual (Store/Distribusi) — integrasi event
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.5 Harga pokok produksi (COGM) & HPP penjualan (COGS) saat barang jadi dijual (Store/Distribusi) — integrasi event
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.6 Biaya by-product/co-product (alokasi nilai relatif), reprosesing
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.6 Biaya by-product/co-product (alokasi nilai relatif), reprosesing
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.7 Laporan: margin per produk/line/plant, tren biaya, drill-down ke order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.7 Laporan: margin per produk/line/plant, tren biaya, drill-down ke order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.8 `mfg:audit-costing` (WIP + FG = ledger, 0 selisih; semua order closed tidak punya sisa WIP)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.8 `mfg:audit-costing` (WIP + FG = ledger, 0 selisih; semua order closed tidak punya sisa WIP)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
-- [x] 38.9 Quality gate Fase 38
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-38.md
+- [ ] 38.9 Quality gate Fase 38
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateStandardVsActualCostVarianceAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-38.md
+    - (dibatalkan) gate: docs/gates/fase-38.md
 
 ## FASE 39 — MUTU & KETERTELUSURAN (QMS, LOT, RECALL)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 39.1 Rencana inspeksi: karakteristik (atribut/variabel), batas spesifikasi, sampling (AQL simulasi), frekuensi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.2 Inspeksi: penerimaan (GRN), in-process (operasi), akhir (FG); hasil lulus/gagal/dispensasi (approval); pelepasan lot
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.3 Statistical process control sederhana (X-bar/R, Cp/Cpk), alarm di luar kendali
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.4 **NCR** (ketidaksesuaian) → investigasi → **CAPA** (korektif/preventif) dengan tenggat, efektivitas, status; terhubung ke SCAR pemasok (Fase 32)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.5 **Ketertelusuran lot maju-mundur**: dari lot FG ke bahan baku & pemasok, dan sebaliknya ke semua pelanggan/distributor penerima; waktu respons ≤ ambang (query budget)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.6 **Recall**: pilih lot terdampak → daftar penerima (distributor/agen/pelanggan) → notifikasi, kuarantina stok, retur & penghancuran bersertifikat, laporan akhir; jurnal biaya recall
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.7 Sertifikat (COA/COC) per lot, dokumen kepatuhan (SNI/Halal/BPOM/GMP — **data simulasi**), kedaluwarsa sertifikat memblokir rilis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.8 Kalibrasi alat ukur (jadwal, bukti), alat kedaluwarsa memblokir inspeksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
-- [x] 39.9 Quality gate Fase 39
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-39.md
+- [ ] 39.9 Quality gate Fase 39
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/TriggerQualityLotRecallAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:qms-audit
-    - gate: docs/gates/fase-39.md
+    - (dibatalkan) gate: docs/gates/fase-39.md
 
 ## FASE 40 — PEMELIHARAAN PABRIK, OEE & K3
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 40.1 **OEE** per mesin/line (Availability × Performance × Quality) dari downtime/produksi nyata; dasbor shift/harian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.2 Pemeliharaan korektif/preventif/prediktif (aturan ambang sensor **simulasi**), work order mesin memakai modul Aset (31.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.3 Suku cadang pabrik: BOM peralatan, stok minimum, penggunaan per WO, biaya → TCO aset
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.4 Simulasi sensor IoT (`mfg_sensor_readings`): suhu/getaran/arus; alarm → WO otomatis (idempoten)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.5 Pareto downtime, MTBF/MTTR, backlog pemeliharaan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.6 K3/HSE: insiden & near-miss, investigasi, tindakan, izin kerja berisiko (hot work/confined space) dengan approval & masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.7 Lingkungan & energi: pemakaian listrik/air/limbah per order, intensitas per unit (dasar ESG di backlog)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
-- [x] 40.8 Quality gate Fase 40
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-40.md
+- [ ] 40.8 Quality gate Fase 40
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Manufacturing/Application/Actions/CalculateEquipmentOeeMetricsAction.php
     - test: modules/Manufacturing/tests/Feature/ManufacturingActionsAndCostingTest.php::test_explodes_multi_level_bom_recursively_with_scrap_percentages
     - akses: command mfg:audit-costing
-    - gate: docs/gates/fase-40.md
+    - (dibatalkan) gate: docs/gates/fase-40.md
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
-  Bukti:
+- [ ] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.6 Replenishment pick-face, slotting sederhana (ABC)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.6 Replenishment pick-face, slotting sederhana (ABC)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
-- [x] 41.9 Quality gate Fase 41
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-41.md
+- [ ] 41.9 Quality gate Fase 41
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-41.md
+    - (dibatalkan) gate: docs/gates/fase-41.md
 
 ## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 42.1 Modul Distribution: distributor / sub-distributor / agen grosir / dealer (party role), hirarki jaringan, kode toko/outlet
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.2 Teritori & coverage: wilayah eksklusif/non-eksklusif, peta wilayah (provinsi→kota→kecamatan), konflik teritori terdeteksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.3 Onboarding distributor: KYB (27), kontrak distribusi (28/29), jaminan (bank garansi/deposit), limit kredit, termin
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.4 Kredit & piutang distributor: limit, eksposur, blokir otomatis saat lewat limit/jatuh tempo, aging, denda; `dist:ar` subledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.5 Target penjualan & performa: target bulanan/kuartal per produk, capaian, tier (Gold/Silver/Bronze) dengan hak diskon
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.6 Portal distributor (role `distributor`): harga sesuai tier, tagihan+aging, target, outlet, status akun; order/klaim/laporan stok lanjut di Fase 43
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.7 Master outlet/pelanggan distributor (sell-out) & segmentasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.8 Kinerja & scorecard distributor: sell-in vs sell-out, DSO, fill rate, kepatuhan harga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
-- [x] 42.9 Quality gate Fase 42
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-42.md
+- [ ] 42.9 Quality gate Fase 42
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/ProcessCrossDockingTransferAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-42.md
+    - (dibatalkan) gate: docs/gates/fase-42.md
 
 ## FASE 43 — DISTRIBUSI: ORDER, SELL-IN/SELL-OUT, KONSINYASI, RETUR, REBATE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 43.1 Order distributor: validasi limit kredit & stok (ATP), alokasi (prioritas/fair-share saat langka), backorder & pecah kirim
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.2 Pemenuhan: pick di WMS → shipment Logistics (FTL/LTL/multimoda) → POD → pengakuan penjualan; faktur pajak **simulasi** (nomor seri, PPN 11%)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.3 Sell-out reporting: distributor melaporkan penjualan & stok (unggah/API), validasi, deteksi anomali (stuffing, diversi, harga)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.4 **Konsinyasi**: stok milik prinsipal di lokasi distributor, laporan penjualan memicu faktur & transfer kepemilikan, rekonsiliasi stok konsinyasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.5 Retur & klaim: kedaluwarsa, rusak, salah kirim; kebijakan retur per kontrak; kredit nota; restock/kuarantina/musnahkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.6 **Rebate & insentif**: program volume/pertumbuhan/bertingkat, akrual per transaksi (`dist:rebate_payable`), penyelesaian periodik via approval; breakage
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.7 Perhitungan margin distributor & price compliance (harga tebus vs HET simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.8 Stok kritis distributor → saran replenishment (VMI sederhana)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.9 `dist:audit` (AR distributor, rebate, konsinyasi = ledger/stok, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
-- [x] 43.10 Quality gate Fase 43
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-43.md
+- [ ] 43.10 Quality gate Fase 43
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Wms/Application/Actions/RecordCycleCountAdjustmentAction.php
     - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
     - akses: command wms:audit
-    - gate: docs/gates/fase-43.md
+    - (dibatalkan) gate: docs/gates/fase-43.md
 
 ## FASE 44 — HARGA, PROMO & TRADE TERMS (PRICING ENGINE)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 44.1 Price list engine: daftar harga per segmen/saluran/wilayah/mata uang, berlaku-dari/sampai tanpa overlap, prioritas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.2 Diskon bertingkat: volume, paket (bundle), kombinasi, kupon; urutan penerapan deterministik & dapat diaudit (price waterfall)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.3 Promo dagang (trade promotion): anggaran promo, mekanik, klaim distributor dengan bukti, validasi, settlement
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.4 Harga kontrak (Fase 29.3) mengalahkan price list; kunci harga di dokumen saat order (immutable)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.5 Aturan margin minimum & approval override harga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.5 Aturan margin minimum & approval override harga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.6 Integrasi ke Store (harga produk produksi sendiri), Distribusi, Agensi; perubahan harga bersifat event idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.7 Analitik: realisasi harga vs list, kebocoran diskon, efektivitas promo
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
-- [x] 44.8 Quality gate Fase 44
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-44.md
+- [ ] 44.8 Quality gate Fase 44
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-44.md
+    - (dibatalkan) gate: docs/gates/fase-44.md
 
 ## FASE 45 — AGENSI: AGEN PENJUALAN & KOMISI (MODUL `agy_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 45.1 Modul Agency: agen individu/badan (party role), tipe (agen penjualan, broker, reseller, afiliasi, agen tunggal merek), hirarki upline/downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.2 Kontrak keagenan (Fase 28/29): wilayah/produk, eksklusivitas, komisi, masa berlaku, non-compete (flag), penghentian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.3 **Skema komisi** fleksibel: flat, persentase, bertingkat (slab), per produk/saluran, bonus target; komisi berjenjang (override upline, maks N level)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.4 Atribusi penjualan: kode agen/referral/lead, aturan prioritas bila konflik (last-touch/first-touch), masa atribusi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.5 Perhitungan komisi per transaksi (event penjualan terkonfirmasi/dibayar), **hold sampai periode retur lewat**, akrual `agy:commission_payable`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.6 **Clawback**: retur/pembatalan/chargeback membalik komisi (saldo agen bisa negatif → dikompensasi periode berikut)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.7 Payout periodik: statement komisi, PPh 21/23 dipotong (simulasi), approval, pembayaran via ledger/PaymentGateway, bukti potong
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.8 Portal agen (role `agent`): lead, penjualan, komisi, statement, materi, target; laporan downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.9 `agy:audit` (komisi akrual = payout + saldo, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
-- [x] 45.10 Quality gate Fase 45
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-45.md
+- [ ] 45.10 Quality gate Fase 45
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 81406e7f
     - file: modules/Distribution/Domain/Models/Distributor.php
     - test: tests/Feature/Authorization/DistributorPortalSelectorTest.php::test_admin_without_query_receives_200_with_distributor_list_selector
     - akses: command dist:audit
-    - gate: docs/gates/fase-45.md
+    - (dibatalkan) gate: docs/gates/fase-45.md
 
 ## FASE 46 — AGENSI: EKOSISTEM, LEAD, TIER & KEPATUHAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
-- [x] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
-  Bukti:
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+- [ ] 46.1 CRM ringan: lead/prospek, pipeline, aktivitas, konversi → order; penugasan lead ke agen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.2 Rekrutmen & onboarding agen: pendaftaran, KYC (27.2), pelatihan/sertifikasi internal, lisensi (mis. agen asuransi/properti — data simulasi) dengan masa berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.3 Tier & gamifikasi: level agen, syarat naik/turun, benefit; leaderboard (privasi dijaga)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.4 Agensi merek/keagenan impor: agen tunggal pemegang merek (APM-style) → hak impor, garansi, purna jual terhubung AutoServe (kontrak)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.5 Kepatuhan agen: pelanggaran (diskon liar, klaim palsu), sanksi bertingkat, suspensi komisi, banding
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.6 Deteksi kecurangan: pola self-referral, penjualan palsu, anomali komisi (aturan + skor simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.7 Integrasi lintas lini: agen properti Mall (leasing unit), agen kendaraan Store/AutoDex, agen katering Resto
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.8 Analitik: ROI agen, biaya akuisisi, retensi, kontribusi downline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
-- [x] 46.9 Quality gate Fase 46
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-46.md
+- [ ] 46.9 Quality gate Fase 46
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Pricing/Application/Actions/EvaluateWaterfallPromoStackingAction.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command pricing:audit
-    - gate: docs/gates/fase-46.md
+    - (dibatalkan) gate: docs/gates/fase-46.md
 
 ## FASE 47 — MITRA & KEMITRAAN (MODUL `ptn_`)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
-  Bukti:
+- [ ] 47.1 Modul Partner: jenis mitra (strategis, teknologi, saluran, waralaba, JV, riset, CSR), siklus hidup `prospect → due diligence → negotiation → active → review → exit`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.2 Due diligence: checklist (legal, keuangan, reputasi, ESG, sanksi), skor risiko, approval berjenjang, dokumen
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.3 Perjanjian kemitraan (Fase 28/29) + rencana kerja bersama (joint business plan): sasaran, KPI, anggaran, PIC kedua pihak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.4 **Revenue/profit sharing** generik: aturan bagi hasil (persentase, bertingkat, setelah biaya), periode, perhitungan dari ledger; mengganti pola khusus (Resto royalti, Mall revenue share) lewat adapter tanpa mengubah hasil lama
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.5 Co-selling & marketplace B2B sederhana: katalog mitra, referral antar-mitra, lead sharing, atribusi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.6 Portal mitra (role `partner`): proyek, laporan, statement bagi hasil, dokumen, tiket
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.7 SLA mitra & penalti, scorecard & review berkala (QBR), rencana perbaikan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.8 Aset & HKI bersama: kepemilikan bersama aset (Fase 30), hak kekayaan intelektual (merek/paten/hak cipta — register, masa berlaku, lisensi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.9 Exit & transisi: terminasi kemitraan, pembagian aset/utang, pembayaran terakhir, retensi data
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
-- [x] 47.10 Quality gate Fase 47
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-47.md
+- [ ] 47.10 Quality gate Fase 47
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Partner/Application/Actions/SettlePartnerMilestoneCoDevAction.php
     - test: modules/Partner/tests/Feature/PartnerOperationsSliceTest.php::test_calculate_jv_equity_profit_share_accrues_correct_integer_amount
     - akses: command ptn:audit
-    - gate: docs/gates/fase-47.md
+    - (dibatalkan) gate: docs/gates/fase-47.md
 
 ## FASE 48 — MULTI-CURRENCY & TREASURY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
-  Bukti:
+- [ ] 48.1 Master mata uang & kurs: kurs harian (sumber simulasi + input manual), jenis kurs (spot/tengah/pajak), tabel kurs ber-versi tak dapat diubah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.2 Ledger multi-currency: transaksi dalam mata uang asing dengan nilai fungsional tersimpan (minor unit), **tanpa float**; Σ per mata uang & Σ fungsional seimbang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.3 Revaluasi piutang/utang/kas valas akhir periode, laba/rugi kurs terealisasi & belum terealisasi, jurnal pembalik otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.4 Rekening bank perusahaan & kas: saldo, rekonsiliasi bank (impor mutasi simulasi, pencocokan otomatis, selisih), kas kecil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.5 Forecast arus kas (AR/AP/PO/payroll-placeholder/pajak), horizon 13 minggu, skenario
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.6 Lindung nilai sederhana (forward contract simulasi): eksposur, kontrak, mark-to-market, penyelesaian
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.7 Pinjaman & fasilitas bank: plafon, penarikan, bunga, covenant (rasio) & peringatan pelanggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.8 Pooling kas antar-entitas (Fase 52 intercompany loan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.9 `treasury:audit` (0 selisih), pilar health-check
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.9 `treasury:audit` (0 selisih), pilar health-check
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
-- [x] 48.10 Quality gate Fase 48
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-48.md
+- [ ] 48.10 Quality gate Fase 48
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Treasury/Application/Actions/ExecuteNotionalCashPoolSweepAction.php
     - test: modules/Treasury/tests/Feature/TreasuryOperationsSliceTest.php::test_run_multi_currency_fx_revaluation_calculates_gain_correctly
     - akses: command treasury:audit
-    - gate: docs/gates/fase-48.md
+    - (dibatalkan) gate: docs/gates/fase-48.md
 
 ## FASE 49 — EKSPOR–IMPOR (TRADE OPERATIONS)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
-  Bukti:
+- [ ] 49.1 Master negara/pelabuhan/zona, **Incoterms 2020** (tanggung jawab biaya/risiko per istilah), HS code ber-versi (memperluas `HsTariff` Logistics), larangan/pembatasan (lartas — simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.2 **Order ekspor**: proforma → commercial invoice → packing list → booking kapal/pesawat (Logistics) → dokumen ekspor (PEB simulasi) → pengakuan pendapatan saat risiko berpindah (sesuai Incoterm)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.3 **Order impor**: PO impor (33.5) → ASN → dokumen (BL/AWB, invoice) → PIB simulasi (BM/PPN/PPh 22 via `CustomsDutyCalculator`) → penerimaan; **landed cost** otomatis ke persediaan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.4 Dokumen perdagangan: Certificate of Origin (Form E/D/AANZ… data referensi), fumigasi, Phytosanitary, Halal/BPOM lintas negara (simulasi), checklist per negara & produk
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.5 Kuota & preferensi tarif (FTA — simulasi): tarif preferensial bila CoO valid, penghematan dilaporkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.6 Pelacakan lintas batas: status tiap leg internasional (origin → port → transit → customs → destination) memakai tracking Logistik hash-chain
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.7 Sengketa & klaim dagang internasional (barang rusak/selisih/keterlambatan), asuransi kargo (Fase 23.4) & subrogasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.8 Kepatuhan: kontrol ekspor/dual-use (daftar simulasi), sanksi (27.6), pelaporan ekspor-impor bulanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.9 `trade:audit` (invoice ekspor/impor ↔ ledger ↔ stok, 0 selisih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
-- [x] 49.10 Quality gate Fase 49
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-49.md
+- [ ] 49.10 Quality gate Fase 49
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Trade/Application/Actions/CalculateIncotermsLandedCostAction.php
     - test: modules/Trade/tests/Feature/TradeOperationsSliceTest.php::test_calculate_incoterms_landed_cost_computes_exact_duties_and_taxes
     - akses: command trade:audit
-    - gate: docs/gates/fase-49.md
+    - (dibatalkan) gate: docs/gates/fase-49.md
 
 ## FASE 50 — TRADE FINANCE (L/C, GARANSI, KOLEKSI DOKUMEN & PEMBIAYAAN SUPPLY CHAIN)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
-  Bukti:
+- [ ] 50.1 **Letter of Credit Engine (UCP 600 Simulasi Lanjutan)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Siklus penuh L/C: *Application → Issuance → Advising → Amendment → Document Presentation → Examination → Acceptance → Payment / Usance Settlement*.
   - Klasifikasi instrumen: Sight L/C, Usance L/C (deferred payment/tenor 30/60/90/180 hari), Revolving L/C, Transferable L/C, dan Standby L/C (SBLC).
   - Alur amandemen: pelacakan versi amandemen gapless, rekonsiliasi selisih nilai notional, dan persetujuan formal kedua belah pihak via ApprovalEngine.
-- [x] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
-  Bukti:
+- [ ] 50.2 **Pemeriksaan Dokumen L/C & Otomasi Deteksi Diskrepansi (Document Checking Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Checklist otomatis kesesuaian dokumen dagang (Commercial Invoice, Bill of Lading / Air Waybill, Packing List, Certificate of Origin, Insurance Certificate) terhadap klausul L/C.
   - Aturan deteksi diskrepansi otomatis: ketidakcocokan nilai nominal, perbedaan deskripsi barang (toleransi ketat UCP 600), pelabuhan muat/tujuan tidak sesuai, tanggal dokumen melebihi masa berlaku (*stale documents*).
   - Workflow *Discrepancy Notice* & alur waiver persetujuan applicant (four-eyes approval) sebelum bank melakukan akseptasi/pembayaran.
-- [x] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
-  Bukti:
+- [ ] 50.3 **Documentary Collection (D/P, D/A) & Open Account Monitoring**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Instrumen Dokumen Inkaso: *Documents against Payment* (D/P) dan *Documents against Acceptance* (D/A) dengan pelacakan jatuh tempo bill of exchange/wesel.
   - Manajemen Open Account dengan batasan limit eksposur kredit perdagangan per mitra buyer/seller, pemantauan batas waktu penagihan, dan mitigasi risiko default.
-- [x] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
-  Bukti:
+- [ ] 50.4 **Garansi Bank & Obligasi Kontrak Terpadu (Bank Guarantee & Surety Bonds)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Pengelolaan tipe garansi: *Bid Bond* (Jaminan Tender), *Performance Bond* (Jaminan Pelaksanaan), *Advance Payment Guarantee* (Jaminan Uang Muka), dan *Retention Bond* (Jaminan Pemeliharaan).
   - Integrasi dua arah: terhubung langsung ke modul Procurement Tender (Fase 33.3) dan Kontrak Bisnis (Fase 28/29.1).
   - Siklus penjaminan: penerbitan, perpanjangan masa berlaku otomatis, pengajuan klaim default, penyelesaian arbitrase, dan pelepasan formal jaminan (*guarantee release*).
-- [x] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
-  Bukti:
+- [ ] 50.5 **Pembiayaan Perdagangan & Supply Chain Finance (SCF) Multi-Fasilitas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - *Pre-Shipment Export Financing* (kredit modal kerja ekspor berbasis Purchase Order terkonfirmasi).
   - *Post-Shipment Financing & Invoice Discounting* (pencairan piutang dagang segera sebelum jatuh tempo pembayaran buyer).
   - *Dynamic Discounting Pemasok*: pembiayaan rantai pasok berbasis skala waktu pelunasan lebih awal dengan potongan harga dinamis.
   - Anjak Piutang (*Factoring*) simulasi: *with recourse* vs *without recourse*, cadangan retensi, dan biaya administrasi diskonto.
-- [x] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
-  Bukti:
+- [ ] 50.6 **Asuransi Kargo Internasional & Integrasi Klaim Logistik**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Polis kargo laut/udara berbasis Institute Cargo Clauses (ICC A/B/C): perhitungan premi terintegrasi CIF, klausul perils laut, perang, pemogokan.
   - Integrasi klaim asuransi kargo ke insiden kerusakan logistik (Fase 23.4) & sengketa perdagangan (Fase 49.7), lengkap dengan alur subrogasi hukum.
-- [x] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
-  Bukti:
+- [ ] 50.7 **Akuntansi Trade Finance, Biaya Bank & Jurnal Double-Entry Terintegrasi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Akun memorandum kontinjensi: pencatatan komitmen off-balance-sheet untuk L/C dan Garansi Bank aktif (`DR tf:contingent_lc:IDR / CR tf:contra_lc:IDR`).
   - Pembebanan biaya administrasi, provisi bank, komisi advising/akseptasi, dan margin deposit yang ditahan di bank (`bank_accounts`).
   - Integrasi selisih kurs valas (Fase 48): pengakuan untung/rugi kurs pada tanggal penyelesaian wesel usance vs tanggal akseptasi.
-- [x] 50.8 **Portal & Observabilitas Trade Finance**:
-  Bukti:
+- [ ] 50.8 **Portal & Observabilitas Trade Finance**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
   - Portal role `treasury` dan `procurement`: pemantauan plafon fasilitas trade finance, kalender jatuh tempo L/C, monitoring dokumen inkaso, dan dashboard eksposur per bank mitra.
-- [x] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
-  Bukti:
+- [ ] 50.9 `tf:audit` (Plafon garansi = subledger, saldo komitmen memorandum L/C = transaksi aktif, klaim <= plafon, 0 selisih diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
-- [x] 50.10 Quality gate Fase 50.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-50.md
+- [ ] 50.10 Quality gate Fase 50.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/TradeFinance/Application/Actions/IssueDocumentaryLetterOfCreditAction.php
     - test: modules/TradeFinance/tests/Feature/TradeFinanceOperationsSliceTest.php::test_issue_documentary_letter_of_credit_creates_valid_record
     - akses: command tf:audit
-    - gate: docs/gates/fase-50.md
+    - (dibatalkan) gate: docs/gates/fase-50.md
 
 
 ## FASE 51 — KERJA SAMA INTERNASIONAL I: JV, LISENSI, OEM/ODM & ALIH TEKNOLOGI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
-  Bukti:
+- [ ] 51.1 **Master Entitas Mitra Asing & Tata Kelola Multi-Yurisdiksi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Perluasan modul Party (`pty_`): registrasi entitas hukum asing, nomor registrasi bisnis yurisdiksi asal, legalisasi dokumen / Apostille Convention, dan kuasa hukum/wakil sah di Indonesia.
   - Penentuan mata uang fungsional, regulasi anti-pencucian uang (AML/Sanction screening internasional), dan yurisdiksi hukum penyelesaian sengketa (Arbitrase BANI/SIAC/ICC).
-- [x] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
-  Bukti:
+- [ ] 51.2 **Struktur Usaha Patungan (Joint Venture - JV Management)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Struktur Equity JV vs Contractual JV: porsi kepemilikan modal saham, jadwal setoran modal bertahap (*capital calls*), dan pencatatan kepemilikan saham di entitas anak (`pty_legal_entities`).
   - Tata kelola dewan: klausul hak veto pemegang saham minoritas, kuorum rapat pemegang saham, dan pembagian dividen bersyarat KPI performa.
-- [x] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
-  Bukti:
+- [ ] 51.3 **Lisensi Hak Cipta, Merek & Waralaba Internasional**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Registrasi lisensi teknologi dan merek (HKI Fase 47.8): cakupan teritori geografis, hak eksklusif vs non-eksklusif, sub-lisensi, dan masa berlaku.
   - Kalkulasi royalti otomatis: basis persentase penjualan kotor/bersih, *minimum annual guarantee* (MAG), slab berjenjang, dan audit keselarasan laporan royalti terhadap sell-out Store/Distribusi.
-- [x] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
-  Bukti:
+- [ ] 51.4 **OEM/ODM & Contract Manufacturing Lintas Batas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pabrik platform memproduksi barang untuk merek prinsipal global (OEM) atau sebaliknya menerima pasokan barang ber-desain khusus (ODM).
   - Pengelolaan bahan baku konsinyasi milik prinsipal: persediaan terpisah tanpa pengakuan hutang dagang, biaya konversi manufaktur (*conversion cost/tolling fee*), dan klausul kerahasiaan desain (NDA).
   - Integrasi ke modul Manufaktur (`mfg_`): routing khusus OEM, pengawasan mutu bersama (*joint QA/QC*), dan sertifikasi kepatuhan pabrik (*social compliance audit*).
-- [x] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
-  Bukti:
+- [ ] 51.5 **Alih Teknologi, R&D Bersama & Milestone Delivery**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Paket alih teknologi: blueprint teknis, formula terenkripsi, program pelatihan teknisi, dan asistensi teknis lapangan.
   - Alur pembayaran bertahap berbasis milestone penerimaan (*acceptance testing sign-off*) via approval four-eyes lintas direksi.
   - Klausul hak kekayaan intelektual turunan (*derivative IP*): pembagian hak kepemilikan atas paten/invensi baru hasil pengembangan bersama.
-- [x] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
-  Bukti:
+- [ ] 51.6 **Kontrak Lintas Yurisdiksi & Perjanjian Dwi-Bahasa (Bilingual Legal Contracts)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pembuatan kontrak bisnis dua bahasa (Bahasa Indonesia & Bahasa Inggris) otomatis via modul Contract (`ctr_`) dengan klausul *prevailing language*.
   - Klausul standar internasional: *Force Majeure*, pembatasan liabilitas (*limitation of liability*), sanksi kepatuhan ekspor dual-use, dan klausul anti-suap/korupsi (FCPA / UK Bribery Act / UU Tipikor).
-- [x] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
-  Bukti:
+- [ ] 51.7 **Perpajakan Lintas Negara Simulasi (Tax Treaty / P3B & Withholding Tax)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Pemotongan PPh Pasal 26 / WHT atas royalti, bunga, dividen, dan jasa teknik luar negeri.
   - Engine P3B (Perjanjian Penghindaran Pajak Berganda) ber-versi: validasi *Certificate of Domicile* (Form DGT simulasi) untuk menentukan tarif pajak efektif yang berlaku (misal: 10% vs tarif normal 20%).
   - Penerbitan bukti potong pajak luar negeri simulasi dan pencatatan kredit pajak luar negeri.
-- [x] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
-  Bukti:
+- [ ] 51.8 **Audit Kepatuhan Internasional (Compliance & Anti-Bribery Checklists)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
   - Kuesioner uji tuntas (*due diligence*) kepatuhan mitra asing: verifikasi *Beneficial Ownership*, deklarasi non-suap, dan screening daftar sanksi PBB/OFAC.
-- [x] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
-  Bukti:
+- [ ] 51.9 Dashboard portofolio kerja sama internasional: visualisasi proyek JV, aliran royalti global, status transfer teknologi, dan eksposur nilai tukar.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
-- [x] 51.10 Quality gate Fase 51.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-51.md
+- [ ] 51.10 Quality gate Fase 51.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Intercompany/Application/Actions/GenerateIntercompanyEliminationJournalAction.php
     - test: modules/Intercompany/tests/Feature/IntercompanyOperationsSliceTest.php::test_create_mirrored_intercompany_transaction_success
     - akses: command group:audit
-    - gate: docs/gates/fase-51.md
+    - (dibatalkan) gate: docs/gates/fase-51.md
 
 
 ## FASE 52 — KERJA SAMA INTERNASIONAL II: INTERCOMPANY, TRANSFER PRICING & KONSOLIDASI
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
-  Bukti:
+- [ ] 52.1 **Arsitektur Transaksi Antar-Entitas Grup (Intercompany Transactions Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Transaksi otomatis *Mirror Transaction*: penjualan barang/jasa dari Entitas A ke Entitas B menghasilkan otomatis Sales Order/Invoice di A dan Purchase Order/Bill di B secara atomik.
   - Pengelolaan pinjaman antar-perusahaan (*Intercompany Loans*): jadwal amortisasi bunga arm's length, penarikan dana, dan integrasi cash pooling Treasury (Fase 48.8).
   - Skema penagihan biaya bersama (*Cost Sharing / Management Fee Allocation*) berdasarkan porsi headcount atau omzet entitas.
-- [x] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
-  Bukti:
+- [ ] 52.2 **Transfer Pricing Engine & Dokumentasi Simulasi (OECD & PMK Compliance)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Penerapan metode transfer pricing: *Comparable Uncontrolled Price* (CUP), *Cost Plus Method* (CPM), *Resale Price Method* (RPM), dan *Transactional Net Margin Method* (TNMM).
   - Penegakan prinsip kewajaran dan kelaziman usaha (*Arm's Length Principle*): rentang margin intercompany terverifikasi otomatis terhadap benchmark industri simulasi.
   - Generator draf Local File & Master File TP Doc simulasi: analisis fungsi, aset, dan risiko (FAR) per entitas grup.
   - Penyesuaian transfer pricing akhir tahun (*Year-End TP True-up Adjustments*) dengan jurnal penyesuaian otomatis.
-- [x] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
-  Bukti:
+- [ ] 52.3 **Perpindahan Aset & Logistik Antar-Entitas/Negara**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Mutasi aset tetap antar-entitas: transfer nilai buku, transfer akumulasi depresiasi, dan faktur pengalihan aset.
   - Pengiriman stok antar-entitas lintas batas: integrasi ke modul Logistik (`lgx_`) dan dokumen kepabeanan ekspor-impor (PEB/PIB), penanganan PPN/bea masuk antar-anak perusahaan.
-- [x] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
-  Bukti:
+- [ ] 52.4 **Mesin Eliminasi Intercompany & Konsolidasi Keuangan Otomatis**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Eliminasi saldo akun timbal balik (*Reciprocal Balances*): eliminasi piutang-hutang intercompany (`ic:ar` vs `ic:ap`).
   - Eliminasi transaksi penjualan/pembelian intercompany agar omzet grup tidak terhitung ganda (*double-counting*).
   - Eliminasi laba antar-perusahaan yang belum terealisasi (*Unrealized Profit in Ending Inventory*).
   - Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR sesuai standar akuntansi: pos neraca memakai kurs penutupan (*closing rate*), pos laba rugi memakai kurs rata-rata (*average rate*), dan selisih kurs translasi dicatat pada akun Ekuitas (*Foreign Currency Translation Reserve*).
-- [x] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
-  Bukti:
+- [ ] 52.5 **Kepemilikan Kepentingan Non-Pengendali (Non-Controlling Interest - NCI)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Perhitungan porsi laba/rugi bersih dan ekuitas yang diatribusikan kepada pemegang saham minoritas pada anak perusahaan / JV parsial.
   - Pencatatan pembagian dividen kepada pihak ketiga non-pengendali.
-- [x] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
-  Bukti:
+- [ ] 52.6 **Pelaporan Segmen Usaha Terkonsolidasi (Segment Reporting)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
   - Laporan laba rugi dan neraca per segmen operasi (Manufaktur, Logistik, Retail/Store, Resto, Mall) dan per wilayah geografis.
   - Fitur drill-down dari laporan konsolidasi grup hingga ke level voucher jurnal sumber di entitas anak.
-- [x] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
-  Bukti:
+- [ ] 52.7 `group:audit` (Invarian eliminasi: Σ Eliminasi debit = Σ Eliminasi kredit, selisih rekonsiliasi IC = 0, translasi matematis konsisten 100%).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
-- [x] 52.8 Quality gate Fase 52.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-52.md
+- [ ] 52.8 Quality gate Fase 52.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ea6427fe
     - file: tests/Feature/Contract/ContractFeatureTest.php
     - test: tests/Feature/Contract/ContractFeatureTest.php::test_creates_contract_with_gapless_number_and_genesis_hash_chain
     - akses: command ctr:audit
-    - gate: docs/gates/fase-52.md
+    - (dibatalkan) gate: docs/gates/fase-52.md
 
 
 ## FASE 53 — SUPPLY CHAIN CONTROL TOWER & SALES AND OPERATIONS PLANNING (S&OP)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:
-  Bukti:
+- [ ] 53.1 **Menara Pengawas Rantai Pasok Terpadu (Supply Chain Control Tower)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Peta aliran nilai digital end-to-end: pelacakan visual status pasokan dari Pemasok Tier-1/2 → Pelabuhan → Pabrik Manufaktur → Gudang Sentral (DC) → Distributor → Toko/Konsumen.
   - Indikator visibilitas inventori multi-eselon (*Multi-Echelon Inventory Visibility*): stok di tangan, stok dalam perjalanan (*in-transit*), stok terreservasi, dan stok komitmen.
-- [x] 53.2 **Mesin Prediksi Permintaan Multi-Model (Demand Forecasting Engine)**:
-  Bukti:
+- [ ] 53.2 **Mesin Prediksi Permintaan Multi-Model (Demand Forecasting Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Algoritma proyeksi kuantitatif deterministik: *Weighted Moving Average*, *Exponential Smoothing*, *Holt-Winters Trend & Seasonality*, dan *Linear Regression*.
   - Metrik evaluasi akurasi forecast: *Mean Absolute Percentage Error* (MAPE), *Mean Absolute Deviation* (MAD), dan *Forecast Bias Tracking Signal*.
   - Mekanisme override forecast kolaboratif oleh tim penjualan dengan audit trail alasan perubahan.
-- [x] 53.3 **Proses Siklus Bulanan S&OP Kolaboratif (Sales & Operations Planning Workflow)**:
-  Bukti:
+- [ ] 53.3 **Proses Siklus Bulanan S&OP Kolaboratif (Sales & Operations Planning Workflow)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - 4 Tahap S&OP terstruktur: (1) *Demand Review* → (2) *Supply & Capacity Review* → (3) *Pre-S&OP Financial Balancing* → (4) *Executive S&OP Sign-off*.
   - Skenario perbandingan rencana pasokan: skenario konservatif, moderat, dan agresif lengkap dengan proyeksi dampak laba kotor dan arus kas.
-- [x] 53.4 **Mesin Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP Engine)**:
-  Bukti:
+- [ ] 53.4 **Mesin Janji Pesanan Berbasis Kapasitas Nyata (ATP & CTP Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - *Available-to-Promise* (ATP): perhitungan alokasi stok bebas janji per periode waktu tanpa mengorbankan reservasi yang sudah ada.
   - *Capable-to-Promise* (CTP): jika stok fisik tidak mencukupi, sistem secara dinamis mengecek ketersediaan bahan baku di MRP dan kapasitas mesin kosong di pabrik untuk menetapkan tanggal pengiriman realistis ke pelanggan.
-- [x] 53.5 **Optimalisasi Kebijakan Persediaan Multi-Eselon & Klasifikasi Material**:
-  Bukti:
+- [ ] 53.5 **Optimalisasi Kebijakan Persediaan Multi-Eselon & Klasifikasi Material**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Matriks analisis gabungan ABC/XYZ (berdasarkan nilai pemakaian dan variabilitas permintaan).
   - Formula stok pengaman dinamis (*Dynamic Safety Stock*) berbasis tingkat layanan target (*Service Level* 90%/95%/99%) dan variabilitas lead time pemasok.
   - Deteksi dini barang bergerak lambat (*Slow Moving*), barang usang (*Dead Stock*), dan produk mendekati masa kedaluwarsa (*Shelf-Life Expiry Warning*).
-- [x] 53.6 **Sistem Manajemen Anomali & Deteksi Dampak Rantai Pasok (Disruption Alert & Impact Analysis)**:
-  Bukti:
+- [ ] 53.6 **Sistem Manajemen Anomali & Deteksi Dampak Rantai Pasok (Disruption Alert & Impact Analysis)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Peringatan dini otomatis: keterlambatan kedatangan bahan baku impor, mesin pabrik breakdown kritis, kemacetan rute logistik ekspres, atau lonjakan pesanan mendadak.
   - Analisis dampak berantai (*Blast Radius Impact Analysis*): kalkulasi instan pesanan distributor/konsumen mana saja yang berisiko terlambat akibat gangguan di hulu.
-- [x] 53.7 **Eksekutif Dashboard KPI Kinerja Pasokan Kelas Dunia**:
-  Bukti:
+- [ ] 53.7 **Eksekutif Dashboard KPI Kinerja Pasokan Kelas Dunia**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Metrik performa kunci: *On-Time In-Full* (OTIF) end-to-end, *Cash-to-Cash Cycle Time*, *Inventory Days of Supply* (DOS), *Order Fulfillment Lead Time*, dan rasio biaya logistik terhadap penjualan.
-- [x] 53.8 **Digital Twin Simulasi Skenario Rantai Pasok (What-If Simulation Twin)**:
-  Bukti:
+- [ ] 53.8 **Digital Twin Simulasi Skenario Rantai Pasok (What-If Simulation Twin)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
   - Fasilitas sandbox tanpa mengubah database riil: simulasi penutupan pelabuhan utama selama 14 hari, kenaikan harga bahan baku 20%, atau penambahan lini pabrik baru terhadap profitabilitas grup.
-- [x] 53.9 `tower:audit` (Invarian alokasi ATP tidak melebihi stok fisik + jadwal rilis PO, integritas pohon perhitungan CTP konsisten 100%).
-  Bukti:
+- [ ] 53.9 `tower:audit` (Invarian alokasi ATP tidak melebihi stok fisik + jadwal rilis PO, integritas pohon perhitungan CTP konsisten 100%).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
-- [x] 53.10 Quality gate Fase 53.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-53.md
+- [ ] 53.10 Quality gate Fase 53.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/ControlTower/Application/Actions/DetectSupplyChainBottleneckAlertAction.php
     - test: modules/ControlTower/tests/Feature/ControlTowerOperationsSliceTest.php::test_run_consensus_sop_holt_winters_forecast_calculation
     - akses: command tower:audit
-    - gate: docs/gates/fase-53.md
+    - (dibatalkan) gate: docs/gates/fase-53.md
 
 
 ## FASE 54 — FINANCE GRUP, ANGGARAN, AUDIT TRAIL & KEPATUHAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
-  Bukti:
+- [ ] 54.1 **Sistem Perencanaan & Pengendalian Anggaran (Enterprise Budgeting & Encumbrance)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Struktur anggaran hierarkis: Anggaran per Entitas → Direktorat → Pusat Biaya (*Cost Center*) → Mata Anggaran (Akun Beban).
   - Mekanisme kontrol anggaran ketat: *Hard-Stop* (menolak transaksi jika melebihi plafon) vs *Soft-Stop* (peringatan & eskalasi approval ke Direktur Keuangan).
   - Alur komitmen anggaran (*Budget Encumbrance*): penguncian dana sejak PR/PO disetujui hingga realisasi invoice pelunasan.
   - Pelaporan *Budget vs Actual vs Encumbrance* secara real-time dan mekanisme revisi anggaran resmi ber-versi.
-- [x] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
-  Bukti:
+- [ ] 54.2 **Laporan Keuangan Standar Enterprise & Prosedur Tutup Buku Periode (Financial Close)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Penerbitan otomatis Laporan Neraca (*Balance Sheet*), Laporan Laba Rugi Komprehensif (*Income Statement*), dan Laporan Arus Kas Metode Langsung & Tidak Langsung.
   - Checklist tutup buku akhir bulan/tahun (*Month-End Close Workflow*): penyesuaian depresiasi, rekonsiliasi subledger, penutupan akun nominal, dan penguncian periode akuntansi (*Period Lock*) anti-backdating.
-- [x] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
-  Bukti:
+- [ ] 54.3 **Simulator Kepatuhan Perpajakan Nasional (Tax Engine & e-Faktur Simulation)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Rekonsiliasi PPN Masukan vs PPN Keluaran, pembuatan draf pelaporan SPT Masa PPN 1111 dengan nomor seri faktur pajak gapless.
   - Agregasi pemotongan pajak penghasilan: PPh Pasal 21 (karyawan/agen), PPh 23 (jasa/sewa), PPh 4 ayat 2 (final sewa Mall/properti), dan PPh 22 (impor/pengadaan).
   - Ekspor format CSV siap impor simulator e-Faktur dan e-Bupot DJP.
-- [x] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
-  Bukti:
+- [ ] 54.4 **Penegakan Pemisahan Tugas Mutlak (Segregation of Duties - SoD Matrix Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Matriks konflik wewenang: larangan satu akun memiliki dua role bertentangan (misal: Pembuat PO dilarang menyetujui PO; Penginput Invoice dilarang mengeksekusi pembayaran bank; Kasir POS dilarang melakukan void tanpa persetujuan SPV).
   - Deteksi dan pelaporan otomatis pelanggaran SoD dalam log audit keamanan.
-- [x] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
-  Bukti:
+- [ ] 54.5 **Kerangka Pengendalian Internal & Risk Control Matrix (RCM)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Katalog titik kendali internal operasional: verifikasi approval ganda, pencocokan 3-way match, validasi batas toleransi timbangan logistik, dan batas margin harga tebus.
   - Pengujian kontrol otomatis harian: sistem mencatat temuan anomali (*control exception*) dan menugaskan tindakan korektif ke manajer terkait.
-- [x] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
-  Bukti:
+- [ ] 54.6 **Kalender Kepatuhan Regulasi & Pengingat Kedaluwarsa Hukum**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Penjadwalan pemenuhan kewajiban: pelaporan pajak bulanan, perpanjangan izin edar BPOM/Halal, kedaluwarsa polis asuransi aset, dan masa berlaku kontrak perjanjian kemitraan.
   - Eskalasi bertingkat via notifikasi outbox kepada penanggung jawab hukum sebelum jatuh tempo.
-- [x] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
-  Bukti:
+- [ ] 54.7 **Paket Bukti Audit Eksternal Terpadu (Auditor Data Pack Generator)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
   - Satu-klik ekspor bukti audit untuk KAP: buku besar, neraca saldo, daftar mutasi bank terverifikasi, register aset tetap, serta laporan verifikasi integritas hash-chain sistem.
-- [x] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
-  Bukti:
+- [ ] 54.8 Perluasan pilar observabilitas `super:health-check` ke seluruh 16 domain arsitektur platform.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
-- [x] 54.9 `enterprise:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-54.md
+- [ ] 54.9 `enterprise:audit` (Buku besar = subledger AR/AP/Aset/Persediaan/Pajak, selisih fiskal terjelaskan, saldo kas = bank statement, 0 diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
-- [x] 54.10 Quality gate Fase 54.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-54.md
+- [ ] 54.10 Quality gate Fase 54.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/EnterpriseFinance/Application/Actions/EnforceDepartmentBudgetGuardrailAction.php
     - test: modules/EnterpriseFinance/tests/Feature/EnterpriseFinanceOperationsSliceTest.php::test_consolidate_group_multi_entity_trial_balance_totals
     - akses: command enterprise:audit
-    - gate: docs/gates/fase-54.md
+    - (dibatalkan) gate: docs/gates/fase-54.md
 
 
 ## FASE 55 — INTEGRASI API V2, B2B ELECTRONIC DATA INTERCHANGE (EDI) & MULTI-TENANCY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Integration (`intg_`) — **hanya** adapter API/webhook/EDI; logika bisnis tetap di modul pemilik · **Prasyarat:** R0–R3 ✅ · **Acuan:** KONSEP §A4.5, §A6
 > **Jalan pintas terlarang di fase ini:** rute API tanpa Sanctum/`Idempotency-Key`/rate limit; webhook berstatus `delivered` tanpa request; EDI `accepted` tanpa parsing; 'multi-tenant' tanpa global scope yang diuji — ditambah seluruh X1–X25.
-- [x] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
-  Bukti:
+- [ ] 55.1 **Enterprise RESTful & GraphQL API v2 Terstandarisasi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Spesifikasi kontrak OpenAPI 3.1 publik lengkap untuk seluruh modul ekosistem (Procurement, WMS, Logistics, Trade, Treasury, Finance).
   - Autentikasi berbasis token Sanctum asli dengan enforcement granular abilities (`tokenCan`).
   - Standarisasi format envelope JSON: pagination terstandarisasi, sorting multi-kolom, filter dinamis, dan error payload RFC 7807 (*Problem Details for HTTP APIs*).
   - Penegakan header wajib `Idempotency-Key` pada seluruh endpoint HTTP berbobot mutasi state/uang.
-- [x] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
-  Bukti:
+- [ ] 55.2 **Mesin Webhook B2B Andal Berbasis Transaksional Outbox**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Katalog event domain kaya untuk konsumsi mitra eksternal: perubahan status pesanan, notifikasi pembayaran, perubahan status tracking kontainer, dan peluncuran PO baru.
   - Keamanan transmisi webhook: penandatanganan payload dengan signature kriptografis HMAC-SHA256 (`X-Signature`).
   - Mekanisme pengiriman andal: antrean pengiriman asinkron, retry eksponensial otomatis dengan jitter, penanganan sirkuit terputus (*circuit breaker*), dan *Dead-Letter Queue* (DLQ) untuk pengiriman gagal.
-- [x] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
-  Bukti:
+- [ ] 55.3 **Subsistem Electronic Data Interchange (EDI) Otomotif & Ritel (EDIFACT / X12 Simulasi)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Penerjemah pesan bisnis standar EDI:
     - EDI 850 / ORDERS: Purchase Order dari mitra pembeli.
     - EDI 855 / ORDRSP: Purchase Order Acknowledgment.
     - EDI 856 / DESADV: Advance Shipping Notice (ASN) dengan hierarki packing list terstruktur.
     - EDI 810 / INVOIC: Faktur tagihan elektronik terverifikasi.
   - Parser dan generator dokumen EDI dengan validasi skema ketat serta penerbitan Functional Acknowledgment (EDI 997 / CONTRL).
-- [x] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
-  Bukti:
+- [ ] 55.4 **Mesin Ekspor/Impor Data Massal Berperforma Tinggi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Upload file spreadsheet massal (CSV/XLSX) berbasis streaming memory: validasi baris demi baris, pratinjau kesalahan komprehensif, dan eksekusi batch transaksional terisolasi.
   - Ekspor asynchronous untuk dataset ratusan ribu baris dengan kompresi ZIP otomatis dan link unduh kedaluwarsa terproteksi tanda tangan token.
-- [x] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
-  Bukti:
+- [ ] 55.5 **Pengelolaan Klien B2B, Kuota API & Keamanan Gateway**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Portal manajemen API Key per badan hukum mitra dengan fitur rotasi kunci rahasia (*secret rotation*) tanpa downtime.
   - Pembatasan tingkat penggunaan bertingkat (*Tiered Rate Limiting*) berbasis kuota harian/menit per tier mitra (Silver, Gold, Platinum).
-- [x] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
-  Bukti:
+- [ ] 55.6 **Portal Pengembang Interaktif (Developer Hub & Mock Sandbox)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Halaman dokumentasi interaktif dengan konsol uji coba langsung (*API Playground*), skema data interaktif, dan contoh kode curl/SDK terverifikasi.
   - Lingkungan *Sandbox* dengan data terisolasi untuk pengujian integrasi pihak ketiga tanpa risiko merusak data produksi.
-- [x] 55.7 **Isolasi Data Multi-Tenant & Penegakan Scoping Tingkat Baris (Row-Level Security)**:
-  Bukti:
+- [ ] 55.7 **Isolasi Data Multi-Tenant & Penegakan Scoping Tingkat Baris (Row-Level Security)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Penerapan global query scope otomatis pada setiap model entitas domain berdasarkan `tenant_id` / `entity_id` / `party_id` pengguna yang terautentikasi.
   - Pengujian penetrasi otomatis untuk memvalidasi zero data leakage antar-badan hukum independen.
-- [x] 55.8 **Manajemen Siklus Hidup Data, Partisi & Retensi**:
-  Bukti:
+- [ ] 55.8 **Manajemen Siklus Hidup Data, Partisi & Retensi**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
   - Pemindahan otomatis data transaksional historis (> 5 tahun) ke tabel arsip dingin (*cold storage archive*) untuk menjaga efisiensi kinerja indeks tabel aktif.
   - Prosedur validasi integritas backup basis data berkala dengan uji pemulihan (*disaster recovery drill*) terukur.
-- [x] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
-  Bukti:
+- [ ] 55.9 `api:audit` (Validasi skema OpenAPI vs implementasi rute aktual, uji integritas signature HMAC webhook 100% cocok).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
-- [x] 55.10 Quality gate Fase 55.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-55.md
+- [ ] 55.10 Quality gate Fase 55.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command api:audit
-    - gate: docs/gates/fase-55.md
+    - (dibatalkan) gate: docs/gates/fase-55.md
 
 ## FASE 56 — STRESS TESTING SKALA ULTRA, SIMULASI 12 BULAN & RESILIENCE
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 56.1 **ValueChainUltraSeeder: Dataset Skala Enterprise 12 Bulan Transaksi**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 56.1 **ValueChainUltraSeeder: Dataset Skala Enterprise 12 Bulan Transaksi**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - Seeder raksasa deterministik dengan eksekusi chunk streaming bulk-insert:
     - ≥ 2.500 Pemasok/Vendor terverifikasi dengan data legalitas, sertifikasi ISO/Halal, dan rekening bank.
     - ≥ 25 Fasilitas Pabrik Manufaktur dengan ratusan work center dan routing BOM multi-tingkat.
@@ -6040,14 +6577,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - ≥ 25.000 Register Aset Tetap dengan riwayat depresiasi bulanan komersial dan fiskal.
     - ≥ 500 Kontrak Bisnis aktif dengan rekam jejak amandemen hash-chain SHA-256.
   - Idempoten mutlak, resumable dari checkpoint kegagalan, dan disertai benchmark durasi waktu per etape seeder.
-- [x] 56.2 **Simulasi Penuh 6 Siklus Rantai Nilai Makro Tanpa Selisih**:
-  Bukti:
+- [ ] 56.2 **Simulasi Penuh 6 Siklus Rantai Nilai Makro Tanpa Selisih**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - (1) *Procure-to-Pay* (PR → RFQ → PO Impor → LC → Shipment → PIB/Landed Cost → GRN → 3-Way Match → Pelunasan AP).
   - (2) *Plan-to-Produce* (Forecast Permintaan → S&OP → MRP → SPK Manufaktur → Konsumsi Lot FIFO → Inspeksi QA → Penerimaan FG).
   - (3) *Order-to-Cash* (Order Distributor → Verifikasi Limit Kredit → Alokasi ATP → Wave Pick WMS → Resi Logistik → POD → Pelunasan AR).
@@ -6055,77 +6593,84 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - (5) *Import/Export-to-Settle* (Order Ekspor FOB/CIF → Booking Kontainer → Penerbitan PEB → Lacak Balak Hash-Chain → Pengakuan Pendapatan).
   - (6) *Record-to-Report* (Jurnal Transaksional → Eliminasi Intercompany → Revaluasi Valas → Penyusutan Aset → Konsolidasi Laporan Grup).
   - Kriteria mutlak: Seluruh 6 siklus berakhir dengan seluruh perintah audit platform melaporkan 0 selisih diskrepansi.
-- [x] 56.3 **Penegakan Anggaran Kueri & Optimasi Kinerja Ekstrem (Query Budget Enforcement)**:
-  Bukti:
+- [ ] 56.3 **Penegakan Anggaran Kueri & Optimasi Kinerja Ekstrem (Query Budget Enforcement)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - Benchmark p95 latensi endpoint di bawah beban konkurensi: MRP run < 3 detik, alokasi ATP < 50ms, kalkulasi komisi agensi < 200ms, konsolidasi grup < 1 detik.
   - Dokumentasi `EXPLAIN QUERY PLAN` pada seluruh kueri agregat berat: pembuktian tidak adanya *Full Table Scan* pada tabel berukuran di atas 100.000 baris.
   - Implementasi caching berlapis (Redis/In-Memory) dengan aturan invalidasi event-driven berbasis *Cache Tagging* yang tepat.
-- [x] 56.4 **Chaos Engineering & Uji Ketahanan Terhadap Kegagalan Sistem**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 56.4 **Chaos Engineering & Uji Ketahanan Terhadap Kegagalan Sistem**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - Simulasi kegagalan worker antrean di tengah eksekusi transaksi moneter multi-entri: mekanisme recovery menjamin transaksi rollback sempurna atau selesai tanpa entri menggantung.
   - Simulasi pengiriman event outbox duplikat: handler menolak pemrosesan ganda berkat idempotency key deterministik.
   - Simulasi konkurensi deadlock database: sistem secara transparan melakukan retry otomatis hingga berhasil tanpa memunculkan error 500 ke pengguna.
-- [x] 56.5 **Uji Balap Konkurensi Ekstrem (Race Condition Stress Test)**:
-  Bukti:
+- [ ] 56.5 **Uji Balap Konkurensi Ekstrem (Race Condition Stress Test)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - Eksekusi 500 permintaan pemesanan serentak terhadap sisa 10 unit stok barang: sistem mengalokasikan tepat 10 unit dan menolak 490 permintaan lainnya tanpa pernah menghasilkan saldo stok negatif.
   - Eksekusi penarikan dana serentak dari saldo dompet yang sama: saldo terpotong presisi tanpa saldo overdraft ilegal.
-- [x] 56.6 **Penetrasi Keamanan & Uji Fuzzing Input Massal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 56.6 **Penetrasi Keamanan & Uji Fuzzing Input Massal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
   - Uji otomatisasi matriks otorisasi: ribuan kombinasi seluruh rute sistem terhadap 26+ role untuk memastikan tidak ada celah eskalasi hak akses (*Privilege Escalation*).
   - Pengujian IDOR massal: skrip otomatis mencoba mengakses data transaksi milik entitas lain menggunakan token entitas yang berbeda; wajib menghasilkan respon HTTP 403 Forbidden.
   - Fuzzing input: pengiriman payload ukuran sangat besar, karakter injeksi SQL, tag XSS bersarang, dan format angka abnormal ke seluruh formulir input.
-- [x] 56.7 Laporan komprehensif profil performa sistem sebelum vs sesudah optimasi indeks dan refactoring kueri. — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 56.7 Laporan komprehensif profil performa sistem sebelum vs sesudah optimasi indeks dan refactoring kueri. — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
-- [x] 56.8 Quality gate Fase 56.
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-56.md
+- [ ] 56.8 Quality gate Fase 56.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50cc405a
     - file: database/seeders/Phase101To105MassiveUltraSeeder.php
     - test: tests/Feature/TwelveLinesUltraScaleStressTest.php::test_twelve_lines_ultra_seeder_runs_idempotently
     - akses: command super:health-check
-    - gate: docs/gates/fase-56.md
+    - (dibatalkan) gate: docs/gates/fase-56.md
 
 ## FASE 57 — SKENARIO EMAS END-TO-END, DOKUMENTASI FINAL & SERAH TERIMA
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 57.1 **Skenario Emas Lintas Ekosistem (The Golden Value Chain Mega-Integration Test)**:
-  Bukti:
+- [ ] 57.1 **Skenario Emas Lintas Ekosistem (The Golden Value Chain Mega-Integration Test)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Satu skenario pengujian otomatis tunggal yang merajut seluruh rantai nilai hulu ke hilir tanpa terputus:
     1. Perusahaan menandatangani Kontrak Pengadaan bahan baku global dengan Pemasok Asing via modul Kontrak.
     2. Modul Treasury & Trade Finance menerbitkan Letter of Credit (L/C) dan mencatat eksposur kontinjensi di buku besar.
@@ -6137,113 +6682,123 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     8. Konsumen akhir membeli produk melalui toko/portal ritel berkat referral Agen Penjualan; sistem mengatribusikan komisi agen, menahannya selama masa garansi retur, memotong PPh 21, dan membayarkan komisi via transfer buku besar.
     9. Skenario diakhiri dengan eksekusi eliminasi transaksi intercompany dan penutupan buku konsolidasi holding grup.
   - Verifikasi akhir: Seluruh perintah audit sistem (`bank:reconcile`, `treasury:audit`, `trade:audit`, `tf:audit`, `proc:audit`, `mfg:audit-costing`, `dist:audit`, `agy:audit`, `group:audit`) serentak menghasilkan **0 selisih diskrepansi**.
-- [x] 57.2 **Skenario Recall Mutu End-to-End (Critical Defect Recall Scenario)**:
-  Bukti:
+- [ ] 57.2 **Skenario Recall Mutu End-to-End (Critical Defect Recall Scenario)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Pengujian krisis mutu: deteksi batch bahan baku cacat di pasar → penelusuran silsilah lot (*genealogy trace*) secara instan ke nomor PO pemasok, lini mesin pabrik, nomor batch produk jadi, daftar gudang penyimpanan, hingga identitas distributor dan pelanggan yang menerima barang.
   - Eksekusi penarikan produk massal otomatis: penguncian stok di gudang (*quarantine hold*), notifikasi darurat penarikan produk, penerbitan kredit nota retur, dan pengajuan klaim ganti rugi asuransi/pemasok secara otomatis.
-- [x] 57.3 **Skenario Integrasi Usaha Patungan & Konsolidasi Pajak Internasional**:
-  Bukti:
+- [ ] 57.3 **Skenario Integrasi Usaha Patungan & Konsolidasi Pajak Internasional**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Eksekusi siklus lengkap pembentukan anak perusahaan JV asing: pencatatan setoran modal saham, lisensi teknologi HKI, penagihan biaya manajemen fee intercompany, pemotongan pajak PPh 26 dengan fasilitas tax treaty P3B, hingga translasi neraca valas ke laporan konsolidasi grup.
-- [x] 57.4 **Group Executive Command Center (Dashboard Eksekutif Nilai Rantai Grup)**:
-  Bukti:
+- [ ] 57.4 **Group Executive Command Center (Dashboard Eksekutif Nilai Rantai Grup)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Dasbor terpadu untuk jajaran C-Level: visualisasi aliran nilai uang dan barang real-time dari hulu (pemasok) ke hilir (pelanggan).
   - Laporan profitabilitas terkonsolidasi (P&L per entitas, per divisi bisnis, dan per negara), ringkasan KPI S&OP, dan analisis eksposur risiko kredit/valas terpadu tanpa melanggar batas anggaran kueri SQL.
-- [x] 57.5 **Penyusunan Dokumentasi Arsitektur & Operasional Final**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 57.5 **Penyusunan Dokumentasi Arsitektur & Operasional Final**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - `docs/ARCHITECTURE.md`: diagram arsitektur tingkat tinggi modular monolith, peta relasi antar-domain, dan prinsip invarian keabadian data.
   - `docs/RUNBOOK.md`: panduan prosedur operasional standar (SOP), jadwal cron job platform, tata cara recovery kegagalan job, dan langkah pemulihan disaster recovery.
   - `docs/API.md`: dokumentasi lengkap seluruh endpoint B2B API v2 dan spesifikasi pesan webhook.
   - `docs/DECISIONS.md`, `docs/AUDIT.md`, `docs/CODEBASE.md`: pemutakhiran menyeluruh seluruh catatan keputusan rekayasa dan log audit.
-- [x] 57.6 **Buku Panduan Operasional Peran Pengguna (Role Playbooks)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 57.6 **Buku Panduan Operasional Peran Pengguna (Role Playbooks)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Panduan kerja komprehensif untuk masing-masing dari 26+ role di sistem (Supplier, Procurement Officer, Production Planner, Factory Operator, QC Inspector, Hub Operator, Dispatcher, Logistics Driver, Distributor, Sales Agent, Partner, Treasury Specialist, Legal Counsel, Auditor Eksternal).
-- [x] 57.7 **Quality Gate Final Seluruh Sistem & Berita Acara Serah Terima**:
-  Bukti:
+- [ ] 57.7 **Quality Gate Final Seluruh Sistem & Berita Acara Serah Terima**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 38e39d21
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/SpecsAndDiagramsCompletenessTest.php::verifies that all 16 specification files exist in docs/specs/
     - akses: command super:health-check
-    - gate: docs/gates/fase-57.md
+    - (dibatalkan) gate: docs/gates/fase-57.md
   - Verifikasi total test suite mencapai target kelulusan 100% tanpa ada satu pun tes yang dilemahkan atau diabaikan.
   - Pemeriksaan kelulusan linting Pint 100%, kompilasi asset front-end Vite tanpa kendala, dan ketiadaan artefak debugging (`dd()`, `dump()`, `console.log`).
   - Penyusunan Laporan Penutup Resmi & Berita Acara Serah Terima Arsitektur Superwebsite Rantai Nilai Hulu-ke-Hilir.
 
 ## FASE 57B — DEEP AUDIT CODEBASE, HARDENING, KEAMANAN, VALIDASI KETAT & ENRICHED UNIQUE SEEDERS (MAINTENANCE & RESILIENCE)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 *Fase pemeliharaan menyeluruh, pengerasan arsitektur, pengetatan validasi, dan pembesaran dataset unik sebelum backlog ekspansi.*
-- [x] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
-  Bukti:
+- [ ] 57B.1 **Analisis & Audit Arsitektur Seluruh Codebase**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Audit kepatuhan arsitektur modular monolith (`modules/*`) terhadap 10 aturan batas modul (`ModuleBoundariesTest`): isolasi domain, pencegahan coupling langsung, dan komunikasi lintas modul murni via Contract, Domain Events, Ledger, atau Outbox Bus.
   - Eliminasi dead code, controller gemuk (fat controller), dan kode duplikat lintas modul; pastikan controller beroperasi murni sebagai HTTP orchestrator tanpa akses langsung ke `DB` facade.
   - Verifikasi ketat seluruh use-case di dalam Action/Service: wajib berada dalam `DB::transaction` dengan parameter retry deadlock otomatis (default 5 attempts), event dispatch ditunda via `afterCommit`, dan handling kegagalan deterministik.
-- [x] 57B.2 **Refactoring, Standardisasi DTO & Exception Hierarchy**:
-  Bukti:
+- [ ] 57B.2 **Refactoring, Standardisasi DTO & Exception Hierarchy**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Konversi seluruh passing data dari Controller ke Action/Service menggunakan `readonly class` DTO (PHP 8.3+) dengan strongly-typed properties, validasi tipe data statis, dan helper factory method `fromArray()` / `fromRequest()`.
   - Standardisasi hierarki Domain Exception terpadu: pemisahan exception bisnis (`InsufficientBalanceException`, `UnbalancedLedgerException`, `StateTransitionException`) dari HTTP presentation layer.
   - Penyeragaman global exception handler di bootstrap Laravel 11 (`bootstrap/app.php`): format response JSON seragam (`status`, `error_type`, `message`, `correlation_id`, `timestamp`) dengan mapping HTTP status code yang presisi (400, 403, 404, 409, 422).
-- [x] 57B.3 **Optimasi Basis Data, Query Budget & Anti-N+1 Sweep**:
-  Bukti:
+- [ ] 57B.3 **Optimasi Basis Data, Query Budget & Anti-N+1 Sweep**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Sweep N+1 query secara komprehensif pada seluruh Controller, Blade View, dan API Resource; wajib menggunakan eager loading teroptimasi (`with()`, `loadMissing()`, constrain closure).
   - Penambahan indeks komposit database pada kolom berfrekuensi lookup tinggi: perpaduan `(status, created_at)`, `(owner_type, owner_id)`, `(party_id, status)`, dan `(reference_type, reference_id)`.
   - Konversi query batch berbobot berat (audit saldo, depresiasi aset, auto-reconciliation bank) ke metode cursor atau `chunkById()` untuk menjaga jejak memori tetap konstan di bawah beban volume tinggi.
-- [x] 57B.4 **Security Hardening, Anti-IDOR & Penegakan RBAC Granular**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 57B.4 **Security Hardening, Anti-IDOR & Penegakan RBAC Granular**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Implementasi komprehensif Laravel Policy pada setiap model entitas domain dengan proteksi mutlak terhadap IDOR: pengguna pihak ketiga (supplier, agent, partner, distributor, mekanik, tenant) terkunci strictly hanya pada record ber-relasi `party_id` miliknya sendiri.
   - Penegakan matriks otorisasi RBAC data-driven untuk seluruh 26+ role (`RbacSeeder`); audit setiap rute web & API agar memiliki middleware `role:` atau pengecekan Gate granular (`can:`).
   - Konfigurasi `RateLimiter` granular di `AppServiceProvider` untuk mitigasi serangan brute-force dan DoS:
@@ -6252,28 +6807,30 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Autentikasi/Login: 5 percobaan/menit per email/IP.
     - Export/Import dokumen & file massal: 5 request/menit.
   - Sanitasi input mendalam pada layer middleware/request untuk pencegahan mutlak SQL Injection, Stored/Reflected XSS, mass-assignment (model `$fillable` audit), dan validasi CSRF.
-- [x] 57B.5 **Defensive Validation & Penegakan Invarian Moneter**:
-  Bukti:
+- [ ] 57B.5 **Defensive Validation & Penegakan Invarian Moneter**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Implementasi `FormRequest` khusus dengan validasi defensive pada setiap mutasi data:
     - Regex spesifik nomor identitas resmi Indonesia: NIK 16-digit valid (`/^[1-9][0-9]{15}$/`) dan NPWP format baru 16-digit / lama 15-digit ber-separator.
     - Validasi moneter anti-float: melarang keras tipe float/desimal pada payload amount, wajib integer minor units, dan menolak mutasi bernilai `0`.
   - Penegakan integritas double-entry ledger: Σ entri debit dan kredit per transaksi wajib seimbang (= 0) per aset sebelum lock DB diinisiasi.
   - Penerapan row-level locking (`lockForUpdate()`) dengan sorting ID akun numerik ascending yang konsisten untuk eliminasi tuntas race condition saldo negatif dan DB deadlock.
   - Guard state machine pada seluruh siklus hidup dokumen transaksi (PO, Order Toko, Kontrak, Klaim, L/C, Produksi): tolak mutasi state non-linear tanpa transisi yang sah.
-- [x] 57B.6 **Enrichment Seeder Skala Besar dengan Data Unik & Idempoten**:
-  Bukti:
+- [ ] 57B.6 **Enrichment Seeder Skala Besar dengan Data Unik & Idempoten**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Refactoring seeder skala besar (`EnterpriseUniverseSeeder`) dengan sifat idempoten mutlak (`upsert`, `firstOrCreate`, `updateOrCreate`) sehingga aman dieksekusi berkali-kali tanpa risiko duplikasi atau kegagalan unique key constraint.
   - Pembuatan generator dataset realistis dan unik (menggunakan Faker locale `id_ID`):
     - ≥ 100 entitas badan hukum (`PT`, `CV`, `Firma`) dengan nama otentik.
@@ -6281,24 +6838,26 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Nomor rekening bank unik untuk 5 bank devisa nasional (Mandiri, BCA, BNI, BRI, BSI).
     - Nomor plat kendaraan, resi pelacakan, dan nomor seri sertifikasi unik.
   - Pembuatan relasi data transaksi hulu-ke-hilir yang utuh (Pemasok → Pabrik → DC → Distributor → Agen → Konsumen) dengan pencatatan jurnal ledger yang seimbang sempurna (`bank:reconcile` = 0 selisih).
-- [x] 57B.7 **Generalisasi Layanan Nomor Dokumen Gapless & Document Store**:
-  Bukti:
+- [ ] 57B.7 **Generalisasi Layanan Nomor Dokumen Gapless & Document Store**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Audit penerapan `DocumentNumberingService` agar seluruh dokumen transaksi (PO, GRN, Invoice, PEB, PIB, L/C, SPK, Resi) menggunakan nomor terurut tanpa celah (gapless) per entitas hukum dan tahun fiskal.
   - Audit `DocumentStoreService`: penyimpanan lampiran dokumen ber-checksum SHA-256, verifikasi integritas file upload, MIME guard, dan enkripsi dokumen rahasia.
-- [x] 57B.8 **Perluasan Observabilitas & Platform Health-Check**:
-  Bukti:
+- [ ] 57B.8 **Perluasan Observabilitas & Platform Health-Check**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Pengembangan command enterprise `super:health-check` menjadi audit multi-pilar sistem otomatis:
     - Pilar 1: Invarian global double-entry ledger (total saldo per aset = 0).
     - Pilar 2: Sinkronisasi cached balance vs riwayat fisik entri jurnal.
@@ -6307,28 +6866,30 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - Pilar 5: Verifikasi integritas kriptografis seluruh rantai hash (Vehicle Passport, Chain of Custody Logistik, Kontrak, Aset, Shipment Tracking).
     - Pilar 6: Deteksi dokumen transaksi "gantung" (stale unconfirmed orders, uncaptured holds).
   - Output informatif dengan exit code deterministik: Code `0` jika seluruh pilar sehat, Code `1` jika terdapat anomali atau diskrepansi data sekecil apa pun.
-- [x] 57B.9 **Pengujian Ketahanan, Stress Test & Uji Regresi Penuh (Resilience & Chaos Testing)**:
-  Bukti:
+- [ ] 57B.9 **Pengujian Ketahanan, Stress Test & Uji Regresi Penuh (Resilience & Chaos Testing)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Penambahan Feature Test khusus ketahanan sistem:
     - Uji simulasi race condition: concurrent transfer / booking multi-thread terhadap saldo yang sama.
     - Uji idempotency retry: submit ulang payload yang sama dengan key yang identik.
     - Uji otorisasi IDOR: attempt modifikasi data lintas tenant / supplier / user.
     - Uji payload batas: nominal integer batas atas (BigInt), karakter khusus Unicode, payload JSON anomali.
   - Menjalankan seluruh test suite tanpa skip/lemah serta seluruh perintah audit platform: `bank:reconcile`, `super:health-check`, `*:audit`, `verify-*`.
-- [x] 57B.10 **Quality Gate Fase 57B & Dokumentasi Pemeliharaan**:
-  Bukti:
+- [ ] 57B.10 **Quality Gate Fase 57B & Dokumentasi Pemeliharaan**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 24f39c18
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-57b.md
+    - (dibatalkan) gate: docs/gates/fase-57b.md
   - Pemutakhiran lengkap dokumentasi arsitektur: `docs/CODEBASE.md`, `docs/DECISIONS.md`, `docs/AUDIT.md`, `docs/RUNBOOK.md`.
   - Penyusunan Standard Operating Procedure (SOP) maintenance berkala, protokol backup/restore database, dan pedoman tanggap darurat data drift.
   - Single meaningful git commit untuk penutupan Fase 57B.
@@ -6339,403 +6900,437 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 *Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
 
 ## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R1, R3 ✅ · **Acuan:** KONSEP 8F
 > **Jalan pintas terlarang di fase ini:** pajak/BPJS tarif datar tanpa label simulasi & persetujuan P10; payroll tanpa jurnal; status payroll di-hard-code; gaji/rekening default diam-diam (X25); halaman gaji tanpa role — ditambah seluruh X1–X25.
-- [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
-  Bukti:
+- [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
   - Jenis hubungan kerja: PKWT (kontrak waktu tertentu), PKWTT (karyawan tetap), tenaga kerja lepas (*casual worker*), magang, dan tenaga alih daya (*outsourcing*).
-- [x] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
-  Bukti:
+- [ ] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Penjadwalan shift multi-pola: shift 3/1, shift 2/2, shift bergilir 24/7 di lantai pabrik manufaktur dan operasional hub logistik.
   - Integrasi mesin absensi biometrik & geofencing mobile: pencatatan clock-in/out, dispensasi toleransi keterlambatan, dan approval lembur (SPL - Surat Perintah Lembur).
   - Manajemen cuti, izin sakit dengan surat dokter, dan akumulasi hak cuti tahunan (*leave accrual engine*).
-- [x] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
-  Bukti:
+- [ ] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Perhitungan gaji bruto: gaji pokok, tunjangan tetap/tidak tetap, premi kehadiran, dan kalkulasi upah lembur resmi Depnaker (1.5x jam pertama, 2x jam berikutnya).
   - Pemotongan jaminan sosial tenaga kerja nasional: BPJS Ketenagakerjaan (JKK, JKM, JHT, JP) dan BPJS Kesehatan dengan pembagian porsi perusahaan vs porsi pekerja.
   - Engine PPh Pasal 21 Terintegrasi (TER - Tarif Efektif Rata-Rata bulanan & kalkulasi masa pajak Desember dengan PTKP dinamis).
   - Alur approval penggajian bertingkat (HR Manager → CFO) dan penerbitan slip gaji terenkripsi PDF.
-- [x] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
-  Bukti:
+- [ ] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
   - Integrasi langsung ke `CostingService` Manufaktur (Fase 38): menggantikan placeholder biaya tenaga kerja dengan jam kerja aktual operator per Work Order SPK.
   - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
-- [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
-  Bukti:
+- [ ] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
     - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
     - akses: command hcm:audit
-    - gate: docs/gates/fase-58.md
+    - (dibatalkan) gate: docs/gates/fase-58.md
 
 ## FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.1 **Manajemen Siklus Hidup Produk & Stage-Gate Process Enterprise**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Pipeline inovasi produk bertahap (*Stage-Gate Model*): *Ideation → Scoping → Business Case → Development → Testing/Pilot → Commercial Launch*.
   - Matriks penilaian kelayakan: estimasi anggaran R&D (`budget_rd_idr`), proyeksi ROI (`projected_roi_percent`), analisis kanibalisasi portofolio produk, dan penilaian risiko kepatuhan regulasi (BPOM, SNI, Halal).
   - Gate review approval matrix: persetujuan formal R&D Lead, Finance Controller, dan Head of Manufacturing sebelum promosi stage.
-- [x] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM) & Transisi Terkontrol**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.2 **Engineering BOM (EBOM) vs Manufacturing BOM (MBOM) & Transisi Terkontrol**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Pengelolaan versi rancangan teknik: transisi terkontrol dari purwarupa R&D (EBOM) ke resep produksi massal pabrik (MBOM di modul Manufacturing).
   - Komparasi struktur BOM & toleransi komponen: deteksi substitusi bahan baku, analisis variance cost estimasi vs standar pabrik.
   - Snapshot representasi komponen bertingkat (`components` JSON schema validation) dan status siklus draft/released/superseded.
-- [x] 59.3 **Manajemen Perubahan Teknik Berantai Kriptografis (Engineering Change Order - ECO & ECN)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.3 **Manajemen Perubahan Teknik Berantai Kriptografis (Engineering Change Order - ECO & ECN)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Alur persetujuan perubahan spesifikasi material: peninjauan dampak biaya (`cost_impact_idr`), disposisi sisa stok lama (*scrap, rework, use-as-is, run-out*).
   - Rantai hash tamper-evident append-only SHA-256 (`prev_hash` → `hash` linking) untuk audit trail otentikasi perubahan rancangan teknis.
   - Notifikasi otomatis delegasi perubahan rekayasa ke modul Manufacturing, WMS, dan Procurement.
-- [x] 59.4 **Electronic Lab Notebook (ELN), Formulasi Rahasia & Uji Stabilitas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 59.4 **Electronic Lab Notebook (ELN), Formulasi Rahasia & Uji Stabilitas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Buku catatan laboratorium elektronik: formula rahasia terenkripsi AES/base64 payload untuk perlindungan hak kekayaan intelektual resep inti.
   - Uji stabilitas suhu & kelembaban terakselerasi (*accelerated shelf-life testing - ASLT*) dengan verdict deterministik (*pass, conditional, fail*).
   - Evaluasi sensori organoleptik panelis skala 1-10 (aroma, rasa, tekstur, visual) serta pelacakan nomor batch sampel riset.
-- [x] 59.5 **PlmService, Web Interface & Audit Command `plm:audit`**:
-  Bukti:
+- [ ] 59.5 **PlmService, Web Interface & Audit Command `plm:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Plm/Application/Actions/ConvertEbomToManufacturingMbomAction.php
     - test: modules/Plm/tests/Feature/PlmStageGateAndEngineeringTest.php::test_advance_stage_gate_strict_sequential_success
     - akses: command plm:audit
-    - gate: docs/gates/fase-59.md
+    - (dibatalkan) gate: docs/gates/fase-59.md
   - Implementasi `Modules\Plm\Application\Services\PlmService` dengan transaksi atomic `DB::transaction`.
   - Web UI `/plm` untuk visibilitas dasbor pipeline riset dan status ECO terkini.
   - Command `plm:audit` (Integritas riwayat revisi ECO hash-chain terverifikasi, sinkronisasi EBOM ke MBOM konsisten 100%, 0 diskrepansi).
 
 ## FASE 60 — ESG, EMISI KARBON & SUSTAINABLE VALUE CHAIN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.1 **Pelacak Emisi Karbon GRK Cakupan 1, 2, dan 3 (GHG Protocol Enterprise)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Cakupan 1 (Emisi Langsung): kalkulasi konsumsi bahan bakar armada diesel/gasoline logistik (`lgx_fleets`) dan genset/boiler pabrik manufaktur (faktor emisi 2.68 kg CO2e/liter diesel, 2.31 kg CO2e/liter bensin).
   - Cakupan 2 (Emisi Tidak Langsung): pemakaian listrik PLN di seluruh mall, outlet resto, kantor, dan fasilitas gudang (faktor emisi grid Jawa-Madura-Bali 0.79 kg CO2e/kWh).
   - Cakupan 3 (Rantai Nilai Hulu/Hilir): emisi freight darat/laut pihak ketiga (0.12 kg CO2e/ton-km) dan estimasi emisi pengadaan bahan mentah pertanian.
   - Pencatatan multi-satuan dengan konversi standar kg CO2e terpresisi tinggi dan pencatatan nomor pelaporan gapless.
-- [x] 60.2 **Akuntansi Karbon, Registrasi Kredit Karbon & Bursa Karbon (IDX Carbon)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.2 **Akuntansi Karbon, Registrasi Kredit Karbon & Bursa Karbon (IDX Carbon)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Registrasi sertifikat kredit karbon terverifikasi (IDX Carbon / Verra / Gold Standard) dengan penatausahaan tahun vintage, volume tonase, dan nilai perolehan IDR.
   - Neraca buku besar karbon: debit perolehan kredit karbon, kredit pelepasan penyeimbangan emisi (*offset retirement*).
   - Penguncian kuota kredit karbon idempoten untuk mencegah double-counting atau penarikan melebihi saldo aktif.
-- [x] 60.3 **Mekanisme Pensiun Kredit Karbon (Carbon Offset Retirement) & Net-Zero Target**:
-  Bukti:
+- [ ] 60.3 **Mekanisme Pensiun Kredit Karbon (Carbon Offset Retirement) & Net-Zero Target**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Alur pensiun kredit emisi (*retirement workflow*) spesifik per entitas bisnis (Holding, Mall, Pabrik, Resto, Logistik).
   - Validasi ketat batas penarikan: larangan mutlak over-retirement melebihi volume sertifikat terbitan.
   - Penerbitan Berita Acara Pensiun Karbon digital dengan tautan sertifikat pembatalan emisi resmi.
-- [x] 60.4 **Penilaian Pemasok Berkelanjutan (Supplier ESG Scorecard) & Kepatuhan GRI**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 60.4 **Penilaian Pemasok Berkelanjutan (Supplier ESG Scorecard) & Kepatuhan GRI**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Evaluasi tiga pilar keberlanjutan: Environmental (bobot 40%), Social (bobot 30%), Governance (bobot 30%).
   - Verifikasi sertifikasi ramah lingkungan pemasok: FSC, RSPO, ISO 14001, PROPER Hijau/Emas dengan rating dinamis (*LEAD, ADVANCED, COMPLIANT, HIGH_RISK*).
   - Integrasi indikator risiko pemasok ke modul Supplier Management (`Modules\Supplier`).
-- [x] 60.5 **EsgService, Web Portal & Audit Command `esg:audit`**:
-  Bukti:
+- [ ] 60.5 **EsgService, Web Portal & Audit Command `esg:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Esg/Application/Actions/CalculateScope123GhgEmissionAction.php
     - test: modules/Esg/tests/Feature/EsgOperationsAndCarbonLedgerTest.php::test_calculate_scope_1_direct_emission
     - akses: command esg:audit
-    - gate: docs/gates/fase-60.md
+    - (dibatalkan) gate: docs/gates/fase-60.md
   - Layanan `Modules\Esg\Application\Services\EsgService` dengan enkapsulasi DTO dan isolasi transaksi database.
   - Web UI `/esg` dasbor dekarbonisasi real-time dan rasio kompensasi emisi karbon korporat.
   - Command `esg:audit` (Faktor emisi terstandarisasi, rekonsiliasi total emisi vs pensiun sertifikat, integritas neraca kredit karbon 100%, 0 diskrepansi).
 
 ## FASE 61 — MARKETPLACE B2B, SURPLUS ASSET AUCTION & ESCROW
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 61.1 **Portal Marketplace B2B Multi-Vendor & Katalog Grosir Tertutup**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Direktori etalase katalog grosir tertutup: produk eksklusif distributor, pabrik, dan mitra resmi terverifikasi.
   - Penetapan harga bertingkat berbasis kuantitas (*Tiered Pricing Matrix* JSON) dan kepatuhan MOQ (*Minimum Order Quantity*).
   - Proteksi privasi harga industri: isolasi visibilitas katalog antar tier pembeli B2B.
-- [x] 61.2 **Alur Negosiasi RFQ (Request for Quotation) Publik & Termin Pembayaran Tempo**:
-  Bukti:
+- [ ] 61.2 **Alur Negosiasi RFQ (Request for Quotation) Publik & Termin Pembayaran Tempo**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Alur penerbitan RFQ formal antar-badan usaha dengan spesifikasi target harga dan kuantitas pesanan.
   - Negosiasi termin pembayaran komersial fleksibel: TOP 30, TOP 60, TOP 90, atau Cash on Delivery.
   - Transisi status terkelola: *open → quoted → negotiated → accepted → contract_bound*.
-- [x] 61.3 **Balai Lelang Digital Aset Surplus, Mesin Pabrik & Armada Bekas**:
-  Bukti:
+- [ ] 61.3 **Balai Lelang Digital Aset Surplus, Mesin Pabrik & Armada Bekas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Pendaftaran barang lelang surplus: unit kendaraan bekas AutoDex, mesin pabrik idle modul Asset, atau persediaan lambat gerak (*slow-moving inventory*) WMS.
   - Mesin lelang real-time (*English Auction*): penetapan harga awal (*starting bid*), batas cadangan rahasia (*reserve price*), dan kelipatan penawaran (*bid increment*).
   - Fitur perlindungan lelang: perpanjangan waktu otomatis (*anti-sniping protection* 5 menit) saat penawaran masuk di menit-menit akhir penutupan lelang.
   - Row-level lock (`lockForUpdate`) untuk mencegah race condition penawaran simultan antar peserta lelang.
-- [x] 61.4 **Escrow Multi-Pihak Terproteksi (Multi-Party Escrow Engine)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 61.4 **Escrow Multi-Pihak Terproteksi (Multi-Party Escrow Engine)**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Penguncian dana deposit lelang dan pembayaran pesanan B2B di rekening escrow platform (`B2bEscrowAccount`).
   - Rekonsiliasi mutasi dana escrow: saldo tersimpan (`deposit_amount_idr`), pencairan bertahap (`released_amount_idr`), dan pengembalian jaminan (`refunded_amount_idr`).
   - Rilis dana bersyarat aman: hanya dapat dicairkan ke penjual setelah konfirmasi fisik BAST digital atau e-POD resmi disahkan.
-- [x] 61.5 **B2bService, Web Portal & Audit Command `b2b:audit`**:
-  Bukti:
+- [ ] 61.5 **B2bService, Web Portal & Audit Command `b2b:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/B2b/Application/Actions/PublishWholesaleTierCatalogAction.php
     - test: modules/B2b/tests/Feature/B2bOperationsSliceTest.php::test_publish_wholesale_tier_catalog_and_price_calculation
     - akses: command b2b:audit
-    - gate: docs/gates/fase-61.md
+    - (dibatalkan) gate: docs/gates/fase-61.md
   - Layanan `Modules\B2b\Application\Services\B2bService` menangani orkestrasi katalog, lelang, dan escrow.
   - Web UI `/b2b` direktori lelang aktif dan status transaksi grosir.
   - Command `b2b:audit` (Invarian dana rekening escrow = saldo komitmen lelang + transaksi berjalan, validasi tanggal lelang, 0 diskrepansi).
 
 ## FASE 62 — AGRIBISNIS, KONTRAK PETANI & HULU RANTAI PASOK MAKANAN
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
-  Bukti:
+- [ ] 62.1 **Kemitraan Petani, Kebun Plasma & Pemetaan GIS Lahan**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Registrasi master kelompok tani (Poktan) dan petani plasma mandiri dengan identifikasi kode unik per wilayah.
   - Pencatatan pemetaan poligon spasial lahan (`land_polygon_geojson`), luas hektar garapan, dan profil komoditas tanam unggulan (cabe merah, beras organik, sayuran hidroponik, peternakan).
   - Riwayat kepatuhan sertifikasi budidaya baik (*Good Agricultural Practices - GAP*).
-- [x] 62.2 **Kontrak Tani Bagi Hasil (Contract Farming) & Pembiayaan Uang Muka Input**:
-  Bukti:
+- [ ] 62.2 **Kontrak Tani Bagi Hasil (Contract Farming) & Pembiayaan Uang Muka Input**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Penerbitan kontrak budidaya komprehensif: tanggal tanam, proyeksi jadwal panen, estimasi target tonase (*target yield kg*).
   - Skema uang muka input produksi: penyediaan bibit bersertifikat dan pupuk berkualitas tinggi yang dicatat sebagai piutang uang muka terpotong (*advance deductible*).
   - Perlindungan harga petani: penetapan jaminan harga dasar minimum (*guaranteed floor price*) untuk memitigasi volatilitas fluktuasi pasar bebas.
-- [x] 62.3 **Sentra Pengumpul (Collection Center) & Grading Mutu Komoditas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 62.3 **Sentra Pengumpul (Collection Center) & Grading Mutu Komoditas**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Operasional pos pengumpul hasil panen pedesaan: penerimaan hasil tani harian, penimbangan akurat digital, dan inspeksi mutu multi-parameter (kadar air, kebersihan, visual).
   - Matriks penentuan mutu bertingkat: *Grade A (100% floor price), Grade B (90%), Grade C (80%)*.
   - Mekanisme pemotongan otomatis uang muka: amortisasi piutang bibit/pupuk langsung dari hasil panen bruto dengan jaminan tidak melebihi hasil panen.
   - Pelunasan seketika (*instant payout*) bersih ke dompet petani atau rekening bank mitra tani.
-- [x] 62.4 **Rantai Dingin Terpadu (Cold Chain IoT) ke Dapur Sentral Resto & Pabrik**:
-  Bukti:
+- [ ] 62.4 **Rantai Dingin Terpadu (Cold Chain IoT) ke Dapur Sentral Resto & Pabrik**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Alur pengiriman terjadwal armada truk berpendingin (*reefer truck*) dari pos pengumpul langsung ke CK-01 Resto Sari Ranah atau Pabrik Manufaktur Makanan.
   - Integrasi telemetri sensor IoT suhu dan kelembaban berkala: deteksi status optimal (2°C - 8°C), status peringatan (8°C - 12°C), dan status pelanggaran mutu (*temperature breach*).
   - Verifikasi sertifikasi rantai pasok halal dari lahan pertanian hingga meja santap.
-- [x] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
-  Bukti:
+- [ ] 62.5 **AgriService, Web Portal & Audit Command `agri:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Agri/Application/Actions/GradeHarvestQualityAtCollectionCenterAction.php
     - test: modules/Agri/tests/Feature/AgriOperationsSliceTest.php::test_register_plasma_farmer_contract_with_input_loan_ledger_disbursement
     - akses: command agri:audit
-    - gate: docs/gates/fase-62.md
+    - (dibatalkan) gate: docs/gates/fase-62.md
   - Layanan `Modules\Agri\Application\Services\AgriService` mengorkestrasi kontrak tani, penerimaan panen, dan telemetri suhu.
   - Web UI `/agri` dasbor pemantauan hasil panen, serapan komoditas resto, dan logistik rantai dingin.
   - Command `agri:audit` (Konsistensi pembagian hasil panen, verifikasi pemotongan piutang uang muka tidak over-deducted, 0 diskrepansi).
 
 ## FASE 63 — KONSTRUKSI EPC, MANAJEMEN PROYEK PROPERTI & ASSET CAPITALIZATION
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [x] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
-  Bukti:
+- [ ] 63.1 **Work Breakdown Structure (WBS) & Rencana Anggaran Biaya (RAB Proyek)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Struktur hierarki proyek teknik & konstruksi: Proyek (Ekstensi Duta Mall, Pabrik Baru Cikande, Central Kitchen CK-02 Surabaya) → Paket Pekerjaan (Struktur Sipil, Arsitektur, MEP, Infrastruktur) → Node Aktivitas WBS terukur.
   - Alokasi anggaran terperinci: komponen material (beton, baja, tiang pancang), upah subkontraktor, dan sewa alat berat.
   - Penentuan bobot persentase penyelesaian fisik (*weight percentage*) per simpul aktivitas dengan total akumulatif persis 100%.
-- [x] 63.2 **Manajemen Progres Fisik Proyek, Analisis Kurva-S & Monthly Certificate (MC)**:
-  Bukti:
+- [ ] 63.2 **Manajemen Progres Fisik Proyek, Analisis Kurva-S & Monthly Certificate (MC)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Pelacakan deviasi progres aktual lapangan vs kurva-S rencana kerja.
   - Verifikasi progres prestasi kerja oleh Konsultan Pengawas Independen terakreditasi (*PT Virama Karya Konsultan*).
   - Penerbitan Sertifikat Prestasi Bulanan (*Monthly Certificate - MC*): perhitungan klaim termin bruto (*gross claim amount*), pemotongan retensi pemeliharaan 5% (*retention deduction*), dan penerbitan nilai tagihan bersih (*net payable*).
-- [x] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 63.3 **Konstruksi Dalam Pengerjaan (CIP) & Akuntansi Biaya Modal**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Akumulasi seluruh biaya proyek, jasa konstruksi, dan sertifikat prestasi bulanan ke akun buku besar Konstruksi Dalam Pengerjaan (`accumulated_cip_cost_idr`).
   - Rekonsiliasi periodik antara realisasi fisik MC konsultan dengan mutasi finansial buku besar CIP.
   - Guardrail pencegah kapitalisasi dini sebelum pekerjaan fisik diverifikasi tuntas.
-- [x] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
-  Bukti:
+- [ ] 63.4 **Serah Terima Akhir Proyek (BAST 1 & 2) & Kapitalisasi Aset Tetap Modul Asset**: — ⚠️ *dibuka kembali (audit 2026-10-10), lihat baris status fase*
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Pelaksanaan Berita Acara Serah Terima Parsial (BAST 1) dan Berita Acara Serah Terima Final (BAST Final).
   - Penutupan saldo akun CIP dan reklasifikasi otomatis menjadi Aset Tetap Bangunan, Gedung, Mesin, dan Instalasi Fasilitas di Modul Aset (`Modules\Asset`).
   - Pemutakhiran nilai buku aset kapitalisasi (`capitalized_asset_value_idr`) dan pengikatan ID register aset tetap baru.
-- [x] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
-  Bukti:
+- [ ] 63.5 **EpcService, Web Portal & Audit Command `epc:audit`**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 82d19dd9
     - file: modules/Epc/Application/Actions/CapitalizeCompletedCipToFixedAssetAction.php
     - test: modules/Epc/tests/Feature/EpcOperationsSliceTest.php::test_record_wbs_progress_and_cip_ledger_cost
     - akses: command epc:audit
-    - gate: docs/gates/fase-63.md
+    - (dibatalkan) gate: docs/gates/fase-63.md
   - Layanan `Modules\Epc\Application\Services\EpcService` mengorkestrasi WBS, sertifikat progres, dan kapitalisasi aset tetap.
   - Web UI `/epc` visualisasi kurva-S progres konstruksi dan status kapitalisasi gedung baru.
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
 > **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
-- [x] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+- [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/DynamicPricingEngineService.php
     - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php::calculates deterministic dynamic prices with identical hash for identical seed and inputs
     - akses: route POST /admin/ai-governance/calculate-pricing [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
   - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/TransactionAnomalyDetectorService.php
     - file: modules/Core/Domain/Models/CoreAiAnomalyQuarantine.php
     - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php::evaluates normal transactions as low risk without triggering quarantine
     - akses: route POST /admin/ai-governance/screen-anomaly [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Application/Services/Ai/StockPrescriptionEngineService.php
     - file: modules/Core/Domain/Models/CoreAiStockRecommendation.php
     - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php::calculates adaptive safety stock and ROP higher during peak holiday seasons
     - akses: route POST /admin/ai-governance/generate-stock-recommendation [role: admin]
-    - gate: docs/gates/fase-64.md
-- [x] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-64.md
+- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: fcabdd5
     - file: modules/Core/Console/Commands/AuditAiCommand.php
     - file: app/Quality/Audit/Fixtures/AiAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php::ai:audit succeeds on clean state with valid deterministic snapshots
     - akses: command ai:audit
     - audit: ai:audit
-    - gate: docs/gates/fase-64.md
+    - (dibatalkan) gate: docs/gates/fase-64.md
 
 ### Register Minus Fase 64
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -6743,41 +7338,44 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 64.1–64.4 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 65 — ENTERPRISE MOBILE SUITE (PWA/HYBRID OFFLINE-FIRST ARCHITECTURE)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core + modul peran (Manufacturing, Wms, Logistics, Agency); PWA di `resources/` · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A7
 > **Jalan pintas terlarang di fase ini:** klaim offline tanpa antrean lokal yang diuji; sinkronisasi tanpa `Idempotency-Key`; `mobile:audit` tautologis — ditambah seluruh X1–X25.
-- [x] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+- [ ] 65.1 **Aplikasi Mobile Lapangan Khusus 4 Peran Kunci**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - *Operator Pabrik*: scan QR work order, input output produksi, catat downtime mesin.
   - *Petugas WMS*: scanner barcode rak/bin, konfirmasi putaway, picking wave panduan jalur terpendek.
   - *Driver Logistik*: navigasi rute optimal, bukti serah terima foto + tanda tangan digital (e-POD offline-capable).
   - *Sales Agen Lapangan*: katalog mobile offline, pembuatan pesanan di lokasi pelanggan, dan pengecekan komisi.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
     - test: modules/Core/tests/Feature/Mobile/MobileFieldRoleActionTest.php::executes offline field actions across 4 operational roles deterministically
     - akses: route POST /admin/mobile-governance/record-action [role: admin]
-    - gate: docs/gates/fase-65.md
-- [x] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+    - (dibatalkan) gate: docs/gates/fase-65.md
+- [ ] 65.2 **Sinkronisasi Data Dua Arah Berbasis Idempotensi (Offline-First Sync Engine)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Penyimpanan lokal perangkat (SQLite / IndexedDB): operasional tetap berjalan tanpa koneksi internet di area terpencil/gudang bawah tanah.
   - Mekanisme rekonsiliasi saat online: transmisi antrean mutasi dengan key idempotensi unik deterministik dan resolusi konflik berbasis *Last-Write-Wins with Timestamp Guard*.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Application/Services/Mobile/MobileOfflineSyncEngineService.php
     - file: modules/Core/Application/Services/Mobile/EpodIntegrityVerifierService.php
     - test: modules/Core/tests/Feature/Mobile/MobileOfflineSyncTest.php::resolves sync conflicts using last write wins with timestamp guard and skips duplicates
     - test: modules/Core/tests/Feature/Mobile/EpodIntegrityTest.php::validates digital signature sha256 hash and flags tampered epod records
     - akses: route POST /admin/mobile-governance/sync-batch [role: admin]
-    - gate: docs/gates/fase-65.md
-- [x] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-65.md
+- [ ] 65.3 `mobile:audit` (Zero duplicate records akibat sync retry, integritas hash tanda tangan e-POD 100% valid).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: d9d84cf
     - file: modules/Core/Console/Commands/AuditMobileCommand.php
     - file: app/Quality/Audit/Fixtures/MobileAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Mobile/MobileAuditCommandTest.php::mobile:audit succeeds on clean state and catches tampered epod hashes
     - akses: command mobile:audit
     - audit: mobile:audit
-    - gate: docs/gates/fase-65.md
+    - (dibatalkan) gate: docs/gates/fase-65.md
 
 ### Register Minus Fase 65
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -6785,47 +7383,51 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 65.1–65.3 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 66 — RESILIENSI GLOBAL, DISASTER RECOVERY MULTI-REGION & DATA SOVEREIGNTY
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** infrastruktur/ops + `dr:audit` di Core · **Prasyarat:** R0.3 ✅ · **Acuan:** KONSEP §A9, §A5
 > **Jalan pintas terlarang di fase ini:** klaim RPO/RTO/multi-region tanpa drill backup→restore yang benar-benar dijalankan dan outputnya terlampir; bila tanpa infrastruktur, nyatakan sebagai simulasi S3 (drill restore lokal) — ditambah seluruh X1–X25.
-- [x] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
+- [ ] 66.1 **Arsitektur Multi-Region Replikasi Aktif-Pasif**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Replikasi basis data asinkron antar-data center geografis (Region Primer Jakarta vs Region Sekunder Surabaya/Singapura).
   - Mekanisme failover otomatis: pendeteksian kegagalan primer via health-check heartbeat dan pengalihan trafik DNS/Load Balancer tanpa kehilangan data (RPO = 0 untuk transaksi ledger).
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/MultiRegionResilienceEngineService.php
     - test: modules/Core/tests/Feature/Resilience/MultiRegionResilienceTest.php::evaluates multi region replication topology and sla thresholds
     - akses: route GET /admin/resilience-governance [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.2 **Drill Pemulihan Bencana Berkala (Disaster Recovery Simulation Drill)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Prosedur simulasi darurat pemadaman data center utama: pengukuran waktu pemulihan aktual (*Recovery Time Objective - RTO*) target < 15 menit.
   - Validasi konsistensi integritas ledger paska-failover: eksekusi otomatis `bank:reconcile` dan verifikasi hash-chain di data center cadangan.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/DisasterRecoveryDrillService.php
     - test: modules/Core/tests/Feature/Resilience/DisasterRecoveryDrillTest.php::executes chaos failover drill with rpo and rto within strict sla
     - akses: route POST /admin/resilience-governance/execute-drill [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.3 **Kedaulatan Data & Enkripsi Tingkat Tinggi (Data Sovereignty & Post-Quantum Readiness)**:
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Klasifikasi data residensi: data sensitif keuangan dan NIK/NPWP diisolasi strictly di yurisdiksi Indonesia (PP 71/2019).
   - Enkripsi end-to-end data at rest (AES-256 GCM) dan data in transit (TLS 1.3), serta audit rotasi kunci master KMS berkala.
-  Bukti:
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Core/Application/Services/Resilience/DataSovereigntyComplianceService.php
     - test: modules/Core/tests/Feature/Resilience/DataSovereigntyComplianceTest.php::validates data sovereignty residency under uu pdp
     - test: modules/Core/tests/Feature/Resilience/DataSovereigntyComplianceTest.php::rotates kms keys deterministically with active version progression
     - akses: route POST /admin/resilience-governance/rotate-kms [role: admin]
-    - gate: docs/gates/fase-66.md
-- [x] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-66.md
+- [ ] 66.4 `dr:audit` (Kesiapan failover drill terverifikasi, integritas sinkronisasi replika 100%, 0 paket data hilang).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - commit: df2a76d
     - file: modules/Integration/Console/Commands/DrAuditCommand.php
     - file: app/Quality/Audit/Fixtures/DrAuditCorruptionFixture.php
     - test: modules/Core/tests/Feature/Resilience/DisasterRecoveryAuditCommandTest.php::dr audit succeeds on clean state and catches divergence and tampered kms keys
     - akses: command dr:audit
     - audit: dr:audit
-    - gate: docs/gates/fase-66.md
+    - (dibatalkan) gate: docs/gates/fase-66.md
 
 ### Register Minus Fase 66
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -6835,7 +7437,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## DEFINITION OF DONE (FASE 26–63)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 26.1–63.5 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 25: 538 test/3189 assertion → Fase 63: 931+ test / 4778+ assertion), tidak ada test di-skip/dilemahkan.
 - [x] Semua quality gate hijau pada commit terakhir; semua `*:audit` (bank, lgx, mall, ast, proc, mfg, wms, dist, pricing, agy, ptn, treasury, trade, tf, group, ctr, tower, enterprise, api, hcm, plm, esg, b2b, agri, epc) = 0 selisih; semua hash-chain (passport, custody, kontrak, aset, formula, PEB leg, ECO) valid.
 - [x] Setiap alur uang/stok baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × 32 role baru (`supplier`, `distributor`, `agent`, `partner`, `contract_manager`, `legal`, `asset_manager`, `planner`, `operator`, `qc_inspector`, `party_manager`, `treasury`, `auditor`, `hcm_manager`, `rnd_specialist`, `esg_officer`, `b2b_buyer`, `farmer`, `epc_manager`).
@@ -6845,7 +7447,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] Working tree bersih; ARCHITECTURE, DECISIONS, RUNBOOK, README, API, AUDIT, CODEBASE mutakhir.
 
 ## DEFINITION OF DONE (FASE 64–66)
-> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 64.1–66.4 tercentang, masing-masing di commit sendiri.
 - [x] Semua prosedur audit (`ai:audit`, `mobile:audit`, `dr:audit`) terverifikasi dengan hasil konsisten 0 diskrepansi atau duplikasi.
 - [x] Protokol DR failover disimulasikan dan menghasilkan RTO di bawah target dengan data mutlak (0 data loss).
@@ -6861,12 +7463,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## KONSEP BERSAMA — ENABLER LINTAS PILAR
 
 ## FASE 67 — SIMULATION KERNEL, UNIVERSAL EVENT SPINE, DIGITAL TWIN BUS & SCALE PROVISIONER
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 67.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (`core_`, `sim_`) · **Prasyarat:** R2.5, R4 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** jam virtual tanpa menjalankan tick handler; `Carbon::setTestNow()` di produksi; event spine tanpa konsumen nyata — ditambah seluruh X1–X25.
-- [x] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
-  Bukti:
+- [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -6874,9 +7477,10 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_advance_simulation_clock_via_post_endpoint
     - akses: command sim:run
     - akses: route POST /admin/simulation-governance/advance [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -6884,18 +7488,20 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_publish_spine_event_via_post_endpoint
     - akses: command core:consume-spine
     - akses: route POST /admin/simulation-governance/publish-spine [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
     - file: modules/Core/Domain/Models/SimTwinState.php
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_record_digital_twin_state_via_post_endpoint
     - akses: route POST /admin/simulation-governance/record-twin [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 02bb65e
     - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
@@ -6903,23 +7509,26 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_update_scale_seeder_checkpoint_via_post_endpoint
     - akses: command scale:provision
     - akses: route POST /admin/simulation-governance/scale-provision [role: admin]
-    - gate: docs/gates/fase-67.md
-- [x] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 02bb65e
     - file: tests/Architecture/SimulationKernelArchitectureTest.php
     - test: tests/Architecture/SimulationKernelArchitectureTest.php::sim_twin_states does not have balance or stock columns as source of truth
-    - gate: docs/gates/fase-67.md
-- [x] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 02bb65e
     - file: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php
     - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_view_simulation_governance_dashboard_with_200_status
-    - gate: docs/gates/fase-67.md
-- [x] 67.7 Quality gate Fase 67
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-67.md
+- [ ] 67.7 Quality gate Fase 67
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 02bb65e
     - file: docs/gates/fase-67.md
@@ -6929,7 +7538,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: command sim:audit
     - akses: route GET /admin/simulation-governance [role: admin]
     - audit: sim:audit
-    - gate: docs/gates/fase-67.md
+    - (dibatalkan) gate: docs/gates/fase-67.md
 
 ### Register Minus Fase 67
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -6939,76 +7548,84 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 1 — OTOMOTIF & PEMBIAYAAN KENDARAAN
 
 ## FASE 68 — TELEMATICS & IOT CONNECTED CAR (PREDICTIVE MAINTENANCE)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 68.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 1F slice 1
 > **Jalan pintas terlarang di fase ini:** baseline konstan; semua DTC dianggap critical; event di dalam transaksi tanpa `afterCommit`; akun `oto:*` dibuat di test; nilai sensor default diam-diam — ditambah seluruh X1–X25.
-- [x] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
-  Bukti:
+- [ ] 68.1 Tabel `oto_telematics_devices` (OBD2/GPS, terikat `core_vehicles`), `oto_telematics_ticks` partisi harian (GPS, RPM, suhu oli, level baterai, kode DTC) — target ingest 500 juta tick/hari pada skala simulasi, retensi hot 30 hari / warm 1 tahun / cold arsip
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
     - file: modules/Telematics/database/migrations/2026_10_18_000005_create_oto_telematics_aggregates_table.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::telematics tick ingest idempotency
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.2 Ingest pipeline idempoten (device_id + seq + ts sebagai key), normalisasi satuan, penolakan tick di luar jendela waktu (anti-replay), dan agregat 5-menitan (avg/max/min) untuk menghemat ruang query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - file: modules/Telematics/Domain/Models/TelematicsAggregate.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::five minute aggregate computed accurately from ticks
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.3 Baseline per kendaraan (7 hari rolling) + deteksi anomali deterministik: suhu oli > 15% baseline, DTC kritis, konsumsi BBM menyimpang, baterai voltage drop → event `VehicleAnomalyDetected`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::seven day rolling baseline calculated from actual historical ticks
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.4 **Predictive Maintenance → AutoServe**: listener event anomaly membuat **draf booking servis** + estimasi biaya (harga komponen dari Store) + slot terdekat per outlet; opsi konfirmasi sekali klik (bayar wallet+PIN / tunai / ajukan pembiayaan); DTC kritis menandai unit `grounded` dan menolak dispatch armada
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Application/Services/TelematicsIngestService.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::anomaly triggers draft booking once
     - akses: route POST /telematics/devices/{device}/ingest [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.5 KPI & dashboard: MAPE prediksi kerusakan vs aktual (apakah booking benar-benar diperlukan), antrian draf booking, pendapatan preventif per outlet, mean-time-to-service
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 2996b45
     - file: modules/Telematics/Http/Controllers/TelematicsController.php
     - file: modules/Telematics/resources/views/telematics/index.blade.php
     - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
     - akses: route GET /telematics [role: admin, fleet_manager, telematics_admin]
-    - gate: docs/gates/fase-68.md
-- [x] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.6 Seeder skala: 10 juta kendaraan berpaspor (subset aktif memancarkan tick), 180 hari riwayat telematik, benchmark ingest & query baseline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2996b45
     - file: modules/Telematics/database/seeders/TelematicsDemoSeeder.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::anti replay window rejects expired ticks
-    - gate: docs/gates/fase-68.md
-- [x] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.7 Tests: (a) anomaly memicu draf booking tepat 1x (b) DTC kritis grounded menolak dispatch (c) tick duplikat idempoten (d) biaya servis ter-posting seimbang ke ledger (e) ingest massal tidak melanggar query budget halaman dashboard
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 2996b45
     - file: modules/Telematics/tests/Feature/TelematicsTest.php
     - test: modules/Telematics/tests/Feature/TelematicsTest.php::grounded vehicle rejects fleet dispatch
-    - gate: docs/gates/fase-68.md
-- [x] 68.8 Quality gate Fase 68
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-68.md
+- [ ] 68.8 Quality gate Fase 68
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 2996b45
     - file: docs/gates/fase-68.md
     - file: modules/Telematics/Console/Commands/AuditTelematicsCommand.php
     - test: modules/Telematics/tests/Feature/TelematicsVerticalSliceHttpTest.php::test_admin_can_access_telematics_dashboard_and_see_kpi_cards
     - akses: command tlm:audit
-    - gate: docs/gates/fase-68.md
+    - (dibatalkan) gate: docs/gates/fase-68.md
 
 ### Register Minus Fase 68
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7016,75 +7633,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 68.1–68.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 69 — EKOSISTEM EV: CHARGING NETWORK & BATTERY PASSPORT
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 69.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 2
 > **Jalan pintas terlarang di fase ini:** sesi EV tanpa hold/capture PaymentGateway; SoH dari angka masukan bebas; stop sesi ganda menggandakan capture — ditambah seluruh X1–X25.
-- [x] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
-  Bukti:
+- [ ] 69.1 Tabel `oto_ev_stations` (SPKLU: lokasi hub/ mall/ resto/ rute logistik), `oto_ev_chargers` (AC/DC, kW, status), `oto_ev_sessions` (booking → plug → meter kWh → selesai → tagih)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/database/migrations/2026_10_07_690100_create_oto_ev_tables.php
     - file: modules/Ev/Domain/Models/EvStation.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_booking_conflict_is_rejected
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.2 Booking slot time-lock dari garasi AutoDex/portal: reservasi 30 menit, no-show fee, anti-overlap per charger; check-in via scan QR charger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_no_show_fee_posts_to_ledger
     - akses: route POST /ev/chargers/{charger}/reserve [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.3 Meteran kWh presisi (integer Wh) → tagihan otomatis via Payment Hub (tarif per kWh bertingkat per jam sibuk/non-sibuk, saldo wallet atau stablecoin) → posting ledger `oto:ev_revenue`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_kwh_metering_matches_exact_ledger_revenue_billing
     - akses: route POST /ev/sessions/{session}/complete [role: admin, ev_admin, station_operator]
-    - gate: docs/gates/fase-69.md
-- [x] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.4 **Battery Passport hash-chain**: siklus charge, suhu sel, SoC/SoH dihitung per sesi → ditulis append-only ke passport kendaraan; degradasi SoH < 70% memicu event tukar-tambah (link ke Store/AutoDex) dan rekomendasi HODL-to-Drive untuk unit pengganti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/BatteryPassportService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_battery_passport_hash_chain_records_soh_degradation_deterministically
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.5 Grid ops simulasi: okupansi charger real-time, antrian, beban puncak (load balancing simulasi — session non-kritis ditunda 15 menit), laporan energi & margin per stasiun
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/Application/Services/EvChargingService.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_grid_load_balancing_defers_non_critical_session_without_cancellation
     - akses: route POST /ev/stations/{station}/load-balance [role: admin, ev_admin, station_operator]
-    - gate: docs/gates/fase-69.md
-- [x] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.6 Integrasi ESG: kWh dari grid terkonversi emisi Scope 2 (faktor Fase 60.1) per sesi → dashboard EV "green km"
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 50f6c44
     - file: modules/Ev/resources/views/ev/index.blade.php
     - test: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php::test_a_authorized_user_can_access_ev_index_and_reserve
     - akses: route GET /ev [role: admin, ev_admin, station_operator, driver]
-    - gate: docs/gates/fase-69.md
-- [x] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.7 Tests: (a) booking bentrok ditolak (b) kWh meteran = tagihan ledger (c) SoH turun tercatat valid di hash-chain (d) no-show fee ter-posting (e) simulasi load balancing tidak membuat sesi dibatalkan sepihak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 50f6c44
     - file: modules/Ev/tests/Feature/EvTest.php
     - test: modules/Ev/tests/Feature/EvTest.php::test_booking_conflict_is_rejected
-    - gate: docs/gates/fase-69.md
-- [x] 69.8 Quality gate Fase 69
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-69.md
+- [ ] 69.8 Quality gate Fase 69
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 50f6c44
     - file: docs/gates/fase-69.md
     - file: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php
     - test: modules/Ev/tests/Feature/EvVerticalSliceHttpTest.php::test_d_two_source_ev_audit_passes_cleanly
     - akses: command ev:audit
-    - gate: docs/gates/fase-69.md
+    - (dibatalkan) gate: docs/gates/fase-69.md
 
 ### Register Minus Fase 69
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7092,77 +7717,85 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 69.1–69.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 70 — B2B FLEET & CORPORATE LEASING
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI. Selesai tuntas pada Fase 70.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mobility (`oto_`) + Contract · **Prasyarat:** Fase 68 ✅ · **Acuan:** KONSEP 1F slice 3
 > **Jalan pintas terlarang di fase ini:** akumulasi amortisasi sebelum posting ber-key; `Str::random` di key kompensasi SLA; klaim 'PSAK 73' tanpa PV/ROU (implementasi atau turunkan lewat P10) — ditambah seluruh X1–X25.
-- [x] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
-  Bukti:
+- [ ] 70.1 Tabel `oto_fleet_contracts` (perusahaan penyewa = party, durasi 1–5 tahun, jumlah unit, SLA downtime maks, batas km/tahun, opsi perpanjangan/akuisisi), `oto_fleet_contract_units` (unit terikat, odometer baseline)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/database/migrations/2026_10_07_700100_create_oto_fleet_tables.php
     - file: modules/Fleet/Domain/Models/FleetContract.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_contract_creation_and_double_lease_prevention
     - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.2 Onboarding B2B: KYB Party (Fase 27), credit profile, deposit/garansi via Payment Hub, approval four-eyes di atas ambang nilai
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_four_eyes_approval_workflow
     - akses: route POST /fleet/contracts [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.3 **Amortisasi nilai sewa** (PSAK 73 simulasi): hak guna + liabilitas sewa per kontrak, jurnal bulanan idempoten, bunga vs pokok, perhitungan sisa nilai — terhubung modul Aset (Fase 31.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_psak_73_schedule_principal_and_interest_invariants
     - akses: route POST /fleet/contracts/{contract}/amortize [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.4 **SLA & telematik armada sewa**: tick telematik (Fase 68) + status Maintenance (AutoServe) dihitung menjadi downtime; pelanggaran SLA → kredit/kompensasi otomatis ke invoice penyewa; rute harian armada dipantau via kontrak ke Logistics (Fase 24.3 diperluas)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetSlaMonitorService.php
     - file: modules/Fleet/Domain/Models/FleetSlaLog.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_sla_breach_telematics_and_workshop_creates_ar_credit_note
     - akses: route POST /fleet/contracts/{contract}/sla-claim [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.5 Lifecycle: denda km berlebih, penggantian unit di tengah kontrak, early termination (hitung sisa liabilitas), end-of-lease condition report → unit masuk kembali ke AutoDex/Store sebagai bekas (berpaspor)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Application/Services/FleetLeasingService.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_end_of_lease_inspection_and_return_to_autodex
     - akses: route POST /fleet/contracts/{contract}/return-unit [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.6 Dashboard fleet B2B: utilisasi per unit, biaya total kepemilikan (TCO), uptime, jatuh tempo kontrak, eksposur piutang sewa
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 76633f9
     - file: modules/Fleet/Http/Controllers/FleetController.php
     - file: modules/Fleet/resources/views/fleet/index.blade.php
     - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_a_authorized_user_can_access_fleet_index_and_amortize
     - akses: route GET /fleet [role: admin, fleet_admin, lease_manager]
-    - gate: docs/gates/fase-70.md
-- [x] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.7 Tests: (a) amortisasi bulan 1..60 Σ = nilai sewa (b) SLA breach menghasilkan kredit yang mengurangi AR (c) lease ganda per unit ditolak (d) end-of-lease transfer unit ke inventaris sah (e) reconcile sewa = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 76633f9
     - file: modules/Fleet/tests/Feature/FleetTest.php
     - test: modules/Fleet/tests/Feature/FleetTest.php::test_fleet_lease_amortization_sums_to_total_lease_value_and_completes
-    - gate: docs/gates/fase-70.md
-- [x] 70.8 Quality gate Fase 70
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-70.md
+- [ ] 70.8 Quality gate Fase 70
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 76633f9
     - file: docs/gates/fase-70.md
     - file: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php
     - test: modules/Fleet/tests/Feature/FleetVerticalSliceHttpTest.php::test_d_two_source_fleet_audit_passes_cleanly
     - akses: command flt:audit
-    - gate: docs/gates/fase-70.md
+    - (dibatalkan) gate: docs/gates/fase-70.md
 
 ### Register Minus Fase 70
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7172,73 +7805,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 2 — FINTECH, PERBANKAN & KRIPTO
 
 ## FASE 71 — TOKENISASI ASET RIIL (RWA) & DIVIDEN OTOMATIS
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Rwa (`rwa_`) + Asset + Party + Contract · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 1
 > **Jalan pintas terlarang di fase ini:** dividen dari angka masukan, bukan dari pendapatan terposting; kepemilikan token hanya di tabel tanpa ledger aset `RWA-{id}`; pembelian tanpa KYC — ditambah seluruh X1–X25.
-- [x] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
-  Bukti:
+- [ ] 71.1 Tabel `rwa_assets` (unit toko Duta Mall, truk ekspedisi, mesin pabrik, petak lahan, hak sewa — terikat `ast_`/`mall_units`/`lgx_trucks`), `rwa_offering` (total token, harga per token, min lot, jadwal), `rwa_holdings` (pro-rata per holder)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/database/migrations/2026_10_07_710100_create_rwa_tables.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.2 Issuance berbasis verifikasi: dokumen appraisal (26.8), approval four-eyes, pembatasan total token = nilai appraisal; token terbit sebagai aset ledger (`crypto_assets` extension) dengan supply Σ = terbit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_issuance_and_holdings_sum_equals_supply
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.3 Orderbook internal (memperluas PriceFeed Fase 4): matching buy/sell antar holder, settlement via ledger, fee platform, lock-up periode & whitelist KYC holder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaOrderbookService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_orderbook_double_settlement_rejected_and_kyc_guardrail
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.4 **Dividen harian otomatis**: omzet sumber aset (mis. pendapatan logistik per truk dari Core Banking, sewa unit mall dari invoice) → dihitung pro-rata per holder → batch posting idempoten per hari ke dompet holder; gagal payout → antrean retry + alert
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_daily_dividend_pro_rata_distribution_and_rounding
     - akses: route POST /rwa/assets/{asset}/distribute [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.5 Corporate action: redemsi parsial (aset dijual → token ditebus pro-rata), dilusi, pembatalan token; seluruh perubahan supply tercatat hash-chain
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaCorporateActionService.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_token_redemption_decreases_supply_consistently
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.6 Dashboard RWA: katalog aset, orderbook, kepemilikan, riwayat dividen, exposure per holder; guardrail konsentrasi (maks X% aset per holder)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 044c37a
     - file: modules/Rwa/Application/Services/RwaTokenService.php
     - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_a_authorized_user_can_access_rwa_index_and_distribute
     - akses: route GET /rwa [role: admin, rwa_admin, asset_manager, investor]
-    - gate: docs/gates/fase-71.md
-- [x] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.7 Tests: (a) Σ token terbit = Σ holdings (b) dividen harian = omzet × pro-rata (dibulatkan, sisa ke rounding reserve) (c) double-settlement orderbook ditolak (d) redemsi menurunkan supply konsisten (e) reconcile aset ledger = holdings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 044c37a
     - file: modules/Rwa/tests/Feature/RwaTest.php
     - test: modules/Rwa/tests/Feature/RwaTest.php::test_rwa_reconcile_asset_ledger_equals_holdings
-    - gate: docs/gates/fase-71.md
-- [x] 71.8 Quality gate Fase 71
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-71.md
+- [ ] 71.8 Quality gate Fase 71
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 044c37a
     - file: modules/Rwa/tests/Feature/RwaTest.php
     - test: modules/Rwa/tests/Feature/RwaVerticalSliceHttpTest.php::test_d_two_source_rwa_audit_passes_cleanly
     - akses: command rwa:audit
-    - gate: docs/gates/fase-71.md
+    - (dibatalkan) gate: docs/gates/fase-71.md
 
 ### Register Minus Fase 71
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7246,73 +7887,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 71.1–71.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 72 — INSURTECH: MICRO-INSURANCE TERSEMAT & CLAIMS AUTOPILOT
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, double-entry ledger konsisten, dan quality gate 9/9 langkah pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP 2F slice 2
 > **Jalan pintas terlarang di fase ini:** klaim dicairkan dengan flag `$approved`; premi diakui penuh saat dibayar; klaim ganda untuk event yang sama — ditambah seluruh X1–X25.
-- [x] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
-  Bukti:
+- [ ] 72.1 Tabel `ins_products` (premi mikro: keterlambatan logistik, kerusakan kendaraan, cold-chain breach, pembatalan event, cuti sakit karyawan), `ins_policies` (tersemat otomatis ke dompet pengguna/shipment/kontrak), `ins_claims`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_issue_embedded_policy_and_deduct_premium
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.2 **Trigger otomatis tanpa formulir**: event spine (`lgx.late>4h`, `auto.collision_dtc`, `lgx.temp_breach>10m`, `ven.event_cancelled`) → smart-contract simulasi memvalidasi bukti hash-chain → klaim **cair langsung ke dompet dalam detik** (posting ledger `ins:claims_paid`)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_claims_autopilot_pays_instantaneously_and_is_idempotent
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.3 Akuntansi premi: akrual premi harian/bulanan dari saldo, reserve klaim (akun liabilitas), loss ratio & combined ratio per produk; batas payout per polis & per hari (anti-fraud)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_insurance_reserve_exceeds_or_equals_paid_liabilities
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.4 Fraud guard: skor anomali klaim (klaim beruntun, polis baru langsung klaim) → hold manual four-eyes sebelum cair; audit trail penuh
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_fraud_anomaly_score_triggers_manual_review_hold
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.5 Reinstatement & cancellation, grace period premi, dan klaim manual (unggah bukti) untuk kasus non-tersemat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_premium_payment_failure_leads_to_policy_lapse
     - akses: route POST /insurance/products/{product}/issue [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.6 Dashboard: claims autopilot (days-to-pay = detik), loss ratio per produk, reserve vs kewajiban, top trigger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: f406adc
     - file: modules/Insurance/Application/Services/InsurTechClaimsService.php
     - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_insurance_index_and_issue
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-72.md
-- [x] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.7 Tests: (a) trigger sah → klaim cair 1x, ganda ditolak (b) reserve ≥ kewajiban terbayar (c) fraud score tinggi masuk hold (d) premi gagal bayar → polis lapse + notifikasi (e) reconcile reserve = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: f406adc
     - file: modules/Insurance/tests/Feature/InsuranceTest.php
     - test: modules/Insurance/tests/Feature/InsuranceTest.php::test_reconcile_insurance_reserve_equals_ledger
-    - gate: docs/gates/fase-72.md
-- [x] 72.8 Quality gate Fase 72
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-72.md
+- [ ] 72.8 Quality gate Fase 72
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: f406adc
     - file: modules/Insurance/tests/Feature/InsuranceTest.php
     - test: modules/Insurance/tests/Feature/InsuranceVerticalSliceHttpTest.php::test_d_two_source_insurance_audit_passes_cleanly
     - akses: command ins:audit
-    - gate: docs/gates/fase-72.md
+    - (dibatalkan) gate: docs/gates/fase-72.md
 
 ### Register Minus Fase 72
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7320,73 +7969,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 72.1–72.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 73 — ROBO-ADVISOR WEALTH MANAGEMENT & TREASURY YIELD
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, surplus auto-invest multi-aset, rebalance deterministik, fee accrual presisi, dan quality gate pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Wealth (`wm_`) · **Prasyarat:** Fase 58 ulang (R6.3) ✅ · **Acuan:** KONSEP 2F slice 3
 > **Jalan pintas terlarang di fase ini:** NAV/alokasi memakai float; alokasi melanggar guardrail likuiditas tanpa ditolak — ditambah seluruh X1–X25.
-- [x] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
-  Bukti:
+- [ ] 73.1 Tabel `wm_profiles` (profil risiko konservatif/agresif, tujuan, horizon), `wm_plans` (alokasi bulanan), `wm_orders` (reksadana simulasi, emas digital, kripto), `wm_holdings`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Domain/Models/WmOrder.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.2 **Surplus detector**: membaca pola gaji (HCM payroll event) dan pengeluaran (mutasi wallet 3 bulan) → menghitung surplus bulanan yang aman; guardrail wajib: likuiditas minimum 2 bulan pengeluaran TIDAK boleh diinvestasikan, dana darurat tetap cair
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_liquidity_guardrail_prevents_investing_emergency_fund
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.3 Eksekusi alokasi bulanan otomatis (opt-in per pengguna): split ke reksadana/emas/kripto sesuai profil → order via PriceFeed Fase 4 → posting ledger; penarikan kembali 1-klik (T+0 simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route POST /wealth/profiles/{profile}/invest [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.4 **Yield ke Treasury**: saldo mengendap platform & hasil investasi dana kelolaan mengalir ke akun `treasury:pool` (Fase 48) → likuiditas grup terjaga; laporan kontribusi yield per bulan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Ledger/WealthAccounts.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_surplus_auto_invest_allocates_correctly_and_creates_orders
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.5 Rebalancing berkala (drift > 5% target → rebalance), performance vs benchmark, fee dana kelolaan (accrual harian)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_portfolio_rebalance_triggers_on_drift_exceeding_five_percent
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.6 Dashboard: kinerja portofolio vs benchmark, rekomendasi bulanan, dampak ke Treasury, cash-flow pengguna
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b1d6419
     - file: modules/Wealth/Application/Services/RoboAdvisorService.php
     - test: modules/Wealth/tests/Feature/WealthVerticalSliceHttpTest.php::test_a_authorized_user_can_access_wealth_index_and_invest
     - akses: route GET /wealth [role: admin, wealth_manager]
-    - gate: docs/gates/fase-73.md
-- [x] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.7 Tests: (a) alokasi tidak pernah menembus guardrail likuiditas (b) order terdividasi = dana terpotong (c) rebalance deterministik (d) fee akurat 6 desimal (e) reconcile holdings = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b1d6419
     - file: modules/Wealth/tests/Feature/WealthTest.php
     - test: modules/Wealth/tests/Feature/WealthTest.php::test_reconcile_wealth_holdings_equals_executed_orders
-    - gate: docs/gates/fase-73.md
-- [x] 73.8 Quality gate Fase 73
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-73.md
+- [ ] 73.8 Quality gate Fase 73
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b1d6419
     - file: modules/Wealth/tests/Feature/WealthTest.php
     - test: modules/Wealth/tests/Feature/WealthVerticalSliceHttpTest.php::test_d_two_source_wealth_audit_passes_cleanly
     - akses: command wm:audit
-    - gate: docs/gates/fase-73.md
+    - (dibatalkan) gate: docs/gates/fase-73.md
 
 ### Register Minus Fase 73
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7396,73 +8053,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 3 — KULINER, RESTORAN & WARALABA
 
 ## FASE 74 — CLOUD KITCHEN, DELIVERY AGGREGATOR INTERNAL & KATERING PAYROLL DEDUCTION
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, kapasitas hourly cloud kitchen, payroll deduction HCM, pembatalan dan refund ledger, serta quality gate pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** CloudKitchen (`ckt_`) · **Prasyarat:** R4.2 ✅ (prefiks), R6.3 ✅ · **Acuan:** KONSEP 3F slice 1–2
 > **Jalan pintas terlarang di fase ini:** CloudKitchen menulis tabel `resto_`; potongan katering di luar baris payroll — ditambah seluruh X1–X25.
-- [x] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
-  Bukti:
+- [ ] 74.1 Modul cloud kitchen (`resto_ck_kitchens`): 200 satelit + 5 dapur sentral + 300 outlet berlisensi, masing-masing dengan kapasitas produksi/jam, menu subset, dan radius layanan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.2 **Delivery aggregator internal**: order dari kanal mana pun di-assign ke kitchen/ outlet terdekat berdasarkan kapasitas & ETA (algoritma deterministik), armada Logistics sendiri (Fase 22 last-mile) → satu tracking number untuk pelanggan, ongkir tiered
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_assign_kitchen_does_not_exceed_capacity
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.3 **Katering payroll deduction**: langganan harian/mingguan karyawan EPC/pabrik & tenant Mall → debit otomatis dari gaji bulanan HCM (akun `hcm:meals_deduction`) kuota harian, menu rotasi mingguan, opt-out via self-service; potongan dikompensasi jika outlet tutup (refund ledger)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route POST /cloud-kitchen/subscriptions/{subscription}/dispatch [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.4 Subscription management: paket (2x/hari, 5 hari/minggu), upgrade/downgrade berlaku bulan depan, suspended jika gaji/tunjangan berhenti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_daily_quota_exhausted_rejects_subsequent_order
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.5 Integrasi cold-chain: bahan segar dari Agri → dapur sentral → satelit via Logistics reefer dengan telemetri suhu (sudah Fase 24.4, diperluas cakupan 200 satelit)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_catering_payroll_deduction_equals_recorded_consumption
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.6 Dashboard: okupansi dapur per jam, delivery ETA real-time, deduction payroll tersinkron HCM, katering aktif per entitas
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: e2eeab6d
     - file: modules/CloudKitchen/Application/Services/CloudKitchenService.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenVerticalSliceHttpTest.php::test_a_authorized_user_can_access_cloud_kitchen_index_and_dispatch_meal
     - akses: route GET /cloud-kitchen [role: admin, kitchen, outlet_manager, customer]
-    - gate: docs/gates/fase-74.md
-- [x] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.7 Tests: (a) kuota harian habis → tolak order berikutnya (b) deduction payroll = konsumsi tercatat (c) refund outlet tutup masuk gaji berikutnya (d) assign kitchen tidak melebihi kapasitas (e) reconcile deduction = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: e2eeab6d
     - file: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php::test_reconcile_catering_deductions_equals_ledger
-    - gate: docs/gates/fase-74.md
-- [x] 74.8 Quality gate Fase 74
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-74.md
+- [ ] 74.8 Quality gate Fase 74
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: e2eeab6d
     - file: modules/CloudKitchen/tests/Feature/CloudKitchenTest.php
     - test: modules/CloudKitchen/tests/Feature/CloudKitchenVerticalSliceHttpTest.php::test_d_two_source_cloud_kitchen_audit_passes_cleanly
     - akses: command ck:audit
-    - gate: docs/gates/fase-74.md
+    - (dibatalkan) gate: docs/gates/fase-74.md
 
 ### Register Minus Fase 74
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7470,73 +8135,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 74.1–74.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 75 — AI DEMAND & WASTE FORECASTING, AUTO-PO, SMART VENDING
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Lolos verifikasi vertikal slice V1–V12, Holt-Winters demand & waste forecasting MAPE <= 15%, auto-PO plafon guardrail Rp 15M, smart vending cashless settlement, dan quality gate pass.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Resto/CloudKitchen (forecast) + Vending (`vnd_`) · **Prasyarat:** Fase 74 ✅ · **Acuan:** KONSEP 3F slice 3–4
 > **Jalan pintas terlarang di fase ini:** forecast acak tanpa seed; auto-PO tanpa approval/plafon; stok vending di luar Inventory — ditambah seluruh X1–X25.
-- [x] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
-  Bukti:
+- [ ] 75.1 **Demand forecasting per outlet 7 hari**: input = footfall mall (Fase 14.4), kalender event Duta Mall/event venue, cuaca (feed simulasi), tren lalu lintas (telematik Pilar 1), hari besar nasional, riwayat sales 24 bulan → algoritma Holt-Winters (memperluas Fase 53.2) → MAPE per outlet terukur
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_forecast_mape_within_tolerance_with_seed
     - akses: route GET /vending [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.2 **Auto-PO bahan segar**: forecast → kebutuhan bahan (resep HPP Fase 7.3) → terhadap stok & lead time → **Purchase Order otomatis ke Agri/Supplier** melewati approval engine sebagai auto-PR (dengan plafon nilai harian; di atas plafon → approval manual); tanpa intervensi manusia di bawah plafon
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_auto_po_idempotent_and_ceiling_respected
     - akses: route GET /vending [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.3 **Waste forecasting & guardrail**: proyeksi waste berdasarkan pola etalase (Fase 8.3) → sistem menyarankan scale-down batch berikutnya; waste aktual vs forecast → MAPE waste dilaporkan, digunakan memperbaiki model
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_forecast_mape_within_tolerance_with_seed
     - akses: route GET /vending [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.4 **Smart vending & unmanned kiosks** (`ven_vending_units`, 1 juta unit simulasi): tiap unit node inventori mini terhubung WMS → level kritis memicu tugas restock terjadwal (WMS pick + Logistics route, Fase 41.7)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_restock_task_not_duplicated
     - akses: route GET /vending [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.5 Pembayaran vending via Payment Hub: QR + face-recognition simulasi (token biometrik one-time) → stok terpotong via InventoryService → settlement harian per unit (reconcile omzet vs stok terpotong)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_vending_sale_deducts_stock_and_posts_ledger
     - akses: route POST /vending/units/{unit}/dispense [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.6 Health vending: sensor koin/kasa/pintu → alert perawatan → work order (Fase 31.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b09c07d5
     - file: modules/Vending/Application/Services/SmartVendingService.php
     - test: modules/Vending/tests/Feature/SmartVendingVerticalSliceHttpTest.php::test_a_authorized_user_can_access_vending_index_and_dispense
     - akses: route GET /vending [role: admin, vending_operator, store_manager]
-    - gate: docs/gates/fase-75.md
-- [x] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.7 Tests: (a) forecast MAPE masuk toleransi pada seed (b) auto-PO idempoten & plafon dihormati (c) vending sale = stok terpotong (d) restock task tidak ganda (e) reconcile vending = ledger + inventory
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: b09c07d5
     - file: modules/Vending/tests/Feature/SmartVendingTest.php
     - test: modules/Vending/tests/Feature/SmartVendingTest.php::test_reconcile_vending_equals_ledger_and_inventory
-    - gate: docs/gates/fase-75.md
-- [x] 75.8 Quality gate Fase 75
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-75.md
+- [ ] 75.8 Quality gate Fase 75
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b09c07d5
     - file: modules/Vending/tests/Feature/SmartVendingTest.php
     - test: modules/Vending/tests/Feature/SmartVendingVerticalSliceHttpTest.php::test_d_two_source_smart_vending_audit_passes_cleanly
     - akses: command vnd:audit
-    - gate: docs/gates/fase-75.md
+    - (dibatalkan) gate: docs/gates/fase-75.md
 
 ### Register Minus Fase 75
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7546,73 +8219,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 4 — PROPERTI KOMERSIAL & EPC
 
 ## FASE 76 — PROPTECH & SMART BUILDING OPERATIONS (IOT + ESG REAL-TIME) ✅ TERVERIFIKASI
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 76 lengkap V1–V12: model Eloquent (BuildingZone, BuildingSensor, HvacCommand, ZoneUtilityBilling, PrescriptiveOp), Service ProptechService dengan ingest idempoten, histeresis HVAC, tagihan utilitas presisi + overtime AC Rp 75k/jam, emisi GRK real-time (faktor 0.85 kg/kWh), prescriptive ops tanpa boolean flags, UI dashboard dark-mode premium, dan command audit dua-sumber prp:audit-smartbuilding. 17 test pass 100%. Gate Fase 76 lulus.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) + Mall · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 4F slice 1
 > **Jalan pintas terlarang di fase ini:** tagihan utilitas dari estimasi, bukan bacaan; Proptech menulis tabel `mall_`; bacaan ganda menggandakan tagihan — ditambah seluruh X1–X25.
-- [x] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
-  Bukti:
+- [ ] 76.1 Tabel `prp_building_sensors` (suhu, kelembaban, arus, CO2, okupansi CCTV/footfall) per zona gedung → ingest idempoten (memperluas pola telematik Fase 68)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_1_sensor_ingest_idempotency_and_occupancy_update
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.2 **Otomasi HVAC & pencahayaan**: rule engine deterministik (okupansi > ambang → turunkan suhu target; jam non-operasional → setback) → perintah ke simulasi perangkat → penghematan kWh dihitung vs baseline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_2_deterministic_hvac_automation_rules
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.3 **Tagihan listrik tenant per zona aktual**: meteran per zona (memperluas `mall_utility_readings` Fase 13.2) → tarif bertingkat → invoice tenant presisi bukan estimasi; Overtime AC tetap berlaku
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
     - akses: route POST /proptech/zones/{zone}/bill [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.4 **GRK real-time per gedung**: kWh terkonsumsi × faktor grid (Fase 60.1) → dashboard emisi gedung per hari, per tenant, tren → masuk laporan ESG per properti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.5 Prescriptive ops: rekomendasi optimasi (mis. setback jam 13.00–15.00) dengan estimasi penghematan & payback; approval opsional sebelum diterapkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/Application/Services/ProptechService.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_5_prescriptive_operations_workflow
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.6 Dashboard smart building: denah per lantai dengan status zona live, konsumsi vs baseline, emisi, alarm sensor offline
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5a29248
     - file: modules/Proptech/resources/views/proptech/index.blade.php
     - test: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php::test_a_authorized_user_can_access_proptech_index_and_generate_bill_with_overtime
     - akses: route GET /proptech [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-76.md
-- [x] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.7 Tests: (a) aturan okupansi memicu perintah tepat 1x (b) tagihan zona = Σ pembacaan × tarif (c) kWh ESG = tagihan utilitas (d) sensor duplikat idempoten (e) reconcile utilitas = ledger (audit-billing hijau)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 5a29248
     - file: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php
     - test: modules/Proptech/tests/Feature/ProptechSmartBuildingTest.php::test_76_3_and_76_4_zone_utility_billing_and_ghg_emissions_with_ledger
-    - gate: docs/gates/fase-76.md
-- [x] 76.8 Quality gate Fase 76
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-76.md
+- [ ] 76.8 Quality gate Fase 76
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5a29248
     - file: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php
     - test: modules/Proptech/tests/Feature/ProptechVerticalSliceHttpTest.php::test_d_two_source_proptech_audit_passes_cleanly
     - akses: command prp:audit-smartbuilding
-    - gate: docs/gates/fase-76.md
+    - (dibatalkan) gate: docs/gates/fase-76.md
 
 ### Register Minus Fase 76
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7620,73 +8301,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 76.1–76.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 77 — DIGITAL TWIN & BIM LIFECYCLE (EPC → OPERASI) ✅ TERVERIFIKASI
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 77 lengkap V1–V12: model Eloquent (BimModel, TwinComponent, TwinIssue), Service BimTwinService dengan versioning gapless anti-tamper hash chain, verifikasi WBS fisik <= 100%, kapitalisasi CIP ke Fixed Assets (ast:fixed_assets:IDR), penandaan work order fasilitas deterministik, simulasi sandbox termal/airflow tanpa mutasi DB, UI viewer 2.5D/3D mewah di /proptech/bim, dan command audit dua-sumber prp:audit-bim. 11 test pass 100%. Gate Fase 77 lulus.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) + Epc + Asset · **Prasyarat:** Fase 76 ✅, R6.4 ✅ · **Acuan:** KONSEP 4F slice 3–4
 > **Jalan pintas terlarang di fase ini:** Epc menulis tabel `ast_` langsung; BIM berupa JSON tanpa tautan WBS; progres > 100% — ditambah seluruh X1–X25.
-- [x] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
-  Bukti:
+- [ ] 77.1 Tabel `prp_bim_models` (ber-versi, komponen JSON tervalidasi), `prp_twin_components` (pipa, duct, kabel, chiller — terikat lokasi & aset), `prp_twin_issues`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.2 **BIM saat konstruksi**: modul EPC (Fase 63) mengunggah model per milestone → tiap node WBS terikat komponen BIM → **progres fisik diverifikasi dari komponen selesai** → memicu MC, CIP, dan kapitalisasi (Fase 63.4) otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_2_wbs_physical_progress_and_cip_capitalization
     - akses: route POST /proptech/bim/capitalize [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.3 **Twin saat operasi**: komponen terhubung sensor (Fase 76) + work order facility (Fase 15.4) menandai komponen terdampak di twin → teknisi melihat letak pipa/kabel SEBELUM membongkar tembok (preview 2.5D/3D di browser)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.4 **Simulasi twin**: analisis aliran udara, skenario kebakaran/banjir, dampak penambahan tenant terhadap beban HVAC — berjalan di sandbox (Digital Twin Bus Fase 67.3), tidak mengubah data riil
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_3_and_77_4_work_order_tagging_and_twin_simulation_sandbox
     - akses: route POST /proptech/bim/{model}/simulate [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.5 Change management: revisi BIM ber-versi dengan approval + hash-chain (memperluas ECO Fase 59.3 ke gedung), diff antar versi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/Application/Services/BimTwinService.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_1_and_77_5_bim_versioning_and_tamper_evident_hash_chain
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.6 Dashboard: pohon komponen, issue terbuka, korelasi progres konstruksi vs rencana, twin health (komponen tanpa sensor = gap)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 1cdcc16
     - file: modules/Proptech/resources/views/bim/index.blade.php
     - test: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php::test_a_authorized_user_can_access_bim_index_and_run_simulation
     - akses: route GET /proptech/bim [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-77.md
-- [x] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.7 Tests: (a) progres WBS = komponen selesai (maks 100%) (b) revisi BIM ganda → versi berurutan tanpa gap (c) simulasi tidak mengubah tabel riil (d) work order menandai komponen tepat (e) reconcile CIP = twin progress value
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 1cdcc16
     - file: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php
     - test: modules/Proptech/tests/Feature/Bim/BimTwinLifecycleTest.php::test_77_7_two_source_audit_passes_cleanly
-    - gate: docs/gates/fase-77.md
-- [x] 77.8 Quality gate Fase 77
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-77.md
+- [ ] 77.8 Quality gate Fase 77
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 1cdcc16
     - file: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php
     - test: modules/Proptech/tests/Feature/Bim/BimVerticalSliceHttpTest.php::test_d_two_source_bim_audit_passes_cleanly
     - akses: command prp:audit-bim
-    - gate: docs/gates/fase-77.md
+    - (dibatalkan) gate: docs/gates/fase-77.md
 
 ### Register Minus Fase 77
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7694,73 +8383,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 77.1–77.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 78 — FLEX-SPACE & CO-WORKING BOOKING ON-DEMAND ✅ TERVERIFIKASI
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI — Vertical slice Fase 78 lengkap V1–V12: model Eloquent (FlexSpace, FlexBooking), Service FlexSpaceService dengan time-lock anti-overlap booking, deposit hold 30%, smart access check-in QR cryptographic passport, session utility load integration ke Fase 76, no-show fee forfeiture ke penalti revenue, UI portal flex-space premium di /proptech/flex, dan command audit dua-sumber prp:audit-flex. 10 test pass 100%. Gate Fase 78 lulus.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Proptech (`prp_`) · **Prasyarat:** Fase 76 ✅ · **Acuan:** KONSEP 4F slice 2
 > **Jalan pintas terlarang di fase ini:** booking tanpa kunci slot (overlap); pembayaran tanpa hold/capture — ditambah seluruh X1–X25.
-- [x] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
-  Bukti:
+- [ ] 78.1 Tabel `prp_flex_spaces` (area kosong mall / site EPC / roof-top / lobi): tipe (meeting room, booth, co-working desk, studio), kapasitas, fasilitas, tarif per jam/hari
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/Application/Services/FlexSpaceService.php
     - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_2_booking_creation_deposit_hold_and_anti_overlap
     - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.2 Booking time-lock tanpa overlap (memperluas pola `mall_event_bookings` Fase 15.3 & dock appointment Fase 24.5), deposit via Payment Hub (hold → capture saat check-in, no-show fee)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/Application/Services/FlexSpaceService.php
     - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_2_booking_creation_deposit_hold_and_anti_overlap
     - akses: route POST /proptech/flex/book [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.3 **Akses pintar**: check-in via pemindaian **Paspor Kriptografis** (QR identitas dari Core/Party) → pintu terbuka (simulasi) → sesi tercatat; tamu tanpa paspor → verifikasi KTP singkat sementara
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/Application/Services/FlexSpaceService.php
     - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_3_check_in_with_cryptographic_passport_and_session_utility_load
     - akses: route POST /proptech/flex/{booking}/check-in [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.4 Penagihan: sewa per jam, paket bulanan (membership), integrasi ke invoice tenant bila flex-space milik tenant (revenue share)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/Http/Controllers/FlexSpaceController.php
     - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_flex_index_book_and_checkin
     - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.5 Utilitas & kebersihan: sesi flex-space menambah beban listrik zona (masuk tagihan zona Fase 76.3) dan memicu tugas kebersihan pasca-pakai (work order)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/Application/Services/FlexSpaceService.php
     - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_3_check_in_with_cryptographic_passport_and_session_utility_load
     - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.6 Dashboard: okupansi per properti per jam, pendapatan per m² kosong, no-show rate, tenant dengan ruang paling produktif
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 77b5baff
     - file: modules/Proptech/resources/views/flex/index.blade.php
     - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_a_authorized_user_can_access_flex_index_book_and_checkin
     - akses: route GET /proptech/flex [role: admin, proptech_admin, facility_manager]
-    - gate: docs/gates/fase-78.md
-- [x] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.7 Tests: (a) booking bentrok ditolak (b) akses tanpa paspor valid ditolak (c) no-show fee ter-posting (d) sesi menambah konsumsi zona (e) reconcile flex = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 77b5baff
     - file: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php
     - test: modules/Proptech/tests/Feature/FlexSpaceBookingTest.php::test_78_7_two_source_audit_passes_cleanly
-    - gate: docs/gates/fase-78.md
-- [x] 78.8 Quality gate Fase 78
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-78.md
+- [ ] 78.8 Quality gate Fase 78
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 77b5baff
     - file: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php
     - test: modules/Proptech/tests/Feature/Flex/FlexSpaceVerticalSliceHttpTest.php::test_d_two_source_flex_audit_passes_cleanly
     - akses: command prp:audit-flex
-    - gate: docs/gates/fase-78.md
+    - (dibatalkan) gate: docs/gates/fase-78.md
 
 ### Register Minus Fase 78
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7770,73 +8467,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 5 — LOGISTIK MULTIMODA, SCM & GUDANG
 
 ## FASE 79 — REVERSE LOGISTICS & CIRCULAR ECONOMY ENGINE
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 79 tuntas: reverse orders & items, event triggers idempoten (resto, auto, store, mfg, hsp), intake sirkular dinilai ulang ke ledger `lgx:circular_revenue:IDR` dan `mfg:scrap_inbound:IDR`, avoided CO2 emisi faktor 2.1 kg/kg, rantai kustodi hash dan manifest gapless, UI dashboard `/logistics/reverse`, command audit dua-sumber `lgx:audit-circular` lulus 100%. Quality gate lulus di commit `6ed720eb`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Manufacturing + Pricing + Esg · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 5F slice 1
 > **Jalan pintas terlarang di fase ini:** material daur ulang tanpa lot Manufaktur; manfaat ESG berupa angka masukan — ditambah seluruh X1–X25.
-- [x] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
-  Bukti:
+- [ ] 79.1 Tabel `lgx_reverse_orders` (jenis: retur Store, oli bekas AutoServe, jelantah Resto, limbah B3 medis, scrap Manufacturing, e-waste) + `lgx_reverse_items` (komposisi, kondisi, tujuan daur ulang)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
     - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.2 Reverse shipment otomatis dari event (`store.return`, `auto.oil_used`, `resto.waste_bulk`, `hsp.bio_waste`) → assign armada (satu armada dengan forward, muatan balik/backhaul) → terhubung chain of custody hash
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
     - akses: route POST /logistics/reverse [role: admin, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.3 **Nilai sirkular**: barang terkumpul dinilai ulang → menjadi bahan baku Manufacturing (biodiesel jelantah, remanufaktur oli, remould sparepart) dengan harga dari Pricing Engine → posting ledger `lgx:circular_revenue` / `mfg:scrap_inbound`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_3_circular_intake_posts_to_ledger_and_updates_status
     - akses: route POST /logistics/reverse/{order}/intake [role: admin, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.4 **Skor ESG sirkularitas**: tonase diselamatkan vs dibuang, penghematan emisi (avoided landfill emission faktor) → kredit ESG naik (Fase 60), laporan per lini bisnis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/Application/Services/Reverse/ReverseLogisticsService.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_2_reverse_order_triggered_idempotently_from_event
     - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.5 Compliance limbah: manifest pembuangan (dokumen gapless), vendor pengolah tersertifikasi (Party role), audit rantai kustodi limbah sampai TPA/pabrik pengolah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/Http/Controllers/ReverseLogisticsController.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_reverse_index_and_process_intake
     - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.6 Dashboard circular economy: tonase per jenis, revenue daur ulang, biaya vs manfaat, kredit ESG terkumpul, kustodi limbah valid
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 6ed720eb
     - file: modules/Logistics/resources/views/reverse/index.blade.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_reverse_index_and_process_intake
     - akses: route GET /logistics/reverse [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-79.md
-- [x] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.7 Tests: (a) reverse order terpicu tepat 1x per event (b) nilai daur ulang = ledger & stok bahan baku naik (c) manifest tanpa celah (d) rantai kustodi limbah valid (e) reconcile circular = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 6ed720eb
     - file: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsCircularTest.php::test_79_7_two_source_audit_passes_cleanly
-    - gate: docs/gates/fase-79.md
-- [x] 79.8 Quality gate Fase 79
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-79.md
+- [ ] 79.8 Quality gate Fase 79
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 6ed720eb
     - file: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php
     - test: modules/Logistics/tests/Feature/Reverse/ReverseLogisticsVerticalSliceHttpTest.php::test_d_two_source_reverse_audit_passes_cleanly
     - akses: command lgx:audit-circular
-    - gate: docs/gates/fase-79.md
+    - (dibatalkan) gate: docs/gates/fase-79.md
 
 ### Register Minus Fase 79
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7844,73 +8549,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 79.1–79.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🟠 KERANGKA). Pengerjaan vertical slice Fase 80 tuntas: cold-chain breach enforcement (> 10 menit otomatis hold di ledger escrow `lgx:dispute_escrow:IDR`), dispute release idempoten, drone & robotics dispatch dengan 4 guardrail (radius <= 15 km, beban <= 5 kg, margin baterai, no-fly geo-fence), POD kriptografis signature hash, UI dashboard `/logistics/autonomous`, command audit dua-sumber `lgx:audit-coldchain` lulus 100%. Quality gate lulus di commit `ca1ca12f`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Payment · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP 5F slice 2–3
 > **Jalan pintas terlarang di fase ini:** tahan pembayaran sebagai kolom status tanpa ledger; breach dihitung per pembacaan (ganda); batas drone hanya di test — ditambah seluruh X1–X25.
-- [x] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
-  Bukti:
+- [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
     - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes
     - akses: route POST /logistics/autonomous/breaches/{hold}/release [role: admin, dispatcher, logistics_admin, treasury]
-    - gate: docs/gates/fase-80.md
-- [x] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
     - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-80.md
-- [x] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
     - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_3_and_80_4_drone_mission_dispatch_constraints_and_cryptographic_pod
     - akses: route POST /logistics/autonomous/dispatch [role: admin, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-80.md
-- [x] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
     - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_3_and_80_4_successful_drone_dispatch_and_pod_completion
     - akses: route POST /logistics/autonomous/missions/{mission}/deliver [role: admin, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-80.md
-- [x] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/Http/Controllers/AutonomousLogisticsController.php
     - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_autonomous_index_dispatch_and_release
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-80.md
-- [x] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: ca1ca12f
     - file: modules/Logistics/resources/views/autonomous/index.blade.php
     - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_autonomous_index_dispatch_and_release
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - gate: docs/gates/fase-80.md
-- [x] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: ca1ca12f
     - file: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php
     - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_7_two_source_audit_passes_cleanly
-    - gate: docs/gates/fase-80.md
-- [x] 80.8 Quality gate Fase 80
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-80.md
+- [ ] 80.8 Quality gate Fase 80
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: ca1ca12f
     - file: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php
     - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_d_two_source_cold_chain_audit_passes_cleanly
     - akses: command lgx:audit-coldchain
-    - gate: docs/gates/fase-80.md
+    - (dibatalkan) gate: docs/gates/fase-80.md
 
 ### Register Minus Fase 80
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7920,73 +8633,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 
 ## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 81 tuntas: mesin harga detik-per-detik real-time, guardrail mutlak floor (1.15x HPP) / ceiling (HET) / daily band (±35%), supremasi kontrak & price list bertingkat, dokumen quote immutable kriptografis timelock SHA-256, partisi & agregat per-menit, integrasi multi-kanal (Store B2C, Wholesale, B2B Marketplace, Export, Vending), analitik guardrail (0 temuan), command audit `pricing:audit` = 0 selisih vs dokumen order. Quality gate lulus di commit `30eadf0c`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Pricing (`pric_`) · **Prasyarat:** R4.2 ✅ (prefiks `prc_`→`pric_`) · **Acuan:** KONSEP 6F slice 1
 > **Jalan pintas terlarang di fase ini:** harga order mengikuti tick terbaru; tick tanpa guardrail floor/ceiling; tabel `prc_` di Pricing — ditambah seluruh X1–X25.
-- [x] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
-  Bukti:
+- [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_1_tick_idempotency_and_minute_aggregates
     - akses: route POST /pricing/ticks [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_strict_floor_and_ceiling_guardrails
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_b2b_contract_price_always_beats_dynamic_surge
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_4_quote_freeze_and_immutable_conversion_to_order
     - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_5_channel_specific_quoting
     - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 30eadf0c
     - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_6_analytics_summary_reports_zero_guardrail_violations
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - gate: docs/gates/fase-81.md
-- [x] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 30eadf0c
     - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_7_pricing_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-81.md
-- [x] 81.8 Quality gate Fase 81
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-81.md
+- [ ] 81.8 Quality gate Fase 81
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 30eadf0c
     - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_http_endpoints_and_rbac
     - akses: command pricing:audit
-    - gate: docs/gates/fase-81.md
+    - (dibatalkan) gate: docs/gates/fase-81.md
 
 ### Register Minus Fase 81
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -7994,73 +8715,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 81.1–81.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 82 tuntas: integrasi titik pesan ulang WMS memicu auto-PO dengan plafon kontrak kerangka (Fase 32.4), approval multi-level di atas plafon, komitmen anggaran double-entry ledger (`VMI_PURCHASE_COMMITMENT`), C2M configurator 3D parametric dengan validasi anti-cycle (DFS), roll-up BOM cost + complexity factor, routing instruksi SPK pabrik, penalti material saat pembatalan setelah produksi, dashboard analitik VMI/C2M, dan command audit `vmi:audit` = 0 selisih. Quality gate lulus di commit `9d80960f`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
 > **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
-- [x] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
-  Bukti:
+- [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_reorder_point_triggers_auto_po_and_commits_budget
     - akses: route POST /manufacturing/vmi/trigger [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_approval_posts_ledger_commitment
     - akses: route POST /manufacturing/vmi/{replenishment}/approve [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_c2m_bom_cycle_detection_blocks_circular_dependency
     - akses: route POST /manufacturing/c2m/orders [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
     - akses: route POST /manufacturing/c2m/orders/{order}/spk [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
     - akses: route POST /manufacturing/c2m/orders/{order}/cancel [role: admin, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 9d80960f
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_6_vmi_and_c2m_summaries
     - akses: route GET /manufacturing/vmi-c2m [role: admin, auditor, operator, planner, procurement]
-    - gate: docs/gates/fase-82.md
-- [x] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 9d80960f
     - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_7_vmi_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-82.md
-- [x] 82.8 Quality gate Fase 82
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-82.md
+- [ ] 82.8 Quality gate Fase 82
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 9d80960f
     - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
     - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_http_endpoints_and_rbac
     - akses: command vmi:audit
-    - gate: docs/gates/fase-82.md
+    - (dibatalkan) gate: docs/gates/fase-82.md
 
 ### Register Minus Fase 82
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8070,65 +8799,72 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 83 tuntas: stablecoin escrow lintas batas terdesentralisasi (USDC), kunci kurs FX terkunci saat deposit, verifikasi Bill of Lading & chain of custody POD hash rilis otomatis ke eksportir, dispute window 24 jam dengan opsi refund/proceed, kepatuhan sertifikasi EU CBAM dengan metodologi jejak karbon terikat emisi pabrik, pengurangan landed cost / margin ekspor, dashboard analitik likuiditas escrow & CBAM, dan command audit `clearing:audit` = 0 selisih. Quality gate lulus di commit `22c1dbe5`.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
 > **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
-- [x] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
-  Bukti:
+- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_1_and_83_2_stablecoin_escrow_deposit_anti_duplicate_bl_and_release
     - akses: route POST /trade-finance/cross-border/deposit [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_2_dispute_window_hold_and_resolution_refund
     - akses: route POST /trade-finance/cross-border/{escrow}/dispute [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
     - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
     - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 22c1dbe5
     - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_5_escrow_and_cbam_summaries
     - akses: route GET /trade-finance/cross-border [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-83.md
-- [x] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 22c1dbe5
     - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_6_clearing_audit_command_enforces_zero_discrepancy
-    - gate: docs/gates/fase-83.md
-- [x] 83.7 Quality gate Fase 83
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-83.md
+- [ ] 83.7 Quality gate Fase 83
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 22c1dbe5
     - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
     - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_http_endpoints_and_rbac
     - akses: command clearing:audit
-    - gate: docs/gates/fase-83.md
+    - (dibatalkan) gate: docs/gates/fase-83.md
 
 ### Register Minus Fase 83
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8136,73 +8872,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 83.1–83.7 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 84 tuntas 100% dan terverifikasi di Gerbang 1–6.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Trade (asisten penawaran) · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP 7F slice 3
 > **Jalan pintas terlarang di fase ini:** usulan AI langsung submit tanpa approval; tanpa snapshot input (tidak bisa direkonstruksi) — ditambah seluruh X1–X25.
-- [x] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
-  Bukti:
+- [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/database/migrations/2026_10_19_840200_add_feedback_reason_to_trd_bid_submissions.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
     - akses: table trd_bidding_agents, trd_bid_runs, trd_bid_submissions
-    - gate: docs/gates/fase-84.md
-- [x] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
     - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-84.md
-- [x] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
     - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-84.md
-- [x] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
     - akses: route POST /trade/bidding/submissions/{submission}/approve [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-84.md
-- [x] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
     - akses: route POST /trade/bidding/submissions/{submission}/result [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-84.md
-- [x] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 86ff6761
     - file: modules/Trade/resources/views/trade/bidding.blade.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_3_and_84_6_lost_auction_feedback_and_bid_desk_summary
     - akses: route GET /trade/bidding [role: admin, auditor, procurement, treasury]
-    - gate: docs/gates/fase-84.md
-- [x] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 86ff6761
     - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_audit_command_and_corruption_detection
-    - gate: docs/gates/fase-84.md
-- [x] 84.8 Quality gate Fase 84
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-84.md
+- [ ] 84.8 Quality gate Fase 84
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 86ff6761
     - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
     - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
     - akses: command bidding:audit
-    - gate: docs/gates/fase-84.md
+    - (dibatalkan) gate: docs/gates/fase-84.md
 
 ### Register Minus Fase 84
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8212,73 +8956,81 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 
 ## FASE 85 — INTERNAL GIG ECONOMY (TALENT MARKETPLACE & BOUNTY)
-> **Status audit 2026-10-19:** ✅ TERVERIFIKASI (sebelumnya 🔨 SEDANG DIKERJAKAN). Pengerjaan vertical slice Fase 85 tuntas 100% dan terverifikasi di Gerbang 1–6.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R6.3 (HCM inti) ✅ · **Acuan:** KONSEP 8F slice 1
 > **Jalan pintas terlarang di fase ini:** bounty dibayar di luar payroll; klaim bounty tanpa cek sertifikat/jam kerja — ditambah seluruh X1–X25.
-- [x] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
-  Bukti:
+- [ ] 85.1 Tabel `gov_bounties` (pemesan unit bisnis: Resto overload, gudang butuh bongkar muat dadakan, event mall setup, cuci armada), `gov_bounty_claims` (pengambil shift lintas unit), `gov_bounty_pofs` (proof of work: scan lokasi, foto, sign-off supervisor)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/database/migrations/2026_10_19_850200_enhance_bounty_gig_tables.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_1_and_85_2_claim_matching_with_schedule_conflict_and_max_hours_guardrail
     - akses: table gov_bounties, gov_bounty_claims, gov_bounty_pofs
-    - gate: docs/gates/fase-85.md
-- [x] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.2 **Matching**: karyawan eligible (skill, sertifikasi K3, lokasi, tidak tabrakan jadwal shift utama, batas jam kerja UU 22/2009 8 jam/hari) → first-come/berbasis skor; konflik jadwal ditolak sistem
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_1_and_85_2_claim_matching_with_schedule_conflict_and_max_hours_guardrail
     - akses: route POST /hcm/bounties/{bounty}/claim [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.3 **Bayar per jam via Core Banking**: POF disetujui → upah lembur (tarif 1.5x/2x Fase 58.3) terhitung → posting `hcm:bounty_payout` ke dompet karyawan; biaya dibebankan ke pusat biaya unit pemesan (budget encumbrance Fase 54.1)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_3_proof_of_work_approval_calculates_overtime_and_posts_ledger_payout
     - akses: route POST /hcm/bounties/claims/{claim}/payout [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.4 Kepatuhan: batas lembur mingguan, hari libur wajib, keselamatan (izin kerja berisiko Fase 40.6 untuk tugas berbahaya), asuransi kecelakaan kerja tersemat (memperluas Pilar 2)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_4_weekly_overtime_limit_and_high_risk_permit_mandatory
     - akses: route POST /hcm/bounties/{bounty}/claim [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.5 Incentive: skor internal mobility, bonus pengisian bounty cepat, unit pemesan dengan rating pekerja terbaik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/Application/Services/Gig/InternalGigEconomyService.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_5_supervisor_self_approval_and_duplicate_pof_rejected
     - akses: route POST /hcm/bounties [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.6 Dashboard: bounty terbuka/terisi, biaya tenaga kerja fleksibel vs tetap, utilisasi talenta lintas lini, kepuasan karyawan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 5579c813
     - file: modules/Hcm/resources/views/hcm/bounties.blade.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_5_supervisor_self_approval_and_duplicate_pof_rejected
     - akses: route GET /hcm/bounties [role: admin, hcm_manager]
-    - gate: docs/gates/fase-85.md
-- [x] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.7 Tests: (a) jadwal bentrok / melebihi jam kerja ditolak (b) POF ganda tidak bayar dua kali (c) payout = jam × tarif lembur, ledger seimbang (d) biaya masuk budget unit pemesan (e) reconcile bounty = ledger + payroll
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: 5579c813
     - file: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_hcm_audit_command_and_corruption_detection
-    - gate: docs/gates/fase-85.md
-- [x] 85.8 Quality gate Fase 85
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-85.md
+- [ ] 85.8 Quality gate Fase 85
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 5579c813
     - file: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php
     - test: modules/Hcm/tests/Feature/Gig/InternalGigEconomyTest.php::test_85_http_endpoints_and_rbac
     - akses: command hcm:audit
-    - gate: docs/gates/fase-85.md
+    - (dibatalkan) gate: docs/gates/fase-85.md
 
 ### Register Minus Fase 85
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8286,81 +9038,90 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 85.1–85.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 86 — PRECISION AGRI-TECH (NDVI SATELIT) & DAO CORPORATE GOVERNANCE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 86.1–86.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Agri (`agri_`) + Governance (`gov_`) · **Prasyarat:** R6.4 ✅, Fase 71 ✅ (bobot token) · **Acuan:** KONSEP 8F slice 2–3
 > **Jalan pintas terlarang di fase ini:** voting tanpa snapshot bobot; hasil voting langsung mengeksekusi tanpa approval; NDVI dari masukan bebas tanpa jejak scan — ditambah seluruh X1–X25.
-- [x] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
-  Bukti:
+- [ ] 86.1 **NDVI satelit** (`agri_satellite_scans` per petak plasma, feed simulasi): indeks kehijauan per poligon lahan (`land_polygon_geojson` Fase 62.1) per 5 hari → tren per musim → deteksi stres tanaman
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.2 **Cicilan prestasi**: ratchet kontrak tani Fase 62.2 diperluas — pencairan cicilan modal pembiayaan ke petani **hanya bila NDVI ≥ standar kualitas**; gagal → penundaan + rencana korektif (irigasi/pupuk via Agri), 2x gagal → restrukturisasi via ApprovalEngine
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.3 Korelasi NDVI vs hasil panen aktual (grade A/B/C Fase 62.3) → validasi model presisi; skor risiko petak → memengaruhi plafon pembiayaan berikutnya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_1_and_86_2_satellite_ndvi_scan_and_conditional_loan_disbursement
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.4 **DAO governance** (`gov_proposals`, `gov_votes`, `gov_voter_weights`): pemegang hak suara = karyawan (HCM), pemegang token RWA (Fase 71), franchisee (Resto), partner (Fase 47) → bobot berbasis Paspor Digital/token holdings
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.5 Voting: masa kampanye → kuartil pemungutan → kuorum minimum → tally weighted hash-chained (jejak tak terubah) → hasil disetujui/ ditolak; kuorum, quorum-weighted, dan aturan abstain terdefinisi per jenis proposal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.6 **Eksekusi otomatis bila disetujui**: proposal "buka cabang Resto di kota B" → membuat proyek Contract/EPC/Investasi draft (Fase 63) + budget request; proposal "akuisisi pabrik" → memicu due diligence Party (Fase 47.2); semuanya tetap melewati approval dewan sebelum eksekusi final
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/Application/Services/Ndvi/PrecisionAgriAndDaoService.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.7 Dashboard: peta NDVI + status cicilan, proposal aktif, distribusi bobot suara, riwayat keputusan & eksekusinya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Agri/resources/views/agri/index.blade.php
     - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_web_index_accessible
     - akses: route GET /agri [role: admin, farmer, procurement]
-    - gate: docs/gates/fase-86.md
-- [x] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.8 Tests: (a) NDVI di bawah standar → cicilan tertahan (b) Σ bobot suara = paspor/token terbit (c) vote ganda per pemilih ditolak (d) proposal disetujui → draft proyek terbentuk tepat 1x (e) `governance:audit` + `agri:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php
     - test: modules/Agri/tests/Feature/Ndvi/PrecisionAgriAndDaoGovernanceTest.php::test_86_4_and_86_6_dao_voting_weight_hash_chain_and_auto_execution
-    - gate: docs/gates/fase-86.md
-- [x] 86.9 Quality gate Fase 86
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-86.md
+- [ ] 86.9 Quality gate Fase 86
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Agri/Console/Commands/AuditGovernanceCommand.php
     - test: modules/Agri/tests/Feature/AgriTest.php::test_agri_audit_passes_cleanly
     - akses: command governance:audit
-    - gate: docs/gates/fase-86.md
+    - (dibatalkan) gate: docs/gates/fase-86.md
 
 ### Register Minus Fase 86
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8372,74 +9133,82 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 # 4 LINI BISNIS TAMBAHAN — RUMAH SAKIT, BEACH CLUB & CLUBS, PERHOTELAN, PERTAMBANGAN
 
 ## FASE 87 — RUMAH SAKIT I: IDENTITAS PASIEN, EMR, BED MANAGEMENT & CLINICAL PATHWAY
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
-  Bukti:
+- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-87.md
-- [x] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalEmrAndBedService.php
     - file: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
-    - gate: docs/gates/fase-87.md
-- [x] 87.8 Quality gate Fase 87
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-87.md
+- [ ] 87.8 Quality gate Fase 87
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
     - test: modules/Hospital/tests/Feature/HospitalVerticalSliceHttpTest.php::test_d_two_source_hospital_audit_passes_cleanly
     - akses: command hsp:audit
-    - gate: docs/gates/fase-87.md
+    - (dibatalkan) gate: docs/gates/fase-87.md
 
 ### Register Minus Fase 87
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8447,81 +9216,90 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 87.1–87.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 88 — RUMAH SAKIT II: ORDER-TO-CASH, FARMASI, LAB, FARMASI SUPPLY CHAIN, KLAIM & REVENUE CYCLE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
-  Bukti:
+- [ ] 88.1 **Billing episode**: seluruh item (bed-day, tindakan, obat, alat habis pakai, lab, radiologi, dokter) tergabung satu folio episode → struktur tarif bertingkat (mirip tarif utilitas mall Fase 13.2) → tagihan akhir saat discharge
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.2 **Pembayaran campuran**: BPJS simulasi (klaim batch), insurance copay (via escrow/marketplace asuransi), self-pay wallet+PIN (Payment Hub Fase 2) → alokasi urut & split payment; bedah besar memakai **escrow deposit** (hold saat masuk → capture saat pulang → sisa refund)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.3 **e-Prescription → Farmasi**: resep digital → farmasi menyiap → stok obat terpotong via InventoryService (FEFO lot/kedaluwarsa) → item masuk tagihan pasien; interaksi obat terdeteksi (rule engine deterministik) → peringatan apoteker
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_3_e_prescription_contraindication_alert
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.4 **Lab & radiologi**: order lab → hasil terverifikasi (teknisi sign-off) → hasil masuk rekam medis paspor → biaya ter-charge; lab outsourcing (Party) → piutang pihak ketiga
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.5 **Cold-chain medis & supply**: darah, vaksin, obat sitostatik disimpan di fridge IoT → breach suhu → quarantine lot + recall internal + **hold pembayaran pemasok** (memperluas Fase 80.1); rantai dingin Logistics dari pemasok ke farmasi RS
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.6 **Limbah medis B3**: pengumpulan terpisah → armada Logistics khusus dengan rantai kustodi hash (memperluas reverse logistics Fase 79) → vendor pengolah tersertifikasi → kredit ESG limbah medis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.7 **Revenue cycle dashboard**: pemungutan per unit (rawat jalan, rawat inap, bedah, lab, farmasi), aging klaim BPJS/insurance, denial rate, LOS rata-rata, cash collection time
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Hospital/Application/Services/HospitalRevenueCycleService.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
-    - gate: docs/gates/fase-88.md
-- [x] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.8 Tests: (a) episode tagihan = Σ item order (b) escrow deposit → capture/refund seimbang (c) stok obat terpotong = item ter-charge (d) fridge breach → quarantine + hold 1x (e) `hosp:audit` = 0 selisih vs ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_5_vaccine_fridge_breach_quarantines_lot_and_holds_supplier_payable
-    - gate: docs/gates/fase-88.md
-- [x] 88.9 Quality gate Fase 88
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-88.md
+- [ ] 88.9 Quality gate Fase 88
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Hospital/Console/Commands/AuditHospitalCommand.php
     - test: modules/Hospital/tests/Feature/HospitalRevenueCycleAndPharmacyTest.php::test_88_1_and_88_2_surgical_escrow_deposit_mixed_split_settlement_and_refund
     - akses: command hosp:audit
-    - gate: docs/gates/fase-88.md
+    - (dibatalkan) gate: docs/gates/fase-88.md
 
 ### Register Minus Fase 88
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8529,82 +9307,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 88.1–88.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 89 — BEACH CLUB & CLUBS I: TICKETING, ACCESS CONTROL, USIA & VENUE OPERATIONS
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 89.1–89.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [x] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
-  Bukti:
+- [ ] 89.1 Modul `Venue` (`ven_`): provider, MenuRegistry "Venue & Entertainment", roles (`venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`), policies, arch test; tabel `ven_venues`, `ven_zones` (pool/beach/dance floor/VIP/garden), `ven_tables`, `ven_events`, `ven_tickets`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.2 **Skala**: 1.000 venue global (500 Indonesia + 500 internasional simulasi), 100 ribu event/tahun, 50 juta tiket/tahun, kapasitas puncak 1 juta pengunjung/hari (festival); venue terikat properti (Mall/properti grup Fase 12) atau lahan mandiri
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.3 **Ticketing hash-chain non-fungible**: tiket digital dengan hash unik + anti-replay; transfer sekali (secondary market resmi dengan fee), QR scan di gate → **verifikasi identitas & usia** via Human Passport/KYC (umur min 21 club / 18+ tertentu) → gate terbuka (integrasi smart door seperti flex-space Fase 78.3); tiket ganda/replay ditolak
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route POST /venue/tickets/{ticket}/scan [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.4 **Kapasitas & keselamatan kerumunan**: density sensor per zone → ambang kapasitas ditolak masuk (mirip parkir Fase 14.3), heatmap density live, protokol crowd crush simulasi (lock gate zona, arah evakuasi), ambulans on-standby tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.5 **Table/bottle service & VIP**: pemesanan meja dengan minimum spend → deposit escrow (hold saat booking → capture saat hadir → no-show fee) → konsumsi tercatat POS venue (memperluas modul Resto Fase 9) → tagihan akhir ke dompet
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.6 **Dynamic pricing tiket**: harga real-time mengikuti countdown tier (early bird → GA → door), demand forecast, cuaca pesisir (feed simulasi), okupansi — memakai Pricing Engine Fase 81 dengan floor (harga dasar artis) & ceiling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.7 Izin & compliance: izin keramaian (dokumen gapless 26.8), kapasitas max legal, kebijakan substance screening simulasi (pemeriksaan acak tercatat, tanpa detail medis), asuransi event tersemat (Pilar 2 Fase 72)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_3_ticket_purchase_and_anti_replay_gate_scan
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-89.md
-- [x] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.8 Tests: (a) tiket replay/ganda ditolak (b) usia di bawah minimum ditolak (c) zona penuh → gate tolak (d) escrow meja → capture/no-show konsisten (e) harga tiket tak keluar dari band floor/ceiling
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueOperationsService.php
     - file: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_5_vip_table_escrow_deposit_and_no_show_forfeiture
-    - gate: docs/gates/fase-89.md
-- [x] 89.9 Quality gate Fase 89
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-89.md
+- [ ] 89.9 Quality gate Fase 89
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Venue/Console/Commands/AuditVenueCommand.php
     - test: modules/Venue/tests/Feature/BeachClubAndVenueOperationsTest.php::test_89_4_zone_at_max_capacity_blocks_further_entry
     - akses: command ven:audit
-    - gate: docs/gates/fase-89.md
+    - (dibatalkan) gate: docs/gates/fase-89.md
 
 ### Register Minus Fase 89
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8612,81 +9399,90 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 89.1–89.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 90 — BEACH CLUB & CLUBS II: ARTIST CONTRACTS, SUPPLY, MEMBERSHIP & FESTIVAL ECONOMY
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit cfdf6bda).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [x] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
-  Bukti:
+- [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_membership_loyalty_point_earn_and_redeem
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: cfdf6bda
     - file: modules/Venue/Application/Services/VenueEconomyService.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
-    - gate: docs/gates/fase-90.md
-- [x] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: tooling
     - commit: cfdf6bda
     - file: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
-    - gate: docs/gates/fase-90.md
-- [x] 90.9 Quality gate Fase 90
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-90.md
+- [ ] 90.9 Quality gate Fase 90
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: cfdf6bda
     - file: modules/Venue/Console/Commands/AuditVenueCommand.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: command venue:audit
-    - gate: docs/gates/fase-90.md
+    - (dibatalkan) gate: docs/gates/fase-90.md
 
 ### Register Minus Fase 90
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8694,82 +9490,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 90.1–90.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 91 — PERHOTELAN I: PMS, CENTRAL RESERVATION, RATE MANAGEMENT & SMART ROOM
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [x] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
-  Bukti:
+- [ ] 91.1 Modul `Hotel` (`htl_`): provider, MenuRegistry "Perhotelan", roles (`front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `concierge`), policies, arch test; tabel `htl_properties`, `htl_rooms`, `htl_rate_plans`, `htl_reservations`, `htl_folios`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.2 **Skala**: 5.000 properti (city hotel, resort, villa, serviced apartment, kapsul, glamping) × 500.000 kamar, 100 juta room-night/tahun, 200 juta booking channel/tahun; properti terikat aset (Fase 30) & sewa (mall/ruko)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_reservation_creation_with_floor_rate_and_contract_rate
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.3 **Central reservation & anti-oversell**: kanal (web, app, OTA simulasi, corporate, walk-in) memakai inventori kamar terpusat dengan lock kapasitas (memperluas Fase 22.2) → overbooking bertingkat (mis. 3% dengan konfirmasi ulang) → konversi ke properti tetangga bila penuh
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_a_oversell_within_percent_limit_and_reconfirmation_flow
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.4 **Check-in/out & smart lock**: identitas via Human Passport/KYC → kamar diberi smart-lock QR/biometrik (sesi berlaku masa inap) → early check-in/late checkout berbayar masuk folio → folio terbuka selama inap → check-out settlement (kartu/wallet/escrow corporate) → posting ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_b_smart_lock_duplicate_and_expired_token_rejected
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.5 **Rate & revenue management**: tarif per kamar per hari per channel mengikuti demand, event kota (mall event Fase 15.3, festival Fase 90.5, konvensi EPC), lead time, okupansi — **dynamic rate** real-time (memperluas Fase 81) dengan guardrail: corporate/contract rate immutable (Fase 44.4), floor = variable cost per malam
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_c_dynamic_rate_respects_floor_and_contract_rate_wins
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.6 **Smart room & energy twin**: occupancy sensor + status TV → "make-up on request" → kamar kosong → HVAC setback otomatis (memperluas smart building Fase 76.2) → energi per occupied-room-night terhitung ESG (Fase 60) → digital twin kamar via Twin Bus (Fase 67.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_d_vacant_room_triggers_energy_setback
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.7 **Housekeeping & maintenance IoT**: tugas kebersihan terdistribusi (rute terpendek ala pick WMS Fase 41.3), inspect quality score; kerusakan (AC, shower) → work order otomatis (Fase 31.5) → SLA durasi → gangguan > jam → kompensasi tamu otomatis (voucher)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_checkout_and_folio_settlement_posting_to_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.8 Tests: (a) oversell berada di batas % & konfirmasi ulang berjalan (b) smart lock ganda/kadaluarsa ditolak (c) rate dinamis tak menembus floor & contract rate menang (d) kamar kosong → setback terpicu (e) `hotel:audit` = room-night revenue = ledger
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
-- [x] 91.9 Quality gate Fase 91
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-91.md
+- [ ] 91.9 Quality gate Fase 91
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelOperationsService.php
     - test: modules/Hotel/tests/Feature/HotelPmsAndOperationsTest.php::test_e_hotel_audit_reconciles_room_night_revenue_with_ledger
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-91.md
+    - (dibatalkan) gate: docs/gates/fase-91.md
 
 ### Register Minus Fase 91
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8777,82 +9582,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 91.1–91.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 92 — PERHOTELAN II: FOLIO, F&B/BANQUET, LOYALTY NIGHTS, TIMESHARE & DESTINATION PACKAGE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [x] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
-  Bukti:
+- [ ] 92.1 **Folio & upsell**: seluruh item inap (kamar, F&B room service, spa, laundry, minibar, parkir valet) masuk satu folio → split settlement, corporate billing (invoicing bulanan ke perusahaan = piutang), deposit & city ledger per tamu
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.2 **F&B & banquet**: restoran hotel memakai modul Resto penuh (HPP, batch, shift Fase 7–9) + banquet multi-event (memperluas katering Fase 11.2) → kitchen terhubung cold-chain Logistics; konsumsi room service ter-charge ke folio otomatis
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.3 **Spa & wellness**: katalog treatment, booking terapis (HCM gig via bounty Fase 85), konsumsi produk ter-charge; treatment medis ringan terhubung konsultasi RS (Pilar 9)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_folio_addon_charge_roll_up
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.4 **Stay passport & loyalty nights**: riwayat menginap, preferensi (lantai, bantal, alergi), poin per room-night (PTS lintas ekosistem: tukar tiket venue, diskon Resto, spa) → tier Silver/Gold/Platinum dengan benefit upgrade & night gratis → churn risk scoring
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.5 **Timeshare & fractional ownership**: unit villa/kamar tertentu di-tokenisasi (memperluas RWA Fase 71) → pemilik dapat hak jadwal inap + bagi hasil sewa saat tidak dipakai → jadwal penggunaan via booking engine → dividen harian dari okupansi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_timeshare_fractional_dividend_distribution_invariants
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.6 **Destination package engine**: bundling hotel + tiket festival/club + restoran + transport + spa → **satu harga, satu pembayaran, satu invoice multi-vendor** → settlement otomatis ke tiap pihak via escrow (Fase 61.4) + fee platform
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_destination_package_multi_vendor_settlement
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.7 **MICE & wedding sales**: pipeline B2B (konvensi, wedding, corporate retreat) → proposal harga berjenjang → deposit milestone → koordinasi venue (atrium mall Fase 15.3 / beach club Fase 89 / hall hotel) → kontrak via modul Contract
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_corporate_billing_posts_to_city_ledger_ar
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate billing masuk AR & aging (e) `hotel:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.8 Tests: (a) folio item = Σ order terkait (b) bundle settlement Σ = pembayaran tamu (c) timeshare Σ token = unit terdaftar & dividen pro-rata akurat (d) corporate billing masuk AR & aging (e) `hotel:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
-- [x] 92.9 Quality gate Fase 92
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-92.md
+- [ ] 92.9 Quality gate Fase 92
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Hotel/Application/Services/HotelFolioAndPackageService.php
     - test: modules/Hotel/tests/Feature/HotelFolioTimeshareAndPackageTest.php::test_hotel_audit_zero_discrepancy
     - akses: route GET /hotel [role: admin, hotel_admin, front_desk]
-    - gate: docs/gates/fase-92.md
+    - (dibatalkan) gate: docs/gates/fase-92.md
 
 ### Register Minus Fase 92
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8860,82 +9674,91 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 92.1–92.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 93 — PERTAMBANGAN I: MINE PLANNING, FLEET DISPATCH & FUEL MANAGEMENT
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [x] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
-  Bukti:
+- [ ] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_c_engine_hours_above_threshold_triggers_work_order_once
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
-- [x] 93.9 Quality gate Fase 93
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-93.md
+- [ ] 93.9 Quality gate Fase 93
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningFleetDispatchService.php
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-93.md
+    - (dibatalkan) gate: docs/gates/fase-93.md
 
 ### Register Minus Fase 93
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -8943,90 +9766,100 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 93.1–93.9 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 94 — PERTAMBANGAN II: WEIGHBRIDGE, GRADE RECONCILIATION, ROYALTY, HSE & OFFTAKE
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 94.1–94.10 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [x] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
-  Bukti:
+- [ ] 94.1 **Weighbridge & stockpile**: timbangan digital tercatat hash-chain per truck load (plat, muatan, tujuan, waktu) → stockpile model 3D (digital twin via Fase 67.3) → **rekonsiliasi ore vs concentrate vs shipment** (yang masuk smelter/ekspor = yang dicatat) → selisih > toleransi → investigasi otomatis + approval
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.2 **Grade control**: sampling & assay lab per stockpile/load (hasil terverifikasi teknisi) → blending optimization (AI deterministik teraudit) agar feed smelter stabil → recovery % per unit pengolahan → assay bias dilaporkan
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_c_assay_bias_outside_tolerance_triggers_investigation
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.3 **Smelter & hilirisasi**: ore → concentrate → bahan jadi (nickel pig iron, tembaga katoda simulasi) → memakai modul Manufacturing (BOM, costing Fase 35–38 dengan routing khusus pertambangan) → produk jadi masuk Store/Trade
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_weighbridge_ticket_hash_chain
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.4 **Royalty & pajak komoditas (simulasi)**: produksi bulanan × tarif royalti per komoditas → jurnal kewajiban (`min:royalty_payable`) → pembayaran ke pemerintah (dokumen gapless) + PPN/PPh final; IUP/IUPK masa berlaku → pengingat & perpanjangan via ApprovalEngine (Fase 54.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.5 **HSE & lingkungan**: izin kerja berisiko (memperluas Fase 40.6: blasting, ketinggian, confined space) dengan approval & masa berlaku; incident & near-miss → investigasi → CAPA; IoT lingkungan (debu, noise, tremor, kualitas air) → ambang → shutdown area + notifikasi; kepatuhan AMDAL simulasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_hse_work_permit_verification
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.6 **Reklamasi & pascatambang**: jadwal reklamasi sebagai proyek EPC (Fase 63) → biaya capitalisasi + provisi liabilitas pascatambang (simulasi PSAK) → track progress vs amdal
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.7 **Offtake & komoditas trading**: kontrak penjualan ore/coal ke smelter/mitra dengan formula harga (index komoditas + kalori/grade adjustment) → settlement bertingkat + assay final → LC/SCF via Trade Finance (Fase 50) → ekspor via Fase 49 dengan B2B marketplace (Fase 61)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.8 **Emisi & ESG tambang**: Scope 1 (BBM alat berat, blasting) & Scope 2 (listrik plant) → kredit karbon (Fase 60) → rencana elektrifikasi fleet & solar plant → laporan ESG per konsesi; HSE dashboard (jam tanpa kecelakaan, permit aktif, ambang lingkungan)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_royalty_calculation_and_ledger_accrual
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.9 Tests: (a) weighbridge Σ = stockpile movement = shipment (b) royalti = produksi × tarif (c) assay bias di luar toleransi → investigasi (d) izin kedaluwarsa → kerja ditolak (e) `mining:audit` = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
-- [x] 94.10 Quality gate Fase 94
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-94.md
+- [ ] 94.10 Quality gate Fase 94
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Mining/Application/Services/MiningComplianceAndRoyaltyService.php
     - test: modules/Mining/tests/Feature/MiningWeighbridgeRoyaltyAndHseTest.php::test_e_mining_audit_zero_discrepancy
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
-    - gate: docs/gates/fase-94.md
+    - (dibatalkan) gate: docs/gates/fase-94.md
 
 ### Register Minus Fase 94
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -9038,75 +9871,83 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 # INTEGRASI 12 LINI, SKALA ULTRA, AI, KEAMANAN & PENUTUPAN — FASE 95–103
 
 ## FASE 95 — INTEGRASI LINTAS 12 LINI (A): OTOMOTIF, EV, LOGISTIK, HOTEL, VENUE, RUMAH SAKIT
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 63f891a8).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
-  Bukti:
+- [ ] 95.1 **Otomotif ↔ Logistik**: armada sewa (Fase 70) & haul truck tambang (Fase 93) memakai dispatch & custody Logistik (Fase 22) satu papan; odometer servis (Fase 24.3) berlaku untuk semua armada lintas lini; EV charger hub tersedia di Hub Logistik & Mall
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_odometer_sync_across_rental_and_mining_fleet
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.2 **EV ↔ infrastruktur lini**: SPKLU dipasang di Mall (Fase 76), Venue (Fase 89), Hotel (Fase 91), site tambang (Fase 94) → satu jaringan charger, tarif konsisten, kWh masuk ESG masing-masing properti
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_spklu_ev_charging_across_properties_with_esg_scope2
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.3 **Hotel ↔ Venue ↔ Resto**: destination package (Fase 92.6) mencakup tiket festival (Fase 90.5) dan dining (Fase 74) → satu pembayaran, settlement multi-vendor escrow; folio hotel menerima charge venue/restaurant
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_venue_charge_posted_to_hotel_folio_via_port
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.4 **Rumah Sakit ↔ Hotel**: medical tourism package (RS + hotel + transport Logistics) → bundle satu harga; kamar hotel disiapkan untuk pasien pasca-operasi; diet meals RS dikirim dapur sentral Resto (Fase 74.3)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.5 **Rumah Sakit ↔ Logistik ↔ Farmasi**: rantai dingin obat/darah (Fase 88.5) memakai cold-chain Logistik (Fase 80) → satu telemetri suhu, satu hash-chain kustodi, hold pembayaran seragam; limbah medis masuk reverse logistics (Fase 79)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_medical_tourism_bundle_settlement_cross_3_lines
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.6 **Akses & identitas tunggal**: Human Passport (RS Fase 87.2) + Paspor Kendaraan (Fase 5A) + Paspor Digital (DAO Fase 86.4) → satu identitas lintas lini; smart door Hotel/Venue/Flex-Space/RS memindai kredensial yang sama
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_unified_single_credential_access_control
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.7 Test integrasi end-to-end satu hari lintas 6 lini (inap hotel → check-in venue → bayar bundle → katering karyawan → servis prediktif mobil → cold-chain obat masuk RS) + reconcile semua ledger terdampak = 0
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 63f891a8
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
-- [x] 95.8 Quality gate Fase 95
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-95.md
+- [ ] 95.8 Quality gate Fase 95
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 63f891a8
     - file: docs/gates/fase-95.md
     - file: modules/Core/Application/Services/TwelveLinesCrossEcosystemService.php
     - test: modules/Core/tests/Feature/CrossEcosystemTwelveLinesTest.php::test_end_to_end_cross_line_ecosystem_audit_zero_discrepancy
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-95.md
+    - (dibatalkan) gate: docs/gates/fase-95.md
 
 ### Register Minus Fase 95
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
@@ -9114,261 +9955,290 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 95.1–95.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 96 — INTEGRASI LINTAS 12 LINI (B): FINTECH, RWA, INSURTECH & PEMBIAYAAN UNTUK SEMUA LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 96.1–96.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit fafca066).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
-  Bukti:
+- [ ] 96.1 **RWA lintas lini**: tokenisasi unit hotel/timeshare (Fase 92.5), unit mall (Fase 71), truk logistik (Fase 71), mesin tambang (Fase 94), alat RS medis → satu marketplace RWA, satu orderbook, satu engine dividen; omzet sumber dari lini mana pun mengalir pro-rata ke holder
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Rwa/Application/Services/RwaCrossLineDividendDistributionService.php
     - test: modules/Rwa/tests/Feature/RwaCrossLineDividendDistributionTest.php::test_rwa_pro_rata_dividend_distribution_with_dust_reserve_invariant
     - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
-    - gate: docs/gates/fase-96.md
-- [x] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.2 **InsurTech tersemat universal**: trigger dari 12 lini (keterlambatan logistik, kecelakaan kendaraan, cold-chain breach venue/RS/hotel, pembatalan event, cuaca tambang, no-show kontrak) → claims autopilot (Fase 72) satu kerangka, reserve terpusat di Treasury
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Insurance/Application/Services/UniversalCrossLineInsuranceClaimService.php
     - test: modules/Insurance/tests/Feature/UniversalCrossLineInsuranceClaimTest.php::test_universal_parametric_claim_autopilot_across_12_lines
     - akses: route GET /insurance [role: admin, insurance_admin, underwriter, customer]
-    - gate: docs/gates/fase-96.md
-- [x] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.3 **Pembiayaan lintas lini**: HODL-to-Drive (Fase 5C) → diperluas: pembiayaan alat berat tambang, pembiayaan fit-out tenant, pembiayaan modal tani (Fase 62) & pre-payment petani berbasis NDVI (Fase 86.2) — satu engine kredit dengan credit profile 360° (Fase 27.7)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Finance/Application/Services/UniversalCreditEvaluationService.php
     - test: modules/Finance/tests/Feature/UniversalCreditEvaluationTest.php::test_credit_profile_360_scoring_and_tier_classification
     - akses: route GET /rwa [role: admin, asset_manager, investor, rwa_admin]
-    - gate: docs/gates/fase-96.md
-- [x] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.4 **Stablecoin settlement gr**up: settlement intercompany & cross-border (venue internasional, artist luar negeri, offtake tambang) memakai stablecoin internal (Fase 83) → clear real-time 24/7, kurs terkunci, Σ ledger seimbang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Core/Application/Services/UniversalStablecoinClearingService.php
     - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_stablecoin_24_7_cross_border_clearing_with_locked_fx
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.5 **Yield & treasury terpadu**: saldo idle 12 lini → robo-advisor/Treasury yield (Fase 73) → cash pooling antar entitas (Fase 48.8) → group liquidity teroptimasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Treasury/Application/Services/UniversalGroupCashPoolingService.php
     - test: modules/Treasury/tests/Feature/UniversalGroupCashPoolingTest.php::test_daily_idle_cash_sweep_to_treasury_yield_pool
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.6 Test integrasi: pembayaran bundle hotel-venue-resto → settle ke vendor + fee platform + poin loyalty; klaim insuransi lintas 3 lini cair otomatis; Σ semua = 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: fafca066
     - file: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php
     - test: modules/Core/tests/Feature/UniversalCrossLineFintechIntegrationTest.php::test_cross_line_bundle_settlement_and_three_line_insurance_autopilot
     - akses: command ins:audit
-    - gate: docs/gates/fase-96.md
-- [x] 96.7 Quality gate Fase 96
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-96.md
+- [ ] 96.7 Quality gate Fase 96
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: fafca066
     - file: docs/gates/fase-96.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command rwa:audit
-    - gate: docs/gates/fase-96.md
+    - (dibatalkan) gate: docs/gates/fase-96.md
 
 ## FASE 97 — INTEGRASI LINTAS 12 LINI (C): TALENT GIG, ESG TERPADU & EVENT SPINE PENUH
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 97.1–97.7 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 55726620).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul produsen & konsumen event yang terlibat (bukan Core/Integration) · **Prasyarat:** R8.1 ✅ + lini yang diintegrasikan ✅ · **Acuan:** KONSEP §A4.2, A12
 > **Jalan pintas terlarang di fase ini:** satu service orkestrasi di Core yang mengimpor Domain banyak modul; event tanpa konsumen nyata; 'integrasi' berupa test yang memanggil service berurutan — ditambah seluruh X1–X25.
-- [x] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
-  Bukti:
+- [ ] 97.1 **Talent marketplace universal**: bounty lintas lini (Resto overload, setup venue, bongkar muat logistik, cuci armada, asistensi RS dadakan, operasional shift hotel, crew tambang kontraktor) → satu papan, aturan upah & K3 konsisten (Fase 85), bayar via Core Banking
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Hcm/Application/Services/UniversalTalentGigOrchestratorService.php
     - test: modules/Hcm/tests/Feature/UniversalTalentGigTest.php::test_claim_and_payout_disbursement_via_ledger
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.2 **ESG terpadu 12 lini**: agregasi emisi Scope 1–3 dari armada (Fase 60), gedung/hotel/venue (Fase 76), pabrik & tambang (Fase 94.8), limbah sirkular (Fase 79) → neraca karbon grup → kredit karbon pensiun → laporan GRI per lini & konsolidasi grup
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Esg/Application/Services/ConsolidatedTwelveLinesEsgService.php
     - test: modules/Esg/tests/Feature/ConsolidatedTwelveLinesEsgTest.php::test_carbon_credit_retirement_double_entry_ledger_posting
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.3 **Universal Event Spine penuh** (Fase 67.2): seluruh event 12 lini terbit & terkonsumsi lintas pilar — contoh: `min.ore_shipped` → `lgx.container_loaded` → `trade.bl_issued` → `fintech.escrow_released`; `ven.event_ticket_sold` → `htl.bundle_confirmed` → `resto.catering_ready`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Application/Services/UniversalEventSpineOutboxService.php
     - test: modules/Core/tests/Feature/UniversalEventSpineOutboxTest.php::test_publish_and_consume_event_spine_idempotently
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.4 **Group command center 12 lini** (memperluas Fase 57.4/16.5): P&L per lini, arus kas, kesehatan seluruh `*:audit` (kini 40+ perintah), status event spine (lag, dead-letter), twin health per entitas — dalam batas query budget
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Application/Services/GroupCommandCenterExecutiveService.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.5 **Skor kesehatan ekosistem** per entitas & per lini (finansial, talenta, ESG, risiko — memperluas ide 8E) → dasar keputusan alokasi modal & prioritas ekspansi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/Domain/Models/CoreEcosystemHealthScore.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_command_center_query_budget_and_health_score
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.6 Tests: (a) event lintas lini diproses idempoten saat replay (b) ESG grup = Σ emisi lini (c) P&L 12 lini = ledger konsolidasi (d) gig payout lintas lini konsisten payroll (e) query budget command center terpenuhi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 55726620
     - file: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php
     - test: modules/Core/tests/Feature/TwelveLinesCrossEcosystemFullSpineTest.php::test_event_spine_idempotent_replay
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
-- [x] 97.7 Quality gate Fase 97
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-97.md
+- [ ] 97.7 Quality gate Fase 97
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 55726620
     - file: docs/gates/fase-97.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-97.md
+    - (dibatalkan) gate: docs/gates/fase-97.md
 
 ## FASE 98 — SKALA ULTRA: SEEDER 12 LINI, QUERY BUDGET & STRESS TEST
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 98.1–98.6 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 815b4180).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (Scale Provisioner) + seeder per lini · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
 > **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report` — ditambah seluruh X1–X25.
-- [x] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
-  Bukti:
+- [ ] 98.1 **TwelveLinesUltraSeeder**: dataset raksasa deterministik idempoten (memperluas Fase 56.1 & 67.4): 10 juta kendaraan berpaspor + telematik 180 hari, 5 juta dompet + ratusan juta mutasi, 5.000 outlet + 730 juta order (12 bulan), 200 properti + 50 ribu lease + 12 bulan billing, 5 juta shipment + 100 juta event kustodi, 100 pabrik + 1 juta SPK, 10 ribu koridor dagang + 50 ribu L/C, 10 juta pasien + 100 juta encounter, 1.000 venue + 50 juta tiket, 5.000 properti hotel + 100 juta room-night, 500 pit + 50 ribu alat berat + miliaran tick telematik; checkpoint/resume, benchmark per etape
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: database/seeders/TwelveLinesUltraSeeder.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_ultra_seeder_executes_within_memory_and_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.2 **Query budget penuh**: endpoint kritis tiap lini (bed board, bed board venue, bed board tambang, RWA orderbook, claims autopilot, rate optimizer, tick feed) diuji p95 latensi & jumlah query di bawah ambang; dokumentasi EXPLAIN tanpa full table scan pada tabel > 100 ribu baris
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: database/migrations/2026_10_22_000006_add_composite_indexes_for_scale.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_critical_endpoints_and_command_center_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.3 **Race condition ekstrem lintas lini**: 1.000 booking kamar serentak atas 10 kamar sisa, 500 tiket atas 100 kursi, 500 bid atas 10 unit RWA, penarikan saldo massal → alokasi tepat, tak pernah negatif/ganda
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesExtremeConcurrencyTest.php
     - test: tests/Feature/TwelveLinesExtremeConcurrencyTest.php::test_pessimistic_locking_prevents_room_oversell
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.4 **Chaos engineering lintas lini**: kegagalan worker di tengah klaim asuransi multi-entri, event spine duplikat, deadlock batch settlement → rollback sempurna/retry idempoten
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesChaosResiliencyTest.php
     - test: tests/Feature/TwelveLinesChaosResiliencyTest.php::test_mid_transaction_crash_rolls_back_cleanly
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.5 Laporan performa sebelum vs sesudah optimasi (memperluas Fase 56.7) untuk seluruh lini baru
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 815b4180
     - file: tests/Feature/TwelveLinesQueryBudgetTest.php
     - test: tests/Feature/TwelveLinesQueryBudgetTest.php::test_critical_endpoints_and_command_center_query_budget
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
-- [x] 98.6 Quality gate Fase 98
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-98.md
+- [ ] 98.6 Quality gate Fase 98
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 815b4180
     - file: docs/gates/fase-98.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ecosystem:audit-12-lines
-    - gate: docs/gates/fase-98.md
+    - (dibatalkan) gate: docs/gates/fase-98.md
 
 ## FASE 99 — AI & ANALITIK PREDIKTIF TERPADU 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — seluruh item 99.1–99.6 tuntas 100% dan terverifikasi di Gerbang 1–6 (commit 27baaafc).
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** AI terpadu tanpa fondasi Fase 64; skor dari parameter pemanggil; auto-execute tanpa kill-switch yang diuji — ditambah seluruh X1–X25.
-- [x] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
-  Bukti:
+- [ ] 99.1 **Dynamic pricing unified**: satu engine (Fase 81 + 64.1) mengatur harga lintas kanal — tiket venue, room rate hotel, ongkir logistik, suku cadang, harga grosir, tarif EV, royalti komoditas — dengan guardrail & contract-price-wins seragam, `ai:audit` membuktikan determinisme
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/UnifiedDynamicPricingEngineService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.2 **Forecasting terpadu**: demand resto dari footfall mall & event venue (Fase 75.1), forecast S&OP pabrik (Fase 53.2), forecast okupansi hotel dari kalender event & festival, forecast produksi tambang dari rencana → satu kerangka MAPE & override ter-audit
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/MultiVectorDemandForecastingService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_demand_forecasting_mape_accuracy
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.3 **Anomaly detection & anti-fraud lintas lini** (memperluas Fase 64.2): skor anomali untuk klaim asuransi, transaksi dompet, penjualan venue, tagihan RS, fuel tambang, resale tiket → quarantine transaksi berisiko sebelum settlement
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/CoreAiAnomalyQuarantineService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_anomaly_fraud_quarantine_blocks_suspicious_settlement
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.4 **Prescriptive ops**: rekomendasi stok & PO (Fase 64.3), replenishment VMI (Fase 82), blending tambang (Fase 94.2), shift & bounty (Fase 97.1), energy setback (Fase 91.6) — semua berbentuk usulan yang dieksekusi otomatis di bawah ambang / approval di atas ambang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: modules/Core/Application/Services/PrescriptiveOperationsService.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_prescriptive_ops_auto_executes_below_threshold
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.5 **AI bid agent & claim agent** (Fase 84 + 72) diuji ulang terhadap dataset ultra (Fase 98.1) → konsistensi & auditabilitas terbukti pada skala
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 27baaafc
     - file: tests/Feature/UnifiedDynamicPricingTest.php
     - test: tests/Feature/UnifiedDynamicPricingTest.php::test_contract_priority_wins_over_dynamic_multipliers
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
-- [x] 99.6 Quality gate Fase 99
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-99.md
+- [ ] 99.6 Quality gate Fase 99
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 27baaafc
     - file: docs/gates/fase-99.md
     - test: tests/Architecture/TestHygieneTest.php
     - akses: command ai:audit
-    - gate: docs/gates/fase-99.md
+    - (dibatalkan) gate: docs/gates/fase-99.md
 
 ## FASE 100 — KEAMANAN, RBAC 60+ ROLE, KEPATUHAN & OBSERVABILITAS 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-96-fintech-rwa (commit 08438aae) tuntas vertical slice keamanan, RBAC 60+ dan observabilitas Fase 100.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core RBAC + semua modul · **Prasyarat:** R3 ✅ · **Acuan:** KONSEP §A6
 > **Jalan pintas terlarang di fase ini:** role disebut di seeder tetapi rute tidak dibatasi; enkripsi field-level diklaim tanpa `encrypted` cast; `*:audit` lini diklaim tanpa command — ditambah seluruh X1–X25.
-- [x] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
-  Bukti:
+- [ ] 100.1 **RBAC 12 lini**: role baru (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `venue_manager`, `venue_staff`, `artist_relations`, `crowd_safety`, `front_office`, `housekeeping`, `revenue_mgr`, `hotel_gm`, `mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`, `ev_operator`, `fleet_manager`, `wm_advisor`, dst.) → matriks otorisasi data-driven, RouteSmokeTest & SecurityTest mencakup seluruh rute baru
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: database/seeders/RbacConglomerateSeeder.php
     - test: tests/Feature/SuperHealthCheckSuiteTest.php::test_super_health_check_passes_cleanly
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.2 **Privacy & PII khusus**: data medis (rekam medis, telemetri pasien) ter-encrypt field-level + audit akses ketat (siapa membaca apa), data tamu hotel/venue (ID, kebiasaan) ter-scope ketat anti-IDOR lintas properti; PII minimization di pelacakan publik
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Hospital/Domain/Models/PatientMedicalRecord.php
     - file: modules/Hospital/database/migrations/2026_10_22_000009_create_hsp_patient_records_table.php
     - test: tests/Feature/PatientMedicalRecordEncryptionTest.php::test_sensitive_medical_fields_are_encrypted_in_database
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.3 **Compliance kalender 12 lini**: izin RS (izin praktik, radiologi), izin venue (keramaian, minuman keras), izin hotel (pariwisata, kebakaran), izin tambang (IUP, AMDAL), sertifikasi halal/BPOM lintas F&B, CBAM lintas ekspor → pengingat & eskalasi terpusat (memperluas Fase 54.6)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Core/Domain/Models/CoreComplianceObligation.php
@@ -9376,207 +10246,229 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - file: modules/Core/database/migrations/2026_10_22_000008_create_core_compliance_obligations_table.php
     - test: tests/Feature/TwelveLinesComplianceCalendarTest.php::test_compliance_calendar_flags_expiring_permits
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.4 **Health-check & audit 12 lini**: `super:health-check` mencakup pilar baru (hsp, ven, htl, min, rwa, ins, wm, otelematics, prc, gov); seluruh `*:audit` baru (hosp:audit, venue:audit, hotel:audit, mining:audit, clearing:audit, pricing:audit, governance:audit, dll.) masuk quality gate default
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.4 **Health-check & audit 12 lini**: `super:health-check` mencakup pilar baru (hsp, ven, htl, min, rwa, ins, wm, otelematics, prc, gov); seluruh `*:audit` baru (hosp:audit, venue:audit, hotel:audit, mining:audit, clearing:audit, pricing:audit, governance:audit, dll.) masuk quality gate default
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: tests/Feature/SuperHealthCheckSuiteTest.php
     - test: tests/Feature/SuperHealthCheckSuiteTest.php::test_super_health_check_passes_cleanly
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.5 Rate limit & anti-abuse khusus: verifikasi usia venue (biometrik simulasi), akses IGD (anti-bruteforce berbeda dari login normal), booking massal (anti-scalping tiket & kamar), telematik ingest (device token rotation)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.5 Rate limit & anti-abuse khusus: verifikasi usia venue (biometrik simulasi), akses IGD (anti-bruteforce berbeda dari login normal), booking massal (anti-scalping tiket & kamar), telematik ingest (device token rotation)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 08438aae
     - file: modules/Core/Application/Services/AntiAbuseRateLimiterService.php
     - test: tests/Feature/AntiAbuseRateLimiterTest.php::test_venue_age_verification_with_biometric_and_rate_limiting
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
-- [x] 100.6 Quality gate Fase 100
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-100.md
+- [ ] 100.6 Quality gate Fase 100
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 08438aae
     - file: tests/Feature/SuperHealthCheckSuiteTest.php
     - file: docs/gates/fase-100.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-100.md
+    - (dibatalkan) gate: docs/gates/fase-100.md
 
 ## FASE 101 — SKENARIO EMAS 12 LINI & KETAHANAN (DISASTER RECOVERY)
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit d0292f0d) tuntas vertical slice Fase 101.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** tests/Feature (golden scenario) + ops DR · **Prasyarat:** Fase 66 ✅, R8 ✅ · **Acuan:** KONSEP §A10.1
 > **Jalan pintas terlarang di fase ini:** klaim DR/RPO tanpa drill yang dijalankan; skenario tanpa `sim:run` yang menjalankan tick handler — ditambah seluruh X1–X25.
-- [x] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
-  Bukti:
+- [ ] 101.1 **Golden scenario lintas 12 lini**: satu skenario otomatis merajut semuanya — petani menanam (NDVI memicu cicilan) → bahan baku dikirim cold-chain → pabrik memproduksi → dikirim logistik → sampai resto/hotel/venue dijual → bagian ke RS sebagai produk farmasi → armada diisi daya EV → tambang mengirim ore via LC stablecoin → seluruhnya terkonsolidasi di group close → **semua `*:audit` serentak = 0 selisih**
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d0292f0d
     - file: modules/Core/Application/Services/TwelveLinesGoldenScenarioService.php
     - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_runs_end_to_end_across_all_lines
     - akses: command super:health-check
-    - gate: docs/gates/fase-101.md
-- [x] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-101.md
+- [ ] 101.2 **Golden scenario krisis**: recall produk lintas lini (obat RS + F&B venue + produk pabrik) → ketertelusuran lot maju-mundur instan → quarantine + notifikasi + klaim asuransi autopilot + kredit vendor → ESG impact tercatat
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d0292f0d
     - file: modules/Core/Application/Services/CrisisProductRecallService.php
     - test: modules/Core/tests/Feature/CrisisProductRecallTest.php::test_emergency_recall_locks_quarantined_lots_across_all_branches
     - akses: command super:health-check
-    - gate: docs/gates/fase-101.md
-- [x] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-101.md
+- [ ] 101.3 **Disaster recovery multi-region 12 lini** (memperluas Fase 66): failover replika dengan RPO = 0 untuk ledger semua aset (termasuk stablecoin, token RWA, escrow venue/hotel), RTO < 15 menit, drill terjadwal + `dr:audit`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d0292f0d
     - file: modules/Core/Application/Services/DisasterRecoveryFailoverService.php
     - test: modules/Core/tests/Feature/DisasterRecoveryMultiRegionTest.php::test_disaster_recovery_failover_achieves_zero_rpo_data_loss
     - akses: command dr:audit
-    - gate: docs/gates/fase-101.md
-- [x] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-101.md
+- [ ] 101.4 **Post-quantum readiness** (Fase 66.3): audit hash-chain 12 lini (passport kendaraan, paspor pasien, tiket venue, custody logistik, kontrak, aset, weighbridge) terhadap rencana migrasi algoritma
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d0292f0d
     - file: modules/Core/Application/Services/PostQuantumCryptoReadinessService.php
     - test: modules/Core/tests/Feature/PostQuantumCryptoReadinessTest.php::test_eight_merkle_chains_cryptographic_integrity_verification
     - akses: command pq:audit-chains
-    - gate: docs/gates/fase-101.md
-- [x] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-101.md
+- [ ] 101.5 Tests: (a) golden scenario hijau end-to-end (b) recall lintas lini terlacak (c) failover drill → reconcile semua aset = 0 (d) RPO/RTO terukur (e) seluruh verify-* chain valid paska-recovery
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: d0292f0d
     - file: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php
     - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_generates_perfectly_balanced_double_entry_ledgers
     - akses: command pq:audit-chains
-    - gate: docs/gates/fase-101.md
-- [x] 101.6 Quality gate Fase 101
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-101.md
+- [ ] 101.6 Quality gate Fase 101
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: d0292f0d
     - file: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php
     - test: modules/Core/tests/Feature/TwelveLinesGoldenScenarioTest.php::test_golden_scenario_runs_end_to_end_across_all_lines
     - akses: command dr:audit
-    - gate: docs/gates/fase-101.md
+    - (dibatalkan) gate: docs/gates/fase-101.md
 
 ## FASE 102 — API V3, WEBHOOK & PORTAL MITRA 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit b0bb96ee) tuntas vertical slice Fase 102.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** `routes/api.php` per modul + Integration (gateway) · **Prasyarat:** R3.4 ✅, Fase 55 ulang ✅ · **Acuan:** KONSEP §A4.5, §A7
 > **Jalan pintas terlarang di fase ini:** service tanpa rute disebut API; tanpa Sanctum/`Idempotency-Key`/rate limit; tanpa entri `docs/API.md` — ditambah seluruh X1–X25.
-- [x] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
-  Bukti:
+- [ ] 102.1 **API v3**: endpoint untuk lini baru (telematik ingest, EV session, RWA orderbook, claims API, ticketing & check-in, PMS reservation, mine dispatch, weighbridge) — OpenAPI 3.1 lengkap, Sanctum abilities per lini, Idempotency-Key wajib, RFC 7807
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0bb96ee
     - file: modules/Core/Http/Controllers/Api/V3/EnterpriseExecutiveController.php
     - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_executive_kpis_endpoint_returns_json_and_headers
     - akses: route api.v3.executive.kpis
-    - gate: docs/gates/fase-102.md
-- [x] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-102.md
+- [ ] 102.2 **Webhook event spine untuk mitra eksternal**: OTA hotel, payment aggregator venue, sistem tambang pihak ketiga, DHI/insurance partner, asuransi RS → HMAC-SHA256, retry, DLQ, replay (memperluas Fase 55.2)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0bb96ee
     - file: modules/Core/Http/Controllers/Api/V3/PartnerWebhookController.php
     - test: modules/Core/tests/Feature/PartnerPortalTenantIsolationTest.php::test_dead_letter_queue_and_replay_action
     - akses: route api.v3.partner.webhooks.store
-    - gate: docs/gates/fase-102.md
-- [x] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-102.md
+- [ ] 102.3 **Portal mitra baru**: supplier VMI (Fase 82), BPJS/insurance (klaim RS), OTA & corporate travel (hotel), artist management (venue), kontraktor tambang & off-taker, EV charge point operator → masing-masing dengan scope ketat & rate limit tier (Fase 55.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0bb96ee
     - file: modules/Core/Application/Services/TwelveLinesWebhookDispatcherService.php
     - test: modules/Core/tests/Feature/PartnerPortalTenantIsolationTest.php::test_partner_webhook_registration_and_tenant_isolation
     - akses: route api.v3.partner.webhooks.index
-    - gate: docs/gates/fase-102.md
-- [x] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-102.md
+- [ ] 102.4 **Mobile offline-first untuk peran lapangan baru** (memperluas Fase 65): perawat/doctor rounds (order offline), housekeeping & front office, venue door staff (scan tiket offline + sync), mine weighbridge & dispatch, EV field tech, driver & driver drone → sync engine idempoten, zero-duplicate
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0bb96ee
     - file: modules/Core/Http/Controllers/Api/V3/MobileSyncController.php
     - test: modules/Core/tests/Feature/MobileOfflineSyncEngineTest.php::test_vector_clock_causality_detection
     - akses: route api.v3.mobile.sync.push
-    - gate: docs/gates/fase-102.md
-- [x] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-102.md
+- [ ] 102.5 `api:audit` diperluas: seluruh endpoint v3 vs OpenAPI, webhook signature 100% valid, portal scope terisolasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: b0bb96ee
     - file: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php
     - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_rfc_7807_problem_details_payload_structure
     - akses: route api.v3.executive.snapshot
-    - gate: docs/gates/fase-102.md
-- [x] 102.6 Quality gate Fase 102
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-102.md
+- [ ] 102.6 Quality gate Fase 102
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: b0bb96ee
     - file: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php
     - test: modules/Core/tests/Feature/EnterpriseApiV3EndpointsTest.php::test_idempotency_locking_mechanism
     - akses: route api.v3.executive.kpis
-    - gate: docs/gates/fase-102.md
+    - (dibatalkan) gate: docs/gates/fase-102.md
 
 ## FASE 103 — DOKUMENTASI FINAL, PLAYBOOK 60+ ROLE & SERAH TERIMA EKSPANSI 12 LINI
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 299f91fb) tuntas dokumentasi final, playbook 60+ role dan gate ekspansi 12 lini.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** dokumen hasil `docs:inventory` & `gate:report` · **Prasyarat:** semua fase 67–102 ✅ · **Acuan:** PROGRESS P7, X24
 > **Jalan pintas terlarang di fase ini:** dokumen klaim/playbook tanpa command generator; mencentang serah terima sebelum fase sebelumnya ✅ — ditambah seluruh X1–X25.
-- [x] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
-  Bukti:
+- [ ] 103.1 **README final**: ringkasan 12 lini bisnis dalam satu website monolith, tabel akun demo per role baru, cara menjalankan simulasi kernel & seeder ultra, daftar seluruh command `*:audit`/`verify-*`
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.2 **docs/ARCHITECTURE.md**: ERD 12 modul baru, peta Universal Event Spine & Digital Twin Bus, sequence diagram integrasi lintas lini, konvensi ledger multi-aset baru (stablecoin, token RWA, reserve asuransi)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ARCHITECTURE.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.3 **docs/CODEBASE.md & DECISIONS.md**: seluruh keputusan Fase 67–103 tercatat, peta orientasi sesi baru lengkap
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/DECISIONS.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.4 **docs/RUNBOOK.md**: SOP operasional 12 lini (bed board, door venue, dispatch tambang, claims autopilot, EV ops, rate optimizer), jadwal scheduler baru, recovery kegagalan, DR drill
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/RUNBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.5 **Role Playbooks 60+ role**: panduan peran baru (doctor, nurse, pharmacist, front office, housekeeping, revenue manager, venue manager, crowd safety, artist relations, mine planner, fleet dispatcher, hse officer, royalty officer, ev operator, fleet manager, wm advisor, vmi supplier, BPJS/insurance partner, OTA partner, kontraktor tambang, dll.)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/ROLES_60_PLAYBOOK.md
     - test: tests/Architecture/TestHygieneTest.php::it keeps tests within the hygiene ratchet baseline
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.6 **Quality gate final ekspansi**: seluruh test suite 100% hijau tanpa test di-skip/dilemahkan (target jumlah test naik drastis dari baseline Fase 63: 931+ test), Pint 100%, build bersih, 0 artefak debug, seluruh `*:audit` = 0 selisih, seluruh hash-chain valid, `super:health-check` HEALTHY untuk seluruh pilar, working tree bersih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/gates/fase-103.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
-- [x] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-103.md
+- [ ] 103.7 **Berita Acara Serah Terima Ekspansi 12 Lini** di `docs/PROGRESS.md` + laporan penutup final (metrik test/audit/stress, peta 12 lini terintegrasi dalam satu monolith)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 299f91fb
     - file: docs/AUDIT.md
     - test: tests/Architecture/ProgressIntegrityTest.php::it enforces proof block integrity and phase verification in docs/PROGRESS.md
     - akses: command super:health-check
-    - gate: docs/gates/fase-103.md
+    - (dibatalkan) gate: docs/gates/fase-103.md
 
 ---
 
 ## DEFINITION OF DONE (FASE 67–103)
-> **Status audit 2026-10-22:** seluruh butir TERPENUHI & TERVERIFIKASI.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [x] Semua task 67.1–103.7 tercentang, masing-masing di commit sendiri; jumlah test naik di setiap fase (baseline Fase 63: 931+ test/4778+ assertion) tanpa ada test di-skip/dilemahkan.
 - [x] Seluruh quality gate hijau pada commit terakhir; SEMUA `*:audit` baru & lama = 0 selisih; semua hash-chain (passport kendaraan, paspor pasien, tiket venue, custody logistik, weighbridge, kontrak, aset, ECO, RWA supply) valid.
 - [x] Setiap alur uang/stok/tiket/kamar/klaim/royalti baru punya test (a)–(e); matriks otorisasi mencakup seluruh rute × seluruh role 12 lini.
@@ -9594,128 +10486,142 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > Konvensi Fase 26+ tetap berlaku penuh tanpa pengecualian.
 
 ## FASE 104 — KESEHATAN: TELEMEDICINE, E-PHARMACY & JARINGAN APOTEK
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 705912fa) tuntas vertical slice Fase 104.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
-  Bukti:
+- [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Domain/Models/ChronicSubscription.php
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_1_book_tele_consultation
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/PrescriptionSafetyEvaluator.php
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_6_a_prescription_without_doctor_signature_is_rejected
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Domain/Models/AllergyMatrix.php
     - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_cross_allergy_class_blocks_amoxicillin_for_penicillin_allergic_patient
     - akses: route POST /hospital/telemedicine/prescriptions/evaluate [role: admin, doctor, pharmacist]
-    - gate: docs/gates/fase-104.md
-- [x] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/ChronicDrugSubscriptionService.php
     - test: modules/Hospital/tests/Feature/ChronicDrugSubscriptionTest.php::test_chronic_subscription_registration_and_recurring_batch_refill
     - akses: route GET /hospital/epharmacy/subscriptions [role: admin, doctor, pharmacist, auditor]
-    - gate: docs/gates/fase-104.md
-- [x] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/Application/Services/PharmacyMultiBranchRoutingService.php
     - test: modules/Hospital/tests/Feature/PharmacyMultiBranchRoutingTest.php::test_routing_selects_local_branch_when_stock_is_sufficient
     - akses: route POST /hospital/epharmacy/routing [role: admin, pharmacist]
-    - gate: docs/gates/fase-104.md
-- [x] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 705912fa
     - file: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php
     - test: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php::test_fefo_depletes_earliest_expiring_lot_first
     - akses: command super:health-check
-    - gate: docs/gates/fase-104.md
-- [x] 104.7 Quality gate Fase 104
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-104.md
+- [ ] 104.7 Quality gate Fase 104
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 705912fa
     - file: docs/gates/fase-104.md
     - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_renal_clearance_under_thirty_blocks_nephrotoxic_drugs
     - akses: command super:health-check
-    - gate: docs/gates/fase-104.md
+    - (dibatalkan) gate: docs/gates/fase-104.md
 
 ## FASE 105 — KESEHATAN: JARINGAN LABORATORIUM & DIAGNOSTIK IMAGING
-> **Status audit 2026-10-22:** ✅ TERVERIFIKASI — branch feature/fase-101-105-vertical-slice (commit 13e5f0f0) tuntas vertical slice Fase 105.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [x] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
-  Bukti:
+- [ ] 105.1 Tabel `hsp_lab_catalog` (10.000 parameter tes), `hsp_lab_specimens` (barcode rantai spesimen), `hsp_lab_results` (verifikasi teknisi + pathologist), `hsp_imaging_studies` (simulasi DICOM metadata)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Domain/Models/LabCriticalRange.php
     - test: modules/Hospital/tests/Feature/LabCatalogAndCriticalValuesTest.php::test_potassium_severe_hypokalemia_triggers_panic_alert
     - akses: route GET /hospital/laboratory/catalog [role: admin, doctor, nurse, pharmacist, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.2 Rantai spesimen hash-chain: ambil → kirim (Logistics cold-chain) → terima lab → proses → hasil — setiap pindah tangan di-scan, waktu & suhu tercatat; spesimen hilang/putus rantai → auto-reject & minta ulang
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/SpecimenCustodyChainService.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_three_hop_custody_chain_integrity_verification
     - akses: route POST /hospital/laboratory/specimens/custody [role: admin, doctor, nurse]
-    - gate: docs/gates/fase-105.md
-- [x] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.3 Hasil bertingkat: auto-verify untuk nilai normal (rule range), nilai kritis → hold pathologist → notifikasi dokter penulis order; hasil masuk Human Passport & memicu alert clinical pathway bila diagnosis berubah
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/CriticalRangeNotifierService.php
     - test: modules/Hospital/tests/Feature/HospitalLabAndImagingTest.php::test_105_3_and_105_6_b_critical_value_requires_pathologist_verification
     - akses: route POST /hospital/laboratory/results/verify [role: admin, doctor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.4 Lab outsourcing (1.000 lab mitra): tarif kontrak, piutang pihak ketiga, SLA turnaround time, scorecard lab mitra
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/InterBranchFinancialClearingService.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
     - akses: route GET /hospital/laboratory/outsourcing [role: admin, doctor, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.5 Imaging center: booking slot modality (CT/MRI/USG), kapasitas mesin, radiologist read time, biaya ter-charge episode; aset mesin terdaftar & depresiasi (Fase 31)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/Application/Services/DicomPacsImagingService.php
     - test: modules/Hospital/tests/Feature/DicomPacsAndRadiologyTest.php::test_dicom_series_attachment_to_imaging_study
     - akses: route GET /hospital/imaging/pacs [role: admin, doctor, auditor]
-    - gate: docs/gates/fase-105.md
-- [x] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.6 Tests: (a) rantai spesimen putus → hasil tidak bisa disahkan (b) nilai kritis wajib verifikasi manual (c) turnaround breach → kredit piutang lab mitra (d) hasil duplikat idempoten (e) billing hasil lab = Σ order terverifikasi
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: fitur
     - commit: 13e5f0f0
     - file: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php
     - test: modules/Hospital/tests/Feature/SpecimenCustodyAndOutsourcingTest.php::test_tampered_custody_record_breaks_chain_verification
     - akses: command super:health-check
-    - gate: docs/gates/fase-105.md
-- [x] 105.7 Quality gate Fase 105
-  Bukti:
+    - (dibatalkan) gate: docs/gates/fase-105.md
+- [ ] 105.7 Quality gate Fase 105
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  (dibatalkan) Bukti:
     - jenis: dokumen
     - commit: 13e5f0f0
     - file: docs/gates/fase-105.md
     - test: modules/Hospital/tests/Feature/InterBranchFinancialClearingTest.php::test_inter_branch_obligation_creation_and_balanced_ledger_settlement
     - akses: command super:health-check
-    - gate: docs/gates/fase-105.md
+    - (dibatalkan) gate: docs/gates/fase-105.md
 
 ## FASE 106 — KESEHATAN: CLINICAL TRIAL, RESEARCH & DATA VAULT
 > **Status audit 2026-10-22:** 🔨 DIKERJAKAN — branch feature/fase-101-105-vertical-slice bersiap untuk clinical trial, research & data vault Fase 106.
@@ -15163,7 +16069,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 499.8 Quality gate Fase 499
 
 ## FASE 500 — ENTERPRISE MATURITY FINAL: ACCEPTANCE, CERTIFICATION & HANDOVER
-> **Status audit 2026-10-10:** ⬜ BELUM — **dibekukan** sampai Fase R, R6, dan R7 selesai.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** lintas modul — hanya agregasi bukti dari fase yang ✅ · **Prasyarat:** semua fase di rentangnya ✅ (terverifikasi) · **Acuan:** PROGRESS P7, X24
 > **Jalan pintas terlarang di fase ini:** mencentang fase final/sertifikasi sebelum seluruh fase sebelumnya ✅; dokumen serah terima yang tidak dihasilkan command — ditambah seluruh X1–X25.
@@ -15180,7 +16086,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 ## DEFINITION OF DONE (FASE 301–500)
-> **Status audit 2026-10-10:** belum.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 - [ ] Semua fase 301–500 tercentang hanya setelah acceptance criteria, test (a)–(e), quality gate, dan commit benar-benar terpenuhi.
 - [ ] Enterprise maturity tercapai: 30 lini beroperasi dengan integrated governance, control, assurance dan continuous improvement.
 - [ ] Semua `*:audit`, `verify-*`, security, performance, DR, accessibility, cost dan quality checks hijau; angka selaras dengan sumber ledger/data.
@@ -15190,7 +16096,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ---
 
 # MATURITY ROADMAP — FASE 501–1000 (RINGKAS, BERBASIS HASIL)
-> **Status audit 2026-10-10:** ⬜ **DIBEKUKAN** — jangan dikerjakan sebelum Fase R selesai dan 30 lini rancangan punya MVP ✅.
+> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
 
 > Fase 501–1000 **tidak menambah lini bisnis baru**. Jumlah tetap 30 lini rancangan dari Fase 151–300; fase berikut adalah pendalaman, integrasi, skala, pengujian, dan pematangan. Satu fase ringkas = satu hasil terukur, pemilik, tes/invarian, dan quality gate. Semua checkbox kosong sampai benar-benar dikerjakan. Untuk menghindari roadmap semu, pekerjaan yang serupa dikelompokkan dalam gelombang; fase hanya dipisah bila menghasilkan acceptance evidence tersendiri.
 

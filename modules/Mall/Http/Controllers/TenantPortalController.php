@@ -120,17 +120,24 @@ class TenantPortalController extends Controller
             abort(403, 'Akses ditolak. Anda tidak berhak membayar tagihan tenant lain.');
         }
 
+        $headerKey = $request->header('Idempotency-Key');
+        if (! empty($headerKey) && empty($request->input('idempotency_key'))) {
+            $request->merge(['idempotency_key' => $headerKey]);
+        }
+
         $validated = $request->validate([
             'amount' => 'required|integer|min:1000',
             'pin' => 'required|string',
+            'idempotency_key' => 'required|string|max:64',
         ]);
 
         try {
             $updated = $action->execute(
                 invoice: $invoice,
-                paymentAmount: (int) $validated['amount'],
+                amount: (int) $validated['amount'],
                 pin: (string) $validated['pin'],
-                user: $request->user()
+                user: $request->user(),
+                idempotencyKey: (string) $validated['idempotency_key']
             );
 
             $msg = $updated->isPaid()

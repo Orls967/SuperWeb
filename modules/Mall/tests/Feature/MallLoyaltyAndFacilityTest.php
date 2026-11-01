@@ -8,8 +8,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
+use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Mall\Application\Actions\AllocatePaymentAction;
 use Modules\Mall\Application\Actions\BillWorkOrderToTenantAction;
 use Modules\Mall\Application\Actions\ClaimReceiptPointsAction;
@@ -119,6 +121,13 @@ class MallLoyaltyAndFacilityTest extends TestCase
         $this->assertInstanceOf(ReceiptClaim::class, $claim);
         $this->assertSame(22, $claim->points_earned);
         $this->assertSame(ReceiptClaimStatus::APPROVED, $claim->status);
+        $this->assertSame($this->admin->id, $claim->processed_by_user_id);
+        $this->assertNotNull($claim->approved_at);
+        $this->assertSame($this->tenant->id, $claim->tenant_id);
+        $this->assertSame(150_000, $claim->receipt_amount);
+        $this->assertSame(LoyaltyTier::GOLD, $claim->tier_at_claim);
+        $this->assertSame(12_000_000 + 150_000, (int) $member->fresh()->lifetime_spend);
+        $this->assertSame(12_000_000 + 150_000, (int) $member->fresh()->current_year_spend);
 
         // Verifikasi saldo PTS pengguna
         $this->assertSame(22, $this->customer->pointsBalance());
@@ -126,11 +135,81 @@ class MallLoyaltyAndFacilityTest extends TestCase
         // Verifikasi PointBatch untuk FIFO
         $batch = PointBatch::where('user_id', $this->customer->id)->latest('id')->first();
         $this->assertNotNull($batch);
+        $this->assertSame(22, $batch->points_earned);
         $this->assertSame(22, $batch->points_remaining);
+        $this->assertSame('receipt_claim', $batch->source_type);
         $this->assertFalse($batch->is_expired);
 
         // Verifikasi buku besar seimbang untuk aset PTS
         $this->assertSame(0, Artisan::call('bank:reconcile'), 'Rekonsiliasi double-entry ledger PTS tidak bersih.');
+    }
+
+    public function test_claim_receipt_points_validations_and_edge_cases(): void
+    {
+        $action = app(ClaimReceiptPointsAction::class);
+
+        // 1. Nominal <= 0 melempar InvalidArgumentException
+        try {
+            $action->execute($this->customer, 'STR-ERR-0', 0, Carbon::today());
+            $this->fail('Harusnya melempar InvalidArgumentException untuk amount 0');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('harus lebih besar dari 0', $e->getMessage());
+        }
+
+        try {
+            $action->execute($this->customer, 'STR-ERR-NEG', -5000, Carbon::today());
+            $this->fail('Harusnya melempar InvalidArgumentException untuk amount negatif');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('harus lebih besar dari 0', $e->getMessage());
+        }
+
+        // 2. Normalisasi nomor struk (trim dan uppercase) serta tanggal berupa string
+        $claim = $action->execute(
+            user: $this->customer,
+            receiptNumber: '   str-lowercase-123   ',
+            receiptAmount: 10_000,
+            receiptDate: '2026-10-15',
+            tenantId: null,
+            processor: null
+        );
+
+        $this->assertSame('STR-LOWERCASE-123', $claim->receipt_number);
+        $this->assertNull($claim->tenant_id);
+        $this->assertNull($claim->processed_by_user_id);
+        $this->assertSame(1, $claim->points_earned);
+        $this->assertSame('2026-10-15', $claim->receipt_date->format('Y-m-d'));
+
+        // Transaksi createdBy fallback ke user->id
+        $tx = LedgerTransaction::where('idempotency_key', 'pts_claim_STR-LOWERCASE-123')->first();
+        $this->assertNotNull($tx);
+        $this->assertSame($this->customer->id, $tx->created_by);
+
+        // PointBatch dicatat dengan masa aktif 1 tahun dan belum expired
+        $batch = PointBatch::where('user_id', $this->customer->id)->latest('id')->first();
+        $this->assertNotNull($batch);
+        $this->assertSame('receipt_claim', $batch->source_type);
+        $this->assertFalse($batch->is_expired);
+        $this->assertSame(1, $batch->points_earned);
+        $this->assertSame(1, $batch->points_remaining);
+
+        // 3. Belanja di bawah Rp 10.000 tidak menghasilkan poin (misal Rp 1 dan Rp 5.000)
+        $ptsBefore = $this->customer->pointsBalance();
+        $claim1 = $action->execute(
+            user: $this->customer,
+            receiptNumber: 'STR-UNDER-1',
+            receiptAmount: 1,
+            receiptDate: Carbon::today()
+        );
+        $this->assertSame(0, $claim1->points_earned);
+
+        $claimUnder = $action->execute(
+            user: $this->customer,
+            receiptNumber: 'STR-UNDER-10K',
+            receiptAmount: 5_000,
+            receiptDate: Carbon::today()
+        );
+        $this->assertSame(0, $claimUnder->points_earned);
+        $this->assertSame($ptsBefore, $this->customer->pointsBalance());
     }
 
     public function test_klaim_struk_dengan_nomor_yang_sama_ditolak_dengan_exception(): void
@@ -175,12 +254,33 @@ class MallLoyaltyAndFacilityTest extends TestCase
 
         // Tukar voucher 50 PTS (Rp 50.000)
         $template = VoucherTemplate::where('points_required', 50)->firstOrFail();
-        $voucher = $redeemAction->execute($this->customer, $template);
+        $voucher = $redeemAction->execute($this->customer, $template, 'loyalty-test-redeem-1');
 
         $this->assertInstanceOf(Voucher::class, $voucher);
         $this->assertSame(VoucherStatus::ACTIVE, $voucher->status);
         $this->assertSame(50_000, $voucher->nominal_value);
         $this->assertTrue(str_starts_with($voucher->voucher_code, 'VCH-'));
+        $this->assertSame(12, strlen($voucher->voucher_code));
+        $this->assertSame($template->id, $voucher->template_id);
+        $this->assertSame($this->customer->id, $voucher->user_id);
+        $this->assertNull($voucher->tenant_id);
+        $this->assertSame($template->min_spend, $voucher->min_spend);
+        $this->assertSame($template->points_required, $voucher->points_spent);
+        $this->assertNotNull($voucher->expires_at);
+
+        // Verifikasi transaksi ledger PTS dan IDR
+        $txPts = LedgerTransaction::where('idempotency_key', 'pts_redeem_loyalty-test-redeem-1')->first();
+        $this->assertNotNull($txPts);
+        $this->assertSame($this->customer->id, $txPts->created_by);
+
+        $txIdr = LedgerTransaction::where('idempotency_key', 'vch_issue_loyalty-test-redeem-1')->first();
+        $this->assertNotNull($txIdr);
+        $this->assertSame($this->customer->id, $txIdr->created_by);
+
+        // Idempotensi replay: eksekusi ulang dengan key yang sama mengembalikan voucher yang sama tanpa potong poin lagi
+        $voucherReplay = $redeemAction->execute($this->customer, $template, 'loyalty-test-redeem-1');
+        $this->assertSame($voucher->id, $voucherReplay->id);
+        $this->assertSame(10, $this->customer->pointsBalance());
 
         // Sisa poin harus 10 PTS
         $this->assertSame(10, $this->customer->pointsBalance());
@@ -191,6 +291,49 @@ class MallLoyaltyAndFacilityTest extends TestCase
 
         // Rekonsiliasi ledger (PTS dan IDR) harus tetap seimbang
         $this->assertSame(0, Artisan::call('bank:reconcile'));
+
+        // Validasi idempotency key kosong
+        try {
+            $redeemAction->execute($this->customer, $template, '   ');
+            $this->fail('Harusnya melempar InvalidArgumentException untuk key kosong');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Idempotency key wajib diisi', $e->getMessage());
+        }
+
+        // Top up 100 poin tambahan dan tukar via header / input
+        $claimAction->execute($this->customer, 'STR-EXTRA-1', 1_000_000, Carbon::today());
+        request()->headers->set('Idempotency-Key', 'redeem-hdr-key-1');
+        $vHdr = $redeemAction->execute($this->customer, $template);
+        $this->assertNotNull($vHdr);
+        request()->headers->remove('Idempotency-Key');
+
+        request()->merge(['idempotency_key' => 'redeem-inp-key-2']);
+        $vInp = $redeemAction->execute($this->customer, $template);
+        $this->assertNotNull($vInp);
+        request()->replace([]);
+
+        // Habiskan sisa poin di batch hingga tepat 0 untuk menguji is_expired = true
+        $currentRemaining = $this->customer->pointsBalance();
+        if ($currentRemaining > 0) {
+            $templateExhaust = VoucherTemplate::create([
+                'uuid' => (string) Str::uuid(),
+                'code' => 'VCH-EXHAUST-1',
+                'title' => 'Voucher Habiskan Poin',
+                'nominal_value' => $currentRemaining * 100,
+                'points_required' => $currentRemaining,
+                'min_spend' => $currentRemaining * 200,
+                'validity_days' => 7,
+                'is_active' => true,
+            ]);
+            $vExhaust = $redeemAction->execute($this->customer, $templateExhaust, 'redeem-exhaust-exact-0');
+            $this->assertNotNull($vExhaust);
+            $this->assertSame(0, $this->customer->pointsBalance());
+            $allBatches = PointBatch::where('user_id', $this->customer->id)->get();
+            foreach ($allBatches as $b) {
+                $this->assertSame(0, $b->points_remaining);
+                $this->assertTrue($b->is_expired);
+            }
+        }
     }
 
     public function test_redeem_voucher_gagal_bila_poin_tidak_mencukupi(): void
@@ -201,7 +344,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
         $newUser = User::factory()->create(['role' => 'customer']);
 
         $this->expectException(InsufficientPointsException::class);
-        $redeemAction->execute($newUser, $template);
+        $redeemAction->execute($newUser, $template, 'loyalty-test-redeem-fail');
     }
 
     public function test_voucher_dipakai_di_tenant_lalu_disettle_via_command_ke_wallet_tenant(): void
@@ -213,7 +356,7 @@ class MallLoyaltyAndFacilityTest extends TestCase
 
         $claimAction->execute($this->customer, 'STR-VCH-USE', 500_000, Carbon::today());
         $template = VoucherTemplate::where('points_required', 25)->firstOrFail();
-        $voucher = $redeemAction->execute($this->customer, $template);
+        $voucher = $redeemAction->execute($this->customer, $template, 'loyalty-test-redeem-2');
 
         // 2. Customer memakai voucher di tenant (Belanja Rp 150.000)
         $usedVoucher = $useAction->execute(
@@ -446,9 +589,9 @@ class MallLoyaltyAndFacilityTest extends TestCase
         $this->assertSame(450_000, $repairLine->amount);
 
         // Pelunasan tagihan via AllocatePaymentAction
-        app(TopUpAction::class)->execute($boutiqueUser, 1_000_000);
+        app(TopUpAction::class)->execute($boutiqueUser, 1_000_000, 'boutique_topup_loyalty_test');
         $allocateAction = app(AllocatePaymentAction::class);
-        $paidInvoice = $allocateAction->execute($invoice, 450_000);
+        $paidInvoice = $allocateAction->execute($invoice, 450_000, 'portal', 'test-alloc-repair-1');
 
         $this->assertSame(450_000, $repairLine->fresh()->paid_amount);
         $this->assertSame(0, Artisan::call('bank:reconcile'));

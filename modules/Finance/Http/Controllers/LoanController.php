@@ -217,9 +217,14 @@ class LoanController extends Controller
 
     public function topUpCollateral(Request $request, Loan $loan): RedirectResponse
     {
+        $headerKey = $request->header('Idempotency-Key');
+        if (! empty($headerKey) && empty($request->input('idempotency_key'))) {
+            $request->merge(['idempotency_key' => $headerKey]);
+        }
+
         $request->validate([
             'qty' => 'required|numeric|gt:0',
-            'idempotency_key' => 'nullable|string|max:64',
+            'idempotency_key' => 'required|string|max:64',
         ]);
 
         try {
@@ -227,7 +232,7 @@ class LoanController extends Controller
                 $loan,
                 $request->user(),
                 (string) BigDecimal::of((string) $request->input('qty')),
-                $request->input('idempotency_key'),
+                (string) $request->input('idempotency_key'),
             );
 
             return redirect()->back()->with('success', 'Kolateral berhasil ditambahkan dan LTV diperbarui.');

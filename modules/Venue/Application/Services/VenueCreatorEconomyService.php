@@ -66,16 +66,27 @@ class VenueCreatorEconomyService
      */
     public function accrueStreamRevenue(RightsContract $contract, int $streamGrossRevenueIdr, ?string $idempotencyKey = null): int
     {
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('idempotency_key')
+                ?? request()?->input('request_id'));
+
+        if ($key === null || trim((string) $key) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk pencatatan streaming royalty.');
+        }
+
+        $cleanKey = trim((string) $key);
         $royaltyAmountIdr = (int) round(($streamGrossRevenueIdr * $contract->royalty_share_percent) / 100);
 
-        return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr, $idempotencyKey) {
-            $key = $idempotencyKey ?? "venue:stream_accrual:{$contract->contract_code}:{$streamGrossRevenueIdr}";
+        return DB::transaction(function () use ($contract, $streamGrossRevenueIdr, $royaltyAmountIdr, $cleanKey) {
+            $txKey = 'venue:stream_accrual:'.$cleanKey;
 
             // Post revenue & hold liability
             $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'CREATOR_STREAM_ROYALTY_ACCRUAL',
                 description: "Accrue creator streaming royalty for contract {$contract->contract_code}",
-                idempotencyKey: $key,
+                idempotencyKey: $txKey,
                 entries: Posting::lines()
                     ->debit('ven:streaming_receivable:IDR', $streamGrossRevenueIdr)
                     ->credit('ven:platform_streaming_revenue:IDR', $streamGrossRevenueIdr - $royaltyAmountIdr)

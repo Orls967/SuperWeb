@@ -75,6 +75,14 @@ class TransferController extends Controller
 
     public function store(Request $request, TransferAction $transferAction): RedirectResponse
     {
+        $idempotencyKey = $request->header('Idempotency-Key')
+            ?? $request->input('request_id')
+            ?? $request->input('idempotency_key');
+
+        if (empty($idempotencyKey)) {
+            abort(422, 'Idempotency key wajib disertakan via header Idempotency-Key atau input request_id/idempotency_key.');
+        }
+
         $validated = $request->validate([
             'recipient_query' => ['required', 'string'],
             'amount' => ['required', 'numeric', 'min:1000', 'max:100000000'],
@@ -114,7 +122,7 @@ class TransferController extends Controller
                 amount: (string) $validated['amount'],
                 pin: $validated['pin'],
                 note: $validated['note'] ?? null,
-                idempotencyKey: $validated['idempotency_key'] ?? null,
+                idempotencyKey: (string) $idempotencyKey,
             );
 
             $formatted = Money::IDR($validated['amount'])->format();
