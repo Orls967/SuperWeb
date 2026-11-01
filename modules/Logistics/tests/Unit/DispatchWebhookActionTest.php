@@ -49,7 +49,7 @@ beforeEach(function () {
     WebhookEndpoint::query()->delete();
 });
 
-test('it queues webhook delivery for active matching endpoints and ignores non matching', function () {
+it('queues webhook delivery for active matching endpoints and ignores non matching', function () {
     $matching = WebhookEndpoint::create([
         'url' => 'https://api.external-partner.com/webhook',
         'secret' => 'matching-secret',
@@ -98,7 +98,7 @@ test('it queues webhook delivery for active matching endpoints and ignores non m
     expect($endpointIds)->not->toContain($inactive->id);
 });
 
-test('it records event into OutboxBusInterface when container bound', function () {
+it('records event into OutboxBusInterface when container bound', function () {
     $recorded = false;
     $mockOutbox = Mockery::mock(OutboxBusInterface::class);
     $mockOutbox->shouldReceive('record')
@@ -118,7 +118,7 @@ test('it records event into OutboxBusInterface when container bound', function (
     expect($recorded)->toBeTrue();
 });
 
-test('it successfully delivers webhook and computes valid HMAC signature', function () {
+it('successfully delivers webhook and computes valid HMAC signature', function () {
     $endpoint = WebhookEndpoint::create([
         'url' => 'https://webhook.receiver.com/hook',
         'secret' => 'test-secret-key-123',
@@ -154,7 +154,7 @@ test('it successfully delivers webhook and computes valid HMAC signature', funct
     expect($receivedHeaders['X-Idempotency-Key'][0])->toBe($delivery->idempotency_key);
 });
 
-test('it blocks SSRF attempts to private IP and cloud metadata', function () {
+it('blocks SSRF attempts to private IP and cloud metadata', function () {
     $endpoint = WebhookEndpoint::create([
         'url' => 'http://169.254.169.254/latest/meta-data/',
         'secret' => 'ssrf-secret',
@@ -176,7 +176,7 @@ test('it blocks SSRF attempts to private IP and cloud metadata', function () {
     Http::assertNothingSent();
 });
 
-test('it handles http failures and calculates exponential backoff delay', function () {
+it('handles http failures and calculates exponential backoff delay', function () {
     $endpoint = WebhookEndpoint::create([
         'url' => 'https://flaky-partner.com/webhook',
         'secret' => 'flaky-secret',
@@ -201,7 +201,7 @@ test('it handles http failures and calculates exponential backoff delay', functi
     expect($delivery->calculateNextRetryDelay())->toBe(30);
 });
 
-test('it marks delivery as dead letter when maximum retry attempts reached', function () {
+it('marks delivery as dead letter when maximum retry attempts reached', function () {
     $endpoint = WebhookEndpoint::create([
         'url' => 'https://broken-partner.com/webhook',
         'secret' => 'broken-secret',
@@ -231,7 +231,7 @@ test('it marks delivery as dead letter when maximum retry attempts reached', fun
     expect($refreshed->next_retry_at)->toBeNull();
 });
 
-test('it retries due pending deliveries and replays dead letter deliveries', function () {
+it('retries due pending deliveries and replays dead letter deliveries', function () {
     $endpoint = WebhookEndpoint::create([
         'url' => 'https://recover-partner.com/webhook',
         'secret' => 'recover-secret',
