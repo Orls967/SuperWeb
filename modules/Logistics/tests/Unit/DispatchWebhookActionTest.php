@@ -2,15 +2,52 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Application\Actions\DispatchWebhookAction;
 use Modules\Logistics\Domain\Models\WebhookDelivery;
 use Modules\Logistics\Domain\Models\WebhookEndpoint;
 use Tests\TestCase;
 
-uses(TestCase::class, RefreshDatabase::class);
+uses(TestCase::class);
+
+beforeEach(function () {
+    static $schemaCreated = false;
+    if (! $schemaCreated) {
+        if (! Schema::hasTable('lgx_webhook_endpoints')) {
+            Schema::create('lgx_webhook_endpoints', function ($table) {
+                $table->id();
+                $table->string('url');
+                $table->text('secret');
+                $table->json('events')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->unsignedBigInteger('shipper_id')->nullable();
+                $table->timestamps();
+            });
+        }
+        if (! Schema::hasTable('lgx_webhook_deliveries')) {
+            Schema::create('lgx_webhook_deliveries', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('endpoint_id');
+                $table->string('event_type');
+                $table->json('payload');
+                $table->string('idempotency_key')->unique();
+                $table->integer('attempt')->default(0);
+                $table->integer('response_code')->nullable();
+                $table->text('response_body')->nullable();
+                $table->string('status')->default('pending');
+                $table->timestamp('next_retry_at')->nullable();
+                $table->timestamp('delivered_at')->nullable();
+                $table->timestamps();
+            });
+        }
+        $schemaCreated = true;
+    }
+
+    WebhookDelivery::query()->delete();
+    WebhookEndpoint::query()->delete();
+});
 
 test('it queues webhook delivery for active matching endpoints and ignores non matching', function () {
     $matching = WebhookEndpoint::create([
