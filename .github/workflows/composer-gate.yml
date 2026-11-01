@@ -151,7 +151,7 @@ jobs:
         run: php artisan migrate --force --seed
 
       - name: Execute Parallel Shard Test Suite
-        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4
+        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4 --parallel
 
   # ============================================================================
   # Job 3: Chaos Engineering & Concurrency Stress Verification
