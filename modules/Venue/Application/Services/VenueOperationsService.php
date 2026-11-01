@@ -7,11 +7,13 @@ namespace Modules\Venue\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Support\Posting;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentZone;
+use Modules\Venue\Domain\Services\VenueTicketChainService;
 
 /**
  * Fase 89: Venue Operations, Ticketing, Age Verification & Crowd Safety
@@ -184,9 +186,37 @@ class VenueOperationsService
         $zoneCount = EntertainmentZone::count();
         $discrepancies = 0;
 
-        // Two-source verification: verify that no zone occupancy exceeds capacity limit
+        // 1. Verifikasi batas kapasitas zona (Crowd safety)
         $overCapacityZones = EntertainmentZone::whereColumn('current_occupancy', '>', 'capacity_limit')->count();
         $discrepancies += $overCapacityZones;
+
+        // 2. Audit dua sumber: Saldo buku besar unearned vs subledger tiket event aktif (KONSEP §A2.8)
+        $ledgerUnearnedBalance = (int) (LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('credit_amount')
+            - LedgerEntry::where('account_code', 'ven:ticket_unearned:IDR')->sum('debit_amount'));
+
+        $openEventIds = EntertainmentEvent::where('status', '!=', 'CLOSED')->pluck('id');
+        $subledgerUnearnedTickets = (int) EntertainmentTicket::whereIn('event_id', $openEventIds)
+            ->where('status', '!=', 'REFUNDED')
+            ->sum('price_paid_idr');
+
+        if ($ledgerUnearnedBalance !== $subledgerUnearnedTickets) {
+            $discrepancies += abs($ledgerUnearnedBalance - $subledgerUnearnedTickets);
+        }
+
+        // 3. Verifikasi double-entry zero-sum balance
+        $totalDebit = (int) LedgerEntry::sum('debit_amount');
+        $totalCredit = (int) LedgerEntry::sum('credit_amount');
+        if ($totalDebit !== $totalCredit) {
+            $discrepancies += abs($totalDebit - $totalCredit);
+        }
+
+        // 4. Verifikasi keutuhan rantai hash tiket
+        $chainVerifier = app(VenueTicketChainService::class);
+        foreach ($openEventIds as $eventId) {
+            if (! $chainVerifier->verifyEventTicketChain((int) $eventId)) {
+                $discrepancies++;
+            }
+        }
 
         return [
             'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',

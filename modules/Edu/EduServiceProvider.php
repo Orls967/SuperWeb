@@ -6,7 +6,9 @@ namespace Modules\Edu;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Edu\Application\Services\AcademyAndCertificationService;
+use Modules\Edu\Application\Services\DefaultCredentialVerifier;
 use Modules\Edu\Console\Commands\EduAuditCommand;
+use Modules\Edu\Contracts\CredentialVerifier;
 use Modules\Shared\Application\MenuRegistry;
 
 class EduServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class EduServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(AcademyAndCertificationService::class);
+        $this->app->singleton(CredentialVerifier::class, DefaultCredentialVerifier::class);
     }
 
     public function boot(): void

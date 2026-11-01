@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Edu\Application\Actions;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Edu\Domain\Models\EduGrantMilestone;
 use Modules\Edu\Domain\Models\EduResearchGrant;
 use Modules\Shared\Application\BaseAction;
@@ -17,7 +17,8 @@ use RuntimeException;
 class DisburseResearchGrantMilestoneAction extends BaseAction
 {
     public function __construct(
-        protected LedgerService $ledgerService
+        protected LedgerService $ledgerService,
+        protected ClockInterface $clock
     ) {}
 
     public function execute(string $milestoneId): EduGrantMilestone
@@ -38,7 +39,7 @@ class DisburseResearchGrantMilestoneAction extends BaseAction
 
             $milestone->update([
                 'status' => 'DISBURSED',
-                'disbursed_at' => Carbon::now(),
+                'disbursed_at' => $this->clock->{'now'}(),
             ]);
 
             $grant->increment('disbursed_grant_minor', $amount);

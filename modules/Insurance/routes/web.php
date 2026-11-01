@@ -5,9 +5,12 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Insurance\Http\Controllers\InsuranceClaimsWorkflowController;
 use Modules\Insurance\Http\Controllers\InsuranceController;
+use Modules\Insurance\Http\Controllers\InsurancePoliciesController;
 
 Route::middleware(['web', 'auth', 'role:admin,insurance_admin,underwriter,customer'])->prefix('insurance')->group(function () {
     Route::get('/', [InsuranceController::class, 'index'])->name('insurance.index');
+    Route::get('/policies', [InsuranceClaimsWorkflowController::class, 'policies'])->name('insurance.policies');
+    Route::post('/policies/issue', [InsurancePoliciesController::class, 'issue'])->name('insurance.policies.issue');
     Route::post('/products/{product}/issue', [InsuranceController::class, 'issue'])->name('insurance.products.issue');
 
     // Insurance Underwriting & Claims Deepening Routes

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Ledger;
 
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul Mining.
- * Didaftarkan ke LedgerAccountsSeeder (KONSEP.md §A2.3).
+ * Didaftarkan ke LedgerAccountsSeeder (KONSEP.md §A2.3, §12F baris 1211-1219).
  */
 final class MiningAccounts
 {
@@ -18,9 +19,47 @@ final class MiningAccounts
     public static function definitions(): array
     {
         return [
+            // Standard MVP Vertical Slice Accounts (KONSEP §12F)
+            [
+                'code' => 'expense:min:royalty:IDR',
+                'name' => 'Mining Statutory Royalty Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true, // Normal debit balance in single-sign convention
+            ],
+            [
+                'code' => 'min:royalty_payable:IDR',
+                'name' => 'Mining Statutory Royalty Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'min:penalty_income:IDR',
+                'name' => 'Mining Contractor Violation Penalty Income',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'expense:min:fuel:IDR',
+                'name' => 'Mining Haulage Fuel Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true, // Normal debit balance
+            ],
+            [
+                'code' => 'min:sales_revenue:IDR',
+                'name' => 'Mining Commodity Sales Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+
+            // Legacy & Extended Accounts
             [
                 'code' => 'expense:mining_royalty:IDR',
-                'name' => 'Mining Royalty Expense',
+                'name' => 'Mining Royalty Expense (Legacy)',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
@@ -145,15 +184,8 @@ final class MiningAccounts
                 'allow_negative' => false,
             ],
             [
-                'code' => 'min:royalty_payable:IDR',
-                'name' => 'State Royalty Payable',
-                'kind' => AccountKind::LIABILITY,
-                'asset_code' => 'IDR',
-                'allow_negative' => true,
-            ],
-            [
                 'code' => 'min:safety_penalty_revenue:IDR',
-                'name' => 'Contractor HSE Violation Penalty Revenue',
+                'name' => 'Contractor HSE Violation Penalty Revenue (Legacy)',
                 'kind' => AccountKind::REVENUE,
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
@@ -180,5 +212,46 @@ final class MiningAccounts
                 'allow_negative' => true,
             ],
         ];
+    }
+
+    public static function royaltyExpense(): string
+    {
+        return 'expense:min:royalty:IDR';
+    }
+
+    public static function royaltyPayable(): string
+    {
+        return 'min:royalty_payable:IDR';
+    }
+
+    public static function penaltyIncome(): string
+    {
+        return 'min:penalty_income:IDR';
+    }
+
+    public static function contractorReceivable(string $partyId): string
+    {
+        $code = "ar:min:contractor:{$partyId}:IDR";
+        LedgerAccount::firstOrCreate(
+            ['code' => $code],
+            [
+                'name' => "Contractor Fuel Penalty Receivable {$partyId}",
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ]
+        );
+
+        return $code;
+    }
+
+    public static function fuelExpense(): string
+    {
+        return 'expense:min:fuel:IDR';
+    }
+
+    public static function salesRevenue(): string
+    {
+        return 'min:sales_revenue:IDR';
     }
 }

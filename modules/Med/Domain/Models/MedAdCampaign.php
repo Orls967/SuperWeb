@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Med\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MedAdCampaign extends Model
 {
@@ -21,6 +23,7 @@ class MedAdCampaign extends Model
         'agency_entity_id',
         'agency_commission_pct',
         'channel_id',
+        'placement_id',
         'target_impressions',
         'verified_impressions',
         'floor_cpm_minor',
@@ -29,6 +32,7 @@ class MedAdCampaign extends Model
         'agency_commission_minor',
         'publisher_share_minor',
         'platform_share_minor',
+        'idempotency_key',
         'status',
     ];
 
@@ -43,4 +47,19 @@ class MedAdCampaign extends Model
         'publisher_share_minor' => 'integer',
         'platform_share_minor' => 'integer',
     ];
+
+    public function channel(): BelongsTo
+    {
+        return $this->belongsTo(MedDistributionChannel::class, 'channel_id');
+    }
+
+    public function placement(): BelongsTo
+    {
+        return $this->belongsTo(MedAdPlacement::class, 'placement_id');
+    }
+
+    public function impressions(): HasMany
+    {
+        return $this->hasMany(MedAdImpression::class, 'campaign_id');
+    }
 }

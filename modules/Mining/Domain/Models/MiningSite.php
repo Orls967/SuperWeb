@@ -19,6 +19,8 @@ class MiningSite extends Model
         'site_code',
         'name',
         'commodity',
+        'timezone',
         'location',
+        'status',
     ];
 }

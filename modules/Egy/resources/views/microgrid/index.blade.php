@@ -4,14 +4,32 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="p-4 sm:p-8 bg-gray-800 shadow sm:rounded-lg">
-            <h2 class="text-xl font-semibold text-white">Microgrid Battery Peak Shaving & P2P Energy</h2>
-            <p class="mt-1 text-sm text-gray-400">Pengendali Baterai Microgrid (BESS Arbitrage) & Kliring Energi Surya P2P</p>
+            <h2 class="text-xl font-semibold text-white">Microgrid Battery Peak Shaving & Islanding Resilience</h2>
+            <p class="mt-1 text-sm text-gray-400">Pengendali Baterai Microgrid (BESS Arbitrage), Islanding Pemadaman Darurat & Kliring Energi Surya P2P</p>
 
             @if(session('success'))
                 <div class="mt-4 p-4 bg-emerald-900/50 border border-emerald-500 rounded text-emerald-200 text-sm">
                     {{ session('success') }}
                 </div>
             @endif
+
+            <!-- Islanding Resilience Section -->
+            <div class="mt-6 p-6 bg-red-950/40 border border-red-700/50 rounded-lg">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-red-200 flex items-center gap-2">
+                            <span class="inline-block w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+                            Microgrid Islanding Emergency Control
+                        </h3>
+                        <p class="text-xs text-red-300/80 mt-1">
+                            Sistem leksikografis priority knapsack (Hospital > Factory > Mall) otomatis memangkas beban non-kritis saat jaringan utama terputus.
+                        </p>
+                    </div>
+                    <span class="px-3 py-1.5 bg-red-800/80 text-white text-xs font-semibold rounded uppercase tracking-wider">
+                        Islanding Ready
+                    </span>
+                </div>
+            </div>
 
             <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Battery Dispatch -->
@@ -56,23 +74,6 @@
                             Selesaikan Transaksi P2P
                         </button>
                     </form>
-                </div>
-            </div>
-
-            <!-- Recent BESS Runs -->
-            <div class="mt-6">
-                <h3 class="text-md font-medium text-white mb-3">Riwayat Dispatch BESS ({{ $bessRuns->count() }})</h3>
-                <div class="space-y-2">
-                    @forelse($bessRuns as $run)
-                        <div class="p-3 bg-gray-700/50 rounded border border-gray-600 flex justify-between items-center text-xs">
-                            <span class="font-mono text-white">{{ $run->run_code }}</span>
-                            <span class="text-gray-300">Discharge: {{ $run->discharge_kwh }} kWh</span>
-                            <span class="text-emerald-400 font-semibold">Profit: Rp {{ number_format($run->net_profit_minor, 0, ',', '.') }}</span>
-                            <span class="text-xs px-2 py-0.5 rounded bg-emerald-900 text-emerald-200">{{ $run->status }}</span>
-                        </div>
-                    @empty
-                        <div class="text-gray-400 text-sm">Belum ada riwayat BESS.</div>
-                    @endforelse
                 </div>
             </div>
         </div>

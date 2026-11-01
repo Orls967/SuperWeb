@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Modules\Ev;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Ev\Application\Services\BatteryPassportService;
 use Modules\Ev\Application\Services\EvChargingService;
 use Modules\Ev\Console\Commands\AuditEvCommand;
+use Modules\Ev\Ledger\EvTransactionTypes;
 
 class EvServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,8 @@ class EvServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        TransactionTypeRegistry::register(EvTransactionTypes::class);
+
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'ev');

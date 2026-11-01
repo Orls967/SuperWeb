@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Modules\Intercompany;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Intercompany\Application\Services\IntercompanyPortService;
 use Modules\Intercompany\Application\Services\IntercompanyService;
 use Modules\Intercompany\Console\Commands\AuditIntercompanyCommand;
+use Modules\Intercompany\Contracts\IntercompanyBillingPort;
+use Modules\Intercompany\Contracts\IntercompanyPortInterface;
 use Modules\Shared\Application\MenuRegistry;
 
 class IntercompanyServiceProvider extends ServiceProvider
@@ -14,6 +17,14 @@ class IntercompanyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(IntercompanyService::class);
+        $this->app->singleton(
+            IntercompanyPortInterface::class,
+            IntercompanyPortService::class
+        );
+        $this->app->singleton(
+            IntercompanyBillingPort::class,
+            IntercompanyPortService::class
+        );
     }
 
     public function boot(): void

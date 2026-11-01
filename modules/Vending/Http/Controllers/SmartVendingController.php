@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Vending\Http\Controllers;
 
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use InvalidArgumentException;
 use Modules\Vending\Application\Services\SmartVendingService;
+use Modules\Vending\Application\Services\VendingDispenseService;
 use Modules\Vending\Domain\Models\VendingAutoPo;
 use Modules\Vending\Domain\Models\VendingDemandForecast;
 use Modules\Vending\Domain\Models\VendingRestockTask;
@@ -36,6 +40,35 @@ class SmartVendingController extends Controller
             'transactions' => $transactions,
             'restockTasks' => $restockTasks,
         ]);
+    }
+
+    public function dispenseApi(Request $request, VendingDispenseService $dispenseService): JsonResponse
+    {
+        $idempotencyKey = $request->header('X-Idempotency-Key');
+        if (! $idempotencyKey) {
+            return response()->json(['error' => 'X-Idempotency-Key header is required'], 422);
+        }
+
+        $validated = $request->validate([
+            'unit_id' => 'required|integer',
+            'item_code' => 'required|string',
+            'qty' => 'required|integer|min:1',
+            'payment_method' => 'nullable|string',
+        ]);
+
+        try {
+            $tx = $dispenseService->dispenseItem(
+                (int) $validated['unit_id'],
+                $validated['item_code'],
+                (int) $validated['qty'],
+                (string) $idempotencyKey,
+                $validated['payment_method'] ?? 'QRIS'
+            );
+
+            return response()->json($tx, 201);
+        } catch (InvalidArgumentException|DomainException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
     public function dispense(Request $request, VendingUnit $unit): RedirectResponse
