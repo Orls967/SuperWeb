@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CateringOrder extends Model
 {
-    protected $table = 'resto_ck_catering_orders';
+    protected $table = 'ckt_catering_orders';
 
     protected $fillable = [
         'order_code',

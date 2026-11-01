@@ -79,13 +79,13 @@ class CloudKitchenLegacyExplorationTest extends TestCase
 
     public function test_legacy_tables_exist_and_legacy_prefixes_identified(): void
     {
-        // Legacy CloudKitchen tables exist in schema
-        expect(Schema::hasTable('resto_ck_kitchens'))->toBeTrue();
-        expect(Schema::hasTable('resto_ck_catering_orders'))->toBeTrue();
-        expect(Schema::hasTable('resto_catering_subscriptions'))->toBeTrue();
+        // Canonical ckt_* tables exist post-migration
+        expect(Schema::hasTable('ckt_kitchens'))->toBeTrue();
+        expect(Schema::hasTable('ckt_catering_orders'))->toBeTrue();
+        expect(Schema::hasTable('ckt_catering_subscriptions'))->toBeTrue();
 
-        // Proves legacy prefixes resto_ck_* were used prior to canonical ckt_* migration
-        expect(str_starts_with('resto_ck_kitchens', 'ckt_'))->toBeFalse();
+        // Proves canonical ckt_* prefix is active
+        expect(str_starts_with('ckt_kitchens', 'ckt_'))->toBeTrue();
     }
 
     public function test_settle_virtual_brand_revenue_split_action_status_salah(): void

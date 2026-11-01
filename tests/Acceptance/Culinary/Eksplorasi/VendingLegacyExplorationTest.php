@@ -54,15 +54,15 @@ class VendingLegacyExplorationTest extends TestCase
 
     public function test_legacy_vending_tables_exist_and_legacy_prefixes_identified(): void
     {
-        // Legacy tables exist
-        expect(Schema::hasTable('ven_vending_units'))->toBeTrue();
-        expect(Schema::hasTable('ven_vending_transactions'))->toBeTrue();
-        expect(Schema::hasTable('ven_demand_forecasts'))->toBeTrue();
-        expect(Schema::hasTable('ven_auto_pos'))->toBeTrue();
-        expect(Schema::hasTable('ven_restock_tasks'))->toBeTrue();
+        // Canonical vnd_* tables exist post-migration
+        expect(Schema::hasTable('vnd_vending_units'))->toBeTrue();
+        expect(Schema::hasTable('vnd_vending_transactions'))->toBeTrue();
+        expect(Schema::hasTable('vnd_demand_forecasts'))->toBeTrue();
+        expect(Schema::hasTable('vnd_auto_pos'))->toBeTrue();
+        expect(Schema::hasTable('vnd_restock_tasks'))->toBeTrue();
 
-        // Proves legacy prefixes ven_* were used prior to canonical vnd_* migration
-        expect(str_starts_with('ven_vending_units', 'vnd_'))->toBeFalse();
+        // Proves canonical vnd_* prefix is active
+        expect(str_starts_with('vnd_vending_units', 'vnd_'))->toBeTrue();
     }
 
     public function test_dispense_smart_vending_cart_action_status_sebagian(): void

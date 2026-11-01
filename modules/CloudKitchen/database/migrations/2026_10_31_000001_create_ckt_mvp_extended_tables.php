@@ -42,8 +42,8 @@ return new class extends Migration
             Schema::create('ckt_orders', function (Blueprint $table) {
                 $table->id();
                 $table->string('order_code')->unique();
-                $table->foreignId('subscription_id')->constrained('resto_catering_subscriptions')->cascadeOnDelete();
-                $table->foreignId('kitchen_id')->constrained('resto_ck_kitchens');
+                $table->foreignId('subscription_id')->constrained('ckt_catering_subscriptions')->cascadeOnDelete();
+                $table->foreignId('kitchen_id')->constrained('ckt_kitchens');
                 $table->foreignId('recipe_id')->nullable()->constrained('ckt_recipes')->nullOnDelete();
                 $table->date('delivery_date');
                 $table->string('meal_slot'); // lunch, dinner
@@ -77,7 +77,7 @@ return new class extends Migration
         if (! Schema::hasTable('ckt_payroll_deductions')) {
             Schema::create('ckt_payroll_deductions', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('subscription_id')->constrained('resto_catering_subscriptions')->cascadeOnDelete();
+                $table->foreignId('subscription_id')->constrained('ckt_catering_subscriptions')->cascadeOnDelete();
                 $table->string('payroll_period');
                 $table->unsignedBigInteger('amount_idr');
                 $table->string('idempotency_key')->unique();

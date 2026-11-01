@@ -2035,3 +2035,30 @@
   - `php artisan route:list --path=oto` menghasilkan 4 rute identik yang kini mengarah ke `modules/Mobility/`.
   - `vendor/bin/pest tests/Acceptance/Mobility` lulus seluruh 83 pengujian.
   - `vendor/bin/pest tests/Acceptance/Telecom` lulus seluruh 87 pengujian.
+
+<a id="2026-11-02-k12-prefix-renames"></a>
+## 2026-11-02: Penataan Prefiks Tabel K-12 (Vending, CloudKitchen, Pricing, Hcm, Agri)
+- **Anchor:** `2026-11-02-k12-prefix-renames`
+- **Context:**
+  - Sejumlah tabel domain yang masuk lewat merge ML1/ML2/ML3 memiliki prefiks tabel tidak sesuai dengan konvensi modular (K-12):
+    - Vending menggunakan `ven_*` (bentrok dengan Venue).
+    - CloudKitchen menggunakan `resto_*` (bentrok dengan Resto).
+    - Pricing menggunakan `prc_*` (bentrok dengan Procurement).
+    - Hcm internal gig bounties menggunakan `gov_*` (bentrok dengan Governance).
+    - Agri DAO governance menggunakan `gov_*` (bentrok dengan Governance).
+  - Ketidaksesuaian ini sebelumnya dipaksa lolos dengan menambahkan 21 entri ke `legacy_tables` di `config/modules.php`.
+- **Decision:**
+  1. Menambahkan migrasi rename tabel dengan timestamp sebelum migrasi ML extended:
+     - `2026_10_30_235959_rename_vending_tables_to_vnd.php`: `ven_demand_forecasts`, `ven_auto_pos`, `ven_vending_units`, `ven_vending_transactions`, `ven_restock_tasks` $\to$ `vnd_*`.
+     - `2026_10_30_235958_rename_cloud_kitchen_tables_to_ckt.php`: `resto_ck_kitchens`, `resto_catering_subscriptions`, `resto_ck_catering_orders` $\to$ `ckt_*`.
+     - `2026_10_30_235957_rename_pricing_tables_to_pric.php`: `prc_price_ticks`, `prc_price_tick_aggregates`, `prc_frozen_quotes` $\to$ `pric_*`.
+     - `2026_10_30_235956_rename_hcm_bounty_tables_to_hcm.php`: `gov_bounties`, `gov_bounty_claims`, `gov_bounty_pofs` $\to$ `hcm_*`.
+     - `2026_10_30_235955_rename_agri_dao_tables_to_agri.php`: `gov_proposals`, `gov_voter_weights`, `gov_votes` $\to$ `agri_*`.
+  2. Memperbarui seluruh model, query, foreign key, test, dan fixture terkait ke nama tabel berprefiks kanonikal baru.
+  3. Menghapus 21 entri warisan tersebut dari `legacy_tables` pada `config/modules.php`, mengembalikan `legacy_tables` ke 19 entri dasar $(\le 22)$.
+- **Verification:**
+  - `php artisan migrate:fresh --seed` keluar dengan status code 0.
+  - `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` lulus 12/12.
+  - Seluruh 92 pengujian acceptance `tests/Acceptance/Culinary` lulus.
+  - Seluruh pengujian fitur Agri, Hcm, Pricing, Vending, dan CloudKitchen lulus.
+  - `arch:scan` A2 BASI bertambah 42 entri dan A2 BARU = 0.

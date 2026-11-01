@@ -81,7 +81,7 @@ class AuditPricingCommand extends Command
         }
 
         // 6. Converted quote tanpa referensi dokumen order (Fase 81.4 / 81.7).
-        $unlinkedConvertedQuotes = DB::table('prc_frozen_quotes')
+        $unlinkedConvertedQuotes = DB::table('pric_frozen_quotes')
             ->where('status', 'CONVERTED')
             ->where(function ($query) {
                 $query->whereNull('order_ref')->orWhere('order_ref', '');
@@ -93,7 +93,7 @@ class AuditPricingCommand extends Command
         }
 
         // 7. Frozen quote melanggar batas guardrail floor/ceiling (Fase 81.3 / 81.7).
-        $guardrailBreaches = DB::table('prc_frozen_quotes')
+        $guardrailBreaches = DB::table('pric_frozen_quotes')
             ->where(function ($query) {
                 $query->whereColumn('frozen_price_idr', '<', 'floor_price_idr')
                     ->orWhereColumn('frozen_price_idr', '>', 'ceiling_price_idr');

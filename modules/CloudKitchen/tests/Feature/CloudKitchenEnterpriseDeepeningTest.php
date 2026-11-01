@@ -59,7 +59,7 @@ class CloudKitchenEnterpriseDeepeningTest extends TestCase
         $this->assertEquals('preparing', $result['status']);
         $this->assertEquals($kitchen->id, $result['kitchen_id']);
         $this->assertEquals(11, $kitchen->fresh()->current_hourly_load);
-        $this->assertDatabaseHas('resto_ck_catering_orders', [
+        $this->assertDatabaseHas('ckt_catering_orders', [
             'subscription_id' => $subscription->id,
             'meal_slot' => 'lunch',
             'meal_cost_idr' => 45000,
