@@ -12,18 +12,22 @@ class TelematicsBaseline extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'metric',
+        'median_value',
+        'mad_value',
         'avg_oil_temp_c',
         'avg_battery_voltage',
         'avg_fuel_consumption_rate',
         'sample_count',
         'calculated_at',
+        'window_days',
     ];
 
     protected $casts = [
         'calculated_at' => 'datetime',
-        'avg_oil_temp_c' => 'float',
-        'avg_battery_voltage' => 'float',
-        'avg_fuel_consumption_rate' => 'float',
+        'median_value' => 'integer',
+        'mad_value' => 'integer',
         'sample_count' => 'integer',
+        'window_days' => 'integer',
     ];
 }

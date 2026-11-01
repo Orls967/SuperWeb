@@ -5,30 +5,59 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Contracts\LedgerTransaction;
+use Modules\Banking\Support\Posting;
 use Modules\Shared\Application\BaseAction;
 use Modules\Venue\Domain\Models\ArtistContract;
 
 class ExecuteArtistContractEscrowAndWhtPayoutAction extends BaseAction
 {
+    public function __construct(
+        private readonly ?Ledger $ledgerService = null
+    ) {}
+
     /**
-     * Settle artist contract revenue escrow with Indonesian Withholding Tax (PPh 23 2% or PPh 21 5%).
+     * Settle artist contract revenue escrow with Indonesian Withholding Tax (PPh 23 bps).
      *
      * @return array{contract: ArtistContract, gross_share_idr: int, wht_tax_idr: int, advance_deducted_idr: int, net_payout_idr: int}
      */
     public function handle(
         string $artistContractId,
         int $totalDoorSalesIdr,
-        float $whtRatePct = 2.0
+        int $whtBps = 200,
+        string $idempotencyKey = ''
     ): array {
-        return DB::transaction(function () use ($artistContractId, $totalDoorSalesIdr, $whtRatePct) {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi (U-4)');
+        }
+
+        return DB::transaction(function () use ($artistContractId, $totalDoorSalesIdr, $whtBps, $idempotencyKey) {
             $contract = ArtistContract::lockForUpdate()->findOrFail($artistContractId);
 
-            $doorSharePct = (float) $contract->door_share_percentage;
-            $grossShareIdr = (int) round(($totalDoorSalesIdr * $doorSharePct) / 100);
+            if ($contract->status === 'settled') {
+                $existingTx = LedgerTransaction::where('idempotency_key', $idempotencyKey)->first();
+                if ($existingTx !== null) {
+                    $gross = (int) $contract->door_share_gross;
+                    $tax = intdiv($gross * $whtBps, 10000);
 
-            // Indonesian Withholding Tax (PPh 23: 2%)
-            $whtTaxIdr = (int) round(($grossShareIdr * $whtRatePct) / 100);
+                    return [
+                        'contract' => $contract,
+                        'gross_share_idr' => $gross,
+                        'wht_tax_idr' => $tax,
+                        'advance_deducted_idr' => (int) $contract->advance_amount,
+                        'net_payout_idr' => (int) $contract->net_payout_amount,
+                    ];
+                }
 
+                throw new \RuntimeException('Kontrak artis sudah diselesaikan (settled)');
+            }
+
+            // Integer math bps (U-1)
+            $doorShareBps = (int) round(((float) $contract->door_share_percentage) * 100);
+            $grossShareIdr = intdiv($totalDoorSalesIdr * $doorShareBps, 10000);
+            $whtTaxIdr = intdiv($grossShareIdr * $whtBps, 10000);
             $advanceDeductedIdr = (int) $contract->advance_amount;
             $netPayoutIdr = max(0, $grossShareIdr - $whtTaxIdr - $advanceDeductedIdr);
 
@@ -38,32 +67,23 @@ class ExecuteArtistContractEscrowAndWhtPayoutAction extends BaseAction
             $contract->status = 'settled';
             $contract->save();
 
-            $this->audit(
-                action: 'venue.artist.settled',
-                auditable: $contract,
-                oldValues: ['status' => 'active'],
-                newValues: [
-                    'contract_number' => $contract->contract_number,
-                    'total_door_sales' => $totalDoorSalesIdr,
-                    'gross_share_idr' => $grossShareIdr,
-                    'wht_tax_idr' => $whtTaxIdr,
-                    'net_payout_idr' => $netPayoutIdr,
-                ],
-                correlationId: "ven_art_{$contract->contract_number}",
-                impactType: 'artist_escrow_settlement'
-            );
+            // Post double-entry journal to ledger
+            if ($this->ledgerService !== null) {
+                $artistNetPayable = $grossShareIdr - $whtTaxIdr;
 
-            $this->outbox(
-                eventType: 'ArtistContractSettled',
-                payload: [
-                    'contract_id' => $contract->id,
-                    'contract_number' => $contract->contract_number,
-                    'gross_share_idr' => $grossShareIdr,
-                    'wht_tax_idr' => $whtTaxIdr,
-                    'net_payout_idr' => $netPayoutIdr,
-                ],
-                idempotencyKey: hash('sha256', "art_settle_{$contract->contract_number}")
-            );
+                $this->ledgerService->post(new PostingDTO(
+                    type: 'VENUE_ARTIST_SETTLEMENT',
+                    description: "Artist fee settlement for {$contract->artist_name} ({$contract->contract_number})",
+                    idempotencyKey: $idempotencyKey,
+                    entries: Posting::lines()
+                        ->debit('expense:venue_artist_fee:IDR', $grossShareIdr)
+                        ->credit('tax:wht23_payable:IDR', $whtTaxIdr)
+                        ->credit('artist:payable:default:IDR', $artistNetPayable)
+                        ->toEntries('IDR'),
+                    referenceType: 'ARTIST_CONTRACT',
+                    referenceId: (string) $contract->id,
+                ));
+            }
 
             return [
                 'contract' => $contract,

@@ -151,6 +151,34 @@ final class RetAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'ret:cashback_promo_expense:IDR',
+                'name' => 'Cashback Promotion Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ret:cashback_breakage_revenue:IDR',
+                'name' => 'Expired Cashback Breakage Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ret:deposit_liability:IDR',
+                'name' => 'Retail Reusable Packaging Deposit Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ret:commission_revenue:IDR',
+                'name' => 'Marketplace 3P Commission Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 }

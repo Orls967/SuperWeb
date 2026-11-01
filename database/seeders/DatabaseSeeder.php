@@ -6,7 +6,9 @@ use App\Models\Service;
 use App\Models\Sparepart;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Modules\Asset\database\seeders\AssetSeeder;
 use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
@@ -132,6 +134,42 @@ class DatabaseSeeder extends Seeder
             $admin->walletAccount('IDR');
             $setPin->execute($admin, '123456');
             $topUp->execute($admin, '25000000', 'seed_topup_admin');
+
+            DB::table('edu_certificates')->insertOrIgnore([
+                'id' => (string) Str::uuid(),
+                'certificate_number' => 'CERT-2026-K3-LOTO-ADMIN',
+                'enrollment_id' => 'ENR-SEED-ADMIN',
+                'student_user_id' => $admin->id,
+                'student_party_id' => "student-{$admin->id}",
+                'program_id' => 'PRG-K3-LOTO',
+                'skill_competency_code' => 'k3_loto',
+                'certificate_hash' => hash('sha256', 'cert-admin-k3-loto'),
+                'prev_hash' => str_repeat('0', 64),
+                'qr_token' => 'admin-k3-token',
+                'qr_verification_url' => 'https://verify.ecosystem.id/cert/admin',
+                'issued_at' => now()->subMonth(),
+                'expires_at' => now()->addYear(),
+                'cpd_points_earned' => 20,
+                'status' => 'ACTIVE',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Seeder exam attempt agar edu:audit tidak melaporkan sertifikat tanpa ujian lulus
+            DB::table('edu_exam_attempts')->insertOrIgnore([
+                'id' => (string) Str::uuid(),
+                'attempt_code' => 'ATT-SEED-ADMIN-K3-LOTO',
+                'student_party_uuid' => "student-{$admin->id}",
+                'enrollment_code' => 'ENR-SEED-ADMIN',
+                'exam_title' => 'K3 Lockout/Tagout Safety Certification Exam',
+                'score' => 90,
+                'passing_score' => 75,
+                'is_passed' => true,
+                'proctor_verification_hash' => hash('sha256', 'seed-admin-k3-loto-proctor'),
+                'status' => 'COMPLETED',
+                'created_at' => now()->subMonth(),
+                'updated_at' => now()->subMonth(),
+            ]);
         }
 
         // Platform notifications & activity log demo data

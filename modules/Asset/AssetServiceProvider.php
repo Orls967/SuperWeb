@@ -6,6 +6,7 @@ namespace Modules\Asset;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Asset\Application\Services\AssetAuditService;
+use Modules\Asset\Application\Services\AssetRegistryLookupService;
 use Modules\Asset\Application\Services\AssetService;
 use Modules\Asset\Application\Services\AssetTcoService;
 use Modules\Asset\Application\Services\DepreciationService;
@@ -17,6 +18,7 @@ use Modules\Asset\Console\Commands\BackfillAssetLinksCommand;
 use Modules\Asset\Console\Commands\CapitalizeAssetsCommand;
 use Modules\Asset\Console\Commands\DepreciateAssetsCommand;
 use Modules\Asset\Console\Commands\VerifyAssetChainsCommand;
+use Modules\Asset\Contracts\AssetRegistryLookupInterface;
 use Modules\Shared\Application\MenuRegistry;
 
 class AssetServiceProvider extends ServiceProvider
@@ -30,6 +32,10 @@ class AssetServiceProvider extends ServiceProvider
         $this->app->singleton(RevaluationService::class);
         $this->app->singleton(AssetTcoService::class);
         $this->app->singleton(AssetAuditService::class);
+        $this->app->bind(
+            AssetRegistryLookupInterface::class,
+            AssetRegistryLookupService::class
+        );
     }
 
     public function boot(): void

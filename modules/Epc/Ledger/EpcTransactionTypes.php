@@ -10,4 +10,5 @@ enum EpcTransactionTypes: string implements TransactionTypeRegistry
 {
     case EPC_PROGRESS_CERTIFICATE = 'EPC_PROGRESS_CERTIFICATE';
     case EPC_CIP_CAPITALIZATION = 'EPC_CIP_CAPITALIZATION';
+    case EPC_RETENTION_RELEASE = 'EPC_RETENTION_RELEASE';
 }

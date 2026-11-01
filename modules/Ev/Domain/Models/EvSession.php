@@ -20,14 +20,17 @@ class EvSession extends Model
         'reserved_from',
         'reserved_to',
         'plugged_in_at',
+        'started_at',
         'completed_at',
         'energy_wh',
         'tariff_per_kwh_idr',
         'total_cost_idr',
         'deposit_held_idr',
+        'refund_idr',
         'no_show_fee_idr',
         'initial_soh_pct',
         'final_soh_pct',
+        'final_soh_bps',
         'peak_cell_temp_c',
         'deferred_minutes',
         'scope2_co2_kg',
@@ -39,12 +42,15 @@ class EvSession extends Model
         'reserved_from' => 'datetime',
         'reserved_to' => 'datetime',
         'plugged_in_at' => 'datetime',
+        'started_at' => 'datetime',
         'completed_at' => 'datetime',
         'energy_wh' => 'integer',
         'tariff_per_kwh_idr' => 'integer',
         'total_cost_idr' => 'integer',
         'deposit_held_idr' => 'integer',
+        'refund_idr' => 'integer',
         'no_show_fee_idr' => 'integer',
+        'final_soh_bps' => 'integer',
         'initial_soh_pct' => 'float',
         'final_soh_pct' => 'float',
         'peak_cell_temp_c' => 'float',
@@ -66,5 +72,10 @@ class EvSession extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function meterValues()
+    {
+        return $this->hasMany(EvMeterValue::class, 'session_id')->orderBy('read_at');
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Fleet\Application\Services\FleetLeasingService;
 use Modules\Fleet\Console\Commands\AuditFleetCommand;
+use Modules\Fleet\Console\Commands\AuditMobilityCommand;
 
 class FleetServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,7 @@ class FleetServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditFleetCommand::class,
+                AuditMobilityCommand::class,
             ]);
         }
     }

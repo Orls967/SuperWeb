@@ -9,4 +9,6 @@ use Modules\Banking\Contracts\TransactionTypeRegistry;
 enum VendingTransactionTypes: string implements TransactionTypeRegistry
 {
     case VENDING_SALE = 'VENDING_SALE';
+    case VENDING_SALES_REVENUE = 'vending_sales_revenue';
+    case VENDING_COGS_EXPENSE = 'vending_cogs_expense';
 }

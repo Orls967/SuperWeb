@@ -6,6 +6,7 @@ namespace Modules\Med;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Med\Console\Commands\MedAuditCommand;
+use Modules\Med\Console\Commands\SettleMediaRoyaltiesCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class MedServiceProvider extends ServiceProvider
@@ -24,6 +25,7 @@ class MedServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MedAuditCommand::class,
+                SettleMediaRoyaltiesCommand::class,
             ]);
         }
 
