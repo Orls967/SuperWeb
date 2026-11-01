@@ -25,7 +25,7 @@ it('ensures zero architecture scan debt across all rules A1 through A13 in basel
      */
     $ceilings = [
         'A1' => 20,
-        'A2' => 67,
+        'A2' => 0,
         'A3' => 0,
         'A4' => 0,
         'A5' => 0,
@@ -35,7 +35,7 @@ it('ensures zero architecture scan debt across all rules A1 through A13 in basel
         'A9' => 0,
         'A10' => 0,
         'A11' => 0,
-        'A12' => 304,
+        'A12' => 204,
         'A13' => 0,
     ];
 

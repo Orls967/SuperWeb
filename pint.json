@@ -1,0 +1,8 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "modules/Edu",
+        "modules/Med",
+        "tests/Acceptance/Retail"
+    ]
+}

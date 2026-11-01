@@ -1,7 +1,9 @@
 {
     "about": "Daftar command audit/reconcile/verify tanpa fixture korupsi (PROGRESS R0.10, KONSEP §A14.4). Hanya boleh berkurang (R5.2).",
-    "total": 0,
-    "entries": [],
+    "total": 1,
+    "entries": [
+        "cmd:mob:audit"
+    ],
     "approved_additions": [
         {
             "date": "2026-10-10",
@@ -25,6 +27,11 @@
         {
             "date": "2026-10-22",
             "decision": "DECISIONS.md#2026-10-22-fase-101-golden-scenario-dr-and-post-quantum",
+            "entries": "baseline awal: 1 entri"
+        },
+        {
+            "date": "2026-11-01",
+            "decision": "DECISIONS.md#2026-10-08-gelombang-2",
             "entries": "baseline awal: 1 entri"
         }
     ]

@@ -88,7 +88,7 @@ jobs:
           npm run build
 
       - name: Step 1.5 — Architecture Suite Contract Verification
-        run: ./vendor/bin/pest tests/Architecture
+        run: ./vendor/bin/pest tests/Architecture --parallel
 
   # ============================================================================
   # Job 2: Sharded Pest Test Matrix Across 46 Enterprise Modules
@@ -136,11 +136,22 @@ jobs:
       - name: Generate Application Encryption Key
         run: php artisan key:generate --ansi
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
       - name: Migrate & Seed Isolated Test Database
         run: php artisan migrate --force --seed
 
       - name: Execute Parallel Shard Test Suite
-        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4
+        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4 --parallel
 
   # ============================================================================
   # Job 3: Chaos Engineering & Concurrency Stress Verification

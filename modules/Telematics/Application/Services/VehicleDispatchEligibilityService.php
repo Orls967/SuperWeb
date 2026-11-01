@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Telematics\Application\Services;
 
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Telematics\Contracts\VehicleDispatchEligibilityContract;
 use Modules\Telematics\Domain\Models\TelematicsDevice;
 

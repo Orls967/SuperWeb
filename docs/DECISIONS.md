@@ -1037,6 +1037,7 @@
   - Memastikan seluruh invarian data: $\sum \text{entries} = 0$, fractional dividend $\sum \text{shares} = \text{supply}$, harga dinamis bounded floor/ceiling, serta verifikasi otorisasi ketat.
 - **Verification:** Seluruh test suite hijau (0 failed, 0 skipped), Pint clean 100%, Arch test hijau, `ecosystem:audit-12-lines` 0 diskrepansi.
 
+<a id="2026-10-08-gelombang-2"></a>
 ## 2026-10-08: Gelombang 2 (Fase 104–149) — 17 Lini Bisnis & Arsitektur Enterprise
 - **Context:**
   - Penambahan 5 lini bisnis baru: Energy & Power Grid (`egy_`), Telecom & ISP (`tlx_`), Media & Entertainment (`med_`), Education & Cohorts (`edu_`), Retail & Q-Commerce (`ret_`).
@@ -1983,3 +1984,17 @@
   - `tests/Feature/Banking/IdempotencyCategoryOneContractTest.php` memverifikasi seluruh 6 aksi Kategori (i): tanpa key $\to$ ditolak (422/exception), key sama $\to$ 1 efek, key berbeda $\to$ 2 efek.
   - `tests/Feature/Banking/IdempotencyCategoryTwoContractTest.php` memverifikasi bahwa dua kejadian bisnis berbeda menghasilkan dua entitas/posting terpisah pada aksi Kategori (ii).
   - `git grep -l "idempotencyKey ??\|idempotency_key ??" -- modules` berkurang dari 13 file menjadi tepat 7 file Kategori (ii).
+
+<a id="2026-11-01-memory-budget"></a>
+## 2026-11-01: Alokasi Batas Anggaran Memori Suite Pengujian Pasca-Gelombang 2 (DECISIONS.md#2026-11-01-memory-budget)
+- **Anchor:** `2026-11-01-memory-budget`
+- **Context:**
+  - Penggabungan 5 lini bisnis baru pada PR #39 (Gelombang 2: Edu, Med, Telco, Energy, Retail) menambah puluhan modul, service provider, dan ribuan pengujian.
+  - Pada lingkungan CI Linux runner dengan eksekusi paralel Paratest dan pest sharded matrix, akumulasi alokasi objek container dan parsing AST melampaui batas awal 512M yang ditetapkan saat suite hanya berisi 297 test (DECISIONS.md:266).
+- **Decision:**
+  - Menaikkan alokasi `<ini name="memory_limit" value="1024M" />` pada `phpunit.xml`.
+  - Mengaktifkan eksekusi `--parallel` pada sharded matrix `composer-gate.yml` untuk menjaga stabilitas pipeline CI.
+  - Batas anggaran 1024M (1G) selaras dengan alokasi mutation testing (`tests/Architecture/MutationTestingContractTest.php:37`).
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/MemoryBudgetContractTest.php` PASS.
+  - `vendor/bin/pest tests/Architecture/WorkflowBuildOrderContractTest.php` PASS.

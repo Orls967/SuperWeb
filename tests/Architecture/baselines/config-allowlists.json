@@ -23,6 +23,16 @@
             "key": "shared_tables",
             "decision": "DECISIONS.md#2026-10-30-pemulihan-baseline",
             "count": 5
+        },
+        {
+            "key": "legacy_tables",
+            "decision": "DECISIONS.md#2026-10-08-gelombang-2",
+            "count": 40
+        },
+        {
+            "key": "cross_module_columns",
+            "decision": "DECISIONS.md#2026-10-08-gelombang-2",
+            "count": 106
         }
     ]
 }

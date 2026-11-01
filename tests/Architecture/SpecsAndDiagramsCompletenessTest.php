@@ -127,7 +127,7 @@ it('verifies that every phase from 1 to 105 and 57B contains all 6 required sect
     }
 });
 
-it('verifies that total sequence diagrams across docs/ is at least 210', function (): void {
+it('verifies that total sequence diagrams across docs/ is at least 252', function (): void {
     $docsDir = base_path('docs');
     $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($docsDir));
 
@@ -140,7 +140,7 @@ it('verifies that total sequence diagrams across docs/ is at least 210', functio
         }
     }
 
-    expect($totalSeq)->toBe(249, "Total sequenceDiagram di seluruh docs/ wajib tepat 249 (ditemukan: {$totalSeq})");
+    expect($totalSeq)->toBe(252, "Total sequenceDiagram di seluruh docs/ wajib tepat 252 (ditemukan: {$totalSeq})");
 });
 
 it('verifies that docs/ROLES_60_PLAYBOOK.md contains at least 600 lines and details all 60 operational roles', function (): void {

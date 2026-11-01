@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Brick\Math\BigDecimal;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -170,6 +171,7 @@ it('captures unique violation on race condition across two connections and retur
 it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native SUM', function (): void {
     $largeAmount = '1000000000000000'; // 10^15 minor units
     $srcId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:source:'.uniqid(),
         'name' => 'Portability Large Source',
         'asset_code' => 'IDR',
@@ -181,6 +183,7 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     ]);
 
     $dstId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:dest:'.uniqid(),
         'name' => 'Portability Large Dest',
         'asset_code' => 'IDR',
@@ -194,6 +197,8 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     $txId = DB::table('bank_ledger_transactions')->insertGetId([
         'uuid' => (string) Str::uuid(),
         'type' => 'transfer',
+        'idempotency_key' => 'portability:tx:'.uniqid(),
+        'payload_hash' => hash('sha256', 'portability-payload'),
         'description' => 'Portability 10^15 Transfer',
         'posted_at' => now(),
         'created_at' => now(),
@@ -206,16 +211,16 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
             'account_id' => $srcId,
             'asset_code' => 'IDR',
             'amount' => "-{$largeAmount}",
+            'balance_after' => "-{$largeAmount}",
             'created_at' => now(),
-            'updated_at' => now(),
         ],
         [
             'transaction_id' => $txId,
             'account_id' => $dstId,
             'asset_code' => 'IDR',
             'amount' => $largeAmount,
+            'balance_after' => $largeAmount,
             'created_at' => now(),
-            'updated_at' => now(),
         ],
     ]);
 
@@ -230,6 +235,6 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
         ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
         ->value('total');
 
-    expect($srcSum)->toBe("-{$largeAmount}")
-        ->and($dstSum)->toBe($largeAmount);
+    expect((string) BigDecimal::of((string) $srcSum)->toScale(0))->toBe("-{$largeAmount}")
+        ->and((string) BigDecimal::of((string) $dstSum)->toScale(0))->toBe($largeAmount);
 })->group('db-portability');

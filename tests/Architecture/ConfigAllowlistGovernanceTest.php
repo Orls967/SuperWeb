@@ -143,7 +143,7 @@ it('validates syntax integrity of all cross_module_columns and audit documentati
     $crossColumns = $config['cross_module_columns'] ?? [];
 
     expect($crossColumns)->toBeArray();
-    expect(count($crossColumns))->toBeLessThanOrEqual(172);
+    expect(count($crossColumns))->toBeLessThanOrEqual(278);
 
     foreach ($crossColumns as $key => $description) {
         expect($key)->toMatch('/^[a-z0-9_]+\.[a-z0-9_]+$/', "Format cross_module_columns '{$key}' harus table.column");

@@ -10,19 +10,19 @@ use Modules\Mining\Http\Controllers\MiningWeighbridgeSmelterController;
 
 Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
     // Weighbridge operator route (mobile 375px)
-    Route::middleware(['role:weighbridge_operator,admin,mining_admin,site_manager,mine_manager'])
+    Route::middleware(['role:weighbridge_operator,admin,mining_admin,site_manager'])
         ->get('/weighbridge', function () {
             return view('mining::weighbridge');
         })->name('mining.weighbridge');
 
     // Mine dispatcher route
-    Route::middleware(['role:dispatcher_mine,admin,mining_admin,site_manager,mine_manager'])
+    Route::middleware(['role:dispatcher_mine,admin,mining_admin,site_manager'])
         ->get('/dispatch', function () {
             return view('mining::dispatch');
-        })->name('mining.dispatch');
+        })->name('mining.dispatch.view');
 
     // Mine manager & admin hub
-    Route::middleware(['role:mine_manager,admin,mining_admin,site_manager'])
+    Route::middleware(['role:admin,mining_admin,site_manager'])
         ->get('/admin', [MiningController::class, 'index'])->name('mining.admin');
 
     // Finance officer royalties route
@@ -34,9 +34,9 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
         ->get('/hse', [MiningRoyaltyReclamationSafetyController::class, 'blastSafety'])->name('mining.hse');
 
     // General Mining hub & legacy routes
-    Route::middleware(['role:admin,mining_admin,site_manager,mine_manager'])->group(function () {
+    Route::middleware(['role:admin,mining_admin,site_manager'])->group(function () {
         Route::get('/', [MiningController::class, 'index'])->name('mining.index');
-        Route::post('/pits/{pit}/dispatch', [MiningController::class, 'dispatch'])->name('mining.pit.dispatch');
+        Route::post('/pits/{pit}/dispatch', [MiningController::class, 'dispatch'])->name('mining.dispatch');
 
         Route::prefix('operations')->name('mining.operations.')->group(function () {
             Route::get('/block-planning', [MiningExtractionDispatchController::class, 'blockPlanning'])->name('block-planning');

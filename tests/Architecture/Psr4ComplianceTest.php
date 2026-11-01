@@ -12,13 +12,17 @@ use App\Quality\Support\SourceFinder;
 */
 
 it('keeps production classes at their case-sensitive PSR-4 path', function (): void {
+    gc_collect_cycles();
     $root = dirname(__DIR__, 2);
     $composer = json_decode((string) file_get_contents($root.'/composer.json'), true, flags: JSON_THROW_ON_ERROR);
     $psr4 = $composer['autoload']['psr-4'];
     $files = SourceFinder::phpFiles($root, array_values($psr4), ['#(?:^|/)modules/[^/]+/tests/#']);
 
+    $count = count($files);
     $mismatches = (new Psr4ComplianceChecker($psr4))->mismatches($files);
+    unset($files);
+    gc_collect_cycles();
 
-    expect(count($files))->toBeGreaterThan(1000)
+    expect($count)->toBeGreaterThan(1000)
         ->and($mismatches)->toBe([]);
 });

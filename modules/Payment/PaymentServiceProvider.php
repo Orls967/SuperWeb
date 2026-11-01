@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Payment\Application\Listeners\NotifyPaymentCaptured;
 use Modules\Payment\Application\Listeners\NotifyPaymentRefunded;
+use Modules\Payment\Application\Services\DefaultPaymentGatewayAdapter;
 use Modules\Payment\Application\Services\PaymentGatewayService;
 use Modules\Payment\Console\Commands\ReleaseExpiredHoldsCommand;
 use Modules\Payment\Contracts\PaymentGateway;
+use Modules\Payment\Contracts\PaymentGatewayInterface;
 use Modules\Payment\Domain\Events\PaymentCaptured;
 use Modules\Payment\Domain\Events\PaymentRefunded;
 
@@ -19,6 +21,7 @@ class PaymentServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PaymentGateway::class, PaymentGatewayService::class);
+        $this->app->singleton(PaymentGatewayInterface::class, DefaultPaymentGatewayAdapter::class);
     }
 
     public function boot(): void

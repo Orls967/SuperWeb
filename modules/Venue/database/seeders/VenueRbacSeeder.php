@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Venue\Database\Seeders;
+namespace Modules\Venue\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Core\Application\Services\RbacService;

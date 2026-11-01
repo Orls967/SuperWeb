@@ -7,7 +7,7 @@ namespace Modules\Telematics\Application\Actions;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Telematics\Domain\Events\TelematicsAnomalyDetectedEvent;
 use Modules\Telematics\Domain\Models\TelematicsAnomaly;
 use Modules\Telematics\Domain\Models\TelematicsBaseline;

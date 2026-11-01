@@ -23,7 +23,7 @@ Route::middleware(['web', 'auth', 'role:admin,telematics_admin,fleet_manager'])-
     });
 });
 
-Route::middleware(['web', 'auth'])->post('/api/oto/telematics/clear-grounding', function (Request $request, ClearVehicleGroundingAction $action) {
+Route::middleware(['web', 'auth', 'role:admin,mechanic'])->post('/api/oto/telematics/clear-grounding', function (Request $request, ClearVehicleGroundingAction $action) {
     $user = $request->user();
     if (! $user->hasAnyRbacRole(['mechanic', 'admin'])) {
         abort(403, 'Hanya mekanik berwenang yang dapat menghapus status grounding');
