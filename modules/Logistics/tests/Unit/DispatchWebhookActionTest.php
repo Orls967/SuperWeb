@@ -12,6 +12,8 @@ use Tests\TestCase;
 
 uses(TestCase::class);
 
+covers(DispatchWebhookAction::class);
+
 beforeEach(function () {
     static $schemaCreated = false;
     if (! $schemaCreated) {
