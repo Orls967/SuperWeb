@@ -96,11 +96,7 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
-        $user = auth()->user();
-
-        if ($user->isCustomer() && $booking->customer_id !== $user->id) {
-            abort(403, 'Anda tidak memiliki akses ke booking ini.');
-        }
+        Gate::authorize('view', $booking);
 
         $booking->load(['customer', 'mechanic', 'service', 'spareparts', 'estimates']);
         $spareparts = Sparepart::active()->where('stock', '>', 0)->get();
