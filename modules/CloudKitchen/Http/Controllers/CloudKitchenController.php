@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Modules\CloudKitchen\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use InvalidArgumentException;
 use Modules\CloudKitchen\Application\Services\CloudKitchenService;
+use Modules\CloudKitchen\Application\Services\KitchenOrderService;
 use Modules\CloudKitchen\Domain\Models\CateringOrder;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
@@ -22,6 +26,35 @@ class CloudKitchenController extends Controller
         $orders = CateringOrder::with(['kitchen', 'subscription'])->latest()->take(10)->get();
 
         return view('cloud_kitchen::cloud_kitchen.index', compact('kitchens', 'subscriptions', 'orders'));
+    }
+
+    public function storeOrder(Request $request, KitchenOrderService $orderService): JsonResponse
+    {
+        $idempotencyKey = $request->header('X-Idempotency-Key');
+        if (! $idempotencyKey) {
+            return response()->json(['error' => 'X-Idempotency-Key header is required'], 422);
+        }
+
+        $validated = $request->validate([
+            'subscription_id' => 'required|integer',
+            'meal_slot' => 'required|string',
+            'delivery_date' => 'required|date',
+            'recipe_id' => 'nullable|integer',
+        ]);
+
+        try {
+            $order = $orderService->orderMeal(
+                (int) $validated['subscription_id'],
+                $validated['meal_slot'],
+                $validated['delivery_date'],
+                (string) $idempotencyKey,
+                isset($validated['recipe_id']) ? (int) $validated['recipe_id'] : null
+            );
+
+            return response()->json($order, 201);
+        } catch (InvalidArgumentException|DomainException $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
     public function dispatchMeal(

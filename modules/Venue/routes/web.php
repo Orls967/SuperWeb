@@ -8,6 +8,10 @@ use Modules\Venue\Http\Controllers\VenueController;
 use Modules\Venue\Http\Controllers\VenueTableBottleServiceController;
 use Modules\Venue\Http\Controllers\VenueTicketingAccessController;
 
+Route::middleware(['web', 'auth', 'role:venue_staff'])->get('/venue/gate', function () {
+    return view('venue::gate');
+})->name('venue.gate.mobile');
+
 Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->prefix('venue')->group(function () {
     Route::get('/', [VenueController::class, 'index'])->name('venue.index');
     Route::post('/tickets/{ticket}/scan', [VenueController::class, 'scanGate'])->name('venue.gate.scan');

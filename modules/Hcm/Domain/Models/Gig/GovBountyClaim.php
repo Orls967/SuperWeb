@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class GovBountyClaim extends Model
 {
-    protected $table = 'gov_bounty_claims';
+    protected $table = 'hcm_bounty_claims';
 
     protected $fillable = [
         'claim_code',

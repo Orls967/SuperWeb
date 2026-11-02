@@ -8,9 +8,9 @@ use App\Models\User;
 use App\Quality\Audit\CorruptionFixture;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Ev\database\seeders\EvDemoSeeder;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvSession;
+use Modules\Mobility\Ev\database\seeders\EvDemoSeeder;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvSession;
 
 final class EvAuditCorruptionFixture implements CorruptionFixture
 {

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VendingRestockTask extends Model
 {
-    protected $table = 'ven_restock_tasks';
+    protected $table = 'vnd_restock_tasks';
 
     protected $fillable = [
         'task_code',

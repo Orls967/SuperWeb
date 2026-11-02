@@ -7,6 +7,7 @@ namespace Modules\Epc\Domain\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use InvalidArgumentException;
 
 class EpcWbsNode extends Model
 {
@@ -32,6 +33,20 @@ class EpcWbsNode extends Model
         'actual_cost_incurred_idr' => 'integer',
         'completion_percentage' => 'decimal:2',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::saving(function (EpcWbsNode $node): void {
+            if ($node->completion_percentage !== null) {
+                $val = (float) $node->completion_percentage;
+                if ($val < 0.0 || $val > 100.0) {
+                    throw new InvalidArgumentException("WBS node completion percentage must be between 0 and 100, got: {$val}");
+                }
+            }
+        });
+    }
 
     public function project(): BelongsTo
     {

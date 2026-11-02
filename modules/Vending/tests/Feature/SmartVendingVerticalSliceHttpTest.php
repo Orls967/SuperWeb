@@ -44,7 +44,7 @@ class SmartVendingVerticalSliceHttpTest extends TestCase
         $dispenseResponse->assertRedirect(route('vending.index'));
         $dispenseResponse->assertSessionHas('success');
 
-        $this->assertDatabaseHas('ven_vending_transactions', [
+        $this->assertDatabaseHas('vnd_vending_transactions', [
             'vending_unit_id' => $unit->id,
             'item_code' => 'SNK-001',
             'qty' => 2,

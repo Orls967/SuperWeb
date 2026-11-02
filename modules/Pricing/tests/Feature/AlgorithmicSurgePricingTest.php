@@ -293,7 +293,7 @@ class AlgorithmicSurgePricingTest extends TestCase
             'driver_source' => 'DEMAND_SURGE',
         ]);
         $postTick->assertRedirect();
-        $this->assertDatabaseHas('prc_price_ticks', ['sku' => 'PART-HTTP-01', 'price_idr' => 150000]);
+        $this->assertDatabaseHas('pric_price_ticks', ['sku' => 'PART-HTTP-01', 'price_idr' => 150000]);
 
         // 3. Procurement can freeze quote via POST
         $postFreeze = $this->actingAs($this->procurementUser)->post(route('pricing.quote.freeze'), [

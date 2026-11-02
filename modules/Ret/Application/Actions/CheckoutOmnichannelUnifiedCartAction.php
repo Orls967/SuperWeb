@@ -49,7 +49,8 @@ class CheckoutOmnichannelUnifiedCartAction extends BaseAction
                 $totalAmountMinor += ($inv->map_price_minor * $qty);
             }
 
-            $orderNumber = 'ORD-'.strtoupper(substr(hash('sha256', "{$channel->id}:{$customerId}:{$totalAmountMinor}:".microtime()), 0, 10));
+            $key = $params['idempotency_key'] ?? "{$channel->id}:{$customerId}:{$totalAmountMinor}:".now()->timestamp;
+            $orderNumber = $params['order_number'] ?? 'ORD-'.strtoupper(substr(hash('sha256', $key), 0, 10));
 
             $order = RetOrder::create([
                 'id' => (string) Str::uuid(),

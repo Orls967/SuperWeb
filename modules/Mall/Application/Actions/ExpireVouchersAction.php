@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Mall\Application\Actions;
 
-use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\VoucherStatus;
 use Modules\Mall\Domain\Models\Voucher;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class ExpireVouchersAction
 {
@@ -45,31 +42,8 @@ class ExpireVouchersAction
                 return;
             }
 
-            $mallVoucherLiability = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:voucher:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Voucher Belanja Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::LIABILITY->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
-
-            $breakageRevenueAccount = LedgerAccount::firstOrCreate(
-                ['code' => 'revenue:mall:voucher_breakage:IDR'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Pendapatan Breakage Voucher Kedaluwarsa',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::REVENUE->value,
-                    'allow_negative' => false,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            $mallVoucherLiability = MallAccounts::voucherLiabilityAccount();
+            $breakageRevenueAccount = MallAccounts::voucherBreakageRevenueAccount();
 
             $totalBreakage = (int) $vouchers->sum('nominal_value');
 
@@ -77,13 +51,11 @@ class ExpireVouchersAction
             $txKey = 'vch_breakage_'.implode('_', $vouchers->pluck('id')->sort()->values()->all());
 
             if ($totalBreakage > 0 && ! LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
-                $valBd = BigDecimal::of($totalBreakage);
-
-                // Tutup liabilitas voucher (-idr), Akui pendapatan breakage (+idr)
-                $entries = [
-                    PostingEntryDTO::forAccount($mallVoucherLiability->id, 'IDR', $valBd->negated()),
-                    PostingEntryDTO::forAccount($breakageRevenueAccount->id, 'IDR', $valBd),
-                ];
+                // Tutup liabilitas voucher (debit), Akui pendapatan breakage (kredit) via Posting helper
+                $entries = Posting::lines()
+                    ->debit($mallVoucherLiability->id, $totalBreakage, 'IDR')
+                    ->credit($breakageRevenueAccount->id, $totalBreakage, 'IDR')
+                    ->toEntries('IDR');
 
                 $dto = new PostingDTO(
                     type: TransactionType::VOUCHER_BREAKAGE->value,

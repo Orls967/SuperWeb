@@ -65,7 +65,17 @@ class CheckoutService
             : max(15000, (int) (ceil($totalWeightGram / 1000) * 10000)); // Rp 10.000 / kg (min 15k)
 
         $discount = 0;
-        $idempotency = $idempotencyKey ?? sprintf('store:checkout:%s:cart%s', $user->id, $cart->id);
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('idempotency_key')
+                ?? request()?->input('request_id'));
+
+        if ($key === null || trim((string) $key) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi untuk checkout.');
+        }
+
+        $idempotency = trim((string) $key);
 
         // Terapkan Voucher Mall bila diberikan
         if ($mallVoucherCode && $this->loyaltyLedger) {

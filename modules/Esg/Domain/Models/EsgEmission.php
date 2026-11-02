@@ -35,4 +35,9 @@ class EsgEmission extends Model
         'reporting_period' => 'date',
         'metadata' => 'array',
     ];
+
+    public function getEmissionsKgCo2Attribute(): int
+    {
+        return (int) round((float) $this->co2e_kg);
+    }
 }

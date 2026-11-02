@@ -15,4 +15,19 @@ class ContractLookupService implements ContractLookupInterface
 
         return $val !== null ? (string) $val : null;
     }
+
+    public function getContract(string|int $contractIdOrNumber): ?array
+    {
+        $query = DB::table('ctr_contracts');
+        if (is_numeric($contractIdOrNumber)) {
+            $query->where('id', (int) $contractIdOrNumber)
+                ->orWhere('contract_number', (string) $contractIdOrNumber);
+        } else {
+            $query->where('contract_number', (string) $contractIdOrNumber);
+        }
+
+        $row = $query->first();
+
+        return $row !== null ? (array) $row : null;
+    }
 }

@@ -175,7 +175,7 @@ class CrossLineIntegrationTest extends TestCase
         $this->assertGreaterThan(0, $this->customer->pointsBalance());
 
         $voucherTemplate = VoucherTemplate::where('points_required', '<=', $this->customer->pointsBalance())->firstOrFail();
-        $voucher = app(RedeemVoucherAction::class)->execute($this->customer, $voucherTemplate);
+        $voucher = app(RedeemVoucherAction::class)->execute($this->customer, $voucherTemplate, idempotencyKey: 'test_crossline_voucher_'.uniqid());
 
         $initialWalletBalance = (int) $this->customer->walletBalance('IDR')->amount->toInt();
 
@@ -309,7 +309,8 @@ class CrossLineIntegrationTest extends TestCase
             invoice: $invoice,
             amount: $invoice->total_amount,
             pin: '123456',
-            user: $this->tenantOwner
+            user: $this->tenantOwner,
+            idempotencyKey: 'crossline_pay_rent_'.$invoice->id
         );
 
         $this->assertSame(InvoiceStatus::PAID, $paidInvoice->status);

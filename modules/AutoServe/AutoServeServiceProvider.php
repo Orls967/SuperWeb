@@ -16,10 +16,10 @@ use Modules\AutoServe\Application\Services\AutoServeTenantSalesProvider;
 use Modules\AutoServe\Domain\Events\BookingCompleted;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\Logistics\Contracts\FleetMaintenanceBooking;
+use Modules\Mobility\Telematics\Domain\Events\VehicleAnomalyDetected;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
 use Modules\Shared\Contracts\SearchProviderInterface;
-use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
 
 class AutoServeServiceProvider extends ServiceProvider
 {

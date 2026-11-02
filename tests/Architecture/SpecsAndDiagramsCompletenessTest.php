@@ -19,8 +19,9 @@ use Tests\TestCase;
 
 uses(TestCase::class);
 
-it('verifies that all 16 specification files exist in docs/specs/', function (): void {
+it('verifies that all 17 specification files exist in docs/specs/', function (): void {
     $expectedFiles = [
+        'FASE_106_125_SPECS.md',
         'fase-001-005-core-banking-payment-store-crypto.md',
         'fase-006-011-platform-resto-complete.md',
         'fase-012-018-mall-cross-hardening.md',
@@ -38,6 +39,9 @@ it('verifies that all 16 specification files exist in docs/specs/', function ():
         'fase-095-100-conglomerate-integration-scale-ai-security.md',
         'fase-101-105-golden-api-v3-handover-healthcare-wave2.md',
     ];
+
+    $specsFiles = glob(base_path('docs/specs/*.md')) ?: [];
+    expect(count($specsFiles))->toBe(17, 'Total file spesifikasi di docs/specs/ wajib tepat 17 file.');
 
     foreach ($expectedFiles as $filename) {
         $path = base_path('docs/specs/'.$filename);
@@ -88,7 +92,7 @@ it('verifies that every phase from 1 to 105 and 57B contains all 6 required sect
         }
     }
 
-    expect(count($phaseMap))->toBe(106, 'Seluruh 106 fase wajib ditemukan dalam spesifikasi modular');
+    expect(count($phaseMap))->toBe(126, 'Seluruh 126 fase wajib ditemukan dalam spesifikasi modular (1-105 + 57B + 106-125)');
 
     foreach ($allPhaseKeys as $k) {
         expect(isset($phaseMap[$k]))->toBeTrue("Fase {$k} tidak ditemukan dalam spesifikasi");
@@ -136,7 +140,11 @@ it('verifies that total sequence diagrams across docs/ is at least 210', functio
         }
     }
 
-    expect($totalSeq)->toBeGreaterThanOrEqual(210, "Total sequenceDiagram di seluruh docs/ wajib >= 210 (ditemukan: {$totalSeq})");
+    // Baseline 249 bertambah 3 menjadi 252 karena diagram sah desain arsitektur MVP lini:
+    // 1. docs/design/venue-mvp.md (+1, commit d81ab2e3 / PR #37 ML1)
+    // 2. docs/design/property-mvp.md (+1, commit dcd6490d / PR #38 ML2)
+    // 3. docs/design/energy-mvp.md (+1, commit bcced3e5 / PR #39 ML3)
+    expect($totalSeq)->toBe(252, "Total sequenceDiagram di seluruh docs/ wajib tepat 252 (ditemukan: {$totalSeq})");
 });
 
 it('verifies that docs/ROLES_60_PLAYBOOK.md contains at least 600 lines and details all 60 operational roles', function (): void {
@@ -146,7 +154,7 @@ it('verifies that docs/ROLES_60_PLAYBOOK.md contains at least 600 lines and deta
     $content = (string) file_get_contents($rolesPath);
     $lines = count(explode("\n", $content));
 
-    expect($lines)->toBeGreaterThanOrEqual(600, "ROLES_60_PLAYBOOK.md wajib memiliki minimal 600 baris (ditemukan: {$lines})");
+    expect($lines)->toBe(739, "ROLES_60_PLAYBOOK.md wajib memiliki tepat 739 baris (ditemukan: {$lines})");
 
     // All 60 roles (1 to 60)
     for ($i = 1; $i <= 60; $i++) {
@@ -166,7 +174,7 @@ it('verifies that docs/ARCHITECTURE.md contains at least 12 cross-line sequence 
     $content = (string) file_get_contents($archPath);
     $seqCount = substr_count($content, 'sequenceDiagram');
 
-    expect($seqCount)->toBeGreaterThanOrEqual(12, "ARCHITECTURE.md wajib memiliki minimal 12 sequenceDiagram (ditemukan: {$seqCount})");
+    expect($seqCount)->toBe(13, "ARCHITECTURE.md wajib memiliki tepat 13 sequenceDiagram (ditemukan: {$seqCount})");
     expect($content)->not->toContain('Laravel 11')
         ->and($content)->not->toContain('PHP 8.3');
 });

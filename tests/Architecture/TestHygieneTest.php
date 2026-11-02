@@ -11,6 +11,8 @@ use App\Quality\TestHygiene\TestHygieneScan;
 */
 
 it('keeps tests within the hygiene ratchet baseline', function (): void {
+    gc_collect_cycles();
+
     assertFingerprintBaseline(
         'tests/Architecture/baselines/test-hygiene.json',
         TestHygieneScan::scanProject(dirname(__DIR__, 2)),

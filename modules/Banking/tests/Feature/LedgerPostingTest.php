@@ -19,6 +19,7 @@ use Modules\Banking\Domain\Exceptions\ImmutableRecordException;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 
 uses(RefreshDatabase::class);
@@ -301,6 +302,39 @@ test('model LedgerEntry melempar ImmutableRecordException pada updating dan dele
         ->toThrow(ImmutableRecordException::class)
         ->and(fn () => $entry->delete())
         ->toThrow(ImmutableRecordException::class);
+});
+
+test('database trigger melempar QueryException pada query builder update dan delete di bank_ledger_entries', function () {
+    $user = User::factory()->create();
+    $userAcc = $user->walletAccount('IDR');
+
+    $dto = new PostingDTO(
+        type: TransactionType::TOPUP->value,
+        description: 'DB trigger append-only test',
+        idempotencyKey: 'db_trigger_test_001',
+        entries: [
+            PostingEntryDTO::forCode('clearing:external:IDR', 'IDR', -20000),
+            PostingEntryDTO::forAccount($userAcc->id, 'IDR', 20000),
+        ],
+    );
+
+    $tx = $this->ledger->post($dto);
+    $entry = $tx->entries->first();
+
+    // Query builder update bypasses Eloquent events but is blocked by DB trigger
+    expect(fn () => LedgerEntry::query()->where('id', $entry->id)->update(['amount' => '999999']))
+        ->toThrow(QueryException::class);
+
+    // Query builder delete bypasses Eloquent events but is blocked by DB trigger
+    expect(fn () => LedgerEntry::query()->where('id', $entry->id)->delete())
+        ->toThrow(QueryException::class);
+
+    // Also verify bank_ledger_transactions trigger
+    expect(fn () => LedgerTransaction::query()->where('id', $tx->id)->update(['description' => 'Hacked']))
+        ->toThrow(QueryException::class);
+
+    expect(fn () => LedgerTransaction::query()->where('id', $tx->id)->delete())
+        ->toThrow(QueryException::class);
 });
 
 test('posting dengan tipe transaksi lebih dari 32 karakter melempar InvalidArgumentException', function () {

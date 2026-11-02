@@ -9,15 +9,15 @@ use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\InvoiceStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Models\Invoice;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class AllocatePaymentAction
 {
@@ -79,9 +79,17 @@ class AllocatePaymentAction
                 throw new InvalidArgumentException('Saldo dompet tenant tidak mencukupi (Tersedia: Rp '.number_format($walletBal).', Diperlukan: Rp '.number_format($paymentAmount).').');
             }
 
-            $txKey = $idempotencyKey ?? (
-                'mall_pay_'.$lockedInvoice->id.'_'.$paymentAmount.'_'.$source.'_'.$lockedInvoice->paid_amount
-            );
+            $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+                ? trim($idempotencyKey)
+                : (request()?->header('Idempotency-Key')
+                    ?? request()?->input('idempotency_key')
+                    ?? request()?->input('request_id'));
+
+            if ($key === null || trim((string) $key) === '') {
+                throw new InvalidArgumentException('Idempotency key wajib diisi untuk alokasi pembayaran invoice.');
+            }
+
+            $txKey = 'mall_pay_'.trim((string) $key);
 
             // Replay guard: kembalikan hasil tanpa double posting bila sudah pernah
             // tercatat dengan kunci yang sama (retry browser/gateway).
@@ -116,16 +124,14 @@ class AllocatePaymentAction
             // Pastikan seluruh akun pendapatan yang terlibat sudah terdaftar di ledger
             $this->ensureRevenueAccountsExist(array_keys($splits));
 
-            // Bangun entri double-entry ledger: Debit dompet tenant, Kredit pendapatan mall
-            $entries = [
-                PostingEntryDTO::forAccount($walletAccount->id, 'IDR', BigDecimal::of($paymentAmount)->negated()),
-            ];
-
+            // Bangun entri double-entry ledger: Debit dompet tenant, Kredit pendapatan mall via Posting helper
+            $builder = Posting::lines()->debit($walletAccount->code, $paymentAmount, 'IDR');
             foreach ($splits as $accountCode => $splitAmount) {
                 if ($splitAmount > 0) {
-                    $entries[] = PostingEntryDTO::forCode($accountCode, 'IDR', BigDecimal::of($splitAmount));
+                    $builder->credit($accountCode, $splitAmount, 'IDR');
                 }
             }
+            $entries = $builder->toEntries('IDR');
 
             $dto = new PostingDTO(
                 type: TransactionType::LEASE_BILLING->value,
@@ -182,27 +188,8 @@ class AllocatePaymentAction
      */
     protected function ensureRevenueAccountsExist(array $accountCodes): void
     {
-        $accountNames = [
-            'revenue:mall:rent:IDR' => 'Pendapatan Sewa & Bagi Hasil Mall',
-            'revenue:mall:service_charge:IDR' => 'Pendapatan Service Charge Mall',
-            'revenue:mall:utilities:electricity:IDR' => 'Pendapatan Utilitas Listrik Mall',
-            'revenue:mall:utilities:water:IDR' => 'Pendapatan Utilitas Air Bersih Mall',
-            'revenue:mall:utilities:ac_overtime:IDR' => 'Pendapatan Lembur AC Mall',
-            'revenue:mall:parking:IDR' => 'Pendapatan Parkir Mall',
-            'revenue:mall:repairs:IDR' => 'Pendapatan Perbaikan Fasilitas Mall',
-            'revenue:mall:penalties:IDR' => 'Pendapatan Denda Keterlambatan Mall',
-        ];
-
         foreach ($accountCodes as $code) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => $accountNames[$code] ?? 'Pendapatan Operasional Mall',
-                    'asset_code' => 'IDR',
-                    'kind' => AccountKind::REVENUE,
-                    'allow_negative' => false,
-                ]
-            );
+            MallAccounts::get($code);
         }
     }
 }

@@ -118,6 +118,9 @@ class Enterprise46ModulesInteractiveUiTest extends TestCase
 
         foreach ($this->enterpriseModules as $module) {
             $viewDir = base_path("modules/{$module}/resources/views");
+            if (! is_dir($viewDir) && is_dir(base_path("modules/Mobility/{$module}/resources/views"))) {
+                $viewDir = base_path("modules/Mobility/{$module}/resources/views");
+            }
             $this->assertDirectoryExists($viewDir, "Direktori view modul {$module} harus tersedia.");
 
             $allViewFiles = array_merge(

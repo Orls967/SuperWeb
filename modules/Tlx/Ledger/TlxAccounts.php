@@ -95,6 +95,27 @@ final class TlxAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'tlx:intercompany_payable:IDR',
+                'name' => 'Intercompany Telecom Payable (Buyer Book)',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'tlx:intercompany_telecom_expense:IDR',
+                'name' => 'Intercompany Telecom Connectivity Expense (Buyer Book)',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'tlx:power_revenue:IDR',
+                'name' => 'Data Center Excess Power Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 }

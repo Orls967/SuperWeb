@@ -18,6 +18,7 @@ class EntertainmentTableBooking extends Model
         'user_id',
         'minimum_spend_idr',
         'deposit_amount_idr',
+        'idempotency_key',
         'status',
     ];
 

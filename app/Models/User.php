@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\Banking\Domain\Traits\HasLedgerAccounts;
+use Modules\Core\Domain\Models\Role;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Core\Domain\Traits\HasRbacRoles;
 use Modules\Logistics\Domain\Models\HubOperator;
@@ -35,6 +36,11 @@ class User extends Authenticatable
     }
 
     // --- Role Helpers ---
+    public function assignRole(string|Role $role, ?string $entityType = null, ?int $entityId = null): void
+    {
+        $this->assignRbacRole($role, $entityType, $entityId);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

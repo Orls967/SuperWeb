@@ -6,18 +6,16 @@ namespace Modules\Mall\Application\Actions;
 
 use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Enums\DepositStatus;
 use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Ledger\MallAccounts;
 
 class TerminateLeaseAction
 {
@@ -45,12 +43,7 @@ class TerminateLeaseAction
                 $deductAmount = min($outstandingDeductions, $depositAmount);
                 $refundAmount = $depositAmount - $deductAmount;
 
-                $liabilityAccount = $this->ensureLedgerAccountExists(
-                    'liability:mall:tenant_deposit:IDR',
-                    'Titipan Deposit Jaminan Sewa Tenant Mall',
-                    AccountKind::LIABILITY,
-                    true
-                );
+                $liabilityAccount = MallAccounts::get('liability:mall:tenant_deposit:IDR');
 
                 $walletAccount = $user->walletAccount('IDR');
 
@@ -59,12 +52,7 @@ class TerminateLeaseAction
                 ];
 
                 if ($deductAmount > 0) {
-                    $revAccount = $this->ensureLedgerAccountExists(
-                        'revenue:mall:rent_settlement:IDR',
-                        'Penyelesaian Tunggakan Sewa Tenant',
-                        AccountKind::REVENUE,
-                        false
-                    );
+                    $revAccount = MallAccounts::get('revenue:mall:rent_settlement:IDR');
                     $entries[] = PostingEntryDTO::forCode($revAccount->code, 'IDR', BigDecimal::of($deductAmount));
                 }
 
@@ -82,9 +70,7 @@ class TerminateLeaseAction
                     createdBy: auth()->id()
                 ));
 
-                $depositStatus = $refundAmount === 0
-                    ? DepositStatus::PARTIALLY_APPLIED
-                    : ($deductAmount > 0 ? DepositStatus::PARTIALLY_APPLIED : DepositStatus::REFUNDED);
+                $depositStatus = $deductAmount > 0 ? DepositStatus::PARTIALLY_APPLIED : DepositStatus::REFUNDED;
             } else {
                 $depositStatus = $locked->deposit_status;
             }
@@ -102,21 +88,5 @@ class TerminateLeaseAction
 
             return $locked;
         });
-    }
-
-    private function ensureLedgerAccountExists(string $code, string $name, AccountKind $kind, bool $allowNegative = false): LedgerAccount
-    {
-        return LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => $name,
-                'asset_code' => 'IDR',
-                'kind' => $kind->value,
-                'allow_negative' => $allowNegative,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
     }
 }

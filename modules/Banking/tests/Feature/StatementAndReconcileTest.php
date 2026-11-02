@@ -34,7 +34,7 @@ beforeEach(function () {
     app(SetPinAction::class)->execute($this->other, '123456');
 
     app(TopUpAction::class)->execute($this->user, '2000000', 'topup_statement_1');
-    app(TransferAction::class)->execute($this->user, $this->other, '500000', '123456', 'Makan siang');
+    app(TransferAction::class)->execute($this->user, $this->other, '500000', '123456', 'Makan siang', 'transfer_statement_1');
 });
 
 test('StatementQuery memfilter mutasi berdasarkan tipe transaksi', function () {

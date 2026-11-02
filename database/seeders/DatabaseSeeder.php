@@ -16,6 +16,7 @@ use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
 use Modules\Distribution\database\seeders\DistributionSeeder;
+use Modules\Edu\database\seeders\EduDemoSeeder;
 use Modules\Logistics\database\seeders\LogisticsSeeder;
 use Modules\Mall\database\seeders\MallSeeder;
 use Modules\Manufacturing\database\seeders\ManufacturingSeeder;
@@ -136,6 +137,7 @@ class DatabaseSeeder extends Seeder
 
         // Platform notifications & activity log demo data
         $this->call([
+            EduDemoSeeder::class,
             PlatformSeeder::class,
             DemoCustomerSeeder::class,
             RestoMenuSeeder::class,

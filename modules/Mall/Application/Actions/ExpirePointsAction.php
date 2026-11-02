@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Mall\Domain\Models\PointBatch;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class ExpirePointsAction
 {
@@ -26,6 +23,7 @@ class ExpirePointsAction
 
     /**
      * Kedaluwarsakan poin loyalitas yang telah melewati masa aktif secara FIFO.
+     * Satu posting per batch dengan key deterministik mall:pts_expire:{batch_id} (KONSEP §A2.5).
      */
     public function execute(?Carbon $asOfDate = null): int
     {
@@ -46,82 +44,56 @@ class ExpirePointsAction
                 return;
             }
 
-            $mallLiabilityAccount = LedgerAccount::firstOrCreate(
-                ['code' => 'liability:mall:points:PTS'],
-                [
-                    'uuid' => (string) Str::uuid(),
-                    'name' => 'Kewajiban Poin Loyalitas Duta Mall',
-                    'asset_code' => 'PTS',
-                    'kind' => AccountKind::CLEARING->value,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            $breakageAccount = MallAccounts::pointsBreakageAccount();
 
-            // Kelompokkan per user untuk meminimalisasi jumlah transaksi buku besar
-            $userBatches = $batches->groupBy('user_id');
-
-            foreach ($userBatches as $userId => $items) {
-                $user = User::find($userId);
+            foreach ($batches as $batch) {
+                $user = User::find($batch->user_id);
                 if (! $user) {
                     continue;
                 }
 
-                $userTotal = (int) $items->sum('points_remaining');
-                if ($userTotal <= 0) {
+                $pointsToExpire = (int) $batch->points_remaining;
+                if ($pointsToExpire <= 0) {
                     continue;
                 }
 
-                // Kunci deterministik dari batch id terurut agar retry tidak men-posting ganda
-                $txKey = 'pts_expire_'.$userId.'_'.implode('_', $items->pluck('id')->sort()->values()->all());
+                // Kunci deterministik satu posting per batch (§A2.5)
+                $txKey = 'mall:pts_expire:'.$batch->id;
 
-                if (LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
-                    foreach ($items as $item) {
-                        $item->update([
-                            'points_remaining' => 0,
-                            'is_expired' => true,
-                        ]);
-                    }
+                if (! LedgerTransaction::query()->where('idempotency_key', $txKey)->exists()) {
+                    $userPointsAccount = $user->pointsAccount();
 
-                    continue;
+                    // Model C: debit dompet user, kredit revenue breakage PTS tanpa negated()
+                    $entries = Posting::lines()
+                        ->debit($userPointsAccount->id, $pointsToExpire, 'PTS')
+                        ->credit($breakageAccount->id, $pointsToExpire, 'PTS')
+                        ->toEntries('PTS');
+
+                    $dto = new PostingDTO(
+                        type: TransactionType::LOYALTY_EXPIRE->value,
+                        description: "Kedaluwarsa {$pointsToExpire} PTS batch #{$batch->id} untuk Pengguna #{$user->id}",
+                        idempotencyKey: $txKey,
+                        entries: $entries,
+                        referenceType: PointBatch::class,
+                        referenceId: $batch->id,
+                        meta: [
+                            'user_id' => $user->id,
+                            'batch_id' => $batch->id,
+                            'expired_points' => $pointsToExpire,
+                        ],
+                        createdBy: 1,
+                        postedAt: now(),
+                    );
+
+                    $this->ledger->post($dto);
                 }
 
-                $userPointsAccount = $user->pointsAccount();
-                $ptsBd = BigDecimal::of($userTotal);
+                $batch->update([
+                    'points_remaining' => 0,
+                    'is_expired' => true,
+                ]);
 
-                // Reversal: Kredit akun user (-pts), Debit kewajiban mall (+pts)
-                $entries = [
-                    PostingEntryDTO::forAccount($userPointsAccount->id, 'PTS', $ptsBd->negated()),
-                    PostingEntryDTO::forAccount($mallLiabilityAccount->id, 'PTS', $ptsBd),
-                ];
-
-                $dto = new PostingDTO(
-                    type: TransactionType::LOYALTY_EXPIRE->value,
-                    description: "Kedaluwarsa {$userTotal} PTS untuk Pengguna #{$userId}",
-                    idempotencyKey: $txKey,
-                    entries: $entries,
-                    referenceType: PointBatch::class,
-                    referenceId: null,
-                    meta: [
-                        'user_id' => $userId,
-                        'expired_points' => $userTotal,
-                        'batch_ids' => $items->pluck('id')->toArray(),
-                    ],
-                    createdBy: 1,
-                    postedAt: now(),
-                );
-
-                $this->ledger->post($dto);
-
-                foreach ($items as $item) {
-                    $item->update([
-                        'points_remaining' => 0,
-                        'is_expired' => true,
-                    ]);
-                }
-
-                $totalExpiredPoints += $userTotal;
+                $totalExpiredPoints += $pointsToExpire;
             }
         });
 
