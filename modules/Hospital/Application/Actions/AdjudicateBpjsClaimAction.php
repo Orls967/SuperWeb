@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Ledger\HospitalTransactionTypes;
 use Modules\Shared\Domain\Attributes\NotAControl;
@@ -15,10 +16,9 @@ use Modules\Shared\Domain\Attributes\NotAControl;
 class AdjudicateBpjsClaimAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+        protected ClockInterface $clock,
+    ) {}
 
     public function execute(
         BpjsClaim $claim,
@@ -27,7 +27,7 @@ class AdjudicateBpjsClaimAction
         ?string $rejectionReason = null
     ): BpjsClaim {
         return DB::transaction(function () use ($claim, $approved, $rejectionReason) {
-            $now = now();
+            $now = $this->clock->now();
 
             if ($approved) {
                 $claim->update([
@@ -54,7 +54,7 @@ class AdjudicateBpjsClaimAction
             $this->ledgerService->post(new PostingDTO(
                 type: HospitalTransactionTypes::HSP_OUTPATIENT_BPJS_REJECT->value,
                 description: "Jurnal pembalik klaim BPJS ditolak berkas {$claim->claim_code}",
-                idempotencyKey: "HSP-REJ-{$claim->id}",
+                idempotencyKey: "hsp:rejection:{$claim->id}",
                 entries: Posting::lines()
                     ->debit('hsp:bpjs_rejected_claim:IDR', $claim->ina_cbg_tariff_idr)
                     ->credit('hsp:bpjs_receivable:IDR', $claim->ina_cbg_tariff_idr)

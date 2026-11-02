@@ -8,11 +8,16 @@ use App\Models\User;
 use DomainException;
 use Illuminate\Auth\Access\AuthorizationException;
 use InvalidArgumentException;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hospital\Application\DTOs\DoctorExaminationDTO;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 
 class ExaminePatientAndDiagnoseAction
 {
+    public function __construct(
+        protected ClockInterface $clock,
+    ) {}
+
     public function execute(OutpatientEncounter $encounter, DoctorExaminationDTO $dto, ?User $doctorUser = null): OutpatientEncounter
     {
         if ($doctorUser !== null) {
@@ -38,7 +43,7 @@ class ExaminePatientAndDiagnoseAction
         $encounter->update([
             'encrypted_doctor_notes' => $dto->doctorNotes,
             'encrypted_icd10_code' => strtoupper($cleanIcd),
-            'examined_at' => now(),
+            'examined_at' => $this->clock->now(),
             'status' => 'EXAMINED',
         ]);
 
