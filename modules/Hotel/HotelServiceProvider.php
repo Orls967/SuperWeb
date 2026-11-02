@@ -10,6 +10,7 @@ use Modules\Hotel\Application\Services\HotelFolioAdapter;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
 use Modules\Hotel\Console\Commands\HotelCloseDayCommand;
+use Modules\Hotel\Console\Commands\HotelReportOrphansCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class HotelServiceProvider extends ServiceProvider
@@ -40,6 +41,7 @@ class HotelServiceProvider extends ServiceProvider
             $this->commands([
                 AuditHotelCommand::class,
                 HotelCloseDayCommand::class,
+                HotelReportOrphansCommand::class,
             ]);
         }
     }
