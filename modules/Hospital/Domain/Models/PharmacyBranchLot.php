@@ -20,6 +20,7 @@ class PharmacyBranchLot extends Model
     {
         return [
             'quantity' => 'integer',
+            'unit_cost_idr' => 'integer',
             'expiry_date' => 'date',
             'is_quarantined' => 'boolean',
         ];
