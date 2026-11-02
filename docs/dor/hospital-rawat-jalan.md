@@ -206,7 +206,7 @@ Setiap aksi bisnis penting memancarkan event resmi di namespace `Modules\Hospita
 
 ## 9. Daftar Acceptance Tests (Minimal 40 Tests)
 
-Diorganisasi ke dalam 8 kelompok file test di `tests/Acceptance/Hospital/`:
+Diorganisasi ke dalam test suite komprehensif di `tests/Acceptance/Hospital/OutpatientRawatJalanAcceptanceTest.php` (mencakup 62 acceptance tests):
 
 ### 1. `OutpatientRegistrationAndQueueTest` (Pendaftaran & Antrian)
 1. `pasien baru dapat didaftarkan dengan NIK terenkripsi dan blind index unik`
@@ -329,15 +329,7 @@ Diorganisasi ke dalam 8 kelompok file test di `tests/Acceptance/Hospital/`:
     - file: modules/Hospital/Application/Actions/AdjudicateBpjsClaimAction.php
     - file: modules/Hospital/Application/Actions/GenerateDailyPolyclinicReportAction.php
     - file: modules/Hospital/Console/Commands/AuditOutpatientCommand.php
-    - test: tests/Acceptance/Hospital/OutpatientRegistrationAndQueueTest.php (8 passed)
-    - test: tests/Acceptance/Hospital/OutpatientExaminationAndTriageTest.php (7 passed)
-    - test: tests/Acceptance/Hospital/OutpatientPharmacyAndFefoTest.php (7 passed)
-    - test: tests/Acceptance/Hospital/OutpatientBillingAndCashierTest.php (8 passed)
-    - test: tests/Acceptance/Hospital/OutpatientBpjsClaimTest.php (6 passed)
-    - test: tests/Acceptance/Hospital/OutpatientAccessControlTest.php (5 passed)
-    - test: tests/Acceptance/Hospital/OutpatientReportAndAuditTest.php (5 passed)
-    - test: tests/Acceptance/Hospital/OutpatientUiAndValidationTest.php (6 passed)
-    - test: tests/Acceptance/Hospital/OutpatientEndToEndFlowTest.php (2 passed)
+    - test: tests/Acceptance/Hospital/OutpatientRawatJalanAcceptanceTest.php (62 passed)
     - akses: route GET /hospital/outpatient/registration [role: admin, hospital_registration]
     - akses: route GET /hospital/outpatient/queue-board [role: admin, doctor, hospital_registration, nurse]
     - akses: route GET /hospital/outpatient/pharmacy [role: admin, pharmacist]
