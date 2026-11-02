@@ -24,6 +24,7 @@ class HotelFolio extends Model
         'total_addon_charges',
         'total_paid',
         'outstanding_balance',
+        'credit_limit_idr',
         'status',
     ];
 
@@ -32,6 +33,7 @@ class HotelFolio extends Model
         'total_addon_charges' => 'integer',
         'total_paid' => 'integer',
         'outstanding_balance' => 'integer',
+        'credit_limit_idr' => 'integer',
     ];
 
     public function reservation(): BelongsTo

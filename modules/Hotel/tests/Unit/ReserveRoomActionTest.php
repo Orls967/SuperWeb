@@ -5,7 +5,9 @@ declare(strict_types=1);
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Hotel\Application\Actions\ReserveRoomAction;
 use Modules\Hotel\Application\DTOs\ReserveRoomDTO;
 use Modules\Hotel\Application\Services\HotelBusinessDateService;
@@ -242,4 +244,62 @@ it('enforces closed-to-arrival and stop-sell calendar restrictions', function ()
 
     expect(fn () => $action->handle($dtoStop))
         ->toThrow(HotelRuleViolationException::class, 'Stop Sell');
+});
+
+it('tests fallback base rate, room assignment fallback, overbooking flag, and audit outbox', function () {
+    $dateIn = Carbon::now()->addDays(30)->toDateString();
+    $dateOut = Carbon::now()->addDays(32)->toDateString();
+
+    // Set physical room base rate
+    $this->room->update([
+        'status' => 'occupied',
+        'base_rate_idr' => 1_250_000,
+    ]);
+
+    // Enable overbooking on room type
+    $this->roomType->update([
+        'overbooking_max_percent' => 50,
+    ]);
+
+    $docNumberMock = Mockery::mock(DocumentNumberingInterface::class);
+    $docNumberMock->shouldReceive('nextNumber')->with('HTL', 'RSV')->andReturn('HTL/RSV/FALLBACK-01');
+
+    $auditMock = Mockery::mock(AuditTrailInterface::class);
+    $auditMock->shouldReceive('record')->once()->withArgs(function ($action, $auditable = null, $oldValues = null, $newValues = null) {
+        expect($action)->toBe('hotel.reservation.created');
+
+        return true;
+    });
+    app()->instance(AuditTrailInterface::class, $auditMock);
+
+    $outboxMock = Mockery::mock(OutboxBusInterface::class);
+    $outboxMock->shouldReceive('record')->once()->withArgs(function ($eventType, $payload, $idempotencyKey) {
+        expect($eventType)->toBe('HotelReservationCreated')
+            ->and($idempotencyKey)->toBe('res_key_fallback_unit');
+
+        return true;
+    });
+    app()->instance(OutboxBusInterface::class, $outboxMock);
+
+    $action = new ReserveRoomAction(
+        inventoryService: app(HotelInventoryService::class),
+        documentNumbering: $docNumberMock
+    );
+
+    $dto = new ReserveRoomDTO(
+        propertyId: $this->property->id,
+        roomTypeId: $this->roomType->id,
+        ratePlanId: $this->barPlan->id,
+        guestUserId: (string) $this->guest->id,
+        checkInDate: $dateIn,
+        checkOutDate: $dateOut,
+        idempotencyKey: 'res_key_fallback_unit'
+    );
+
+    $res = $action->handle($dto);
+
+    expect($res['reservation']->status)->toBe('confirmed')
+        ->and($res['reservation']->daily_rate_idr)->toBe(1_250_000)
+        ->and($res['total_room_charge_idr'])->toBe(2_500_000)
+        ->and($res['reservation']->room_id)->toBe($this->room->id);
 });
