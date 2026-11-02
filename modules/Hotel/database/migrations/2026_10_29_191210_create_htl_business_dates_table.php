@@ -13,6 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        gc_collect_cycles();
+
         Schema::create('htl_business_dates', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('property_id')->unique();
@@ -27,6 +29,13 @@ return new class extends Migration
                 ->on('htl_properties')
                 ->cascadeOnDelete();
         });
+
+        Schema::table('htl_properties', function (Blueprint $table) {
+            $table->string('check_out_time', 8)->default('12:00:00');
+            $table->unsignedBigInteger('late_checkout_fee_idr')->default(0);
+        });
+
+        gc_collect_cycles();
     }
 
     /**
@@ -34,6 +43,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('htl_properties', function (Blueprint $table) {
+            $table->dropColumn(['check_out_time', 'late_checkout_fee_idr']);
+        });
+
         Schema::dropIfExists('htl_business_dates');
     }
 };

@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        gc_collect_cycles();
         Schema::table('htl_properties', function (Blueprint $table) {
             if (! Schema::hasColumn('htl_properties', 'tax_pbjt_bps')) {
                 $table->unsignedInteger('tax_pbjt_bps')->default(1000)->after('total_rooms');
@@ -57,6 +58,8 @@ return new class extends Migration
             $table->string('plan_type', 32)->default('BAR');
             $table->unsignedInteger('free_cancellation_hours')->default(24);
             $table->unsignedInteger('penalty_nights')->default(1);
+            $table->unsignedInteger('min_stay')->nullable();
+            $table->unsignedInteger('max_stay')->nullable();
             $table->boolean('requires_deposit')->default(false);
             $table->timestamps();
 
@@ -75,6 +78,8 @@ return new class extends Migration
             $table->uuid('rate_plan_id');
             $table->date('calendar_date');
             $table->unsignedBigInteger('rate_idr');
+            $table->boolean('closed_to_arrival')->default(false);
+            $table->boolean('stop_sell')->default(false);
             $table->timestamps();
 
             $table->foreign('property_id')

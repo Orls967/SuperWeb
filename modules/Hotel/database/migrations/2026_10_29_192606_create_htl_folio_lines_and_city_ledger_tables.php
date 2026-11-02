@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        gc_collect_cycles();
         Schema::create('htl_folio_lines', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('folio_id');
@@ -75,6 +76,12 @@ return new class extends Migration
                 ->on('htl_folios')
                 ->cascadeOnDelete();
         });
+
+        Schema::table('htl_folios', function (Blueprint $table) {
+            $table->unsignedBigInteger('credit_limit_idr')->nullable();
+        });
+
+        gc_collect_cycles();
     }
 
     /**
@@ -82,6 +89,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('htl_folios', function (Blueprint $table) {
+            $table->dropColumn('credit_limit_idr');
+        });
+
         Schema::dropIfExists('htl_city_ledger_transfers');
         Schema::dropIfExists('htl_city_ledger_accounts');
         Schema::dropIfExists('htl_folio_lines');

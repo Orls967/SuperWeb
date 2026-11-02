@@ -13,6 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        gc_collect_cycles();
+
         Schema::create('htl_deposits', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('property_id');
@@ -24,6 +26,7 @@ return new class extends Migration
             $table->string('payment_method', 32)->default('CASH');
             $table->string('status', 32)->default('HELD');
             $table->string('idempotency_key', 64)->unique();
+            $table->string('refund_idempotency_key', 128)->nullable();
             $table->timestamps();
 
             $table->foreign('property_id')
@@ -36,6 +39,8 @@ return new class extends Migration
                 ->on('htl_reservations')
                 ->cascadeOnDelete();
         });
+
+        gc_collect_cycles();
     }
 
     /**
