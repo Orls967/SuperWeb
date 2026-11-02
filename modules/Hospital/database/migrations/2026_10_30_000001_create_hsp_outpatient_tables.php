@@ -10,6 +10,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        gc_collect_cycles();
+
         Schema::table('hsp_patients', function (Blueprint $table): void {
             $table->text('national_id_nik')->nullable();
             $table->char('nik_bidx', 64)->nullable()->index();
@@ -49,8 +51,6 @@ return new class extends Migration
             $table->date('effective_from');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-
-            $table->index(['service_code', 'effective_from'], 'idx_hsp_tariffs_srv_eff');
         });
 
         Schema::create('hsp_queues', function (Blueprint $table): void {
@@ -62,9 +62,6 @@ return new class extends Migration
             $table->string('queue_code', 32)->unique();
             $table->string('status', 32)->default('WAITING');
             $table->timestamps();
-
-            $table->unique(['polyclinic_id', 'queue_date', 'queue_number'], 'uniq_hsp_q_poli_date_num');
-            $table->index(['queue_date', 'status'], 'idx_hsp_q_date_stat');
         });
 
         Schema::create('hsp_outpatient_encounters', function (Blueprint $table): void {
@@ -86,9 +83,6 @@ return new class extends Migration
             $table->text('encrypted_icd10_code')->nullable();
             $table->dateTime('examined_at')->nullable();
             $table->timestamps();
-
-            $table->index(['patient_id', 'status'], 'idx_hsp_enc_pat_stat');
-            $table->index(['polyclinic_id', 'status'], 'idx_hsp_enc_pol_stat');
         });
 
         Schema::create('hsp_outpatient_prescriptions', function (Blueprint $table): void {
@@ -161,6 +155,8 @@ return new class extends Migration
             $table->dateTime('adjudicated_at')->nullable();
             $table->timestamps();
         });
+
+        gc_collect_cycles();
     }
 
     public function down(): void
