@@ -35,7 +35,7 @@ it('ensures zero architecture scan debt across all rules A1 through A13 in basel
         'A9' => 0,
         'A10' => 0,
         'A11' => 0,
-        'A12' => 304,
+        'A12' => 300,
         'A13' => 0,
     ];
 
