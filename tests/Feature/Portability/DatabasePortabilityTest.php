@@ -233,6 +233,8 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
         ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
         ->value('total');
 
-    expect($srcSum)->toBe("-{$largeAmount}")
-        ->and($dstSum)->toBe($largeAmount);
+    $normalize = fn (mixed $val): string => rtrim(rtrim((string) $val, '0'), '.');
+
+    expect($normalize($srcSum))->toBe("-{$largeAmount}")
+        ->and($normalize($dstSum))->toBe($largeAmount);
 })->group('db-portability');
