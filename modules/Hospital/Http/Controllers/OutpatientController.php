@@ -25,7 +25,6 @@ use Modules\Hospital\Application\DTOs\PrescriptionItemDTO;
 use Modules\Hospital\Application\DTOs\RegisterPatientDTO;
 use Modules\Hospital\Application\DTOs\VitalSignsDTO;
 use Modules\Hospital\Domain\Models\BpjsClaim;
-use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Domain\Models\OutpatientPrescription;

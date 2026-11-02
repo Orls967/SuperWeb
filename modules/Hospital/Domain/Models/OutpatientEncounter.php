@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Models;
 
+use App\Models\User;
 use DomainException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -74,7 +75,7 @@ class OutpatientEncounter extends Model
     public static function getOrCreateArchFixture(): array
     {
         $poli = Polyclinic::firstOrCreate(['code' => 'POLI_UMUM'], ['name' => 'Poli Umum', 'is_active' => true]);
-        $doctorUser = \App\Models\User::firstOrCreate(['email' => 'doc_arch@hospital.local'], [
+        $doctorUser = User::firstOrCreate(['email' => 'doc_arch@hospital.local'], [
             'name' => 'Dr. Arch',
             'password' => bcrypt('secret'),
             'role' => 'doctor',

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
+use Modules\Hospital\Application\Actions\GenerateOutpatientInvoiceAction;
+use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
-use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Domain\Models\OutpatientPrescription;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\PharmacyBranch;
@@ -19,6 +20,7 @@ use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 class OutpatientEndToEndFlowTest extends HospitalAcceptanceHelper
 {
     protected Polyclinic $poli;
+
     protected Doctor $doctor;
 
     protected function setUp(): void
@@ -125,7 +127,7 @@ class OutpatientEndToEndFlowTest extends HospitalAcceptanceHelper
         $this->assertSame('DISPENSED', $prescription->fresh()->status);
 
         // Buat invoice tagihan
-        $billingAction = app(\Modules\Hospital\Application\Actions\GenerateOutpatientInvoiceAction::class);
+        $billingAction = app(GenerateOutpatientInvoiceAction::class);
         $invoice = $billingAction->execute($encounter->fresh());
         $this->assertSame(150000 + 20000, $invoice->total_amount_idr); // 150.000 dokter + 20.000 obat
 
@@ -183,7 +185,7 @@ class OutpatientEndToEndFlowTest extends HospitalAcceptanceHelper
         ])->assertRedirect();
 
         // Tagihan RS terbentuk
-        $billingAction = app(\Modules\Hospital\Application\Actions\GenerateOutpatientInvoiceAction::class);
+        $billingAction = app(GenerateOutpatientInvoiceAction::class);
         $invoice = $billingAction->execute($encounter->fresh());
         $this->assertSame(150000, $invoice->total_amount_idr);
 
@@ -196,7 +198,7 @@ class OutpatientEndToEndFlowTest extends HospitalAcceptanceHelper
         $claimResponse->assertRedirect();
         $this->assertSame('CLAIMED', $invoice->fresh()->status);
 
-        $claim = \Modules\Hospital\Domain\Models\BpjsClaim::where('invoice_id', $invoice->id)->firstOrFail();
+        $claim = BpjsClaim::where('invoice_id', $invoice->id)->firstOrFail();
         $this->assertSame('SUBMITTED', $claim->status);
         $this->assertSame(30000, $claim->variance_amount_idr); // 180.000 paket - 150.000 RS
 

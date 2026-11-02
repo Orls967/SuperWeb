@@ -8,10 +8,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\Actions\RegisterPatientAndIssueQueueAction;
 use Modules\Hospital\Application\DTOs\RegisterPatientDTO;
+use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Polyclinic;
-use Modules\Hospital\Domain\Models\Doctor;
-use Modules\Hospital\Domain\Models\QueueTicket;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 

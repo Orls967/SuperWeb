@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
-use Modules\Hospital\Domain\Models\Doctor;
-use Modules\Hospital\Domain\Models\Polyclinic;
 use Tests\Acceptance\Support\HospitalAcceptanceHelper;
 
 class OutpatientUiAndValidationTest extends HospitalAcceptanceHelper

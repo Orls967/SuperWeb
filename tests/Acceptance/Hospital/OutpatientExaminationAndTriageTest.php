@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
-use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\Actions\ExaminePatientAndDiagnoseAction;
 use Modules\Hospital\Application\Actions\RecordVitalSignsAction;
@@ -89,7 +89,7 @@ class OutpatientExaminationAndTriageTest extends HospitalAcceptanceHelper
             icd10DiagnosisCode: 'K30',
         );
 
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
         $action->execute($encounter, $dto, $nurse);
     }
 
@@ -135,7 +135,7 @@ class OutpatientExaminationAndTriageTest extends HospitalAcceptanceHelper
         );
 
         // Dokter 2 mencoba memeriksa pasien dokter 1
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
         $action->execute($encounter, $dto, $docUser2);
     }
 

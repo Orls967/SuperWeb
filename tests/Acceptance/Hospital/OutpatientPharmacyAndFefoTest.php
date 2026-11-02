@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Access\AuthorizationException;
 use Modules\Hospital\Application\Actions\CreateOutpatientPrescriptionAction;
 use Modules\Hospital\Application\Actions\DispensePrescriptionFefoAction;
 use Modules\Hospital\Application\DTOs\PrescriptionItemDTO;
@@ -56,7 +55,7 @@ class OutpatientPharmacyAndFefoTest extends HospitalAcceptanceHelper
             dosageInstructions: '3 x 1 tablet sesudah makan',
         );
 
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
         $action->execute($encounter, $dto, $nurse);
     }
 

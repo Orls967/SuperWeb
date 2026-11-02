@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
-use App\Models\User;
 use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\OutpatientInvoice;
