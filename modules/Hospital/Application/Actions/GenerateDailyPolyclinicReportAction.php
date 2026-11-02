@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
@@ -13,10 +14,8 @@ use Modules\Hospital\Domain\Models\Polyclinic;
 class GenerateDailyPolyclinicReportAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+    ) {}
 
     /**
      * @return array{
@@ -66,19 +65,37 @@ class GenerateDailyPolyclinicReportAction
             ];
         }
 
-        // Rekonsiliasi dua-sumber terhadap saldo mutasi Buku Besar Banking
+        // Rekonsiliasi dua-sumber terhadap mutasi Buku Besar Banking pada tanggal lokal
         $discrepancies = [];
+        $startOfDay = $date.' 00:00:00';
+        $endOfDay = $date.' 23:59:59';
 
-        // 1. Cek Kas Masuk via LedgerService
-        $cashBalanceStr = $this->ledgerService->getCachedBalance('hsp:cash:IDR');
-        $ledgerCashDebit = $cashBalanceStr !== null ? abs((int) (float) $cashBalanceStr) : 0;
+        // 1. Cek Kas Masuk via entri ledger pada tanggal lokal (sesuai sisi normal debit = negatif per §A2.1)
+        $cashRow = DB::selectOne('
+            SELECT COALESCE(SUM(le.amount), 0) AS total_sum
+            FROM bank_ledger_entries le
+            JOIN bank_ledger_transactions lt ON le.transaction_id = lt.id
+            JOIN bank_ledger_accounts la ON le.account_id = la.id
+            WHERE la.code = ? AND lt.posted_at >= ? AND lt.posted_at <= ?
+        ', ['hsp:cash:IDR', $startOfDay, $endOfDay]);
+
+        $ledgerCashSum = (int) ($cashRow?->total_sum ?? 0);
+        $ledgerCashDebit = -$ledgerCashSum;
         if ($ledgerCashDebit !== $cashIncome) {
             $discrepancies[] = "Diskrepansi Kas Tunai: Operasional Rp {$cashIncome} vs Ledger Rp {$ledgerCashDebit}";
         }
 
-        // 2. Cek Piutang BPJS via LedgerService
-        $bpjsBalanceStr = $this->ledgerService->getCachedBalance('hsp:bpjs_receivable:IDR');
-        $ledgerBpjsDebit = $bpjsBalanceStr !== null ? abs((int) (float) $bpjsBalanceStr) : 0;
+        // 2. Cek Piutang BPJS via entri ledger pada tanggal lokal (sesuai sisi normal debit = negatif per §A2.1)
+        $bpjsRow = DB::selectOne('
+            SELECT COALESCE(SUM(le.amount), 0) AS total_sum
+            FROM bank_ledger_entries le
+            JOIN bank_ledger_transactions lt ON le.transaction_id = lt.id
+            JOIN bank_ledger_accounts la ON le.account_id = la.id
+            WHERE la.code = ? AND lt.posted_at >= ? AND lt.posted_at <= ?
+        ', ['hsp:bpjs_receivable:IDR', $startOfDay, $endOfDay]);
+
+        $ledgerBpjsSum = (int) ($bpjsRow?->total_sum ?? 0);
+        $ledgerBpjsDebit = -$ledgerBpjsSum;
         if ($ledgerBpjsDebit !== $bpjsClaim) {
             $discrepancies[] = "Diskrepansi Piutang BPJS: Operasional Rp {$bpjsClaim} vs Ledger Rp {$ledgerBpjsDebit}";
         }
