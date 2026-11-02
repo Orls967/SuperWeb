@@ -13,5 +13,8 @@ final class PrescriptionItemDTO
         public string $dosageInstructions,
         public int $unitPriceIdr = 2000,
     ) {
+        if ($this->quantity <= 0) {
+            throw new \InvalidArgumentException('Quantity must be greater than zero.');
+        }
     }
 }

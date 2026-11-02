@@ -19,5 +19,8 @@ final class RegisterPatientDTO
         public ?string $bpjsCardNumber = null,
         public ?int $userId = null,
     ) {
+        if ($this->polyclinicId <= 0) {
+            throw new \InvalidArgumentException('Polyclinic ID must be positive.');
+        }
     }
 }

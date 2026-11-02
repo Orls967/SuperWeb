@@ -12,5 +12,8 @@ final class CashPaymentDTO
         public string $idempotencyKey,
         public int $cashierUserId,
     ) {
+        if ($this->invoiceId <= 0) {
+            throw new \InvalidArgumentException('Invoice ID must be positive.');
+        }
     }
 }

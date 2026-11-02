@@ -13,5 +13,8 @@ final class VitalSignsDTO
         public int $respiratory,
         public float $temperature,
     ) {
+        if ($this->systolic <= 0) {
+            throw new \InvalidArgumentException('Systolic BP must be positive.');
+        }
     }
 }

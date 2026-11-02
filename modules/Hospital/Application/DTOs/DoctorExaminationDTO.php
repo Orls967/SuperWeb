@@ -10,5 +10,8 @@ final class DoctorExaminationDTO
         public string $doctorNotes,
         public string $icd10DiagnosisCode,
     ) {
+        if (trim($this->icd10DiagnosisCode) === '') {
+            throw new \InvalidArgumentException('ICD-10 code cannot be empty.');
+        }
     }
 }
