@@ -13,6 +13,7 @@ use Modules\Hotel\Domain\Models\HotelDailyRevenueSnapshot;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioLine;
+use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
 use Modules\Hotel\tests\Unit\HotelUnitTestHelper;
@@ -244,4 +245,72 @@ it('resumes from simulated checkpoint failure', function () {
     $record->refresh();
     expect($record->status)->toBe('open')
         ->and($record->last_checkpoint)->toBe('COMPLETED');
+});
+
+it('charges full stay penalty on no-show for non-refundable rate plan and checks date closed', function () {
+    $bDateService = app(HotelBusinessDateService::class);
+    $currentDate = $bDateService->getCurrentBusinessDate($this->property->id);
+
+    $nonRefPlan = HotelRatePlan::firstOrCreate(
+        ['property_id' => $this->property->id, 'code' => 'NONREF_NOSHOW'],
+        [
+            'id' => (string) Str::uuid(),
+            'name' => 'Non-refundable No Show',
+            'plan_type' => 'non_refundable',
+            'free_cancellation_hours' => 0,
+            'penalty_nights' => 1,
+            'requires_deposit' => false,
+        ]
+    );
+
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/NOSHOW-NONREF',
+        'property_id' => $this->property->id,
+        'rate_plan_id' => $nonRefPlan->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => $currentDate,
+        'check_out_date' => Carbon::parse($currentDate)->addDays(3)->toDateString(),
+        'daily_rate_idr' => 1_000_000,
+        'total_room_charge_idr' => 3_000_000,
+        'status' => 'confirmed',
+    ]);
+
+    $deposit = HotelDeposit::create([
+        'id' => (string) Str::uuid(),
+        'property_id' => $this->property->id,
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'amount_idr' => 3_000_000,
+        'applied_amount_idr' => 0,
+        'refunded_amount_idr' => 0,
+        'payment_method' => 'CASH',
+        'status' => 'HELD',
+        'idempotency_key' => 'dep_nonref_noshow',
+    ]);
+
+    $ledgerMock = Mockery::mock(Ledger::class);
+    $ledgerMock->shouldReceive('post')->atLeast()->once();
+
+    $action = new ExecuteHotelNightAuditAction(
+        businessDateService: $bDateService,
+        inventoryService: app(HotelInventoryService::class),
+        ledger: $ledgerMock
+    );
+
+    expect($bDateService->isDateClosed($this->property->id, $currentDate))->toBeFalse();
+
+    $action->execute($this->property->id);
+
+    $reservation->refresh();
+    expect($reservation->status)->toBe('no_show');
+
+    $deposit->refresh();
+    // Non-refundable: full penalty 3,000,000 applied to deposit
+    expect($deposit->applied_amount_idr)->toBe(3_000_000)
+        ->and($deposit->status)->toBe('APPLIED');
+
+    // Date is now closed
+    expect($bDateService->isDateClosed($this->property->id, $currentDate))->toBeTrue();
 });

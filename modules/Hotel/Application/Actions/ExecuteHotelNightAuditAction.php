@@ -19,6 +19,7 @@ use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioLine;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRateCalendar;
+use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
@@ -44,7 +45,7 @@ class ExecuteHotelNightAuditAction extends BaseAction
             $currentDate = $targetDate ?? Carbon::parse($businessDateRecord->current_business_date)->toDateString();
             $property = HotelProperty::findOrFail($propertyId);
 
-            // Cek jika sudah pernah diaudit pada tanggal ini (idempotensi)
+            // Cek jika sudah pernah diaudit pada tanggal ini (idempotensi: dibuat sekali per tanggal, tidak ditutup dua kali)
             $existingSnapshot = HotelDailyRevenueSnapshot::where('property_id', $propertyId)
                 ->whereDate('business_date', $currentDate)
                 ->first();
@@ -166,12 +167,21 @@ class ExecuteHotelNightAuditAction extends BaseAction
                         ->whereDate('night_date', '>', $currentDate)
                         ->delete();
 
-                    // Denda satu malam dipotong dari deposit (bila ada deposit)
+                    // Denda no-show konsisten dengan kebijakan H2 (penalti penuh untuk non-refundable)
                     $deposit = HotelDeposit::where('reservation_id', $noShow->id)
                         ->where('status', 'HELD')
                         ->first();
 
-                    $penaltyAmount = $noShow->daily_rate_idr > 0 ? $noShow->daily_rate_idr : 1000000;
+                    $ratePlan = $noShow->rate_plan_id ? HotelRatePlan::find($noShow->rate_plan_id) : null;
+                    $isNonRefundable = $ratePlan && (
+                        strtoupper((string) $ratePlan->plan_type) === 'NON_REFUNDABLE'
+                        || strtoupper((string) $ratePlan->code) === 'NON_REFUNDABLE'
+                        || $ratePlan->free_cancellation_hours === 0
+                    );
+                    $dailyRate = $noShow->daily_rate_idr > 0 ? (int) $noShow->daily_rate_idr : 1000000;
+                    $penaltyAmount = $isNonRefundable
+                        ? ($noShow->total_room_charge_idr > 0 ? (int) $noShow->total_room_charge_idr : $dailyRate)
+                        : (($ratePlan->penalty_nights ?? 1) * $dailyRate);
 
                     if ($deposit) {
                         $deductible = min($penaltyAmount, $deposit->amount_idr - $deposit->applied_amount_idr);

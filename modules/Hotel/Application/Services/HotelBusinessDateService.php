@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Domain\Models\HotelBusinessDate;
+use Modules\Hotel\Domain\Models\HotelDailyRevenueSnapshot;
 
 class HotelBusinessDateService
 {
@@ -69,5 +70,15 @@ class HotelBusinessDateService
         $this->getCurrentBusinessDate($propertyId);
 
         return HotelBusinessDate::where('property_id', $propertyId)->firstOrFail();
+    }
+
+    /**
+     * Memeriksa apakah suatu business date sudah pernah ditutup (memiliki snapshot).
+     */
+    public function isDateClosed(string $propertyId, string $date): bool
+    {
+        return HotelDailyRevenueSnapshot::where('property_id', $propertyId)
+            ->whereDate('business_date', Carbon::parse($date)->toDateString())
+            ->exists();
     }
 }
