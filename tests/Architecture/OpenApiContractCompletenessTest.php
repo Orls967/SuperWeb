@@ -28,6 +28,11 @@ use Tests\TestCase;
 
 uses(TestCase::class);
 
+beforeEach(function (): void {
+    gc_collect_cycles();
+    @ini_set('memory_limit', '1G');
+});
+
 it('ensures php artisan openapi:validate passes with exit code 0', function (): void {
     $exitCode = Artisan::call('openapi:validate');
     expect($exitCode)->toBe(0);

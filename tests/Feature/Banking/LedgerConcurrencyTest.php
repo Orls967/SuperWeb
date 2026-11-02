@@ -6,6 +6,7 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
@@ -188,26 +189,42 @@ test('mysql two pdo connections lock for update blocks and serializes concurrent
     expect(DB::connection()->getDriverName())
         ->not->toBe('sqlite', 'Test db-portability DILARANG dijalankan di SQLite. Wajib dijalankan pada MySQL 8 / PostgreSQL di CI.');
 
-    $accounts = LedgerAccount::whereIn('code', ['clearing:external:IDR', 'fee:banking:IDR'])->get();
-    expect($accounts)->toHaveCount(2);
-
     $config = config('database.connections.'.config('database.default'));
-    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s', $config['host'], $config['port'], $config['database']);
+    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $config['host'], $config['port'], $config['database']);
     $pdo1 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     $pdo2 = new PDO($dsn, $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
+    // Insert isolated account row via pdo1 so it commits outside RefreshDatabase transaction
+    $uuid = (string) Str::uuid();
+    $code = 'concurrency:test:'.uniqid();
+    $stmt = $pdo1->prepare('INSERT INTO bank_ledger_accounts (uuid, code, name, asset_code, kind, allow_negative, cached_balance, created_at, updated_at) VALUES (:uuid, :code, :name, :asset_code, :kind, :allow_negative, :cached_balance, NOW(), NOW())');
+    $stmt->execute([
+        'uuid' => $uuid,
+        'code' => $code,
+        'name' => 'Concurrency Lock Test Account',
+        'asset_code' => 'IDR',
+        'kind' => 'cash',
+        'allow_negative' => 1,
+        'cached_balance' => 0,
+    ]);
+    $accountId = (int) $pdo1->lastInsertId();
+
     $pdo1->beginTransaction();
     $stmt1 = $pdo1->prepare('SELECT * FROM bank_ledger_accounts WHERE id = :id FOR UPDATE');
-    $stmt1->execute(['id' => $accounts[0]->id]);
+    $stmt1->execute(['id' => $accountId]);
 
     $lockedOut = false;
     try {
         $stmt2 = $pdo2->prepare('SELECT * FROM bank_ledger_accounts WHERE id = :id FOR UPDATE NOWAIT');
-        $stmt2->execute(['id' => $accounts[0]->id]);
+        $stmt2->execute(['id' => $accountId]);
     } catch (PDOException) {
         $lockedOut = true;
     }
 
     $pdo1->commit();
+
+    // Cleanup row
+    $pdo1->prepare('DELETE FROM bank_ledger_accounts WHERE id = :id')->execute(['id' => $accountId]);
+
     expect($lockedOut)->toBeTrue();
 })->group('db-portability');

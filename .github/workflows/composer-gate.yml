@@ -116,6 +116,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, pdo, pdo_sqlite, intl, bcmath, pcntl, redis
           coverage: none
+          ini-values: memory_limit=1G, pcov.directory=.
 
       - name: Setup Application Environment
         run: |
@@ -139,8 +140,18 @@ jobs:
       - name: Migrate & Seed Isolated Test Database
         run: php artisan migrate --force --seed
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
       - name: Execute Parallel Shard Test Suite
-        run: ./vendor/bin/pest --shard=${{ matrix.shard }}/4
+        run: php -d memory_limit=1G ./vendor/bin/pest --shard=${{ matrix.shard }}/4
 
   # ============================================================================
   # Job 3: Chaos Engineering & Concurrency Stress Verification
