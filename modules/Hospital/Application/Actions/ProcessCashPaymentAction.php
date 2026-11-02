@@ -10,6 +10,8 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Application\DTOs\CashPaymentDTO;
 use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Domain\Models\OutpatientPayment;
@@ -18,10 +20,10 @@ use Modules\Hospital\Ledger\HospitalTransactionTypes;
 class ProcessCashPaymentAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
 
     public function execute(CashPaymentDTO $dto): OutpatientPayment
     {
@@ -48,7 +50,8 @@ class ProcessCashPaymentAction
             }
 
             $changeGiven = $dto->cashReceivedIdr - $invoice->total_amount_idr;
-            $paymentCode = sprintf('PAY-%s-%04d', now()->format('Ymd'), (OutpatientPayment::count() + 1));
+            $paymentCode = $this->numbering->nextNumber('HSP', 'PAY');
+            $now = $this->clock->now();
 
             $payment = OutpatientPayment::create([
                 'payment_code' => $paymentCode,
@@ -59,7 +62,7 @@ class ProcessCashPaymentAction
                 'change_given_idr' => $changeGiven,
                 'payment_method' => 'CASH',
                 'idempotency_key' => $cleanKey,
-                'paid_at' => now(),
+                'paid_at' => $now,
             ]);
 
             $invoice->update(['status' => 'PAID']);
@@ -71,7 +74,7 @@ class ProcessCashPaymentAction
             $this->ledgerService->post(new PostingDTO(
                 type: HospitalTransactionTypes::HSP_OUTPATIENT_CASH_PAY->value,
                 description: "Penerimaan pembayaran kas invoice {$invoice->invoice_code}",
-                idempotencyKey: "HSP-PAY-{$cleanKey}",
+                idempotencyKey: "hsp:pay:{$cleanKey}",
                 entries: Posting::lines()
                     ->debit('hsp:cash:IDR', $invoice->total_amount_idr)
                     ->credit('hsp:patient_receivable:IDR', $invoice->total_amount_idr)

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Domain\Models\OutpatientDispensing;
 use Modules\Hospital\Domain\Models\OutpatientPrescription;
 use Modules\Hospital\Domain\Models\PharmacyBranchLot;
@@ -19,10 +21,10 @@ use Modules\Hospital\Ledger\HospitalTransactionTypes;
 class DispensePrescriptionFefoAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
 
     /**
      * @return list<OutpatientDispensing>
@@ -37,9 +39,10 @@ class DispensePrescriptionFefoAction
             throw new DomainException('Resep ini sudah pernah diserahkan.');
         }
 
-        $today = now()->toDateString();
+        $now = $this->clock->now();
+        $today = $now->toDateString();
 
-        return DB::transaction(function () use ($prescription, $branchId, $pharmacist, $today) {
+        return DB::transaction(function () use ($prescription, $branchId, $pharmacist, $today, $now) {
             // Ambil seluruh lot aktif, tidak dikarantina, belum kedaluwarsa, urut FEFO (expiry_date ASC)
             $availableLots = PharmacyBranchLot::where('branch_id', $branchId)
                 ->where('drug_code', $prescription->drug_code)
@@ -71,7 +74,7 @@ class DispensePrescriptionFefoAction
                 $cogsForLot = $takeQty * $unitCost;
                 $totalCogsIdr += $cogsForLot;
 
-                $dispenseCode = sprintf('DSP-%s-%04d', now()->format('Ymd'), (OutpatientDispensing::count() + 1 + count($dispensings)));
+                $dispenseCode = $this->numbering->nextNumber('HSP', 'DSP');
 
                 $dispensing = OutpatientDispensing::create([
                     'dispensing_code' => $dispenseCode,
@@ -81,7 +84,7 @@ class DispensePrescriptionFefoAction
                     'unit_cost_idr' => $unitCost,
                     'total_cogs_idr' => $cogsForLot,
                     'dispensed_by_user_id' => $pharmacist?->id ?? 1,
-                    'dispensed_at' => now(),
+                    'dispensed_at' => $now,
                 ]);
 
                 $dispensings[] = $dispensing;
@@ -98,7 +101,7 @@ class DispensePrescriptionFefoAction
                 $this->ledgerService->post(new PostingDTO(
                     type: HospitalTransactionTypes::HSP_OUTPATIENT_COGS->value,
                     description: "Pengakuan beban HPP obat resep {$prescription->prescription_code}",
-                    idempotencyKey: "HSP-COGS-{$prescription->id}",
+                    idempotencyKey: "hsp:cogs:{$prescription->id}",
                     entries: Posting::lines()
                         ->debit('hsp:cogs_pharmacy:IDR', $totalCogsIdr)
                         ->credit('hsp:inventory_pharmacy:IDR', $totalCogsIdr)

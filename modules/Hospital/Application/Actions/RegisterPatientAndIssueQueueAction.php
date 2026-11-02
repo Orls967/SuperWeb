@@ -8,8 +8,9 @@ use App\Models\User;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Application\DTOs\RegisterPatientDTO;
-use Modules\Hospital\Domain\Models\Doctor;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\Polyclinic;
@@ -17,6 +18,11 @@ use Modules\Hospital\Domain\Models\QueueTicket;
 
 class RegisterPatientAndIssueQueueAction
 {
+    public function __construct(
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
+
     /**
      * @return array{patient: Patient, queue: QueueTicket, encounter: OutpatientEncounter}
      */
@@ -31,9 +37,10 @@ class RegisterPatientAndIssueQueueAction
         }
 
         $blindIndex = hash_hmac('sha256', $dto->nik, (string) config('app.blind_index_pepper', 'hospital-rawat-jalan-secret-pepper-2026'));
-        $today = now()->toDateString();
+        $now = $this->clock->now();
+        $today = $now->toDateString();
 
-        return DB::transaction(function () use ($dto, $blindIndex, $today) {
+        return DB::transaction(function () use ($dto, $blindIndex, $today, $now) {
             $patient = Patient::where('nik_bidx', $blindIndex)->orWhere('nik_blind_index', $blindIndex)->first();
 
             if ($patient !== null) {
@@ -48,7 +55,7 @@ class RegisterPatientAndIssueQueueAction
                     throw new DomainException('Pasien dengan NIK tersebut sudah terdaftar pada poliklinik ini hari ini.');
                 }
             } else {
-                $mrn = sprintf('MRN-%s-%04d', now()->format('Ymd'), (Patient::count() + 1));
+                $mrn = $this->numbering->nextNumber('HSP', 'MRN');
                 $passportHash = hash('sha256', "{$mrn}:{$dto->fullName}:{$dto->dateOfBirth->toDateString()}:{$dto->bloodType}");
 
                 $patient = Patient::create([
@@ -72,7 +79,7 @@ class RegisterPatientAndIssueQueueAction
             $nextNumber = ($maxQueue !== null ? (int) $maxQueue : 0) + 1;
 
             $polyclinic = Polyclinic::findOrFail($dto->polyclinicId);
-            $queueCode = sprintf('%s-%s-%03d', $polyclinic->code, now()->format('Ymd'), $nextNumber);
+            $queueCode = sprintf('%s-%s-%03d', $polyclinic->code, $now->format('Ymd'), $nextNumber);
 
             $queue = QueueTicket::create([
                 'polyclinic_id' => $dto->polyclinicId,
@@ -83,7 +90,7 @@ class RegisterPatientAndIssueQueueAction
                 'status' => 'WAITING',
             ]);
 
-            $encounterCode = sprintf('ENC-%s-%04d', now()->format('Ymd'), (OutpatientEncounter::count() + 1));
+            $encounterCode = $this->numbering->nextNumber('HSP', 'ENC');
 
             $encounter = OutpatientEncounter::create([
                 'encounter_code' => $encounterCode,

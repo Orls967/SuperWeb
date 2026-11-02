@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\Hospital;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\Actions\GenerateOutpatientInvoiceAction;
 use Modules\Hospital\Application\Actions\ProcessCashPaymentAction;
@@ -177,7 +176,7 @@ class OutpatientBillingAndCashierTest extends HospitalAcceptanceHelper
 
         // Ledger hanya memuat tepat satu posting
         $entriesCount = DB::table('bank_ledger_transactions')
-            ->where('idempotency_key', 'HSP-PAY-'.$key)
+            ->where('idempotency_key', 'hsp:pay:'.$key)
             ->count();
         $this->assertSame(1, $entriesCount);
     }

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Ledger\HospitalTransactionTypes;
@@ -15,16 +17,16 @@ use Modules\Hospital\Ledger\HospitalTransactionTypes;
 class SubmitBpjsClaimAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
 
     public function execute(OutpatientInvoice $invoice, string $inaCbgCode, int $packageTariffIdr): BpjsClaim
     {
         return DB::transaction(function () use ($invoice, $inaCbgCode, $packageTariffIdr) {
             $variance = $packageTariffIdr - $invoice->total_amount_idr;
-            $claimCode = sprintf('CLM-BPJS-%s-%04d', now()->format('Ymd'), (BpjsClaim::count() + 1));
+            $claimCode = $this->numbering->nextNumber('HSP', 'CLM-BPJS');
 
             $claim = BpjsClaim::create([
                 'claim_code' => $claimCode,
@@ -69,7 +71,7 @@ class SubmitBpjsClaimAction
             $this->ledgerService->post(new PostingDTO(
                 type: HospitalTransactionTypes::HSP_OUTPATIENT_BPJS_CLAIM->value,
                 description: "Pengajuan klaim INA-CBG {$inaCbgCode} invoice {$invoice->invoice_code}",
-                idempotencyKey: "HSP-CLM-{$claim->id}",
+                idempotencyKey: "hsp:claim:{$claim->id}",
                 entries: $lines->toEntries('IDR'),
                 referenceType: 'HSP_BPJS_CLAIM',
                 referenceId: (string) $claim->id,

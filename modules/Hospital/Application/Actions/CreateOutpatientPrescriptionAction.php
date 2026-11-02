@@ -6,19 +6,26 @@ namespace Modules\Hospital\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Application\DTOs\PrescriptionItemDTO;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\OutpatientPrescription;
 
 class CreateOutpatientPrescriptionAction
 {
+    public function __construct(
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
+
     public function execute(OutpatientEncounter $encounter, PrescriptionItemDTO $dto, ?User $doctorUser = null): OutpatientPrescription
     {
         if ($doctorUser !== null && ! in_array($doctorUser->role, ['doctor', 'admin'], true)) {
             throw new AuthorizationException('Hanya dokter yang berwenang menerbitkan resep obat.');
         }
 
-        $prescriptionCode = sprintf('RX-%s-%04d', now()->format('Ymd'), (OutpatientPrescription::count() + 1));
+        $prescriptionCode = $this->numbering->nextNumber('HSP', 'RX');
         $subtotal = $dto->quantity * $dto->unitPriceIdr;
 
         $prescription = OutpatientPrescription::create([

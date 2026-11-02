@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\OutpatientInvoice;
 use Modules\Hospital\Domain\Models\TariffVersion;
@@ -16,15 +18,16 @@ use Modules\Hospital\Ledger\HospitalTransactionTypes;
 class GenerateOutpatientInvoiceAction
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-    }
+        protected LedgerService $ledgerService,
+        protected DocumentNumberingInterface $numbering,
+        protected ClockInterface $clock,
+    ) {}
 
     public function execute(OutpatientEncounter $encounter): OutpatientInvoice
     {
         return DB::transaction(function () use ($encounter) {
-            $today = now()->toDateString();
+            $now = $this->clock->now();
+            $today = $now->toDateString();
             $tariff = TariffVersion::where('service_code', 'SRV-DOC-SPECIALIST')
                 ->where('is_active', true)
                 ->whereDate('effective_from', '<=', $today)
@@ -35,7 +38,7 @@ class GenerateOutpatientInvoiceAction
             $medicationFee = (int) $encounter->prescriptions()->sum('subtotal_idr');
             $totalAmount = $doctorFee + $medicationFee;
 
-            $invoiceCode = sprintf('INV-%s-%04d', now()->format('Ymd'), (OutpatientInvoice::count() + 1));
+            $invoiceCode = $this->numbering->nextNumber('HSP', 'INV');
 
             $invoice = OutpatientInvoice::create([
                 'invoice_code' => $invoiceCode,
@@ -62,7 +65,7 @@ class GenerateOutpatientInvoiceAction
                 $this->ledgerService->post(new PostingDTO(
                     type: HospitalTransactionTypes::HSP_OUTPATIENT_BILLING->value,
                     description: "Penagihan rawat jalan umum invoice {$invoice->invoice_code}",
-                    idempotencyKey: "HSP-BILL-{$invoice->id}",
+                    idempotencyKey: "hsp:bill:{$invoice->id}",
                     entries: $lines->toEntries('IDR'),
                     referenceType: 'OUTPATIENT_INVOICE',
                     referenceId: (string) $invoice->id,

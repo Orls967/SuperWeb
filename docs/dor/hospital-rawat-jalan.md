@@ -13,7 +13,8 @@ Dokumen ini mendefinisikan kontrak fungsional, finansial, arsitektur, dan penguj
 - **D-5 Stok obat**: Berkurang hanya saat obat diserahkan/dispensing oleh apoteker (bukan saat diresepkan oleh dokter); stok fisik tidak boleh negatif; alokasi batch/lot menggunakan metode FEFO (*First Expired First Out*); lot kedaluwarsa atau dikarantina tidak boleh diserahkan.
 - **D-6 Data medis**: Diagnosis ICD-10 dan catatan dokter disimpan terenkripsi (cast encrypted AES-256); hanya dokter/perawat yang menangani kunjungan tersebut, admin, dan pasien bersangkutan yang memiliki wewenang membaca data medis tersebut.
 - **D-7 Antrian**: Nomor antrian berurutan per poli per tanggal (reset ke 1 setiap hari baru), tidak boleh lompat dan tidak boleh ganda meskipun dua petugas pendaftaran melakukan pendaftaran secara bersamaan (*concurrency-safe via database atomic lock*).
-- **D-8 Laporan & Audit**: Rekap harian per poli (jumlah kunjungan pasien, total pendapatan per cara bayar) yang nilainya terbukti seimbang dan sama dengan saldo mutasi ledger modul Banking pada hari tersebut; dilengkapi artisan command `hospital:outpatient-audit` yang lolos bersih (*exit code 0*) pada data valid dan gagal (*exit code != 0*) bila ditemukan manipulasi/korupsi data satu baris di database.
+- **D-8 Laporan & Audit**: Rekap harian per poli (jumlah kunjungan pasien, total pendapatan per cara bayar) yang nilainya terbukti seimbang dan sama dengan saldo mutasi ledger modul Banking pada hari tersebut; pemeriksaan audit dua-sumber dilebur ke `hsp:audit` (K-11) yang lolos bersih (*exit code 0*) pada data valid dan gagal (*exit code != 0*) bila ditemukan manipulasi/korupsi data satu baris di database.
+- **D-9 Penomoran Dokumen Gapless**: Penomoran dokumen alur rawat jalan (MRN, ENC, RX, DSP, INV, PAY, CLM-BPJS) menggunakan `Modules\Core\Contracts\DocumentNumberingInterface::nextNumber()` dengan format `HSP/{TYPE}/{YYYY}{MM}-{NNNNN}` gapless berbasis atomic lock `core_document_sequences`. Setiap kolom kode memiliki unique constraint.
 
 ---
 
@@ -193,13 +194,13 @@ Setiap aksi bisnis penting memancarkan event resmi di namespace `Modules\Hospita
 
 ## 8. Command Audit Dua-Sumber & Fixture Korupsi
 
-- **Command**: `php artisan hospital:outpatient-audit [--date=YYYY-MM-DD]`
+- **Command**: `php artisan hsp:audit [--date=YYYY-MM-DD]`
 - **Mekanisme Verifikasi**:
   1. **Sumber 1 (Operasional)**: Menghitung agregat dari tabel `hsp_outpatient_invoices` dan `hsp_outpatient_payments` pada tanggal yang diuji (total penerimaan tunai, total tagihan terbayar, total klaim BPJS).
-  2. **Sumber 2 (Buku Besar Banking)**: Menghitung mutasi debit/kredit pada akun `bank:cash:IDR`, `hsp:patient_receivable:IDR`, `hsp:bpjs_receivable:IDR`, `hsp:doctor_fee_revenue:IDR`, `hsp:pharmacy_revenue:IDR`, `hsp:cogs_pharmacy:IDR`, dan `hsp:inventory_pharmacy:IDR` pada tanggal yang sama.
+  2. **Sumber 2 (Buku Besar Banking)**: Menghitung mutasi debit/kredit pada akun `hsp:cash:IDR`, `hsp:patient_receivable:IDR`, `hsp:bpjs_receivable:IDR`, `hsp:doctor_fee_revenue:IDR`, `hsp:pharmacy_revenue:IDR`, `hsp:cogs_pharmacy:IDR`, dan `hsp:inventory_pharmacy:IDR` pada tanggal yang sama.
   3. **Pencocokan**: Setiap selisih > 0 Rupiah memicu pencatatan rekonsiliasi galat dan command mengembalikan *exit code 1* (FAILURE). Jika seluruh saldo identik, command mengembalikan *exit code 0* (SUCCESS).
 - **Fixture Korupsi (Uji Integritas Audit)**:
-  Dalam test acceptance, satu baris tagihan pada `hsp_outpatient_invoices` dimanipulasi nominalnya secara langsung via SQL `DB::table()->update()` tanpa melalui transaksi ledger. Command `hospital:outpatient-audit` wajib mendeteksi diskrepansi tersebut dan keluar dengan status non-zero.
+  Dalam test acceptance, satu baris tagihan pada `hsp_outpatient_invoices` dimanipulasi nominalnya secara langsung via SQL `DB::table()->update()` tanpa melalui transaksi ledger. Command `hsp:audit` wajib mendeteksi diskrepansi tersebut dan keluar dengan status non-zero.
 
 ---
 
@@ -263,8 +264,8 @@ Diorganisasi ke dalam 8 kelompok file test di `tests/Acceptance/Hospital/`:
 ### 7. `OutpatientReportAndAuditTest` (Laporan Harian & Audit Dua-Sumber)
 42. `laporan rekapitulasi harian menyajikan jumlah pasien per poli serta rincian pendapatan tunai dan klaim BPJS`
 43. `total angka pendapatan pada laporan rekap harian identik dengan saldo akhir mutasi ledger hari bersangkutan`
-44. `artisan command hospital:outpatient-audit menghasilkan exit code 0 saat seluruh data konsisten`
-45. `artisan command hospital:outpatient-audit menghasilkan exit code non-zero saat ditemukan baris tagihan termanipulasi`
+44. `artisan command hsp:audit menghasilkan exit code 0 saat seluruh data konsisten`
+45. `artisan command hsp:audit menghasilkan exit code non-zero saat ditemukan baris tagihan termanipulasi`
 46. `seluruh transaksi jurnal buku besar rawat jalan memenuhi kaidah double-entry seimbang debit sama dengan kredit`
 
 ### 8. `OutpatientUiAndValidationTest` (Antarmuka UI Blade & Penanganan Error)
