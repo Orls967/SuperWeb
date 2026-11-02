@@ -118,9 +118,8 @@ class ReserveRoomAntiOverlapRegressionTest extends TestCase
 
         $this->assertEquals(1, $res['nights']);
         $this->assertEquals(1500000, $res['total_room_charge_idr']);
-        $this->assertStringStartsWith('HTL-RES-', $reservation->reservation_number);
-        $this->assertEquals(16, strlen($reservation->reservation_number));
-        $this->assertTrue(ctype_upper(substr($reservation->reservation_number, 8)) || ctype_xdigit(substr($reservation->reservation_number, 8)));
+        $this->assertStringStartsWith('HTL/RSV/', $reservation->reservation_number);
+        $this->assertMatchesRegularExpression('/^HTL\/RSV\/\d{6}-\d{5}$/', $reservation->reservation_number);
 
         $this->assertEquals(1500000, $folio->total_room_charges);
         $this->assertEquals(0, $folio->total_addon_charges);

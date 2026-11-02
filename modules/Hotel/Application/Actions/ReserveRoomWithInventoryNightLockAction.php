@@ -7,6 +7,7 @@ namespace Modules\Hotel\Application\Actions;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
@@ -14,6 +15,10 @@ use Modules\Shared\Application\BaseAction;
 
 class ReserveRoomWithInventoryNightLockAction extends BaseAction
 {
+    public function __construct(
+        protected ?DocumentNumberingInterface $documentNumbering = null
+    ) {}
+
     /**
      * Reserve room with pessimistic inventory lock and auto-provisioned guest folio.
      *
@@ -51,7 +56,8 @@ class ReserveRoomWithInventoryNightLockAction extends BaseAction
             $nights = max(1, $in->diffInDays($out));
             $totalRoomChargeIdr = $nights * $dailyRateIdr;
 
-            $resNumber = 'HTL-RES-'.strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
+            $numbering = $this->documentNumbering ?? app(DocumentNumberingInterface::class);
+            $resNumber = $numbering->nextNumber('HTL', 'RSV');
 
             $reservation = HotelReservation::create([
                 'id' => (string) Str::uuid(),

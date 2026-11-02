@@ -157,17 +157,9 @@ class ReserveRoomAction extends BaseAction
             $isOverbooked = $availCheck['min_available'] <= (int) floor($totalPhysical * ($roomType->overbooking_max_percent / 100))
                 && $roomType->overbooking_max_percent > 0;
 
-            // Generate nomor dokumen sekuensial
-            if ($this->documentNumbering) {
-                $resNumber = $this->documentNumbering->nextNumber(
-                    entityCode: 'HTL',
-                    documentType: 'RSV',
-                    resetMonthly: true,
-                    customPrefix: 'RSV-'.date('Ym').'-'
-                );
-            } else {
-                $resNumber = 'RSV-'.date('Ym').'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
-            }
+            // Generate nomor dokumen sekuensial via DocumentNumberingInterface
+            $numbering = $this->documentNumbering ?? app(DocumentNumberingInterface::class);
+            $resNumber = $numbering->nextNumber('HTL', 'RSV');
 
             $reservationId = (string) Str::uuid();
 

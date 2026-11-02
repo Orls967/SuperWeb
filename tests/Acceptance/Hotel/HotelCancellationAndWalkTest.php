@@ -21,6 +21,7 @@ use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
 use Modules\Hotel\Domain\Models\HotelRoomType;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class HotelCancellationAndWalkTest extends TestCase
@@ -266,5 +267,28 @@ class HotelCancellationAndWalkTest extends TestCase
         $res->refresh();
         $this->assertEquals('relocated_walk', $res->status);
         $this->assertEquals(0, HotelRoomNight::where('reservation_id', $res->id)->count());
+    }
+
+    public function test_walk_tamu_tanpa_idempotency_key_ditolak_422(): void
+    {
+        $reserveAction = app(ReserveRoomAction::class);
+        $res = $reserveAction->execute(new ReserveRoomDTO(
+            propertyId: $this->property->id,
+            roomTypeId: $this->roomType->id,
+            ratePlanId: $this->barPlan->id,
+            guestUserId: (string) $this->guest->id,
+            checkInDate: '2026-11-10',
+            checkOutDate: '2026-11-12',
+            idempotencyKey: 'res-walk-nokey-01',
+        ));
+
+        $walkAction = app(ExecuteWalkCompensationAction::class);
+
+        $this->expectException(HttpException::class);
+        $walkAction->handle(
+            reservationId: $res->id,
+            alternatePropertyName: 'Aston Kartika Hotel',
+            idempotencyKey: null,
+        );
     }
 }

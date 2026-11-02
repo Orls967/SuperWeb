@@ -36,9 +36,9 @@ class HotelBusinessDateService
             return Carbon::parse($record->current_business_date)->toDateString();
         }
 
-        // Jika belum diinisialisasi, inisialisasi dari ClockInterface atau hari ini
-        $now = $this->clock ? $this->clock->now() : Carbon::now();
-        $dateStr = Carbon::parse($now)->toDateString();
+        // Jika belum diinisialisasi, inisialisasi dari ClockInterface
+        $clock = $this->clock ?? app(ClockInterface::class);
+        $dateStr = Carbon::instance($clock->now())->toDateString();
 
         HotelBusinessDate::create([
             'id' => (string) Str::uuid(),

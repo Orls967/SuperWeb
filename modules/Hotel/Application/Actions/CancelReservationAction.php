@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -19,7 +20,8 @@ use Modules\Shared\Application\BaseAction;
 class CancelReservationAction extends BaseAction
 {
     public function __construct(
-        protected ?Ledger $ledger = null
+        protected ?Ledger $ledger = null,
+        protected ?ClockInterface $clock = null
     ) {}
 
     /**
@@ -60,7 +62,8 @@ class CancelReservationAction extends BaseAction
             $freeHours = $ratePlan->free_cancellation_hours ?? 24;
             $deadline = $checkInDateTime->copy()->subHours($freeHours);
 
-            $now = $cancellationTime ? Carbon::parse($cancellationTime) : Carbon::now();
+            $clock = $this->clock ?? app(ClockInterface::class);
+            $now = $cancellationTime ? Carbon::parse($cancellationTime) : Carbon::instance($clock->now());
 
             $isFree = ($freeHours > 0) && ($now->lessThanOrEqualTo($deadline));
             $penaltyAmount = 0;

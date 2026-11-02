@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Application\Services\HotelInventoryService;
 use Modules\Hotel\Domain\Models\HotelDailyRevenueSnapshot;
@@ -30,6 +31,7 @@ class ExecuteHotelNightAuditAction extends BaseAction
         private readonly HotelBusinessDateService $businessDateService,
         private readonly HotelInventoryService $inventoryService,
         private readonly ?Ledger $ledger = null,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     /**
@@ -263,11 +265,12 @@ class ExecuteHotelNightAuditAction extends BaseAction
             // CHECKPOINT 4: ADVANCE_BUSINESS_DATE (H-2)
             // ========================================================
             $nextDate = Carbon::parse($currentDate)->addDay()->toDateString();
+            $clock = $this->clock ?? app(ClockInterface::class);
             $businessDateRecord->update([
                 'current_business_date' => $nextDate,
                 'status' => 'open',
                 'last_checkpoint' => 'COMPLETED',
-                'audited_at' => now(),
+                'audited_at' => $clock->now(),
             ]);
 
             return $snapshot;

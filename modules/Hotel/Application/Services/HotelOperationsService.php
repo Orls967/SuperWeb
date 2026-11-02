@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -18,7 +20,9 @@ use RuntimeException;
 class HotelOperationsService
 {
     public function __construct(
-        protected ?Ledger $ledger = null
+        protected ?Ledger $ledger = null,
+        protected ?ClockInterface $clock = null,
+        protected ?DocumentNumberingInterface $documentNumbering = null
     ) {}
 
     /**
@@ -77,11 +81,14 @@ class HotelOperationsService
         $nights = max(1, $checkIn->diffInDays($checkOut));
         $totalRoomCharge = $effectiveRate * $nights;
 
+        $numbering = $this->documentNumbering ?? app(DocumentNumberingInterface::class);
+        $resNumber = $numbering->nextNumber('HTL', 'RSV');
+
         $reservation = HotelReservation::create([
             'id' => (string) Str::uuid(),
             'property_id' => $property->id,
             'room_id' => $room->id,
-            'reservation_number' => 'RES-'.strtoupper(Str::random(8)),
+            'reservation_number' => $resNumber,
             'guest_user_id' => $guestUserId,
             'check_in_date' => $checkInDate,
             'check_out_date' => $checkOutDate,
@@ -131,7 +138,9 @@ class HotelOperationsService
         $reservation = HotelReservation::findOrFail($reservationId);
         $room = HotelRoom::findOrFail($reservation->room_id);
 
-        $smartLockToken = 'LOCK-'.hash('sha256', $reservation->id.now()->toIso8601String());
+        $clock = $this->clock ?? app(ClockInterface::class);
+        $now = $clock->now();
+        $smartLockToken = 'LOCK-'.hash('sha256', $reservation->id.$now->toIso8601String());
         $expiresAt = Carbon::parse($reservation->check_out_date)->endOfDay();
 
         $room->update([
@@ -157,7 +166,8 @@ class HotelOperationsService
             return false;
         }
 
-        if ($room->smart_lock_expires_at && now()->greaterThan($room->smart_lock_expires_at)) {
+        $clock = $this->clock ?? app(ClockInterface::class);
+        if ($room->smart_lock_expires_at && Carbon::instance($clock->now())->greaterThan($room->smart_lock_expires_at)) {
             return false;
         }
 

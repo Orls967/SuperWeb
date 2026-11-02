@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Application\Services\HotelInventoryService;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
@@ -24,7 +25,8 @@ class CheckOutAndSettleFolioAction extends BaseAction
 {
     public function __construct(
         protected ?Ledger $ledger = null,
-        protected ?HotelInventoryService $inventoryService = null
+        protected ?HotelInventoryService $inventoryService = null,
+        protected ?ClockInterface $clock = null
     ) {}
 
     /**
@@ -177,7 +179,8 @@ class CheckOutAndSettleFolioAction extends BaseAction
             ]);
 
             // 5. Early check-out: lepas sisa malam jika check-out lebih awal dari rencana
-            $today = Carbon::now()->toDateString();
+            $clock = $this->clock ?? app(ClockInterface::class);
+            $today = Carbon::instance($clock->now())->toDateString();
             HotelRoomNight::where('reservation_id', $reservation->id)
                 ->whereDate('night_date', '>', $today)
                 ->delete();

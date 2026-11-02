@@ -29,13 +29,13 @@ class ExecuteWalkCompensationAction extends BaseAction
     public function execute(
         string $reservationId,
         string $alternatePropertyName,
-        string $idempotencyKey,
+        ?string $idempotencyKey = null,
         ?int $compensationAmountIdr = null,
         int $transportAllowanceIdr = 350000,
         int $goodwillCreditIdr = 1000000,
     ): array {
-        if (trim($idempotencyKey) === '') {
-            throw new \InvalidArgumentException('Idempotency-Key diperlukan untuk walk compensation.');
+        if ($idempotencyKey === null || trim($idempotencyKey) === '') {
+            abort(422, 'Idempotency-Key diperlukan untuk walk compensation.');
         }
 
         return DB::transaction(function () use (
@@ -90,12 +90,14 @@ class ExecuteWalkCompensationAction extends BaseAction
         int $goodwillCreditIdr = 1000000,
         ?string $idempotencyKey = null,
     ): array {
-        $key = $idempotencyKey ?? "walk_legacy_{$reservationId}";
+        if ($idempotencyKey === null || trim($idempotencyKey) === '') {
+            abort(422, 'Idempotency-Key diperlukan untuk walk compensation.');
+        }
 
         return $this->execute(
             reservationId: $reservationId,
             alternatePropertyName: $alternatePropertyName,
-            idempotencyKey: $key,
+            idempotencyKey: $idempotencyKey,
             transportAllowanceIdr: $transportAllowanceIdr,
             goodwillCreditIdr: $goodwillCreditIdr,
         );

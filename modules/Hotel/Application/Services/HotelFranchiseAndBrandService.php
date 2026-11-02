@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Application\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Domain\Models\BrandStandardAudit;
 use Modules\Hotel\Domain\Models\FranchiseContract;
 use Modules\Hotel\Domain\Models\HotelProperty;
@@ -50,7 +52,7 @@ class HotelFranchiseAndBrandService
             'id' => (string) Str::uuid(),
             'audit_code' => 'BSA-'.strtoupper(bin2hex(random_bytes(4))),
             'property_id' => $property->id,
-            'audit_date' => now()->toDateString(),
+            'audit_date' => Carbon::instance(app(ClockInterface::class)->now())->toDateString(),
             'total_checklist_items' => $totalItems,
             'passed_items_count' => $passedItems,
             'compliance_score_percent' => round($score, 2),
