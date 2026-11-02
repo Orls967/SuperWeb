@@ -1,0 +1,19 @@
+diff --git a/modules/Agency/Http/Controllers/AgencyController.php b/modules/Agency/Http/Controllers/AgencyController.php
+index 7fcf89b2..130b311d 100644
+--- a/modules/Agency/Http/Controllers/AgencyController.php
++++ b/modules/Agency/Http/Controllers/AgencyController.php
+@@ -31,8 +31,13 @@ public function index(): View
+         ]);
+     }
+ 
+-    public function show(Agent $agent): View
++    public function show(Agent $agent, Request $request): View
+     {
++        $user = $request->user();
++        if ($user && $user->role === 'agent' && $agent->owner_user_id !== $user->id) {
++            abort(403, 'Akses data agensi dibatasi hanya untuk pemilik agen.');
++        }
++
+         $agent->load(['parent', 'children', 'contracts', 'schemes', 'accruals', 'payouts']);
+ 
+         return view('agency::show', [
