@@ -10,6 +10,8 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Core\Contracts\ClockInterface;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -19,10 +21,15 @@ use Modules\Shared\Application\BaseAction;
 
 class CancelReservationAction extends BaseAction
 {
+    protected HotelBusinessDateService $businessDateService;
+
     public function __construct(
         protected ?Ledger $ledger = null,
-        protected ?ClockInterface $clock = null
-    ) {}
+        protected ?ClockInterface $clock = null,
+        ?HotelBusinessDateService $businessDateService = null
+    ) {
+        $this->businessDateService = $businessDateService ?? app(HotelBusinessDateService::class);
+    }
 
     /**
      * @return array{
@@ -49,29 +56,61 @@ class CancelReservationAction extends BaseAction
         ) {
             $reservation = HotelReservation::lockForUpdate()->findOrFail($reservationId);
 
-            if (in_array($reservation->status, ['checked_in', 'checked_out', 'dibatalkan', 'dibatalkan_denda', 'selesai', 'no_show'])) {
-                throw new \DomainException("Reservasi berstatus '{$reservation->status}' tidak dapat dibatalkan.");
+            if ($reservation->status === 'checked_in') {
+                throw new HotelRuleViolationException("Pembatalan ditolak: reservasi sudah dalam status 'checked_in'.", 422);
+            }
+
+            if (in_array($reservation->status, ['checked_out', 'selesai', 'no_show'])) {
+                throw new HotelRuleViolationException("Reservasi berstatus '{$reservation->status}' tidak dapat dibatalkan.", 422);
+            }
+
+            if (in_array($reservation->status, ['dibatalkan', 'dibatalkan_denda'])) {
+                $isFree = $reservation->status === 'dibatalkan';
+                $penalty = $isFree ? 0 : ($reservation->daily_rate_idr > 0 ? (int) $reservation->daily_rate_idr : 1000000);
+
+                return [
+                    'reservation' => $reservation,
+                    'penalty_idr' => $penalty,
+                    'deposit_refunded_idr' => 0,
+                    'is_free' => $isFree,
+                ];
             }
 
             $ratePlan = $reservation->rate_plan_id
                 ? HotelRatePlan::find($reservation->rate_plan_id)
                 : null;
 
-            // Hitung batas waktu pembatalan gratis
-            $checkInDateTime = Carbon::parse($reservation->check_in_date)->setTime(14, 0, 0);
-            $freeHours = $ratePlan->free_cancellation_hours ?? 24;
-            $deadline = $checkInDateTime->copy()->subHours($freeHours);
+            $isNonRefundable = $ratePlan && (
+                strtoupper((string) $ratePlan->plan_type) === 'NON_REFUNDABLE'
+                || strtoupper((string) $ratePlan->code) === 'NON_REFUNDABLE'
+                || $ratePlan->free_cancellation_hours === 0
+            );
 
-            $clock = $this->clock ?? app(ClockInterface::class);
-            $now = $cancellationTime ? Carbon::parse($cancellationTime) : Carbon::instance($clock->now());
+            $businessDate = $this->businessDateService->getCurrentBusinessDate($reservation->property_id);
+            $checkInDate = Carbon::parse($reservation->check_in_date)->toDateString();
 
-            $isFree = ($freeHours > 0) && ($now->lessThanOrEqualTo($deadline));
-            $penaltyAmount = 0;
+            if ($isNonRefundable) {
+                $isFree = false;
+                $penaltyAmount = $reservation->total_room_charge_idr > 0
+                    ? (int) $reservation->total_room_charge_idr
+                    : (int) ($reservation->daily_rate_idr > 0 ? $reservation->daily_rate_idr : 1000000);
+            } else {
+                // Hitung batas waktu pembatalan gratis berdasarkan jam batas & business date
+                $checkInDateTime = Carbon::parse($reservation->check_in_date)->setTime(14, 0, 0);
+                $freeHours = $ratePlan->free_cancellation_hours ?? 24;
+                $deadline = $checkInDateTime->copy()->subHours($freeHours);
 
-            if (! $isFree) {
-                $penaltyNights = $ratePlan->penalty_nights ?? 1;
-                $dailyRate = $reservation->daily_rate_idr > 0 ? $reservation->daily_rate_idr : 1000000;
-                $penaltyAmount = $penaltyNights * $dailyRate;
+                $clock = $this->clock ?? app(ClockInterface::class);
+                $now = $cancellationTime ? Carbon::parse($cancellationTime) : Carbon::instance($clock->now());
+
+                $isFree = ($freeHours > 0) && ($now->lessThanOrEqualTo($deadline)) && ($businessDate < $checkInDate);
+                $penaltyAmount = 0;
+
+                if (! $isFree) {
+                    $penaltyNights = $ratePlan->penalty_nights ?? 1;
+                    $dailyRate = $reservation->daily_rate_idr > 0 ? $reservation->daily_rate_idr : 1000000;
+                    $penaltyAmount = $penaltyNights * $dailyRate;
+                }
             }
 
             // Lepaskan room nights yang dipesan ke inventaris

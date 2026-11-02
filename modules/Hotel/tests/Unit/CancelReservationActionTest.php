@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Hotel\Application\Actions\CancelReservationAction;
 use Modules\Hotel\Domain\Models\HotelDeposit;
+use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
 use Modules\Hotel\tests\Unit\HotelUnitTestHelper;
@@ -236,4 +237,51 @@ it('cancels reservation without rate plan and without deposit using fallback dai
         ->and($res['penalty_idr'])->toBe(1000000)
         ->and($res['deposit_refunded_idr'])->toBe(0)
         ->and($res['reservation']->status)->toBe('dibatalkan_denda');
+});
+
+it('cancels non-refundable reservation with full stay penalty and idempotent re-execution', function () {
+    $nonRefPlan = HotelRatePlan::firstOrCreate(
+        ['property_id' => $this->property->id, 'code' => 'NON_REF_CUSTOM'],
+        [
+            'id' => (string) Str::uuid(),
+            'name' => 'Non-Refundable Promo',
+            'plan_type' => 'non_refundable',
+            'free_cancellation_hours' => 0,
+            'penalty_nights' => 1,
+            'requires_deposit' => false,
+        ]
+    );
+
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/CANCEL-NONREF',
+        'property_id' => $this->property->id,
+        'rate_plan_id' => $nonRefPlan->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => Carbon::now()->addDays(5)->toDateString(),
+        'check_out_date' => Carbon::now()->addDays(8)->toDateString(),
+        'daily_rate_idr' => 1000000,
+        'total_room_charge_idr' => 3000000,
+        'status' => 'confirmed',
+    ]);
+
+    $action = app(CancelReservationAction::class);
+    $res = $action->execute(
+        reservationId: $reservation->id,
+        idempotencyKey: 'cancel_nonref_key_01'
+    );
+
+    // Full stay penalty for non-refundable
+    expect($res['is_free'])->toBeFalse()
+        ->and($res['penalty_idr'])->toBe(3000000)
+        ->and($res['reservation']->status)->toBe('dibatalkan_denda');
+
+    // Idempotent re-execution returns same result
+    $resDup = $action->execute(
+        reservationId: $reservation->id,
+        idempotencyKey: 'cancel_nonref_key_01'
+    );
+    expect($resDup['reservation']->status)->toBe('dibatalkan_denda')
+        ->and($resDup['deposit_refunded_idr'])->toBe(0);
 });
