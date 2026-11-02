@@ -8,9 +8,13 @@ use App\Security\BlindIndex;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Application\Services\HotelInventoryService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
+use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelGuestIdentity;
 use Modules\Hotel\Domain\Models\HotelHousekeepingLog;
+use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
@@ -18,9 +22,14 @@ use Modules\Shared\Application\BaseAction;
 
 class CheckInGuestAction extends BaseAction
 {
+    protected HotelBusinessDateService $businessDateService;
+
     public function __construct(
-        protected HotelInventoryService $inventoryService
-    ) {}
+        protected HotelInventoryService $inventoryService,
+        ?HotelBusinessDateService $businessDateService = null
+    ) {
+        $this->businessDateService = $businessDateService ?? app(HotelBusinessDateService::class);
+    }
 
     public function checkIn(
         string $reservationId,
@@ -63,7 +72,41 @@ class CheckInGuestAction extends BaseAction
                 throw new \InvalidArgumentException("Reservasi berstatus '{$reservation->status}' tidak dapat di-check-in.");
             }
 
+            // Validasi identitas tamu wajib
+            if (empty(trim($identityNumber)) || empty(trim($fullName))) {
+                throw new \InvalidArgumentException('Nomor identitas dan nama lengkap tamu wajib diisi saat check-in.');
+            }
+
+            // Validasi business date & early check-in
+            $currentBusinessDate = $this->businessDateService->getCurrentBusinessDate($reservation->property_id);
+            $checkInDate = Carbon::parse($reservation->check_in_date)->toDateString();
+
             $room = HotelRoom::lockForUpdate()->findOrFail($roomId);
+
+            if ($currentBusinessDate < $checkInDate) {
+                // Early check-in: hanya diizinkan bila kamar berstatus siap (inspected) dan tercatat di housekeeping log
+                $hasInspectedLog = HotelHousekeepingLog::where('room_id', $room->id)
+                    ->where('to_status', 'inspected')
+                    ->exists();
+
+                if ($room->status !== 'inspected' && ! $hasInspectedLog) {
+                    throw new HotelRuleViolationException("Early check-in ditolak: kamar {$room->room_number} belum lolos inspeksi kebersihan (inspected).", 422);
+                }
+            }
+
+            // Validasi deposit/garansi minimum bila rate plan mewajibkan
+            if ($reservation->rate_plan_id) {
+                $ratePlan = HotelRatePlan::find($reservation->rate_plan_id);
+                if ($ratePlan && $ratePlan->requires_deposit) {
+                    $hasDeposit = HotelDeposit::where('reservation_id', $reservation->id)
+                        ->whereIn('status', ['HELD', 'APPLIED'])
+                        ->exists();
+
+                    if (! $hasDeposit) {
+                        throw new HotelRuleViolationException("Check-in ditolak: paket tarif {$ratePlan->name} mewajibkan deposit/garansi sebelum check-in.", 422);
+                    }
+                }
+            }
 
             // H-9: Check-in HANYA ke kamar available atau inspected
             if (! in_array($room->status, ['available', 'inspected'])) {

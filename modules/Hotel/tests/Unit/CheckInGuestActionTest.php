@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Hotel\Application\Actions\CheckInGuestAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Application\Services\HotelInventoryService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
+use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelHousekeepingLog;
+use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
@@ -295,4 +300,105 @@ it('updates housekeeping status following valid state transitions and rejects in
     // invalid: dirty -> available directly
     expect(fn () => $action->updateHousekeepingStatus($this->room->id, 'available', (int) $this->guest->id))
         ->toThrow(InvalidArgumentException::class, "Transisi status housekeeping tidak valid: dari 'dirty' ke 'available'.");
+});
+
+it('enforces early check-in inspection requirement and deposit guarantee', function () {
+    $currentDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($this->property->id);
+
+    // Reservation check-in is tomorrow (future date relative to business date)
+    $res = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/EARLY-001',
+        'property_id' => $this->property->id,
+        'rate_plan_id' => $this->barPlan->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => Carbon::parse($currentDate)->addDays(1)->toDateString(),
+        'check_out_date' => Carbon::parse($currentDate)->addDays(3)->toDateString(),
+        'daily_rate_idr' => 1000000,
+        'total_room_charge_idr' => 2000000,
+        'status' => 'confirmed',
+    ]);
+
+    $action = app(CheckInGuestAction::class);
+
+    // Case 1: Room is available but NOT inspected -> Early check-in rejected
+    $this->room->update(['status' => 'available']);
+    expect(fn () => $action->handle(
+        reservationId: $res->id,
+        roomId: $this->room->id,
+        identityType: 'KTP',
+        identityNumber: '3171099887766554',
+        fullName: 'Early Guest'
+    ))->toThrow(HotelRuleViolationException::class, 'Early check-in ditolak');
+
+    // Case 2: Room is inspected -> Early check-in allowed
+    $this->room->update(['status' => 'inspected']);
+    $resCheckIn = $action->handle(
+        reservationId: $res->id,
+        roomId: $this->room->id,
+        identityType: 'KTP',
+        identityNumber: '3171099887766554',
+        fullName: 'Early Guest'
+    );
+    expect($resCheckIn['reservation']->status)->toBe('checked_in')
+        ->and($resCheckIn['room']->status)->toBe('occupied');
+
+    // Case 3: Rate plan requires deposit but no deposit exists -> Check-in rejected
+    $depositPlan = HotelRatePlan::create([
+        'id' => (string) Str::uuid(),
+        'property_id' => $this->property->id,
+        'code' => 'DEP_REQ_PLAN',
+        'name' => 'Deposit Required Plan',
+        'plan_type' => 'BAR',
+        'requires_deposit' => true,
+    ]);
+
+    $res2 = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/DEP-REQ-001',
+        'property_id' => $this->property->id,
+        'rate_plan_id' => $depositPlan->id,
+        'room_id' => null,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => $currentDate,
+        'check_out_date' => Carbon::parse($currentDate)->addDays(2)->toDateString(),
+        'daily_rate_idr' => 1000000,
+        'total_room_charge_idr' => 2000000,
+        'status' => 'confirmed',
+    ]);
+
+    $room2 = HotelRoom::where('property_id', $this->property->id)->where('id', '!=', $this->room->id)->firstOrFail();
+    $room2->update(['status' => 'available']);
+
+    expect(fn () => $action->handle(
+        reservationId: $res2->id,
+        roomId: $room2->id,
+        identityType: 'PASSPORT',
+        identityNumber: 'A12345678',
+        fullName: 'Deposit Guest'
+    ))->toThrow(HotelRuleViolationException::class, 'mewajibkan deposit/garansi');
+
+    // Case 4: Deposit provided -> Check-in succeeds
+    HotelDeposit::create([
+        'id' => (string) Str::uuid(),
+        'property_id' => $this->property->id,
+        'reservation_id' => $res2->id,
+        'guest_user_id' => $this->guest->id,
+        'amount_idr' => 1000000,
+        'applied_amount_idr' => 0,
+        'refunded_amount_idr' => 0,
+        'payment_method' => 'CASH',
+        'status' => 'HELD',
+        'idempotency_key' => 'dep_key_h3_test',
+    ]);
+
+    $resCheckIn2 = $action->handle(
+        reservationId: $res2->id,
+        roomId: $room2->id,
+        identityType: 'PASSPORT',
+        identityNumber: 'A12345678',
+        fullName: 'Deposit Guest'
+    );
+    expect($resCheckIn2['reservation']->status)->toBe('checked_in');
 });
