@@ -193,7 +193,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, pcov, bcmath
           coverage: pcov
-          ini-values: memory_limit=1G
+          ini-values: memory_limit=1G, pcov.directory=.
 
       - name: Setup Environment File
         run: cp .env.example .env

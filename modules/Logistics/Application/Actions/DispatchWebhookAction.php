@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Logistics\Application\Actions;
 
 use Illuminate\Support\Facades\Http;
+use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Domain\Models\WebhookDelivery;
 use Modules\Logistics\Domain\Models\WebhookEndpoint;
@@ -75,6 +76,17 @@ class DispatchWebhookAction
         }
 
         $delivery->increment('attempt');
+
+        if (class_exists(OutboxBusService::class) && ! OutboxBusService::isSafeWebhookUrl($endpoint->url)) {
+            $delivery->update([
+                'response_code' => 400,
+                'response_body' => 'SSRF Blocked: Destination URL resolves to a forbidden private/internal IP address.',
+                'status' => 'dead_letter',
+            ]);
+
+            return;
+        }
+
         $payloadJson = json_encode($delivery->payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $signature = hash_hmac('sha256', $payloadJson, $endpoint->secret);
 

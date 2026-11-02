@@ -1,0 +1,26 @@
+diff --git a/modules/Vending/resources/views/vending/markdowns.blade.php b/modules/Vending/resources/views/vending/markdowns.blade.php
+index f35ccb21..91991621 100644
+--- a/modules/Vending/resources/views/vending/markdowns.blade.php
++++ b/modules/Vending/resources/views/vending/markdowns.blade.php
+@@ -22,7 +22,7 @@
+ 
+             @if(session('success'))
+                 <div class="mb-4 p-4 bg-emerald-900/60 border border-emerald-500 rounded-lg text-emerald-200 text-sm">
+-                    {!! session('success') !!}
++                    {{ session('success') }}
+                 </div>
+             @endif
+ 
+diff --git a/modules/Venue/resources/views/venue/bottle_surge.blade.php b/modules/Venue/resources/views/venue/bottle_surge.blade.php
+index d8943c02..917e7518 100644
+--- a/modules/Venue/resources/views/venue/bottle_surge.blade.php
++++ b/modules/Venue/resources/views/venue/bottle_surge.blade.php
+@@ -22,7 +22,7 @@
+ 
+             @if(session('success'))
+                 <div class="mb-4 p-4 bg-emerald-900/60 border border-emerald-500 rounded-lg text-emerald-200 text-sm">
+-                    {!! session('success') !!}
++                    {{ session('success') }}
+                 </div>
+             @endif
+ 

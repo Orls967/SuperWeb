@@ -1,0 +1,16 @@
+diff --git a/modules/B2b/Http/Controllers/B2bOperationsController.php b/modules/B2b/Http/Controllers/B2bOperationsController.php
+index 557e4cf9..8d9cbaeb 100644
+--- a/modules/B2b/Http/Controllers/B2bOperationsController.php
++++ b/modules/B2b/Http/Controllers/B2bOperationsController.php
+@@ -96,6 +96,11 @@ public function lockEscrow(Request $request, SettleMultiPartyB2bEscrowViaLedgerA
+ 
+     public function releaseEscrow(Request $request, SettleMultiPartyB2bEscrowViaLedgerAction $action): RedirectResponse
+     {
++        $user = $request->user();
++        if ($user && ! in_array($user->role, ['admin', 'procurement'], true)) {
++            abort(403, 'Pelepasan dana escrow B2B hanya dapat diotorisasi oleh procurement atau admin.');
++        }
++
+         $validated = $request->validate([
+             'escrow_id' => 'required|string',
+             'bast_document_id' => 'required|string',

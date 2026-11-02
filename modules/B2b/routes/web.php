@@ -19,5 +19,7 @@ Route::middleware(['web', 'auth', 'role:admin,b2b_buyer,procurement'])->prefix('
 
     Route::get('/escrow', [B2bOperationsController::class, 'escrowIndex'])->name('escrow.index');
     Route::post('/escrow/lock', [B2bOperationsController::class, 'lockEscrow'])->name('escrow.lock');
-    Route::post('/escrow/release', [B2bOperationsController::class, 'releaseEscrow'])->name('escrow.release');
+    Route::post('/escrow/release', [B2bOperationsController::class, 'releaseEscrow'])
+        ->middleware('role:admin,procurement')
+        ->name('escrow.release');
 });
