@@ -10,6 +10,8 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
+use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioLine;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -68,6 +70,11 @@ class ChargeFolioOutletAction extends BaseAction
 
             $reservation = HotelReservation::with('property')->findOrFail($folio->reservation_id);
 
+            // Cek status folio: hanya folio open yang boleh dibebankan
+            if (strtolower((string) $folio->status) !== 'open') {
+                throw new HotelRuleViolationException("Pembebanan outlet ditolak: status folio '{$folio->status}' bukan 'open'.", 422);
+            }
+
             // Cek status reservasi: hanya tamu in-house (checked_in) yang boleh dibebankan
             if ($reservation->status !== 'checked_in') {
                 throw new \DomainException("Pembebanan outlet ditolak: Tamu harus berstatus 'checked_in' (status saat ini: {$reservation->status}).");
@@ -90,6 +97,19 @@ class ChargeFolioOutletAction extends BaseAction
             $serviceCharge = (int) round($baseAmountIdr * $serviceChargeBps / 10000, 0, PHP_ROUND_HALF_UP);
             $taxPbjt = (int) round(($baseAmountIdr + $serviceCharge) * $taxPbjtBps / 10000, 0, PHP_ROUND_HALF_UP);
             $totalAmount = $baseAmountIdr + $serviceCharge + $taxPbjt;
+
+            // Validasi batas kredit folio: (saldo terbuka + charge baru - deposit)
+            $creditLimit = $folio->credit_limit_idr;
+            if ($creditLimit !== null && $creditLimit > 0) {
+                $heldDeposit = (int) HotelDeposit::where('reservation_id', $reservation->id)
+                    ->where('status', 'HELD')
+                    ->sum(DB::raw('amount_idr - applied_amount_idr - refunded_amount_idr'));
+
+                $netExposure = ((int) $folio->outstanding_balance + $totalAmount) - $heldDeposit;
+                if ($netExposure > $creditLimit) {
+                    throw new HotelRuleViolationException("Batas kredit folio terlampaui: pajanan bersih (IDR {$netExposure}) melebihi batas kredit (IDR {$creditLimit}).", 422);
+                }
+            }
 
             $businessDate = $this->businessDateService->getCurrentBusinessDate($property->id);
 

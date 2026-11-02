@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Hotel\Application\Actions\ChargeFolioOutletAction;
 use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
+use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioLine;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -192,4 +194,99 @@ it('reverses folio outlet line append-only with negative amounts and ledger post
         idempotencyKey: 'rev_key_01'
     );
     expect($revAgain->id)->toBe($revLine->id);
+});
+
+it('rejects outlet charge when folio status is not open', function () {
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/CLOSED-FOLIO',
+        'property_id' => $this->property->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => now()->toDateString(),
+        'check_out_date' => now()->addDays(2)->toDateString(),
+        'daily_rate_idr' => 1000000,
+        'total_room_charge_idr' => 2000000,
+        'status' => 'checked_in',
+    ]);
+
+    $folio = HotelFolio::create([
+        'id' => (string) Str::uuid(),
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'total_room_charges' => 2000000,
+        'total_addon_charges' => 0,
+        'total_paid' => 2000000,
+        'outstanding_balance' => 0,
+        'status' => 'settled',
+    ]);
+
+    $action = app(ChargeFolioOutletAction::class);
+    $action->execute(
+        reservationOrFolioId: $folio->id,
+        baseAmountIdr: 50000,
+        description: 'Coffee',
+        idempotencyKey: 'charge_settled_folio'
+    );
+})->throws(HotelRuleViolationException::class, "bukan 'open'");
+
+it('enforces folio credit limit accounting for held deposit', function () {
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/CREDIT-LIMIT',
+        'property_id' => $this->property->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => now()->toDateString(),
+        'check_out_date' => now()->addDays(2)->toDateString(),
+        'daily_rate_idr' => 1000000,
+        'total_room_charge_idr' => 2000000,
+        'status' => 'checked_in',
+    ]);
+
+    // Credit limit IDR 200,000, current balance IDR 100,000
+    $folio = HotelFolio::create([
+        'id' => (string) Str::uuid(),
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'total_room_charges' => 100000,
+        'total_addon_charges' => 0,
+        'total_paid' => 0,
+        'outstanding_balance' => 100000,
+        'credit_limit_idr' => 200000,
+        'status' => 'open',
+    ]);
+
+    $action = app(ChargeFolioOutletAction::class);
+
+    // Charge base IDR 200,000 + tax + service ~ IDR 242,000 => exposure = 100,000 + 242,000 = 342,000 > 200,000
+    expect(fn () => $action->execute(
+        reservationOrFolioId: $folio->id,
+        baseAmountIdr: 200000,
+        description: 'Fine Dining Buffet',
+        idempotencyKey: 'charge_exceed_limit'
+    ))->toThrow(HotelRuleViolationException::class, 'Batas kredit folio terlampaui');
+
+    // Add HELD deposit of IDR 300,000 => net exposure becomes 342,000 - 300,000 = 42,000 <= 200,000
+    HotelDeposit::create([
+        'id' => (string) Str::uuid(),
+        'property_id' => $this->property->id,
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'amount_idr' => 300000,
+        'applied_amount_idr' => 0,
+        'refunded_amount_idr' => 0,
+        'payment_method' => 'CASH',
+        'status' => 'HELD',
+        'idempotency_key' => 'dep_held_credit_test',
+    ]);
+
+    $line = $action->execute(
+        reservationOrFolioId: $folio->id,
+        baseAmountIdr: 200000,
+        description: 'Fine Dining Buffet',
+        idempotencyKey: 'charge_exceed_limit'
+    );
+    expect($line)->not->toBeNull()
+        ->and($line->base_amount_idr)->toBe(200000);
 });
