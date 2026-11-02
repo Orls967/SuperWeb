@@ -21,9 +21,6 @@ final class OpenApiContractValidator
      */
     public function validate(?string $basePath = null): OpenApiValidationResult
     {
-        gc_collect_cycles();
-        @ini_set('memory_limit', '1G');
-
         $root = $basePath ?? base_path();
         $jsonPath = $root.'/docs/openapi-v3.json';
         $yamlPath = $root.'/docs/openapi-v3.yaml';
