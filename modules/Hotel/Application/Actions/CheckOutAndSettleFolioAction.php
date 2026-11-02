@@ -14,7 +14,9 @@ use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Application\Services\HotelInventoryService;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
+use Modules\Hotel\Domain\Models\HotelFolioLine;
 use Modules\Hotel\Domain\Models\HotelHousekeepingLog;
+use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
@@ -46,7 +48,8 @@ class CheckOutAndSettleFolioAction extends BaseAction
         int $paymentAmountIdr = 0,
         int $cashReceivedIdr = 0,
         int $cardReceivedIdr = 0,
-        int|string|null $cashierUserId = null
+        int|string|null $cashierUserId = null,
+        ?string $corporateAccountId = null,
     ): array {
         if (! $folioId && $reservationId) {
             $folio = HotelFolio::where('reservation_id', $reservationId)->firstOrFail();
@@ -64,7 +67,8 @@ class CheckOutAndSettleFolioAction extends BaseAction
             folioId: (string) $folioId,
             paymentMethod: $method,
             idempotencyKey: $idempotencyKey,
-            paymentAmountIdr: $amount
+            paymentAmountIdr: $amount,
+            corporateAccountId: $corporateAccountId
         );
     }
 
@@ -81,7 +85,8 @@ class CheckOutAndSettleFolioAction extends BaseAction
         string $folioId,
         string $paymentMethod = 'CASH',
         string $idempotencyKey = '',
-        int $paymentAmountIdr = 0
+        int $paymentAmountIdr = 0,
+        ?string $corporateAccountId = null,
     ): array {
         if (empty(trim($idempotencyKey))) {
             throw new \InvalidArgumentException('Idempotency-Key wajib disertakan.');
@@ -91,11 +96,61 @@ class CheckOutAndSettleFolioAction extends BaseAction
             $folioId,
             $paymentMethod,
             $idempotencyKey,
-            $paymentAmountIdr
+            $paymentAmountIdr,
+            $corporateAccountId,
         ) {
             $folio = HotelFolio::lockForUpdate()->findOrFail($folioId);
             $reservation = HotelReservation::lockForUpdate()->findOrFail($folio->reservation_id);
             $room = HotelRoom::lockForUpdate()->findOrFail($reservation->room_id);
+
+            // 0. Periksa biaya late check-out bila melewati jam batas properti
+            $property = HotelProperty::find($reservation->property_id);
+            if ($property && (int) $property->late_checkout_fee_idr > 0) {
+                $checkOutTime = $property->check_out_time ?? '12:00:00';
+                $clock = $this->clock ?? app(ClockInterface::class);
+                $now = Carbon::instance($clock->now());
+
+                if ($now->format('H:i:s') > $checkOutTime) {
+                    $alreadyCharged = HotelFolioLine::where('folio_id', $folio->id)
+                        ->where('line_type', 'LATE_CHECKOUT')
+                        ->exists();
+
+                    if (! $alreadyCharged) {
+                        $lateFee = (int) $property->late_checkout_fee_idr;
+                        $lateFeeLineId = (string) Str::uuid();
+                        HotelFolioLine::create([
+                            'id' => $lateFeeLineId,
+                            'folio_id' => $folio->id,
+                            'business_date' => $now->toDateString(),
+                            'line_type' => 'LATE_CHECKOUT',
+                            'description' => "Biaya Late Check-out (melewati {$checkOutTime})",
+                            'amount_idr' => $lateFee,
+                            'base_amount_idr' => $lateFee,
+                            'service_charge_idr' => 0,
+                            'tax_pbjt_idr' => 0,
+                            'idempotency_key' => "htl:late_co:{$folio->id}",
+                        ]);
+
+                        $folio->total_addon_charges += $lateFee;
+                        $folio->outstanding_balance += $lateFee;
+                        $folio->save();
+
+                        if ($this->ledger) {
+                            $this->ledger->post(new PostingDTO(
+                                type: HotelTransactionTypes::HOTEL_FOLIO_OUTLET_CHARGE->value,
+                                description: "Late check-out fee folio {$folio->id}",
+                                idempotencyKey: "htl:late_fee:{$folio->id}",
+                                entries: [
+                                    PostingEntryDTO::forCode('htl:guest_ledger:IDR', 'IDR', -$lateFee),
+                                    PostingEntryDTO::forCode('htl:room_revenue:IDR', 'IDR', $lateFee),
+                                ],
+                                referenceType: 'htl_folio_lines',
+                                referenceId: $lateFeeLineId,
+                            ));
+                        }
+                    }
+                }
+            }
 
             // 1. Terapkan deposit jika ada yang tersisa
             $deposit = HotelDeposit::where('reservation_id', $reservation->id)
@@ -150,6 +205,19 @@ class CheckOutAndSettleFolioAction extends BaseAction
                         referenceId: $folio->id
                     ));
                 }
+            }
+
+            // 2b. Pengalihan sisa saldo ke city ledger korporat bila ditentukan
+            if ($corporateAccountId && (int) $folio->outstanding_balance > 0) {
+                $transferAmount = (int) $folio->outstanding_balance;
+                app(TransferFolioToCityLedgerAction::class)->execute(
+                    folioId: $folio->id,
+                    cityLedgerAccountIdOrCode: $corporateAccountId,
+                    amountIdr: $transferAmount,
+                    notes: 'Pelunasan sisa saldo check-out ke city ledger',
+                    idempotencyKey: "cl_co_{$idempotencyKey}"
+                );
+                $folio->refresh();
             }
 
             // 3. Verifikasi saldo akhir wajib 0

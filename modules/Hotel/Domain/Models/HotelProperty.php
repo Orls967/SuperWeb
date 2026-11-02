@@ -25,6 +25,8 @@ class HotelProperty extends Model
         'total_rooms',
         'tax_pbjt_bps',
         'service_charge_bps',
+        'check_out_time',
+        'late_checkout_fee_idr',
     ];
 
     /**
@@ -36,6 +38,7 @@ class HotelProperty extends Model
             'total_rooms' => 'integer',
             'tax_pbjt_bps' => 'integer',
             'service_charge_bps' => 'integer',
+            'late_checkout_fee_idr' => 'integer',
         ];
     }
 

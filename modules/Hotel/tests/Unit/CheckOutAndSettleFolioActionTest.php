@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Core\Contracts\AuditTrailInterface;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Hotel\Application\Actions\CheckOutAndSettleFolioAction;
+use Modules\Hotel\Domain\Models\HotelCityLedgerAccount;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelFolio;
+use Modules\Hotel\Domain\Models\HotelFolioLine;
 use Modules\Hotel\Domain\Models\HotelHousekeepingLog;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoomNight;
@@ -673,4 +677,110 @@ it('resolves cash payment method when only cash is received via execute', functi
     $folio->refresh();
     expect((int) $folio->outstanding_balance)->toBe(0)
         ->and($folio->total_paid)->toBe(600_000);
+});
+
+it('charges late check-out fee when checking out after property cutoff time', function () {
+    $this->property->update([
+        'check_out_time' => '12:00:00',
+        'late_checkout_fee_idr' => 250_000,
+    ]);
+
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/LATE-CO-01',
+        'property_id' => $this->property->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => Carbon::now()->subDays(2)->toDateString(),
+        'check_out_date' => Carbon::now()->toDateString(),
+        'daily_rate_idr' => 1_000_000,
+        'total_room_charge_idr' => 2_000_000,
+        'status' => 'checked_in',
+    ]);
+
+    // Folio starting at 0 balance, but late fee will add 250,000
+    $folio = HotelFolio::create([
+        'id' => (string) Str::uuid(),
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'total_room_charges' => 2_000_000,
+        'total_paid' => 2_000_000,
+        'outstanding_balance' => 0,
+        'status' => 'open',
+    ]);
+
+    $clockMock = Mockery::mock(ClockInterface::class);
+    // 14:30:00 (after 12:00:00)
+    $clockMock->shouldReceive('now')->andReturn(Carbon::parse(Carbon::now()->toDateString().' 14:30:00'));
+
+    $action = new CheckOutAndSettleFolioAction(
+        ledger: null,
+        clock: $clockMock
+    );
+
+    // Pay 250,000 to cover the late check-out fee
+    $res = $action->execute(
+        folioId: $folio->id,
+        paymentMethod: 'CASH',
+        idempotencyKey: 'late_fee_pay_01',
+        paymentAmountIdr: 250_000
+    );
+
+    expect($res['status'])->toBe('CHECKOUT_COMPLETED');
+
+    $folioLine = HotelFolioLine::where('folio_id', $folio->id)
+        ->where('line_type', 'LATE_CHECKOUT')
+        ->first();
+    expect($folioLine)->not->toBeNull()
+        ->and($folioLine->amount_idr)->toBe(250_000);
+});
+
+it('settles folio balance via corporate city ledger transfer', function () {
+    $corporateAccount = HotelCityLedgerAccount::create([
+        'id' => (string) Str::uuid(),
+        'property_id' => $this->property->id,
+        'company_code' => 'CORP_SETTLE_TEST',
+        'company_name' => 'PT Megah Prima Jaya',
+        'credit_limit_idr' => 10_000_000,
+        'outstanding_balance_idr' => 1_000_000,
+        'is_active' => true,
+    ]);
+
+    $reservation = HotelReservation::create([
+        'id' => (string) Str::uuid(),
+        'reservation_number' => 'HTL/RSV/CITY-SETTLE-01',
+        'property_id' => $this->property->id,
+        'room_id' => $this->room->id,
+        'guest_user_id' => $this->guest->id,
+        'check_in_date' => Carbon::now()->subDays(2)->toDateString(),
+        'check_out_date' => Carbon::now()->toDateString(),
+        'daily_rate_idr' => 1_000_000,
+        'total_room_charge_idr' => 2_000_000,
+        'status' => 'checked_in',
+    ]);
+
+    $folio = HotelFolio::create([
+        'id' => (string) Str::uuid(),
+        'reservation_id' => $reservation->id,
+        'guest_user_id' => $this->guest->id,
+        'total_room_charges' => 2_000_000,
+        'total_paid' => 1_000_000,
+        'outstanding_balance' => 1_000_000,
+        'status' => 'open',
+    ]);
+
+    $action = app(CheckOutAndSettleFolioAction::class);
+    $res = $action->execute(
+        folioId: $folio->id,
+        idempotencyKey: 'co_city_ledger_key_01',
+        corporateAccountId: $corporateAccount->id
+    );
+
+    expect($res['status'])->toBe('CHECKOUT_COMPLETED');
+    $folio->refresh();
+    expect((int) $folio->outstanding_balance)->toBe(0)
+        ->and($folio->status)->toBe('settled');
+
+    $corporateAccount->refresh();
+    expect((int) $corporateAccount->outstanding_balance_idr)->toBe(2_000_000);
 });
