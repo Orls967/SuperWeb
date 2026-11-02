@@ -34,7 +34,7 @@ class TokenizeRealWorldAssetSupplyAction extends BaseAction
             $totalSupplyTokens,
             $maxHolderConcentrationPct
         ) {
-            $tokenPriceIdr = (int) round($appraisalValueIdr / max(1, $totalSupplyTokens));
+            $tokenPriceIdr = intdiv($appraisalValueIdr, max(1, $totalSupplyTokens));
 
             $idempotencyKey = hash('sha256', "rwa:tokenize:{$tokenSymbol}:{$underlyingId}:{$appraisalValueIdr}");
 

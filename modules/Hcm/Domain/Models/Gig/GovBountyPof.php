@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GovBountyPof extends Model
 {
-    protected $table = 'gov_bounty_pofs';
+    protected $table = 'hcm_bounty_pofs';
 
     protected $fillable = [
         'pof_code',

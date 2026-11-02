@@ -12,6 +12,7 @@ use Modules\Rwa\Application\Services\RwaOrderbookService;
 use Modules\Rwa\Application\Services\RwaTokenService;
 use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaHolding;
+use Modules\Rwa\Domain\Models\RwaTokenTransfer;
 use Tests\TestCase;
 
 class RwaTest extends TestCase
@@ -218,10 +219,29 @@ class RwaTest extends TestCase
             'user_id' => $this->user1->id,
             'token_balance' => 12000,
         ]);
+        RwaTokenTransfer::create([
+            'rwa_asset_id' => $asset->id,
+            'from_user_id' => null,
+            'to_user_id' => $this->user1->id,
+            'quantity' => 12000,
+            'transfer_type' => 'PRIMARY_ISSUANCE',
+            'idempotency_key' => "test:rwa:issuance:{$asset->id}:{$this->user1->id}:12000",
+            'created_at' => now(),
+        ]);
+
         RwaHolding::create([
             'rwa_asset_id' => $asset->id,
             'user_id' => $this->user2->id,
             'token_balance' => 8000,
+        ]);
+        RwaTokenTransfer::create([
+            'rwa_asset_id' => $asset->id,
+            'from_user_id' => null,
+            'to_user_id' => $this->user2->id,
+            'quantity' => 8000,
+            'transfer_type' => 'PRIMARY_ISSUANCE',
+            'idempotency_key' => "test:rwa:issuance:{$asset->id}:{$this->user2->id}:8000",
+            'created_at' => now(),
         ]);
 
         $audit = $service->auditRwa();

@@ -8,17 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class CateringOrder extends Model
 {
-    protected $table = 'resto_ck_catering_orders';
+    protected $table = 'ckt_catering_orders';
 
     protected $fillable = [
         'order_code',
         'subscription_id',
         'kitchen_id',
+        'recipe_id',
         'delivery_date',
         'meal_slot',
         'status',
         'meal_cost_idr',
+        'courier_batch_ref',
         'idempotency_key',
+        'payload_hash',
     ];
 
     protected $casts = [

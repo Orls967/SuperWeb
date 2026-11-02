@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class MiningWorkPermit extends Model
@@ -17,6 +18,7 @@ class MiningWorkPermit extends Model
     protected $fillable = [
         'id',
         'site_id',
+        'area_id',
         'permit_number',
         'permit_type',
         'supervisor_name',
@@ -27,6 +29,7 @@ class MiningWorkPermit extends Model
         'allowed_radius_meters',
         'valid_from',
         'valid_until',
+        'approval_status',
         'status',
     ];
 
@@ -37,4 +40,28 @@ class MiningWorkPermit extends Model
         'valid_from' => 'datetime',
         'valid_until' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model) {
+            if (empty($model->supervisor_name)) {
+                $model->supervisor_name = 'HSE Superintendent';
+            }
+        });
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->valid_until !== null && Carbon::now()->greaterThan($this->valid_until);
+    }
+
+    public function isValid(): bool
+    {
+        return ! $this->isExpired() && ($this->approval_status === 'APPROVED' || $this->status === 'ACTIVE');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(MiningArea::class, 'area_id');
+    }
 }

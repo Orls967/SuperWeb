@@ -97,7 +97,6 @@ class ExecuteCappedSecondaryTicketResaleWithAntiScalpingAction extends BaseActio
 
                 $ticket->update([
                     'buyer_user_id' => $buyerUserId,
-                    'ticket_hash' => $newTicketHash,
                 ]);
 
                 $this->ledgerService->post(new PostingDTO(

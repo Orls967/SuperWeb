@@ -6,13 +6,29 @@ namespace Modules\Tlx;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Tlx\Application\Services\CdrRatingService;
+use Modules\Tlx\Application\Services\ColocationBillingService;
+use Modules\Tlx\Application\Services\ConnectivityBillingService;
+use Modules\Tlx\Application\Services\IotDeviceRegistryService;
+use Modules\Tlx\Application\Services\NocCorrelationService;
 use Modules\Tlx\Application\Services\TelecomNetworkAndIotService;
+use Modules\Tlx\Console\Commands\BillColocationCommand;
+use Modules\Tlx\Console\Commands\BillConnectivityCommand;
+use Modules\Tlx\Console\Commands\CorrelateTelecomAlarmsCommand;
+use Modules\Tlx\Console\Commands\RateTelecomCdrCommand;
 use Modules\Tlx\Console\Commands\TlxAuditCommand;
+use Modules\Tlx\Contracts\IotDeviceRegistry;
 
 class TlxServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(IotDeviceRegistry::class, IotDeviceRegistryService::class);
+        $this->app->singleton(IotDeviceRegistryService::class);
+        $this->app->singleton(CdrRatingService::class);
+        $this->app->singleton(ConnectivityBillingService::class);
+        $this->app->singleton(ColocationBillingService::class);
+        $this->app->singleton(NocCorrelationService::class);
         $this->app->singleton(TelecomNetworkAndIotService::class);
     }
 
@@ -25,6 +41,10 @@ class TlxServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 TlxAuditCommand::class,
+                RateTelecomCdrCommand::class,
+                BillConnectivityCommand::class,
+                BillColocationCommand::class,
+                CorrelateTelecomAlarmsCommand::class,
             ]);
         }
 

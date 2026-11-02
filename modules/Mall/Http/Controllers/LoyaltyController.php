@@ -64,15 +64,20 @@ class LoyaltyController extends Controller
         VoucherTemplate $template,
         RedeemVoucherAction $action
     ): RedirectResponse {
+        $headerKey = $request->header('Idempotency-Key');
+        if (! empty($headerKey) && empty($request->input('idempotency_key'))) {
+            $request->merge(['idempotency_key' => $headerKey]);
+        }
+
         $validated = $request->validate([
-            'idempotency_key' => ['nullable', 'string', 'max:64'],
+            'idempotency_key' => ['required', 'string', 'max:64'],
         ]);
 
         try {
             $voucher = $action->execute(
                 $request->user(),
                 $template,
-                $validated['idempotency_key'] ?? null
+                (string) $validated['idempotency_key']
             );
 
             return back()->with('success', "Voucher {$template->title} berhasil ditukarkan! Kode voucher Anda: {$voucher->voucher_code}.");

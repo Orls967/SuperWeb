@@ -99,8 +99,8 @@ final class ProgressIntegrityScanner
                 continue;
             }
 
-            // Phase status line: > **Status audit...:**
-            if (preg_match('/^>\s+\*\*Status\s+audit(?:.*)?:\*\*\s*(.*)$/u', $line, $matches)) {
+            // Phase status line: > **Status audit...:** or **Status audit...:**
+            if (preg_match('/^(?:>\s*)?\*\*Status\s+audit(?:.*)?:\*\*\s*(.*)$/ui', $line, $matches)) {
                 $rawStatus = trim($matches[1]);
                 $currentStatusRaw = $rawStatus;
 
@@ -243,7 +243,8 @@ final class ProgressIntegrityScanner
         $inspector = $this->gitInspector ?? new GitCommitInspector($root);
         $violations = [];
 
-        $allPhasesInScope = false;
+        // Check if Fase R6 is completed; if so, all phases in PROGRESS.md are in scope.
+        $allPhasesInScope = isset($phases['R6']) && $phases['R6']->isVerified();
 
         if ($snapshot !== null) {
             $snapshotPhases = $snapshot['phases'] ?? [];
@@ -556,22 +557,7 @@ final class ProgressIntegrityScanner
                         }
 
                         // V4: Tidak ada perubahan di luar docs/ antara commit yang digate dan HEAD (untuk fase yang belum diverifikasi)
-                        // Bila ada fase berikutnya yang sedang aktif dikerjakan (🔨), HEAD sudah maju untuk pengembangan fase berikutnya
-                        $hasSubsequentActivePhase = false;
-                        $foundCurrent = false;
-                        foreach ($phases as $p) {
-                            if ($p->id === $phase->id) {
-                                $foundCurrent = true;
-
-                                continue;
-                            }
-                            if ($foundCurrent && in_array($p->statusIcon, ['🔨', '🔵'], true)) {
-                                $hasSubsequentActivePhase = true;
-                                break;
-                            }
-                        }
-
-                        if (! $hasSubsequentActivePhase && ! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
+                        if (! $phase->isVerified() && preg_match('/-\s+\*\*Commit:\*\*\s+`([a-f0-9]+)`/i', $gateContent, $cm)) {
                             $gateCommit = $cm[1];
                             $diffFiles = $inspector->diffFiles($gateCommit, 'HEAD');
                             $nonDocs = array_filter($diffFiles, static fn ($f) => ! str_starts_with($f, 'docs/'));
@@ -625,7 +611,7 @@ final class ProgressIntegrityScanner
 
     /**
      * Checks if exact test declaration exists in file with prefix normalization.
-     * No substring or fuzzy matching allowed.
+     * No substring or fuzzy matching allowed, and comments are ignored.
      */
     public static function testNameExistsInFile(string $filePath, string $declaredTestName): bool
     {
@@ -633,7 +619,18 @@ final class ProgressIntegrityScanner
             return false;
         }
 
-        $content = (string) file_get_contents($filePath);
+        $raw = (string) file_get_contents($filePath);
+        $tokens = token_get_all($raw);
+        $clean = '';
+        foreach ($tokens as $token) {
+            if (is_array($token)) {
+                if ($token[0] !== T_COMMENT && $token[0] !== T_DOC_COMMENT) {
+                    $clean .= $token[1];
+                }
+            } else {
+                $clean .= $token;
+            }
+        }
 
         $candidates = [$declaredTestName];
         if (str_starts_with($declaredTestName, 'it ')) {
@@ -645,18 +642,28 @@ final class ProgressIntegrityScanner
         }
 
         foreach ($candidates as $candidate) {
-            // 1. Literal exact quoted string in file (Pest / dataset / description)
-            if (str_contains($content, "'{$candidate}'") || str_contains($content, "\"{$candidate}\"")) {
+            $quoted = preg_quote($candidate, '/');
+
+            // 1. Pest: it('...', ...) or test('...', ...) - exact case-sensitive match
+            if (preg_match('/(?:it|test)\s*\(\s*([\'"])'.$quoted.'\1/', $clean)) {
                 return true;
             }
 
-            // 2. Exact PHPUnit method declaration
-            $snake = 'test_'.str_replace([' ', '-'], '_', strtolower($candidate));
-            if (str_contains(strtolower($content), 'function '.$snake.'(')) {
+            // 2. PHPUnit: public function test_...() or testMethodName()
+            $snake = str_starts_with(strtolower($candidate), 'test_')
+                ? strtolower($candidate)
+                : 'test_'.str_replace([' ', '-'], '_', strtolower($candidate));
+
+            if (preg_match('/function\s+'.preg_quote($snake, '/').'\s*\(/i', $clean)) {
                 return true;
             }
 
-            if (str_contains(strtolower($content), 'function '.strtolower($candidate).'(')) {
+            $rawCandidate = str_starts_with(strtolower($candidate), 'test_')
+                ? substr($candidate, 5)
+                : (str_starts_with(strtolower($candidate), 'test') ? substr($candidate, 4) : $candidate);
+
+            $camel = 'test'.str_replace([' ', '-', '_'], '', ucwords($rawCandidate, ' -_'));
+            if (preg_match('/function\s+'.preg_quote($camel, '/').'\s*\(/i', $clean)) {
                 return true;
             }
         }

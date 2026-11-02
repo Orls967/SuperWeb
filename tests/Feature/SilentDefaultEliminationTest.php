@@ -10,8 +10,8 @@ use Illuminate\Validation\ValidationException;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Esg\Application\Services\EsgService;
 use Modules\Hcm\Application\Services\HcmService;
-use Modules\Telematics\Application\Services\TelematicsIngestService;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Telematics\Application\Services\TelematicsIngestService;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Tests\TestCase;
 
 class SilentDefaultEliminationTest extends TestCase

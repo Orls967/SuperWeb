@@ -92,6 +92,7 @@ function scanModelSensitiveCasting(string $content, string $filePath = 'MemoryMo
 }
 
 it('enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast', function (): void {
+    gc_collect_cycles();
     $root = dirname(__DIR__, 2);
     $files = SourceFinder::phpFiles($root, ['app/Models', 'modules'], ['#(?:^|/)modules/[^/]+/tests/.*#']);
 
@@ -103,6 +104,9 @@ it('enforces that every Eloquent model with sensitive columns declares encrypted
             $violations = array_merge($violations, $fileViolations);
         }
     }
+
+    unset($files);
+    gc_collect_cycles();
 
     expect($violations)->toBe([], 'Semua model Eloquent dengan kolom sensitif wajib memiliki cast encrypted atau hashed.');
 });

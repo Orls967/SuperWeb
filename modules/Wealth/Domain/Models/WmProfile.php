@@ -14,12 +14,22 @@ class WmProfile extends Model
     protected $fillable = [
         'user_id',
         'risk_profile',
+        'risk_score',
+        'target_money_market_bps',
+        'target_bonds_bps',
+        'target_equity_rwa_bps',
+        'drift_band_bps',
         'emergency_fund_target_idr',
         'monthly_spend_baseline_idr',
         'auto_invest_enabled',
     ];
 
     protected $casts = [
+        'risk_score' => 'integer',
+        'target_money_market_bps' => 'integer',
+        'target_bonds_bps' => 'integer',
+        'target_equity_rwa_bps' => 'integer',
+        'drift_band_bps' => 'integer',
         'emergency_fund_target_idr' => 'integer',
         'monthly_spend_baseline_idr' => 'integer',
         'auto_invest_enabled' => 'boolean',

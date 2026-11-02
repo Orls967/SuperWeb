@@ -71,6 +71,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->bigInteger('minimum_spend_idr');
             $table->bigInteger('deposit_amount_idr');
+            $table->string('idempotency_key', 128)->nullable()->index();
             $table->string('status', 32)->default('HELD'); // HELD, SEATED, COMPLETED, NO_SHOW
             $table->timestamps();
 

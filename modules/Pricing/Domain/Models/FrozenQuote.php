@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FrozenQuote extends Model
 {
-    protected $table = 'prc_frozen_quotes';
+    protected $table = 'pric_frozen_quotes';
 
     protected $fillable = [
         'quote_code',

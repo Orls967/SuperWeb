@@ -17,8 +17,6 @@ use Modules\Egy\Ledger\EgyAccounts;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceAccounts;
 use Modules\Epc\Ledger\EpcAccounts;
 use Modules\Esg\Ledger\EsgAccounts;
-use Modules\Ev\Ledger\EvAccounts;
-use Modules\Fleet\Ledger\FleetAccounts;
 use Modules\Hcm\Ledger\HcmAccounts;
 use Modules\Hospital\Ledger\HospitalAccounts;
 use Modules\Hotel\Ledger\HotelAccounts;
@@ -28,6 +26,8 @@ use Modules\Mall\Ledger\MallAccounts;
 use Modules\Manufacturing\Ledger\ManufacturingAccounts;
 use Modules\Med\Ledger\MedAccounts;
 use Modules\Mining\Ledger\MiningAccounts;
+use Modules\Mobility\Ev\Ledger\EvAccounts;
+use Modules\Mobility\Fleet\Ledger\FleetAccounts;
 use Modules\Proptech\Ledger\ProptechAccounts;
 use Modules\Ret\Ledger\RetAccounts;
 use Modules\Rwa\Ledger\RwaAccounts;
@@ -102,5 +102,18 @@ class LedgerAccountsSeeder extends Seeder
                 );
             }
         }
+
+        LedgerAccount::firstOrCreate(
+            ['code' => 'hsp:hospital_package_revenue:IDR'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => 'Hospital Package Revenue',
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::REVENUE->value,
+                'allow_negative' => false,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
     }
 }

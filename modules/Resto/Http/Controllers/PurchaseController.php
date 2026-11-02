@@ -7,6 +7,7 @@ namespace Modules\Resto\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\Resto\Application\Actions\CreatePurchaseOrderAction;
 use Modules\Resto\Application\Actions\PaySupplierAction;
@@ -56,6 +57,8 @@ class PurchaseController extends Controller
             'lines.*.unit_price' => ['required', 'integer', 'min:0'],
         ]);
 
+        Gate::authorize('create', [PurchaseOrder::class, (int) $validated['outlet_id']]);
+
         $po = $action->handle(
             outletId: (int) $validated['outlet_id'],
             supplierId: (int) $validated['supplier_id'],
@@ -71,6 +74,8 @@ class PurchaseController extends Controller
 
     public function show(PurchaseOrder $purchase): View
     {
+        Gate::authorize('view', $purchase);
+
         $purchase->load(['outlet', 'supplier', 'creator', 'lines.ingredient', 'receipts.lines.poLine.ingredient', 'receipts.receiver']);
 
         return view('resto::purchases.show', [
@@ -80,6 +85,8 @@ class PurchaseController extends Controller
 
     public function receive(Request $request, PurchaseOrder $purchase, ReceiveGoodsAction $action): RedirectResponse
     {
+        Gate::authorize('receive', $purchase);
+
         $validated = $request->validate([
             'quality' => ['required', 'string', 'in:good,partial_reject'],
             'note' => ['nullable', 'string', 'max:255'],
@@ -102,6 +109,8 @@ class PurchaseController extends Controller
 
     public function pay(Request $request, PurchaseOrder $purchase, PaySupplierAction $action): RedirectResponse
     {
+        Gate::authorize('pay', $purchase);
+
         $validated = $request->validate([
             'amount' => ['required', 'integer', 'min:1'],
             'note' => ['nullable', 'string', 'max:255'],

@@ -23,7 +23,8 @@ class AllocateDarkStorePickPackOrderAction extends BaseAction
             $placedAt = $params['placed_at'] ?? Carbon::now();
             $promisedAt = Carbon::parse($placedAt)->addMinutes(30);
 
-            $orderCode = 'QC-'.strtoupper(substr(hash('sha256', "{$darkStoreId}:{$customerId}:".microtime()), 0, 10));
+            $key = $params['idempotency_key'] ?? "{$darkStoreId}:{$customerId}:".Carbon::parse($placedAt)->toIso8601String();
+            $orderCode = $params['order_code'] ?? 'QC-'.strtoupper(substr(hash('sha256', $key), 0, 10));
 
             $qcOrder = RetQuickCommerceOrder::create([
                 'id' => (string) Str::uuid(),

@@ -13,7 +13,7 @@ class AuditMiningCommand extends Command
 
     protected $aliases = ['mining:audit'];
 
-    protected $description = 'Perform two-source verification of mining equipment statuses and dispatch runs';
+    protected $description = 'Perform two-source verification of mining equipment statuses, weighbridge hash-chains, and ledger invariants';
 
     public function handle(MiningFleetDispatchService $service): int
     {
@@ -35,6 +35,9 @@ class AuditMiningCommand extends Command
 
         if ($result['discrepancies'] > 0) {
             $this->error("Mining audit FAILED with {$result['discrepancies']} discrepancies found.");
+            foreach ($result['errors'] ?? [] as $errorMsg) {
+                $this->error(" - {$errorMsg}");
+            }
 
             return 1;
         }

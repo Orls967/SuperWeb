@@ -121,7 +121,10 @@ final class MissingForeignKeyRule implements Rule
         self::$allModuleMorphs = [];
 
         $root = dirname(__DIR__, 4);
-        $migrationFiles = glob($root.'/modules/*/database/migrations/*.php') ?: [];
+        $migrationFiles = array_merge(
+            glob($root.'/modules/*/database/migrations/*.php') ?: [],
+            glob($root.'/modules/*/*/database/migrations/*.php') ?: [],
+        );
 
         foreach ($migrationFiles as $path) {
             $code = @file_get_contents($path);

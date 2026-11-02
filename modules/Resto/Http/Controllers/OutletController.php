@@ -7,6 +7,7 @@ namespace Modules\Resto\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\Resto\Domain\Enums\OutletType;
 use Modules\Resto\Domain\Models\Outlet;
@@ -57,6 +58,8 @@ class OutletController extends Controller
 
     public function show(Outlet $outlet): View
     {
+        Gate::authorize('view', $outlet);
+
         $outlet->load(['staffAssignments.user', 'ingredientCosts.ingredient']);
 
         return view('resto::outlets.show', compact('outlet'));
@@ -64,6 +67,8 @@ class OutletController extends Controller
 
     public function edit(Outlet $outlet): View
     {
+        Gate::authorize('update', $outlet);
+
         $types = OutletType::cases();
 
         return view('resto::outlets.edit', compact('outlet', 'types'));
@@ -71,6 +76,8 @@ class OutletController extends Controller
 
     public function update(Request $request, Outlet $outlet): RedirectResponse
     {
+        Gate::authorize('update', $outlet);
+
         $validated = $request->validate([
             'code' => ['required', 'string', 'max:20', 'unique:resto_outlets,code,'.$outlet->id],
             'name' => ['required', 'string', 'max:255'],

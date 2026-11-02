@@ -1,0 +1,16 @@
+diff --git a/modules/Agri/Http/Controllers/AgriOperationsController.php b/modules/Agri/Http/Controllers/AgriOperationsController.php
+index 60bffe82..95d9abcf 100644
+--- a/modules/Agri/Http/Controllers/AgriOperationsController.php
++++ b/modules/Agri/Http/Controllers/AgriOperationsController.php
+@@ -78,6 +78,11 @@ public function payoutIndex(): View
+ 
+     public function settlePayout(Request $request, SettleFarmerPayoutNetOfInputLoanViaLedgerAction $action): RedirectResponse
+     {
++        $user = $request->user();
++        if ($user && ! in_array($user->role, ['admin', 'procurement'], true)) {
++            abort(403, 'Penyelesaian pembayaran hasil tani hanya dapat dilakukan oleh procurement atau admin.');
++        }
++
+         $validated = $request->validate([
+             'contract_id' => 'required|string',
+             'collection_center_id' => 'required|string',

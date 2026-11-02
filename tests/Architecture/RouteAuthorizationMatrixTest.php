@@ -17,6 +17,15 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
+beforeEach(function (): void {
+    config(['app.debug' => false]);
+    gc_collect_cycles();
+});
+
+afterEach(function (): void {
+    gc_collect_cycles();
+});
+
 it('maps every registered route in route-roles.php', function (): void {
     $routes = Route::getRoutes()->getRoutes();
     $map = require __DIR__.'/route-roles.php';
@@ -97,6 +106,7 @@ it('enforces that unauthorized roles receive 403 on role-protected routes', func
 
     $usersByRole = [];
 
+    $unauthorizedCount = 0;
     foreach ($executable as $route) {
         $allowedRoles = $route['roles'];
         $unauthorizedRole = null;
@@ -116,6 +126,10 @@ it('enforces that unauthorized roles receive 403 on role-protected routes', func
         $response = $this->actingAs($user)->call($route['method'], $route['uri']);
         $statusCode = method_exists($response, 'status') ? $response->status() : $response->getStatusCode();
         expect($statusCode)->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) harus mengembalikan 403 untuk role nyata '{$unauthorizedRole}' yang tidak berhak.");
+        unset($response);
+        if (++$unauthorizedCount % 20 === 0) {
+            gc_collect_cycles();
+        }
     }
 });
 
@@ -125,6 +139,7 @@ it('confirms authorized roles are not forbidden (not 403) on role-protected rout
     $executable = RouteAuthorizationScanner::executableRoleRoutes($routes, $map);
 
     $usersByRole = [];
+    $authorizedCount = 0;
 
     foreach ($executable as $route) {
         foreach ($route['roles'] as $allowedRole) {
@@ -140,6 +155,10 @@ it('confirms authorized roles are not forbidden (not 403) on role-protected rout
             $response = $this->actingAs($user)->call($route['method'], $route['uri']);
             $statusCode = method_exists($response, 'status') ? $response->status() : $response->getStatusCode();
             expect($statusCode)->not->toBe(403, "Rute {$route['name']} ({$route['method']} {$route['uri']}) tidak boleh 403 untuk role berhak '{$allowedRole}'.");
+            unset($response);
+            if (++$authorizedCount % 20 === 0) {
+                gc_collect_cycles();
+            }
         }
     }
 });

@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VendingUnit extends Model
 {
-    protected $table = 'ven_vending_units';
+    protected $table = 'vnd_vending_units';
 
     protected $fillable = [
         'unit_code',
         'location_name',
+        'latitude',
+        'longitude',
         'status',
         'current_stock',
         'critical_threshold',
