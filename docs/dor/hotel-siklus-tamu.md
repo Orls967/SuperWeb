@@ -17,6 +17,15 @@ Dokumen ini mendefinisikan kontrak fungsional, finansial, arsitektur, dan penguj
 - **H-9 Housekeeping & Kesiapan Kamar**: Transisi status kamar: `dirty` → `cleaning` → `inspected` → `available`. Check-in HANYA diizinkan ke kamar dengan status `available` atau `inspected`. Status `out_of_order` mengurangi inventaris kamar yang dapat dijual.
 - **H-10 Matriks Role & Otorisasi**: `admin`, `hotel_manager`, `front_office`, `reservation_agent`, `housekeeping`, `hotel_cashier`, `night_auditor`, `fnb_outlet` (membebankan ke folio kamar aktif), `corporate_client` (portal korporat: melihat invoice & folio perusahaannya), `guest` (portal tamu: melihat reservasi & folio miliknya), `auditor` (hak baca saja).
 - **H-11 Perlindungan Data Pribadi Tamu**: Nomor identitas (KTP/paspor) disimpan terenkripsi (AES-256) disertai blind index (HMAC-SHA256 dengan `BLIND_INDEX_PEPPER`); hanya role `front_office`, `hotel_manager`, dan `admin` yang berhak melihat identitas utuh, sedangkan role lainnya menerima data termasking.
+- **H-12 Aturan Siklus Tamu Terperinci (H1–H8)**:
+  - **H1 Reservasi**: Check-out > check-in; tanggal kedatangan tidak boleh sebelum business date aktif properti (`HotelBusinessDateService`); batasan `min_stay` / `max_stay` dan `closed_to_arrival` / `stop_sell` kalender tarif; Idempotency-Key berulang dengan rincian berbeda memicu 409 Conflict (`IdempotencyConflictException`).
+  - **H2 Pembatalan**: Kebijakan bertingkat via business date (bebas denda sebelum deadline, denda malam pertama sesudahnya, rate non-refundable dikenakan penalti 100% total biaya menginap); pembatalan setelah check-in ditolak (422); status akhir idempoten.
+  - **H3 Check-in**: Hanya dari status `confirmed`; pada business date kedatangan (early check-in hanya jika kamar berstatus `inspected` di log housekeeping); identitas tamu wajib; deposit/garansi wajib bila dipersyaratkan rate plan.
+  - **H4 Charge Folio**: Folio harus open (422); batas kredit folio (`outstanding_balance + charge - deposit <= credit_limit`) ditegakkan ketat; service & PBJT bilangan bulat integer tanpa float; koreksi biaya append-only reversal (`reversal_of_id`).
+  - **H5 Check-out & Pelunasan**: Deposit diaplikasikan terlebih dahulu, sisa dilunasi kasir; folio hanya ditutup jika saldo tepat 0; late check-out fee otomatis bila melewati jam batas properti; saldo terutang dapat dialihkan ke city ledger akun korporat aktif dengan limit kredit mencukupi.
+  - **H6 Deposit**: Refund <= deposit - terpakai; proteksi refund ganda idempoten (key berulang mengembalikan hasil sama, percobaan kedua setelah REFUNDED ditolak).
+  - **H7 Tutup Hari**: Satu business date ditutup sekali per snapshot; tamu belum check-in pada business date kedatangan menjadi `no_show` dengan denda konsisten H2 (penalti penuh jika non-refundable); posting room charge idempoten; tanggal maju +1.
+  - **H8 Laporan**: Occupancy rate (bps), ADR, dan RevPAR dihitung dalam bilangan bulat integer tanpa floating point, konsisten dengan snapshot tutup hari H7.
 
 ---
 

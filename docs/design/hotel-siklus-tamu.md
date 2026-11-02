@@ -39,6 +39,8 @@ Paket tarif dan kalender harga dinamis per malam (H-1, H-7).
   - `free_cancellation_hours` (unsignedInteger, default 24)
   - `penalty_nights` (unsignedInteger, default 1)
   - `requires_deposit` (boolean, default false)
+  - `min_stay` (unsignedInteger, nullable) — durasi minimum menginap
+  - `max_stay` (unsignedInteger, nullable) — durasi maksimum menginap
   - `timestamps`
   - *Unique*: `uniq_htl_rp_prop_code` (`property_id`, `code`)
 - `htl_rate_calendar`:
@@ -48,6 +50,8 @@ Paket tarif dan kalender harga dinamis per malam (H-1, H-7).
   - `rate_plan_id` (uuid, FK -> `htl_rate_plans.id`, cascade)
   - `calendar_date` (date)
   - `rate_idr` (unsignedBigInteger)
+  - `closed_to_arrival` (boolean, default false) — pembatasan CTA
+  - `stop_sell` (boolean, default false) — penghentian penjualan kamar
   - `timestamps`
   - *Unique*: `uniq_htl_rate_cal` (`property_id`, `room_type_id`, `rate_plan_id`, `calendar_date`)
 
