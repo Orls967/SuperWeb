@@ -28,6 +28,8 @@ class HotelRateCalendar extends Model
         'rate_plan_id',
         'calendar_date',
         'rate_idr',
+        'closed_to_arrival',
+        'stop_sell',
     ];
 
     /**
@@ -38,6 +40,8 @@ class HotelRateCalendar extends Model
         return [
             'calendar_date' => 'date:Y-m-d',
             'rate_idr' => 'integer',
+            'closed_to_arrival' => 'boolean',
+            'stop_sell' => 'boolean',
         ];
     }
 

@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
@@ -15,9 +17,14 @@ use Modules\Shared\Application\BaseAction;
 
 class ReserveRoomWithInventoryNightLockAction extends BaseAction
 {
+    protected HotelBusinessDateService $businessDateService;
+
     public function __construct(
-        protected ?DocumentNumberingInterface $documentNumbering = null
-    ) {}
+        protected ?DocumentNumberingInterface $documentNumbering = null,
+        ?HotelBusinessDateService $businessDateService = null
+    ) {
+        $this->businessDateService = $businessDateService ?? app(HotelBusinessDateService::class);
+    }
 
     /**
      * Reserve room with pessimistic inventory lock and auto-provisioned guest folio.
@@ -40,6 +47,11 @@ class ReserveRoomWithInventoryNightLockAction extends BaseAction
 
             if ($out->lte($in)) {
                 throw new \InvalidArgumentException('Check-out date must be after check-in date.');
+            }
+
+            $currentBusinessDate = $this->businessDateService->getCurrentBusinessDate($propertyId);
+            if ($in->toDateString() < $currentBusinessDate) {
+                throw new HotelRuleViolationException("Tanggal kedatangan ({$in->toDateString()}) tidak boleh sebelum business date hotel ({$currentBusinessDate}).", 422);
             }
 
             // Anti-overlap verification: (check_in_date < $out) and (check_out_date > $in)

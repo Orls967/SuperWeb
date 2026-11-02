@@ -31,6 +31,8 @@ class HotelRatePlan extends Model
         'free_cancellation_hours',
         'penalty_nights',
         'requires_deposit',
+        'min_stay',
+        'max_stay',
     ];
 
     /**
@@ -42,6 +44,8 @@ class HotelRatePlan extends Model
             'free_cancellation_hours' => 'integer',
             'penalty_nights' => 'integer',
             'requires_deposit' => 'boolean',
+            'min_stay' => 'integer',
+            'max_stay' => 'integer',
         ];
     }
 

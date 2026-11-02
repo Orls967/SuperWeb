@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Hotel\Application\DTOs\ReserveRoomDTO;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Application\Services\HotelInventoryService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
+use Modules\Hotel\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRateCalendar;
@@ -22,10 +25,15 @@ use Modules\Shared\Application\BaseAction;
 
 class ReserveRoomAction extends BaseAction
 {
+    protected HotelBusinessDateService $businessDateService;
+
     public function __construct(
         protected HotelInventoryService $inventoryService,
-        protected ?DocumentNumberingInterface $documentNumbering = null
-    ) {}
+        protected ?DocumentNumberingInterface $documentNumbering = null,
+        ?HotelBusinessDateService $businessDateService = null
+    ) {
+        $this->businessDateService = $businessDateService ?? app(HotelBusinessDateService::class);
+    }
 
     public function execute(ReserveRoomDTO $dto): HotelReservation
     {
@@ -50,9 +58,20 @@ class ReserveRoomAction extends BaseAction
             throw new \InvalidArgumentException('Idempotency-Key wajib disertakan.');
         }
 
-        // Idempotency check: jika key sudah pernah diproses, return hasil yang sama
+        // Idempotency check: jika key sudah pernah diproses, verifikasi konsistensi payload
         $existing = HotelReservation::where('idempotency_key', $dto->idempotencyKey)->first();
         if ($existing) {
+            $isSamePayload = $existing->property_id === $dto->propertyId
+                && $existing->room_type_id === $dto->roomTypeId
+                && $existing->rate_plan_id === $dto->ratePlanId
+                && Carbon::parse($existing->check_in_date)->toDateString() === Carbon::parse($dto->checkInDate)->toDateString()
+                && Carbon::parse($existing->check_out_date)->toDateString() === Carbon::parse($dto->checkOutDate)->toDateString()
+                && (int) $existing->guest_user_id === (int) $dto->guestUserId;
+
+            if (! $isSamePayload) {
+                throw new IdempotencyConflictException("Idempotency-Key '{$dto->idempotencyKey}' sudah digunakan untuk rincian reservasi berbeda.", 409);
+            }
+
             $folio = HotelFolio::where('reservation_id', $existing->id)->firstOrFail();
             $in = Carbon::parse($existing->check_in_date);
             $out = Carbon::parse($existing->check_out_date);
@@ -80,23 +99,55 @@ class ReserveRoomAction extends BaseAction
                 throw new \InvalidArgumentException('Check-out date must be after check-in date.');
             }
 
+            // Validasi tanggal kedatangan tidak sebelum current business date properti
+            $currentBusinessDate = $this->businessDateService->getCurrentBusinessDate($property->id);
+            if ($in->toDateString() < $currentBusinessDate) {
+                throw new HotelRuleViolationException("Tanggal kedatangan ({$in->toDateString()}) tidak boleh sebelum business date hotel ({$currentBusinessDate}).", 422);
+            }
+
+            $nights = max(1, (int) $in->diffInDays($out));
+
+            // Validasi batasan min_stay dan max_stay bila dikonfigurasi di Rate Plan
+            if ($ratePlan->min_stay && $nights < (int) $ratePlan->min_stay) {
+                throw new HotelRuleViolationException("Durasi menginap minimum untuk paket {$ratePlan->name} adalah {$ratePlan->min_stay} malam.", 422);
+            }
+            if ($ratePlan->max_stay && $nights > (int) $ratePlan->max_stay) {
+                throw new HotelRuleViolationException("Durasi menginap maksimum untuk paket {$ratePlan->name} adalah {$ratePlan->max_stay} malam.", 422);
+            }
+
             // Validasi Rate Plan yang butuh deposit
             if ($ratePlan->requires_deposit && ($dto->depositAmountIdr === null || $dto->depositAmountIdr <= 0)) {
                 throw new \InvalidArgumentException("Paket tarif {$ratePlan->name} mewajibkan pembayaran deposit di muka.");
             }
 
+            // Validasi Closed to Arrival (CTA) pada tanggal kedatangan
+            $inRateCalendar = HotelRateCalendar::where('property_id', $property->id)
+                ->where('room_type_id', $roomType->id)
+                ->where('rate_plan_id', $ratePlan->id)
+                ->whereDate('calendar_date', $in->toDateString())
+                ->first();
+
+            if ($inRateCalendar && (bool) $inRateCalendar->closed_to_arrival) {
+                throw new HotelRuleViolationException("Paket tarif {$ratePlan->name} ditutup untuk kedatangan pada tanggal {$in->toDateString()} (Closed to Arrival).", 422);
+            }
+
             // Periksa ketersediaan & hitung tarif per malam dari Rate Calendar
             $period = CarbonPeriod::create($in, '1 day', $out->copy()->subDay());
-            $nights = max(1, (int) $in->diffInDays($out));
             $totalExpected = 0;
 
             foreach ($period as $dt) {
                 $dateStr = $dt->toDateString();
-                $calendarRate = HotelRateCalendar::where('property_id', $property->id)
+                $rateCalendarRow = HotelRateCalendar::where('property_id', $property->id)
                     ->where('room_type_id', $roomType->id)
                     ->where('rate_plan_id', $ratePlan->id)
                     ->whereDate('calendar_date', $dateStr)
-                    ->value('rate_idr');
+                    ->first();
+
+                if ($rateCalendarRow && (bool) $rateCalendarRow->stop_sell) {
+                    throw new HotelRuleViolationException("Penjualan paket tarif {$ratePlan->name} dihentikan pada tanggal {$dateStr} (Stop Sell).", 422);
+                }
+
+                $calendarRate = $rateCalendarRow ? $rateCalendarRow->rate_idr : null;
 
                 if ($calendarRate !== null) {
                     $totalExpected += (int) $calendarRate;

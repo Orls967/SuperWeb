@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Hotel\Application\Actions\ReserveRoomWithInventoryNightLockAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\tests\Unit\HotelUnitTestHelper;
 use Tests\TestCase;
@@ -70,3 +73,17 @@ it('successfully reserves room with night lock', function () {
         ->and((int) $result['total_room_charge_idr'])->toBe(3600000)
         ->and((int) $result['folio']->outstanding_balance)->toBe(3600000);
 });
+
+it('rejects reservation with night lock when check-in date before business date', function () {
+    $action = app(ReserveRoomWithInventoryNightLockAction::class);
+    $currentDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($this->property->id);
+
+    $action->handle(
+        propertyId: $this->property->id,
+        roomId: $this->room->id,
+        guestUserId: (string) $this->guest->id,
+        checkInDate: Carbon::parse($currentDate)->subDays(1)->toDateString(),
+        checkOutDate: Carbon::parse($currentDate)->addDays(1)->toDateString(),
+        dailyRateIdr: 1000000
+    );
+})->throws(HotelRuleViolationException::class, 'tidak boleh sebelum business date');
