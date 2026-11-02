@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Ledger\HotelTransactionTypes;
 use Modules\Shared\Application\BaseAction;
@@ -48,6 +49,21 @@ class RefundGuestDepositAction extends BaseAction
 
         return DB::transaction(function () use ($depositId, $refundAmountIdr, $idempotencyKey) {
             $deposit = HotelDeposit::lockForUpdate()->findOrFail($depositId);
+
+            // Idempotency check: jika key yang sama sudah pernah diproses untuk deposit ini
+            if ($deposit->refund_idempotency_key === $idempotencyKey) {
+                return [
+                    'deposit' => $deposit,
+                    'refunded_amount_idr' => (int) $deposit->refunded_amount_idr,
+                    'remaining_amount_idr' => (int) $deposit->remaining_amount_idr,
+                ];
+            }
+
+            // Proteksi refund ganda: bila deposit sudah dalam status REFUNDED
+            if ($deposit->status === 'REFUNDED' || $deposit->remaining_amount_idr === 0) {
+                throw new HotelRuleViolationException("Refund kedua untuk sumber deposit yang sama ditolak: deposit {$deposit->id} sudah dalam status REFUNDED.", 422);
+            }
+
             $remaining = $deposit->remaining_amount_idr;
 
             if ($refundAmountIdr > $remaining) {
@@ -71,6 +87,7 @@ class RefundGuestDepositAction extends BaseAction
             }
 
             $deposit->refunded_amount_idr += $refundAmountIdr;
+            $deposit->refund_idempotency_key = $idempotencyKey;
             $newRemaining = $deposit->remaining_amount_idr;
             $deposit->status = $newRemaining === 0 ? 'REFUNDED' : 'PARTIALLY_REFUNDED';
             $deposit->save();

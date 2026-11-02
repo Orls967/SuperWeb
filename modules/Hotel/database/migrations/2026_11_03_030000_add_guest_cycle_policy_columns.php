@@ -42,10 +42,22 @@ return new class extends Migration
                 $table->unsignedBigInteger('late_checkout_fee_idr')->default(0)->after('check_out_time');
             }
         });
+
+        Schema::table('htl_deposits', function (Blueprint $table) {
+            if (! Schema::hasColumn('htl_deposits', 'refund_idempotency_key')) {
+                $table->string('refund_idempotency_key', 128)->nullable()->after('idempotency_key');
+            }
+        });
     }
 
     public function down(): void
     {
+        Schema::table('htl_deposits', function (Blueprint $table) {
+            if (Schema::hasColumn('htl_deposits', 'refund_idempotency_key')) {
+                $table->dropColumn('refund_idempotency_key');
+            }
+        });
+
         Schema::table('htl_properties', function (Blueprint $table) {
             if (Schema::hasColumn('htl_properties', 'late_checkout_fee_idr')) {
                 $table->dropColumn('late_checkout_fee_idr');

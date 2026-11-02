@@ -33,6 +33,7 @@ class HotelDeposit extends Model
         'payment_method',
         'status',
         'idempotency_key',
+        'refund_idempotency_key',
     ];
 
     /**

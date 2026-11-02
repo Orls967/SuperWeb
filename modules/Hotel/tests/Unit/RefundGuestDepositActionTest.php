@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Hotel\Application\Actions\RefundGuestDepositAction;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelDeposit;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\tests\Unit\HotelUnitTestHelper;
@@ -124,4 +125,20 @@ it('refunds deposit partially and fully with ledger postings', function () {
     expect($res2['refunded_amount_idr'])->toBe(300000)
         ->and($res2['remaining_amount_idr'])->toBe(0)
         ->and($res2['deposit']->status)->toBe('REFUNDED');
+
+    // Idempotent retry with same key returns identical result
+    $resDup = $action->handle(
+        depositId: $deposit->id,
+        refundAmountIdr: 300000,
+        idempotencyKey: 'ref_key_full'
+    );
+    expect($resDup['refunded_amount_idr'])->toBe(500000)
+        ->and($resDup['remaining_amount_idr'])->toBe(0);
+
+    // Second refund attempt with different key on fully refunded deposit is rejected
+    expect(fn () => $action->handle(
+        depositId: $deposit->id,
+        refundAmountIdr: 100000,
+        idempotencyKey: 'ref_key_second_attempt'
+    ))->toThrow(HotelRuleViolationException::class, 'Refund kedua untuk sumber deposit yang sama ditolak');
 });
