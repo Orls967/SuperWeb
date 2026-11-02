@@ -9,6 +9,11 @@ use Tests\TestCase;
 
 uses(TestCase::class);
 
+beforeEach(function (): void {
+    gc_collect_cycles();
+    @ini_set('memory_limit', '1G');
+});
+
 /*
  * WorkflowBuildOrderContractTest
  *

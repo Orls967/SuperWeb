@@ -42,6 +42,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
           coverage: none
+          ini-values: memory_limit=1G, pcov.directory=.
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -246,6 +247,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
           coverage: none
+          ini-values: memory_limit=1G, pcov.directory=.
 
       - name: Setup Environment File
         run: cp .env.example .env
