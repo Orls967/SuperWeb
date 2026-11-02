@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Hotel\Application\Actions\ExecuteOverbookingWalkCompensationAction;
@@ -47,12 +46,6 @@ it('handles overbooking walk compensation and posts to ledger with custom amount
         ->once();
     $this->app->instance(OutboxBusInterface::class, $outboxMock);
 
-    LedgerAccount::firstOrCreate(['code' => 'htl:overbooking_expense:IDR'], [
-        'name' => 'Beban Overbooking Hotel',
-        'type' => 'EXPENSE',
-        'normal_balance' => 'DEBIT',
-    ]);
-
     $reservation = HotelReservation::create([
         'id' => (string) Str::uuid(),
         'reservation_number' => 'HTL/RSV/WALK-001',
@@ -85,12 +78,6 @@ it('handles overbooking walk compensation and posts to ledger with custom amount
 });
 
 it('handles overbooking walk compensation using default allowance and goodwill credit without ledger', function () {
-    LedgerAccount::firstOrCreate(['code' => 'htl:overbooking_expense:IDR'], [
-        'name' => 'Beban Overbooking Hotel',
-        'type' => 'EXPENSE',
-        'normal_balance' => 'DEBIT',
-    ]);
-
     $reservation = HotelReservation::create([
         'id' => (string) Str::uuid(),
         'reservation_number' => 'HTL/RSV/WALK-002',

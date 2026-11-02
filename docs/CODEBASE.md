@@ -499,7 +499,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 19 | **Finance** | `fin_` | 1 |
 | 20 | **Hcm** | `hcm_` | 7 |
 | 21 | **Hospital** | `hsp_` | 14 |
-| 22 | **Hotel** | `htl_` | 16 |
+| 22 | **Hotel** | `htl_` | 17 |
 | 23 | **Insurance** | `ins_` | 2 |
 | 24 | **Integration** | `intg_` | 340 |
 | 25 | **Intercompany** | `ic_` | 1 |
@@ -532,7 +532,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 52 | **Venue** | `ven_` | 6 |
 | 53 | **Wealth** | `wm_` | 2 |
 | 54 | **Wms** | `wms_` | 2 |
-| | **Total: 54 Modul** | | **595 Migrasi** |
+| | **Total: 54 Modul** | | **596 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |

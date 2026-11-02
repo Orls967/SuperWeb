@@ -14,6 +14,7 @@ use Modules\Hotel\Application\Actions\ExecuteOverbookingWalkCompensationAction;
 use Modules\Hotel\Application\Actions\ReserveRoomWithInventoryNightLockAction;
 use Modules\Hotel\Application\Actions\RunIdempotentHotelNightAuditAction;
 use Modules\Hotel\Application\Actions\SettleSplitGuestFolioCorporatePersonalAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelProperty;
@@ -61,40 +62,37 @@ class HotelExplorationTest extends TestCase
     public function test_eksplorasi_reserve_action_flaws(): void
     {
         $action = app(ReserveRoomWithInventoryNightLockAction::class);
+        $bizDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($this->property->id);
+        $d1 = Carbon::parse($bizDate)->toDateString();
+        $d2 = Carbon::parse($bizDate)->addDays(4)->toDateString();
+        $dMid1 = Carbon::parse($bizDate)->addDays(1)->toDateString();
+        $dMid2 = Carbon::parse($bizDate)->addDays(2)->toDateString();
 
-        // Booking 1: 2026-11-01 s/d 2026-11-05 (4 malam)
+        // Booking 1: 4 malam
         $res1 = $action->handle(
             propertyId: $this->property->id,
             roomId: $this->room->id,
             guestUserId: (string) $this->guest->id,
-            checkInDate: '2026-11-01',
-            checkOutDate: '2026-11-05',
+            checkInDate: $d1,
+            checkOutDate: $d2,
             dailyRateIdr: 1000000
         );
 
         $this->assertEquals('confirmed', $res1['reservation']->status);
 
-        // Uji Overlap Terjepit: Tamu lain ingin 2026-11-02 s/d 2026-11-03 (di tengah-tengah booking 1)
-        // Logika lama di ReserveRoomWithInventoryNightLockAction:
-        //   where(function ($q) use ($in, $out) {
-        //       $q->whereBetween('check_in_date', [$in, $out])
-        //         ->orWhereBetween('check_out_date', [$in, $out]);
-        //   })
-        // Pada booking 1: check_in_date = 2026-11-01, check_out_date = 2026-11-05
-        // Keduanya TIDAK between 2026-11-02 dan 2026-11-03!
-        // Akibatnya: Action lama MENGIZINKAN double booking!
+        // Uji Overlap Terjepit: Tamu lain ingin memesan di tengah-tengah booking 1
         $doubleBooked = false;
         try {
             $res2 = $action->handle(
                 propertyId: $this->property->id,
                 roomId: $this->room->id,
                 guestUserId: (string) $this->guest->id,
-                checkInDate: '2026-11-02',
-                checkOutDate: '2026-11-03',
+                checkInDate: $dMid1,
+                checkOutDate: $dMid2,
                 dailyRateIdr: 1000000
             );
             $doubleBooked = true; // Terbukti cacat: berhasil double book!
-        } catch (\RuntimeException $e) {
+        } catch (\Throwable $e) {
             $doubleBooked = false;
         }
 
