@@ -990,12 +990,24 @@ return [
     'hospital.outpatient.portal.index' => ['roles' => ['admin', 'patient']],
     'hospital.outpatient.encounters.show' => [
         'roles' => ['admin', 'doctor', 'nurse', 'patient'],
-        'setup' => fn (User $user) => OutpatientEncounter::getOrCreateArchFixture()['patient']->update(['user_id' => $user->id]),
+        'setup' => function (User $user): void {
+            $p = OutpatientEncounter::getOrCreateArchFixture()['patient'];
+            if ($p->user_id !== $user->id) {
+                $p->user_id = $user->id;
+                $p->save();
+            }
+        },
         'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
     ],
     'hospital.outpatient.invoices.show' => [
         'roles' => ['admin', 'cashier', 'hospital_finance', 'patient'],
-        'setup' => fn (User $user) => OutpatientEncounter::getOrCreateArchFixture()['patient']->update(['user_id' => $user->id]),
+        'setup' => function (User $user): void {
+            $p = OutpatientEncounter::getOrCreateArchFixture()['patient'];
+            if ($p->user_id !== $user->id) {
+                $p->user_id = $user->id;
+                $p->save();
+            }
+        },
         'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
     ],
     'hotel.index' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],

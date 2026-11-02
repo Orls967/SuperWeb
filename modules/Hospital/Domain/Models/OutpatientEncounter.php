@@ -72,8 +72,14 @@ class OutpatientEncounter extends Model
         }
     }
 
+    private static ?array $archFixture = null;
+
     public static function getOrCreateArchFixture(): array
     {
+        if (self::$archFixture !== null) {
+            return self::$archFixture;
+        }
+
         $poli = Polyclinic::firstOrCreate(['code' => 'POLI_UMUM'], ['name' => 'Poli Umum', 'is_active' => true]);
         $doctorUser = User::firstOrCreate(['email' => 'doc_arch@hospital.local'], [
             'name' => 'Dr. Arch',
@@ -131,7 +137,7 @@ class OutpatientEncounter extends Model
             'status' => 'SUBMITTED',
         ]);
 
-        return [
+        return self::$archFixture = [
             'queue' => $queue,
             'encounter' => $enc,
             'prescription' => $rx,
