@@ -34,10 +34,6 @@ const WORKFLOW_BUILD_EXEMPT_JOBS = [
     // Hanya menjalankan platform:stress-concurrency + platform:chaos-verify
     // bukan pest/test PHPUnit sebenarnya — tidak ada route/view yang di-load
     'composer-gate.yml::chaos-and-concurrency-verification',
-
-    // Sharded matrix dijalankan sebagai shard pest biasa tanpa Architecture tests,
-    // tidak ada komponen Vite yang dikonsumsi dalam test tersebut
-    'composer-gate.yml::pest-sharded-matrix',
 ];
 
 /**
