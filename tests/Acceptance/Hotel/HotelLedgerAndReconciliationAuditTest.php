@@ -53,26 +53,26 @@ class HotelLedgerAndReconciliationAuditTest extends TestCase
             $this->assertEquals(0, $sum, "Transaksi {$tx->id} tidak seimbang!");
         }
 
-        $exitCode = Artisan::call('hotel:folio-audit');
+        $exitCode = Artisan::call('htl:audit');
         $this->assertEquals(0, $exitCode);
     }
 
     public function test_seluruh_saldo_akun_hotel_berada_pada_sisi_saldo_normal_sesuai_account_kind(): void
     {
-        $exitCode = Artisan::call('hotel:folio-audit');
+        $exitCode = Artisan::call('htl:audit');
         $this->assertEquals(0, $exitCode);
     }
 
     public function test_artisan_command_hotel_folio_audit_lolos_bersih_exit_0_pada_data_valid(): void
     {
-        $exitCode = Artisan::call('hotel:folio-audit');
+        $exitCode = Artisan::call('htl:audit');
         $this->assertEquals(0, $exitCode);
     }
 
     public function test_artisan_command_hotel_folio_audit_gagal_exit_non_zero_saat_terdapat_baris_folio_korup(): void
     {
         // Pastikan audit awal bersih
-        $this->assertEquals(0, Artisan::call('hotel:folio-audit'));
+        $this->assertEquals(0, Artisan::call('htl:audit'));
 
         $folio = HotelFolio::firstOrFail();
 
@@ -97,7 +97,7 @@ class HotelLedgerAndReconciliationAuditTest extends TestCase
         ]);
 
         // Jalankan audit dua-sumber: harus mendeteksi korupsi dan mengembalikan exit non-zero
-        $exitCode = Artisan::call('hotel:folio-audit');
+        $exitCode = Artisan::call('htl:audit');
         $this->assertNotEquals(0, $exitCode);
         $this->assertEquals(1, $exitCode);
     }
@@ -105,7 +105,7 @@ class HotelLedgerAndReconciliationAuditTest extends TestCase
     public function test_artisan_command_hotel_availability_audit_gagal_bila_ada_ketidakcocokan_inventaris(): void
     {
         // Pastikan audit awal bersih
-        $this->assertEquals(0, Artisan::call('hotel:availability-audit'));
+        $this->assertEquals(0, Artisan::call('htl:audit'));
 
         $room = HotelRoom::firstOrFail();
 
@@ -133,7 +133,7 @@ class HotelLedgerAndReconciliationAuditTest extends TestCase
         ]);
 
         // Jalankan audit inventaris: harus mendeteksi duplikasi alokasi dan exit non-zero
-        $exitCode = Artisan::call('hotel:availability-audit');
+        $exitCode = Artisan::call('htl:audit');
         $this->assertNotEquals(0, $exitCode);
         $this->assertEquals(1, $exitCode);
     }

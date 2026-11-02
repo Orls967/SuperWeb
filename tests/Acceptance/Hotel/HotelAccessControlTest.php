@@ -76,7 +76,7 @@ class HotelAccessControlTest extends TestCase
     {
         $hk = User::factory()->create(['role' => 'housekeeping']);
 
-        $response = $this->actingAs($hk)->get('/hotel/night-audit');
+        $response = $this->actingAs($hk)->get('/hotel/close-day');
         $this->assertEquals(403, $response->getStatusCode());
     }
 
@@ -84,7 +84,7 @@ class HotelAccessControlTest extends TestCase
     {
         $outlet = User::factory()->create(['role' => 'fnb_outlet']);
 
-        $response = $this->actingAs($outlet)->post('/hotel/night-audit/run');
+        $response = $this->actingAs($outlet)->post('/hotel/close-day/run');
         $this->assertEquals(403, $response->getStatusCode());
     }
 
@@ -92,7 +92,7 @@ class HotelAccessControlTest extends TestCase
     {
         $auditor = User::factory()->create(['role' => 'auditor']);
 
-        $response = $this->actingAs($auditor)->post('/hotel/night-audit/run');
+        $response = $this->actingAs($auditor)->post('/hotel/close-day/run');
         $this->assertEquals(403, $response->getStatusCode());
     }
 

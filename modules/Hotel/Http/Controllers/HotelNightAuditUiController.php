@@ -45,6 +45,6 @@ class HotelNightAuditUiController extends Controller
             ]);
         }
 
-        return redirect()->route('hotel.night-audit.index')->with('success', 'Night audit berhasil diselesaikan.');
+        return redirect()->route('hotel.close-day.index')->with('success', 'Tutup hari (close-day) berhasil diselesaikan.');
     }
 }

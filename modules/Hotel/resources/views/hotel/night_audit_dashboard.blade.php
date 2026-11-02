@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Night Audit & Penutupan Harian</h1>
-        <form method="POST" action="{{ route('hotel.night-audit.run') }}">
+        <form method="POST" action="{{ route('hotel.close-day.run') }}">
             @csrf
             <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow">
                 Jalankan Night Audit Sekarang

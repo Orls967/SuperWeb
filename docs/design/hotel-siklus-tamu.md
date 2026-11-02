@@ -444,7 +444,7 @@ sequenceDiagram
 +-----------------------------------------------------------------------------------------+
 ```
 
-### 7.5 Kontrol Night Audit (`GET /hotel/night-audit`)
+### 7.5 Kontrol Night Audit (`GET /hotel/close-day`)
 ```
 +-----------------------------------------------------------------------------------------+
 | KONTROL OPERASIONAL NIGHT AUDIT (TUTUP HARI BUKU)                                       |

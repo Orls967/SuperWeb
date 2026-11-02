@@ -28,8 +28,8 @@ Route::middleware(['web', 'auth', 'role:admin,hotel_admin,front_desk'])->prefix(
         Route::get('/overbooking', [HotelYieldAndOverbookingController::class, 'overbookingWalk'])->name('overbooking');
         Route::post('/overbooking/walk', [HotelYieldAndOverbookingController::class, 'executeWalk'])->name('overbooking.walk');
 
-        Route::get('/night-audit', [HotelNightAuditFolioController::class, 'nightAudit'])->name('night-audit');
-        Route::post('/night-audit/run', [HotelNightAuditFolioController::class, 'runNightAudit'])->name('night-audit.run');
+        Route::get('/close-day', [HotelNightAuditFolioController::class, 'nightAudit'])->name('close-day');
+        Route::post('/close-day/run', [HotelNightAuditFolioController::class, 'runNightAudit'])->name('close-day.run');
 
         Route::get('/split-folios', [HotelNightAuditFolioController::class, 'splitFolios'])->name('split-folios');
         Route::post('/split-folios/settle', [HotelNightAuditFolioController::class, 'settleSplitFolio'])->name('split-folios.settle');
@@ -57,10 +57,10 @@ Route::middleware(['web', 'auth', 'role:admin,hotel_manager,front_office,houseke
     Route::post('/housekeeping/{room}/status', [HotelHousekeepingController::class, 'updateStatus'])->name('hotel.housekeeping.update');
 });
 
-// Siklus Tamu - Night Audit Operasional
+// Siklus Tamu - Close Day Operasional
 Route::middleware(['web', 'auth', 'role:admin,hotel_manager,night_auditor'])->prefix('hotel')->group(function () {
-    Route::get('/night-audit', [HotelNightAuditUiController::class, 'index'])->name('hotel.night-audit.index');
-    Route::post('/night-audit/run', [HotelNightAuditUiController::class, 'run'])->name('hotel.night-audit.run');
+    Route::get('/close-day', [HotelNightAuditUiController::class, 'index'])->name('hotel.close-day.index');
+    Route::post('/close-day/run', [HotelNightAuditUiController::class, 'run'])->name('hotel.close-day.run');
 });
 
 // Siklus Tamu - Portal Tamu (Self-Service)

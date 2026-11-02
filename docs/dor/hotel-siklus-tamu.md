@@ -136,8 +136,8 @@ Contoh Parameter:
 | `POST /hotel/folios/{id}/split-city-ledger` | Pengalihan ke City Ledger | `admin`, `hotel_manager`, `hotel_cashier` | `front_office`, `fnb_outlet`, `guest` |
 | `GET /hotel/housekeeping` | Papan Status Kamar & Housekeeping | `admin`, `hotel_manager`, `housekeeping`, `front_office` | `guest`, `corporate_client` |
 | `POST /hotel/housekeeping/{room}/status` | Update Status Bersih/Inspeksi | `admin`, `hotel_manager`, `housekeeping` | `front_office`, `fnb_outlet`, `guest` |
-| `GET /hotel/night-audit` | Kontrol & Monitor Night Audit | `admin`, `hotel_manager`, `night_auditor` | `front_office`, `hotel_cashier`, `housekeeping` |
-| `POST /hotel/night-audit/run` | Eksekusi Tutup Hari Night Audit | `admin`, `hotel_manager`, `night_auditor` | `front_office`, `hotel_cashier`, `auditor` |
+| `GET /hotel/close-day` | Kontrol & Monitor Night Audit | `admin`, `hotel_manager`, `night_auditor` | `front_office`, `hotel_cashier`, `housekeeping` |
+| `POST /hotel/close-day/run` | Eksekusi Tutup Hari Night Audit | `admin`, `hotel_manager`, `night_auditor` | `front_office`, `hotel_cashier`, `auditor` |
 | `GET /hotel/reports/daily` | Laporan Okupansi, ADR & RevPAR | `admin`, `hotel_manager`, `night_auditor`, `auditor` | `housekeeping`, `fnb_outlet`, `guest` |
 | `GET /hotel/portal/guest` | Portal Tamu (Reservasi & Folio Sendiri) | `guest` | Role lain dibatasi ke data miliknya |
 | `GET /hotel/portal/corporate` | Portal Korporat (Folio & Invoice Perusahaan) | `corporate_client` | Perusahaan lain dilarang (403/404) |
@@ -146,7 +146,7 @@ Contoh Parameter:
 
 ## 7. Command & Audit Dua-Sumber
 
-1. `php artisan hotel:night-audit {property_id}`: Menjalankan eksekusi night audit terjadwal atau manual. Idempoten: bila sudah ditutup pada tanggal tersebut, mengembalikan pesan sukses tanpa mengeksekusi ulang.
+1. `php artisan hotel:close-day {property_id}`: Menjalankan eksekusi night audit terjadwal atau manual. Idempoten: bila sudah ditutup pada tanggal tersebut, mengembalikan pesan sukses tanpa mengeksekusi ulang.
 2. `php artisan hotel:folio-audit`: Audit rekonsiliasi antara total baris `htl_folio_lines` dengan saldo `bank_ledger_entries` akun piutang tamu. Menghasilkan exit code 0 saat seimbang; exit non-zero bila terdapat baris tagihan termanipulasi di basis data.
 3. `php artisan hotel:availability-audit`: Membandingkan inventaris kamar `htl_room_nights` dengan jumlah reservasi aktif dan kamar out-of-order. Menghasilkan exit code 0 bila cocok; exit non-zero bila ada oversell melebihi batas atau reservasi orphan.
 
@@ -300,7 +300,7 @@ Contoh Parameter:
 *(Bagian ini akan disalin ke `docs/PROGRESS.md` oleh sesi verifikasi/integrasi)*:
 
 ```markdown
-- [ ] R7.HTL.1 **Vertical Slice Siklus Tamu Perhotelan**: Reservasi multi-malam (anti-overlap inventory lock per malam), deposit kewajiban, check-in aman identitas terenkripsi (KTP/paspor + blind index), housekeeping state machine (dirty->cleaning->inspected->available), pembebanan folio append-only & F&B outlet, night audit idempoten (pengakuan pendapatan harian, PBJT 10% & service 10%, no-show penalty, snapshot harian, pemajuan business date), check-out pelunasan (tunai/kartu/city ledger korporat/deposit), split folio, refund deposit, pembatalan & walk compensation seimbang di ledger, portal tamu & korporat, laporan okupansi/ADR/RevPAR cocok ledger, dan artisan command hotel:night-audit, hotel:folio-audit, hotel:availability-audit dua-sumber.
+- [ ] R7.HTL.1 **Vertical Slice Siklus Tamu Perhotelan**: Reservasi multi-malam (anti-overlap inventory lock per malam), deposit kewajiban, check-in aman identitas terenkripsi (KTP/paspor + blind index), housekeeping state machine (dirty->cleaning->inspected->available), pembebanan folio append-only & F&B outlet, night audit idempoten (pengakuan pendapatan harian, PBJT 10% & service 10%, no-show penalty, snapshot harian, pemajuan business date), check-out pelunasan (tunai/kartu/city ledger korporat/deposit), split folio, refund deposit, pembatalan & walk compensation seimbang di ledger, portal tamu & korporat, laporan okupansi/ADR/RevPAR cocok ledger, dan artisan command hotel:close-day, hotel:folio-audit, hotel:availability-audit dua-sumber.
   Bukti:
     - jenis: fitur
     - commit: 3bdf8772, e4e202aa, 8dc7d7e1, 9a343549, bbbeef20, d9c6b61a, feb129a1, 6f988fb7, cb1f1f4c, a3296d53, cb8ef129, e9e29a48, 5944befc, f0ed7934, 571422df, a74f1b58, b429a039, 3232a1a4, fef909ce, 912845c1, 21ce0bb0, 98b849f0
@@ -337,11 +337,11 @@ Contoh Parameter:
     - akses: route GET /hotel [role: admin, hotel_manager, front_office]
     - akses: route GET /hotel/reservations [role: admin, hotel_manager, front_office, reservation_agent]
     - akses: route GET /hotel/housekeeping [role: admin, hotel_manager, housekeeping, front_office]
-    - akses: route GET /hotel/night-audit [role: admin, hotel_manager, night_auditor]
+    - akses: route GET /hotel/close-day [role: admin, hotel_manager, night_auditor]
     - akses: route GET /hotel/reports/daily [role: admin, hotel_manager, night_auditor, auditor]
     - akses: route GET /hotel/portal/guest [role: guest]
     - akses: route GET /hotel/portal/corporate [role: corporate_client]
-    - akses: command hotel:night-audit
+    - akses: command hotel:close-day
     - akses: command hotel:folio-audit
     - akses: command hotel:availability-audit
 ```

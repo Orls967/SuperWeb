@@ -595,9 +595,8 @@ class HotelSevenDaySimulationTest extends TestCase
         $this->assertGreaterThan(0, $corpAlpha->outstanding_balance_idr);
         $this->assertGreaterThan(0, $corpBeta->outstanding_balance_idr);
 
-        // 6. Artisan Command hotel:folio-audit, hotel:availability-audit, dan bank:reconcile lolos exit 0
-        $this->assertEquals(0, Artisan::call('hotel:folio-audit'));
-        $this->assertEquals(0, Artisan::call('hotel:availability-audit'));
+        // 6. Artisan Command htl:audit dan bank:reconcile lolos exit 0
+        $this->assertEquals(0, Artisan::call('htl:audit'));
         $this->assertEquals(0, Artisan::call('bank:reconcile'));
     }
 }

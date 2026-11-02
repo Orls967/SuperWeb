@@ -42,14 +42,14 @@ class HotelUiAndValidationTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function test_halaman_night_audit_merespons_200_untuk_night_auditor_dan_403_untuk_role_lain(): void
+    public function test_halaman_close_day_merespons_200_untuk_night_auditor_dan_403_untuk_role_lain(): void
     {
         $auditor = User::factory()->create(['role' => 'night_auditor']);
-        $response = $this->actingAs($auditor)->get('/hotel/night-audit');
+        $response = $this->actingAs($auditor)->get('/hotel/close-day');
         $this->assertEquals(200, $response->getStatusCode());
 
         $guest = User::factory()->create(['role' => 'guest']);
-        $responseGuest = $this->actingAs($guest)->get('/hotel/night-audit');
+        $responseGuest = $this->actingAs($guest)->get('/hotel/close-day');
         $this->assertEquals(403, $responseGuest->getStatusCode());
     }
 

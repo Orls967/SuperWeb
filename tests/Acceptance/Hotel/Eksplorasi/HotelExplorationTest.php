@@ -219,7 +219,7 @@ class HotelExplorationTest extends TestCase
             'hotel.index' => [],
             'hotel.pms.banquet' => [],
             'hotel.pms.destination-packages' => [],
-            'hotel.pms.night-audit' => [],
+            'hotel.pms.close-day' => [],
             'hotel.pms.overbooking' => [],
             'hotel.pms.reservations' => [],
             'hotel.pms.split-folios' => [],

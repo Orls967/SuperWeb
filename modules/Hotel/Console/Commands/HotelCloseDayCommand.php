@@ -8,11 +8,11 @@ use Illuminate\Console\Command;
 use Modules\Hotel\Application\Actions\ExecuteHotelNightAuditAction;
 use Modules\Hotel\Domain\Models\HotelProperty;
 
-class HotelNightAuditCommand extends Command
+class HotelCloseDayCommand extends Command
 {
-    protected $signature = 'hotel:night-audit {property_id?}';
+    protected $signature = 'hotel:close-day {property_id?}';
 
-    protected $description = 'Menjalankan proses night audit untuk properti hotel';
+    protected $description = 'Menjalankan proses tutup hari (close-day) untuk properti hotel';
 
     public function handle(ExecuteHotelNightAuditAction $action): int
     {
@@ -29,7 +29,7 @@ class HotelNightAuditCommand extends Command
         }
 
         foreach ($properties as $property) {
-            $this->info("Menjalankan night audit untuk properti: {$property->name} ({$property->id})...");
+            $this->info("Menjalankan tutup hari (close-day) untuk properti: {$property->name} ({$property->id})...");
 
             $snapshot = $action->execute($property->id);
 
@@ -49,7 +49,7 @@ class HotelNightAuditCommand extends Command
             );
         }
 
-        $this->info('Night audit berhasil diselesaikan.');
+        $this->info('Tutup hari (close-day) berhasil diselesaikan.');
 
         return self::SUCCESS;
     }

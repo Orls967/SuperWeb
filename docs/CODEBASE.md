@@ -653,12 +653,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
-| `hotel:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
-| `hotel:availability-audit` | `manual` | Audit rekonsiliasi dua-sumber antara inventaris kamar per malam dan status reservasi |
-| `hotel:folio-audit` | `manual` | Audit rekonsiliasi dua-sumber antara baris folio hotel dan mutasi Banking Ledger |
-| `hotel:night-audit` | `manual` | Menjalankan proses night audit untuk properti hotel |
+| `hotel:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
+| `hotel:close-day` | `manual` | Menjalankan proses tutup hari (close-day) untuk properti hotel |
 | `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, dan integritas subjek |
-| `htl:audit` | `manual` | Audit operasional hotel: kamar, reservasi, folio, dan integritas occupancy vs reservation |
+| `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, and autopilot claim payouts |
 | `inspire` | `manual` | Display an inspiring quote |
 | `install:api` | `manual` | Create an API routes file and install Laravel Sanctum or Laravel Passport |
@@ -763,7 +761,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 166 Command** | **37 Terjadwal** | |
+| **Total: 164 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

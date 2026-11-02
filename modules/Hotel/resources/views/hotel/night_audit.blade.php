@@ -28,8 +28,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-gray-900/80 p-5 rounded-lg border border-gray-700">
-                    <h3 class="text-lg font-semibold text-white mb-4">Execute End-of-Day Audit</h3>
-                    <form action="{{ route('hotel.pms.night-audit.run') }}" method="POST" class="space-y-4">
+                    <h3 class="text-lg font-semibold text-white mb-4">Execute End-of-Day Close Day</h3>
+                    <form action="{{ route('hotel.pms.close-day.run') }}" method="POST" class="space-y-4">
                         @csrf
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1">Target Hotel Property</label>
