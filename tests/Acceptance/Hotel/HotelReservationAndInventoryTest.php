@@ -383,7 +383,7 @@ class HotelReservationAndInventoryTest extends TestCase
         $dateIn = Carbon::now()->addDays(4)->toDateString();
         $dateOut = Carbon::now()->addDays(5)->toDateString();
 
-        $res = $action->handle(new ReserveRoomDTO(
+        $res1 = $action->handle(new ReserveRoomDTO(
             propertyId: $this->property->id,
             roomTypeId: $this->deluxeType->id,
             ratePlanId: $this->barPlan->id,
@@ -393,7 +393,19 @@ class HotelReservationAndInventoryTest extends TestCase
             idempotencyKey: 'key_doc_num_01'
         ));
 
-        $this->assertStringStartsWith('RSV-', $res['reservation']->reservation_number);
+        $res2 = $action->handle(new ReserveRoomDTO(
+            propertyId: $this->property->id,
+            roomTypeId: $this->deluxeType->id,
+            ratePlanId: $this->barPlan->id,
+            guestUserId: (string) $this->guest->id,
+            checkInDate: Carbon::now()->addDays(5)->toDateString(),
+            checkOutDate: Carbon::now()->addDays(6)->toDateString(),
+            idempotencyKey: 'key_doc_num_02'
+        ));
+
+        $this->assertStringStartsWith('HTL/RSV/', $res1['reservation']->reservation_number);
+        $this->assertStringStartsWith('HTL/RSV/', $res2['reservation']->reservation_number);
+        $this->assertNotEquals($res1['reservation']->reservation_number, $res2['reservation']->reservation_number);
     }
 
     public function test_query_ketersediaan_kamar_mencegah_tumpang_tindih_di_tengah_periode_menginap(): void
