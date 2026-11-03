@@ -23,4 +23,3 @@ interface RecycledMaterialReceiver
         string $idempotencyKey
     ): int;
 }
-

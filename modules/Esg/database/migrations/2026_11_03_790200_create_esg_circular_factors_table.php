@@ -45,4 +45,3 @@ return new class extends Migration
         Schema::dropIfExists('esg_circular_factors');
     }
 };
-

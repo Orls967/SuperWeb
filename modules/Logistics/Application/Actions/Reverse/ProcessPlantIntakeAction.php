@@ -6,6 +6,7 @@ namespace Modules\Logistics\Application\Actions\Reverse;
 
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modules\Banking\Application\DTOs\PostingDTO;
@@ -14,7 +15,6 @@ use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Esg\Contracts\EmissionBenefitRecorder;
 use Modules\Logistics\Application\Actions\RecordTrackingEventAction;
-use Modules\Logistics\Application\Actions\Reverse\TransitionReverseShipmentAction;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Logistics\Ledger\SubjectAccounts;
@@ -192,9 +192,9 @@ class ProcessPlantIntakeAction
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection<int, Shipment>
+     * @return Collection<int, Shipment>
      */
-    public function getPendingIntakes(): \Illuminate\Database\Eloquent\Collection
+    public function getPendingIntakes(): Collection
     {
         return Shipment::where('is_reverse', true)
             ->whereIn('status', [ShipmentStatus::AtHub->value, ShipmentStatus::DeliveredToPlant->value])
@@ -203,4 +203,3 @@ class ProcessPlantIntakeAction
             ->get();
     }
 }
-

@@ -43,6 +43,7 @@ class AuditCircularCommand extends Command
             // 2. Keberadaan Plant Receipt ID
             if (! $shipment->plant_receipt_id) {
                 $discrepancies[] = "Shipment received #{$shipment->tracking_number} belum memiliki tautan plant_receipt_id.";
+
                 continue;
             }
 
@@ -50,6 +51,7 @@ class AuditCircularCommand extends Command
             $receipt = RecycledMaterialReceipt::find($shipment->plant_receipt_id);
             if (! $receipt) {
                 $discrepancies[] = "Shipment #{$shipment->tracking_number} merujuk ke receipt #{$shipment->plant_receipt_id} yang tidak ditemukan.";
+
                 continue;
             }
 

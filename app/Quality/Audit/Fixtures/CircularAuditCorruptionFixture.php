@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Quality\Audit\Fixtures;
 
+use App\Models\User;
 use App\Quality\Audit\CorruptionFixture;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
+use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Shipment;
 
 final class CircularAuditCorruptionFixture implements CorruptionFixture
@@ -17,13 +19,13 @@ final class CircularAuditCorruptionFixture implements CorruptionFixture
 
     public function corrupt(): string
     {
-        $userId = \App\Models\User::value('id') ?? \App\Models\User::create([
+        $userId = User::value('id') ?? User::create([
             'name' => 'Audit Fixture User',
             'email' => 'corrupt-fixture@test.local',
             'password' => bcrypt('password'),
         ])->id;
 
-        $locId = \Modules\Logistics\Domain\Models\Location::value('id') ?? \Modules\Logistics\Domain\Models\Location::create([
+        $locId = Location::value('id') ?? Location::create([
             'code' => 'CORRUPT-LOC-01',
             'name' => 'Corrupt Hub',
             'type' => 'hub',

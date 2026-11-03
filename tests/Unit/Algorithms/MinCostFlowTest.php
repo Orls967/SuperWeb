@@ -258,7 +258,7 @@ describe('MinCostFlow', function (): void {
     });
 
     it('verifies all failure branches of MinCostFlowCertificateVerifier', function (): void {
-        $verifier = new MinCostFlowCertificateVerifier();
+        $verifier = new MinCostFlowCertificateVerifier;
         $edges = [
             0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 5],
             1 => ['u' => 1, 'v' => 2, 'cap' => 10, 'cost' => 3],

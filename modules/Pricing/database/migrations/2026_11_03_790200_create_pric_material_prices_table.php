@@ -29,4 +29,3 @@ return new class extends Migration
         Schema::dropIfExists('pric_material_prices');
     }
 };
-

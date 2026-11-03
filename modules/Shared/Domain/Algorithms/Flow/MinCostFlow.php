@@ -118,7 +118,7 @@ class MinCostFlow
             for ($i = 0; $i < $n - 1; $i++) {
                 $updated = false;
                 foreach ($this->edges as $e) {
-                    if ($e['cap'] > 0 && $dist[$e['u']] + $e['cost'] < $dist[$e['v']]) {
+                    if ($e['cap'] > 0 && $dist[$e['v']] > $dist[$e['u']] + $e['cost']) {
                         $dist[$e['v']] = $dist[$e['u']] + $e['cost'];
                         $updated = true;
                     }
@@ -140,13 +140,15 @@ class MinCostFlow
             $dist[$source] = 0;
 
             // Priority queue min-heap deterministik: simpan simpul dengan prioritas [dist, u]
-            $pq = new class extends SplPriorityQueue {
+            $pq = new class extends SplPriorityQueue
+            {
                 public function compare(mixed $a, mixed $b): int
                 {
                     // Nilai jarak terkecil diprioritaskan
                     if ($a[0] !== $b[0]) {
                         return $a[0] < $b[0] ? 1 : -1;
                     }
+
                     // Tie-break indeks simpul lebih kecil diprioritaskan
                     return $a[1] < $b[1] ? 1 : -1;
                 }
@@ -161,7 +163,7 @@ class MinCostFlow
                     if ($edge['cap'] > 0) {
                         $v = $edge['to'];
                         $reducedCost = $edge['cost'] + $potentials[$u] - $potentials[$v];
-                        if ($dist[$u] !== PHP_INT_MAX && $dist[$u] + $reducedCost < $dist[$v]) {
+                        if ($dist[$u] !== PHP_INT_MAX && $dist[$v] > $dist[$u] + $reducedCost) {
                             $dist[$v] = $dist[$u] + $reducedCost;
                             $parent[$v] = ['u' => $u, 'edge_idx' => $edgeIdxInAdj];
                             $pq->insert($v, [$dist[$v], $v]);
@@ -240,9 +242,9 @@ class MinCostFlow
     /**
      * Helper alokasi tonase dari sumber ke pabrik daur ulang berkapasitas (D79-5).
      *
-     * @param array<string, int> $sources [nama_sumber => pasokan_ton]
-     * @param array<string, int> $plants [nama_pabrik => kapasitas_ton]
-     * @param array<string, array<string, int>> $costs [nama_sumber => [nama_pabrik => biaya_per_ton]]
+     * @param  array<string, int>  $sources  [nama_sumber => pasokan_ton]
+     * @param  array<string, int>  $plants  [nama_pabrik => kapasitas_ton]
+     * @param  array<string, array<string, int>>  $costs  [nama_sumber => [nama_pabrik => biaya_per_ton]]
      * @return array{
      *     allocations: array<string, array<string, int>>,
      *     unallocated: array<string, int>,

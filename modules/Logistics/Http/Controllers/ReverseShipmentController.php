@@ -15,6 +15,7 @@ use Modules\Logistics\Application\Actions\Reverse\TransitionReverseShipmentActio
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Shared\Domain\Algorithms\Flow\MinCostFlow;
+use Modules\Shared\Domain\Algorithms\Flow\MinCostFlowCertificateVerifier;
 
 class ReverseShipmentController extends Controller
 {
@@ -229,7 +230,7 @@ class ReverseShipmentController extends Controller
 
         $result = $mcf->solve($sourceNode, $sinkNode, $totalSupply);
 
-        $verifier = new \Modules\Shared\Domain\Algorithms\Flow\MinCostFlowCertificateVerifier();
+        $verifier = new MinCostFlowCertificateVerifier;
         $isDualCertified = $verifier->verify(
             $mcf->getEdges(),
             $mcf->getVertexCount(),

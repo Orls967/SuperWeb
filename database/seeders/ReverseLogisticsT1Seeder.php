@@ -10,7 +10,6 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
-use Modules\Logistics\Domain\Enums\TransportMode;
 use Modules\Logistics\Domain\Models\Location;
 use Modules\Manufacturing\Domain\Models\Material;
 use Modules\Manufacturing\Domain\Models\Plant;
@@ -18,7 +17,9 @@ use Modules\Manufacturing\Domain\Models\Plant;
 class ReverseLogisticsT1Seeder extends Seeder
 {
     private const TOTAL_SHIPMENTS = 2000;
+
     private const REVERSE_SHIPMENTS = 500;
+
     private const FLEET_COUNT = 50;
 
     public function run(): void
@@ -41,7 +42,7 @@ class ReverseLogisticsT1Seeder extends Seeder
                     'name' => $name,
                     'type' => 'hub',
                     'city' => explode(' ', $name)[2],
-                    'province' => 'Provinsi ' . ($i + 1),
+                    'province' => 'Provinsi '.($i + 1),
                     'country' => 'ID',
                     'lat_e6' => -6200000 + ($i * 100000),
                     'lng_e6' => 106800000 + ($i * 100000),
@@ -205,9 +206,9 @@ class ReverseLogisticsT1Seeder extends Seeder
                 'id' => $i,
                 'tracking_number' => $trkNum,
                 'shipper_id' => $user->id,
-                'consignee_name' => 'Consignee Plant/Facility ' . $i,
+                'consignee_name' => 'Consignee Plant/Facility '.$i,
                 'consignee_phone' => '081234567890',
-                'consignee_address' => json_encode(['address' => 'Plant Area ' . $plant, 'city' => 'Jakarta']),
+                'consignee_address' => json_encode(['address' => 'Plant Area '.$plant, 'city' => 'Jakarta']),
                 'origin_location_id' => $origin,
                 'destination_location_id' => $dest,
                 'destination_facility_id' => $dest,

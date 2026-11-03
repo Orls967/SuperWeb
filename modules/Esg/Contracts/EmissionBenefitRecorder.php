@@ -25,4 +25,3 @@ interface EmissionBenefitRecorder
         string $idempotencyKey
     ): int;
 }
-

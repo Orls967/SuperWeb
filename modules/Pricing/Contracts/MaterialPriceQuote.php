@@ -17,4 +17,3 @@ interface MaterialPriceQuote
      */
     public function pricePerKgIdr(string $materialCode, string $gradeCode, CarbonImmutable $at): ?int;
 }
-

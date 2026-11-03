@@ -10,10 +10,10 @@ namespace Modules\Shared\Domain\Algorithms\Flow;
 final readonly class MinCostFlowResult
 {
     /**
-     * @param int $totalFlow Total aliran terkirim
-     * @param int $totalCost Total biaya yang dikeluarkan
-     * @param array<int, int> $flowPerEdge Peta indeks sisi asli => aliran terkirim
-     * @param array<int, int> $nodePotentials Peta indeks simpul => potensial pi
+     * @param  int  $totalFlow  Total aliran terkirim
+     * @param  int  $totalCost  Total biaya yang dikeluarkan
+     * @param  array<int, int>  $flowPerEdge  Peta indeks sisi asli => aliran terkirim
+     * @param  array<int, int>  $nodePotentials  Peta indeks simpul => potensial pi
      */
     public function __construct(
         public int $totalFlow,
@@ -22,4 +22,3 @@ final readonly class MinCostFlowResult
         public array $nodePotentials,
     ) {}
 }
-

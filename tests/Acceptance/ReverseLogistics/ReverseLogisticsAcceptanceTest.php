@@ -7,9 +7,12 @@ namespace Tests\Acceptance\ReverseLogistics;
 use App\Models\User;
 use App\Quality\Audit\Fixtures\CircularAuditCorruptionFixture;
 use Carbon\CarbonImmutable;
+use Database\Seeders\LedgerAccountsSeeder;
+use Database\Seeders\ReverseLogisticsT1Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Esg\Contracts\EmissionBenefitRecorder;
@@ -18,13 +21,14 @@ use Modules\Logistics\Application\Actions\Reverse\CreateReverseShipmentAction;
 use Modules\Logistics\Application\Actions\Reverse\ProcessPlantIntakeAction;
 use Modules\Logistics\Application\Actions\Reverse\TransitionReverseShipmentAction;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
+use Modules\Logistics\Domain\Enums\TransportMode;
 use Modules\Logistics\Domain\Exceptions\InvalidShipmentTransitionException;
 use Modules\Logistics\Domain\Models\Carrier;
 use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Logistics\Domain\Models\ShipmentLeg;
 use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
 use Modules\Manufacturing\Domain\Models\Material;
-use Modules\Manufacturing\Domain\Models\MaterialLot;
 use Modules\Manufacturing\Domain\Models\Plant;
 use Modules\Manufacturing\Domain\Models\RecycledMaterialReceipt;
 use Tests\TestCase;
@@ -34,20 +38,28 @@ class ReverseLogisticsAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     protected User $adminUser;
+
     protected User $hubOperator;
+
     protected User $plantReceiver;
+
     protected User $customerUser;
+
     protected Location $hubLocation;
+
     protected Location $plantLocation;
+
     protected Plant $plant;
+
     protected Material $material;
+
     protected Carrier $carrier;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(\Database\Seeders\LedgerAccountsSeeder::class);
+        $this->seed(LedgerAccountsSeeder::class);
 
         $this->adminUser = User::factory()->create(['role' => 'admin']);
         $this->hubOperator = User::factory()->create(['role' => 'hub_operator']);
@@ -79,7 +91,7 @@ class ReverseLogisticsAcceptanceTest extends TestCase
         ]);
 
         $this->plant = Plant::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'code' => 'PLANT-KRW-01',
             'name' => 'Pabrik Daur Ulang Karawang',
             'nominal_capacity_per_day' => 20000,
@@ -87,7 +99,7 @@ class ReverseLogisticsAcceptanceTest extends TestCase
         ]);
 
         $this->material = Material::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'code' => 'PET_FLAKES',
             'name' => 'PET Flakes Bersih',
             'kind' => 'raw',
@@ -363,11 +375,11 @@ class ReverseLogisticsAcceptanceTest extends TestCase
             'carrier_cost_idr' => 250000,
         ]);
 
-        $leg = \Modules\Logistics\Domain\Models\ShipmentLeg::create([
+        $leg = ShipmentLeg::create([
             'shipment_id' => $shipment->id,
             'carrier_id' => $this->carrier->id,
             'leg_sequence' => 1,
-            'mode' => \Modules\Logistics\Domain\Enums\TransportMode::ROAD,
+            'mode' => TransportMode::ROAD,
             'origin_location_id' => $this->hubLocation->id,
             'destination_location_id' => $this->plantLocation->id,
             'estimated_departure' => now(),
@@ -477,7 +489,7 @@ class ReverseLogisticsAcceptanceTest extends TestCase
 
     public function test_11_audit_circular_passes_on_clean_data(): void
     {
-        $this->seed(\Database\Seeders\ReverseLogisticsT1Seeder::class);
+        $this->seed(ReverseLogisticsT1Seeder::class);
 
         $exitCode = Artisan::call('logi:circular-audit');
         $this->assertEquals(0, $exitCode);
@@ -485,7 +497,7 @@ class ReverseLogisticsAcceptanceTest extends TestCase
 
     public function test_12_audit_circular_fails_on_corrupt_data(): void
     {
-        $fixture = new CircularAuditCorruptionFixture();
+        $fixture = new CircularAuditCorruptionFixture;
         $fixture->corrupt();
 
         $exitCode = Artisan::call('logi:circular-audit');

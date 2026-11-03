@@ -21,11 +21,11 @@ use RuntimeException;
 class MinCostFlowCertificateVerifier
 {
     /**
-     * @param list<array{u: int, v: int, cap: int, cost: int}> $edges Sisi asli graf
-     * @param int $vertexCount Jumlah total simpul
-     * @param int $source Simpul sumber
-     * @param int $sink Simpul muara
-     * @param MinCostFlowResult $result Hasil komputasi yang diverifikasi
+     * @param  list<array{u: int, v: int, cap: int, cost: int}>  $edges  Sisi asli graf
+     * @param  int  $vertexCount  Jumlah total simpul
+     * @param  int  $source  Simpul sumber
+     * @param  int  $sink  Simpul muara
+     * @param  MinCostFlowResult  $result  Hasil komputasi yang diverifikasi
      *
      * @throws RuntimeException Bila sertifikat tidak valid
      */
@@ -120,4 +120,3 @@ class MinCostFlowCertificateVerifier
         return true;
     }
 }
-

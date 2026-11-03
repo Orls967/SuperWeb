@@ -33,4 +33,3 @@ class MaterialPriceQuoteService implements MaterialPriceQuote
         return (int) $row->price_per_kg_idr;
     }
 }
-
