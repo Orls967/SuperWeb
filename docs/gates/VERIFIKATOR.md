@@ -44,7 +44,7 @@ gh api repos/Orls967/superweb/actions/runs/<run-id>/jobs \
 gh run download <run-id> --repo Orls967/superweb --dir /tmp/ci-<run-id>
 ```
 
-Yang dicek: ketiga job (`PHP 8.4 × SQLite (Full Gate Suite)`, `PHP 8.4 × MySQL 8 (DB Portability)`, `PHP 8.4 × Pest Mutation Testing (min 60%)`) hijau pada **commit kode terakhir** fase. Run yang hijau di commit lain tidak dihitung.
+Yang dicek: job (`PHP 8.4 × SQLite (Full Gate Suite)`, `PHP 8.4 × MySQL 8 (DB Portability)`) hijau pada **commit kode terakhir** fase. Mutation: manual/opsional (keputusan pemilik 2026-11-04). Run yang hijau di commit lain tidak dihitung.
 
 > **Larangan keamanan:** jangan pernah memanggil `git credential fill`, `gh auth token`, atau cara lain untuk membaca/mencetak token. Bila `gh` belum login, minta pemilik login (K-39).
 
@@ -230,7 +230,7 @@ Tempel di akhir `docs/gates/fase-{N}.md`, menggantikan template kosong buatan `g
 
 - **Tanggal:** 2026-10-12
 - **Verifikator:** <sesi/agent atau nama pemilik>
-- **Commit yang diverifikasi:** <hash lengkap> (CI run <run-id>: SQLite ✅, MySQL ✅, Mutation ✅)
+- **Commit yang diverifikasi:** <hash lengkap> (CI run <run-id>: SQLite ✅, MySQL ✅, Mutation: manual/opsional)
 - **Keputusan:** ✅ TERVERIFIKASI | 🔁 DIBUKA KEMBALI
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
