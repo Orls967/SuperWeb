@@ -11542,42 +11542,42 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [x] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
   Bukti:
     - jenis: fitur
-    - commit: caf789ec
+    - commit: 1277b22d
     - file: modules/Circular/database/migrations/2026_11_03_174100_create_circular_marketplace_tables.php
     - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_1_route_access_matrix_enforces_roles_across_all_circular_route_groups
     - akses: route GET /circular/listings [role: admin, material_seller]
 - [x] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
   Bukti:
     - jenis: fitur
-    - commit: caf789ec
+    - commit: 1277b22d
     - file: modules/Circular/Application/Actions/PlaceOrderAction.php
     - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_2_end_to_end_marketplace_flow_escrow_reverse_shipment_k1_receipt_settlement_and_idempotency
     - akses: route POST /circular/orders [role: admin, material_buyer]
 - [x] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
   Bukti:
     - jenis: fitur
-    - commit: caf789ec
+    - commit: 1277b22d
     - file: modules/Circular/Application/Actions/RecordOrderPlantReceiptAction.php
     - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_3_business_rules_over_stock_422_early_settlement_rejected_and_shrinkage_refund
     - akses: route POST /circular/orders/{order}/receipt [role: admin, circular_admin]
 - [x] 174.4 Circularity accounting: material input/output, recycled content, avoided disposal, revenue/fee and ESG evidence linked to lots
   Bukti:
     - jenis: fitur
-    - commit: caf789ec
+    - commit: 1277b22d
     - file: modules/Circular/Application/Actions/SettleOrderAction.php
     - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_2_end_to_end_marketplace_flow_escrow_reverse_shipment_k1_receipt_settlement_and_idempotency
     - akses: route POST /circular/orders/{order}/settle [role: admin, circular_admin]
 - [x] 174.5 Tests: hazardous waste cannot route to unqualified party, mass balance reconciles, manifest chain complete, no double-counted ESG claim, `circular:audit` clean
   Bukti:
     - jenis: tooling
-    - commit: caf789ec
+    - commit: 1277b22d
     - file: modules/Circular/Console/Commands/AuditCircularCommand.php
     - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_5_circular_audit_passes_clean_and_detects_corruption_fixture
     - akses: command cir:audit
 - [x] 174.6 Quality gate Fase 174
   Bukti:
     - jenis: dokumen
-    - commit: 6c15592e
+    - commit: 393004b1
     - file: docs/design/circular-marketplace-lini-24.md
 
 ### Register Minus Fase 174
