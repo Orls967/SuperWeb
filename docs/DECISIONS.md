@@ -2116,3 +2116,22 @@
 - **Verification:**
   - `SecurityHeadersAndSessionTest::test_session_secure_cookie_configuration_k13` membuktikan produksi bernilai `true` dan lokal bernilai `false`.
 
+<a id="2026-11-03-g6-p1-reverse-logistics"></a>
+## 2026-11-03: [G6-P1.1] Reverse Logistics ke Bahan Baku Manufaktur & Algoritma MinCostFlow (D79-1..D79-6)
+- **Anchor:** `2026-11-03-g6-p1-reverse-logistics`
+- **Context:**
+  - Integrasi logistik sirkular (Pilar 5 KONSEP §5F) mewajibkan alur pengangkutan muatan balik/limbah dari berbagai party sumber menuju pabrik daur ulang.
+  - Diperlukan pencatatan penerimaan sebagai lot material Manufaktur murni (1:1 per shipment reverse), pengutipan harga dari Pricing Engine, pencatatan manfaat emisi terhindar ke ESG dengan faktor berversi, serta alokasi tonase optimal berbiaya minimum (MinCostFlow) dengan sertifikat matematis dualitas.
+- **Decision:**
+  1. D79-1: Pengiriman balik menggunakan model `Shipment` bertipe reverse dengan `reverse_reason` in {retur, oli_bekas, jelantah, scrap, material_sekunder}, dengan status: requested -> picked_up -> at_hub -> delivered_to_plant -> received | rejected, serta mencatat tracking event ber-hash chain.
+  2. D79-2: Penerimaan pabrik memverifikasi timbang neto gram integer dan grading, mengutip harga pasar via kontrak K1/K2 (`RecycledMaterialReceiver` / `MaterialPriceQuote`), melempar 422 bila harga belum ada, dan membuat tepat satu baris `mfg_material_lots` yang idempoten terhadap retry.
+  3. D79-3: Aturan posting pembukuan double-entry: (a) akru carrier: Debit `lgx:carrier_cost:IDR` / Kredit `ap:carrier:{id}:IDR`, (b) kliring penerimaan lot: Debit `inv:materials:IDR` / Kredit `mfg:recycled_material_clearing:IDR`, (c) nota sumber: Debit `mfg:recycled_material_clearing:IDR` / Kredit `ap:supplier:{party}:IDR`. Sumber internal grup via Intercompany ditunda ke P2.
+  4. D79-4: Manfaat emisi dicatat via kontrak K3 `EmissionBenefitRecorder` ke tabel `esg_circular_factors` (S1) dan skor sirkularitas dihitung dalam satuan basis points (bps) floor.
+  5. D79-5: Alokasi tonase siap angkut ke pabrik daur ulang diselesaikan oleh algoritma `Flow\MinCostFlow` (successive shortest path dengan potensial Johnson) dan diverifikasi oleh `Flow\MinCostFlowCertificateVerifier` berbasis kondisi reduced cost non-negatif pada graf residual.
+  6. D79-6: Audit dua sumber `logi:circular-audit` memverifikasi rekonsiliasi operasional ke lot manufaktur serta konsistensi saldo buku besar akun clearing dan hold.
+- **Verification:**
+  - Vektor uji alokasi prompt (S1: 30, S2: 20, S3: 25 ke P1: 40, P2: 40) menghasilkan alokasi unik berbiaya 290 dengan sertifikat valid.
+  - Acceptance test `tests/Acceptance/ReverseLogistics/ReverseLogisticsAcceptanceTest.php` lulus menyeluruh.
+  - Command `logi:circular-audit` lolos exit 0 pada kondisi bersih dan exit 1 pada fixture korupsi.
+
+
