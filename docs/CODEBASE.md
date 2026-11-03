@@ -517,7 +517,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 37 | **Payment** | `pay_` | 3 |
 | 38 | **Plm** | `plm_` | 1 |
 | 39 | **Port** | `prt_` | 1 |
-| 40 | **Pricing** | `pric_` | 6 |
+| 40 | **Pricing** | `pric_` | 7 |
 | 41 | **Procurement** | `prc_` | 6 |
 | 42 | **Proptech** | `prp_` | 3 |
 | 43 | **Resto** | `resto_` | 10 |
@@ -534,7 +534,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 54 | **Venue** | `ven_` | 6 |
 | 55 | **Wealth** | `wm_` | 2 |
 | 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **602 Migrasi** |
+| | **Total: 56 Modul** | | **603 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -579,7 +579,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Payment** | 2 | `payment/inspector`, `payment/inspector/{uuid}` | web, auth, role:admin,auditor,treasury |
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 4 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
-| **Pricing** | 17 | `pricing`, `pricing/ticks`, `pricing/price-lists` ... | web, auth, verified |
+| **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
 | **Procurement** | 21 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 21 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 81 | `resto/menu/calculate-cost`, `resto/menu/create`, `resto/menu` ... | web, auth, role:admin,outlet_manager |
@@ -596,7 +596,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1045 Rute** | | |
+| **Total** | **1049 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -718,6 +718,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
 | `pq:audit-chains` | `manual` | Audit 8 Merkle hash chains for Post-Quantum readiness — 0 discrepancy required |
 | `pricing:audit` | `manual` | Audit pricing: lock harga, anggaran promo, override, overlap, dan guardrail quote (0 selisih) |
+| `pricing:tick` | `manual` | Hitung dan simpan tick harga dinamis terjadwal (idempoten per slot 5 menit) |
 | `proc:audit` | `manual` | Audit subledger AP dan GR/IR terhadap ledger (harus 0 selisih) |
 | `prp:audit` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `prp:audit-bim` | `manual` | Perform two-source verification of BIM model version hash chains and twin component completion |
@@ -770,7 +771,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 169 Command** | **37 Terjadwal** | |
+| **Total: 170 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
