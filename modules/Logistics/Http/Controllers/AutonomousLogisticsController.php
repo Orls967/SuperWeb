@@ -21,6 +21,11 @@ class AutonomousLogisticsController extends Controller
 
     public function index(): View
     {
+        return $this->coldChain();
+    }
+
+    public function coldChain(): View
+    {
         $breaches = TempBreachHold::orderBy('id', 'desc')->paginate(15, ['*'], 'breaches_page');
         $missions = DroneMission::with('drone')->orderBy('id', 'desc')->paginate(15, ['*'], 'missions_page');
         $drones = DroneUnit::orderBy('id', 'asc')->get();
@@ -41,6 +46,11 @@ class AutonomousLogisticsController extends Controller
             'drones' => $drones,
             'stats' => $stats,
         ]);
+    }
+
+    public function drone(): View
+    {
+        return $this->coldChain();
     }
 
     public function dispatch(Request $request): RedirectResponse

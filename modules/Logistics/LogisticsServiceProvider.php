@@ -16,6 +16,7 @@ use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\AuditBillingCommand;
 use Modules\Logistics\Console\Commands\AuditCircularLogisticsCommand;
 use Modules\Logistics\Console\Commands\AuditColdChainCommand;
+use Modules\Logistics\Console\Commands\DetectTemperatureBreachCommand;
 use Modules\Logistics\Console\Commands\CheckCapacityCommand;
 use Modules\Logistics\Console\Commands\DetectLateShipmentsCommand;
 use Modules\Logistics\Console\Commands\PayCarriersCommand;
@@ -63,6 +64,7 @@ class LogisticsServiceProvider extends ServiceProvider
                 AuditBillingCommand::class,
                 AuditCircularLogisticsCommand::class,
                 AuditColdChainCommand::class,
+                DetectTemperatureBreachCommand::class,
                 RetryWebhooksCommand::class,
             ]);
         }

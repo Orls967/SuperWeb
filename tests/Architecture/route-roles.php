@@ -1231,6 +1231,8 @@ return [
         },
     ],
     'logistics.autonomous.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.cold-chain.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.drone.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
     'logistics.autonomous.dispatch' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
     'logistics.autonomous.deliver' => [
         'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
