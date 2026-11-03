@@ -2246,3 +2246,22 @@
   - Vektor uji CSP meja (AC-3 $W=80, M=\text{besi}$; AC-3 $W=120$; penolakan 422 QuickXplain untuk $[W=120, M=\text{kaca}]$ dan $[W=60, D=60]$) lulus persis.
   - Acceptance test `tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php` lulus 6 skenario.
   - Command `vmi:audit` membuktikan 0 selisih komitmen anggaran dan ketaatan plafon kontrak.
+
+<a id="2026-11-04-g6-p2-agri-processing-fase-168"></a>
+<a id="d168-1"></a>
+<a id="d168-2"></a>
+<a id="d168-3"></a>
+## 2026-11-04: [G6-P2.3] Agri-Processing, LP Blending & Genealogi Recall Lini 21 (Fase 168, D168-1..D168-3)
+- **Anchor:** `2026-11-04-g6-p2-agri-processing-fase-168` / `d168-1` / `d168-2` / `d168-3`
+- **Context:**
+  - Lini 21 (Agri-Processing & Food) membutuhkan integrasi hulu ke hilir: komoditas hasil panen petani (Agri Fase 62) diolah di pabrik pengolahan Manufaktur dengan optimasi pencampuran mutu (blending optimization) dan neraca massa yang ketat, serta pengemasan produk pangan bernutrisi dan bermerek (Food) dengan kemampuan pelacakan genealogi penarikan produk (recall traceability forward/backward).
+- **Decision:**
+  1. D168-1: Kontrak K8 `Modules\Agri\Contracts\HarvestLotSource` menyediakan integrasi hulu ke hilir tanpa ketergantungan konkrit domain. Konsumsi panen dicatat secara aditif pada tabel `agri_collection_consumptions` dengan jaminan idempotensi per kunci transaksi konsumsi. Sisa persediaan lot panen terverifikasi deterministik $(\text{gross\_weight\_kg} \times 1000) - \sum \text{grams\_consumed}$.
+  2. D168-2: Modul pengolahan berada di `Manufacturing` (`mfg_agri_batches`, `mfg_agri_batch_inputs`, `mfg_agri_genealogy_edges`). Formulasi pencampuran menggunakan Two-Phase Simplex `RationalSimplex` dan `IntegerBlendRounder` untuk menemukan bauran berbiaya minimum yang memenuhi syarat kadar protein dan kelembaban. Formulasi yang mustahil (infeasible) dideteksi secara deterministik dan disertai bukti sertifikat Farkas Lemma. Invarian neraca massa mewajibkan total input gram setara dengan output produk jadi ditambah limbah/susut tanpa residu tak terjelaskan.
+  3. D168-3: Modul `Food` (`food_brands`, `food_products`, `food_batch_nutrition`) mengelola merek dan informasi nilai gizi produk akhir. Nilai gizi per 100g dihitung otomatis dari komposisi bahan baku batch pengolahan dengan pembulatan HalfUp 1 desimal. Pelacakan penarikan (recall forward/backward) dieksekusi menggunakan algoritma `Modules\Shared\Domain\Algorithms\Graph\GenealogyTraversal` berbasis BFS dan diverifikasi terhadap oracle DFS. Command `food:audit` menguji neraca massa nol selisih, konsumsi panen valid, dan kepatuhan grade ekspor.
+- **Verification:**
+  - Vektor uji LP Blending prompt (Lot A 9.000/12%/14%, B 7.500/9%/12%, C 8.000/11%/16% untuk target 1.000kg $\ge 10.5\%$ protein, $\le 14\%$ air) menghasilkan solusi optimum tepat A 250kg, B 375kg, C 375kg dengan biaya Rp 8.062.500 dan sertifikat optimalitas.
+  - Vektor infeasible menghasilkan status INFEASIBLE disertai sertifikat Farkas.
+  - Acceptance test `tests/Acceptance/AgriProcessing/AgriProcessingAcceptanceTest.php` lulus 6 skenario.
+  - Command `food:audit` membuktikan 0 selisih neraca massa dan mendeteksi anomali pada fixture korupsi.
+
