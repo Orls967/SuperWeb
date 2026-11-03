@@ -2134,4 +2134,17 @@
   - Acceptance test `tests/Acceptance/ReverseLogistics/ReverseLogisticsAcceptanceTest.php` lulus menyeluruh.
   - Command `logi:circular-audit` lolos exit 0 pada kondisi bersih dan exit 1 pada fixture korupsi.
 
+<a id="2026-11-04-mutation-testing-manual"></a>
+## 2026-11-04: Mutation Testing Dipindah ke Manual
+- **Anchor:** `2026-11-04-mutation-testing-manual`
+- **Context:**
+  - Job CI Pest Mutation Testing (`mutation-testing`) pada alur pull request memakan waktu 35–45+ menit per PR dan kerap mengalami batas waktu / timeout di PR #46 dan PR #49.
+- **Decision:**
+  - Memindahkan pemicu job `mutation-testing` di `.github/workflows/ci.yml` dari `pull_request` menjadi `workflow_dispatch` (manual). Job mutasi tidak lagi menjadi syarat merge PR.
+  - Alasan: job memakan 35–45+ menit per PR dan timeout di PR #46 dan #49.
+  - Risiko: kekuatan test tidak lagi diukur otomatis pada setiap PR; pengujian mutasi dijalankan secara manual/opsional via `workflow_dispatch`.
+  - Struktur job, step, command `test:mutate`, timeout, dan threshold `--min` dipertahankan utuh sehingga seluruh pengujian kontrak workflow tetap konsisten dan hijau.
+- **Verification:**
+  - `vendor/bin/pest tests/Architecture/MutationTestingContractTest.php tests/Architecture/MutationFenceContractTest.php tests/Architecture/CiWorkflowContractTest.php tests/Architecture/WorkflowBuildOrderContractTest.php` lulus 100%.
+
 
