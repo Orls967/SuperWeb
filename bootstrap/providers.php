@@ -20,6 +20,7 @@ use Modules\Egy\EgyServiceProvider;
 use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
 use Modules\Epc\EpcServiceProvider;
 use Modules\Esg\EsgServiceProvider;
+use Modules\Fashion\FashionServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Food\FoodServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
@@ -76,6 +77,7 @@ return [
     CryptoServiceProvider::class,
     FinanceServiceProvider::class,
     FoodServiceProvider::class,
+    FashionServiceProvider::class,
     RestoServiceProvider::class,
     MallServiceProvider::class,
     LogisticsServiceProvider::class,

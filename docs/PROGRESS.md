@@ -11670,12 +11670,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Manufacturing + Store (varian) · Fashion (`fsh_`) hanya sourcing/koleksi · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 28
 > **Jalan pintas terlarang di fase ini:** master produk/varian ganda di luar Inventory/Store; memperluas `FashionSourcingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
-- [ ] 181.2 Ethical sourcing audit integrates Supplier ESG (Fase 154); factory capacity, labor standard evidence and corrective action gates before PO
-- [ ] 181.3 Production orders integrate Manufacturing; lot-level fiber/dye provenance, quality inspection, defect/rework and costing
-- [ ] 181.4 Channel allocation: Store/Retail/Marketplace/Hotel/Venue merch, markdown calendar, returns and end-of-season liquidation auction
-- [ ] 181.5 Tests: size-color SKU allocation exact, unapproved factory blocked, lot provenance complete, markdown respects margin approval, `fashion:audit` clean
-- [ ] 181.6 Quality gate Fase 181
+- [🔵] 181.1 Modul `Fashion` (`fsh_`): design collections, size/color matrix, BOM, seasonal buy plan, supplier factories, purchase commitments and sample approval
+- [🔵] 181.2 Ethical sourcing audit integrates Supplier ESG (Fase 154); factory capacity, labor standard evidence and corrective action gates before PO
+- [🔵] 181.3 Production orders integrate Manufacturing; lot-level fiber/dye provenance, quality inspection, defect/rework and costing
+- [🔵] 181.4 Channel allocation: Store/Retail/Marketplace/Hotel/Venue merch, markdown calendar, returns and end-of-season liquidation auction
+- [🔵] 181.5 Tests: size-color SKU allocation exact, unapproved factory blocked, lot provenance complete, markdown respects margin approval, `fashion:audit` clean
+- [🔵] 181.6 Quality gate Fase 181
 
 ## FASE 182 — LINI 28: FASHION RETAIL, PERSONALIZATION & CIRCULAR TEXTILES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FashionRetailCircularService`; 1 migrasi; test `FashionRetailCircularTest` — commit `094502d`, +254 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

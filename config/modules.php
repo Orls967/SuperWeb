@@ -29,6 +29,7 @@ return [
         'esg_' => 'Esg',
         'fin_' => 'Finance',
         'food_' => 'Food',
+        'fsh_' => 'Fashion',
         'gov_' => 'Governance',
         'hcm_' => 'Hcm',
         'hsp_' => 'Hospital',
