@@ -29,15 +29,8 @@ class ColdChainDroneAcceptanceTest extends TestCase
 
         $this->seed(LedgerAccountsSeeder::class);
 
-        // Pastikan akun buku besar cold-chain tersedia di tabel
-        LedgerAccount::firstOrCreate(
-            ['code' => 'lgx:carrier_payable_on_hold:IDR'],
-            ['name' => 'Logistics Carrier Payable On Hold', 'kind' => 'LIABILITY', 'asset_code' => 'IDR', 'allow_negative' => true, 'cached_balance' => 0]
-        );
-        LedgerAccount::firstOrCreate(
-            ['code' => 'ap:carrier:42:IDR'],
-            ['name' => 'Carrier 42 Payable', 'kind' => 'LIABILITY', 'asset_code' => 'IDR', 'allow_negative' => true, 'cached_balance' => 10_000_000]
-        );
+        // Pastikan akun per-carrier diinisialisasi melalui helper modul Logistics
+        \Modules\Logistics\Ledger\SubjectAccounts::carrierPayable(42);
     }
 
     /**
