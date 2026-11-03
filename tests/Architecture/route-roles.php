@@ -10,6 +10,10 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Circular\Domain\Models\CirAuctionRound;
+use Modules\Circular\Domain\Models\CirBid;
+use Modules\Circular\Domain\Models\CirListing;
+use Modules\Circular\Domain\Models\CirOrder;
 use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
@@ -3167,6 +3171,173 @@ return [
         'setup' => function (User $user): void {
             if ($user->role === 'driver') {
                 EvSession::where('session_code', 'SES-DYN-001')->update(['user_id' => $user->id]);
+            }
+        },
+    ],
+
+    // circular-marketplace (Lini 24, Fase 174)
+    'circular.listings.index' => ['roles' => ['admin', 'material_seller']],
+    'circular.listings.store' => ['roles' => ['admin', 'material_seller']],
+    'circular.market.index' => ['roles' => ['admin', 'material_buyer']],
+    'circular.orders.store' => ['roles' => ['admin', 'material_buyer']],
+    'circular.auctions.bids.store' => ['roles' => ['admin', 'material_buyer']],
+    'circular.auctions.index' => ['roles' => ['admin', 'circular_admin']],
+    'circular.auctions.store' => ['roles' => ['admin', 'circular_admin']],
+    'circular.auctions.close' => [
+        'roles' => ['admin', 'circular_admin'],
+        'params' => fn () => [
+            'round' => CirAuctionRound::firstOrCreate(
+                ['round_code' => 'CIR-RND-ROUTE-001'],
+                [
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'status' => 'open',
+                    'cleared_volume_grams' => 0,
+                ]
+            )->id,
+        ],
+    ],
+    'circular.orders.show' => [
+        'roles' => ['admin', 'circular_admin', 'material_buyer', 'material_seller'],
+        'params' => function () {
+            $listing = CirListing::firstOrCreate(
+                ['listing_code' => 'CIR-LST-ROUTE-001'],
+                [
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'available_grams' => 5_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'mode' => 'fixed',
+                    'status' => 'active',
+                ]
+            );
+            $order = CirOrder::firstOrCreate(
+                ['order_number' => 'CIR-ORD-ROUTE-001'],
+                [
+                    'listing_id' => $listing->id,
+                    'buyer_party_id' => 1,
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'ordered_grams' => 1_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'escrow_amount_idr' => 4_000_000,
+                    'refund_amount_idr' => 0,
+                    'status' => 'in_transit',
+                    'idempotency_key' => 'cir-route-order-001',
+                ]
+            );
+
+            return ['order' => $order->id];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'material_buyer') {
+                CirOrder::where('order_number', 'CIR-ORD-ROUTE-001')->update(['buyer_party_id' => $user->id]);
+            } elseif ($user->role === 'material_seller') {
+                CirOrder::where('order_number', 'CIR-ORD-ROUTE-001')->update(['seller_party_id' => $user->id]);
+            }
+        },
+    ],
+    'circular.orders.receipt' => [
+        'roles' => ['admin', 'circular_admin'],
+        'params' => function () {
+            $listing = CirListing::firstOrCreate(
+                ['listing_code' => 'CIR-LST-ROUTE-001'],
+                [
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'available_grams' => 5_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'mode' => 'fixed',
+                    'status' => 'active',
+                ]
+            );
+            $order = CirOrder::firstOrCreate(
+                ['order_number' => 'CIR-ORD-ROUTE-001'],
+                [
+                    'listing_id' => $listing->id,
+                    'buyer_party_id' => 1,
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'ordered_grams' => 1_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'escrow_amount_idr' => 4_000_000,
+                    'refund_amount_idr' => 0,
+                    'status' => 'in_transit',
+                    'idempotency_key' => 'cir-route-order-001',
+                ]
+            );
+
+            return ['order' => $order->id];
+        },
+    ],
+    'circular.orders.settle' => [
+        'roles' => ['admin', 'circular_admin'],
+        'params' => function () {
+            $listing = CirListing::firstOrCreate(
+                ['listing_code' => 'CIR-LST-ROUTE-001'],
+                [
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'available_grams' => 5_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'mode' => 'fixed',
+                    'status' => 'active',
+                ]
+            );
+            $order = CirOrder::firstOrCreate(
+                ['order_number' => 'CIR-ORD-ROUTE-001'],
+                [
+                    'listing_id' => $listing->id,
+                    'buyer_party_id' => 1,
+                    'seller_party_id' => 1,
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'ordered_grams' => 1_000_000,
+                    'unit_price_per_kg_idr' => 4_000,
+                    'escrow_amount_idr' => 4_000_000,
+                    'refund_amount_idr' => 0,
+                    'status' => 'in_transit',
+                    'idempotency_key' => 'cir-route-order-001',
+                ]
+            );
+
+            return ['order' => $order->id];
+        },
+    ],
+    'circular.bids.show' => [
+        'roles' => ['admin', 'circular_admin', 'material_buyer', 'material_seller'],
+        'params' => function () {
+            $round = CirAuctionRound::firstOrCreate(
+                ['round_code' => 'CIR-RND-ROUTE-001'],
+                [
+                    'material_code' => 'SCRAP_FE',
+                    'grade_code' => 'A',
+                    'status' => 'open',
+                    'cleared_volume_grams' => 0,
+                ]
+            );
+            $bid = CirBid::firstOrCreate(
+                ['idempotency_key' => 'cir-route-bid-001'],
+                [
+                    'auction_round_id' => $round->id,
+                    'buyer_party_id' => 1,
+                    'quantity_grams' => 1_000_000,
+                    'max_price_per_kg_idr' => 4_000,
+                    'allocated_grams' => 0,
+                    'status' => 'active',
+                ]
+            );
+
+            return ['bid' => $bid->id];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'material_buyer' || $user->role === 'material_seller') {
+                CirBid::where('idempotency_key', 'cir-route-bid-001')->update(['buyer_party_id' => $user->id]);
             }
         },
     ],

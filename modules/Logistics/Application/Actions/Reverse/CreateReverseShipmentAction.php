@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Logistics\Application\Actions\RecordTrackingEventAction;
 use Modules\Logistics\Domain\Enums\ShipmentStatus;
+use Modules\Logistics\Domain\Models\Location;
 use Modules\Logistics\Domain\Models\Shipment;
 
 class CreateReverseShipmentAction
@@ -52,6 +53,27 @@ class CreateReverseShipmentAction
 
         return DB::transaction(function () use ($data, $reason, $actor) {
             $now = $this->clock ? $this->clock->now() : CarbonImmutable::now();
+            $originLocationId = (int) ($data['origin_location_id'] ?? 0);
+            $destinationFacilityId = (int) ($data['destination_facility_id'] ?? 0);
+
+            if ($originLocationId <= 0 || $destinationFacilityId <= 0) {
+                $defaultLoc = Location::firstOrCreate(
+                    ['code' => 'LGX-REV-DEFAULT'],
+                    [
+                        'name' => 'Hub Sirkular Utama',
+                        'type' => 'hub',
+                        'city' => 'Jakarta',
+                        'province' => 'DKI Jakarta',
+                        'country' => 'ID',
+                        'lat_e6' => -6200000,
+                        'lng_e6' => 106800000,
+                        'is_active' => true,
+                    ]
+                );
+                $originLocationId = $originLocationId > 0 ? $originLocationId : (int) $defaultLoc->id;
+                $destinationFacilityId = $destinationFacilityId > 0 ? $destinationFacilityId : (int) $defaultLoc->id;
+            }
+
             $seed = hash('sha256', "REV:{$reason}:{$data['source_party_id']}:{$data['material_code']}:".microtime(true));
             $trackingNumber = 'REV-'.strtoupper(substr($seed, 0, 12));
 
@@ -62,9 +84,9 @@ class CreateReverseShipmentAction
                 'consignee_name' => $data['consignee_name'] ?? 'Pabrik Daur Ulang Manufaktur',
                 'consignee_phone' => $data['consignee_phone'] ?? '0812000000',
                 'consignee_address' => $data['consignee_address'] ?? ['city' => 'Jakarta', 'address' => 'Kawasan Industri'],
-                'origin_location_id' => $data['origin_location_id'],
-                'destination_location_id' => $data['destination_facility_id'],
-                'destination_facility_id' => $data['destination_facility_id'],
+                'origin_location_id' => $originLocationId,
+                'destination_location_id' => $destinationFacilityId,
+                'destination_facility_id' => $destinationFacilityId,
                 'service_level' => 'regular',
                 'mode' => 'road',
                 'status' => ShipmentStatus::Requested,
@@ -80,7 +102,7 @@ class CreateReverseShipmentAction
             $this->recordTrackingEvent->execute(
                 shipment: $shipment,
                 eventType: 'reverse.requested',
-                locationId: $data['origin_location_id'],
+                locationId: $originLocationId,
                 actor: $actor,
                 actorRole: $actor ? $actor->role : 'source_party',
                 description: "Reverse shipment {$trackingNumber} diminta untuk {$reason} ({$data['material_code']})",

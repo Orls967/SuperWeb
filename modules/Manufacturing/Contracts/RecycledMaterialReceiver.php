@@ -22,4 +22,6 @@ interface RecycledMaterialReceiver
         int $unitPricePerKgIdr,
         string $idempotencyKey
     ): int;
+
+    public function getReceiptQuantityGrams(int $receiptId): ?int;
 }

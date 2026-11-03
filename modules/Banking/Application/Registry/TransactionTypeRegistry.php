@@ -9,6 +9,7 @@ use Modules\Agri\Ledger\AgriTransactionTypes;
 use Modules\B2b\Ledger\B2bTransactionTypes;
 use Modules\Banking\Contracts\TransactionTypeRegistry as RegistryInterface;
 use Modules\Banking\Domain\Enums\TransactionType;
+use Modules\Circular\Ledger\CircularTransactionTypes;
 use Modules\CloudKitchen\Ledger\CloudKitchenTransactionTypes;
 use Modules\Core\Ledger\CoreTransactionTypes;
 use Modules\Edu\Ledger\EduTransactionTypes;
@@ -44,6 +45,7 @@ final class TransactionTypeRegistry
         TransactionType::class,
         AgriTransactionTypes::class,
         B2bTransactionTypes::class,
+        CircularTransactionTypes::class,
         CloudKitchenTransactionTypes::class,
         CoreTransactionTypes::class,
         EduTransactionTypes::class,

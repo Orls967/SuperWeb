@@ -6,8 +6,10 @@ namespace Tests\Acceptance\Circular;
 
 use App\Models\User;
 use App\Quality\Audit\Fixtures\CirAuditCorruptionFixture;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Circular\Application\Actions\CloseAuctionRoundAction;
@@ -17,12 +19,10 @@ use Modules\Circular\Application\Actions\PlaceOrderAction;
 use Modules\Circular\Application\Actions\RecordOrderPlantReceiptAction;
 use Modules\Circular\Application\Actions\SettleOrderAction;
 use Modules\Circular\Application\Actions\SubmitBidAction;
-use Modules\Circular\Domain\Models\CirAuctionRound;
-use Modules\Circular\Domain\Models\CirBid;
-use Modules\Circular\Domain\Models\CirListing;
 use Modules\Circular\Domain\Models\CirOrder;
 use Modules\Circular\Ledger\CircularSubjectAccounts;
 use Modules\Logistics\Domain\Models\Location;
+use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Manufacturing\Domain\Models\Material;
 use Tests\TestCase;
 
@@ -31,18 +31,24 @@ class CircularMarketplaceAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     protected User $sellerUser;
+
     protected User $buyerUser;
+
     protected User $otherBuyerUser;
+
     protected User $circularAdmin;
+
     protected User $customerUser;
+
     protected Location $sellerLocation;
+
     protected Location $buyerPlantLocation;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(\Database\Seeders\LedgerAccountsSeeder::class);
+        $this->seed(LedgerAccountsSeeder::class);
 
         $this->sellerUser = User::factory()->create(['role' => 'material_seller']);
         $this->buyerUser = User::factory()->create(['role' => 'material_buyer']);
@@ -77,7 +83,7 @@ class CircularMarketplaceAcceptanceTest extends TestCase
         Material::firstOrCreate(
             ['code' => 'SCRAP_FE'],
             [
-                'id' => (string) \Illuminate\Support\Str::uuid(),
+                'id' => (string) Str::uuid(),
                 'name' => 'Scrap Besi Industri',
                 'kind' => 'raw',
                 'base_uom' => 'kg',
@@ -158,7 +164,7 @@ class CircularMarketplaceAcceptanceTest extends TestCase
             ->and($order->reverse_shipment_id)->not->toBeNull();
 
         // Verifikasi reverse shipment P1.1 terbuat dengan alasan material_sekunder
-        $reverseShipment = \Modules\Logistics\Domain\Models\Shipment::findOrFail($order->reverse_shipment_id);
+        $reverseShipment = Shipment::findOrFail($order->reverse_shipment_id);
         expect($reverseShipment->is_reverse)->toBeTrue()
             ->and($reverseShipment->reverse_reason)->toBe('material_sekunder');
 
@@ -208,11 +214,11 @@ class CircularMarketplaceAcceptanceTest extends TestCase
         $sellerApAcc = LedgerAccount::where('code', "ap:cir:seller:{$this->sellerUser->id}:IDR")->firstOrFail();
         $sellerWallet = LedgerAccount::where('code', "wallet:user:{$this->sellerUser->id}:IDR")->firstOrFail();
 
-        // Escrow habis (0), fee revenue 500.000, AP seller 0 (karena sudah di-payout), wallet seller 19.500.000
+        // Escrow habis (0), fee revenue 500.000, AP seller 0 (karena sudah di-payout), wallet seller +19.500.000 (kredit)
         expect((int) $escrowAcc->cached_balance)->toBe(0)
             ->and((int) $feeAcc->cached_balance)->toBe(500_000)
             ->and((int) $sellerApAcc->cached_balance)->toBe(0)
-            ->and((int) $sellerWallet->cached_balance)->toBe(-19_500_000);
+            ->and((int) $sellerWallet->cached_balance)->toBe(19_500_000);
     }
 
     public function test_3_business_rules_over_stock_422_early_settlement_rejected_and_shrinkage_refund(): void
@@ -354,14 +360,14 @@ class CircularMarketplaceAcceptanceTest extends TestCase
             'destination_facility_id' => $this->buyerPlantLocation->id,
         ], $this->circularAdmin);
 
-        // Ask (Listing mode auction): S1 15 ton @ 1.200, S2 15 ton @ 1.350
+        // Ask (Listing mode auction): S1 12 ton @ 1.100, S2 10 ton @ 1.300, S3 10 ton @ 1.450 (D24-3)
         app(CreateListingAction::class)->execute([
             'seller_party_id' => $this->sellerUser->id,
             'auction_round_id' => $round->id,
             'material_code' => 'SCRAP_FE',
             'grade_code' => 'A',
-            'available_grams' => 15_000_000,
-            'unit_price_per_kg_idr' => 1_200,
+            'available_grams' => 12_000_000,
+            'unit_price_per_kg_idr' => 1_100,
             'mode' => 'auction',
             'origin_location_id' => $this->sellerLocation->id,
         ], $this->sellerUser);
@@ -371,13 +377,24 @@ class CircularMarketplaceAcceptanceTest extends TestCase
             'auction_round_id' => $round->id,
             'material_code' => 'SCRAP_FE',
             'grade_code' => 'A',
-            'available_grams' => 15_000_000,
-            'unit_price_per_kg_idr' => 1_350,
+            'available_grams' => 10_000_000,
+            'unit_price_per_kg_idr' => 1_300,
             'mode' => 'auction',
             'origin_location_id' => $this->sellerLocation->id,
         ], $this->sellerUser);
 
-        // Bids: B1 10 ton @ 1.500, B2 12 ton @ 1.400, B3 8 ton @ 1.300
+        app(CreateListingAction::class)->execute([
+            'seller_party_id' => $this->sellerUser->id,
+            'auction_round_id' => $round->id,
+            'material_code' => 'SCRAP_FE',
+            'grade_code' => 'A',
+            'available_grams' => 10_000_000,
+            'unit_price_per_kg_idr' => 1_450,
+            'mode' => 'auction',
+            'origin_location_id' => $this->sellerLocation->id,
+        ], $this->sellerUser);
+
+        // Bids: B1 10 ton @ 1.500, B2 15 ton @ 1.400, B3 10 ton @ 1.200
         $bid1 = app(SubmitBidAction::class)->execute([
             'auction_round_id' => $round->id,
             'buyer_party_id' => $this->buyerUser->id,
@@ -389,7 +406,7 @@ class CircularMarketplaceAcceptanceTest extends TestCase
         $bid2 = app(SubmitBidAction::class)->execute([
             'auction_round_id' => $round->id,
             'buyer_party_id' => $this->otherBuyerUser->id,
-            'quantity_grams' => 12_000_000,
+            'quantity_grams' => 15_000_000,
             'max_price_per_kg_idr' => 1_400,
             'idempotency_key' => 'auc-bid-2',
         ], $this->otherBuyerUser);
@@ -397,8 +414,8 @@ class CircularMarketplaceAcceptanceTest extends TestCase
         $bid3 = app(SubmitBidAction::class)->execute([
             'auction_round_id' => $round->id,
             'buyer_party_id' => $this->buyerUser->id,
-            'quantity_grams' => 8_000_000,
-            'max_price_per_kg_idr' => 1_300,
+            'quantity_grams' => 10_000_000,
+            'max_price_per_kg_idr' => 1_200,
             'idempotency_key' => 'auc-bid-3',
         ], $this->buyerUser);
 
@@ -412,7 +429,7 @@ class CircularMarketplaceAcceptanceTest extends TestCase
             ->and($closedRound1->clearing_price_per_kg_idr)->toBe(1_350)
             ->and($closedRound1->cleared_volume_grams)->toBe(22_000_000)
             ->and($closedRound2->clearing_price_per_kg_idr)->toBe(1_350)
-            ->and(CirOrder::where('auction_round_id', $round->id)->count())->toBe(2);
+            ->and(CirOrder::where('auction_round_id', $round->id)->count())->toBe(3);
 
         $bid1->refresh();
         $bid2->refresh();
