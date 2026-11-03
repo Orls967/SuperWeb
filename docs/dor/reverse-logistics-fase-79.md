@@ -26,3 +26,4 @@
   - D79-6: Audit dua sumber `logi:circular-audit` dan fixture korupsi `CircularAuditCorruptionFixture`.
 - **Item yang ditunda (Register Minus):**
   - Sumber internal grup lewat Intercompany (ditunda ke P2).
+

@@ -24,6 +24,7 @@ use Modules\Insurance\Ledger\InsuranceAccounts;
 use Modules\Logistics\Ledger\LogisticsAccounts;
 use Modules\Mall\Ledger\MallAccounts;
 use Modules\Manufacturing\Ledger\ManufacturingAccounts;
+use Modules\Manufacturing\Ledger\RecycledMaterialAccounts;
 use Modules\Med\Ledger\MedAccounts;
 use Modules\Mining\Ledger\MiningAccounts;
 use Modules\Mobility\Ev\Ledger\EvAccounts;
@@ -67,6 +68,7 @@ class LedgerAccountsSeeder extends Seeder
         LogisticsAccounts::class,
         MallAccounts::class,
         ManufacturingAccounts::class,
+        RecycledMaterialAccounts::class,
         MedAccounts::class,
         MiningAccounts::class,
         ProptechAccounts::class,

@@ -19,8 +19,22 @@ final class LogisticsAccounts
     {
         return [
             [
+                'code' => 'lgx:carrier_cost:IDR',
+                'name' => 'Logistics Carrier Cost Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
                 'code' => 'lgx:carrier_payable:IDR',
                 'name' => 'Logistics Carrier Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'lgx:carrier_payable_on_hold:IDR',
+                'name' => 'Logistics Carrier Payable On Hold',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
                 'allow_negative' => true,

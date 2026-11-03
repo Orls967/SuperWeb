@@ -105,3 +105,4 @@ interface EmissionBenefitRecorder
 2. Sumber 2: Verifikasi konsistensi buku besar:
    - Saldo akun `mfg:recycled_material_clearing:IDR` = $\sum$ nilai lot yang belum diselesaikan nota sumbernya.
    - Saldo akun `lgx:carrier_payable_on_hold:IDR` = $\sum$ sengketa terbuka (setelah P1.3).
+

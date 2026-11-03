@@ -8,6 +8,7 @@ use Modules\Banking\Contracts\TransactionTypeRegistry;
 
 enum LogisticsTransactionTypes: string implements TransactionTypeRegistry
 {
+    case CARRIER_COST_ACCRUAL = 'CARRIER_COST_ACCRUAL';
     case CIRCULAR_ECONOMY_INTAKE = 'CIRCULAR_ECONOMY_INTAKE';
     case COLD_CHAIN_HOLD_RELEASED = 'COLD_CHAIN_HOLD_RELEASED';
     case COLD_CHAIN_TEMP_BREACH_HOLD = 'COLD_CHAIN_TEMP_BREACH_HOLD';
