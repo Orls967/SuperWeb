@@ -29,6 +29,9 @@ return new class extends Migration
 
             $table->index(['is_reverse', 'status']);
             $table->index(['reverse_reason']);
+            $table->index('plant_id');
+            $table->index('plant_receipt_id');
+            $table->index('supplier_party_id');
         });
     }
 
