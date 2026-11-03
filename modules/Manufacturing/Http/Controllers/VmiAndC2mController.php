@@ -29,6 +29,16 @@ class VmiAndC2mController extends Controller
         ]);
     }
 
+    public function c2mIndex(): View
+    {
+        return view('manufacturing::vmi_c2m', [
+            'replenishments' => VmiReplenishment::orderByDesc('created_at')->limit(50)->get(),
+            'customOrders' => C2mCustomOrder::with('bomNodes')->orderByDesc('created_at')->limit(50)->get(),
+            'vmiSummary' => $this->service->getVmiDashboardSummary(),
+            'c2mBoard' => $this->service->getC2mProductionBoard(),
+        ]);
+    }
+
     public function triggerVmi(Request $request): RedirectResponse
     {
         $data = $request->validate([

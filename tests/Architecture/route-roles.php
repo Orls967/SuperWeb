@@ -1659,6 +1659,7 @@ return [
     'manufacturing.routings.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.workers.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.vmi-c2m.index' => ['roles' => ['admin', 'auditor', 'operator', 'planner', 'procurement']],
+    'manufacturing.c2m.index' => ['roles' => ['admin', 'planner']],
     'manufacturing.vmi.approve' => [
         'roles' => ['admin', 'planner', 'procurement'],
         'params' => fn () => ['replenishment' => VmiReplenishment::firstOrCreate(['vmi_code' => 'VMI-ROUTE-APP'], [
@@ -2337,6 +2338,8 @@ return [
     'store.admin.products.index' => ['roles' => ['admin']],
     'store.admin.products.toggle' => ['roles' => ['admin'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->id]],
     'store.c2c.buy' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
+    'store.c2m.index' => ['roles' => ['admin', 'customer']],
+    'store.c2m.configure' => ['roles' => ['admin', 'customer']],
     'store.c2c.buyForm' => ['roles' => ['admin', 'auditor', 'customer'], 'params' => fn () => ['product' => $storeAutoServeSeedHelper()['product']->slug]],
     'store.c2c.cancel' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
     'store.c2c.confirm' => ['roles' => ['admin', 'customer'], 'params' => fn () => ['order' => $storeAutoServeSeedHelper()['order']->uuid], 'setup' => $storeAutoServeCustomerSetup],
@@ -2596,6 +2599,22 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => ['protection' => 'auth', 'params' => fn () => ['id' => 1, 'hash' => 'testhash']],
+    'vmi.portal' => ['roles' => ['admin', 'supplier']],
+    'vmi.trigger' => ['roles' => ['admin', 'supplier']],
+    'vmi.approve' => [
+        'roles' => ['admin', 'procurement', 'procurement_manager'],
+        'params' => fn () => ['replenishment' => VmiReplenishment::firstOrCreate(['vmi_code' => 'VMI-ROUTE-APP-NEW'], [
+            'supplier_id' => 1,
+            'sku' => 'SKU-ROUTE-APP',
+            'current_shelf_stock' => 10,
+            'reorder_point' => 20,
+            'suggested_reorder_qty' => 50,
+            'total_estimated_idr' => 500000,
+            'contract_plafond_idr' => 1000000,
+            'status' => 'PENDING_APPROVAL',
+            'idempotency_key' => 'ROUTE-APP-VMI-NEW',
+        ])->id],
+    ],
     'vending.dispense.api' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
     'vending.index' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
     'vending.units.dispense' => [

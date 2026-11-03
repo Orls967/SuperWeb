@@ -9,6 +9,7 @@ use Modules\Procurement\Application\Services\MrpRequisitionProposer;
 use Modules\Procurement\Application\Services\ProcurementService;
 use Modules\Procurement\Application\Services\ReceivingService;
 use Modules\Procurement\Console\Commands\AuditProcurementCommand;
+use Modules\Procurement\Console\Commands\ScanVmiReorderCommand;
 use Modules\Procurement\Contracts\MrpRequisitionProposer as MrpRequisitionProposerContract;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -28,7 +29,7 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditProcurementCommand::class]);
+            $this->commands([AuditProcurementCommand::class, ScanVmiReorderCommand::class]);
         }
 
         $this->registerMenu();
