@@ -11,7 +11,9 @@ use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\CreateShipmentOnOrderPaid;
 use Modules\Logistics\Application\Listeners\HandleFleetServiceDue;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
+use Modules\Logistics\Application\Services\LogisticsDemurrageDetentionQuote;
 use Modules\Logistics\Application\Services\LogisticsUsageReaderService;
+use Modules\Logistics\Application\Services\LogisticsVesselRegistry;
 use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\AuditBillingCommand;
 use Modules\Logistics\Console\Commands\AuditCircularLogisticsCommand;
@@ -23,8 +25,10 @@ use Modules\Logistics\Console\Commands\PayCarriersCommand;
 use Modules\Logistics\Console\Commands\RetryWebhooksCommand;
 use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
+use Modules\Logistics\Contracts\DemurrageDetentionQuote;
 use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
 use Modules\Logistics\Contracts\ShipmentBooking;
+use Modules\Logistics\Contracts\VesselRegistry;
 use Modules\Logistics\Domain\Events\FleetServiceDue;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
 use Modules\Shared\Application\MenuRegistry;
@@ -40,12 +44,12 @@ class LogisticsServiceProvider extends ServiceProvider
             LogisticsUsageReaderService::class
         );
         $this->app->bind(
-            \Modules\Logistics\Contracts\VesselRegistry::class,
-            \Modules\Logistics\Application\Services\LogisticsVesselRegistry::class
+            VesselRegistry::class,
+            LogisticsVesselRegistry::class
         );
         $this->app->bind(
-            \Modules\Logistics\Contracts\DemurrageDetentionQuote::class,
-            \Modules\Logistics\Application\Services\LogisticsDemurrageDetentionQuote::class
+            DemurrageDetentionQuote::class,
+            LogisticsDemurrageDetentionQuote::class
         );
     }
 
