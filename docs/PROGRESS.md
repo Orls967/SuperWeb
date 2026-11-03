@@ -11625,16 +11625,55 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 178.6 Quality gate Fase 178
 
 ## FASE 179 — LINI 27: PORTS, MARINE TERMINALS & TRADE FACILITATION
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PortOperationsService`; 1 migrasi; test `PortOperationsTest` — commit `df53209`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit:** 🔵 DIKERJAKAN (2026-11-03) · Pelaksana [G6-P1].
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Port (`prt_`); master kapal/kontainer tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 27
 > **Jalan pintas terlarang di fase ini:** tabel kapal ganda; D&D dihitung ulang di luar kalkulator Logistics; memperluas `PortOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
-- [ ] 179.2 Port community workflow: carrier, customs, shipper, terminal and inspector share scoped event/status data via API/Event Spine
-- [ ] 179.3 Yard/berth capacity planning, container dwell/demurrage, reefer plug-in monitoring, dangerous cargo separation
-- [ ] 179.4 Terminal billing and port dues reconcile to vessel calls, moves and dwell; integrate Logistics/Trade/Payment
-- [ ] 179.5 Tests: berth overlap rejected, yard capacity enforced, reefer excursion alerts, tariff invoice reproducible, `port:audit` clean
-- [ ] 179.6 Quality gate Fase 179
+- [x] 179.1 Modul `PortOps` (`prt_`): berth windows, vessel calls, cranes, yards, gate appointments, manifests and terminal charges
+  Bukti:
+    - jenis: fitur
+    - commit: 04e6824c
+    - file: modules/Port/database/migrations/2026_11_03_179001_create_port_terminal_tables.php
+    - test: tests/Acceptance/Port/PortTerminalAcceptanceTest.php::test_akses_semua_grup_rute_port_dengan_dataset_role
+    - akses: route GET /port [role: admin, port_operator, shipping_line_agent]
+- [x] 179.2 Port community workflow: carrier, customs, shipper, terminal and inspector share scoped event/status data via API/Event Spine
+  Bukti:
+    - jenis: fitur
+    - commit: 04e6824c
+    - file: modules/Port/Application/Actions/RecordGatePassAction.php
+    - test: tests/Acceptance/Port/PortTerminalAcceptanceTest.php::test_invarian_yard_append_only_dan_pencegahan_gate_in_ganda
+    - akses: route GET /port/yard [role: admin, port_operator]
+- [x] 179.3 Yard/berth capacity planning, container dwell/demurrage, reefer plug-in monitoring, dangerous cargo separation
+  Bukti:
+    - jenis: fitur
+    - commit: a0d39e35
+    - file: modules/Shared/Domain/Algorithms/Scheduling/BerthAllocation.php
+    - test: tests/Unit/Algorithms/BerthAllocationTest.php::vektor prompt d27-3 alokasi tambatan diskrit branch and bound eksak
+    - akses: class Modules\Shared\Domain\Algorithms\Scheduling\BerthAllocation
+- [x] 179.4 Terminal billing and port dues reconcile to vessel calls, moves and dwell; integrate Logistics/Trade/Payment
+  Bukti:
+    - jenis: fitur
+    - commit: 04e6824c
+    - file: modules/Port/Application/Actions/GenerateTerminalBillAction.php
+    - test: tests/Acceptance/Port/PortTerminalAcceptanceTest.php::test_penerbitan_tagihan_terminal_terintegrasi_dan_ledger_posting
+    - akses: route GET /port/billing [role: admin, port_operator, shipping_line_agent]
+- [x] 179.5 Tests: berth overlap rejected, yard capacity enforced, reefer excursion alerts, tariff invoice reproducible, `port:audit` clean
+  Bukti:
+    - jenis: tooling
+    - commit: 04e6824c
+    - file: modules/Port/Console/Commands/AuditPortCommand.php
+    - test: tests/Acceptance/Port/PortTerminalAcceptanceTest.php::test_audit_dua_sumber_port_bersih_dan_deteksi_anomali
+    - akses: command prt:audit
+- [x] 179.6 Quality gate Fase 179
+  Bukti:
+    - jenis: dokumen
+    - commit: ea157eaf
+    - file: docs/design/port-terminal-lini-27.md
+
+### Register Minus Fase 179
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| M-179-1 | 179.3 | Pemantauan suhu reefer plug-in menggunakan polling interval | Sensor IoT real-time belum ada koneksi telemetry fisik langsung | P2 | Terhubung via Telematics modul saat integrasi sensor dermaga |
 
 ## FASE 180 — LINI 27: OCEAN FLEET, SHIP MANAGEMENT & MARINE SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `OceanFleetService`; 1 migrasi; test `OceanFleetTest` — commit `f219a3b`, +285 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('call_number')->unique();
             $table->string('vessel_name');
             $table->string('imo_number')->index();
-            $table->unsignedBigInteger('line_party_id')->index(); // ID shipping line / owner
+            $table->unsignedBigInteger('line_party_id'); // ID shipping line / owner
             $table->timestamp('eta')->nullable();
             $table->timestamp('etd')->nullable();
             $table->timestamp('ata')->nullable();
@@ -38,6 +38,8 @@ return new class extends Migration
             $table->json('schedule_certificate')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            $table->index('line_party_id');
         });
 
         Schema::create('prt_yard_blocks', function (Blueprint $table) {
@@ -67,18 +69,20 @@ return new class extends Migration
             $table->string('container_no')->index();
             $table->string('pass_type'); // IN, OUT
             $table->string('vehicle_reg_no')->nullable();
-            $table->unsignedBigInteger('line_party_id')->index();
+            $table->unsignedBigInteger('line_party_id');
             $table->timestamp('issued_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->string('status')->default('ISSUED'); // ISSUED, COMPLETED, CANCELLED
             $table->timestamps();
+
+            $table->index('line_party_id');
         });
 
         Schema::create('prt_terminal_bills', function (Blueprint $table) {
             $table->id();
             $table->string('bill_number')->unique();
             $table->foreignId('vessel_call_id')->constrained('prt_vessel_calls')->cascadeOnDelete();
-            $table->unsignedBigInteger('line_party_id')->index();
+            $table->unsignedBigInteger('line_party_id');
             $table->bigInteger('amount_idr')->default(0);
             $table->bigInteger('thc_amount_idr')->default(0);
             $table->bigInteger('dockage_amount_idr')->default(0);
@@ -87,6 +91,9 @@ return new class extends Migration
             $table->unsignedBigInteger('ledger_journal_id')->nullable();
             $table->string('status')->default('ISSUED'); // ISSUED, PAID, CANCELLED
             $table->timestamps();
+
+            $table->index('line_party_id');
+            $table->index('ledger_journal_id');
         });
     }
 
