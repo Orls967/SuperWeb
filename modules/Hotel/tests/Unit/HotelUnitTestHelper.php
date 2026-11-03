@@ -6,7 +6,7 @@ namespace Modules\Hotel\tests\Unit;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Support\Str;
 use Modules\Hotel\Domain\Models\HotelBusinessDate;
 use Modules\Hotel\Domain\Models\HotelFolio;
@@ -16,7 +16,6 @@ use Modules\Hotel\Domain\Models\HotelRatePlan;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomType;
-use Modules\Hotel\Ledger\HotelAccounts;
 
 trait HotelUnitTestHelper
 {
@@ -197,35 +196,6 @@ trait HotelUnitTestHelper
             ]
         );
 
-        // Batch insert minimal ledger accounts needed by Hotel
-        $now = now();
-        $accountRows = [];
-        foreach (HotelAccounts::definitions() as $def) {
-            $accountRows[] = [
-                'uuid' => (string) Str::uuid(),
-                'code' => $def['code'],
-                'name' => $def['name'],
-                'asset_code' => $def['asset_code'] ?? 'IDR',
-                'kind' => $def['kind']->value ?? (string) $def['kind'],
-                'allow_negative' => $def['allow_negative'] ?? true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        }
-        $accountRows[] = [
-            'uuid' => (string) Str::uuid(),
-            'code' => 'clearing:external:IDR',
-            'name' => 'Clearing External',
-            'asset_code' => 'IDR',
-            'kind' => 'ASSET',
-            'allow_negative' => true,
-            'cached_balance' => '0',
-            'is_frozen' => false,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ];
-        DB::table('bank_ledger_accounts')->insertOrIgnore($accountRows);
+        $this->seed(LedgerAccountsSeeder::class);
     }
 }
