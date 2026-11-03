@@ -30,6 +30,7 @@ use Modules\Med\Ledger\MedAccounts;
 use Modules\Mining\Ledger\MiningAccounts;
 use Modules\Mobility\Ev\Ledger\EvAccounts;
 use Modules\Mobility\Fleet\Ledger\FleetAccounts;
+use Modules\Port\Ledger\PortAccounts;
 use Modules\Proptech\Ledger\ProptechAccounts;
 use Modules\Ret\Ledger\RetAccounts;
 use Modules\Rwa\Ledger\RwaAccounts;
@@ -73,6 +74,7 @@ class LedgerAccountsSeeder extends Seeder
         RecycledMaterialAccounts::class,
         MedAccounts::class,
         MiningAccounts::class,
+        PortAccounts::class,
         ProptechAccounts::class,
         RetAccounts::class,
         RwaAccounts::class,

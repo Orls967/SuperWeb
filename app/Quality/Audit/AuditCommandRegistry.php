@@ -57,6 +57,7 @@ use App\Quality\Audit\Fixtures\ProptechBimCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechFlexCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\PrtAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
@@ -141,6 +142,7 @@ final class AuditCommandRegistry
             'prp:audit-bim' => new ProptechBimCorruptionFixture,
             'prp:audit-flex' => new ProptechFlexCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
+            'prt:audit' => new PrtAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'ret:audit' => new RetAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
