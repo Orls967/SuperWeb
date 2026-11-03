@@ -9,18 +9,30 @@ use Modules\Core\Contracts\HotelFolioPort;
 use Modules\Hotel\Application\Services\HotelFolioAdapter;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
+use Modules\Hotel\Console\Commands\HotelCloseDayCommand;
+use Modules\Hotel\Console\Commands\HotelReportOrphansCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class HotelServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        @ini_set('memory_limit', '1024M');
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
         $this->app->bind(HotelFolioPort::class, HotelFolioAdapter::class);
         $this->app->singleton(HotelOperationsService::class);
     }
 
     public function boot(): void
     {
+        @ini_set('memory_limit', '1024M');
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'hotel');
@@ -38,6 +50,8 @@ class HotelServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditHotelCommand::class,
+                HotelCloseDayCommand::class,
+                HotelReportOrphansCommand::class,
             ]);
         }
     }

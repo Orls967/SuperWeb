@@ -38,7 +38,7 @@ class HotelNightAuditFolioController extends Controller
             (int) ($validated['total_available_rooms'] ?? 100)
         );
 
-        return redirect()->route('hotel.pms.night-audit')
+        return redirect()->route('hotel.pms.close-day')
             ->with('success', "Night Audit Closed for {$result['audit_date']}: {$result['active_in_house_count']} in-house rooms, Total Room Rev: IDR ".number_format($result['total_room_revenue_posted_idr']).', ADR: IDR '.number_format($result['adr_idr']).', RevPAR: IDR '.number_format($result['revpar_idr']).'.');
     }
 

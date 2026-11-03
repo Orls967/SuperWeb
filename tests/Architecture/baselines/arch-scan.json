@@ -125,7 +125,7 @@
             "entries": {}
         },
         "A12": {
-            "total": 304,
+            "total": 300,
             "entries": {
                 "modules/Agency/database/migrations/2026_10_05_450100_create_agy_tables.php": {
                     "agy_agents.owner_user_id": 1,
@@ -273,14 +273,10 @@
                 "modules/Hotel/database/migrations/2026_10_07_910100_create_htl_hotel_tables.php": {
                     "htl_folios.guest_user_id": 1,
                     "htl_folios.reservation_id": 1,
-                    "htl_reservations.guest_user_id": 1,
-                    "htl_reservations.property_id": 1,
-                    "htl_reservations.room_id": 1
+                    "htl_reservations.guest_user_id": 1
                 },
                 "modules/Hotel/database/migrations/2026_10_07_920100_create_htl_folio_and_package_tables.php": {
-                    "htl_folio_items.folio_id": 1,
                     "htl_timeshare_investors.investor_user_id": 1,
-                    "htl_timeshare_investors.timeshare_unit_id": 1,
                     "htl_timeshare_units.property_id": 1
                 },
                 "modules/Hotel/database/migrations/2026_10_08_112100_create_htl_travel_pass_tables.php": {

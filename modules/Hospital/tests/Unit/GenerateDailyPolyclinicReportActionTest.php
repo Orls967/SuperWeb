@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Hospital\tests\Unit;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Application\DTOs\PostingDTO;
@@ -27,7 +28,12 @@ uses(TestCase::class, RefreshDatabase::class);
 covers(GenerateDailyPolyclinicReportAction::class);
 
 beforeEach(function () {
+    Carbon::setTestNow('2026-11-02 09:30:00');
     $this->seed(LedgerAccountsSeeder::class);
+});
+
+afterEach(function () {
+    Carbon::setTestNow();
 });
 
 function seedReportData(string $date = '2026-11-02', bool $postLedger = true, bool $corruptPayment = false): array

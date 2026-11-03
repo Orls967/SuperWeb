@@ -1,0 +1,84 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Hotel\Application\Services;
+
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Hotel\Domain\Models\HotelBusinessDate;
+use Modules\Hotel\Domain\Models\HotelDailyRevenueSnapshot;
+
+class HotelBusinessDateService
+{
+    public function __construct(
+        protected ?ClockInterface $clock = null
+    ) {}
+
+    public function initializeBusinessDate(string $propertyId, string $date): HotelBusinessDate
+    {
+        $record = HotelBusinessDate::where('property_id', $propertyId)->first();
+
+        if ($record) {
+            $record->update([
+                'current_business_date' => $date,
+                'status' => 'open',
+                'last_checkpoint' => null,
+                'audited_at' => null,
+            ]);
+
+            return $record;
+        }
+
+        return HotelBusinessDate::create([
+            'id' => (string) Str::uuid(),
+            'property_id' => $propertyId,
+            'current_business_date' => $date,
+            'status' => 'open',
+            'last_checkpoint' => null,
+            'audited_at' => null,
+        ]);
+    }
+
+    public function getCurrentBusinessDate(string $propertyId): string
+    {
+        $record = HotelBusinessDate::where('property_id', $propertyId)->first();
+
+        if ($record) {
+            return Carbon::parse($record->current_business_date)->toDateString();
+        }
+
+        // Jika belum diinisialisasi, inisialisasi dari ClockInterface
+        $clock = $this->clock ?? app(ClockInterface::class);
+        $dateStr = Carbon::instance($clock->now())->toDateString();
+
+        HotelBusinessDate::create([
+            'id' => (string) Str::uuid(),
+            'property_id' => $propertyId,
+            'current_business_date' => $dateStr,
+            'status' => 'open',
+            'last_checkpoint' => null,
+            'audited_at' => null,
+        ]);
+
+        return $dateStr;
+    }
+
+    public function getBusinessDateRecord(string $propertyId): HotelBusinessDate
+    {
+        $this->getCurrentBusinessDate($propertyId);
+
+        return HotelBusinessDate::where('property_id', $propertyId)->firstOrFail();
+    }
+
+    /**
+     * Memeriksa apakah suatu business date sudah pernah ditutup (memiliki snapshot).
+     */
+    public function isDateClosed(string $propertyId, string $date): bool
+    {
+        return HotelDailyRevenueSnapshot::where('property_id', $propertyId)
+            ->whereDate('business_date', Carbon::parse($date)->toDateString())
+            ->exists();
+    }
+}

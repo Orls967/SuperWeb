@@ -301,7 +301,7 @@ Berikut adalah spesifikasi mendalam untuk seluruh 60 peran terdaftar dalam arsit
 - **Lini Bisnis / Domain**: Pariwisata (Hotel)
 - **Batas Otorisasi Finansial**: `Rp 200.000.000`
 - **Izin Kunci (*Core Abilities*)**: `room.rate_override`, `vip.complimentary`, `audit.close_day`
-- **Rute Terotorisasi**: `GET /hotel/*`, `POST /hotel/rate-override`, `POST /hotel/night-audit/approve`
+- **Rute Terotorisasi**: `GET /hotel/*`, `POST /hotel/rate-override`, `POST /hotel/close-day/approve`
 - **Rute Terlarang**: Rute administrasi di luar domain tugas dan rute mutasi buku besar langsung tanpa kontrak.
 - **Rutinitas Operasional Harian**: Otorisasi diskon grup besar, persetujuan complimentary suite VIP, review night audit.
 - **Pemetaan User Story Resmi**: US-91.1, US-91.2, US-92.1, US-92.2

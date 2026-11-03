@@ -598,7 +598,7 @@ erDiagram
 - **Daftar Model Eloquent**: `GuestFolioMaster`, `NightAuditDailyBalance`, `BanquetMiceContract`, `TimesharePointShare`
 - **Daftar Tabel Migrasi**: `htl_folios`, `htl_night_audits`, `htl_banquets`, `htl_timeshares`
 - **Daftar Service & Action**: `NightAuditReconciliationService`, `GuestFolioBillingEngine`, `BanquetEventOrderManager`
-- **Daftar Controller & Rute**: `NightAuditController@close (POST /hotel/night-audit/close)`, `BanquetController@book (POST /hotel/banquet/book)`
+- **Daftar Controller & Rute**: `NightAuditController@close (POST /hotel/close-day/close)`, `BanquetController@book (POST /hotel/banquet/book)`
 - **Akun Ledger Terkait**: `htl:night_audit_clearing`, `htl:banquet_revenue`
 - **Command Audit**: `php artisan htl:audit`
 

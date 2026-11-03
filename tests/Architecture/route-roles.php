@@ -33,6 +33,7 @@ use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
@@ -2770,8 +2771,8 @@ return [
     'hotel.pms.banquet.create' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.destination-packages' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.destination-packages.settle' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
-    'hotel.pms.night-audit' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
-    'hotel.pms.night-audit.run' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.pms.close-day' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.pms.close-day.run' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.overbooking' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.overbooking.walk' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.reservations' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
@@ -3006,6 +3007,19 @@ return [
     'wealth.treasury.rebalance' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.risk-profiles' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.sweep-cash' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+
+    // hotel-siklus-tamu
+    'hotel.reservations.index' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.reservations.store' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.housekeeping.index' => ['roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping']],
+    'hotel.housekeeping.update' => [
+        'roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping'],
+        'params' => fn () => ['room' => HotelRoom::first()?->id ?? 1],
+    ],
+    'hotel.close-day.index' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.close-day.run' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.portal.guest' => ['roles' => ['admin', 'customer', 'guest']],
+    'hotel.portal.corporate' => ['roles' => ['admin', 'corporate_client']],
 
     // energy-mvp
     'egy.grid.dispatch' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],

@@ -140,12 +140,13 @@ it('verifies that total sequence diagrams across docs/ is at least 210', functio
         }
     }
 
-    // Baseline 249 bertambah menjadi 254 karena diagram sah desain arsitektur MVP lini:
+    // Baseline 249 bertambah menjadi 259 karena diagram sah desain arsitektur MVP lini:
     // 1. docs/design/venue-mvp.md (+1, commit d81ab2e3 / PR #37 ML1)
     // 2. docs/design/property-mvp.md (+1, commit dcd6490d / PR #38 ML2)
     // 3. docs/design/energy-mvp.md (+1, commit bcced3e5 / PR #39 ML3)
     // 4. docs/design/hospital-rawat-jalan.md (+2, PR #35 Hospital)
-    expect($totalSeq)->toBe(254, "Total sequenceDiagram di seluruh docs/ wajib tepat 254 (ditemukan: {$totalSeq})");
+    // 5. docs/design/hotel-siklus-tamu.md (+5, PR G5-C2 Hotel)
+    expect($totalSeq)->toBe(259, "Total sequenceDiagram di seluruh docs/ wajib tepat 259 (ditemukan: {$totalSeq})");
 });
 
 it('verifies that docs/ROLES_60_PLAYBOOK.md contains at least 600 lines and details all 60 operational roles', function (): void {
