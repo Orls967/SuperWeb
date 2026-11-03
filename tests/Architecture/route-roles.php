@@ -1056,6 +1056,7 @@ return [
         return ['carrier' => $d['carrier']->id];
     }],
     'logistics.carriers.store' => ['roles' => ['admin', 'logistics_admin', 'procurement']],
+    'logistics.circular-ledger.index' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'treasury']],
     'logistics.claims.decide' => ['roles' => ['admin', 'dispatcher', 'logistics_admin'], 'params' => function () use ($logisticsSeedHelper) {
         $d = $logisticsSeedHelper();
 
@@ -1204,6 +1205,25 @@ return [
             );
 
             return ['order' => $order->id];
+        },
+    ],
+    'logistics.reverse.optimize' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.shipments.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.shipments.show' => [
+        'roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () use ($logisticsSeedHelper) {
+            $d = $logisticsSeedHelper();
+
+            return ['shipment' => $d['shipment']->id];
+        },
+    ],
+    'logistics.reverse.shipments.store' => ['roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin']],
+    'logistics.reverse.shipments.transition' => [
+        'roles' => ['admin', 'dispatcher', 'hub_operator', 'logistics_admin'],
+        'params' => function () use ($logisticsSeedHelper) {
+            $d = $logisticsSeedHelper();
+
+            return ['shipment' => $d['shipment']->id];
         },
     ],
     'logistics.autonomous.index' => ['roles' => ['admin', 'auditor', 'dispatcher', 'hub_operator', 'logistics_admin']],
@@ -1628,6 +1648,8 @@ return [
     'manufacturing.quality.plans.store' => ['roles' => ['admin', 'planner', 'qc_inspector']],
     'manufacturing.quality.recalls.complete' => ['roles' => ['admin', 'planner', 'qc_inspector'], 'params' => fn () => ['recall' => 1]],
     'manufacturing.quality.recalls.notify' => ['roles' => ['admin', 'planner', 'qc_inspector'], 'params' => fn () => ['recall' => 1]],
+    'manufacturing.recycled-materials.index' => ['roles' => ['admin', 'auditor', 'operator', 'planner', 'plant_receiver']],
+    'manufacturing.recycled-materials.intake' => ['roles' => ['admin', 'planner', 'plant_receiver']],
     'manufacturing.routings.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.workers.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.vmi-c2m.index' => ['roles' => ['admin', 'auditor', 'operator', 'planner', 'procurement']],

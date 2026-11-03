@@ -6,12 +6,16 @@ namespace Modules\Esg;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Esg\Application\Services\EmissionBenefitRecorderService;
 use Modules\Esg\Console\Commands\AuditEsgCommand;
+use Modules\Esg\Contracts\EmissionBenefitRecorder;
 
 class EsgServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(EmissionBenefitRecorder::class, EmissionBenefitRecorderService::class);
+
         $this->commands([
             AuditEsgCommand::class,
         ]);

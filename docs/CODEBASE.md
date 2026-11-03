@@ -495,7 +495,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 15 | **Egy** | `egy_` | 6 |
 | 16 | **EnterpriseFinance** | `ef_` | 2 |
 | 17 | **Epc** | `epc_` | 1 |
-| 18 | **Esg** | `esg_` | 3 |
+| 18 | **Esg** | `esg_` | 4 |
 | 19 | **Finance** | `fin_` | 1 |
 | 20 | **Hcm** | `hcm_` | 7 |
 | 21 | **Hospital** | `hsp_` | 14 |
@@ -505,9 +505,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 25 | **Intercompany** | `ic_` | 1 |
 | 26 | **International** | `intl_` | 1 |
 | 27 | **Inventory** | `inv_` | 2 |
-| 28 | **Logistics** | `lgx_` | 29 |
+| 28 | **Logistics** | `lgx_` | 30 |
 | 29 | **Mall** | `mall_` | 7 |
-| 30 | **Manufacturing** | `mfg_` | 12 |
+| 30 | **Manufacturing** | `mfg_` | 13 |
 | 31 | **Med** | `med_` | 3 |
 | 32 | **Mining** | `min_` | 11 |
 | 33 | **Mobility** | `oto_` | 0 |
@@ -515,7 +515,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 35 | **Party** | `pty_` | 3 |
 | 36 | **Payment** | `pay_` | 3 |
 | 37 | **Plm** | `plm_` | 1 |
-| 38 | **Pricing** | `pric_` | 5 |
+| 38 | **Pricing** | `pric_` | 6 |
 | 39 | **Procurement** | `prc_` | 6 |
 | 40 | **Proptech** | `prp_` | 3 |
 | 41 | **Resto** | `resto_` | 10 |
@@ -532,7 +532,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 52 | **Venue** | `ven_` | 6 |
 | 53 | **Wealth** | `wm_` | 2 |
 | 54 | **Wms** | `wms_` | 2 |
-| | **Total: 54 Modul** | | **595 Migrasi** |
+| | **Total: 54 Modul** | | **599 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -565,9 +565,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
-| **Logistics** | 77 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
+| **Logistics** | 83 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
-| **Manufacturing** | 63 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Manufacturing** | 65 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
 | **Mining** | 18 | `mining`, `mining/pits/{pit}/dispatch`, `mining/operations/block-planning` ... | web, auth, role:admin,mining_admin,site_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
@@ -592,7 +592,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1019 Rute** | | |
+| **Total** | **1027 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -676,6 +676,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `lgx:retry-webhooks` | **`everyFiveMinutes()->withoutOverlapping()`** | Retry failed webhook deliveries that are due for retry |
 | `lgx:settle-cod` | **`dailyAt('08:30')`** | Cairkan dana COD yang sudah disetor ke hub (D+N) ke dompet shipper dikurangi fee COD |
 | `lgx:verify-custody` | **`dailyAt('02:30')`** | Verifikasi integritas kriptografis rantai lacak balak (Chain of Custody) seluruh pengiriman |
+| `logi:circular-audit` | `manual` | Audit dua-sumber: verifikasi shipment reverse received == lot bahan baku sekunder & saldo kliring sirkular |
 | `mall:apply-penalties` | **`dailyAt('05:00')`** | Hitung dan terapkan denda harian (0.1%/hari) pada invoice mall yang terlambat dan suspend lease > 30 hari |
 | `mall:audit-billing` | **`dailyAt('07:00')`** | Audit kesesuaian dan integritas seluruh invoice mall terhadap buku besar double-entry ledger |
 | `mall:auto-debit` | **`dailyAt('04:00')`** | Jalankan pemotongan otomatis tagihan mall dari saldo dompet tenant tanpa PIN |
@@ -762,7 +763,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 165 Command** | **37 Terjadwal** | |
+| **Total: 166 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -780,9 +781,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 39 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 7 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
-| **Logistics** | `LogisticsAccounts` | 5 | `lgx:carrier_payable:IDR`, `lgx:circular_revenue:IDR` ... |
+| **Logistics** | `LogisticsAccounts` | 7 | `lgx:carrier_cost:IDR`, `lgx:carrier_payable:IDR` ... |
 | **Mall** | `MallAccounts` | 28 | `expense:mall:points_issued:PTS`, `revenue:mall:points_redeemed:PTS` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
+| **Manufacturing** | `RecycledMaterialAccounts` | 2 | `inv:materials:IDR`, `mfg:recycled_material_clearing:IDR` |
 | **Med** | `MedAccounts` | 9 | `med:ad_platform_revenue:IDR`, `med:ad_publisher_payable:IDR` ... |
 | **Mining** | `MiningAccounts` | 27 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
@@ -797,6 +799,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 30 Registry** | | **355 Akun** | |
+| **Total: 31 Registry** | | **359 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

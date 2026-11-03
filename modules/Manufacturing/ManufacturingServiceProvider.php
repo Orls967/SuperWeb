@@ -14,11 +14,13 @@ use Modules\Manufacturing\Application\Services\ManufacturingService;
 use Modules\Manufacturing\Application\Services\PlanningService;
 use Modules\Manufacturing\Application\Services\ProductionService;
 use Modules\Manufacturing\Application\Services\QualityService;
+use Modules\Manufacturing\Application\Services\RecycledMaterialReceiverService;
 use Modules\Manufacturing\Console\Commands\AuditCostingCommand;
 use Modules\Manufacturing\Console\Commands\AuditVmiCommand;
 use Modules\Manufacturing\Console\Commands\QmsAuditCommand;
 use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
+use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Store\Domain\Events\OrderPaid;
 
@@ -33,6 +35,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(QualityService::class);
         $this->app->singleton(MaintenanceService::class);
         $this->app->singleton(HseService::class);
+        $this->app->singleton(RecycledMaterialReceiver::class, RecycledMaterialReceiverService::class);
     }
 
     public function boot(): void

@@ -7,8 +7,10 @@ namespace Modules\Pricing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Pricing\Application\Listeners\PostSalePriceLockListener;
+use Modules\Pricing\Application\Services\MaterialPriceQuoteService;
 use Modules\Pricing\Application\Services\PricingService;
 use Modules\Pricing\Console\Commands\AuditPricingCommand;
+use Modules\Pricing\Contracts\MaterialPriceQuote;
 use Modules\Pricing\Contracts\PriceLocker;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Store\Domain\Events\OrderPaid;
@@ -19,6 +21,7 @@ class PricingServiceProvider extends ServiceProvider
     {
         $this->app->singleton(PricingService::class);
         $this->app->bind(PriceLocker::class, PricingService::class);
+        $this->app->singleton(MaterialPriceQuote::class, MaterialPriceQuoteService::class);
     }
 
     public function boot(): void

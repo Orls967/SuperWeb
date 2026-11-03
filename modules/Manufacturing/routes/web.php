@@ -8,6 +8,7 @@ use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
 use Modules\Manufacturing\Http\Controllers\ProductionController;
 use Modules\Manufacturing\Http\Controllers\QualityController;
+use Modules\Manufacturing\Http\Controllers\RecycledMaterialController;
 use Modules\Manufacturing\Http\Controllers\VmiAndC2mController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,planner,operator,qc_inspector'])
@@ -125,4 +126,16 @@ Route::middleware(['web', 'auth', 'verified'])
             Route::post('/c2m/orders/{order}/spk', [VmiAndC2mController::class, 'issueSpk'])->name('c2m.orders.spk');
             Route::post('/c2m/orders/{order}/cancel', [VmiAndC2mController::class, 'cancelC2m'])->name('c2m.orders.cancel');
         });
+    });
+
+Route::middleware(['web', 'auth', 'verified'])
+    ->prefix('manufacturing')
+    ->name('manufacturing.')
+    ->group(function () {
+        Route::get('/recycled-materials', [RecycledMaterialController::class, 'index'])
+            ->middleware('role:admin,auditor,planner,plant_receiver,operator')
+            ->name('recycled-materials.index');
+        Route::post('/recycled-materials/intake', [RecycledMaterialController::class, 'intake'])
+            ->middleware('role:admin,planner,plant_receiver')
+            ->name('recycled-materials.intake');
     });
