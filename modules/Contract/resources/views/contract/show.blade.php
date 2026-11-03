@@ -184,7 +184,7 @@
                         @forelse($contract->parties as $cp)
                             <tr class="hover:bg-slate-700/20">
                                 <td class="px-4 py-3 text-white">{{ $cp->party?->name ?? '—' }}</td>
-                                <td class="px-4 py-3 text-slate-300 capitalize">{{ str_replace('_',' ',$cp->role) }}</td>
+                                <td class="px-4 py-3 text-slate-300 capitalize">{{ str_replace('_', ' ', $cp->role instanceof \BackedEnum ? $cp->role->value : (string) $cp->role) }}</td>
                                 <td class="px-4 py-3 text-slate-400">{{ $cp->signing_order }}</td>
                                 <td class="px-4 py-3">
                                     @if($cp->is_signed)

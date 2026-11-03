@@ -7,8 +7,8 @@
                     ← Kembali ke Daftar Menu
                 </a>
                 <div class="flex items-center gap-3">
-                    <span class="px-2.5 py-1 text-xs font-semibold rounded-lg {{ $item->service_style->value === 'hidang' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }}">
-                        {{ $item->service_style->label() }}
+                    <span class="px-2.5 py-1 text-xs font-semibold rounded-lg {{ ($item->service_style?->value ?? '') === 'hidang' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }}">
+                        {{ $item->service_style?->label() ?? 'Standard' }}
                     </span>
                     <h1 class="text-2xl font-bold text-white tracking-tight">{{ $item->name }}</h1>
                     <span class="text-xs text-slate-400 font-mono">({{ $item->sku }})</span>
@@ -116,7 +116,7 @@
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="text-base font-bold text-white">Komposisi Resep (BOM)</h3>
                             <span class="text-xs text-slate-400 font-mono">
-                                Target: {{ (float)$item->recipe->expected_portions }} porsi | Waste: {{ (float)$item->recipe->waste_percent }}%
+                                Target: {{ (float) (string) $item->recipe->expected_portions }} porsi | Waste: {{ (float) (string) $item->recipe->waste_percent }}%
                             </span>
                         </div>
 
@@ -143,13 +143,13 @@
                                                 {{ $line['name'] }}
                                             </td>
                                             <td class="py-2.5 px-3 text-right font-mono">
-                                                {{ (float) $line['qty'] }}
+                                                {{ (float) (string) $line['qty'] }}
                                             </td>
                                             <td class="py-2.5 px-3 text-right font-mono text-slate-400">
-                                                Rp {{ number_format((float)$line['unit_cost'], 2) }}
+                                                Rp {{ number_format((float) (string) $line['unit_cost'], 2) }}
                                             </td>
                                             <td class="py-2.5 px-3 text-right font-mono text-white font-semibold">
-                                                Rp {{ number_format((float)$line['line_cost'], 0, ',', '.') }}
+                                                Rp {{ number_format((float) (string) $line['line_cost'], 0, ',', '.') }}
                                             </td>
                                         </tr>
                                     @empty
@@ -162,7 +162,7 @@
                                     <tr>
                                         <td colspan="4" class="py-3 px-3 text-right text-slate-300">Total Biaya Batch:</td>
                                         <td class="py-3 px-3 text-right text-emerald-400 font-mono text-sm">
-                                            Rp {{ number_format((float)$costData['batch_cost'], 0, ',', '.') }}
+                                            Rp {{ number_format((float) (string) $costData['batch_cost'], 0, ',', '.') }}
                                         </td>
                                     </tr>
                                 </tfoot>

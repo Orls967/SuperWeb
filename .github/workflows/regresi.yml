@@ -1,0 +1,64 @@
+name: "Regresi perilaku & keamanan"
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/**'
+      - 'verify/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - master
+      - 'feature/**'
+      - 'verify/**'
+      - 'fix/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regresi:
+    name: Suite Regresi Perilaku & Keamanan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, gd, zip, bcmath
+          coverage: none
+          ini-values: memory_limit=1G, pcov.directory=.
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Environment File & Key
+        run: |
+          cp .env.example .env
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install npm dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Generate Application Key
+        run: php artisan key:generate --force
+
+      - name: Jalankan Suite Regresi
+        run: bash scripts/run-regresi.sh
+

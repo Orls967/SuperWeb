@@ -9,7 +9,7 @@
                     <h2 class="font-bold text-2xl text-slate-800 leading-tight">
                         Pesanan Katering #{{ $order->number }}
                     </h2>
-                    <p class="text-sm text-slate-500 mt-0.5">{{ $order->outlet?->name }} &bull; Acara: {{ $order->event_date->format('d F Y') }} ({{ substr($order->event_time, 0, 5) }} WIB)</p>
+                    <p class="text-sm text-slate-500 mt-0.5">{{ $order->outlet?->name }} &bull; Acara: {{ $order->event_date?->format('d F Y') ?? '-' }} ({{ substr($order->event_time ?? '', 0, 5) }} WIB)</p>
                 </div>
             </div>
 

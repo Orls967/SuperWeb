@@ -49532,64 +49532,6 @@ paths:
         -
           SessionCookieAuth: {}
   /resto/catering:
-    get:
-      operationId: getRestoCateringIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoCateringStore
       tags:
@@ -49655,6 +49597,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoCateringIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/catering/create:
     get:
       operationId: getRestoCateringCreate
@@ -49714,69 +49714,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/catering/{catering}':
-    get:
-      operationId: getRestoCateringShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          name: catering
-          in: path
-          required: true
-          description: 'Identifier parameter catering for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoCateringUpdate
       tags:
@@ -49942,6 +49879,69 @@ paths:
           $ref: '#/components/parameters/CorrelationIdHeader'
         -
           $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+    get:
+      operationId: getRestoCateringShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          name: catering
+          in: path
+          required: true
+          description: 'Identifier parameter catering for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
       responses:
         200:
           description: 'Successful operation'
@@ -50268,65 +50268,6 @@ paths:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
   /resto/deliveries:
-    get:
-      operationId: getRestoDeliveriesIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, driver, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - driver
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoDeliveriesStore
       tags:
@@ -50393,6 +50334,65 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoDeliveriesIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, driver, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - driver
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/deliveries/create:
     get:
       operationId: getRestoDeliveriesCreate
@@ -50453,70 +50453,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/deliveries/{delivery}':
-    get:
-      operationId: getRestoDeliveriesShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, driver, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - driver
-        - outlet_manager
-      parameters:
-        -
-          name: delivery
-          in: path
-          required: true
-          description: 'Identifier parameter delivery for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoDeliveriesUpdate
       tags:
@@ -50685,6 +50621,70 @@ paths:
           $ref: '#/components/parameters/CorrelationIdHeader'
         -
           $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+    get:
+      operationId: getRestoDeliveriesShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, driver, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - driver
+        - outlet_manager
+      parameters:
+        -
+          name: delivery
+          in: path
+          required: true
+          description: 'Identifier parameter delivery for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
       responses:
         200:
           description: 'Successful operation'
@@ -51132,64 +51132,6 @@ paths:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
   /resto/ingredients:
-    get:
-      operationId: getRestoIngredientsIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoIngredientsStore
       tags:
@@ -51255,6 +51197,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoIngredientsIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/ingredients/conversions:
     post:
       operationId: postRestoIngredientsConversionsStore
@@ -51380,69 +51380,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/ingredients/{ingredient}':
-    get:
-      operationId: getRestoIngredientsShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          name: ingredient
-          in: path
-          required: true
-          description: 'Identifier parameter ingredient for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoIngredientsUpdate
       tags:
@@ -51608,6 +51545,69 @@ paths:
           $ref: '#/components/parameters/CorrelationIdHeader'
         -
           $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+    get:
+      operationId: getRestoIngredientsShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          name: ingredient
+          in: path
+          required: true
+          description: 'Identifier parameter ingredient for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
       responses:
         200:
           description: 'Successful operation'
@@ -52056,64 +52056,6 @@ paths:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
   /resto/menu:
-    get:
-      operationId: getRestoMenuIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoMenuStore
       tags:
@@ -52179,6 +52121,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoMenuIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/menu/calculate-cost:
     post:
       operationId: postRestoMenuCalculateCost
@@ -52304,69 +52304,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/menu/{menu}':
-    get:
-      operationId: getRestoMenuShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          name: menu
-          in: path
-          required: true
-          description: 'Identifier parameter menu for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoMenuUpdate
       tags:
@@ -52575,6 +52512,69 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+    get:
+      operationId: getRestoMenuShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          name: menu
+          in: path
+          required: true
+          description: 'Identifier parameter menu for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   '/resto/menu/{menu}/edit':
     get:
       operationId: getRestoMenuEdit
@@ -52639,64 +52639,6 @@ paths:
         -
           SessionCookieAuth: {}
   /resto/outlets:
-    get:
-      operationId: getRestoOutletsIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoOutletsStore
       tags:
@@ -52762,6 +52704,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoOutletsIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/outlets/create:
     get:
       operationId: getRestoOutletsCreate
@@ -52821,69 +52821,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/outlets/{outlet}':
-    get:
-      operationId: getRestoOutletsShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          name: outlet
-          in: path
-          required: true
-          description: 'Identifier parameter outlet for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoOutletsUpdate
       tags:
@@ -53049,6 +52986,69 @@ paths:
           $ref: '#/components/parameters/CorrelationIdHeader'
         -
           $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+    get:
+      operationId: getRestoOutletsShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          name: outlet
+          in: path
+          required: true
+          description: 'Identifier parameter outlet for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
       responses:
         200:
           description: 'Successful operation'
@@ -54055,65 +54055,6 @@ paths:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
   /resto/purchases:
-    get:
-      operationId: getRestoPurchasesIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager, procurement].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-        - procurement
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoPurchasesStore
       tags:
@@ -54180,15 +54121,15 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  /resto/purchases/create:
     get:
-      operationId: getRestoPurchasesCreate
+      operationId: getRestoPurchasesIndex
       tags:
         - Resto
-      summary: 'Create (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, outlet_manager, procurement].'
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager, procurement].'
       x-allowed-roles:
         - admin
+        - auditor
         - outlet_manager
         - procurement
       parameters:
@@ -54249,281 +54190,6 @@ paths:
       x-allowed-roles:
         - admin
         - auditor
-        - outlet_manager
-        - procurement
-      parameters:
-        -
-          name: purchase
-          in: path
-          required: true
-          description: 'Identifier parameter purchase for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-    put:
-      operationId: putRestoPurchasesUpdate
-      tags:
-        - Resto
-      summary: 'Update (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, outlet_manager, procurement].'
-      x-allowed-roles:
-        - admin
-        - outlet_manager
-        - procurement
-      parameters:
-        -
-          name: purchase
-          in: path
-          required: true
-          description: 'Identifier parameter purchase for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-      requestBody:
-        description: 'Request payload for putRestoPurchasesUpdate'
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: 'Dynamic payload attributes governed by module domain rules'
-    patch:
-      operationId: patchRestoPurchasesUpdate
-      tags:
-        - Resto
-      summary: 'Update (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, outlet_manager, procurement].'
-      x-allowed-roles:
-        - admin
-        - outlet_manager
-        - procurement
-      parameters:
-        -
-          name: purchase
-          in: path
-          required: true
-          description: 'Identifier parameter purchase for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-      requestBody:
-        description: 'Request payload for patchRestoPurchasesUpdate'
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: 'Dynamic payload attributes governed by module domain rules'
-    delete:
-      operationId: deleteRestoPurchasesDestroy
-      tags:
-        - Resto
-      summary: 'Destroy (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, outlet_manager, procurement].'
-      x-allowed-roles:
-        - admin
-        - outlet_manager
-        - procurement
-      parameters:
-        -
-          name: purchase
-          in: path
-          required: true
-          description: 'Identifier parameter purchase for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-  '/resto/purchases/{purchase}/edit':
-    get:
-      operationId: getRestoPurchasesEdit
-      tags:
-        - Resto
-      summary: 'Edit (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, outlet_manager, procurement].'
-      x-allowed-roles:
-        - admin
         - outlet_manager
         - procurement
       parameters:
@@ -54728,64 +54394,6 @@ paths:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
   /resto/stock-counts:
-    get:
-      operationId: getRestoStockCountsIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoStockCountsStore
       tags:
@@ -54851,6 +54459,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+    get:
+      operationId: getRestoStockCountsIndex
+      tags:
+        - Resto
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /resto/stock-counts/create:
     get:
       operationId: getRestoStockCountsCreate
@@ -54910,69 +54576,6 @@ paths:
         -
           SessionCookieAuth: {}
   '/resto/stock-counts/{stock_count}':
-    get:
-      operationId: getRestoStockCountsShow
-      tags:
-        - Resto
-      summary: 'Show (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - outlet_manager
-      parameters:
-        -
-          name: stock_count
-          in: path
-          required: true
-          description: 'Identifier parameter stock_count for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     put:
       operationId: putRestoStockCountsUpdate
       tags:
@@ -55181,6 +54784,69 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+    get:
+      operationId: getRestoStockCountsShow
+      tags:
+        - Resto
+      summary: 'Show (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, outlet_manager].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - outlet_manager
+      parameters:
+        -
+          name: stock_count
+          in: path
+          required: true
+          description: 'Identifier parameter stock_count for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   '/resto/stock-counts/{stock_count}/approve':
     post:
       operationId: postRestoStockCountsApprove
@@ -55318,65 +54984,6 @@ paths:
         -
           SessionCookieAuth: {}
   /resto/transfers:
-    get:
-      operationId: getRestoTransfersIndex
-      tags:
-        - Resto
-      summary: 'Index (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, kitchen, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - auditor
-        - kitchen
-        - outlet_manager
-      parameters:
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/CursorPaginationParam'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
     post:
       operationId: postRestoTransfersStore
       tags:
@@ -55443,15 +55050,15 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  /resto/transfers/create:
     get:
-      operationId: getRestoTransfersCreate
+      operationId: getRestoTransfersIndex
       tags:
         - Resto
-      summary: 'Create (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, kitchen, outlet_manager].'
+      summary: 'Index (Resto)'
+      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, auditor, kitchen, outlet_manager].'
       x-allowed-roles:
         - admin
+        - auditor
         - kitchen
         - outlet_manager
       parameters:
@@ -55512,281 +55119,6 @@ paths:
       x-allowed-roles:
         - admin
         - auditor
-        - kitchen
-        - outlet_manager
-      parameters:
-        -
-          name: transfer
-          in: path
-          required: true
-          description: 'Identifier parameter transfer for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-    put:
-      operationId: putRestoTransfersUpdate
-      tags:
-        - Resto
-      summary: 'Update (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, kitchen, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - kitchen
-        - outlet_manager
-      parameters:
-        -
-          name: transfer
-          in: path
-          required: true
-          description: 'Identifier parameter transfer for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-      requestBody:
-        description: 'Request payload for putRestoTransfersUpdate'
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: 'Dynamic payload attributes governed by module domain rules'
-    patch:
-      operationId: patchRestoTransfersUpdate
-      tags:
-        - Resto
-      summary: 'Update (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, kitchen, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - kitchen
-        - outlet_manager
-      parameters:
-        -
-          name: transfer
-          in: path
-          required: true
-          description: 'Identifier parameter transfer for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-      requestBody:
-        description: 'Request payload for patchRestoTransfersUpdate'
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: 'Dynamic payload attributes governed by module domain rules'
-    delete:
-      operationId: deleteRestoTransfersDestroy
-      tags:
-        - Resto
-      summary: 'Destroy (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, kitchen, outlet_manager].'
-      x-allowed-roles:
-        - admin
-        - kitchen
-        - outlet_manager
-      parameters:
-        -
-          name: transfer
-          in: path
-          required: true
-          description: 'Identifier parameter transfer for this resource'
-          schema:
-            type: string
-        -
-          $ref: '#/components/parameters/CorrelationIdHeader'
-        -
-          $ref: '#/components/parameters/IdempotencyKeyHeader'
-      responses:
-        200:
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                type: object
-                description: 'Response envelope'
-        401:
-          description: 'Authentication credentials missing, expired, or invalid'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        403:
-          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        409:
-          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        422:
-          description: 'Validation error or business invariant domain violation'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-        429:
-          description: 'Rate limit exceeded: caller exceeded request quota per time window'
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailsRfc7807'
-      security:
-        -
-          BearerAuth: {}
-        -
-          SessionCookieAuth: {}
-  '/resto/transfers/{transfer}/edit':
-    get:
-      operationId: getRestoTransfersEdit
-      tags:
-        - Resto
-      summary: 'Edit (Resto)'
-      description: 'Operational endpoint for Resto module. Protected by role matrix: [admin, kitchen, outlet_manager].'
-      x-allowed-roles:
-        - admin
         - kitchen
         - outlet_manager
       parameters:

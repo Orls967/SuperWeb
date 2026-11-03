@@ -140,7 +140,7 @@
                     @forelse($party->roles as $role)
                         <span class="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs font-medium text-slate-300 flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full {{ $role->is_active ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
-                            {{ ucfirst(str_replace('_', ' ', $role->role)) }}
+                            {{ ucfirst(str_replace('_', ' ', $role->role instanceof \BackedEnum ? $role->role->value : (string) $role->role)) }}
                         </span>
                     @empty
                         <span class="text-slate-500 text-sm">Belum ada role yang ditetapkan.</span>
