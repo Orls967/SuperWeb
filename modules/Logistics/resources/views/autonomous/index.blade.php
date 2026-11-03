@@ -33,7 +33,7 @@
                 <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl backdrop-blur-xl shadow-lg">
                     <div class="text-xs uppercase tracking-wider text-amber-400 font-medium">Escrow Amount Held</div>
                     <div class="text-2xl font-bold text-amber-300 mt-2" id="kpi-held-amount">Rp {{ number_format($stats['total_held_idr'], 0, ',', '.') }}</div>
-                    <div class="text-xs text-slate-500 mt-1">Terkunci di lgx:dispute_escrow:IDR</div>
+                    <div class="text-xs text-slate-500 mt-1">Terkunci di lgx:carrier_payable_on_hold:IDR</div>
                 </div>
 
                 <div class="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl backdrop-blur-xl shadow-lg">
