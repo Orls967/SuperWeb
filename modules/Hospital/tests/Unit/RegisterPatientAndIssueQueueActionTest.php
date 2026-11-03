@@ -22,6 +22,7 @@ uses(TestCase::class, RefreshDatabase::class);
 covers(RegisterPatientAndIssueQueueAction::class);
 
 beforeEach(function () {
+    Carbon::setTestNow('2026-11-02 08:30:00');
     $this->clock = new class implements ClockInterface
     {
         public function now(): CarbonImmutable
@@ -30,6 +31,10 @@ beforeEach(function () {
         }
     };
     $this->app->instance(ClockInterface::class, $this->clock);
+});
+
+afterEach(function () {
+    Carbon::setTestNow();
 });
 
 function setupDoctorAndPoli(string $code = 'POLI_REG'): array
