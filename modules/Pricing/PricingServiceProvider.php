@@ -7,9 +7,11 @@ namespace Modules\Pricing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Pricing\Application\Listeners\PostSalePriceLockListener;
+use Modules\Pricing\Application\Services\DynamicTickEngine;
 use Modules\Pricing\Application\Services\MaterialPriceQuoteService;
 use Modules\Pricing\Application\Services\PricingService;
 use Modules\Pricing\Console\Commands\AuditPricingCommand;
+use Modules\Pricing\Console\Commands\GeneratePriceTickCommand;
 use Modules\Pricing\Contracts\MaterialPriceQuote;
 use Modules\Pricing\Contracts\PriceLocker;
 use Modules\Shared\Application\MenuRegistry;
@@ -20,6 +22,7 @@ class PricingServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PricingService::class);
+        $this->app->singleton(DynamicTickEngine::class);
         $this->app->bind(PriceLocker::class, PricingService::class);
         $this->app->singleton(MaterialPriceQuote::class, MaterialPriceQuoteService::class);
     }
@@ -37,7 +40,10 @@ class PricingServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditPricingCommand::class]);
+            $this->commands([
+                AuditPricingCommand::class,
+                GeneratePriceTickCommand::class,
+            ]);
         }
 
         Event::listen(OrderPaid::class, PostSalePriceLockListener::class);

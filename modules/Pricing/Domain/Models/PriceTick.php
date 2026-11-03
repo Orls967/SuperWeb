@@ -13,15 +13,24 @@ class PriceTick extends Model
     protected $fillable = [
         'sku',
         'tick_time',
+        'slot_time',
         'price_idr',
+        'base_price_idr',
+        'raw_price_idr',
+        'factor_total_bps',
         'demand_index',
         'driver_source',
+        'status',
         'idempotency_key',
     ];
 
     protected $casts = [
         'tick_time' => 'datetime',
+        'slot_time' => 'datetime',
         'price_idr' => 'integer',
+        'base_price_idr' => 'integer',
+        'raw_price_idr' => 'integer',
+        'factor_total_bps' => 'integer',
         'demand_index' => 'decimal:2',
     ];
 }
