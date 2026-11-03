@@ -1080,7 +1080,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 | M-R2-13 | Telematics | Aksi tulis utama WriteSmoke menghasilkan 404 (Not Found) | Prefix rute berubah seiring refactoring modul ke Mobility | P2 | Sesuaikan URI rute ingest telematics di endpoint baru |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
-> **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-31, audit keamanan S-01..S-06)
+> **Status audit:** ✅ TERVERIFIKASI (2026-11-03, sesi verifikator 2026-11-03) · Prasyarat: R0 ✅.
 
 #### DoR Fase R3 — Otorisasi & data sensitif
 - Disetujui pemilik: [x] 2026-10-15 (chat) — D1–D6 sesuai prompt disetujui
@@ -1233,9 +1233,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - **D5 (Pencabutan Hak Tulis Auditor, M-R0-18):** Persetujuan mencabut role `auditor` dari seluruh 37 rute POST mutasi di Manufacturing (23 rute), Pricing (12 rute), dan Partner (2 rute), sehingga auditor murni read-only.
   - **D6 (Rate Limit Default Klien API, R3.4):** Untuk klien API tanpa konfigurasi kustom `rate_limit_per_minute`, limit default ditetapkan 600 req/menit dengan format respons JSON 429 dan header `Retry-After: 60`.
 
-- [ ] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
+- [x] R3.1 **Tutup rute tanpa role** (K-20): isi `route-roles.php` untuk semua rute dan perbaiki minimal: Mall (`billing/generate`, `invoices/{id}/auto-debit`, leases, tenants, utilities, parking admin), Resto (menu, ingredients, outlets, purchases + `pay`, transfers, stock counts, POS), HCM, Treasury, Trade, Trade Finance, International, Intercompany, Control Tower, Enterprise Finance, ESG, B2B, Agri, EPC, PLM, Integration; tambah pemeriksaan role di Action uang (`MallAutoDebitAction`, `PaySupplierAction`).
   - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
-  (dibatalkan) Bukti:
+  Bukti:
     - commit: 8ccdcca
     - file: tests/Architecture/route-roles.php
     - test: tests/Architecture/RouteAuthorizationMatrixTest.php::it maps every registered route in route-roles.php
@@ -1252,11 +1252,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - minus: M-R0-12
     - minus: M-R0-13
     - minus: M-R0-18
-    - (dibatalkan) gate: docs/gates/fase-r3.md
+    - gate: docs/gates/fase-r3.md
   - Kriteria terima: baseline `RouteAuthorizationMatrixTest` = 0; tidak ada rute mutasi/keuangan yang hanya `auth`.
-- [ ] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
+- [x] R3.2 **PII & rahasia** (K-22): NIK/NPWP → `encrypted` cast + kolom blind index HMAC (pepper di config); formula PLM → `encrypted` cast; `secret_key` webhook & `api_key` → `encrypted`/hash sesuai kebutuhan; data gaji hanya untuk `hcm_manager`/`admin` (baseline `arch:scan` A7 = 0).
   - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-08
-  (dibatalkan) Bukti:
+  Bukti:
     - commit: 12202b6
     - commit: d38ea22
     - commit: da165c4
@@ -1282,11 +1282,11 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Authorization/SalaryAuthorizationPolicyTest.php::staff can view own salary and payroll slip
     - test: tests/Architecture/SensitiveDataCastingTest.php::it enforces that every Eloquent model with sensitive columns declares encrypted or hashed cast
     - akses: command hcm:encrypt-legacy
-    - (dibatalkan) gate: docs/gates/fase-r3.md
+    - gate: docs/gates/fase-r3.md
   - Test wajib: nilai di DB tidak sama dengan plaintext; pencarian via blind index bekerja.
-- [ ] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
+- [x] R3.3 **Hapus flag-sebagai-kontrol** (K-21) pada jalur yang menyentuh uang, akses data, atau kepatuhan: status diturunkan dari ApprovalEngine/DocumentStore/hasil pemeriksaan tersimpan (baseline `arch:scan` A6 untuk modul non-Integration = 0; sisanya mengikuti R4.4).
   - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
     - commit: aa0c007
     - file: modules/Venue/Application/Services/VenueCreatorEconomyService.php
@@ -1296,10 +1296,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout succeeds when hold window has passed
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout rejected when contract is disputed
     - test: tests/Feature/Venue/CreatorRoyaltyPayoutGuardTest.php::payout returns zero when no held royalties
-    - (dibatalkan) gate: docs/gates/fase-r3.md
-- [ ] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
+    - gate: docs/gates/fase-r3.md
+- [x] R3.4 **Kuota API ditegakkan** (K-23): `RateLimiter` per klien API dari `rate_limit_per_minute`; halaman `/integration` hanya role admin/integrasi.
   - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-10
-  (dibatalkan) Bukti:
+  Bukti:
     - commit: 53cc681
     - file: app/Providers/AppServiceProvider.php
     - file: modules/Integration/routes/web.php
@@ -1312,9 +1312,9 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiting enforced by client id header
     - test: tests/Feature/Integration/ApiClientRateLimitingTest.php::api client rate limiter resets after clearing
     - akses: route GET /integration [role: admin]
-- [ ] R3.5 Quality gate Fase R3 + verifikasi silang.
+- [x] R3.5 Quality gate Fase R3 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-keamanan.md#S-01
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
     - commit: ea89d37
     - file: docs/gates/fase-r3.md
@@ -1323,7 +1323,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
     - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index dry run does not mutate database
     - test: tests/Feature/Security/RotateBlindIndexCommandTest.php::rotate blind index with force updates records idempotently
     - test: tests/Feature/Authorization/ApiClientRateLimitBlackBoxProofTest.php::black box client rate limiting and isolation
-    - (dibatalkan) gate: docs/gates/fase-r3.md
+    - gate: docs/gates/fase-r3.md
 
 #### Register Minus Fase R3
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
