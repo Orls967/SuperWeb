@@ -10,6 +10,7 @@ use Modules\Agri\Ledger\AgriAccounts;
 use Modules\B2b\Ledger\B2bAccounts;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Circular\Ledger\CircularAccounts;
 use Modules\CloudKitchen\Ledger\CloudKitchenAccounts;
 use Modules\Core\Ledger\CoreAccounts;
 use Modules\Edu\Ledger\EduAccounts;
@@ -52,6 +53,7 @@ class LedgerAccountsSeeder extends Seeder
     public const ACCOUNT_REGISTRIES = [
         AgriAccounts::class,
         B2bAccounts::class,
+        CircularAccounts::class,
         CloudKitchenAccounts::class,
         CoreAccounts::class,
         EduAccounts::class,

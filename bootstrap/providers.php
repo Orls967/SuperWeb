@@ -8,6 +8,7 @@ use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
 use Modules\B2b\B2bServiceProvider;
 use Modules\Banking\BankingServiceProvider;
+use Modules\Circular\CircularServiceProvider;
 use Modules\CloudKitchen\CloudKitchenServiceProvider;
 use Modules\Contract\ContractServiceProvider;
 use Modules\ControlTower\ControlTowerServiceProvider;
@@ -65,6 +66,7 @@ return [
     AutoServeServiceProvider::class,
     AutoDexServiceProvider::class,
     BankingServiceProvider::class,
+    CircularServiceProvider::class,
     PaymentServiceProvider::class,
     InventoryServiceProvider::class,
     StoreServiceProvider::class,
