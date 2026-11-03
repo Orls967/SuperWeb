@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Manufacturing\Application\Services\C2m;
 
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
@@ -310,6 +311,125 @@ class VmiAndC2mService
                 'quote_hash' => $quoteHash,
             ];
         });
+    }
+
+    /**
+     * 82.3 & 82.4 Validate C2M Parametric Design, detect BOM cycles, roll-up BOM cost and calculate price
+     *
+     * @param  array<string, int>  $bomItemsCost
+     * @param  array<int, array{code: string, parent: ?string, name: string, material: string, qty: int, unit_cost_idr: int}>|null  $bomHierarchy
+     */
+    public function configureAndQuoteC2m(
+        int $userId,
+        string $baseModel,
+        array $parameters,
+        array $bomItemsCost = [],
+        ?array $bomHierarchy = null
+    ): C2mCustomOrder {
+        // Assert no BOM cycles if hierarchy is provided
+        if ($bomHierarchy !== null) {
+            $this->assertNoBomCycles($bomHierarchy);
+        }
+
+        // Complexity factor calculation
+        $baseComplexity = 1.0;
+        $finish = $parameters['finish'] ?? 'STANDARD';
+        $tolerance = $parameters['tolerance'] ?? 'STANDARD';
+
+        if ($finish === 'TITANIUM_COATED') {
+            $baseComplexity += 0.35;
+        } elseif ($finish === 'ANODIZED_BLACK') {
+            $baseComplexity += 0.15;
+        }
+
+        if ($tolerance === 'AEROSPACE_PRECISION') {
+            $baseComplexity += 0.25;
+        }
+
+        $baseBomCost = array_sum($bomItemsCost);
+        $rolledUpBomCost = (int) round($baseBomCost * $baseComplexity);
+        $finalPrice = (int) round($rolledUpBomCost * 1.30); // 30% gross margin target
+
+        $entropy = hash('sha256', "C2M:{$userId}:{$baseModel}:".json_encode($parameters).":{$finalPrice}");
+        $c2mCode = 'C2M-'.strtoupper(substr($entropy, 0, 10));
+
+        $order = C2mCustomOrder::create([
+            'c2m_code' => $c2mCode,
+            'user_id' => $userId,
+            'base_model' => $baseModel,
+            'parameters' => $parameters,
+            'complexity_factor' => $baseComplexity,
+            'rolled_up_bom_cost_idr' => $rolledUpBomCost,
+            'final_price_idr' => $finalPrice,
+            'status' => 'DESIGN_VALIDATED',
+            'estimated_lead_days' => 7,
+        ]);
+
+        // Save BOM nodes if hierarchy provided
+        if ($bomHierarchy !== null) {
+            foreach ($bomHierarchy as $node) {
+                $qty = $node['qty'] ?? 1;
+                $unitCost = $node['unit_cost_idr'] ?? 0;
+                C2mBomNode::create([
+                    'c2m_custom_order_id' => $order->id,
+                    'node_code' => $node['code'],
+                    'parent_node_code' => $node['parent'] ?? null,
+                    'part_name' => $node['name'],
+                    'material' => $node['material'],
+                    'quantity' => $qty,
+                    'unit_cost_idr' => $unitCost,
+                    'subtotal_cost_idr' => $qty * $unitCost,
+                ]);
+            }
+        }
+
+        return $order;
+    }
+
+    /**
+     * Cycle detection DFS algorithm
+     *
+     * @param  array<int, array{code: string, parent: ?string}>  $hierarchy
+     */
+    public function assertNoBomCycles(array $hierarchy): void
+    {
+        $childrenMap = [];
+        $nodes = [];
+
+        foreach ($hierarchy as $node) {
+            $code = $node['code'];
+            $parent = $node['parent'] ?? null;
+            $nodes[$code] = true;
+            if ($parent !== null) {
+                $childrenMap[$parent][] = $code;
+            }
+        }
+
+        $visited = [];
+        $recursionStack = [];
+
+        $dfs = function (string $current) use (&$dfs, &$visited, &$recursionStack, $childrenMap): void {
+            $visited[$current] = true;
+            $recursionStack[$current] = true;
+
+            if (isset($childrenMap[$current])) {
+                foreach ($childrenMap[$current] as $child) {
+                    if (! isset($visited[$child])) {
+                        $dfs($child);
+                    } elseif (! empty($recursionStack[$child])) {
+                        throw new InvalidArgumentException("Circular dependency detected in BOM structure at node {$child}");
+                    }
+                }
+            }
+
+            $recursionStack[$current] = false;
+        };
+
+        foreach (array_keys($nodes) as $nodeCode) {
+            if (! isset($visited[$nodeCode])) {
+                $dfs($nodeCode);
+            }
+        }
     }
 
     /**
