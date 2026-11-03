@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Pricing\Http\Controllers\PricingController;
+use Modules\Pricing\Http\Controllers\SurgePricingController;
 
 Route::middleware(['web', 'auth', 'verified'])
     ->prefix('pricing')
     ->name('pricing.')
     ->group(function () {
+        Route::get('/surge', [SurgePricingController::class, 'surge'])->middleware('role:pricing_manager')->name('surge');
+        Route::post('/surge/calculate', [SurgePricingController::class, 'calculate'])->middleware('role:pricing_manager')->name('surge.calculate');
+        Route::get('/rejections', [SurgePricingController::class, 'rejections'])->middleware('role:pricing_manager')->name('rejections');
+        Route::post('/checkout-quote', [SurgePricingController::class, 'checkoutQuote'])->middleware('role:pricing_manager')->name('checkout-quote');
         Route::get('/', [PricingController::class, 'index'])->middleware('role:admin,procurement,auditor')->name('index');
         Route::get('/ticks', [PricingController::class, 'ticks'])->middleware('role:admin,procurement,auditor')->name('ticks');
         Route::middleware('role:admin,procurement')->group(function () {

@@ -2211,4 +2211,22 @@
 - **Verification:**
   - `vendor/bin/pest tests/Architecture/MutationTestingContractTest.php tests/Architecture/MutationFenceContractTest.php tests/Architecture/CiWorkflowContractTest.php tests/Architecture/WorkflowBuildOrderContractTest.php` lulus 100%.
 
+<a id="2026-11-04-g6-p2-surge-pricing-fase-81"></a>
+<a id="d81-1"></a>
+## 2026-11-04: [G6-P2.1] Surge Pricing Dinamis ber-Guardrail (Fase 81 & Item 64.1, D81-1..D81-5)
+- **Anchor:** `2026-11-04-g6-p2-surge-pricing-fase-81` / `d81-1`
+- **Context:**
+  - Penyesuaian harga real-time berbasis permintaan, sisa stok, umur simpan, musim, dan okupansi gudang/katering memerlukan mesin harga deterministik ber-guardrail mutlak untuk mencegah manipulasi, lonjakan liar, atau pelanggaran batas harga regulasi (HET) serta memastikan dokumen order membekukan harga secara immutable melalui PriceLocker.
+- **Decision:**
+  1. D81-1: Prefiks tabel Pricing dipastikan memakai `pric_` (`pric_price_ticks`, `pric_frozen_quotes`, `pric_price_tick_aggregates`, `pric_tick_rejections`, `pric_sku_parameters`). Entri A2 basi dibersihkan sesuai Q4b.
+  2. D81-2: Formula tick deterministik tingkat S1 menggabungkan $f_{stok}$, $f_{permintaan}$, $f_{umur\_simpan}$, $f_{musim}$, dan $f_{okupansi}$. Harga mentah dibulatkan HalfUp ke rupiah dan kelipatan Rp 50. Perubahan dari tick terakhir dibatasi maksimal $\pm 1.000$ bps (status `dibatasi`). Jika melanggar guardrail keras [floor, min(ceiling, HET)], tick ditolak dan dicatat di `pric_tick_rejections` sementara harga efektif tetap pada harga tick terakhir.
+  3. D81-3: Pemenuhan item 64.1 (elastisitas) dicakup oleh modul Pricing melalui proyeksi $q' = q \times (10.000 - e \times \Delta p_{bps} / 10.000) / 10.000$ (HalfUp ke unit) sebagai laporan dampak harga tanpa memodifikasi tick riil. Layanan lama di Core dipertahankan.
+  4. D81-4: `PriceLocker` mengunci harga per baris pada dokumen order ke `pric_price_locks` dan `pric_frozen_quotes` (TTL 15 menit). Order lama tidak terpengaruh oleh tick baru. Quote yang kedaluwarsa saat checkout mengembalikan HTTP 409 Conflict disertai penawaran harga terbaru.
+  5. D81-5: Command `pricing:tick` terjadwal idempoten per (SKU, slot 5 menit). Command `pricing:audit` menguji bahwa setiap baris order sesuai harga terkunci saat order, tidak ada tick yang melanggar guardrail, dan setiap penolakan tercatat. Rute `/pricing/surge` dan `/pricing/rejections` diakses oleh peran `pricing_manager`.
+- **Verification:**
+  - Vektor perhitungan D81-2 (vektor 1 s.d. 5) lulus persis dengan batas floor 8.000, ceiling 15.000, HET 14.000, dan langkah 50.
+  - Acceptance test `tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php` lulus ≤ 6 skenario.
+  - Command `pricing:audit` membuktikan kesesuaian harga order, ketaatan guardrail, dan integritas pencatatan penolakan.
+
+
 

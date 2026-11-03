@@ -104,6 +104,49 @@ class AuditPricingCommand extends Command
             $issues++;
         }
 
+        // 8. D81-5 Setiap baris order = harga terkunci saat order (0 mismatch)
+        $orderPriceMismatch = DB::table('pric_frozen_quotes as q')
+            ->join('pric_price_locks as l', function ($join) {
+                $join->on('q.order_ref', '=', 'l.subject_id')
+                    ->on('q.sku', '=', 'l.sku')
+                    ->where('l.subject_type', '=', 'order');
+            })
+            ->where('q.status', 'CONVERTED')
+            ->whereColumn('q.frozen_price_idr', '<>', 'l.applied_price_idr')
+            ->count();
+        if ($orderPriceMismatch > 0) {
+            $rows[] = ['order.price_mismatch', '0', (string) $orderPriceMismatch, (string) $orderPriceMismatch, 'SELISIH'];
+            $issues++;
+        }
+
+        // 9. D81-5 Tick aktif tidak melanggar guardrail floor / ceiling / HET parameter SKU
+        $tickGuardrailBreach = DB::table('pric_price_ticks as t')
+            ->join('pric_sku_parameters as p', 't.sku', '=', 'p.sku')
+            ->where(function ($query) {
+                $query->whereColumn('t.price_idr', '<', 'p.floor_price_idr')
+                    ->orWhereColumn('t.price_idr', '>', 'p.ceiling_price_idr')
+                    ->orWhereColumn('t.price_idr', '>', 'p.het_price_idr');
+            })
+            ->count();
+        if ($tickGuardrailBreach > 0) {
+            $rows[] = ['tick.guardrail_breach', '0', (string) $tickGuardrailBreach, (string) $tickGuardrailBreach, 'SELISIH'];
+            $issues++;
+        }
+
+        // 10. D81-5 Penolakan tick tanpa alasan atau tanpa idempotency key
+        $unrecordedRejections = DB::table('pric_tick_rejections')
+            ->where(function ($query) {
+                $query->whereNull('rejection_reason')
+                    ->orWhere('rejection_reason', '')
+                    ->orWhereNull('idempotency_key')
+                    ->orWhere('idempotency_key', '');
+            })
+            ->count();
+        if ($unrecordedRejections > 0) {
+            $rows[] = ['rejection.unrecorded', '0', (string) $unrecordedRejections, (string) $unrecordedRejections, 'SELISIH'];
+            $issues++;
+        }
+
         $this->table(
             ['Sumber', 'Seharusnya', 'Aktual', 'Selisih', 'Status'],
             $rows === [] ? [['—', '0', '0', '0', 'OK']] : $rows
@@ -115,7 +158,7 @@ class AuditPricingCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('✓ pricing:audit selesai: lock harga, anggaran promo, override, overlap, dan guardrail quote konsisten.');
+        $this->info('✓ pricing:audit selesai: lock harga, anggaran promo, override, overlap, guardrail quote, dan baris order konsisten.');
 
         return self::SUCCESS;
     }
