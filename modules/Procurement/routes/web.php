@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Procurement\Http\Controllers\ProcurementController;
+use Modules\Procurement\Http\Controllers\VmiPortalController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,procurement,supplier'])
     ->prefix('procurement')
@@ -57,3 +58,15 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,procurement,supplier']
         Route::post('/pos/{po}/inbound', [ProcurementController::class, 'bookInbound'])
             ->middleware('role:admin,procurement')->name('pos.inbound');
     });
+
+// D82-1 Portal VMI Pemasok & Approval
+Route::middleware(['web', 'auth', 'verified'])->group(function () {
+    Route::middleware(['role:admin,supplier'])->group(function () {
+        Route::get('/portal/vmi', [VmiPortalController::class, 'index'])->name('vmi.portal');
+        Route::post('/portal/vmi/trigger', [VmiPortalController::class, 'trigger'])->name('vmi.trigger');
+    });
+
+    Route::post('/portal/vmi/{replenishment}/approve', [VmiPortalController::class, 'approve'])
+        ->middleware('role:admin,procurement,procurement_manager')
+        ->name('vmi.approve');
+});

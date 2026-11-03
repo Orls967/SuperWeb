@@ -119,6 +119,7 @@ Route::middleware(['web', 'auth', 'verified'])
     ->name('manufacturing.')
     ->group(function () {
         Route::get('/vmi-c2m', [VmiAndC2mController::class, 'index'])->middleware('role:admin,auditor,operator,planner,procurement')->name('vmi-c2m.index');
+        Route::get('/c2m', [VmiAndC2mController::class, 'c2mIndex'])->middleware('role:admin,planner')->name('c2m.index');
         Route::middleware('role:admin,planner,procurement')->group(function () {
             Route::post('/vmi/trigger', [VmiAndC2mController::class, 'triggerVmi'])->name('vmi.trigger');
             Route::post('/vmi/{replenishment}/approve', [VmiAndC2mController::class, 'approveVmi'])->name('vmi.approve');

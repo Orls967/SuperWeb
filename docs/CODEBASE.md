@@ -570,7 +570,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
-| **Manufacturing** | 65 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Manufacturing** | 66 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
 | **Mining** | 18 | `mining`, `mining/pits/{pit}/dispatch`, `mining/operations/block-planning` ... | web, auth, role:admin,mining_admin,site_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
@@ -580,13 +580,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 4 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
-| **Procurement** | 21 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
+| **Procurement** | 24 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 21 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 81 | `resto/menu/calculate-cost`, `resto/menu/create`, `resto/menu` ... | web, auth, role:admin,outlet_manager |
 | **Ret** | 13 | `retail`, `retail/overview`, `retail/orders/{id}` ... | web, auth, role:admin,retail_ops,marketplace_mgr,category_mgr,last_mile_cs |
 | **Rwa** | 13 | `rwa`, `rwa/offerings`, `rwa/offerings/{offering}/subscribe` ... | web, auth, role:admin,rwa_admin,asset_manager,investor |
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
-| **Store** | 33 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
+| **Store** | 35 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
@@ -596,7 +596,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1049 Rute** | | |
+| **Total** | **1055 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -768,10 +768,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ven:close-events` | `manual` | Menutup semua event venue yang jadwalnya telah lewat secara otomatis dan mengakui pendapatan (V-7) |
 | `venue:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
 | `vmi:audit` | `manual` | Audit VMI & C2M: rekonsiliasi auto-PO komitmen anggaran, plafon kontrak, dan BOM C2M (0 selisih) |
+| `vmi:scan-reorder` | `manual` | D82-1 Scan otomatis status stok VMI dan terbitkan auto-PO idempoten berdasarkan kebijakan (s, S) |
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 170 Command** | **37 Terjadwal** | |
+| **Total: 171 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

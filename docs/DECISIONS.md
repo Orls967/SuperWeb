@@ -2230,3 +2230,19 @@
 
 
 
+
+<a id="2026-11-04-g6-p2-vmi-c2m-fase-82"></a>
+<a id="d82-1"></a>
+<a id="d82-2"></a>
+## 2026-11-04: [G6-P2.2] VMI Kebijakan (s, S) & C2M Konfigurator Parametrik CSP (Fase 82, D82-1 & D82-2)
+- **Anchor:** `2026-11-04-g6-p2-vmi-c2m-fase-82` / `d82-1` / `d82-2`
+- **Context:**
+  - Fase 82 membutuhkan kolaborasi rantai pasok vendor (Vendor-Managed Inventory) berbasis kebijakan persediaan $(s, S)$ yang deterministik dengan verifikasi sertifikat matematis serta konfigurator produk berbasis konsumen ke manufaktur (Consumer-to-Manufacturer) yang menjamin konsistensi pilihan modular melalui algoritma Constraint Satisfaction Problem (AC-3) dan identifikasi akar konflik minimal (QuickXplain).
+- **Decision:**
+  1. D82-1: Vendor-Managed Inventory (VMI) diakses oleh pemasok (`role: supplier`) pada `/portal/vmi` dengan proteksi anti-IDOR hanya untuk SKU yang terikat kontrak aktif di `prc_vmi_agreements` / `ContractLookupInterface`. Kebijakan $(s, S)$ dihitung deterministik via `Modules\Shared\Domain\Algorithms\Inventory\ReorderPolicy` dengan formula $SS = \lceil z \times \sigma \times \sqrt{L} \rceil$, $ROP = \bar{d} \times L + SS$, $S = ROP + \bar{d} \times \text{review}$, $\text{posisi} = \text{on\_hand} + \text{on\_order} - \text{backorder}$, dan $\text{qty} = S - \text{posisi}$ (kelipatan pack). Nilai $\le$ plafon kontrak menghasilkan auto-PO langsung (`AUTO_ORDERED`), sedangkan $>$ plafon mewajibkan approval `procurement_manager` (`PENDING_APPROVAL`). Command `vmi:scan-reorder` idempoten per (SKU, supplier, tanggal).
+  2. D82-2: Consumer-to-Manufacturer (C2M) menyediakan konfigurator parametrik di `/store/c2m` (`role: customer`) dan dasbor pesanan manufaktur di `/manufacturing/c2m` (`role: planner`). Pemilihan opsi disaring menggunakan algoritma `Modules\Shared\Domain\Algorithms\Csp\ArcConsistency` (AC-3). Pilihan yang tidak konsisten ditolak dengan HTTP 422 Unprocessable Entity disertai penjelasan konflik minimal dari `Modules\Shared\Domain\Algorithms\Csp\QuickXplain`. Konfigurasi yang valid menghasilkan BOM & routing turunan ke `mfg_c2m_bom_nodes`, biaya dihitung dari biaya live material $\times$ faktor kompleksitas (bps), dan harga dikunci secara immutable via `PriceLocker`.
+- **Verification:**
+  - Vektor uji VMI ($SS=99, ROP=579, S=1419, \text{qty}=950$ @12.000 = 11.4jt, auto-PO vs approval, $L=5 \implies SS=111, ROP=711, S=1551$) lulus persis.
+  - Vektor uji CSP meja (AC-3 $W=80, M=\text{besi}$; AC-3 $W=120$; penolakan 422 QuickXplain untuk $[W=120, M=\text{kaca}]$ dan $[W=60, D=60]$) lulus persis.
+  - Acceptance test `tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php` lulus 6 skenario.
+  - Command `vmi:audit` membuktikan 0 selisih komitmen anggaran dan ketaatan plafon kontrak.

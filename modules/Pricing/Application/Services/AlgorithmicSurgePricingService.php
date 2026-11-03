@@ -191,6 +191,38 @@ class AlgorithmicSurgePricingService
     }
 
     /**
+     * D82-2 Kunci harga kutipan C2M secara deterministik untuk integrasi manufaktur.
+     *
+     * @param  array<string, mixed>  $metadata
+     */
+    public function freezePriceQuoteDeterministic(
+        string $quoteCode,
+        string $sku,
+        int $effectivePriceIdr,
+        int $floorPriceIdr,
+        int $ceilingPriceIdr,
+        string $quoteHash,
+        string $orderRef,
+        string $channel,
+        int $lockMinutes = 15,
+        array $metadata = []
+    ): FrozenQuote {
+        return FrozenQuote::create([
+            'quote_code' => $quoteCode,
+            'sku' => $sku,
+            'frozen_price_idr' => $effectivePriceIdr,
+            'floor_price_idr' => $floorPriceIdr,
+            'ceiling_price_idr' => $ceilingPriceIdr,
+            'quote_hash' => $quoteHash,
+            'order_ref' => $orderRef,
+            'channel' => $channel,
+            'locked_until' => now()->addMinutes($lockMinutes),
+            'status' => 'FROZEN',
+            'metadata' => $metadata,
+        ]);
+    }
+
+    /**
      * 81.4 Convert immutable frozen quote to order document with integrity verification
      */
     public function convertFrozenQuoteToOrder(string $quoteCode, string $orderRef): FrozenQuote

@@ -10,6 +10,7 @@ use Modules\Store\Http\Controllers\CartController;
 use Modules\Store\Http\Controllers\CatalogController;
 use Modules\Store\Http\Controllers\CheckoutController;
 use Modules\Store\Http\Controllers\OrderController;
+use Modules\Store\Http\Controllers\StoreC2mController;
 
 Route::middleware(['web'])->group(function () {
     // Public Catalog
@@ -78,4 +79,10 @@ Route::middleware(['web'])->group(function () {
         Route::post('/products/{product}/adjust-stock', [AdminProductController::class, 'adjustStock'])->name('products.adjustStock');
         Route::post('/products/cars/listing', [AdminProductController::class, 'createCarListing'])->name('products.createCarListing');
     });
+});
+
+// D82-2 Konfigurator C2M Parametrik CSP
+Route::middleware(['web', 'auth', 'role:admin,customer'])->group(function () {
+    Route::get('/store/c2m', [StoreC2mController::class, 'index'])->name('store.c2m.index');
+    Route::post('/store/c2m/configure', [StoreC2mController::class, 'configure'])->name('store.c2m.configure');
 });
