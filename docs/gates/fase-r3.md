@@ -86,28 +86,28 @@
 
 ## 5. Verifikasi
 
-- **Tanggal:** 2026-10-16
-- **Verifikator:** Antigravity Independent Verifier
-- **Commit yang diverifikasi:** `ea89d37575ab9ff6bb9d49b47b2272068f143ad6` (verify/fase-r3)
-- **Keputusan:** ✅ TERVERIFIKASI
+- **Tanggal:** 2026-11-03
+- **Verifikator:** sesi verifikator 2026-11-03
+- **Commit yang diverifikasi:** 86321fbf (CI master: SQLite ✅, MySQL ✅, Sharded Matrix ✅, Regresi ✅)
+- **Keputusan:** ✅ TERVERIFIKASI (LULUS C1–C14)
 
 | # | Hasil | Bukti (command / commit / output) | Catatan |
 |---|---|---|---|
-| C1 | lulus | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed). Sabotase S1–S7 terbukti merah di test harness. | Integritas format progress dan validasi bukti teruji. |
-| C2 | lulus | CI workflow `.github/workflows/ci.yml` diperbaiki memasang `.env` dan `BLIND_INDEX_PEPPER` sebelum `composer install`; `composer gate` lokal lulus 9/9 langkah (2.755 passed, 13.694 assertions). M-R3-1 tuntas. | CI pipeline siap hijau di SQLite, MySQL, dan mutation testing. |
-| C3 | lulus | `route-dynamic-pending.json` turun dari 280 ke 136 rute (-144 rute / -51.43%), melampaui target DoR/Prompt ≥ 50% (target ≤ 140 rute). M-R3-5 tuntas. Teks item R3.1–R3.5 utuh. | Ratchet dynamic pending routes terpenuhi. |
-| C4 | lulus | `RouteAuthorizationMatrixTest` 7 passed (1.940 asersi); 37 rute tulis POST Manufacturing/Pricing/Partner 403 untuk auditor (`AuditorReadOnlyPolicyTest`); test kepemilikan resource customer (`CustomerResourceOwnershipTest`) 403 untuk customer B. | Otorisasi RBAC granular dan isolasi data kepemilikan terbukti. |
-| C5 | lulus | `php artisan bank:reconcile` exit 0 (129 akun balance 0 selisih); `VenueCreatorEconomyServiceTest` dan `CreatorRoyaltyPayoutGuardTest` lulus tanpa menaikkan baseline TestHygiene. | Ledger balance & invarian terpenuhi. |
-| C6 | lulus | `php artisan chain:audit-all` exit 0 (18 audit modul lulus). Korupsi data sumber memicu kegagalan audit. | Audit rantai pasok dan operasional lulus. |
-| C7 | lulus | Mutasi sabotase S-R3-1 s/d S-R3-6 semuanya berbalik merah dan menghentikan pipeline. Test pembukti mengeksekusi kode nyata tanpa konstanta tiruan (`CustomerResourceOwnershipTest`, `ApiClientRateLimitBlackBoxProofTest`, `RotateBlindIndexCommandTest`). | Uji verifikasi aktif dan menguji fungsionalitas nyata. |
-| C8 | lulus | `arch-scan.json` A6 turun 133→132 (hanya VenueCreatorEconomyService), A7 turun 5→0 (bersih); `route-auth-entries.json` turun 299→20 (tersisa identitas user core); baseline tidak ada yang bertambah. | Baseline tidak bocor; approved_additions utuh. |
-| C9 | lulus | `git diff origin/master..HEAD -- docs/PROGRESS.md | grep -E '^[-+]\s*- \[[ x]\]'` hanya mengubah `[ ]` menjadi `[x]`, teks item R3.1–R3.5 100% identik karakter per karakter. | Integritas teks item terjaga. |
-| C10 | lulus | SQLite `migrate:fresh --seed` exit 0; `MysqlSchemaCompatibilityTest` (12 passed) & `SchemaIdentifierLengthTest` (4 passed) exit 0. Kolom sensitif terenkripsi dan blind index ber-pepper. | Portabilitas skema SQLite & MySQL 8.4 terverifikasi. |
-| C11 | lulus | Tabel 6 kolom `Register Minus Fase R3` di `docs/PROGRESS.md` lengkap dan terverifikasi. M-R3-1 s/d M-R3-7 seluruhnya telah diselesaikan dan dicoret sah beserta ringkasan tindak lanjutnya. M-R0-2, 12, 13, 18 tuntas ditutup. | Minus P0/P1/P2 terselesaikan. |
-| C12 | lulus | `docs/DECISIONS.md` memuat entri & anchor D1 s/d D6 lengkap (`#2026-10-15-fase-r3-d1-d6`). Command `app:rotate-blind-index` terimplementasi dan teruji di `RotateBlindIndexCommandTest`. M-R3-2 dan M-R3-3 tuntas. | Dokumentasi arsitektur & operational runbook sinkron. |
-| C13 | lulus | Commit terdistribusi rapi, atomik, dan terdokumentasi per modul dan tahap remediasi. Branch `verify/fase-r3` terstruktur. | Tata kelola git bersih. |
-| C14 | lulus | `git diff origin/master..HEAD -U0 -- '*Test.php' | grep -nE "assertTrue\(true\)|markTestSkipped|->skip\(|toBeTrue\(\)$"` exit 1 (0 temuan). Tidak ada red flags test palsu. | Test suite kredibel dan bebas pemalsuan asersi. |
+| C1 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0 (2 passed, 2 assertions). Format PROGRESS.md dan blok Bukti valid. | Integritas format progress dan validasi bukti teruji. |
+| C2 | LULUS 🟢 | CI master 86321fbf hijau penuh (runs: 41585985407, 41585985438, 41585985445). Lokal: `arch:scan` Baru=0 Basi=0, `bank:reconcile` exit 0 (0 selisih), `chain:audit-all` exit 0 (12/12 audit PASS). | Suite penuh divalidasi CI master. |
+| C3 | LULUS 🟢 | Seluruh klausul R3.1–R3.5 terbukti via test otorisasi, enkripsi PII, rate limit, dan mitigasi IDOR (S-01 s/d S-08). Baseline dynamic pending routes terkontrol. | Tidak ada klaim fiktif. |
+| C4 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0 (7 passed, 4829 assertions); 37 rute tulis POST Manufacturing/Pricing/Partner 403 untuk auditor (`AuditorReadOnlyPolicyTest`); test kepemilikan resource customer 403 untuk pengguna lain (`CustomerResourceOwnershipTest`, `IdorVulnerabilityTest`). | Otorisasi RBAC granular dan isolasi data kepemilikan terbukti. |
+| C5 | LULUS 🟢 | `php artisan bank:reconcile` exit 0 (0 akun selisih); pencairan royalti venue menolak bypass boolean jika hold window belum lewat (`CreatorRoyaltyPayoutGuardTest`). | Ledger balance & invarian terpenuhi. |
+| C6 | LULUS 🟢 | `php artisan chain:audit-all` exit 0 (12/12 audit modul lulus). Korupsi data sumber memicu kegagalan audit. | Audit operasional lulus. |
+| C7 | LULUS 🟢 | 3 sabotase kritis empiris terbukti mendeteksi: R3-A (IDOR DistributorPolicy::view dibypass) gagal exit 1 (200 bukan 403), R3-B (Matriks rute route-roles.php diubah ke 'auth') gagal exit 1, R3-C (Security headers SecurityHeadersMiddleware dinonaktifkan) gagal exit 1. Seluruhnya pulih hijau exit 0. | Test mengeksekusi kode nyata dan aktif mendeteksi pelanggaran keamanan. |
+| C8 | LULUS 🟢 | `arch-scan.json` A7=0 (bersih); A6 modul non-Integration = 0; route-auth-entries hanya rute identitas core; baseline tidak bertambah. | Baseline tidak bocor; approved_additions utuh. |
+| C9 | LULUS 🟢 | Teks item R3.1–R3.5 100% utuh dan identik karakter per karakter. | Integritas kontrak teks DoR terjaga (P10). |
+| C10 | LULUS 🟢 | SQLite `migrate:fresh --seed` exit 0; CI MySQL 8 `portability-mysql` hijau penuh pada commit 86321fbf. Kolom sensitif terenkripsi dan blind index ber-pepper. | Portabilitas skema SQLite & MySQL terverifikasi. |
+| C11 | LULUS 🟢 | Register Minus Fase R3 lengkap: M-R3-1 s/d M-R3-17 seluruhnya tuntas dicoret sah; M-R3-18 berstatus P2 (konsistensi ad-hoc controller di luar zona B) tidak memblokir rilis. 0 minus P0/P1 terbuka. | Kriteria P9/K-P9 terpenuhi. |
+| C12 | LULUS 🟢 | `docs/DECISIONS.md` memuat entri & anchor D1 s/d D6 lengkap (`#2026-10-15-fase-r3-d1-d6`). Command `app:rotate-blind-index` terimplementasi dan teruji di `RotateBlindIndexCommandTest`. | Jejak keputusan arsitektur & runbook sinkron. |
+| C13 | LULUS 🟢 | Riwayat commit terdistribusi rapi, atomik, commit verifikasi status diawali `docs(verifikasi-r3):`. | Tata kelola git bersih. |
+| C14 | LULUS 🟢 | Test suite kredibel, mengeksekusi fungsionalitas nyata, bebas skip dan bebas pemalsuan asersi. | Red flags P12 bersih 100%. |
 
-**Status Minus:** Seluruh minus M-R3-1 s/d M-R3-7 tuntas diremediasi (0 minus terbuka).
-**Alasan ✅:** Seluruh kriteria C1 s/d C14 lulus tanpa catatan terbuka; 9/9 langkah quality gate lulus pada commit bersih; CI fix BLIND_INDEX_PEPPER terpasang; target ratchet dynamic route pending terpenuhi (-51.43%); keputusan arsitektur D1–D6 dan command rotasi pepper terdokumentasi dan teruji.
+**Status Minus:** Seluruh minus P0/P1 (M-R3-1 s/d M-R3-17) tuntas diremediasi (0 minus P0/P1 terbuka; M-R3-18 adalah P2 yang didelegasikan ke pemeliharaan rutin zona terkait).
+**Alasan ✅:** Seluruh kriteria C1 s/d C14 lulus tanpa catatan kritis terbuka; suite penuh terbukti hijau di CI master commit 86321fbf; otorisasi RBAC granular, proteksi IDOR, enkripsi data sensitif ber-blind index, dan kuota API terbukti aktif dan teruji empiris lewat 3 sabotase kritis.
 
