@@ -30,6 +30,7 @@ use App\Quality\Audit\Fixtures\EnterpriseAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EpcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EsgAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EvAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\FashionAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FltAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FoodAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\GovernanceAuditCorruptionFixture;
@@ -114,6 +115,7 @@ final class AuditCommandRegistry
             'ev:audit' => new EvAuditCorruptionFixture,
             'flt:audit' => new FltAuditCorruptionFixture,
             'food:audit' => new FoodAuditCorruptionFixture,
+            'fsh:audit' => new FashionAuditCorruptionFixture,
             'governance:audit' => new GovernanceAuditCorruptionFixture,
             'group:audit' => new GroupAuditCorruptionFixture,
             'hcm:audit' => new HcmAuditCorruptionFixture,

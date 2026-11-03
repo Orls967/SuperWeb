@@ -2265,3 +2265,20 @@
   - Acceptance test `tests/Acceptance/AgriProcessing/AgriProcessingAcceptanceTest.php` lulus 6 skenario.
   - Command `food:audit` membuktikan 0 selisih neraca massa dan mendeteksi anomali pada fixture korupsi.
 
+
+<a id="2026-11-04-g6-p2-fashion-sourcing-fase-181"></a>
+<a id="d181-1"></a>
+<a id="d181-2"></a>
+<a id="d181-3"></a>
+## 2026-11-04: [G6-P2.4] Apparel, Textile & Fashion Sourcing Lini 28 (Fase 181, D181-1..D181-3)
+- **Anchor:** `2026-11-04-g6-p2-fashion-sourcing-fase-181` / `d181-1` / `d181-2` / `d181-3`
+- **Context:**
+  - Lini 28 (Fashion & Textile) membutuhkan tata kelola sourcing musiman yang ketat: siklus koleksi desain busana, persetujuan sampel (tech pack), perencanaan pembelian musiman, dan alokasi diskrit pesanan produksi ke matriks ukuran/warna tanpa ada kebocoran atau pembulatan yang menyimpang dari total kuota yang dipesan.
+- **Decision:**
+  1. D181-1: Modul `Fashion` (`fsh_`) khusus menangani sourcing musiman, koleksi desain, sampel artikel, rencana beli, dan PO produksi garmen. Varian produk akhir mengacu pada master Store/Inventory guna mencegah duplikasi master produk/varian di luar Inventory (KONSEP §A16 baris 1429).
+  2. D181-2: Alokasi matriks ukuran dan warna busana menggunakan algoritma pembagian proporsional deterministik `Modules\Shared\Domain\Algorithms\Apportionment\LargestRemainder` (metode Hamilton). Total alokasi unit pada rincian ukuran/warna terbukti secara matematis tepat sama dengan total kuota PO produksi ($\sum a_i = Q$) tanpa selisih.
+  3. D181-3: Persetujuan sampel (`approval_status = APPROVED`) merupakan prasyarat mutlak sebelum penerbitan PO produksi ke pabrik rekanan. Command audit `fsh:audit` memvalidasi 0 selisih konservasi kuota alokasi varian dan mencegah penerbitan PO dari sampel yang belum disetujui.
+- **Verification:**
+  - Vektor uji pembagian proporsional Hamilton: kuota 1.000 unit dengan bobot [2, 3, 3, 1] menghasilkan alokasi [222, 334, 333, 111]; kuota 250 unit dengan bobot [1, 2, 2, 1] menghasilkan [42, 83, 83, 42].
+  - Acceptance test `tests/Acceptance/FashionTextile/FashionTextileAcceptanceTest.php` lulus 6 skenario.
+  - Command `fsh:audit` membuktikan 0 selisih alokasi kuota dan mendeteksi anomali pada fixture korupsi `FashionAuditCorruptionFixture`.

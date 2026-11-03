@@ -497,45 +497,46 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 17 | **EnterpriseFinance** | `ef_` | 2 |
 | 18 | **Epc** | `epc_` | 1 |
 | 19 | **Esg** | `esg_` | 4 |
-| 20 | **Finance** | `fin_` | 1 |
-| 21 | **Food** | `food_` | 1 |
-| 22 | **Hcm** | `hcm_` | 7 |
-| 23 | **Hospital** | `hsp_` | 14 |
-| 24 | **Hotel** | `htl_` | 16 |
-| 25 | **Insurance** | `ins_` | 2 |
-| 26 | **Integration** | `intg_` | 340 |
-| 27 | **Intercompany** | `ic_` | 1 |
-| 28 | **International** | `intl_` | 1 |
-| 29 | **Inventory** | `inv_` | 2 |
-| 30 | **Logistics** | `lgx_` | 31 |
-| 31 | **Mall** | `mall_` | 7 |
-| 32 | **Manufacturing** | `mfg_` | 14 |
-| 33 | **Med** | `med_` | 3 |
-| 34 | **Mining** | `min_` | 11 |
-| 35 | **Mobility** | `oto_` | 0 |
-| 36 | **Partner** | `ptn_` | 1 |
-| 37 | **Party** | `pty_` | 3 |
-| 38 | **Payment** | `pay_` | 3 |
-| 39 | **Plm** | `plm_` | 1 |
-| 40 | **Port** | `prt_` | 1 |
-| 41 | **Pricing** | `pric_` | 7 |
-| 42 | **Procurement** | `prc_` | 6 |
-| 43 | **Proptech** | `prp_` | 3 |
-| 44 | **Resto** | `resto_` | 10 |
-| 45 | **Ret** | `ret_` | 4 |
-| 46 | **Rwa** | `rwa_` | 3 |
-| 47 | **Shared** | — | 0 |
-| 48 | **Store** | `store_` | 5 |
-| 49 | **Supplier** | `sup_` | 3 |
-| 50 | **Tlx** | `tlx_` | 4 |
-| 51 | **Trade** | `trd_` | 3 |
-| 52 | **TradeFinance** | `tf_` | 3 |
-| 53 | **Treasury** | `trs_` | 1 |
-| 54 | **Vending** | `vnd_` | 3 |
-| 55 | **Venue** | `ven_` | 6 |
-| 56 | **Wealth** | `wm_` | 2 |
-| 57 | **Wms** | `wms_` | 2 |
-| | **Total: 57 Modul** | | **606 Migrasi** |
+| 20 | **Fashion** | `fsh_` | 1 |
+| 21 | **Finance** | `fin_` | 1 |
+| 22 | **Food** | `food_` | 1 |
+| 23 | **Hcm** | `hcm_` | 7 |
+| 24 | **Hospital** | `hsp_` | 14 |
+| 25 | **Hotel** | `htl_` | 16 |
+| 26 | **Insurance** | `ins_` | 2 |
+| 27 | **Integration** | `intg_` | 340 |
+| 28 | **Intercompany** | `ic_` | 1 |
+| 29 | **International** | `intl_` | 1 |
+| 30 | **Inventory** | `inv_` | 2 |
+| 31 | **Logistics** | `lgx_` | 31 |
+| 32 | **Mall** | `mall_` | 7 |
+| 33 | **Manufacturing** | `mfg_` | 14 |
+| 34 | **Med** | `med_` | 3 |
+| 35 | **Mining** | `min_` | 11 |
+| 36 | **Mobility** | `oto_` | 0 |
+| 37 | **Partner** | `ptn_` | 1 |
+| 38 | **Party** | `pty_` | 3 |
+| 39 | **Payment** | `pay_` | 3 |
+| 40 | **Plm** | `plm_` | 1 |
+| 41 | **Port** | `prt_` | 1 |
+| 42 | **Pricing** | `pric_` | 7 |
+| 43 | **Procurement** | `prc_` | 6 |
+| 44 | **Proptech** | `prp_` | 3 |
+| 45 | **Resto** | `resto_` | 10 |
+| 46 | **Ret** | `ret_` | 4 |
+| 47 | **Rwa** | `rwa_` | 3 |
+| 48 | **Shared** | — | 0 |
+| 49 | **Store** | `store_` | 5 |
+| 50 | **Supplier** | `sup_` | 3 |
+| 51 | **Tlx** | `tlx_` | 4 |
+| 52 | **Trade** | `trd_` | 3 |
+| 53 | **TradeFinance** | `tf_` | 3 |
+| 54 | **Treasury** | `trs_` | 1 |
+| 55 | **Vending** | `vnd_` | 3 |
+| 56 | **Venue** | `ven_` | 6 |
+| 57 | **Wealth** | `wm_` | 2 |
+| 58 | **Wms** | `wms_` | 2 |
+| | **Total: 58 Modul** | | **607 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -560,6 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **EnterpriseFinance** | 6 | `enterprise-finance`, `enterprise-finance/budgets`, `enterprise-finance/governance` ... | web, auth, role:admin,auditor,treasury |
 | **Epc** | 8 | `epc`, `epc/dashboard`, `epc/claims` ... | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 6 | `esg`, `esg/operations`, `esg/operations/emissions` ... | web, auth, role:admin,esg_officer,auditor |
+| **Fashion** | 3 | `fashion/collections`, `fashion/orders/allocate` ... | web, auth, role:fashion_buyer,merchandiser,admin |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Food** | 2 | `food/brands` ... | web, auth, role:brand_manager,admin |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
@@ -598,7 +600,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1059 Rute** | | |
+| **Total** | **1062 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -654,6 +656,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `finance:charge-installments` | **`dailyAt('01:00')`** | Debit cicilan pembiayaan yang jatuh tempo dari dompet peminjam |
 | `flt:audit` | `manual` | Perform two-source verification of B2B fleet leasing contracts, units, and amortization integrity |
 | `food:audit` | `manual` | Audit dua sumber integritas komoditas pangan, neraca massa pengolahan, dan mutu ekspor (Lini 21) |
+| `fsh:audit` | `manual` | Audit integritas alokasi ukuran/warna, approval sampel desain, dan rencana beli busana (Lini 28) |
 | `gate:report` | `manual` | Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite |
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
 | `governance:audit` | `manual` | Audit DAO governance proposals, voter weights, and hash-chained vote receipts |
@@ -775,7 +778,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 172 Command** | **37 Terjadwal** | |
+| **Total: 173 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

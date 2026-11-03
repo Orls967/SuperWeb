@@ -3382,4 +3382,13 @@ return [
     'port.billing' => [
         'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
     ],
+    'fashion.collections.index' => [
+        'roles' => ['admin', 'fashion_buyer', 'merchandiser'],
+    ],
+    'fashion.collections.store' => [
+        'roles' => ['admin', 'fashion_buyer', 'merchandiser'],
+    ],
+    'fashion.orders.allocate' => [
+        'roles' => ['admin', 'fashion_buyer', 'merchandiser'],
+    ],
 ];
