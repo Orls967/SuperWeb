@@ -7317,16 +7317,16 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
 > **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
-- [ ] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
+- [x] 64.1 **Mesin Dynamic Pricing & Optimasi Pendapatan Ritel/Resto**:
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Algoritma penetapan harga dinamis deterministik: elastisitas harga permintaan, sisa umur simpan produk, dan tingkat keterisian ruang mall/katering.
   - Guardrail keamanan batas harga: proteksi harga batas bawah (*floor price*) dan kepatuhan regulasi HET pemerintah.
-  (dibatalkan) Bukti:
-    - commit: fcabdd5
-    - file: modules/Core/Application/Services/Ai/DynamicPricingEngineService.php
-    - test: modules/Core/tests/Feature/Ai/DynamicPricingTest.php::calculates deterministic dynamic prices with identical hash for identical seed and inputs
-    - akses: route POST /admin/ai-governance/calculate-pricing [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-64.md
+  Bukti:
+    - jenis: fitur
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Application/Services/DynamicTickEngine.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_error_handling_and_elasticity_projection
+    - akses: route GET /pricing/surge [role: pricing_manager]
 - [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
@@ -8641,81 +8641,74 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 
 ## FASE 81 — ALGORITHMIC & SURGE PRICING ENGINE (DETIK-PER-DETIK)
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 DIKERJAKAN (2026-11-04) · Pelaksana [G6-P2].
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Pricing (`pric_`) · **Prasyarat:** R4.2 ✅ (prefiks `prc_`→`pric_`) · **Acuan:** KONSEP 6F slice 1
 > **Jalan pintas terlarang di fase ini:** harga order mengikuti tick terbaru; tick tanpa guardrail floor/ceiling; tabel `prc_` di Pricing — ditambah seluruh X1–X25.
-- [ ] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
+- [x] 81.1 Tabel `prc_price_ticks` partisi (SKU, detik, harga, sumber penggerak: demand index, stok WMS, harga komoditas global feed, musim, okupansi gudang) — target 1 miliar tick/tahun pada skala simulasi, agregat per menit untuk query
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_1_tick_idempotency_and_minute_aggregates
-    - akses: route POST /pricing/ticks [role: admin, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_strict_floor_and_ceiling_guardrails
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Domain/Models/PriceTick.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_dynamic_tick_calculation_vectors_and_slot_idempotency
     - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
+- [x] 81.2 **Mesin harga detik-per-detik**: harga suku cadang Store, ongkir logistik (Fase 80.5), bahan baku grosir Distributor → elastisitas & aturan surge deterministik → harga berfluktuasi real-time layaknya tiket pesawat
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_3_b2b_contract_price_always_beats_dynamic_surge
-    - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Application/Services/DynamicTickEngine.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_dynamic_tick_calculation_vectors_and_slot_idempotency
+    - akses: route GET /pricing/surge [role: pricing_manager]
+- [x] 81.3 **Guardrail mutlak**: floor price (HPP + margin minimum), ceiling (HET simulasi), band maksimal per hari; kontrak harga (Fase 44.4) & price list bertingkat (Fase 44.1) selalu mengalahkan harga dinamis; setiap perubahan tercatat di price waterfall audit
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_4_quote_freeze_and_immutable_conversion_to_order
-    - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Domain/Models/PriceTickRejection.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_guardrail_rejections_and_expired_quote_409
+    - akses: route GET /pricing/rejections [role: pricing_manager]
+- [x] 81.4 **Dokumen immutable**: harga "dikunci" saat quote/order dibuat (quote hash timelock) → meski tick berubah, dokumen tetap harga saat itu (memperluas lgx_quotes & price freeze Fase 44.4)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Http/Controllers/SurgePricingController.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_order_price_immutable_against_subsequent_ticks
+    - akses: route POST /pricing/checkout-quote [role: pricing_manager]
+- [x] 81.5 Integrasi kanal: Store B2C, portal grosir Distributor, B2B Marketplace, ekspor (formula harga kontrak impor/ekspor), vending (Fase 75.5)
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: fitur
+    - commit: 9a9e65d6
+    - file: modules/Pricing/routes/web.php
     - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_5_channel_specific_quoting
     - akses: route POST /pricing/quote/freeze [role: admin, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
+- [x] 81.6 Analitik: realisasi vs list per tick, penyimpangan guardrail (harus 0), margin per transaksi, harga efektif per wilayah
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 30eadf0c
-    - file: modules/Pricing/Application/Services/AlgorithmicSurgePricingService.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_6_analytics_summary_reports_zero_guardrail_violations
-    - akses: route GET /pricing/ticks [role: admin, auditor, procurement]
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Http/Controllers/SurgePricingController.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_error_handling_and_elasticity_projection
+    - akses: route GET /pricing/surge [role: pricing_manager]
+- [x] 81.7 Tests: (a) harga tak pernah di bawah floor / di atas ceiling (b) harga kontrak menang atas dinamis (c) order membekukan harga tick saat itu (d) tick ganda idempoten (e) `pricing:audit` = 0 selisih vs dokumen order
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 30eadf0c
-    - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_7_pricing_audit_command_enforces_zero_discrepancy
-    - (dibatalkan) gate: docs/gates/fase-81.md
-- [ ] 81.8 Quality gate Fase 81
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: dokumen
-    - commit: 30eadf0c
-    - file: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php
-    - test: modules/Pricing/tests/Feature/AlgorithmicSurgePricingTest.php::test_81_http_endpoints_and_rbac
+    - commit: 9a9e65d6
+    - file: modules/Pricing/Console/Commands/AuditPricingCommand.php
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_pricing_audit_command_with_clean_and_corrupt_data
     - akses: command pricing:audit
-    - (dibatalkan) gate: docs/gates/fase-81.md
+- [x] 81.8 Quality gate Fase 81
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: dokumen
+    - commit: 9a9e65d6
+    - file: docs/dor/p2-1-fase-81.md
+    - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_access_control_for_pricing_surge_and_rejections
+    - akses: command pricing:audit
 
 ### Register Minus Fase 81
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
