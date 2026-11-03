@@ -797,6 +797,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Mining** | `MiningAccounts` | 27 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
 | **Mobility** | `FleetAccounts` | 7 | `oto:fleet_lease_revenue:IDR`, `expense:oto:fleet_sla_credit:IDR` ... |
+| **Port** | `PortAccounts` | 4 | `rev:prt:thc:IDR`, `rev:prt:dockage:IDR` ... |
 | **Proptech** | `ProptechAccounts` | 10 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 23 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
 | **Rwa** | `RwaAccounts` | 12 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
@@ -807,6 +808,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 32 Registry** | | **361 Akun** | |
+| **Total: 33 Registry** | | **365 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
