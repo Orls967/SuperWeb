@@ -8716,81 +8716,66 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 81.1–81.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 82 — VENDOR-MANAGED INVENTORY (VMI) & C2M (CONSUMER-TO-MANUFACTURER)
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 DIKERJAKAN (2026-11-04) · Pelaksana [G6-P2].
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Wms (VMI) · Manufacturing + Plm + Store (C2M) · **Prasyarat:** Fase 81 ✅ · **Acuan:** KONSEP 6F slice 2–3
 > **Jalan pintas terlarang di fase ini:** auto-PO tanpa plafon kontrak/approval; C2M tanpa BOM/routing nyata — ditambah seluruh X1–X25.
-- [ ] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+- [x] 82.1 **VMI**: akses khusus pemasok via API v2 (Fase 55, ability `vmi:read` + `vmi:po`) → mereka memantau stok rak WMS milik kita (read-only + scope partikel per SKU mereka) → menyentuh titik pesan ulang → **PO otomatis terbit tanpa staf pengadaan** (plafon per kontrak kerangka Fase 32.4; di atas plafon → approval)
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
+    - commit: 961cdd2c
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_reorder_point_triggers_auto_po_and_commits_budget
-    - akses: route POST /manufacturing/vmi/trigger [role: admin, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_vmi_e2e_reorder_policy_auto_po_and_idempotency
+    - akses: route POST /portal/vmi/trigger [role: supplier]
+- [x] 82.2 Penerimaan VMI: ASN dari pemasok → GRN → 3-way match (Fase 34.3) → kredit terms → siklus P2P penuh; performance pemasok masuk supplier scorecard (Fase 32.6)
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
-    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_1_vmi_approval_posts_ledger_commitment
-    - akses: route POST /manufacturing/vmi/{replenishment}/approve [role: admin, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - commit: 961cdd2c
+    - file: modules/Procurement/Http/Controllers/VmiPortalController.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_vmi_contract_plafond_and_procurement_approval
+    - akses: route POST /portal/vmi/{replenishment}/approve [role: procurement_manager]
+- [x] 82.3 **C2M configurator 3D**: pembeli Store B2C mendesain suku cadang modifikasi mobil (parametric: ukuran, bahan, finishing) → validasi kelayakan (toleransi, beban) → harga live dari BOM + complexity factor
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
-    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_c2m_bom_cycle_detection_blocks_circular_dependency
-    - akses: route POST /manufacturing/c2m/orders [role: admin, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - commit: 961cdd2c
+    - file: modules/Store/Http/Controllers/StoreC2mController.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_c2m_csp_validation_422_and_valid_order_with_pricelocker
+    - akses: route POST /store/c2m/configure [role: customer]
+- [x] 82.4 **Routing instruksi pabrik**: desain → dikonversi menjadi BOM khusus + routing operasi (memperluas PLM EBOM/MBOM Fase 59.2) → planned order di MRP → konversi ke SPK → produksi → QC (Fase 39) → pengiriman via Logistics
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
-    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
-    - akses: route POST /manufacturing/c2m/orders/{order}/spk [role: admin, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - commit: 961cdd2c
+    - file: modules/Manufacturing/Http/Controllers/VmiAndC2mController.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_c2m_csp_validation_422_and_valid_order_with_pricelocker
+    - akses: route GET /manufacturing/c2m [role: planner]
+- [x] 82.5 Lead time C2M dihitung dari beban work center (CRP Fase 36.4) → ETA real-time ke pembeli; pembatalan setelah produksi dimulai dikenakan biaya material
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
+    - commit: 961cdd2c
     - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_3_and_82_4_c2m_configurator_bom_cost_roll_up_and_spk_routing
-    - akses: route POST /manufacturing/c2m/orders/{order}/cancel [role: admin, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_c2m_csp_validation_422_and_valid_order_with_pricelocker
+    - akses: route POST /store/c2m/configure [role: customer]
+- [x] 82.6 Dashboard: stok per rak pemasok, auto-PO terbit, fill rate VMI; papan produksi C2M (desain → status SPK → biaya aktual vs penawaran)
+  Bukti:
     - jenis: fitur
-    - commit: 9d80960f
-    - file: modules/Manufacturing/Application/Services/C2m/VmiAndC2mService.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_6_vmi_and_c2m_summaries
-    - akses: route GET /manufacturing/vmi-c2m [role: admin, auditor, operator, planner, procurement]
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+    - commit: 961cdd2c
+    - file: modules/Procurement/resources/views/procurement/vmi_portal.blade.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_vmi_supplier_anti_idor_scope
+    - akses: route GET /portal/vmi [role: supplier]
+- [x] 82.7 Tests: (a) titik pesan ulang → PO 1x idempoten (b) PO di atas plafon butuh approval (c) desain C2M menghasilkan BOM valid tanpa siklus (d) harga C2M = roll-up BOM + complexity (e) reconcile auto-PO komitmen anggaran
+  Bukti:
     - jenis: tooling
-    - commit: 9d80960f
-    - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_7_vmi_audit_command_enforces_zero_discrepancy
-    - (dibatalkan) gate: docs/gates/fase-82.md
-- [ ] 82.8 Quality gate Fase 82
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: dokumen
-    - commit: 9d80960f
-    - file: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php
-    - test: modules/Manufacturing/tests/Feature/C2m/VmiAndC2mManufacturingTest.php::test_82_http_endpoints_and_rbac
+    - commit: 961cdd2c
+    - file: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_vmi_audit_clean_and_corruption_fixture
     - akses: command vmi:audit
-    - (dibatalkan) gate: docs/gates/fase-82.md
+- [x] 82.8 Quality gate Fase 82
+  Bukti:
+    - jenis: dokumen
+    - commit: 961cdd2c
+    - file: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php
+    - test: tests/Acceptance/VmiC2m/VmiC2mAcceptanceTest.php::test_rbac_access_control_vmi_and_c2m_routes
+    - akses: command vmi:audit
 
 ### Register Minus Fase 82
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
