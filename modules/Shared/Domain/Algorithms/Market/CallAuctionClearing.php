@@ -17,8 +17,8 @@ namespace Modules\Shared\Domain\Algorithms\Market;
 final class CallAuctionClearing
 {
     /**
-     * @param list<array{id: string|int, quantity: int, price: int, created_at: int|string}> $bids
-     * @param list<array{id: string|int, quantity: int, price: int, created_at: int|string}> $asks
+     * @param  list<array{id: string|int, quantity: int, price: int, created_at: int|string}>  $bids
+     * @param  list<array{id: string|int, quantity: int, price: int, created_at: int|string}>  $asks
      */
     public function solve(array $bids, array $asks): CallAuctionClearingResult
     {
@@ -298,9 +298,8 @@ final class CallAuctionClearing
             certificate: $certificate,
         );
 
-        (new CallAuctionClearingCertificateVerifier())->verify($bids, $asks, $result);
+        (new CallAuctionClearingCertificateVerifier)->verify($bids, $asks, $result);
 
         return $result;
     }
 }
-

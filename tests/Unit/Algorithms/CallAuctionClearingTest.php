@@ -13,13 +13,14 @@ use Tests\TestCase;
 class CallAuctionClearingTest extends TestCase
 {
     private CallAuctionClearing $solver;
+
     private CallAuctionClearingCertificateVerifier $verifier;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->solver = new CallAuctionClearing();
-        $this->verifier = new CallAuctionClearingCertificateVerifier();
+        $this->solver = new CallAuctionClearing;
+        $this->verifier = new CallAuctionClearingCertificateVerifier;
     }
 
     public function test_exact_prompt_vector_d24_3_clears_at_1350_with_22t_volume(): void

@@ -21,8 +21,8 @@ use RuntimeException;
 final class CallAuctionClearingCertificateVerifier
 {
     /**
-     * @param list<array{id: string|int, quantity: int, price: int, created_at: int|string}> $bids
-     * @param list<array{id: string|int, quantity: int, price: int, created_at: int|string}> $asks
+     * @param  list<array{id: string|int, quantity: int, price: int, created_at: int|string}>  $bids
+     * @param  list<array{id: string|int, quantity: int, price: int, created_at: int|string}>  $asks
      */
     public function verify(array $bids, array $asks, CallAuctionClearingResult $result): bool
     {

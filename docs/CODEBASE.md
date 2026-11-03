@@ -485,54 +485,55 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 5 | **AutoServe** | `serve_` | 1 |
 | 6 | **B2b** | `b2b_` | 1 |
 | 7 | **Banking** | `bank_` | 11 |
-| 8 | **CloudKitchen** | `ckt_` | 3 |
-| 9 | **Contract** | `ctr_` | 3 |
-| 10 | **ControlTower** | `sct_` | 1 |
-| 11 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 25 |
-| 12 | **Crypto** | `crypto_` | 4 |
-| 13 | **Distribution** | `dist_` | 5 |
-| 14 | **Edu** | `edu_` | 4 |
-| 15 | **Egy** | `egy_` | 6 |
-| 16 | **EnterpriseFinance** | `ef_` | 2 |
-| 17 | **Epc** | `epc_` | 1 |
-| 18 | **Esg** | `esg_` | 4 |
-| 19 | **Finance** | `fin_` | 1 |
-| 20 | **Hcm** | `hcm_` | 7 |
-| 21 | **Hospital** | `hsp_` | 14 |
-| 22 | **Hotel** | `htl_` | 16 |
-| 23 | **Insurance** | `ins_` | 2 |
-| 24 | **Integration** | `intg_` | 340 |
-| 25 | **Intercompany** | `ic_` | 1 |
-| 26 | **International** | `intl_` | 1 |
-| 27 | **Inventory** | `inv_` | 2 |
-| 28 | **Logistics** | `lgx_` | 30 |
-| 29 | **Mall** | `mall_` | 7 |
-| 30 | **Manufacturing** | `mfg_` | 13 |
-| 31 | **Med** | `med_` | 3 |
-| 32 | **Mining** | `min_` | 11 |
-| 33 | **Mobility** | `oto_` | 0 |
-| 34 | **Partner** | `ptn_` | 1 |
-| 35 | **Party** | `pty_` | 3 |
-| 36 | **Payment** | `pay_` | 3 |
-| 37 | **Plm** | `plm_` | 1 |
-| 38 | **Pricing** | `pric_` | 6 |
-| 39 | **Procurement** | `prc_` | 6 |
-| 40 | **Proptech** | `prp_` | 3 |
-| 41 | **Resto** | `resto_` | 10 |
-| 42 | **Ret** | `ret_` | 4 |
-| 43 | **Rwa** | `rwa_` | 3 |
-| 44 | **Shared** | — | 0 |
-| 45 | **Store** | `store_` | 5 |
-| 46 | **Supplier** | `sup_` | 3 |
-| 47 | **Tlx** | `tlx_` | 4 |
-| 48 | **Trade** | `trd_` | 3 |
-| 49 | **TradeFinance** | `tf_` | 3 |
-| 50 | **Treasury** | `trs_` | 1 |
-| 51 | **Vending** | `vnd_` | 3 |
-| 52 | **Venue** | `ven_` | 6 |
-| 53 | **Wealth** | `wm_` | 2 |
-| 54 | **Wms** | `wms_` | 2 |
-| | **Total: 54 Modul** | | **599 Migrasi** |
+| 8 | **Circular** | `cir_` | 1 |
+| 9 | **CloudKitchen** | `ckt_` | 3 |
+| 10 | **Contract** | `ctr_` | 3 |
+| 11 | **ControlTower** | `sct_` | 1 |
+| 12 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 25 |
+| 13 | **Crypto** | `crypto_` | 4 |
+| 14 | **Distribution** | `dist_` | 5 |
+| 15 | **Edu** | `edu_` | 4 |
+| 16 | **Egy** | `egy_` | 6 |
+| 17 | **EnterpriseFinance** | `ef_` | 2 |
+| 18 | **Epc** | `epc_` | 1 |
+| 19 | **Esg** | `esg_` | 4 |
+| 20 | **Finance** | `fin_` | 1 |
+| 21 | **Hcm** | `hcm_` | 7 |
+| 22 | **Hospital** | `hsp_` | 14 |
+| 23 | **Hotel** | `htl_` | 16 |
+| 24 | **Insurance** | `ins_` | 2 |
+| 25 | **Integration** | `intg_` | 340 |
+| 26 | **Intercompany** | `ic_` | 1 |
+| 27 | **International** | `intl_` | 1 |
+| 28 | **Inventory** | `inv_` | 2 |
+| 29 | **Logistics** | `lgx_` | 30 |
+| 30 | **Mall** | `mall_` | 7 |
+| 31 | **Manufacturing** | `mfg_` | 13 |
+| 32 | **Med** | `med_` | 3 |
+| 33 | **Mining** | `min_` | 11 |
+| 34 | **Mobility** | `oto_` | 0 |
+| 35 | **Partner** | `ptn_` | 1 |
+| 36 | **Party** | `pty_` | 3 |
+| 37 | **Payment** | `pay_` | 3 |
+| 38 | **Plm** | `plm_` | 1 |
+| 39 | **Pricing** | `pric_` | 6 |
+| 40 | **Procurement** | `prc_` | 6 |
+| 41 | **Proptech** | `prp_` | 3 |
+| 42 | **Resto** | `resto_` | 10 |
+| 43 | **Ret** | `ret_` | 4 |
+| 44 | **Rwa** | `rwa_` | 3 |
+| 45 | **Shared** | — | 0 |
+| 46 | **Store** | `store_` | 5 |
+| 47 | **Supplier** | `sup_` | 3 |
+| 48 | **Tlx** | `tlx_` | 4 |
+| 49 | **Trade** | `trd_` | 3 |
+| 50 | **TradeFinance** | `tf_` | 3 |
+| 51 | **Treasury** | `trs_` | 1 |
+| 52 | **Vending** | `vnd_` | 3 |
+| 53 | **Venue** | `ven_` | 6 |
+| 54 | **Wealth** | `wm_` | 2 |
+| 55 | **Wms** | `wms_` | 2 |
+| | **Total: 55 Modul** | | **600 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -545,6 +546,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
 | **B2b** | 9 | `b2b`, `b2b/dashboard`, `b2b/wholesale` ... | web, auth, role:admin,b2b_buyer,procurement |
 | **Banking** | 13 | `wallet`, `wallet/transfer`, `wallet/mutasi` ... | web, auth, role:admin,customer,auditor |
+| **Circular** | 12 | `circular/listings`, `circular/market`, `circular/orders` ... | web, auth, verified |
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
@@ -592,7 +594,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1027 Rute** | | |
+| **Total** | **1039 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -613,6 +615,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `benchmark:run` | `manual` | Jalankan benchmark suite platform: latensi p95 endpoint kritis dan durasi audit finansial (PROGRESS R9.2) |
 | `bidding:audit` | `manual` | Audit AI Bidding Agent: verifikasi determinisme evaluasi lelang, four-eyes approval, dan komitmen kontrak (0 selisih) |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
+| `cir:audit` | `manual` | Audit dua sumber Circular Marketplace (D24-5: tonase terjual = dikirim = diterima K1, escrow balance, dan fee revenue) |
 | `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
 | `clearing:audit` | `manual` | Audit Cross-Border Clearing: rekonsiliasi saldo escrow kripto, pelepasan POD, dan sertifikasi CBAM (0 selisih) |
 | `contracts:verify-chain` | **`dailyAt('03:00')`** | Verify the append-only cryptographic hash-chain across all contract versions |
@@ -763,13 +766,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 166 Command** | **37 Terjadwal** | |
+| **Total: 167 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
 |---|---|---|---|
 | **Agri** | `AgriAccounts` | 5 | `agri:farmer_loan_ar:IDR`, `agri:escrow_disbursement:IDR` ... |
 | **B2b** | `B2bAccounts` | 3 | `escrow:b2b:orders:IDR`, `clearing:b2b:deposit:IDR` ... |
+| **Circular** | `CircularAccounts` | 2 | `cir:fee_revenue:IDR`, `escrow:payment:IDR` |
 | **CloudKitchen** | `CloudKitchenAccounts` | 5 | `hcm:meals_deduction:IDR`, `resto:catering_revenue:IDR` ... |
 | **Core** | `CoreAccounts` | 22 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 10 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
@@ -799,6 +803,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 31 Registry** | | **359 Akun** | |
+| **Total: 32 Registry** | | **361 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

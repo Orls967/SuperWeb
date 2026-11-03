@@ -10,11 +10,11 @@ namespace Modules\Shared\Domain\Algorithms\Market;
 final readonly class CallAuctionClearingResult
 {
     /**
-     * @param int $clearingPrice Harga kliring per unit (Rp/kg)
-     * @param int $clearingVolume Volume total transaksi yang tereksekusi
-     * @param array<string|int, int> $bidAllocations Peta ID bid => kuantitas terisi
-     * @param array<string|int, int> $askAllocations Peta ID ask => kuantitas terisi
-     * @param list<array{bid_id: string|int, ask_id: string|int, quantity: int, price: int}> $trades Daftar transaksi berpasangan
+     * @param  int  $clearingPrice  Harga kliring per unit (Rp/kg)
+     * @param  int  $clearingVolume  Volume total transaksi yang tereksekusi
+     * @param  array<string|int, int>  $bidAllocations  Peta ID bid => kuantitas terisi
+     * @param  array<string|int, int>  $askAllocations  Peta ID ask => kuantitas terisi
+     * @param  list<array{bid_id: string|int, ask_id: string|int, quantity: int, price: int}>  $trades  Daftar transaksi berpasangan
      * @param array{
      *     clearing_price: int,
      *     clearing_volume: int,
@@ -32,4 +32,3 @@ final readonly class CallAuctionClearingResult
         public array $certificate,
     ) {}
 }
-
