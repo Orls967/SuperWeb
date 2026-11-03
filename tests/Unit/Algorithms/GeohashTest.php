@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Modules\Shared\Domain\Algorithms\Geo\Geohash;
 
 it('encodes exact D80-4 prompt vector to geohash qqguygv1t and verifies pod certificate', function () {
-    $geohash = new Geohash();
+    $geohash = new Geohash;
 
     $lat = -6.175392;
     $lng = 106.827153;
@@ -18,7 +18,7 @@ it('encodes exact D80-4 prompt vector to geohash qqguygv1t and verifies pod cert
 });
 
 it('rejects corrupted pod geohash certificate with InvalidArgumentException', function () {
-    $geohash = new Geohash();
+    $geohash = new Geohash;
 
     // Titik yang jauh dari geohash Monas Jakarta (qqguygv1t)
     $corruptedLat = -7.257472; // Surabaya

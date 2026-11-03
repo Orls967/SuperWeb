@@ -16,7 +16,7 @@ final class SegmentPolygonIntersection
 
     public function __construct(?PointInPolygon $pip = null)
     {
-        $this->pip = $pip ?? new PointInPolygon();
+        $this->pip = $pip ?? new PointInPolygon;
     }
 
     /**

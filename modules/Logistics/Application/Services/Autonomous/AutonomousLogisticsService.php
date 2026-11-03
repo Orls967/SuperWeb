@@ -7,7 +7,6 @@ namespace Modules\Logistics\Application\Services\Autonomous;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
-use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Contracts\LedgerAccount;
@@ -29,8 +28,8 @@ class AutonomousLogisticsService
         protected ?Geohash $geohash = null
     ) {
         $this->ledgerService = $ledgerService ?? app(LedgerService::class);
-        $this->router = $router ?? new VisibilityGraphRouter();
-        $this->geohash = $geohash ?? new Geohash();
+        $this->router = $router ?? new VisibilityGraphRouter;
+        $this->geohash = $geohash ?? new Geohash;
     }
 
     /**

@@ -16,7 +16,7 @@ final class VisibilityGraphRouter
 
     public function __construct(?SegmentPolygonIntersection $intersection = null)
     {
-        $this->intersection = $intersection ?? new SegmentPolygonIntersection();
+        $this->intersection = $intersection ?? new SegmentPolygonIntersection;
     }
 
     /**

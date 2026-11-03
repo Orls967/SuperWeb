@@ -9,14 +9,13 @@ use App\Quality\Audit\Fixtures\LogisticsColdChainCorruptionFixture;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Logistics\Application\Services\Autonomous\AutonomousLogisticsService;
 use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
 use Modules\Logistics\Domain\Models\Autonomous\DroneUnit;
 use Modules\Logistics\Domain\Models\Autonomous\NoFlyZone;
 use Modules\Logistics\Domain\Models\Autonomous\TempBreachHold;
-use Modules\Logistics\Domain\Models\Shipment;
+use Modules\Logistics\Ledger\SubjectAccounts;
 use Tests\TestCase;
 
 class ColdChainDroneAcceptanceTest extends TestCase
@@ -30,7 +29,7 @@ class ColdChainDroneAcceptanceTest extends TestCase
         $this->seed(LedgerAccountsSeeder::class);
 
         // Pastikan akun per-carrier diinisialisasi melalui helper modul Logistics
-        \Modules\Logistics\Ledger\SubjectAccounts::carrierPayable(42);
+        SubjectAccounts::carrierPayable(42);
     }
 
     /**
@@ -336,7 +335,7 @@ class ColdChainDroneAcceptanceTest extends TestCase
         expect($cleanExitCode)->toBe(0);
 
         // 3. Audit gagal (exit 1) saat data dikorupsi lewat fixture
-        $fixture = new LogisticsColdChainCorruptionFixture();
+        $fixture = new LogisticsColdChainCorruptionFixture;
         $fixture->corrupt();
 
         $corruptExitCode = Artisan::call('lgx:audit-coldchain');

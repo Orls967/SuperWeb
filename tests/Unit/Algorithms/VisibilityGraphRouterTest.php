@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Modules\Shared\Domain\Algorithms\Geo\VisibilityGraphRouter;
 
 it('solves exact D80-4 prompt vector with lexicographical tie-break and exact length 10246m', function () {
-    $router = new VisibilityGraphRouter();
+    $router = new VisibilityGraphRouter;
 
     $hub = ['x' => 0, 'y' => 0];
     $destination = ['x' => 10000, 'y' => 0];
@@ -35,7 +35,7 @@ it('solves exact D80-4 prompt vector with lexicographical tie-break and exact le
 });
 
 it('rejects corrupted visibility router certificate with InvalidArgumentException', function () {
-    $router = new VisibilityGraphRouter();
+    $router = new VisibilityGraphRouter;
 
     $hub = ['x' => 0, 'y' => 0];
     $destination = ['x' => 10000, 'y' => 0];

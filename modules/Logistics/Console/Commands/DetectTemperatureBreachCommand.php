@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Logistics\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Modules\Logistics\Application\Services\Autonomous\AutonomousLogisticsService;
 use Modules\Logistics\Domain\Models\Shipment;
 use Modules\Logistics\Domain\Models\TemperatureReading;
