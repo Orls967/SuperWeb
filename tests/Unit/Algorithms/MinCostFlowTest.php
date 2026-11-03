@@ -62,6 +62,25 @@ describe('MinCostFlow', function (): void {
             ->and($result['total_cost'])->toBe(170);
     });
 
+    it('handles incomplete cost matrix where some lanes are missing', function (): void {
+        $sources = ['S1' => 10, 'S2' => 10];
+        $plants = ['P1' => 15, 'P2' => 10];
+        // S1 only connects to P1, S2 only connects to P2
+        $costs = [
+            'S1' => ['P1' => 2],
+            'S2' => ['P2' => 5],
+        ];
+        $result = MinCostFlow::allocate($sources, $plants, $costs);
+        expect($result['allocations']['S1']['P1'])->toBe(10)
+            ->and($result['allocations']['S1']['P2'])->toBe(0)
+            ->and($result['allocations']['S2']['P1'])->toBe(0)
+            ->and($result['allocations']['S2']['P2'])->toBe(10)
+            ->and($result['unallocated']['S1'])->toBe(0)
+            ->and($result['unallocated']['S2'])->toBe(0)
+            ->and($result['total_allocated'])->toBe(20)
+            ->and($result['total_cost'])->toBe(70);
+    });
+
     it('rejects invalid certificates when sabotaged', function (): void {
         $mcf = new MinCostFlow(4);
         $mcf->addEdge(0, 1, 10, 2);
@@ -236,5 +255,183 @@ describe('MinCostFlow', function (): void {
 
             expect($mcfResult['total_cost'])->toBe($minBruteCost);
         }
+    });
+
+    it('verifies all failure branches of MinCostFlowCertificateVerifier', function (): void {
+        $verifier = new MinCostFlowCertificateVerifier();
+        $edges = [
+            0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 5],
+            1 => ['u' => 1, 'v' => 2, 'cap' => 10, 'cost' => 3],
+        ];
+
+        // Valid base result
+        $validResult = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 40,
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect($verifier->verify($edges, 3, 0, 2, $validResult))->toBeTrue();
+
+        // 1. Flow > capacity
+        $overflowResult = new MinCostFlowResult(
+            totalFlow: 15,
+            totalCost: 120,
+            flowPerEdge: [0 => 15, 1 => 15],
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $overflowResult))
+            ->toThrow(RuntimeException::class, 'melanggar batas kapasitas');
+
+        // 2. Flow < 0
+        $negFlowResult = new MinCostFlowResult(
+            totalFlow: -1,
+            totalCost: 0,
+            flowPerEdge: [0 => -1, 1 => 0],
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $negFlowResult))
+            ->toThrow(RuntimeException::class, 'melanggar batas kapasitas');
+
+        // 3. Reduced cost maju negatif (pi[0] = 0, pi[1] = 10, cost = 5 -> reduced = 5 + 0 - 10 = -5 < 0)
+        $badForwardPotentials = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 40,
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 0, 1 => 10, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $badForwardPotentials))
+            ->toThrow(RuntimeException::class, 'Reduced cost sisi maju');
+
+        // 4. Reduced cost mundur negatif (pi[0] = 10, pi[1] = 0, cost = 5 -> reduced = -5 + 0 - 10 = -15 < 0)
+        $badBackwardPotentials = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 40,
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 10, 1 => 0, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $badBackwardPotentials))
+            ->toThrow(RuntimeException::class, 'Reduced cost sisi mundur');
+
+        // 5. Konservasi aliran simpul perantara melanggar
+        $badConservation = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 35,
+            flowPerEdge: [0 => 5, 1 => 3], // Simpul 1 neraca bersih: +5 - 3 = +2 != 0
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $badConservation))
+            ->toThrow(RuntimeException::class, 'melanggar konservasi aliran');
+
+        // 6. Aliran keluar dari source salah
+        $badSourceFlow = new MinCostFlowResult(
+            totalFlow: 7, // Source sends 5, but totalFlow claims 7
+            totalCost: 40,
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $badSourceFlow))
+            ->toThrow(RuntimeException::class, 'Aliran keluar dari source');
+
+        // Exact -1 reduced cost forward
+        $exactMinusOneForward = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 40,
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 0, 1 => 6, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $exactMinusOneForward))
+            ->toThrow(RuntimeException::class, 'Reduced cost sisi maju');
+
+        // Exact -1 reduced cost backward with flow = 1
+        $edges1 = [
+            0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 1],
+        ];
+        $exactMinusOneBackward = new MinCostFlowResult(
+            totalFlow: 1,
+            totalCost: 1,
+            flowPerEdge: [0 => 1],
+            nodePotentials: [0 => 0, 1 => 0]
+        );
+        expect(fn () => $verifier->verify($edges1, 2, 0, 1, $exactMinusOneBackward))
+            ->toThrow(RuntimeException::class, 'Reduced cost sisi mundur');
+
+        // Missing flow in flowPerEdge (coalesces to 0)
+        $zeroCostEdges = [
+            0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 0],
+        ];
+        $missingEdgeFlowResult = new MinCostFlowResult(
+            totalFlow: 0,
+            totalCost: 0,
+            flowPerEdge: [],
+            nodePotentials: [0 => 0, 1 => 0]
+        );
+        expect($verifier->verify($zeroCostEdges, 2, 0, 1, $missingEdgeFlowResult))->toBeTrue();
+
+        // Node 0 conservation check when source = 1, sink = 2, node 0 has non-zero netFlow
+        $edgesWithNode0 = [
+            0 => ['u' => 1, 'v' => 0, 'cap' => 10, 'cost' => 0],
+        ];
+        $node0ViolationResult = new MinCostFlowResult(
+            totalFlow: 2,
+            totalCost: 0,
+            flowPerEdge: [0 => 2],
+            nodePotentials: [0 => 0, 1 => 0, 2 => 0]
+        );
+        expect(fn () => $verifier->verify($edgesWithNode0, 3, 1, 2, $node0ViolationResult))
+            ->toThrow(RuntimeException::class, 'Simpul 0 melanggar konservasi aliran');
+
+        // 7. Missing potentials fallback to 0 (cost = 0 edge)
+        $zeroCostEdges = [
+            0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 0],
+        ];
+        $noPotentialsResult = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 0,
+            flowPerEdge: [0 => 5],
+            nodePotentials: [] // tests $potentials[$u] ?? 0 and $potentials[$v] ?? 0
+        );
+        expect($verifier->verify($zeroCostEdges, 2, 0, 1, $noPotentialsResult))->toBeTrue();
+
+        // 8. Total cost mismatch
+        $badCostResult = new MinCostFlowResult(
+            totalFlow: 5,
+            totalCost: 999, // actual computed is 40
+            flowPerEdge: [0 => 5, 1 => 5],
+            nodePotentials: [0 => 0, 1 => 5, 2 => 8]
+        );
+        expect(fn () => $verifier->verify($edges, 3, 0, 2, $badCostResult))
+            ->toThrow(RuntimeException::class, 'berbeda dengan totalCost');
+
+        // 9. Direct edge 2 nodes (node 0 -> node 1)
+        $directEdges = [
+            0 => ['u' => 0, 'v' => 1, 'cap' => 10, 'cost' => 4],
+        ];
+        $directResult = new MinCostFlowResult(
+            totalFlow: 6,
+            totalCost: 24,
+            flowPerEdge: [0 => 6],
+            nodePotentials: [0 => 0, 1 => 4]
+        );
+        expect($verifier->verify($directEdges, 2, 0, 1, $directResult))->toBeTrue();
+    });
+
+    it('exposes vertexCount, edge count, and handles edge cases', function (): void {
+        $mcf = new MinCostFlow(4);
+        expect($mcf->getVertexCount())->toBe(4);
+        $idx0 = $mcf->addEdge(0, 1, 10, 2);
+        $idx1 = $mcf->addEdge(1, 2, 5, 3);
+        expect($idx0)->toBe(0);
+        expect($idx1)->toBe(1);
+        expect(count($mcf->getEdges()))->toBe(2);
+
+        // flowLimit = 0 returns 0 flow immediately
+        $res0 = $mcf->solve(0, 2, 0);
+        expect($res0->totalFlow)->toBe(0);
+        expect($res0->totalCost)->toBe(0);
+
+        // source == sink returns 0 flow immediately
+        $resSame = $mcf->solve(0, 0, 10);
+        expect($resSame->totalFlow)->toBe(0);
     });
 });

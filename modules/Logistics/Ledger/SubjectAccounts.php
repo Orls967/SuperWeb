@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Logistics\Ledger;
 
 use Illuminate\Support\Str;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 
 /**
  * Helper idempoten akun per-subjek (carrier / supplier sumber) — KONSEP §A2.3.

@@ -46,6 +46,14 @@ class Shipment extends BaseShipment implements Payable
         'material_code',
         'grade_code',
         'net_weight_grams',
+        'verified_weight_grams',
+        'reverse_manifest_number',
+        'reverse_chain_hash',
+        'plant_id',
+        'plant_receipt_id',
+        'plant_received_at',
+        'carrier_cost_idr',
+        'supplier_party_id',
         'destination_facility_id',
         'total_chargeable_weight_g',
         'total_amount_idr',
@@ -75,6 +83,10 @@ class Shipment extends BaseShipment implements Payable
         'status' => ShipmentStatus::class,
         'is_reverse' => 'boolean',
         'net_weight_grams' => 'integer',
+        'verified_weight_grams' => 'integer',
+        'plant_receipt_id' => 'integer',
+        'carrier_cost_idr' => 'integer',
+        'plant_received_at' => 'datetime',
         'declared_value_idr' => 'integer',
         'insured' => 'boolean',
         'cod_amount_idr' => 'integer',
@@ -342,5 +354,35 @@ class Shipment extends BaseShipment implements Payable
         usort($events, fn ($a, $b) => $b['timestamp'] <=> $a['timestamp']);
 
         return $events;
+    }
+
+    public function getReverseTypeAttribute(): ?string
+    {
+        return $this->reverse_reason;
+    }
+
+    public function setReverseTypeAttribute(?string $value): void
+    {
+        $this->attributes['reverse_reason'] = $value;
+    }
+
+    public function getQualityGradeAttribute(): ?string
+    {
+        return $this->grade_code;
+    }
+
+    public function setQualityGradeAttribute(?string $value): void
+    {
+        $this->attributes['grade_code'] = $value;
+    }
+
+    public function getWeightGramsAttribute(): ?int
+    {
+        return $this->net_weight_grams;
+    }
+
+    public function setWeightGramsAttribute(?int $value): void
+    {
+        $this->attributes['net_weight_grams'] = $value;
     }
 }

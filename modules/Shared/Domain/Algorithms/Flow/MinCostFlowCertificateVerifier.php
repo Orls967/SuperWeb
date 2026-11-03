@@ -40,7 +40,7 @@ class MinCostFlowCertificateVerifier
         $potentials = $result->nodePotentials;
 
         // Inisialisasi neraca aliran per simpul
-        $netFlow = array_fill(0, $vertexCount, 0);
+        $netFlow = array_pad([], $vertexCount, 0);
         $computedCost = 0;
 
         foreach ($edges as $idx => $edge) {

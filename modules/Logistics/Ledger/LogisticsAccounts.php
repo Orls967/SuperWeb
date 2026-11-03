@@ -23,7 +23,7 @@ final class LogisticsAccounts
                 'name' => 'Logistics Carrier Cost Expense',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'lgx:carrier_payable:IDR',

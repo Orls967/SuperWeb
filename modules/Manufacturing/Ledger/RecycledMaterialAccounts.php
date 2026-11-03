@@ -22,7 +22,7 @@ final class RecycledMaterialAccounts
                 'name' => 'Raw Materials Inventory',
                 'kind' => AccountKind::ASSET,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'mfg:recycled_material_clearing:IDR',

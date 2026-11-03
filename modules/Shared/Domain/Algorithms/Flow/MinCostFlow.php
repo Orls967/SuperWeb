@@ -37,6 +37,19 @@ class MinCostFlow
     }
 
     /**
+     * @return list<array{u: int, v: int, cap: int, cost: int}>
+     */
+    public function getEdges(): array
+    {
+        return $this->edges;
+    }
+
+    public function getVertexCount(): int
+    {
+        return $this->vertexCount;
+    }
+
+    /**
      * Tambahkan sisi berarah ke dalam jaringan.
      *
      * @return int Indeks sisi asli
@@ -84,6 +97,10 @@ class MinCostFlow
     public function solve(int $source, int $sink, ?int $flowLimit = null): MinCostFlowResult
     {
         $n = $this->vertexCount;
+        if ($source === $sink || $flowLimit === 0) {
+            return new MinCostFlowResult(0, 0, array_fill(0, count($this->edges), 0), array_fill(0, $n, 0));
+        }
+
         $potentials = array_fill(0, $n, 0);
 
         // Periksa apakah terdapat biaya negatif pada sisi awal
@@ -246,9 +263,7 @@ class MinCostFlow
 
         $sourceNode = 0;
         $sinkNode = $numSources + $numPlants + 1;
-        $totalNodes = $sinkNode + 1;
-
-        $mcf = new self($totalNodes);
+        $mcf = new self($sinkNode + 1);
 
         // Indeks simpul
         $sourceIndexMap = [];
@@ -289,7 +304,7 @@ class MinCostFlow
         $verifier = new MinCostFlowCertificateVerifier;
         $certValid = $verifier->verify(
             $mcf->edges,
-            $totalNodes,
+            $mcf->vertexCount,
             $sourceNode,
             $sinkNode,
             $result
@@ -303,11 +318,11 @@ class MinCostFlow
             $allocations[$sName] = [];
             foreach ($plantNames as $pName) {
                 $eIdx = $laneEdgeMap[$sName][$pName] ?? null;
-                $flow = ($eIdx !== null) ? ($result->flowPerEdge[$eIdx] ?? 0) : 0;
+                $flow = ($eIdx !== null) ? $result->flowPerEdge[$eIdx] : 0;
                 $allocations[$sName][$pName] = $flow;
                 $allocatedFromSource += $flow;
             }
-            $unallocated[$sName] = max(0, $sources[$sName] - $allocatedFromSource);
+            $unallocated[$sName] = $sources[$sName] - $allocatedFromSource;
         }
 
         return [

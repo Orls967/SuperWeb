@@ -14,6 +14,7 @@ use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\BiddingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ChainAuditAllCorruptionFixture;
+use App\Quality\Audit\Fixtures\CircularAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\CkAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ClearingAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ContractsVerifyChainCorruptionFixture;
@@ -121,6 +122,7 @@ final class AuditCommandRegistry
             'lgx:audit-circular' => new LogisticsCircularCorruptionFixture,
             'lgx:audit-coldchain' => new LogisticsColdChainCorruptionFixture,
             'lgx:verify-custody' => new LgxVerifyCustodyCorruptionFixture,
+            'logi:circular-audit' => new CircularAuditCorruptionFixture,
             'mall:audit-billing' => new MallAuditBillingCorruptionFixture,
             'med:audit' => new MedAuditCorruptionFixture,
             'mfg:audit-costing' => new MfgAuditCostingCorruptionFixture,

@@ -22,6 +22,7 @@ use Modules\Logistics\Http\Controllers\LocationController;
 use Modules\Logistics\Http\Controllers\LogisticsDashboardController;
 use Modules\Logistics\Http\Controllers\PublicTrackingController;
 use Modules\Logistics\Http\Controllers\ReverseLogisticsController;
+use Modules\Logistics\Http\Controllers\ReverseShipmentController;
 use Modules\Logistics\Http\Controllers\ShipperPortalController;
 
 // Public Tracking Routes (No login required, rate limited 30 req/min)
@@ -39,7 +40,13 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
             Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
             Route::get('/exceptions', [ExceptionController::class, 'index'])->name('exceptions.index');
             Route::get('/reverse', [ReverseLogisticsController::class, 'index'])->name('reverse.index');
+            Route::get('/reverse/shipments', [ReverseShipmentController::class, 'index'])->name('reverse.shipments.index');
+            Route::get('/reverse/shipments/{shipment}', [ReverseShipmentController::class, 'show'])->name('reverse.shipments.show');
             Route::get('/autonomous', [AutonomousLogisticsController::class, 'index'])->name('autonomous.index');
+        });
+
+        Route::middleware(['role:admin,auditor,logistics_admin,treasury'])->group(function () {
+            Route::get('/circular-ledger', [ReverseShipmentController::class, 'ledger'])->name('circular-ledger.index');
         });
 
         // Control Tower
@@ -189,6 +196,9 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
         Route::middleware(['role:admin,dispatcher,hub_operator,logistics_admin'])->group(function () {
             Route::post('/reverse', [ReverseLogisticsController::class, 'store'])->name('reverse.store');
             Route::post('/reverse/{order}/intake', [ReverseLogisticsController::class, 'intake'])->name('reverse.intake');
+            Route::post('/reverse/shipments', [ReverseShipmentController::class, 'store'])->name('reverse.shipments.store');
+            Route::post('/reverse/shipments/{shipment}/transition', [ReverseShipmentController::class, 'transition'])->name('reverse.shipments.transition');
+            Route::post('/reverse/optimize-allocations', [ReverseShipmentController::class, 'optimize'])->name('reverse.optimize');
             Route::post('/autonomous/dispatch', [AutonomousLogisticsController::class, 'dispatch'])->name('autonomous.dispatch');
             Route::post('/autonomous/missions/{mission}/deliver', [AutonomousLogisticsController::class, 'deliver'])->name('autonomous.deliver');
         });
