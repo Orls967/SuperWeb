@@ -12,14 +12,20 @@ class PortHttpTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_terminal_operator_can_access_port_routes(): void
+    public function test_port_operator_can_access_port_routes(): void
     {
-        $user = User::factory()->create(['role' => 'terminal_operator']);
+        $user = User::factory()->create(['role' => 'port_operator']);
 
-        $response = $this->actingAs($user)->get('/port/vessel-visits');
+        $response = $this->actingAs($user)->get('/port');
         $response->assertStatus(200);
 
-        $responseBerth = $this->actingAs($user)->get('/port/berth-plan');
+        $responseBerth = $this->actingAs($user)->get('/port/berths');
         $responseBerth->assertStatus(200);
+
+        $responseYard = $this->actingAs($user)->get('/port/yard');
+        $responseYard->assertStatus(200);
+
+        $responseBilling = $this->actingAs($user)->get('/port/billing');
+        $responseBilling->assertStatus(200);
     }
 }
