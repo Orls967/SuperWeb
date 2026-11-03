@@ -44,4 +44,3 @@ class SkuParameter extends Model
         'version' => 'integer',
     ];
 }
-

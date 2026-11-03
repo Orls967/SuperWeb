@@ -96,4 +96,3 @@ class GeneratePriceTickCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -42,4 +42,3 @@ class PricingRbacSeeder extends Seeder
         ]);
     }
 }
-

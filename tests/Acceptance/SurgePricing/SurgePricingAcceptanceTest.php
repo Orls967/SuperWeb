@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Tests\Acceptance\SurgePricing;
 
 use App\Models\User;
-use Carbon\CarbonImmutable;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Contracts\ClockInterface;
+use Illuminate\Support\Str;
 use Modules\Pricing\Application\Services\DynamicTickEngine;
 use Modules\Pricing\Contracts\PriceLocker;
 use Modules\Pricing\Domain\Models\PriceTick;
-use Modules\Pricing\Domain\Models\PriceTickRejection;
 use Tests\TestCase;
 
 class SurgePricingAcceptanceTest extends TestCase
@@ -21,6 +19,7 @@ class SurgePricingAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     protected User $pricingManager;
+
     protected User $unauthorizedUser;
 
     protected function setUp(): void
@@ -244,7 +243,7 @@ class SurgePricingAcceptanceTest extends TestCase
 
         // Korupsi: buat mismatch baris order vs harga terkunci
         $corruptLockId = DB::table('pric_price_locks')->insertGetId([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'subject_type' => 'order',
             'subject_id' => 'ORD-CORRUPT-TEST',
             'sku' => 'SKU-CORRUPT-01',
@@ -285,4 +284,3 @@ class SurgePricingAcceptanceTest extends TestCase
         $this->artisan('pricing:audit')->assertSuccessful();
     }
 }
-

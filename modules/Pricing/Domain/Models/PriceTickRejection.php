@@ -37,4 +37,3 @@ class PriceTickRejection extends Model
         'het_price_idr' => 'integer',
     ];
 }
-

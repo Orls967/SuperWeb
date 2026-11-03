@@ -9,7 +9,6 @@ use Carbon\CarbonInterface;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Pricing\Domain\Models\PriceTick;
 use Modules\Pricing\Domain\Models\PriceTickRejection;
-use Modules\Pricing\Domain\Models\SkuParameter;
 
 class DynamicTickEngine
 {
@@ -267,4 +266,3 @@ class DynamicTickEngine
             ->second(0);
     }
 }
-
