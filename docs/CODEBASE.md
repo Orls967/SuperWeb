@@ -506,7 +506,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 26 | **Intercompany** | `ic_` | 1 |
 | 27 | **International** | `intl_` | 1 |
 | 28 | **Inventory** | `inv_` | 2 |
-| 29 | **Logistics** | `lgx_` | 30 |
+| 29 | **Logistics** | `lgx_` | 31 |
 | 30 | **Mall** | `mall_` | 7 |
 | 31 | **Manufacturing** | `mfg_` | 13 |
 | 32 | **Med** | `med_` | 3 |
@@ -533,7 +533,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 53 | **Venue** | `ven_` | 6 |
 | 54 | **Wealth** | `wm_` | 2 |
 | 55 | **Wms** | `wms_` | 2 |
-| | **Total: 55 Modul** | | **600 Migrasi** |
+| | **Total: 55 Modul** | | **601 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -567,7 +567,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
-| **Logistics** | 83 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
+| **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 65 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
@@ -594,7 +594,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1039 Rute** | | |
+| **Total** | **1041 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -674,6 +674,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `lgx:audit-coldchain` | `manual` | Perform two-source verification of cold-chain temperature breach holds, drone missions, and dispute escrow ledger |
 | `lgx:capacity-check` | **`hourly()`** | Audit dan verifikasi integritas pemakaian kapasitas seluruh jadwal operasi jaringan logistik |
 | `lgx:detect-late` | **`everyFifteenMinutes()->withoutOverlapping()`** | Deteksi resi yang melampaui SLA dan tandai exception "late" (idempoten) |
+| `lgx:detect-temperature-breach` | `manual` | Deteksi terjadwal dan otomatis terhadap episode breach suhu rantai dingin (> 10 menit) untuk penahanan utang carrier |
 | `lgx:invoice-shippers` | **`monthlyOn(1, '02:00')`** | Terbitkan tagihan bulanan pascabayar (postpaid) B2B secara idempoten per shipper |
 | `lgx:pay-carriers` | **`weeklyOn(1, '09:00')`** | Bayar utang carrier subkontrak atas leg yang sudah diakrual dan melewati termin (jadwal mingguan) |
 | `lgx:retry-webhooks` | **`everyFiveMinutes()->withoutOverlapping()`** | Retry failed webhook deliveries that are due for retry |
@@ -766,7 +767,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 167 Command** | **37 Terjadwal** | |
+| **Total: 168 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

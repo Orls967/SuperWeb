@@ -43,6 +43,8 @@ Route::middleware(['web'])->prefix('logistics')->name('logistics.')->group(funct
             Route::get('/reverse/shipments', [ReverseShipmentController::class, 'index'])->name('reverse.shipments.index');
             Route::get('/reverse/shipments/{shipment}', [ReverseShipmentController::class, 'show'])->name('reverse.shipments.show');
             Route::get('/autonomous', [AutonomousLogisticsController::class, 'index'])->name('autonomous.index');
+            Route::get('/cold-chain', [AutonomousLogisticsController::class, 'coldChain'])->name('cold-chain.index');
+            Route::get('/drone', [AutonomousLogisticsController::class, 'drone'])->name('drone.index');
         });
 
         Route::middleware(['role:admin,auditor,logistics_admin,treasury'])->group(function () {

@@ -13,6 +13,8 @@ class TempBreachHold extends Model
     protected $fillable = [
         'breach_code',
         'shipment_code',
+        'leg_id',
+        'episode_id',
         'carrier_id',
         'recorded_temp_c',
         'max_allowed_temp_c',
