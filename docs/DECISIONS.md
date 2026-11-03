@@ -2157,6 +2157,26 @@
   - Acceptance test `tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php` lulus ≥ 12 skenario.
   - Command `cir:audit` bersih exit 0, dan exit 1 pada fixture korupsi.
 
+<a id="2026-11-03-g6-p1-cold-chain-drone-fase-80"></a>
+<a id="d80-1"></a>
+## 2026-11-03: [G6-P1.3] Rantai Dingin & Drone Last-Mile (Fase 80, D80-1..D80-4)
+- **Anchor:** `2026-11-03-g6-p1-cold-chain-drone-fase-80` / `d80-1`
+- **Context:**
+  - Pemenuhan standar mutu logistik komoditas sensitif suhu (farmasi, vaksin, wagyu, produk beralkohol) membutuhkan telemetri berkala reefer container/truck yang langsung menegakkan konsekuensi finansial melalui pembekuan hak bayar pengangkut (carrier hold) ke buku besar, serta dispatch drone logistik otonom untuk pengiriman jarak pendek yang aman dari zona larangan terbang (no-fly zone).
+- **Decision:**
+  1. D80-1: Rentang toleransi suhu per profil komoditas disimpan dalam integer 0,1 °C (`min_temp_deci`, `max_temp_deci`). Durasi pelanggaran dihitung mulai saat suhu keluar ambang hingga pembacaan pertama normal: durasi = t_akhir − t_mulai. Status breach hanya berlaku jika durasi > 10 menit (600 detik). Durasi ≤ 10 menit (misal 9 menit atau 10 menit tepat) tidak memicu hold.
+  2. D80-2: Satu penahanan (hold) per episode pelanggaran dan leg pengiriman. Bersifat idempoten terhadap pembacaan berulang atau evaluasi terjadwal berulang. Event `lgx.temperature.breached.v1` dipancarkan tepat satu kali per episode, dan jendela telemetri suhu dicatat ke custody hash-chain shipment.
+  3. D80-3: Aturan posting akuntansi buku besar berimbang:
+     - Tahan (breach): Debit `ap:carrier:{id}:IDR` / Kredit `lgx:carrier_payable_on_hold:IDR` senilai tagihan leg yang terdampak.
+     - Rilis tahanan: Debit `lgx:carrier_payable_on_hold:IDR` / Kredit `ap:carrier:{id}:IDR`.
+     Penyelesaian sengketa selain "lepas penuh" ditunda (minus).
+  4. D80-4: Drone dispatch last-mile dibatasi secara ketat: jarak tujuan ≤ 15.000 meter, berat muatan ≤ 5.000 gram, baterai mencukupi rute pulang-pergi + margin. Rute dihitung via `Modules\Shared\Domain\Algorithms\Geo\VisibilityGraphRouter` + Dijkstra yang tidak memotong INTERIOR zona larangan terbang (menyinggung batas luar diizinkan), dengan tie-break urutan simpul (x, y) leksikografis terkecil. Pembuktian serah terima (POD) wajib menyertakan kode geohash 9-karakter (`Modules\Shared\Domain\Algorithms\Geo\Geohash`).
+- **Verification:**
+  - Vektor rute benchmark: Hub (0, 0), tujuan (10.000, 0), no-fly zone persegi (4.000, -1.000) s.d. (6.000, 1.000) menghasilkan rute (0,0) → (4.000, -1.000) → (6.000, -1.000) → (10.000, 0) dengan panjang tepat 10.246 meter.
+  - Vektor geohash benchmark: (-6.175392, 106.827153) menghasilkan `qqguygv1t`.
+  - Acceptance test `tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php` lulus 6 test v3.
+  - Command `lgx:audit-coldchain` membuktikan kesesuaian saldo ledger `lgx:carrier_payable_on_hold:IDR` dengan total hold aktif.
+
 <a id="2026-11-04-mutation-testing-manual"></a>
 ## 2026-11-04: Mutation Testing Dipindah ke Manual
 - **Anchor:** `2026-11-04-mutation-testing-manual`
