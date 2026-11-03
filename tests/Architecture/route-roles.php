@@ -885,6 +885,8 @@ return [
             return ['contract' => $contract->id];
         },
     ],
+    'food.brands.index' => ['roles' => ['admin', 'brand_manager']],
+    'food.brands.store' => ['roles' => ['admin', 'brand_manager']],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
     'hcm.bounties.index' => ['roles' => ['admin', 'hcm_manager']],
     'hcm.bounties.store' => ['roles' => ['admin', 'hcm_manager']],
@@ -1599,6 +1601,8 @@ return [
         ])->id],
     ],
     'manufacturing.c2m.orders.store' => ['roles' => ['admin', 'planner', 'procurement']],
+    'manufacturing.agri-processing.batches.optimize' => ['roles' => ['admin', 'food_qa', 'planner']],
+    'manufacturing.agri-processing.index' => ['roles' => ['admin', 'food_qa', 'planner']],
     'manufacturing.boms.store' => ['roles' => ['admin', 'planner']],
     'manufacturing.costing.index' => ['roles' => ['admin', 'auditor', 'planner']],
     'manufacturing.costing.versions.approve' => ['roles' => ['admin', 'planner'], 'params' => fn () => ['version' => 1]],

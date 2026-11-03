@@ -28,6 +28,7 @@ return [
         'epc_' => 'Epc',
         'esg_' => 'Esg',
         'fin_' => 'Finance',
+        'food_' => 'Food',
         'gov_' => 'Governance',
         'hcm_' => 'Hcm',
         'hsp_' => 'Hospital',
