@@ -50,6 +50,7 @@ return [
         'pric_' => 'Pricing',
         'prc_' => 'Procurement',
         'prp_' => 'Proptech',
+        'prt_' => 'Port',
         'resto_' => 'Resto',
         'ret_' => 'Ret',
         'rwa_' => 'Rwa',

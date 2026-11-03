@@ -39,6 +39,14 @@ class LogisticsServiceProvider extends ServiceProvider
             LogisticsUsageReaderInterface::class,
             LogisticsUsageReaderService::class
         );
+        $this->app->bind(
+            \Modules\Logistics\Contracts\VesselRegistry::class,
+            \Modules\Logistics\Application\Services\LogisticsVesselRegistry::class
+        );
+        $this->app->bind(
+            \Modules\Logistics\Contracts\DemurrageDetentionQuote::class,
+            \Modules\Logistics\Application\Services\LogisticsDemurrageDetentionQuote::class
+        );
     }
 
     public function boot(): void

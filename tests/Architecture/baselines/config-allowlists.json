@@ -15,6 +15,11 @@
             "count": 1
         },
         {
+            "key": "table_prefixes",
+            "decision": "DECISIONS.md#2026-11-03-g6-p1-port-terminal",
+            "count": 1
+        },
+        {
             "key": "shared_kernel_namespaces",
             "decision": "DECISIONS.md#2026-10-30-pemulihan-baseline",
             "count": 12
