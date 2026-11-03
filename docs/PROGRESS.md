@@ -11435,13 +11435,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Manufacturing + Agri (pengolahan) · Food (`food_`) hanya merek/program gizi · **Prasyarat:** Fase 62 (R6.4) ✅ · **Acuan:** KONSEP Lini 21
 > **Jalan pintas terlarang di fase ini:** BOM/MRP duplikat di luar Manufacturing; grade ekspor dari masukan bebas; memperluas `FoodProcessingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
-- [ ] 168.2 Procurement contracts with farmer groups; forecast intake from NDVI/harvest estimates; capacity reservation; quality-based price & transparent deductions
-- [ ] 168.3 Processing orders: raw material → WIP → finished goods, mass-balance invariant, waste/by-product recovery, manufacturing costing adapter
-- [ ] 168.4 Food-safety controls: temperature, moisture, allergen segregation, lab sampling, hold/release, recall forward/backward trace within query budget
-- [ ] 168.5 Export pack: grade certificate, origin, halal, phytosanitary simulation, CBAM/emission profile where applicable; Trade/Logistics handoff
-- [ ] 168.6 Tests: mass balance within defined tolerance, quarantined lot cannot ship, farmer settlement matches grade/weight, trace recall complete, `food:audit` = 0
-- [ ] 168.7 Quality gate Fase 168
+- [🔵] 168.1 Modul `FoodProcessing` (`food_`): collection, grading, mill/packing plants, food-safety plans, lots, yield, co-products, traceability to Agri Fase 62
+- [🔵] 168.2 Procurement contracts with farmer groups; forecast intake from NDVI/harvest estimates; capacity reservation; quality-based price & transparent deductions
+- [🔵] 168.3 Processing orders: raw material → WIP → finished goods, mass-balance invariant, waste/by-product recovery, manufacturing costing adapter
+- [🔵] 168.4 Food-safety controls: temperature, moisture, allergen segregation, lab sampling, hold/release, recall forward/backward trace within query budget
+- [🔵] 168.5 Export pack: grade certificate, origin, halal, phytosanitary simulation, CBAM/emission profile where applicable; Trade/Logistics handoff
+- [🔵] 168.6 Tests: mass balance within defined tolerance, quarantined lot cannot ship, farmer settlement matches grade/weight, trace recall complete, `food:audit` = 0
+- [🔵] 168.7 Quality gate Fase 168
 
 ## FASE 169 — LINI 21: FOOD BRAND, PRIVATE LABEL & NUTRITION PROGRAMS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FoodBrandNutritionService`; 1 migrasi; test `FoodBrandNutritionTest` — commit `6101826`, +322 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

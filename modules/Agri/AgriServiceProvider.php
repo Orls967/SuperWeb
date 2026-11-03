@@ -6,13 +6,17 @@ namespace Modules\Agri;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Agri\Application\Services\HarvestLotSourceService;
 use Modules\Agri\Console\Commands\AuditAgriCommand;
 use Modules\Agri\Console\Commands\AuditGovernanceCommand;
+use Modules\Agri\Contracts\HarvestLotSource;
 
 class AgriServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(HarvestLotSource::class, HarvestLotSourceService::class);
+
         $this->commands([
             AuditAgriCommand::class,
             AuditGovernanceCommand::class,

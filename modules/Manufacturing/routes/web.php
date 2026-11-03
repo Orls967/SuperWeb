@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Manufacturing\Http\Controllers\AgriProcessingController;
 use Modules\Manufacturing\Http\Controllers\MaintenanceController;
 use Modules\Manufacturing\Http\Controllers\ManufacturingController;
 use Modules\Manufacturing\Http\Controllers\PlanningController;
@@ -139,4 +140,12 @@ Route::middleware(['web', 'auth', 'verified'])
         Route::post('/recycled-materials/intake', [RecycledMaterialController::class, 'intake'])
             ->middleware('role:admin,planner,plant_receiver')
             ->name('recycled-materials.intake');
+    });
+
+Route::middleware(['web', 'auth', 'role:planner,food_qa,admin'])
+    ->prefix('manufacturing/agri-processing')
+    ->name('manufacturing.agri-processing.')
+    ->group(function () {
+        Route::get('/', [AgriProcessingController::class, 'index'])->name('index');
+        Route::post('/batches/optimize', [AgriProcessingController::class, 'optimize'])->name('batches.optimize');
     });

@@ -7,6 +7,7 @@ namespace Modules\Manufacturing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Manufacturing\Application\Listeners\PostSaleCogsListener;
+use Modules\Manufacturing\Application\Services\AgriProcessing\MfgAgriGenealogyService;
 use Modules\Manufacturing\Application\Services\CostingService;
 use Modules\Manufacturing\Application\Services\HseService;
 use Modules\Manufacturing\Application\Services\MaintenanceService;
@@ -22,6 +23,7 @@ use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
 use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Domain\Algorithms\Graph\GenealogyEdgeProviderInterface;
 use Modules\Store\Domain\Events\OrderPaid;
 
 class ManufacturingServiceProvider extends ServiceProvider
@@ -36,6 +38,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(MaintenanceService::class);
         $this->app->singleton(HseService::class);
         $this->app->singleton(RecycledMaterialReceiver::class, RecycledMaterialReceiverService::class);
+        $this->app->bind(GenealogyEdgeProviderInterface::class, MfgAgriGenealogyService::class);
     }
 
     public function boot(): void

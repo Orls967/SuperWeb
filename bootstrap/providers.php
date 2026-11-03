@@ -21,6 +21,7 @@ use Modules\EnterpriseFinance\EnterpriseFinanceServiceProvider;
 use Modules\Epc\EpcServiceProvider;
 use Modules\Esg\EsgServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
+use Modules\Food\FoodServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Hospital\HospitalServiceProvider;
 use Modules\Hotel\HotelServiceProvider;
@@ -74,6 +75,7 @@ return [
     StoreServiceProvider::class,
     CryptoServiceProvider::class,
     FinanceServiceProvider::class,
+    FoodServiceProvider::class,
     RestoServiceProvider::class,
     MallServiceProvider::class,
     LogisticsServiceProvider::class,

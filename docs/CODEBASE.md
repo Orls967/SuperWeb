@@ -479,7 +479,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | No | Modul | Prefiks Tabel Resmi (`config/modules.php`) | Jumlah Migrasi |
 |---|---|---|---|
 | 1 | **Agency** | `agy_` | 2 |
-| 2 | **Agri** | `agri_` | 3 |
+| 2 | **Agri** | `agri_` | 4 |
 | 3 | **Asset** | `ast_` | 3 |
 | 4 | **AutoDex** | `dex_` | 0 |
 | 5 | **AutoServe** | `serve_` | 1 |
@@ -498,43 +498,44 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 18 | **Epc** | `epc_` | 1 |
 | 19 | **Esg** | `esg_` | 4 |
 | 20 | **Finance** | `fin_` | 1 |
-| 21 | **Hcm** | `hcm_` | 7 |
-| 22 | **Hospital** | `hsp_` | 14 |
-| 23 | **Hotel** | `htl_` | 16 |
-| 24 | **Insurance** | `ins_` | 2 |
-| 25 | **Integration** | `intg_` | 340 |
-| 26 | **Intercompany** | `ic_` | 1 |
-| 27 | **International** | `intl_` | 1 |
-| 28 | **Inventory** | `inv_` | 2 |
-| 29 | **Logistics** | `lgx_` | 31 |
-| 30 | **Mall** | `mall_` | 7 |
-| 31 | **Manufacturing** | `mfg_` | 13 |
-| 32 | **Med** | `med_` | 3 |
-| 33 | **Mining** | `min_` | 11 |
-| 34 | **Mobility** | `oto_` | 0 |
-| 35 | **Partner** | `ptn_` | 1 |
-| 36 | **Party** | `pty_` | 3 |
-| 37 | **Payment** | `pay_` | 3 |
-| 38 | **Plm** | `plm_` | 1 |
-| 39 | **Port** | `prt_` | 1 |
-| 40 | **Pricing** | `pric_` | 7 |
-| 41 | **Procurement** | `prc_` | 6 |
-| 42 | **Proptech** | `prp_` | 3 |
-| 43 | **Resto** | `resto_` | 10 |
-| 44 | **Ret** | `ret_` | 4 |
-| 45 | **Rwa** | `rwa_` | 3 |
-| 46 | **Shared** | — | 0 |
-| 47 | **Store** | `store_` | 5 |
-| 48 | **Supplier** | `sup_` | 3 |
-| 49 | **Tlx** | `tlx_` | 4 |
-| 50 | **Trade** | `trd_` | 3 |
-| 51 | **TradeFinance** | `tf_` | 3 |
-| 52 | **Treasury** | `trs_` | 1 |
-| 53 | **Vending** | `vnd_` | 3 |
-| 54 | **Venue** | `ven_` | 6 |
-| 55 | **Wealth** | `wm_` | 2 |
-| 56 | **Wms** | `wms_` | 2 |
-| | **Total: 56 Modul** | | **603 Migrasi** |
+| 21 | **Food** | `food_` | 1 |
+| 22 | **Hcm** | `hcm_` | 7 |
+| 23 | **Hospital** | `hsp_` | 14 |
+| 24 | **Hotel** | `htl_` | 16 |
+| 25 | **Insurance** | `ins_` | 2 |
+| 26 | **Integration** | `intg_` | 340 |
+| 27 | **Intercompany** | `ic_` | 1 |
+| 28 | **International** | `intl_` | 1 |
+| 29 | **Inventory** | `inv_` | 2 |
+| 30 | **Logistics** | `lgx_` | 31 |
+| 31 | **Mall** | `mall_` | 7 |
+| 32 | **Manufacturing** | `mfg_` | 14 |
+| 33 | **Med** | `med_` | 3 |
+| 34 | **Mining** | `min_` | 11 |
+| 35 | **Mobility** | `oto_` | 0 |
+| 36 | **Partner** | `ptn_` | 1 |
+| 37 | **Party** | `pty_` | 3 |
+| 38 | **Payment** | `pay_` | 3 |
+| 39 | **Plm** | `plm_` | 1 |
+| 40 | **Port** | `prt_` | 1 |
+| 41 | **Pricing** | `pric_` | 7 |
+| 42 | **Procurement** | `prc_` | 6 |
+| 43 | **Proptech** | `prp_` | 3 |
+| 44 | **Resto** | `resto_` | 10 |
+| 45 | **Ret** | `ret_` | 4 |
+| 46 | **Rwa** | `rwa_` | 3 |
+| 47 | **Shared** | — | 0 |
+| 48 | **Store** | `store_` | 5 |
+| 49 | **Supplier** | `sup_` | 3 |
+| 50 | **Tlx** | `tlx_` | 4 |
+| 51 | **Trade** | `trd_` | 3 |
+| 52 | **TradeFinance** | `tf_` | 3 |
+| 53 | **Treasury** | `trs_` | 1 |
+| 54 | **Vending** | `vnd_` | 3 |
+| 55 | **Venue** | `ven_` | 6 |
+| 56 | **Wealth** | `wm_` | 2 |
+| 57 | **Wms** | `wms_` | 2 |
+| | **Total: 57 Modul** | | **606 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -560,6 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Epc** | 8 | `epc`, `epc/dashboard`, `epc/claims` ... | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 6 | `esg`, `esg/operations`, `esg/operations/emissions` ... | web, auth, role:admin,esg_officer,auditor |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
+| **Food** | 2 | `food/brands` ... | web, auth, role:brand_manager,admin |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 26 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
@@ -570,7 +572,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
-| **Manufacturing** | 66 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Manufacturing** | 68 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
 | **Mining** | 18 | `mining`, `mining/pits/{pit}/dispatch`, `mining/operations/block-planning` ... | web, auth, role:admin,mining_admin,site_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
@@ -596,7 +598,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1055 Rute** | | |
+| **Total** | **1059 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -651,6 +653,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ev:audit` | `manual` | Perform two-source verification of EV charging stations, chargers, and completed session tariffs |
 | `finance:charge-installments` | **`dailyAt('01:00')`** | Debit cicilan pembiayaan yang jatuh tempo dari dompet peminjam |
 | `flt:audit` | `manual` | Perform two-source verification of B2B fleet leasing contracts, units, and amortization integrity |
+| `food:audit` | `manual` | Audit dua sumber integritas komoditas pangan, neraca massa pengolahan, dan mutu ekspor (Lini 21) |
 | `gate:report` | `manual` | Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite |
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
 | `governance:audit` | `manual` | Audit DAO governance proposals, voter weights, and hash-chained vote receipts |
@@ -772,7 +775,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 171 Command** | **37 Terjadwal** | |
+| **Total: 172 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
