@@ -1153,7 +1153,7 @@ Alur status (`⬜/🟠/🟡 → 🔨 → 🔵 → ✅/🔁`), checklist verifika
 | Check-out (bayar) | `wallet:user:{tamu}:IDR` / `escrow:payment:IDR` | `ar:htl:folio:{folio}:IDR` |
 
 - **Rute & role:** `/hotel/front-office` (`front_office`) · `/hotel/housekeeping` (`housekeeping`, 375 px) · `/hotel/revenue` (`revenue_mgr`) · `/hotel/admin` (`hotel_gm`) · portal tamu (reservasinya sendiri).
-- **Command:** `htl:night-audit` (harian, tick handler simulasi) · `hotel:audit`.
+- **Command:** `htl:close-day` (harian, tick handler simulasi) · `hotel:audit`.
 - **Audit dua sumber (`hotel:audit`):** room-night terjual = baris room charge folio = posting `htl:room_revenue`; tidak ada tanggal dengan kamar terjual > inventori; folio ditutup bersaldo 0.
 - **Test kunci:** dua reservasi bersamaan untuk kamar terakhir → satu gagal; night audit 2× untuk tanggal sama → sekali; check-out folio bersaldo ≠ 0 → ditolak.
 - **Skala:** T1 = 3 properti, 300 kamar, 90 hari reservasi; T3 = visi 11A.

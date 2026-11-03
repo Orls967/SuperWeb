@@ -20,6 +20,7 @@ class EntertainmentEvent extends Model
         'ticket_floor_price_idr',
         'ticket_ceiling_price_idr',
         'current_ticket_price_idr',
+        'status',
     ];
 
     protected $casts = [

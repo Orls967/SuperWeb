@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Hotel\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HotelFolio extends Model
 {
@@ -22,6 +24,7 @@ class HotelFolio extends Model
         'total_addon_charges',
         'total_paid',
         'outstanding_balance',
+        'credit_limit_idr',
         'status',
     ];
 
@@ -30,5 +33,21 @@ class HotelFolio extends Model
         'total_addon_charges' => 'integer',
         'total_paid' => 'integer',
         'outstanding_balance' => 'integer',
+        'credit_limit_idr' => 'integer',
     ];
+
+    public function reservation(): BelongsTo
+    {
+        return $this->belongsTo(HotelReservation::class, 'reservation_id');
+    }
+
+    public function lines(): HasMany
+    {
+        return $this->hasMany(HotelFolioLine::class, 'folio_id');
+    }
+
+    public function cityLedgerTransfers(): HasMany
+    {
+        return $this->hasMany(HotelCityLedgerTransfer::class, 'folio_id');
+    }
 }

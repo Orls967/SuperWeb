@@ -10,6 +10,7 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduEnrollment;
+use Modules\Edu\Ledger\EduAccounts;
 use Modules\Shared\Application\BaseAction;
 use RuntimeException;
 
@@ -22,7 +23,7 @@ class SettleCorporateAcademyBillingAction extends BaseAction
     /**
      * Settle B2B academy invoice for corporate cohort training.
      */
-    public function execute(string $cohortId, string $corporateClientId): int
+    public function execute(string $cohortId, string $corporateClientId, ?string $idempotencyKey = null): int
     {
         $cohort = EduCohort::findOrFail($cohortId);
 
@@ -36,17 +37,17 @@ class SettleCorporateAcademyBillingAction extends BaseAction
 
         $totalBilling = (int) $enrollments->sum('amount_paid_minor');
 
-        return DB::transaction(function () use ($cohort, $corporateClientId, $totalBilling, $enrollments) {
-            $idempotencyKey = hash('sha256', "CORP-EDU:{$cohort->cohort_code}:{$corporateClientId}:{$totalBilling}");
+        return DB::transaction(function () use ($cohort, $corporateClientId, $totalBilling, $idempotencyKey) {
+            $key = $idempotencyKey ?? ('edu:settle:corp:'.$cohort->id.':'.$corporateClientId.':'.$totalBilling);
 
             if ($totalBilling > 0) {
                 $this->ledgerService->post(new PostingDTO(
                     type: 'EDU_CORPORATE_SETTLEMENT',
                     description: "Corporate billing settlement for cohort {$cohort->cohort_code} and client {$corporateClientId}",
-                    idempotencyKey: $idempotencyKey,
+                    idempotencyKey: $key,
                     entries: Posting::lines()
-                        ->debit('edu:tuition_receivable:IDR', $totalBilling)
-                        ->credit('edu:corporate_revenue:IDR', $totalBilling)
+                        ->debit(EduAccounts::TUITION_RECEIVABLE, $totalBilling)
+                        ->credit(EduAccounts::CORPORATE_REVENUE, $totalBilling)
                         ->toEntries('IDR'),
                     referenceType: 'EDU_CORP_SETTLEMENT',
                     referenceId: "{$cohort->cohort_code}-{$corporateClientId}",
@@ -58,10 +59,9 @@ class SettleCorporateAcademyBillingAction extends BaseAction
                 auditable: $cohort,
                 newValues: [
                     'corporate_client_id' => $corporateClientId,
-                    'total_amount' => $totalBilling,
-                    'student_count' => $enrollments->count(),
+                    'total_billed' => $totalBilling,
                 ],
-                impactType: 'financial',
+                impactType: 'education',
             );
 
             return $totalBilling;

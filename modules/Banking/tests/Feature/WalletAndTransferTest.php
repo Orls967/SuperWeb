@@ -46,22 +46,22 @@ test('maskName menyamarkan nama pengguna sesuai format', function () {
 });
 
 test('top up saldo menambah saldo dompet pengguna dan tercatat di ledger', function () {
-    $tx = $this->topUpAction->execute($this->sender, '1500000');
+    $tx = $this->topUpAction->execute($this->sender, '1500000', 'topup-wallet-test-1');
 
     expect($tx)->not->toBeNull()
         ->and($this->sender->walletBalance('IDR')->amount->toInt())->toBe(1500000);
 });
 
 test('top up menolak nominal negatif, nol, atau melebihi 50 juta', function () {
-    expect(fn () => $this->topUpAction->execute($this->sender, '0'))
+    expect(fn () => $this->topUpAction->execute($this->sender, '0', 'topup-wallet-test-zero'))
         ->toThrow(InvalidArgumentException::class);
 
-    expect(fn () => $this->topUpAction->execute($this->sender, '50000001'))
+    expect(fn () => $this->topUpAction->execute($this->sender, '50000001', 'topup-wallet-test-max'))
         ->toThrow(InvalidArgumentException::class);
 });
 
 test('transfer di bawah atau sama dengan 1 juta rupiah bebas biaya admin', function () {
-    $this->topUpAction->execute($this->sender, '2000000');
+    $this->topUpAction->execute($this->sender, '2000000', 'topup-wallet-test-2');
 
     $tx = $this->transferAction->execute(
         sender: $this->sender,
@@ -69,6 +69,7 @@ test('transfer di bawah atau sama dengan 1 juta rupiah bebas biaya admin', funct
         amount: '500000',
         pin: '123456',
         note: 'Uang makan',
+        idempotencyKey: 'transfer-test-1',
     );
 
     expect($tx->entries)->toHaveCount(2);
@@ -81,7 +82,7 @@ test('transfer di bawah atau sama dengan 1 juta rupiah bebas biaya admin', funct
 });
 
 test('transfer di atas 1 juta rupiah dikenakan biaya admin Rp 2500 dan menghasilkan 3 entri ledger seimbang', function () {
-    $this->topUpAction->execute($this->sender, '3000000');
+    $this->topUpAction->execute($this->sender, '3000000', 'topup-wallet-test-3');
 
     $feeAccBefore = LedgerAccount::where('code', 'fee:banking:IDR')->first()->cached_balance;
 
@@ -91,6 +92,7 @@ test('transfer di atas 1 juta rupiah dikenakan biaya admin Rp 2500 dan menghasil
         amount: '1500000',
         pin: '123456',
         note: 'Transfer besar dengan fee',
+        idempotencyKey: 'transfer-test-2',
     );
 
     expect($tx->entries)->toHaveCount(3);
@@ -108,19 +110,20 @@ test('transfer di atas 1 juta rupiah dikenakan biaya admin Rp 2500 dan menghasil
 });
 
 test('transfer ke diri sendiri ditolak dengan SelfTransferException', function () {
-    $this->topUpAction->execute($this->sender, '1000000');
+    $this->topUpAction->execute($this->sender, '1000000', 'topup-wallet-test-4');
 
     $this->transferAction->execute(
         sender: $this->sender,
         recipient: $this->sender,
         amount: '100000',
         pin: '123456',
+        idempotencyKey: 'transfer-test-3',
     );
 })->throws(SelfTransferException::class);
 
 test('simulasi transfer konkuren/berurutan yang melebihi saldo ditolak dan tidak boleh bersaldo negatif', function () {
     // Saldo awal 5 juta
-    $this->topUpAction->execute($this->sender, '5000000');
+    $this->topUpAction->execute($this->sender, '5000000', 'topup-wallet-test-5');
 
     // Transfer 1: 4 juta (+ fee 2.500 = 4.002.500) -> Sukses! Sisa: 997.500
     $this->transferAction->execute(
@@ -128,6 +131,7 @@ test('simulasi transfer konkuren/berurutan yang melebihi saldo ditolak dan tidak
         recipient: $this->recipient,
         amount: '4000000',
         pin: '123456',
+        idempotencyKey: 'transfer-test-4',
     );
 
     expect($this->sender->walletBalance('IDR')->amount->toInt())->toBe(997500);
@@ -139,6 +143,7 @@ test('simulasi transfer konkuren/berurutan yang melebihi saldo ditolak dan tidak
             recipient: $this->recipient,
             amount: '2000000',
             pin: '123456',
+            idempotencyKey: 'transfer-test-5',
         );
     })->toThrow(InsufficientFundsException::class);
 

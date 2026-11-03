@@ -7,6 +7,9 @@ namespace Modules\Hotel\Application\Actions;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
+use Modules\Hotel\Domain\Exceptions\HotelRuleViolationException;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
@@ -14,6 +17,15 @@ use Modules\Shared\Application\BaseAction;
 
 class ReserveRoomWithInventoryNightLockAction extends BaseAction
 {
+    protected HotelBusinessDateService $businessDateService;
+
+    public function __construct(
+        protected ?DocumentNumberingInterface $documentNumbering = null,
+        ?HotelBusinessDateService $businessDateService = null
+    ) {
+        $this->businessDateService = $businessDateService ?? app(HotelBusinessDateService::class);
+    }
+
     /**
      * Reserve room with pessimistic inventory lock and auto-provisioned guest folio.
      *
@@ -37,13 +49,16 @@ class ReserveRoomWithInventoryNightLockAction extends BaseAction
                 throw new \InvalidArgumentException('Check-out date must be after check-in date.');
             }
 
-            // Anti-overlap verification
+            $currentBusinessDate = $this->businessDateService->getCurrentBusinessDate($propertyId);
+            if ($in->toDateString() < $currentBusinessDate) {
+                throw new HotelRuleViolationException("Tanggal kedatangan ({$in->toDateString()}) tidak boleh sebelum business date hotel ({$currentBusinessDate}).", 422);
+            }
+
+            // Anti-overlap verification: (check_in_date < $out) and (check_out_date > $in)
             $hasOverlap = HotelReservation::where('room_id', $room->id)
                 ->whereIn('status', ['confirmed', 'checked_in'])
-                ->where(function ($q) use ($in, $out) {
-                    $q->whereBetween('check_in_date', [$in, $out])
-                        ->orWhereBetween('check_out_date', [$in, $out]);
-                })
+                ->whereDate('check_in_date', '<', $out->toDateString())
+                ->whereDate('check_out_date', '>', $in->toDateString())
                 ->exists();
 
             if ($hasOverlap) {
@@ -53,7 +68,8 @@ class ReserveRoomWithInventoryNightLockAction extends BaseAction
             $nights = max(1, $in->diffInDays($out));
             $totalRoomChargeIdr = $nights * $dailyRateIdr;
 
-            $resNumber = 'HTL-RES-'.strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
+            $numbering = $this->documentNumbering ?? app(DocumentNumberingInterface::class);
+            $resNumber = $numbering->nextNumber('HTL', 'RSV');
 
             $reservation = HotelReservation::create([
                 'id' => (string) Str::uuid(),

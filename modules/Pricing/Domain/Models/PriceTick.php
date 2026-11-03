@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PriceTick extends Model
 {
-    protected $table = 'prc_price_ticks';
+    protected $table = 'pric_price_ticks';
 
     protected $fillable = [
         'sku',

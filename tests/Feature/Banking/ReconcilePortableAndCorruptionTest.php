@@ -106,6 +106,7 @@ class ReconcilePortableAndCorruptionTest extends TestCase
         $this->artisan('bank:reconcile')->assertSuccessful();
 
         // Korupsi 1 entri: ubah -50000 menjadi -49999
+        DB::statement('DROP TRIGGER IF EXISTS prevent_bank_ledger_entries_update');
         DB::table('bank_ledger_entries')->where('id', $entryId)->update(['amount' => '-49999']);
 
         // Jalankan rekonsiliasi: harus gagal dan menyebutkan nama/kode akun yang korup

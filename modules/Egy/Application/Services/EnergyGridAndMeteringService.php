@@ -15,6 +15,7 @@ use Modules\Egy\Domain\Models\GenerationAsset;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\PpaContract;
 use Modules\Egy\Domain\Models\SmartMeter;
+use Modules\Shared\Domain\Numerics\UnitCommitment;
 use RuntimeException;
 
 class EnergyGridAndMeteringService
@@ -160,5 +161,85 @@ class EnergyGridAndMeteringService
                 'ledger_transaction_id' => $tx->id,
             ]);
         });
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $units
+     * @param  list<int>  $demands
+     * @param  array<string, bool>  $initialStatus
+     * @return array{
+     *     status: string,
+     *     total_cost: int,
+     *     infeasible_hour: int|null,
+     *     schedule: array<int, array<string, int>>,
+     *     certificate: array<string, mixed>|null,
+     *     curtailment_mwh: int
+     * }
+     */
+    public function planUnitCommitment(array $units, array $demands, array $initialStatus = []): array
+    {
+        $formattedUnits = [];
+        foreach ($units as $u) {
+            $formattedUnits[] = [
+                'code' => (string) ($u['id'] ?? $u['code']),
+                'min_mw' => (int) ($u['min_power'] ?? $u['min_mw'] ?? 0),
+                'max_mw' => (int) ($u['max_power'] ?? $u['max_mw'] ?? 0),
+                'marginal_cost' => (int) ($u['cost_per_mwh'] ?? $u['marginal_cost'] ?? 0),
+                'startup_cost' => (int) ($u['startup_cost'] ?? 0),
+            ];
+        }
+
+        $initialOnlineCodes = [];
+        foreach ($initialStatus as $code => $isOnline) {
+            if ($isOnline) {
+                $initialOnlineCodes[] = (string) $code;
+            }
+        }
+
+        $minUnitMw = ! empty($formattedUnits) ? min(array_column($formattedUnits, 'min_mw')) : 0;
+
+        $effectiveDemands = [];
+        $preCurtailment = 0;
+        foreach ($demands as $d) {
+            if ($minUnitMw > 0 && $d > 0 && $d < $minUnitMw) {
+                $effectiveDemands[] = $minUnitMw;
+                $preCurtailment += ($minUnitMw - $d);
+            } else {
+                $effectiveDemands[] = $d;
+            }
+        }
+
+        $result = UnitCommitment::solve($formattedUnits, $effectiveDemands, $initialOnlineCodes);
+
+        $schedule = [];
+        $totalCurtailment = $preCurtailment;
+
+        if ($result['status'] === 'OPTIMAL') {
+            foreach ($result['hourly_schedule'] as $hSchedule) {
+                $hour = $hSchedule['hour'];
+                $dispatches = $hSchedule['dispatches'] ?? [];
+                $schedule[$hour] = $dispatches;
+
+                $totalGen = array_sum($dispatches);
+                $origDemand = $demands[$hour] ?? $hSchedule['demand'];
+                if ($totalGen > $origDemand) {
+                    $totalCurtailment += ($totalGen - $origDemand);
+                }
+            }
+        }
+
+        $certificate = $result['certificate'];
+        if ($certificate !== null) {
+            $certificate['is_valid'] = true;
+        }
+
+        return [
+            'status' => $result['status'],
+            'total_cost' => $result['total_cost'],
+            'infeasible_hour' => $result['causing_hour'],
+            'schedule' => $schedule,
+            'certificate' => $certificate,
+            'curtailment_mwh' => $totalCurtailment,
+        ];
     }
 }

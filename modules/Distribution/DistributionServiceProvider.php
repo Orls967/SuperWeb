@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Distribution;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Distribution\Application\Services\DistributionFulfilmentService;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Console\Commands\AuditDistributionCommand;
+use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Distribution\Policies\DistributorPolicy;
 use Modules\Shared\Application\MenuRegistry;
 
 class DistributionServiceProvider extends ServiceProvider
@@ -20,6 +23,8 @@ class DistributionServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(Distributor::class, DistributorPolicy::class);
+
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         if (file_exists(__DIR__.'/routes/web.php')) {

@@ -433,7 +433,7 @@ class MallSeeder extends Seeder
             $customerUser->walletAccount('IDR');
             $setPin->execute($customerUser, '123456');
             $topUp->execute($customerUser, $payAmount + 5_000_000, "seed_mall_pay_starbucks_{$starbucksInvoice->id}");
-            $payInvoice->execute($starbucksInvoice, $payAmount, '123456', $customerUser);
+            $payInvoice->execute($starbucksInvoice, $payAmount, '123456', $customerUser, "seed_mall_pay_starbucks_{$starbucksInvoice->id}");
         }
 
         // 10. Parkir: zona, tarif progresif, akun ledger, dan langganan member

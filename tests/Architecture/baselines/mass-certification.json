@@ -1,0 +1,447 @@
+{
+    "about": "Baseline commit masa lalu yang melanggar aturan sertifikasi massal atau tata kelola verifikasi sebelum penegakan pagar 2026-10-30 (K-8, KONSEP \u00a7A14).",
+    "anchor": "DECISIONS.md#2026-10-30-pagar-sertifikasi-massal",
+    "total": 46,
+    "commits": [
+        "b359587aa8176910a855c80662fba84736c91982",
+        "50cc405a30ea4e2d31af69c630e4e0736187acf7",
+        "68e89326685fd273cc41a374145478340104afd7",
+        "2e9e0a93fd10f56e7a5ab066e6799f366f29afa7",
+        "209d134003de9b87dc1444fa30c93d0b758cb84b",
+        "8893c1aa498421db093f4ebcbcc84c1c61a6ad02",
+        "e07550773bbc0de5bd75893330baa09cf05b1191",
+        "610685c5cb98764e28149492effd0b2f1bd02cc4",
+        "f443942c7f72e5db2b2088fa1012fe6225be56a5",
+        "5c13750eb79873f7099f0e8fb295b5a32d811c3f",
+        "d548dd804228cbb53c6dbf180930ce8bf07aa238",
+        "0bb3e673fc33545b4a384a06718c646f3d4a44db",
+        "eaa78709efa5dfdf021eaa4a2c93ab8b05f5c4e1",
+        "fcebf669cad921b93f0ffe8eedc4794988c49fcd",
+        "805b0525fcb8d944e24fb5daacb5558342bbbb40",
+        "e765c7b246915ed9e7fe6ae2f9305ed6fbe7bca5",
+        "003a6bb2135ad8351ea9c1dac281592f793efdb0",
+        "50802029a7dc883dd933f171c9e93556edd8b9ff",
+        "c010cce1ad6a72770ff33990f65f0985e34ace7f",
+        "4e7705c795d609a21c3bebbe8f0a080130a5ab9f",
+        "e944245da3e21629d7d39286dedbea56279b9b80",
+        "8cc7e8e38cbc647158a99f0e174410d92c2ba3ec",
+        "41151ba28a5e2aaf542ef8f3c6e35a62b6dbf632",
+        "0034f8ef4e79b99dfcabd1d1769b3dad0529b610",
+        "c0549099c9970652a412deb912a2a929eb22759b",
+        "c01cc9883905b0327fac798eda726d3995777083",
+        "4e1c055474159c4b74837d473772ca1bc2da6f8f",
+        "7bbdce64f4c22d457d8ff6657ef0f060ca61b44a",
+        "9a99148263969d0dd9592fc9b1ebb94a467d2440",
+        "f0adb074fcc0a579cb47fb9668b969ad31d6cd4d",
+        "d7eb68c3c4df647249a2a94bff1e2f28463377aa",
+        "13afdcc0bda77ec7a52926b77d037aa2c011d32b",
+        "af91f3d6f29d4abce88818f4b1e4fb1e9fab0493",
+        "b0fdb82abfcd20f391867fc06608d8a1493c629d",
+        "d55dc034c1201760a0481d02ed94f8462e33a467",
+        "36612661e1908dc06ad40f30264289362ac330ae",
+        "4407dcb38b02c9c781fee3a803ca2d8779d1957b",
+        "033bf85b615401e6a19a69818f0182d65eb3d343",
+        "af921c7ea73e600117098727899e500009efe820",
+        "e67d840ba90e84747d68e3753d425f87a352f373",
+        "3a41cc81ec1647162da078b42ce038a6b00b6f5f",
+        "4f287a1a697591e926a0abdb84d80f3d838855fd",
+        "9170da6a5ccf7f69d399990c26c962d98772436f",
+        "044aa14c71c15af0160edfbc30f5c862552f3272",
+        "97b953aa868357ca486dce25abf6d81afa6fd72f",
+        "b8ef0b70f4476c551745dea2cf3b23bb4ccfce78"
+    ],
+    "details": [
+        {
+            "sha": "b359587aa8176910a855c80662fba84736c91982",
+            "short_sha": "b359587a",
+            "subject": "release(tahap-8): complete Fase 0-105 full vertical slices, 100% proof blocks, specs, diagrams, and zero-debt architecture certification",
+            "reasons": [
+                ">15 items checked (47) without anchor",
+                ">1 phase verified (75) without anchor",
+                "verified phase with files outside docs (155 files)",
+                "verified phase without docs(verifikasi- prefix: release(tahap-8): complete Fase 0-105 full vertical slices, 100% proof blocks, specs, diagrams, and zero-debt architecture certification"
+            ]
+        },
+        {
+            "sha": "50cc405a30ea4e2d31af69c630e4e0736187acf7",
+            "short_sha": "50cc405a",
+            "subject": "fix(tahap-0): stabilisasi dan penutupan bersih Fase 101-105",
+            "reasons": [
+                ">15 items checked (41) without anchor",
+                ">1 phase verified (5) without anchor",
+                "verified phase with files outside docs (38 files)",
+                "verified phase without docs(verifikasi- prefix: fix(tahap-0): stabilisasi dan penutupan bersih Fase 101-105"
+            ]
+        },
+        {
+            "sha": "68e89326685fd273cc41a374145478340104afd7",
+            "short_sha": "68e89326",
+            "subject": "docs(gate): verify Fase 100 gate and update PROGRESS.md to Fase 101",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(gate): verify Fase 100 gate and update PROGRESS.md to Fase 101"
+            ]
+        },
+        {
+            "sha": "2e9e0a93fd10f56e7a5ab066e6799f366f29afa7",
+            "short_sha": "2e9e0a93",
+            "subject": "docs: record Phase 99 quality gate and update progress",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs: record Phase 99 quality gate and update progress"
+            ]
+        },
+        {
+            "sha": "209d134003de9b87dc1444fa30c93d0b758cb84b",
+            "short_sha": "209d1340",
+            "subject": "docs: record Phase 98 quality gate and update progress",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs: record Phase 98 quality gate and update progress"
+            ]
+        },
+        {
+            "sha": "8893c1aa498421db093f4ebcbcc84c1c61a6ad02",
+            "short_sha": "8893c1aa",
+            "subject": "docs: record Phase 97 quality gate and update progress",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs: record Phase 97 quality gate and update progress"
+            ]
+        },
+        {
+            "sha": "e07550773bbc0de5bd75893330baa09cf05b1191",
+            "short_sha": "e0755077",
+            "subject": "docs: record Phase 96 quality gate and update codebase inventory",
+            "reasons": [
+                "verified phase with files outside docs (6 files)",
+                "verified phase without docs(verifikasi- prefix: docs: record Phase 96 quality gate and update codebase inventory"
+            ]
+        },
+        {
+            "sha": "610685c5cb98764e28149492effd0b2f1bd02cc4",
+            "short_sha": "610685c5",
+            "subject": "docs: finalize phase 91-95 gates and test formatting",
+            "reasons": [
+                ">1 phase verified (5) without anchor",
+                "verified phase with files outside docs (6 files)",
+                "verified phase without docs(verifikasi- prefix: docs: finalize phase 91-95 gates and test formatting"
+            ]
+        },
+        {
+            "sha": "f443942c7f72e5db2b2088fa1012fe6225be56a5",
+            "short_sha": "f443942c",
+            "subject": "feat(hotel,mining,core): implement vertical slices and audit gates for Phase 91 to 95",
+            "reasons": [
+                ">15 items checked (45) without anchor",
+                ">1 phase verified (5) without anchor",
+                "verified phase without docs(verifikasi- prefix: feat(hotel,mining,core): implement vertical slices and audit gates for Phase 91 to 95"
+            ]
+        },
+        {
+            "sha": "5c13750eb79873f7099f0e8fb295b5a32d811c3f",
+            "short_sha": "5c13750e",
+            "subject": "docs: verify Phase 86-90 quality gates and sync inventory",
+            "reasons": [
+                ">15 items checked (44) without anchor",
+                ">1 phase verified (5) without anchor",
+                "verified phase without docs(verifikasi- prefix: docs: verify Phase 86-90 quality gates and sync inventory"
+            ]
+        },
+        {
+            "sha": "d548dd804228cbb53c6dbf180930ce8bf07aa238",
+            "short_sha": "d548dd80",
+            "subject": "docs(hcm): verify Fase 85 quality gate and record evidence",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(hcm): verify Fase 85 quality gate and record evidence"
+            ]
+        },
+        {
+            "sha": "0bb3e673fc33545b4a384a06718c646f3d4a44db",
+            "short_sha": "0bb3e673",
+            "subject": "docs(trade): verify Fase 84 quality gate and record evidence",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(trade): verify Fase 84 quality gate and record evidence"
+            ]
+        },
+        {
+            "sha": "eaa78709efa5dfdf021eaa4a2c93ab8b05f5c4e1",
+            "short_sha": "eaa78709",
+            "subject": "docs(trade_finance): verify Fase 83 quality gate and record evidence",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(trade_finance): verify Fase 83 quality gate and record evidence"
+            ]
+        },
+        {
+            "sha": "fcebf669cad921b93f0ffe8eedc4794988c49fcd",
+            "short_sha": "fcebf669",
+            "subject": "docs(manufacturing): verify Fase 82 quality gate and record evidence",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(manufacturing): verify Fase 82 quality gate and record evidence"
+            ]
+        },
+        {
+            "sha": "805b0525fcb8d944e24fb5daacb5558342bbbb40",
+            "short_sha": "805b0525",
+            "subject": "docs(pricing): verify Fase 81 quality gate and record evidence",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(pricing): verify Fase 81 quality gate and record evidence"
+            ]
+        },
+        {
+            "sha": "e765c7b246915ed9e7fe6ae2f9305ed6fbe7bca5",
+            "short_sha": "e765c7b2",
+            "subject": "docs(logistics): penutupan gate fase 80 cold-chain drone robotics terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(logistics): penutupan gate fase 80 cold-chain drone robotics terverifikasi"
+            ]
+        },
+        {
+            "sha": "003a6bb2135ad8351ea9c1dac281592f793efdb0",
+            "short_sha": "003a6bb2",
+            "subject": "docs(logistics): penutupan gate fase 79 reverse logistics terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(logistics): penutupan gate fase 79 reverse logistics terverifikasi"
+            ]
+        },
+        {
+            "sha": "50802029a7dc883dd933f171c9e93556edd8b9ff",
+            "short_sha": "50802029",
+            "subject": "docs(vnd): quality gate dan verifikasi silang penutupan fase 75 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(vnd): quality gate dan verifikasi silang penutupan fase 75 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "c010cce1ad6a72770ff33990f65f0985e34ace7f",
+            "short_sha": "c010cce1",
+            "subject": "docs(proptech): penutupan gate fase 78 flex-space booking on-demand terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(proptech): penutupan gate fase 78 flex-space booking on-demand terverifikasi"
+            ]
+        },
+        {
+            "sha": "4e7705c795d609a21c3bebbe8f0a080130a5ab9f",
+            "short_sha": "4e7705c7",
+            "subject": "docs(ckt): quality gate dan verifikasi silang penutupan fase 74 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(ckt): quality gate dan verifikasi silang penutupan fase 74 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "e944245da3e21629d7d39286dedbea56279b9b80",
+            "short_sha": "e944245d",
+            "subject": "docs(proptech): penutupan gate fase 77 digital twin bim lifecycle terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(proptech): penutupan gate fase 77 digital twin bim lifecycle terverifikasi"
+            ]
+        },
+        {
+            "sha": "8cc7e8e38cbc647158a99f0e174410d92c2ba3ec",
+            "short_sha": "8cc7e8e3",
+            "subject": "docs(wm): quality gate dan verifikasi silang penutupan fase 73 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(wm): quality gate dan verifikasi silang penutupan fase 73 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "41151ba28a5e2aaf542ef8f3c6e35a62b6dbf632",
+            "short_sha": "41151ba2",
+            "subject": "docs(proptech): penutupan gate fase 76 smart building iot esg terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(proptech): penutupan gate fase 76 smart building iot esg terverifikasi"
+            ]
+        },
+        {
+            "sha": "0034f8ef4e79b99dfcabd1d1769b3dad0529b610",
+            "short_sha": "0034f8ef",
+            "subject": "docs(ins): update progress verifikasi fase 72",
+            "reasons": [
+                ">15 items checked (16) without anchor",
+                ">1 phase verified (2) without anchor",
+                "verified phase without docs(verifikasi- prefix: docs(ins): update progress verifikasi fase 72"
+            ]
+        },
+        {
+            "sha": "c0549099c9970652a412deb912a2a929eb22759b",
+            "short_sha": "c0549099",
+            "subject": "docs(rwa): quality gate dan verifikasi silang penutupan fase 71 (terverifikasi)",
+            "reasons": [
+                ">15 items checked (16) without anchor",
+                ">1 phase verified (2) without anchor",
+                "verified phase without docs(verifikasi- prefix: docs(rwa): quality gate dan verifikasi silang penutupan fase 71 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "c01cc9883905b0327fac798eda726d3995777083",
+            "short_sha": "c01cc988",
+            "subject": "docs(ev): quality gate dan verifikasi silang penutupan fase 69 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(ev): quality gate dan verifikasi silang penutupan fase 69 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "4e1c055474159c4b74837d473772ca1bc2da6f8f",
+            "short_sha": "4e1c0554",
+            "subject": "docs(governance): verify and promote Fase 67 and Fase 68 to verified status, activate Fase 69",
+            "reasons": [
+                ">1 phase verified (2) without anchor",
+                "verified phase without docs(verifikasi- prefix: docs(governance): verify and promote Fase 67 and Fase 68 to verified status, activate Fase 69"
+            ]
+        },
+        {
+            "sha": "7bbdce64f4c22d457d8ff6657ef0f060ca61b44a",
+            "short_sha": "7bbdce64",
+            "subject": "docs(r9): penutupan fase r9 dan pemenuhan definition of done (dod) fase r",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r9): penutupan fase r9 dan pemenuhan definition of done (dod) fase r"
+            ]
+        },
+        {
+            "sha": "9a99148263969d0dd9592fc9b1ebb94a467d2440",
+            "short_sha": "9a991482",
+            "subject": "docs(r8): r8.5 penutupan resmi fase r8 terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r8): r8.5 penutupan resmi fase r8 terverifikasi"
+            ]
+        },
+        {
+            "sha": "f0adb074fcc0a579cb47fb9668b969ad31d6cd4d",
+            "short_sha": "f0adb074",
+            "subject": "docs(r7): r7.4 penutupan resmi fase r7 terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r7): r7.4 penutupan resmi fase r7 terverifikasi"
+            ]
+        },
+        {
+            "sha": "d7eb68c3c4df647249a2a94bff1e2f28463377aa",
+            "short_sha": "d7eb68c3",
+            "subject": "docs(r6): r6.6 penutupan resmi fase r6 terverifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r6): r6.6 penutupan resmi fase r6 terverifikasi"
+            ]
+        },
+        {
+            "sha": "13afdcc0bda77ec7a52926b77d037aa2c011d32b",
+            "short_sha": "13afdcc0",
+            "subject": "docs(r6): r6.1-r6.5 susun DoR fase r6 dan dokumentasi keputusan arsitektur di DECISIONS.md",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r6): r6.1-r6.5 susun DoR fase r6 dan dokumentasi keputusan arsitektur di DECISIONS.md"
+            ]
+        },
+        {
+            "sha": "af91f3d6f29d4abce88818f4b1e4fb1e9fab0493",
+            "short_sha": "af91f3d6",
+            "subject": "docs(r4): r4.7 verifikasi silang independen dan penutupan resmi fase r4 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r4): r4.7 verifikasi silang independen dan penutupan resmi fase r4 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "b0fdb82abfcd20f391867fc06608d8a1493c629d",
+            "short_sha": "b0fdb82a",
+            "subject": "docs(r4): r4.7 quality gate fase r4 siap verifikasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r4): r4.7 quality gate fase r4 siap verifikasi"
+            ]
+        },
+        {
+            "sha": "d55dc034c1201760a0481d02ed94f8462e33a467",
+            "short_sha": "d55dc034",
+            "subject": "refactor(r4): r4.1 penegakan strict_types di seluruh modul A11=0 dan arch test generik",
+            "reasons": [
+                "verified phase with files outside docs (148 files)",
+                "verified phase without docs(verifikasi- prefix: refactor(r4): r4.1 penegakan strict_types di seluruh modul A11=0 dan arch test generik"
+            ]
+        },
+        {
+            "sha": "36612661e1908dc06ad40f30264289362ac330ae",
+            "short_sha": "36612661",
+            "subject": "docs(r5): r5.6 verifikasi penutupan fase r5 (terverifikasi)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r5): r5.6 verifikasi penutupan fase r5 (terverifikasi)"
+            ]
+        },
+        {
+            "sha": "4407dcb38b02c9c781fee3a803ca2d8779d1957b",
+            "short_sha": "4407dcb3",
+            "subject": "feat(r5): r5.1 codebase otomatis via docs:inventory dan sinkronisasi codebase.md",
+            "reasons": [
+                "verified phase with files outside docs (3 files)",
+                "verified phase without docs(verifikasi- prefix: feat(r5): r5.1 codebase otomatis via docs:inventory dan sinkronisasi codebase.md"
+            ]
+        },
+        {
+            "sha": "033bf85b615401e6a19a69818f0182d65eb3d343",
+            "short_sha": "033bf85b",
+            "subject": "docs(r2): verifikasi silang independen fase R2 lulus (TERVERIFIKASI) dan rapikan commit R1.10",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(r2): verifikasi silang independen fase R2 lulus (TERVERIFIKASI) dan rapikan commit R1.10"
+            ]
+        },
+        {
+            "sha": "af921c7ea73e600117098727899e500009efe820",
+            "short_sha": "af921c7e",
+            "subject": "feat(fase-r2): integrasikan seluruh implementasi dan test fase R2 pasca verifikasi fase R1",
+            "reasons": [
+                "verified phase with files outside docs (1 files)",
+                "verified phase without docs(verifikasi- prefix: feat(fase-r2): integrasikan seluruh implementasi dan test fase R2 pasca verifikasi fase R1"
+            ]
+        },
+        {
+            "sha": "e67d840ba90e84747d68e3753d425f87a352f373",
+            "short_sha": "e67d840b",
+            "subject": "docs(r1): verifikasi silang independen fase R1 lulus (TERVERIFIKASI)",
+            "reasons": [
+                ">1 phase verified (2) without anchor",
+                "verified phase without docs(verifikasi- prefix: docs(r1): verifikasi silang independen fase R1 lulus (TERVERIFIKASI)"
+            ]
+        },
+        {
+            "sha": "3a41cc81ec1647162da078b42ce038a6b00b6f5f",
+            "short_sha": "3a41cc81",
+            "subject": "docs(progress): catat bukti commit dan test remediasi temuan verifikator fase R1",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(progress): catat bukti commit dan test remediasi temuan verifikator fase R1"
+            ]
+        },
+        {
+            "sha": "4f287a1a697591e926a0abdb84d80f3d838855fd",
+            "short_sha": "4f287a1a",
+            "subject": "docs(progress): tandai Fase R1 selesai (menunggu verifikasi) dan perbarui bukti implementasi",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(progress): tandai Fase R1 selesai (menunggu verifikasi) dan perbarui bukti implementasi"
+            ]
+        },
+        {
+            "sha": "9170da6a5ccf7f69d399990c26c962d98772436f",
+            "short_sha": "9170da6a",
+            "subject": "fix(fase-R1): nolkan baseline test hygiene T2 (M-R0-8)",
+            "reasons": [
+                "verified phase with files outside docs (2 files)",
+                "verified phase without docs(verifikasi- prefix: fix(fase-R1): nolkan baseline test hygiene T2 (M-R0-8)"
+            ]
+        },
+        {
+            "sha": "044aa14c71c15af0160edfbc30f5c862552f3272",
+            "short_sha": "044aa14c",
+            "subject": "docs(fase-R3): verifikasi silang putaran 2 tuntas, tutup fase R3 (status TERVERIFIKASI)",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(fase-R3): verifikasi silang putaran 2 tuntas, tutup fase R3 (status TERVERIFIKASI)"
+            ]
+        },
+        {
+            "sha": "97b953aa868357ca486dce25abf6d81afa6fd72f",
+            "short_sha": "97b953aa",
+            "subject": "merge: sinkronisasi origin/master (R0 \u2705 TERVERIFIKASI) ke feature/fase-r3-otorisasi",
+            "reasons": [
+                "verified phase with files outside docs (1 files)",
+                "verified phase without docs(verifikasi- prefix: merge: sinkronisasi origin/master (R0 \u2705 TERVERIFIKASI) ke feature/fase-r3-otorisasi"
+            ]
+        },
+        {
+            "sha": "b8ef0b70f4476c551745dea2cf3b23bb4ccfce78",
+            "short_sha": "b8ef0b70",
+            "subject": "docs(fase-R0): finalisasi status verifikasi silang \u2705 TERVERIFIKASI Fase R0",
+            "reasons": [
+                "verified phase without docs(verifikasi- prefix: docs(fase-R0): finalisasi status verifikasi silang \u2705 TERVERIFIKASI Fase R0"
+            ]
+        }
+    ]
+}

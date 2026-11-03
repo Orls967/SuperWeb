@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GovProposal extends Model
 {
-    protected $table = 'gov_proposals';
+    protected $table = 'agri_proposals';
 
     protected $fillable = [
         'proposal_code',

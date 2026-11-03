@@ -15,6 +15,7 @@ use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Rwa\Domain\Models\RwaDividend;
 use Modules\Rwa\Domain\Models\RwaHolding;
 use Modules\Rwa\Domain\Models\RwaOffering;
+use Modules\Rwa\Domain\Models\RwaTokenTransfer;
 
 class RwaTokenService
 {
@@ -22,6 +23,89 @@ class RwaTokenService
         protected SimClockInterface $simClock,
         protected LedgerService $ledgerService
     ) {}
+
+    public function createDraftAsset(array $data, string $idempotencyKey): RwaAsset
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key is required.');
+        }
+
+        $appraisalValueIdr = (int) ($data['appraisal_value_idr'] ?? 0);
+        $totalSupply = (int) ($data['total_supply_tokens'] ?? 0);
+        if ($totalSupply <= 0) {
+            throw new \InvalidArgumentException('Total supply must be greater than zero.');
+        }
+
+        $tokenPrice = intdiv($appraisalValueIdr, $totalSupply);
+
+        return RwaAsset::create([
+            'token_symbol' => $data['symbol'] ?? $data['token_symbol'],
+            'name' => $data['name'],
+            'underlying_asset_type' => $data['underlying_asset_type'],
+            'underlying_asset_id' => $data['underlying_asset_id'],
+            'appraisal_document_ref' => $data['appraisal_document_ref'] ?? null,
+            'appraisal_value_idr' => $appraisalValueIdr,
+            'total_supply_tokens' => $totalSupply,
+            'token_price_idr' => $tokenPrice,
+            'creator_id' => $data['creator_id'] ?? null,
+            'status' => 'draft',
+            'approved_at' => null,
+        ]);
+    }
+
+    public function approveAsset(int $assetId, int $approverId, string $idempotencyKey): RwaAsset
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key is required.');
+        }
+
+        $asset = RwaAsset::findOrFail($assetId);
+
+        if ($asset->creator_id !== null && $asset->creator_id === $approverId) {
+            throw new \DomainException('Four-eyes principle violation: Creator cannot approve their own asset.');
+        }
+
+        $asset->status = 'approved';
+        $asset->approved_by_primary_id = $approverId;
+        $asset->approved_at = $this->simClock->now();
+        $asset->save();
+
+        return $asset;
+    }
+
+    public function issueAsset(int $assetId, string $idempotencyKey): RwaAsset
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key is required.');
+        }
+
+        return DB::transaction(function () use ($assetId, $idempotencyKey) {
+            $asset = RwaAsset::lockForUpdate()->findOrFail($assetId);
+
+            if ($asset->status !== 'approved') {
+                throw new \DomainException("Asset must be in approved status to be issued. Current: {$asset->status}");
+            }
+
+            $tokenPrice = intdiv($asset->appraisal_value_idr, $asset->total_supply_tokens);
+            $asset->token_price_idr = $tokenPrice;
+            $asset->status = 'issued';
+            $asset->save();
+
+            $this->ledgerService->post(new PostingDTO(
+                type: 'rwa_issuance',
+                description: "Initial RWA Token Issuance for {$asset->token_symbol}",
+                idempotencyKey: $idempotencyKey,
+                entries: [
+                    PostingEntryDTO::forCode('rwa:issued_supply:default', 'IDR', -$asset->appraisal_value_idr),
+                    PostingEntryDTO::forCode('rwa:unsold:default', 'IDR', $asset->appraisal_value_idr),
+                ],
+                referenceType: 'rwa_asset',
+                referenceId: (string) $asset->id,
+            ));
+
+            return $asset;
+        });
+    }
 
     public function issueAssetToken(
         string $symbol,
@@ -244,6 +328,21 @@ class RwaTokenService
             if ($totalAllocated > $asset->total_supply_tokens) {
                 $discrepancies++;
                 $corruptDetails[] = "Asset ID {$asset->id} ({$asset->token_symbol}): holdings {$totalAllocated} exceeds supply {$asset->total_supply_tokens}";
+            }
+        }
+
+        $holdings = RwaHolding::all();
+        foreach ($holdings as $holding) {
+            $inbound = (int) RwaTokenTransfer::where('rwa_asset_id', $holding->rwa_asset_id)
+                ->where('to_user_id', $holding->user_id)
+                ->sum('quantity');
+            $outbound = (int) RwaTokenTransfer::where('rwa_asset_id', $holding->rwa_asset_id)
+                ->where('from_user_id', $holding->user_id)
+                ->sum('quantity');
+            $expected = $inbound - $outbound;
+            if ((int) $holding->token_balance !== $expected) {
+                $discrepancies++;
+                $corruptDetails[] = "Holding user {$holding->user_id} asset {$holding->rwa_asset_id}: balance {$holding->token_balance} does not match transfer log {$expected}";
             }
         }
 

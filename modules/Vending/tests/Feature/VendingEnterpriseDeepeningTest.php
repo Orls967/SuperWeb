@@ -41,7 +41,7 @@ class VendingEnterpriseDeepeningTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result['waste_forecast_qty']);
         $this->assertLessThanOrEqual(15.0, (float) $result['forecast']->mape);
 
-        $this->assertDatabaseHas('ven_demand_forecasts', [
+        $this->assertDatabaseHas('vnd_demand_forecasts', [
             'outlet_code' => 'OUTLET-TEST-01',
             'item_code' => 'BEV-TEST-01',
         ]);
@@ -63,7 +63,7 @@ class VendingEnterpriseDeepeningTest extends TestCase
         $this->assertEquals(600000, $result['estimated_total_idr']);
         $this->assertLessThanOrEqual(15000000, $result['estimated_total_idr']);
 
-        $this->assertDatabaseHas('ven_auto_pos', [
+        $this->assertDatabaseHas('vnd_auto_pos', [
             'item_code' => 'SNACK-RESTOCK-01',
             'status' => 'approved',
         ]);
@@ -84,7 +84,7 @@ class VendingEnterpriseDeepeningTest extends TestCase
         $this->assertStringStartsWith('TX-VEN-', $result['tx_code']);
         $this->assertEquals(30000, $result['total_price_idr']);
 
-        $this->assertDatabaseHas('ven_vending_transactions', [
+        $this->assertDatabaseHas('vnd_vending_transactions', [
             'vending_unit_id' => $unit->id,
             'item_code' => 'BEV-JUICE-01',
             'qty' => 2,

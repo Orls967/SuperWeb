@@ -21,7 +21,7 @@ arch('non-core controllers do not access SimClockService directly')
         'Modules\Resto\Http\Controllers',
         'Modules\Logistics\Http\Controllers',
         'Modules\Store\Http\Controllers',
-        'Modules\Telematics\Http\Controllers',
+        'Modules\Mobility\Telematics\Http\Controllers',
     ])
     ->not->toUse([
         'Modules\Core\Application\Services\SimClockService',

@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace Modules\Mall\Application\Actions;
 
 use App\Models\User;
-use Brick\Math\BigDecimal;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\VerifiesWalletPin;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use Modules\Banking\Domain\Exceptions\InsufficientFundsException;
 use Modules\Mall\Domain\Enums\DepositStatus;
@@ -22,6 +17,8 @@ use Modules\Mall\Domain\Enums\LeaseStatus;
 use Modules\Mall\Domain\Enums\UnitStatus;
 use Modules\Mall\Domain\Exceptions\LeaseActivationException;
 use Modules\Mall\Domain\Models\Lease;
+use Modules\Mall\Ledger\MallAccounts;
+use Modules\Shared\Support\Posting;
 
 class ActivateLeaseAction
 {
@@ -58,25 +55,24 @@ class ActivateLeaseAction
                 $walletAccount = $user->walletAccount('IDR');
                 if (! $walletAccount->canCover($depositAmount)) {
                     throw new InsufficientFundsException(
-                        'Saldo dompet tenant tidak mencukupi untuk pembayaran deposit jaminan Rp '.number_format($depositAmount, 0, ',', '.')
+                        $walletAccount->code,
+                        (string) $walletAccount->cached_balance,
+                        (string) $depositAmount
                     );
                 }
 
-                $liabilityAccount = $this->ensureLiabilityAccountExists(
-                    'liability:mall:tenant_deposit:IDR',
-                    'Titipan Deposit Jaminan Sewa Tenant Mall'
-                );
+                $liabilityAccount = MallAccounts::tenantDepositLiabilityAccount();
 
-                $depositBd = BigDecimal::of($depositAmount);
+                $entries = Posting::lines()
+                    ->debit($walletAccount->code, $depositAmount, 'IDR')
+                    ->credit($liabilityAccount->code, $depositAmount, 'IDR')
+                    ->toEntries('IDR');
 
                 $this->ledger->post(new PostingDTO(
                     type: TransactionType::LEASE_DEPOSIT->value,
                     description: "Setoran deposit jaminan sewa unit {$locked->unit->unit_number} (#{$locked->lease_number})",
                     idempotencyKey: "mall:lease:activate:{$locked->id}",
-                    entries: [
-                        PostingEntryDTO::forCode($walletAccount->code, 'IDR', $depositBd->negated()),
-                        PostingEntryDTO::forCode($liabilityAccount->code, 'IDR', $depositBd),
-                    ],
+                    entries: $entries,
                     referenceType: 'mall_lease',
                     referenceId: $locked->id,
                     createdBy: $user->id
@@ -96,21 +92,5 @@ class ActivateLeaseAction
 
             return $locked;
         });
-    }
-
-    private function ensureLiabilityAccountExists(string $code, string $name): LedgerAccount
-    {
-        return LedgerAccount::firstOrCreate(
-            ['code' => $code],
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => $name,
-                'asset_code' => 'IDR',
-                'kind' => AccountKind::LIABILITY->value,
-                'allow_negative' => true,
-                'cached_balance' => '0',
-                'is_frozen' => false,
-            ]
-        );
     }
 }

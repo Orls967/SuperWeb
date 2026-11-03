@@ -7,6 +7,7 @@ namespace Modules\Agency\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\Agency\Application\Services\AgencyService;
 use Modules\Agency\Domain\Models\Agent;
@@ -33,6 +34,8 @@ class AgencyController extends Controller
 
     public function show(Agent $agent): View
     {
+        Gate::authorize('view', $agent);
+
         $agent->load(['parent', 'children', 'contracts', 'schemes', 'accruals', 'payouts']);
 
         return view('agency::show', [

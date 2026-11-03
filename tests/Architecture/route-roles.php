@@ -24,16 +24,16 @@ use Modules\Crypto\Domain\Models\CryptoAlert;
 use Modules\Crypto\Domain\Models\CryptoAsset;
 use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
-use Modules\Ev\Domain\Models\EvCharger;
-use Modules\Ev\Domain\Models\EvSession;
-use Modules\Ev\Domain\Models\EvStation;
+use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Modules\Finance\Domain\Models\Loan;
-use Modules\Fleet\Domain\Models\FleetContract;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
+use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
+use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Insurance\Domain\Models\InsuranceProduct;
 use Modules\Logistics\Domain\Enums\LocationType;
 use Modules\Logistics\Domain\Models\Autonomous\DroneMission;
@@ -63,8 +63,15 @@ use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
 use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
+use Modules\Med\Domain\Models\MedIpLicense;
+use Modules\Med\Domain\Models\MedRoyaltyStatement;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
+use Modules\Mobility\Ev\Domain\Models\EvCharger;
+use Modules\Mobility\Ev\Domain\Models\EvSession;
+use Modules\Mobility\Ev\Domain\Models\EvStation;
+use Modules\Mobility\Fleet\Domain\Models\FleetContract;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Partner\Domain\Models\Partner;
 use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\BuildingZone;
@@ -87,7 +94,7 @@ use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
@@ -158,6 +165,19 @@ $restoSeedHelper = function (): void {
         ['outlet_id' => $outlet->id],
         ['number' => 'CAT-001', 'customer_name' => 'Budi', 'customer_phone' => '081', 'event_date' => now()->addDays(5), 'event_time' => '12:00:00', 'pax' => 50, 'delivery_address' => 'Jl Test', 'subtotal' => 1000000, 'grand_total' => 1000000, 'status' => 'inquiry']
     );
+};
+
+$restoManagerSetup = function (User $user) use ($restoSeedHelper): void {
+    $restoSeedHelper();
+    if ($user->hasRole('outlet_manager')) {
+        $outlet = Outlet::first();
+        if ($outlet !== null) {
+            DB::table('resto_staff_assignments')->updateOrInsert(
+                ['user_id' => $user->id, 'outlet_id' => $outlet->id],
+                ['role' => 'outlet_manager', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()]
+            );
+        }
+    }
 };
 
 $logisticsSeedHelper = function () {
@@ -663,9 +683,10 @@ return [
     'bookings.store' => ['roles' => ['admin', 'customer']],
     'bookings.updateStatus' => ['roles' => ['admin', 'mekanik'], 'params' => fn () => ['booking' => $storeAutoServeSeedHelper()['booking']->id]],
     'boost.browser-logs' => 'public',
-    'cloud_kitchen.index' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.index' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.orders.store' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
     'cloud_kitchen.subscriptions.dispatch' => [
-        'roles' => ['admin', 'customer', 'kitchen', 'outlet_manager'],
+        'roles' => ['admin', 'kitchen', 'outlet_manager'],
         'params' => function () {
             $user = User::firstOrCreate(['id' => 1], ['name' => 'Arch User', 'email' => 'arch@test.test', 'password' => 'secret', 'role' => 'customer']);
             $sub = CateringSubscription::firstOrCreate(
@@ -754,7 +775,20 @@ return [
     ],
     'distribution.scorecards.store' => ['roles' => ['admin', 'procurement']],
     'distribution.securities.store' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
-    'distribution.show' => ['roles' => ['admin', 'auditor', 'distributor', 'procurement'], 'params' => $distributorParamHelper],
+    'distribution.show' => [
+        'roles' => ['admin', 'auditor', 'distributor', 'procurement'],
+        'params' => $distributorParamHelper,
+        'setup' => function (User $user): void {
+            if ($user->role === 'distributor') {
+                $dist = Distributor::firstOrCreate(
+                    ['code' => 'DST-DYNAMIC-01'],
+                    ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
+                );
+                $dist->owner_user_id = $user->id;
+                $dist->save();
+            }
+        },
+    ],
     'distribution.sweep' => ['roles' => ['admin', 'procurement']],
     'distribution.targets.store' => ['roles' => ['admin', 'procurement']],
     'distribution.territories.store' => ['roles' => ['admin', 'procurement']],
@@ -915,6 +949,68 @@ return [
         'roles' => ['admin', 'doctor', 'hospital_admin'],
         'params' => fn () => ['trial' => ClinicalTrial::firstOrCreate(['trial_code' => 'TRL-CARDIO-01'], ['title' => 'Trial Card', 'phase' => 'PHASE_3', 'sponsor_name' => 'Novartis', 'target_subjects' => 10, 'status' => 'RECRUITING'])->id],
     ],
+    // hospital-rawat-jalan
+    'hospital.outpatient.registration.index' => ['roles' => ['admin', 'hospital_registration']],
+    'hospital.outpatient.registration.store' => ['roles' => ['admin', 'hospital_registration']],
+    'hospital.outpatient.queue.index' => ['roles' => ['admin', 'doctor', 'hospital_registration', 'nurse']],
+    'hospital.outpatient.queue.call' => [
+        'roles' => ['admin', 'doctor', 'nurse'],
+        'params' => fn () => ['queue' => OutpatientEncounter::getOrCreateArchFixture()['queue']->id],
+    ],
+    'hospital.outpatient.encounters.triage' => [
+        'roles' => ['admin', 'nurse'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.encounters.examine' => [
+        'roles' => ['admin', 'doctor'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.encounters.prescribe' => [
+        'roles' => ['admin', 'doctor'],
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.pharmacy.index' => ['roles' => ['admin', 'pharmacist']],
+    'hospital.outpatient.pharmacy.dispense' => [
+        'roles' => ['admin', 'pharmacist'],
+        'params' => fn () => ['prescription' => OutpatientEncounter::getOrCreateArchFixture()['prescription']->id],
+    ],
+    'hospital.outpatient.cashier.index' => ['roles' => ['admin', 'cashier', 'hospital_finance']],
+    'hospital.outpatient.cashier.pay' => [
+        'roles' => ['admin', 'cashier'],
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
+    ],
+    'hospital.outpatient.bpjs.claim' => [
+        'roles' => ['admin', 'cashier', 'hospital_finance'],
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
+    ],
+    'hospital.outpatient.bpjs.adjudicate' => [
+        'roles' => ['admin', 'hospital_finance'],
+        'params' => fn () => ['claim' => OutpatientEncounter::getOrCreateArchFixture()['claim']->id],
+    ],
+    'hospital.outpatient.reports.daily' => ['roles' => ['admin', 'auditor', 'hospital_finance']],
+    'hospital.outpatient.portal.index' => ['roles' => ['admin', 'patient']],
+    'hospital.outpatient.encounters.show' => [
+        'roles' => ['admin', 'doctor', 'nurse', 'patient'],
+        'setup' => function (User $user): void {
+            $p = OutpatientEncounter::getOrCreateArchFixture()['patient'];
+            if ($p->user_id !== $user->id) {
+                $p->user_id = $user->id;
+                $p->save();
+            }
+        },
+        'params' => fn () => ['encounter' => OutpatientEncounter::getOrCreateArchFixture()['encounter']->id],
+    ],
+    'hospital.outpatient.invoices.show' => [
+        'roles' => ['admin', 'cashier', 'hospital_finance', 'patient'],
+        'setup' => function (User $user): void {
+            $p = OutpatientEncounter::getOrCreateArchFixture()['patient'];
+            if ($p->user_id !== $user->id) {
+                $p->user_id = $user->id;
+                $p->save();
+            }
+        },
+        'params' => fn () => ['invoice' => OutpatientEncounter::getOrCreateArchFixture()['invoice']->id],
+    ],
     'hotel.index' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.reservations.settle' => [
         'roles' => ['admin', 'front_desk', 'hotel_admin'],
@@ -936,6 +1032,8 @@ return [
         },
     ],
     'insurance.index' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.policies' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
+    'insurance.policies.issue' => ['roles' => ['admin', 'customer', 'insurance_admin', 'underwriter']],
     'insurance.products.issue' => [
         'roles' => ['admin', 'customer', 'insurance_admin', 'underwriter'],
         'params' => function () {
@@ -1722,6 +1820,13 @@ return [
             return ['asset' => $asset->id];
         },
     ],
+    'rwa.offerings' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.offerings.subscribe' => [
+        'roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin'],
+        'params' => fn () => ['offering' => 1],
+    ],
+    'rwa.orderbook' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
+    'rwa.yield-distribution' => ['roles' => ['admin', 'asset_manager', 'investor', 'rwa_admin']],
     'resto.analytics.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.catering.cancel' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -1935,6 +2040,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.edit' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -1943,6 +2049,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.index' => ['roles' => ['admin', 'auditor', 'outlet_manager']],
     'resto.outlets.show' => [
@@ -1952,6 +2059,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.outlets.store' => ['roles' => ['admin', 'outlet_manager']],
     'resto.outlets.update' => [
@@ -1961,6 +2069,7 @@ return [
 
             return ['outlet' => Outlet::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.pos.index' => ['roles' => ['admin', 'cashier', 'outlet_manager']],
     'resto.pos.order.pay' => [
@@ -2039,6 +2148,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.edit' => [
         'roles' => ['admin', 'outlet_manager', 'procurement'],
@@ -2047,6 +2157,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.index' => ['roles' => ['admin', 'auditor', 'outlet_manager', 'procurement']],
     'resto.purchases.pay' => [
@@ -2056,6 +2167,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.receive' => [
         'roles' => ['admin', 'outlet_manager', 'procurement'],
@@ -2064,6 +2176,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.show' => [
         'roles' => ['admin', 'auditor', 'outlet_manager', 'procurement'],
@@ -2072,6 +2185,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.purchases.store' => ['roles' => ['admin', 'outlet_manager', 'procurement']],
     'resto.purchases.update' => [
@@ -2081,6 +2195,7 @@ return [
 
             return ['purchase' => PurchaseOrder::first()?->id ?? 1];
         },
+        'setup' => $restoManagerSetup,
     ],
     'resto.stock-counts.approve' => [
         'roles' => ['admin', 'outlet_manager'],
@@ -2449,9 +2564,10 @@ return [
     'verification.notice' => 'auth',
     'verification.send' => 'auth',
     'verification.verify' => ['protection' => 'auth', 'params' => fn () => ['id' => 1, 'hash' => 'testhash']],
-    'vending.index' => ['roles' => ['admin', 'vending_operator', 'store_manager']],
+    'vending.dispense.api' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
+    'vending.index' => ['roles' => ['admin', 'store_manager', 'vending_operator']],
     'vending.units.dispense' => [
-        'roles' => ['admin', 'vending_operator', 'store_manager'],
+        'roles' => ['admin', 'store_manager', 'vending_operator'],
         'params' => function () {
             $unit = VendingUnit::firstOrCreate(
                 ['unit_code' => 'VEN-ROUTER-01'],
@@ -2489,7 +2605,9 @@ return [
     'wallet.transfer' => ['roles' => ['admin', 'auditor', 'customer']],
     'wallet.transfer.lookup' => ['roles' => ['admin', 'customer']],
     'wallet.transfer.store' => ['roles' => ['admin', 'customer']],
+    'wealth.cash-sweep' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.index' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+    'wealth.portfolio-rebalancing' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.profiles.invest' => [
         'roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager'],
         'params' => function () {
@@ -2498,6 +2616,7 @@ return [
             return ['profile' => $prof->id];
         },
     ],
+    'wealth.risk-profiles.submit' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wms.cycle-counts.apply' => ['roles' => ['admin'], 'params' => fn () => ['count' => 1]],
     'wms.cycle-counts.store' => ['roles' => ['admin', 'hub_operator']],
     'wms.cycle-counts.submit' => ['roles' => ['admin', 'hub_operator'], 'params' => fn () => ['count' => 1]],
@@ -2520,23 +2639,23 @@ return [
     'agri.grading.evaluate' => ['roles' => ['admin', 'farmer', 'procurement']],
     'agri.grading.index' => ['roles' => ['admin', 'farmer', 'procurement']],
     'agri.payout.index' => ['roles' => ['admin', 'farmer', 'procurement']],
-    'agri.payout.settle' => ['roles' => ['admin', 'farmer', 'procurement']],
+    'agri.payout.settle' => ['roles' => ['admin', 'procurement']],
     'b2b.auction.create' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.auction.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.dashboard' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.escrow.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.escrow.lock' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
-    'b2b.escrow.release' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
+    'b2b.escrow.release' => ['roles' => ['admin', 'procurement']],
     'b2b.wholesale.index' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
     'b2b.wholesale.publish' => ['roles' => ['admin', 'b2b_buyer', 'procurement']],
-    'cloud_kitchen.operations.audit-thermal' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.batch-couriers' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.courier-batches' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.order-routing' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.revenue-split' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.route-order' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.settle-split' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
-    'cloud_kitchen.operations.thermal-audit' => ['roles' => ['admin', 'customer', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.audit-thermal' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.batch-couriers' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.courier-batches' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.order-routing' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.revenue-split' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.route-order' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.settle-split' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
+    'cloud_kitchen.operations.thermal-audit' => ['roles' => ['admin', 'kitchen', 'outlet_manager']],
     'control_tower.autonomous.bottlenecks' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],
     'control_tower.autonomous.forecast' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],
     'control_tower.autonomous.index' => ['roles' => ['admin', 'auditor', 'logistics_admin', 'planner']],
@@ -2547,6 +2666,9 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.admin.programs.index' => ['roles' => ['academy_admin', 'admin']],
+    'edu.admin.programs.store' => ['roles' => ['academy_admin', 'admin']],
+    'edu.api.certificates.verify' => 'public',
     'edu.certification.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.issue' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'edu.certification.verify' => [
@@ -2562,6 +2684,16 @@ return [
         'roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor'],
         'params' => fn () => ['id' => 1],
     ],
+    'edu.student.attempts.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.certificates.show' => [
+        'roles' => ['admin', 'student'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'edu.student.dashboard' => ['roles' => ['admin', 'student']],
+    'edu.web.certificates.verify' => 'public',
     'education.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
     'egy.grid.anomaly' => [
         'roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev'],
@@ -2639,8 +2771,8 @@ return [
     'hotel.pms.banquet.create' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.destination-packages' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.destination-packages.settle' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
-    'hotel.pms.night-audit' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
-    'hotel.pms.night-audit.run' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.pms.close-day' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.pms.close-day.run' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.overbooking' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.overbooking.walk' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
     'hotel.pms.reservations' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
@@ -2875,4 +3007,145 @@ return [
     'wealth.treasury.rebalance' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.risk-profiles' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.sweep-cash' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
+
+    // hotel-siklus-tamu
+    'hotel.reservations.index' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.reservations.store' => ['roles' => ['admin', 'front_desk', 'front_office', 'hotel_admin', 'hotel_manager', 'reservation_agent']],
+    'hotel.housekeeping.index' => ['roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping']],
+    'hotel.housekeeping.update' => [
+        'roles' => ['admin', 'front_office', 'hotel_manager', 'housekeeping'],
+        'params' => fn () => ['room' => HotelRoom::first()?->id ?? 1],
+    ],
+    'hotel.close-day.index' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.close-day.run' => ['roles' => ['admin', 'hotel_manager', 'night_auditor']],
+    'hotel.portal.guest' => ['roles' => ['admin', 'customer', 'guest']],
+    'hotel.portal.corporate' => ['roles' => ['admin', 'corporate_client']],
+
+    // energy-mvp
+    'egy.grid.dispatch' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'egy.grid.invoices' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'api.energy.telemetry' => 'public',
+    'api.energy.billing.calculate' => ['roles' => ['admin', 'energy_manager', 'genco_trader']],
+    'api.energy.invoices.show' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-001'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-01', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'ISSUED']
+            )->id,
+        ],
+    ],
+    'api.energy.invoices.issue' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => UtilityConsolidatedInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-UTIL-TEST-002'],
+                ['id' => (string) Str::uuid(), 'property_id' => 'PROP-TEST-02', 'billing_period' => '2026-10', 'total_consolidated_minor' => 100000, 'status' => 'DRAFT']
+            )->id,
+        ],
+    ],
+    'api.energy.ppa.settle' => [
+        'roles' => ['admin', 'energy_manager', 'genco_trader'],
+        'params' => fn () => [
+            'id' => PpaContract::firstOrCreate(
+                ['contract_number' => 'PPA-TEST-001'],
+                ['id' => (string) Str::uuid(), 'producer_entity_id' => 'ENT-01', 'grid_offtaker_id' => 'ENT-EGY-01', 'feed_in_tariff_per_kwh_minor' => 1000, 'status' => 'ACTIVE']
+            )->id,
+        ],
+    ],
+
+    // telecom-mvp
+    'tlx.noc.alarms' => ['roles' => ['admin', 'noc_engineer', 'tlx_admin']],
+    'tlx.datacenter.colocation' => ['roles' => ['admin', 'datacenter_ops', 'tlx_admin']],
+    'tlx.billing.connectivity' => ['roles' => ['admin', 'telecom_billing', 'tlx_admin']],
+    'tlx.billing.connectivity.detail' => [
+        'roles' => ['admin', 'telecom_billing', 'tlx_admin'],
+        'params' => fn () => [
+            'id' => IotConnectivityInvoice::firstOrCreate(
+                ['invoice_number' => 'INV-TLX-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'owner_entity_id' => 'ENT-LOGISTICS-01',
+                    'billing_period' => '2026-10',
+                    'active_device_count' => 1,
+                    'total_consumed_mb' => 0.0,
+                    'total_charge_minor' => 30000,
+                    'status' => 'ISSUED',
+                ]
+            )->id,
+        ],
+    ],
+
+    // media-mvp
+    'med.mvp.dashboard' => ['roles' => ['admin', 'auditor', 'media_admin', 'rights_manager', 'studio_manager']],
+    'med.mvp.studios' => ['roles' => ['admin', 'media_admin', 'studio_manager']],
+    'med.mvp.licensing' => ['roles' => ['admin', 'media_admin', 'rights_manager']],
+    'med.mvp.royalties.detail' => [
+        'roles' => ['admin', 'media_admin', 'rights_manager'],
+        'params' => fn () => [
+            'id' => MedRoyaltyStatement::firstOrCreate(
+                ['statement_number' => 'STMT-ROUTE-001'],
+                [
+                    'id' => (string) Str::uuid(),
+                    'license_id' => MedIpLicense::firstOrCreate(
+                        ['license_code' => 'LIC-ROUTE-001'],
+                        [
+                            'id' => (string) Str::uuid(),
+                            'ip_id' => (string) Str::uuid(),
+                            'licensee_entity_id' => 'PARTY-ROUTE-01',
+                            'rights_type' => 'STREAMING',
+                            'channel' => 'STREAMING',
+                            'territory' => 'GLOBAL',
+                            'start_date' => '2026-01-01',
+                            'end_date' => '2026-12-31',
+                            'royalty_rate_pct' => 10.0,
+                            'status' => 'ACTIVE',
+                        ]
+                    )->id,
+                    'billing_period' => '2026-10',
+                    'gross_revenue_minor' => 1000000,
+                    'total_distribution_fee_minor' => 100000,
+                    'total_recouped_minor' => 0,
+                    'total_royalty_distributed_minor' => 900000,
+                    'status' => 'ISSUED',
+                ]
+            )->id,
+        ],
+    ],
+    'mining.admin' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.dispatch.ui' => ['roles' => ['admin', 'dispatcher_mine', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.hse' => ['roles' => ['admin', 'hse_officer', 'mining_admin', 'site_manager']],
+    'mining.royalties' => ['roles' => ['admin', 'finance_officer', 'mining_admin', 'site_manager']],
+    'mining.weighbridge' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager', 'weighbridge_operator']],
+    'venue.gate.mobile' => ['roles' => ['venue_staff']],
+    'oto.charging' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],
+    'oto.fleet' => ['roles' => ['admin', 'fleet_admin', 'fleet_manager', 'lease_manager']],
+    'oto.telematics.clear-grounding' => ['roles' => ['admin', 'mechanic']],
+    'oto.sessions.show' => [
+        'roles' => ['admin', 'driver', 'ev_operator', 'fleet_manager'],
+        'params' => function () {
+            $user = User::firstOrCreate(['email' => 'driver-route@example.com'], ['name' => 'Route Driver', 'password' => 'secret']);
+            $vehicle = Vehicle::firstOrCreate(['vin' => 'VIN-ROUTE-01'], ['user_id' => $user->id, 'plate_number' => 'B 1111 EV', 'color' => 'White', 'odometer_km' => 1000, 'status' => 'active']);
+            $station = EvStation::firstOrCreate(['station_code' => 'SPKLU-PLN-01'], ['name' => 'SPKLU Sudirman', 'location_type' => 'PUBLIC', 'address' => 'Sudirman', 'latitude' => -6.2, 'longitude' => 106.8, 'is_active' => true]);
+            $charger = EvCharger::firstOrCreate(['charger_code' => 'CHG-CCS2-01'], ['station_id' => $station->id, 'type' => 'DC_FAST', 'max_kw' => 150, 'status' => 'available']);
+            $session = EvSession::firstOrCreate(
+                ['session_code' => 'SES-DYN-001'],
+                [
+                    'charger_id' => $charger->id,
+                    'vehicle_id' => $vehicle->id,
+                    'user_id' => $user->id,
+                    'status' => 'CHARGING',
+                    'deposit_held_idr' => 50000,
+                    'started_at' => now(),
+                ]
+            );
+
+            return ['session' => $session->id];
+        },
+        'setup' => function (User $user): void {
+            if ($user->role === 'driver') {
+                EvSession::where('session_code', 'SES-DYN-001')->update(['user_id' => $user->id]);
+            }
+        },
+    ],
 ];

@@ -40,7 +40,17 @@ class ManualAdjustmentAction
         $asset = $account->asset_code;
         $clearingCode = "clearing:external:{$asset}";
 
-        $key = $idempotencyKey ?? sprintf('banking:manual_adjustment:%s:%s', $account->id, sha1($adminUser->id.':'.$amountBd->__toString().':'.$trimmedReason));
+        $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+            ? trim($idempotencyKey)
+            : (request()?->header('Idempotency-Key')
+                ?? request()?->input('request_id')
+                ?? request()?->input('idempotency_key'));
+
+        if ($key === null || trim((string) $key) === '') {
+            throw new InvalidArgumentException('Idempotency key wajib diisi untuk penyesuaian manual.');
+        }
+
+        $key = trim((string) $key);
 
         $dto = new PostingDTO(
             type: TransactionType::MANUAL_ADJUSTMENT->value,

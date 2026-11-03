@@ -7,7 +7,7 @@ namespace App\Quality\Audit\Fixtures;
 use App\Quality\Audit\CorruptionFixture;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use Modules\Fleet\Domain\Models\FleetContract;
+use Modules\Mobility\Fleet\Domain\Models\FleetContract;
 
 final class FltAuditCorruptionFixture implements CorruptionFixture
 {

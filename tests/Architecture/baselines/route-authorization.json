@@ -1357,12 +1357,12 @@
             "front_desk",
             "hotel_admin"
         ],
-        "hotel.pms.night-audit": [
+        "hotel.pms.close-day": [
             "admin",
             "front_desk",
             "hotel_admin"
         ],
-        "hotel.pms.night-audit.run": [
+        "hotel.pms.close-day.run": [
             "admin",
             "front_desk",
             "hotel_admin"

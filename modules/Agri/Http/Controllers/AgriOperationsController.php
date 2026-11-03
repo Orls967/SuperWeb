@@ -7,6 +7,7 @@ namespace Modules\Agri\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Modules\Agri\Application\Actions\GradeHarvestQualityAtCollectionCenterAction;
 use Modules\Agri\Application\Actions\RegisterPlasmaFarmerContractAction;
@@ -78,6 +79,8 @@ class AgriOperationsController extends Controller
 
     public function settlePayout(Request $request, SettleFarmerPayoutNetOfInputLoanViaLedgerAction $action): RedirectResponse
     {
+        Gate::authorize('settle', AgriContract::class);
+
         $validated = $request->validate([
             'contract_id' => 'required|string',
             'collection_center_id' => 'required|string',

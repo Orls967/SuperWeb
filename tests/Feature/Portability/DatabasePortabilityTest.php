@@ -170,11 +170,11 @@ it('captures unique violation on race condition across two connections and retur
 it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native SUM', function (): void {
     $largeAmount = '1000000000000000'; // 10^15 minor units
     $srcId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:source:'.uniqid(),
         'name' => 'Portability Large Source',
         'asset_code' => 'IDR',
         'kind' => 'cash',
-        'normal_balance' => 'debit',
         'allow_negative' => 1,
         'cached_balance' => "-{$largeAmount}",
         'created_at' => now(),
@@ -182,11 +182,11 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     ]);
 
     $dstId = DB::table('bank_ledger_accounts')->insertGetId([
+        'uuid' => (string) Str::uuid(),
         'code' => 'portability:dest:'.uniqid(),
         'name' => 'Portability Large Dest',
         'asset_code' => 'IDR',
         'kind' => 'revenue',
-        'normal_balance' => 'credit',
         'allow_negative' => 1,
         'cached_balance' => $largeAmount,
         'created_at' => now(),
@@ -196,6 +196,7 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
     $txId = DB::table('bank_ledger_transactions')->insertGetId([
         'uuid' => (string) Str::uuid(),
         'type' => 'transfer',
+        'idempotency_key' => 'portability:tx:'.uniqid(),
         'description' => 'Portability 10^15 Transfer',
         'posted_at' => now(),
         'created_at' => now(),
@@ -208,16 +209,16 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
             'account_id' => $srcId,
             'asset_code' => 'IDR',
             'amount' => "-{$largeAmount}",
+            'balance_after' => "-{$largeAmount}",
             'created_at' => now(),
-            'updated_at' => now(),
         ],
         [
             'transaction_id' => $txId,
             'account_id' => $dstId,
             'asset_code' => 'IDR',
             'amount' => $largeAmount,
+            'balance_after' => $largeAmount,
             'created_at' => now(),
-            'updated_at' => now(),
         ],
     ]);
 
@@ -232,6 +233,8 @@ it('reconciles 10^15 minor unit ledger balances accurately on MySQL with native 
         ->selectRaw('CAST(SUM(amount) AS CHAR) as total')
         ->value('total');
 
-    expect($srcSum)->toBe("-{$largeAmount}")
-        ->and($dstSum)->toBe($largeAmount);
+    $normalize = fn (mixed $val): string => rtrim(rtrim((string) $val, '0'), '.');
+
+    expect($normalize($srcSum))->toBe("-{$largeAmount}")
+        ->and($normalize($dstSum))->toBe($largeAmount);
 })->group('db-portability');

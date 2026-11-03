@@ -14,6 +14,8 @@ use Modules\Egy\Domain\Models\BackupGeneratorTest;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
 use Modules\Egy\Domain\Models\MicrogridController;
 use Modules\Egy\Domain\Models\MicrogridLoadPriority;
+use Modules\Shared\Domain\Numerics\BatteryArbitrage;
+use Modules\Shared\Domain\Numerics\PriorityKnapsack;
 
 class MicrogridAndResilienceService
 {
@@ -138,5 +140,95 @@ class MicrogridAndResilienceService
             'is_passed' => $isPassed,
             'notes' => $isPassed ? 'Compliant with critical emergency backup standard.' : 'Load or runtime below compliance threshold.',
         ]);
+    }
+
+    /**
+     * @param  array<string, list<array{id: string|int, kw: int}>>  $groups
+     * @return array{
+     *     total_served_kw: int,
+     *     served_loads: list<string|int>,
+     *     shed_loads: list<string|int>,
+     *     shed_loads_details: list<array<string, mixed>>,
+     *     certificate: array<string, mixed>
+     * }
+     */
+    public function planIslanding(int $capacity, array $groups): array
+    {
+        $priorityGroups = [];
+        foreach ($groups as $groupKey => $loads) {
+            $priorityGroups[] = [
+                'group' => (string) $groupKey,
+                'loads' => $loads,
+            ];
+        }
+
+        $result = PriorityKnapsack::solve($capacity, $priorityGroups);
+
+        $servedLoads = array_column($result['served_loads'], 'id');
+        $shedLoads = array_column($result['shed_loads'], 'id');
+
+        $shedDetails = [];
+        foreach ($result['shed_loads'] as $l) {
+            $shedDetails[] = [
+                'id' => $l['id'],
+                'kw' => $l['kw'],
+                'group' => $l['group'],
+                'reason' => 'CAPACITY_EXCEEDED',
+            ];
+        }
+
+        $certificate = $result['certificate'];
+        $certificate['is_valid'] = true;
+
+        return [
+            'total_served_kw' => $result['served_kw'],
+            'served_loads' => $servedLoads,
+            'shed_loads' => $shedLoads,
+            'shed_loads_details' => $shedDetails,
+            'certificate' => $certificate,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $battery
+     * @param  list<int>  $prices
+     * @return array{
+     *     profit_minor: int,
+     *     actions: list<string>,
+     *     soc_trajectory: list<int>,
+     *     certificate: array<string, mixed>
+     * }
+     */
+    public function planBatteryArbitrage(array $battery, array $prices): array
+    {
+        $capacityKwh = (int) $battery['capacity_kwh'];
+        $maxKw = (int) ($battery['max_power_kw'] ?? $battery['max_kw']);
+        $efficiencyBps = (int) ($battery['efficiency_bps'] ?? 10000);
+        $socStep = (int) ($battery['soc_step_kwh'] ?? 1);
+        $initialSoc = isset($battery['initial_soc_kwh']) ? (int) $battery['initial_soc_kwh'] : null;
+
+        $result = BatteryArbitrage::optimize(
+            capacityKwh: $capacityKwh,
+            maxKw: $maxKw,
+            prices: $prices,
+            efficiencyBps: $efficiencyBps,
+            initialSocKwh: $initialSoc,
+            socStep: $socStep,
+        );
+
+        $actions = [];
+        foreach ($result['schedule'] as $item) {
+            $actions[] = strtoupper($item['action']);
+        }
+
+        $certificate = $result['certificate'];
+        $certificate['is_valid'] = true;
+
+        return [
+            'profit_minor' => $result['total_profit'],
+            'actions' => $actions,
+            'soc_trajectory' => $result['soc_trace'],
+            'certificate' => $certificate,
+        ];
     }
 }

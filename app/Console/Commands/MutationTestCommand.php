@@ -93,7 +93,12 @@ class MutationTestCommand extends Command
         $this->info("Menjalankan Pest Mutation Testing per kelas (ambang batas: {$minScore}%)...");
         foreach ($commands as $item) {
             $this->line("==> Menjalankan mutasi untuk: {$item['class']}");
-            $process = Process::fromShellCommandline($item['cmd'], base_path());
+            $env = array_merge($_SERVER, $_ENV, [
+                'APP_ENV' => 'testing',
+                'DB_CONNECTION' => 'sqlite',
+                'DB_DATABASE' => ':memory:',
+            ]);
+            $process = Process::fromShellCommandline($item['cmd'], base_path(), $env);
             $process->setTimeout(null);
             $process->run(function (string $type, string $buffer): void {
                 echo $buffer;

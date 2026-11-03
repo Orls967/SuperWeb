@@ -1070,3 +1070,215 @@ PHP
         ->and(ProgressIntegrityScanner::testNameExistsInFile($testFile, 'unrelated test'))->toBeFalse()
         ->and(ProgressIntegrityScanner::testNameExistsInFile('non_existent.php', 'custom user workflow'))->toBeFalse();
 });
+
+// ============================================================================
+// II.1 Test Fixtures Pagar ProgressIntegrityScanner
+// ============================================================================
+
+it('fails when old phase lacks proof block when R6 is verified', function (): void {
+    $markdown = <<<'MD'
+### FASE R6 — VERIFIKASI ULANG ITEM FASE 26–63
+> **Status audit:** ✅ TERVERIFIKASI (2026-10-17)
+
+- [x] R6.1 Item R6 valid
+  Bukti:
+    - jenis: dokumen
+    - file: docs/PROGRESS.md
+    - gate: docs/gates/fase-r6.md
+
+### FASE 45 — LOGISTIK
+> **Status audit:** 🔨 DIKERJAKAN
+
+- [x] 45.1 Item lama centang tanpa bukti sama sekali
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, textBaseline: [
+        'R6:R6.1' => 'Item R6 valid',
+        '45:45.1' => 'Item lama centang tanpa bukti sama sekali',
+    ]);
+
+    expect($violations)->toContain('Item 45.1 tercentang [x] tanpa blok Bukti: (PROGRESS.md §P2).');
+});
+
+it('fails when gate report is stale with non-docs code changes between gate commit and HEAD', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_gate_stale_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    mkdir($tempDir.'/tests', 0777, true);
+
+    file_put_contents($tempDir.'/docs/gates/fase-r1.md', <<<'MD'
+# Gate Report R1
+- **Commit:** `c0ffee1`
+## 2. Hasil Gate
+`test_example` PASS 🟢
+MD
+    );
+
+    file_put_contents($tempDir.'/tests/ExampleTest.php', "<?php\ntest('example', function () {});");
+
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER
+> **Status audit:** 🔵 SELESAI
+
+- [x] R1.1 Item R1
+  Bukti:
+    - jenis: tooling
+    - test: tests/ExampleTest.php::example
+    - gate: docs/gates/fase-r1.md
+MD;
+
+    $mockInspector = new class extends GitCommitInspector
+    {
+        public function __construct()
+        {
+            parent::__construct(sys_get_temp_dir());
+        }
+
+        public function commitExists(string $hash): bool
+        {
+            return true;
+        }
+
+        public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array
+        {
+            return ['app/Models/User.php', 'docs/PROGRESS.md']; // non-docs change exists
+        }
+    };
+
+    $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R1:R1.1' => 'Item R1']);
+
+    expect($violations)->toContain('Item R1.1: terdapat perubahan di luar docs/ antara commit gate (c0ffee1) dan HEAD: app/Models/User.php.');
+});
+
+it('passes when gate report has only docs changes between gate commit and HEAD', function (): void {
+    $tempDir = sys_get_temp_dir().'/progress_gate_docs_only_'.uniqid();
+    mkdir($tempDir.'/docs/gates', 0777, true);
+    mkdir($tempDir.'/tests', 0777, true);
+
+    file_put_contents($tempDir.'/docs/gates/fase-r1.md', <<<'MD'
+# Gate Report R1
+- **Commit:** `c0ffee1`
+## 2. Hasil Gate
+`test_example` PASS 🟢
+MD
+    );
+
+    file_put_contents($tempDir.'/tests/ExampleTest.php', "<?php\ntest('example', function () {});");
+
+    $markdown = <<<'MD'
+### FASE R1 — LEDGER
+> **Status audit:** 🔵 SELESAI
+
+- [x] R1.1 Item R1
+  Bukti:
+    - jenis: tooling
+    - test: tests/ExampleTest.php::example
+    - gate: docs/gates/fase-r1.md
+MD;
+
+    $mockInspector = new class extends GitCommitInspector
+    {
+        public function __construct()
+        {
+            parent::__construct(sys_get_temp_dir());
+        }
+
+        public function commitExists(string $hash): bool
+        {
+            return true;
+        }
+
+        public function diffFiles(string $fromCommit, string $toCommit = 'HEAD'): array
+        {
+            return ['docs/PROGRESS.md', 'docs/audits/report.md']; // only docs!
+        }
+    };
+
+    $scanner = new ProgressIntegrityScanner(gitInspector: $mockInspector);
+    $phases = $scanner->parse($markdown);
+    $violations = $scanner->validate($phases, repoRoot: $tempDir, textBaseline: ['R1:R1.1' => 'Item R1']);
+
+    $gateStaleViolations = array_filter($violations, fn ($v) => str_contains($v, 'terdapat perubahan di luar docs/'));
+    expect($gateStaleViolations)->toBeEmpty();
+});
+
+it('fails testNameExistsInFile when test name appears only inside a comment', function (): void {
+    $tempFile = tempnam(sys_get_temp_dir(), 'test_comment_').'.php';
+    file_put_contents($tempFile, <<<'PHP'
+<?php
+// it('this test is only commented out and does not exist')
+/* function test_commented_method_should_fail() */
+class NormalClass {}
+PHP
+    );
+
+    expect(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'this test is only commented out and does not exist'))->toBeFalse()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'test_commented_method_should_fail'))->toBeFalse();
+    @unlink($tempFile);
+});
+
+it('fails testNameExistsInFile when function name is not a test method', function (): void {
+    $tempFile = tempnam(sys_get_temp_dir(), 'test_func_').'.php';
+    file_put_contents($tempFile, <<<'PHP'
+<?php
+class HelperClass {
+    public function calculate_payroll_total(): int { return 100; }
+}
+PHP
+    );
+
+    expect(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'calculate_payroll_total'))->toBeFalse();
+    @unlink($tempFile);
+});
+
+it('passes testNameExistsInFile when exact Pest it or test declaration is present', function (): void {
+    $tempFile = tempnam(sys_get_temp_dir(), 'test_pest_').'.php';
+    file_put_contents($tempFile, <<<'PHP'
+<?php
+it('calculates exact interest rate with decimal precision', function () {});
+test('ensures ledger is strictly balanced', function () {});
+PHP
+    );
+
+    expect(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'calculates exact interest rate with decimal precision'))->toBeTrue()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'ensures ledger is strictly balanced'))->toBeTrue()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'non-existent pest test'))->toBeFalse();
+    @unlink($tempFile);
+});
+
+it('passes testNameExistsInFile when exact PHPUnit test method is present in snake_case or camelCase', function (): void {
+    $tempFile = tempnam(sys_get_temp_dir(), 'test_phpunit_').'.php';
+    file_put_contents($tempFile, <<<'PHP'
+<?php
+class AccountPostingTest {
+    public function test_journal_entry_creates_valid_audit_trail(): void {}
+    public function testReconciliationDetectsMismatch(): void {}
+}
+PHP
+    );
+
+    expect(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'test_journal_entry_creates_valid_audit_trail'))->toBeTrue()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'journal entry creates valid audit trail'))->toBeTrue()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'reconciliation detects mismatch'))->toBeTrue()
+        ->and(ProgressIntegrityScanner::testNameExistsInFile($tempFile, 'testReconciliationDetectsMismatch'))->toBeTrue();
+    @unlink($tempFile);
+});
+
+it('correctly parses and audits variant status audit labels such as Status audit 2026-10-23', function (): void {
+    $markdown = <<<'MD'
+### FASE 88 — EKONOMI KREATIF
+> **Status audit 2026-10-23:** ✅ TERVERIFIKASI (2026-10-23)
+
+- [x] 88.1 Creative item
+MD;
+
+    $scanner = new ProgressIntegrityScanner;
+    $phases = $scanner->parse($markdown);
+
+    expect(isset($phases['88']))->toBeTrue()
+        ->and($phases['88']->isVerified())->toBeTrue()
+        ->and($phases['88']->statusDate)->toBe('2026-10-23');
+});

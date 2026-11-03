@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Wealth\Http\Controllers\WealthController;
+use Modules\Wealth\Http\Controllers\WealthRiskProfileController;
 use Modules\Wealth\Http\Controllers\WealthTreasuryManagementController;
 
 Route::middleware(['web', 'auth', 'role:admin,wealth_manager,treasury,investor,customer'])->prefix('wealth')->group(function () {
     Route::get('/', [WealthController::class, 'index'])->name('wealth.index');
+    Route::get('/cash-sweep', [WealthTreasuryManagementController::class, 'cashSweep'])->name('wealth.cash-sweep');
+    Route::get('/portfolio-rebalancing', [WealthTreasuryManagementController::class, 'portfolioRebalancing'])->name('wealth.portfolio-rebalancing');
+    Route::post('/risk-profiles/submit', [WealthRiskProfileController::class, 'submit'])->name('wealth.risk-profiles.submit');
     Route::post('/profiles/{profile}/invest', [WealthController::class, 'invest'])->name('wealth.profiles.invest');
 
     // Robo-Advisor & Corporate Treasury Deepening Routes

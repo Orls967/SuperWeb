@@ -91,8 +91,18 @@ class TransferAction extends BaseAction
             $senderWallet = $sender->walletAccount('IDR');
             $recipientWallet = $recipient->walletAccount('IDR');
 
-            // Deterministic key based on business identity if caller key is omitted.
-            $key = $idempotencyKey ?? sprintf('banking:transfer:%s:%s:%s', $sender->id, $recipient->id, sha1($amountBd->__toString().':'.($note ?? '')));
+            // Deterministic key from request/caller (K-3)
+            $key = ($idempotencyKey !== null && trim($idempotencyKey) !== '')
+                ? trim($idempotencyKey)
+                : (request()?->header('Idempotency-Key')
+                    ?? request()?->input('request_id')
+                    ?? request()?->input('idempotency_key'));
+
+            if ($key === null || trim((string) $key) === '') {
+                throw new InvalidArgumentException('Idempotency key wajib diisi untuk transaksi finansial transfer.');
+            }
+
+            $key = trim((string) $key);
 
             $entries = [
                 PostingEntryDTO::forAccount($senderWallet->id, 'IDR', $totalDeduction->negated()),

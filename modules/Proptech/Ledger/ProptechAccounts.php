@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Proptech\Ledger;
 
+use Illuminate\Support\Str;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
 
 /**
@@ -29,6 +31,13 @@ final class ProptechAccounts
                 'code' => 'epc:cip_liability:IDR',
                 'name' => 'Construction in Progress CIP',
                 'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'escrow:payment:IDR',
+                'name' => 'Payment Escrow Central Account',
+                'kind' => AccountKind::ESCROW,
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
@@ -74,6 +83,29 @@ final class ProptechAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'mall:utility_revenue:IDR',
+                'name' => 'Mall Tenant Utility Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
+    }
+
+    public static function tenantAr(int|string $tenantId): LedgerAccount
+    {
+        return LedgerAccount::firstOrCreate(
+            ['code' => "ar:mall:tenant:{$tenantId}:IDR"],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => "Mall Tenant AR #{$tenantId}",
+                'asset_code' => 'IDR',
+                'kind' => AccountKind::ASSET->value,
+                'allow_negative' => true,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
     }
 }

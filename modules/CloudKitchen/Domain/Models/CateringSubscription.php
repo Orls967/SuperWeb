@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CateringSubscription extends Model
 {
-    protected $table = 'resto_catering_subscriptions';
+    protected $table = 'ckt_catering_subscriptions';
 
     protected $fillable = [
         'subscription_code',

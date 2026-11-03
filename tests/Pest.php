@@ -49,6 +49,10 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)
     ->in('Feature', '../modules/*/tests/Feature');
 
+pest()->afterEach(function (): void {
+    gc_collect_cycles();
+})->in('Architecture');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

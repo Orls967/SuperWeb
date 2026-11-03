@@ -57,6 +57,14 @@ class AdminLedgerController extends Controller
 
     public function adjust(Request $request, LedgerAccount $account, ManualAdjustmentAction $adjustmentAction): RedirectResponse
     {
+        $idempotencyKey = $request->header('Idempotency-Key')
+            ?? $request->input('request_id')
+            ?? $request->input('idempotency_key');
+
+        if (empty($idempotencyKey)) {
+            abort(422, 'Idempotency key wajib disertakan via header Idempotency-Key atau input request_id/idempotency_key.');
+        }
+
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'not_in:0'],
             'reason' => ['required', 'string', 'min:5', 'max:255'],
@@ -72,7 +80,7 @@ class AdminLedgerController extends Controller
             amount: (string) $validated['amount'],
             reason: $validated['reason'],
             adminUser: $request->user(),
-            idempotencyKey: $validated['idempotency_key'] ?? null,
+            idempotencyKey: (string) $idempotencyKey,
         );
 
         return back()->with('status', "Penyesuaian manual pada akun '{$account->code}' berhasil diposting ke ledger.");

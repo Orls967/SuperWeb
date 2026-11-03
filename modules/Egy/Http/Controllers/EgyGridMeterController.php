@@ -13,6 +13,7 @@ use Modules\Egy\Application\Actions\IngestSmartGridMeterTelemetryAction;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\SmartMeter;
+use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 
 class EgyGridMeterController extends Controller
 {
@@ -27,9 +28,23 @@ class EgyGridMeterController extends Controller
     public function meters(): View
     {
         $meters = SmartMeter::query()->latest()->paginate(20);
-        $recentReadings = MeterReading::query()->latest('reading_timestamp')->take(20)->get();
+        $recentReadings = MeterReading::query()->latest('reading_at')->take(20)->get();
 
         return view('egy::grid.meters', compact('meters', 'recentReadings'));
+    }
+
+    public function dispatchView(): View
+    {
+        $nodes = GridNode::query()->latest()->take(10)->get();
+
+        return view('egy::grid.dispatch', compact('nodes'));
+    }
+
+    public function invoicesView(): View
+    {
+        $invoices = UtilityConsolidatedInvoice::with('lines')->latest()->paginate(15);
+
+        return view('egy::grid.invoices', compact('invoices'));
     }
 
     public function ingestTelemetry(Request $request, IngestSmartGridMeterTelemetryAction $action): RedirectResponse
@@ -41,7 +56,11 @@ class EgyGridMeterController extends Controller
             'power_factor' => ['nullable', 'integer'],
         ]);
 
-        $reading = $action->execute($validated);
+        $reading = $action->execute([
+            'meter_number' => $validated['meter_number'],
+            'cumulative_wh' => (int) $validated['kwh_consumed'] * 1000,
+            'delta_wh' => (int) $validated['kwh_consumed'] * 1000,
+        ]);
 
         return redirect()->back()->with('success', "Telemetri meter dicatat [{$reading->kwh_consumed} kWh].");
     }

@@ -38,6 +38,15 @@ class Party extends BaseParty
         'is_active' => 'boolean',
     ];
 
+    protected $hidden = [
+        'nik',
+        'npwp',
+        'nik_bidx',
+        'npwp_bidx',
+        'nik_hash',
+        'npwp_hash',
+    ];
+
     protected static function booted(): void
     {
         static::saving(function (self $party) {

@@ -13,6 +13,7 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Wealth\Domain\Models\WmHolding;
 use Modules\Wealth\Domain\Models\WmOrder;
 use Modules\Wealth\Domain\Models\WmPlan;
+use Modules\Wealth\Domain\Models\WmPortfolioHolding;
 use Modules\Wealth\Domain\Models\WmProfile;
 
 class RoboAdvisorService
@@ -21,6 +22,38 @@ class RoboAdvisorService
         protected SimClockInterface $simClock,
         protected LedgerService $ledgerService
     ) {}
+
+    public function submitRiskSurvey(int $userId, array $answers, string $idempotencyKey): WmProfile
+    {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key is required.');
+        }
+
+        $values = array_values($answers);
+        $avg = count($values) > 0 ? (int) round(array_sum($values) / count($values)) : 3;
+        $riskScore = max(1, min(5, $avg));
+
+        $weights = match ($riskScore) {
+            1 => ['mm' => 7000, 'bd' => 2500, 'eq' => 500, 'tier' => 'conservative'],
+            2 => ['mm' => 5000, 'bd' => 3500, 'eq' => 1500, 'tier' => 'conservative'],
+            3 => ['mm' => 3000, 'bd' => 4000, 'eq' => 3000, 'tier' => 'moderate'],
+            4 => ['mm' => 2000, 'bd' => 3000, 'eq' => 5000, 'tier' => 'aggressive'],
+            5 => ['mm' => 1000, 'bd' => 2000, 'eq' => 7000, 'tier' => 'aggressive'],
+        };
+
+        return WmProfile::updateOrCreate(
+            ['user_id' => $userId],
+            [
+                'risk_score' => $riskScore,
+                'risk_profile' => $weights['tier'],
+                'target_money_market_bps' => $weights['mm'],
+                'target_bonds_bps' => $weights['bd'],
+                'target_equity_rwa_bps' => $weights['eq'],
+                'drift_band_bps' => 500,
+                'auto_invest_enabled' => true,
+            ]
+        );
+    }
 
     public function configureProfile(
         int $userId,
@@ -309,6 +342,15 @@ class RoboAdvisorService
         foreach ($profiles as $profile) {
             $expectedMinFloor = $profile->monthly_spend_baseline_idr * 2;
             if ($profile->emergency_fund_target_idr < $expectedMinFloor) {
+                $discrepancies++;
+            }
+        }
+
+        $portfolioHoldings = WmPortfolioHolding::all();
+        $holdingCount += $portfolioHoldings->count();
+        foreach ($portfolioHoldings as $holding) {
+            $expectedMarketValue = intdiv($holding->units * $holding->current_nav, 10);
+            if ($holding->current_market_value_idr !== $expectedMarketValue) {
                 $discrepancies++;
             }
         }
