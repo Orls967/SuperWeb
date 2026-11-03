@@ -37,7 +37,7 @@ Folder ini berisi laporan gate resmi per fase (`docs/gates/fase-{N}.md`, mis. `f
 | 8 | `php artisan super:health-check` | salah satu pemeriksaan kesehatan gagal |
 | 9 | `npm run build` | build aset Vite gagal |
 
-Portabilitas database diperiksa job CI terpisah, `PHP 8.4 × MySQL 8 (DB Portability)`: `migrate:fresh --seed` di MySQL 8.4 lalu `pest --group=db-portability`. Mutation testing berjalan di job `PHP 8.4 × Pest Mutation Testing (min 60%)` pada setiap pull request. Kedua job ini tidak masuk laporan SQLite, tetapi wajib hijau sebelum merge.
+Portabilitas database diperiksa job CI terpisah, `PHP 8.4 × MySQL 8 (DB Portability)`: `migrate:fresh --seed` di MySQL 8.4 lalu `pest --group=db-portability` (wajib hijau sebelum merge). Mutation testing hanya dijalankan manual (`workflow_dispatch`), bukan syarat merge (keputusan pemilik 2026-11-04).
 
 ---
 

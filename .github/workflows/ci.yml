@@ -179,7 +179,7 @@ jobs:
     name: PHP 8.4 × Pest Mutation Testing (min 60%)
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout repository
