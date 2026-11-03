@@ -8566,86 +8566,77 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | M-79-1 | 79.3 | Sumber internal grup lewat Intercompany ditunda | Settlement reverse transfer antar-badan hukum internal belum otomatis | P2 | Dilanjutkan di Fase Intercompany consolidation |
 
 ## FASE 80 — COLD-CHAIN BLOCKCHAIN AUTONOMOUS, DRONE & LAST-MILE ROBOTICS
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 DIKERJAKAN (2026-11-03) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Logistics (`lgx_`) + Payment · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP 5F slice 2–3
 > **Jalan pintas terlarang di fase ini:** tahan pembayaran sebagai kolom status tanpa ledger; breach dihitung per pembacaan (ganda); batas drone hanya di test — ditambah seluruh X1–X25.
-- [ ] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
+- [x] 80.1 **Cold-chain enforcement**: pembacaan suhu reefer (Fase 24.4) → breach > 10 menit → event `lgx.temp_breach` → **PaymentGateway otomatis HOLD pembayaran subkontraktor** pengangkut sampai dispute selesai (release setelah investigasi/klaim asuransi Fase 23.4); pembacaan suhu masuk hash-chain sebagai bukti
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
+    - commit: 67defa4d
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
-    - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_2_cold_chain_breach_detection_triggers_ledger_hold_idempotently
     - akses: route POST /logistics/autonomous/breaches/{hold}/release [role: admin, dispatcher, logistics_admin, treasury]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
+- [x] 80.2 Perluasan monitored goods: farmasi (link Pilar 9), daging wagyu, vaksin, produk beach club (minuman beralkohol butuh suhu), linen hotel (sterilisasi)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
+    - commit: 67defa4d
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
-    - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_1_temp_breach_holds_carrier_payment_only_when_exceeding_ten_minutes
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_3_breach_under_ten_minutes_ignored_and_release_restores_payable
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
+- [x] 80.3 **Drone & last-mile robotics dispatch** (`lgx_drone_units`, `lgx_drone_missions`): dispatcher menugaskan leg terakhir ke drone/robot dari Hub (radius ≤ 15 km, beban ≤ 5 kg, baterai cukup untuk pulang-pergi + margin) → routing mempertimbangkan no-fly zone simulasi & angin → bahan ringan suku cadang/obat/makanan resto
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
+    - commit: 67defa4d
     - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
-    - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_3_and_80_4_drone_mission_dispatch_constraints_and_cryptographic_pod
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_4_drone_dispatch_constraints_reject_overweight_outofrange_and_lowbattery
     - akses: route POST /logistics/autonomous/dispatch [role: admin, dispatcher, hub_operator, logistics_admin]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
+- [x] 80.4 POD drone: foto geo-hash + waktu + tanda terima digital → masuk chain of custody → bila gagal turun → fallback ke driver terdekat
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
-    - file: modules/Logistics/Application/Services/Autonomous/AutonomousLogisticsService.php
-    - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_3_and_80_4_successful_drone_dispatch_and_pod_completion
+    - commit: 96b4bf84
+    - file: modules/Shared/Domain/Algorithms/Geo/VisibilityGraphRouter.php
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_5_drone_navigation_avoids_nofly_zone_and_pod_geohash_verified
     - akses: route POST /logistics/autonomous/missions/{mission}/deliver [role: admin, dispatcher, hub_operator, logistics_admin]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
+- [x] 80.5 **Rate card dinamis**: tarif & kapasitas berubah real-time mengikuti permintaan musiman, harga BBM (feed simulasi), okupansi armada (memperluas Fase 21.3 + dynamic pricing Fase 64.1); kontrak harga B2B immutable tetap menang (Fase 44.4)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
+    - commit: 67defa4d
     - file: modules/Logistics/Http/Controllers/AutonomousLogisticsController.php
-    - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_autonomous_index_dispatch_and_release
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_1_route_access_and_role_authorization_matrix
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
+- [x] 80.6 Dashboard: breach suhu & uang tertahan, misi drone aktif, biaya last-mile per mode, tarif berjalan vs kontrak
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: ca1ca12f
+    - commit: 07776400
     - file: modules/Logistics/resources/views/autonomous/index.blade.php
-    - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_a_authorized_user_can_access_autonomous_index_dispatch_and_release
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_1_route_access_and_role_authorization_matrix
     - akses: route GET /logistics/autonomous [role: admin, auditor, dispatcher, hub_operator, logistics_admin]
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
+- [x] 80.7 Tests: (a) breach > 10 menit → hold persis 1x, < 10 menit tidak (b) hold dilepas = dispute selesai, tidak ganda (c) misi drone melewati radius/baterai ditolak (d) POD drone valid di hash chain (e) reconcile hold = ledger escrow
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: ca1ca12f
-    - file: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php
-    - test: modules/Logistics/tests/Feature/Autonomous/ColdChainAndDroneRoboticsTest.php::test_80_7_two_source_audit_passes_cleanly
-    - (dibatalkan) gate: docs/gates/fase-80.md
-- [ ] 80.8 Quality gate Fase 80
+    - commit: 5b8fb1e9
+    - file: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php
+    - test: tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php::test_6_carrier_idor_isolation_and_two_source_cold_chain_audit
+- [x] 80.8 Quality gate Fase 80
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: dokumen
-    - commit: ca1ca12f
-    - file: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php
-    - test: modules/Logistics/tests/Feature/Autonomous/AutonomousLogisticsVerticalSliceHttpTest.php::test_d_two_source_cold_chain_audit_passes_cleanly
+    - commit: 0b7fc1cc
+    - file: docs/dor/cold-chain-drone-fase-80.md
     - akses: command lgx:audit-coldchain
-    - (dibatalkan) gate: docs/gates/fase-80.md
 
 ### Register Minus Fase 80
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
 |---|---|---|---|---|---|
-| — | — | Nihil (seluruh deliverable 80.1–80.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+| M-80-1 | 80.1 | Penyelesaian sengketa selain rilis penuh ditunda | Pemotongan saldo klaim/asuransi dilakukan di fase konsolidasi asuransi | P2 | Dilanjutkan di Fase Universal Insurance & Claim Consolidation |
 
 ## PILAR 6 — MANUFAKTUR, DISTRIBUSI & KEBIJAKAN HARGA
 
