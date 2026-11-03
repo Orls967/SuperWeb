@@ -41,6 +41,7 @@ use Modules\Partner\PartnerServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
 use Modules\Plm\PlmServiceProvider;
+use Modules\Port\PortServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Proptech\ProptechServiceProvider;
@@ -68,6 +69,7 @@ return [
     BankingServiceProvider::class,
     CircularServiceProvider::class,
     PaymentServiceProvider::class,
+    PortServiceProvider::class,
     InventoryServiceProvider::class,
     StoreServiceProvider::class,
     CryptoServiceProvider::class,

@@ -3343,4 +3343,16 @@ return [
             }
         },
     ],
+    'port.index' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.berths' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.yard' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.billing' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
 ];
