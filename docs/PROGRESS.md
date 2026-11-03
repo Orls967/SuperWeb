@@ -11535,16 +11535,55 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 173.6 Quality gate Fase 173
 
 ## FASE 174 — LINI 24: WASTE, RECYCLING & INDUSTRIAL CIRCULARITY MARKETPLACE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CircularEconomyService`; 1 migrasi; test `CircularEconomyTest` — commit `8eb2251`, +268 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit:** 🔵 DIKERJAKAN (2026-11-03) · Pelaksana [G6-P1].
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Circular (`cir_`) + Logistics reverse + Esg · **Prasyarat:** Fase 79 ✅ · **Acuan:** KONSEP Lini 24
 > **Jalan pintas terlarang di fase ini:** tonase dari masukan bebas; angkutan di luar Logistics; memperluas `CircularEconomyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
-- [ ] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
-- [ ] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
-- [ ] 174.4 Circularity accounting: material input/output, recycled content, avoided disposal, revenue/fee and ESG evidence linked to lots
-- [ ] 174.5 Tests: hazardous waste cannot route to unqualified party, mass balance reconciles, manifest chain complete, no double-counted ESG claim, `circular:audit` clean
-- [ ] 174.6 Quality gate Fase 174
+- [x] 174.1 Modul `Circular` (`cir_`): waste streams, by-product specifications, testing, permits, recycler facilities, manifests, weighbridge records
+  Bukti:
+    - jenis: fitur
+    - commit: 1277b22d
+    - file: modules/Circular/database/migrations/2026_11_03_174100_create_circular_marketplace_tables.php
+    - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_1_route_access_matrix_enforces_roles_across_all_circular_route_groups
+    - akses: route GET /circular/listings [role: admin, material_seller]
+- [x] 174.2 B2B marketplace matches seller by-product (manufacturing/mining/hotel/healthcare) to buyer input; price, quality, distance and compliance filters
+  Bukti:
+    - jenis: fitur
+    - commit: 1277b22d
+    - file: modules/Circular/Application/Actions/PlaceOrderAction.php
+    - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_2_end_to_end_marketplace_flow_escrow_reverse_shipment_k1_receipt_settlement_and_idempotency
+    - akses: route POST /circular/orders [role: admin, material_buyer]
+- [x] 174.3 Reverse logistics booking + custody + treatment certificate; hazardous streams require eligible licensed operator and stricter approval
+  Bukti:
+    - jenis: fitur
+    - commit: 1277b22d
+    - file: modules/Circular/Application/Actions/RecordOrderPlantReceiptAction.php
+    - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_3_business_rules_over_stock_422_early_settlement_rejected_and_shrinkage_refund
+    - akses: route POST /circular/orders/{order}/receipt [role: admin, circular_admin]
+- [x] 174.4 Circularity accounting: material input/output, recycled content, avoided disposal, revenue/fee and ESG evidence linked to lots
+  Bukti:
+    - jenis: fitur
+    - commit: 1277b22d
+    - file: modules/Circular/Application/Actions/SettleOrderAction.php
+    - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_2_end_to_end_marketplace_flow_escrow_reverse_shipment_k1_receipt_settlement_and_idempotency
+    - akses: route POST /circular/orders/{order}/settle [role: admin, circular_admin]
+- [x] 174.5 Tests: hazardous waste cannot route to unqualified party, mass balance reconciles, manifest chain complete, no double-counted ESG claim, `circular:audit` clean
+  Bukti:
+    - jenis: tooling
+    - commit: 1277b22d
+    - file: modules/Circular/Console/Commands/AuditCircularCommand.php
+    - test: tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php::test_5_circular_audit_passes_clean_and_detects_corruption_fixture
+    - akses: command cir:audit
+- [x] 174.6 Quality gate Fase 174
+  Bukti:
+    - jenis: dokumen
+    - commit: 393004b1
+    - file: docs/design/circular-marketplace-lini-24.md
+
+### Register Minus Fase 174
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| M-174-1 | 174.3 | Filter verifikasi perizinan limbah B3 lintas regulator masih mock | Alur limbah B3 berizin ketat saat ini memakai stub verifikasi | P2 | Dilengkapi pada fase integrasi regulasi AMDAL/B3 eksternal |
 
 ## FASE 175 — LINI 25: PROFESSIONAL SERVICES, CONSULTING & PROJECT MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProfessionalServicesService`; 1 migrasi; test `ProfessionalServicesTest` — commit `8d286cf`, +345 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

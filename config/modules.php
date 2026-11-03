@@ -11,6 +11,7 @@ return [
         'dex_' => 'AutoDex',
         'b2b_' => 'B2b',
         'bank_' => 'Banking',
+        'cir_' => 'Circular',
         'ckt_' => 'CloudKitchen',
         'ctr_' => 'Contract',
         'sct_' => 'ControlTower',

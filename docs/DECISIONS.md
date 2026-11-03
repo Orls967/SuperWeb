@@ -2134,6 +2134,29 @@
   - Acceptance test `tests/Acceptance/ReverseLogistics/ReverseLogisticsAcceptanceTest.php` lulus menyeluruh.
   - Command `logi:circular-audit` lolos exit 0 pada kondisi bersih dan exit 1 pada fixture korupsi.
 
+<a id="2026-11-03-g6-p1-circular-marketplace"></a>
+<a id="d24-1"></a>
+## 2026-11-03: [G6-P1.2] Waste & Recycling Marketplace (modul Circular cir_, Fase 174, D24-1..D24-5)
+- **Anchor:** `2026-11-03-g6-p1-circular-marketplace` / `d24-1`
+- **Context:**
+  - Lini 24 (Waste & Recycling Marketplace) memerlukan modul terisolasi `Circular` (`cir_`) untuk perdagangan limbah industri dan bahan baku sekunder (scrap, jelantah, oli bekas, plastik, dsb.).
+  - Marketplace membutuhkan mekanisme lelang periodik harga seragam (Call Auction) dengan sertifikat matematis validitas kliring, integrasi escrow hold & capture, pengiriman fisik melalui Reverse Logistics P1.1 (reason `material_sekunder`), verifikasi penerimaan faktual timbangan pabrik via kontrak K1 `RecycledMaterialReceiver`, refund otomatis susut timbangan, settlement fee marketplace, dan audit dua sumber.
+- **Decision:**
+  1. D24-1: Pembentukan modul baru `Circular` (`cir_`) yang disetujui (G6-K1, U-9), dengan 6 tabel relasional: `cir_listings`, `cir_bids`, `cir_auction_rounds`, `cir_orders`, `cir_order_lines`, `cir_settlements`.
+  2. D24-2: Alur transaksi 6 tahap: listing → pemesanan/lelang → escrow hold pembayaran → pengiriman fisik via shipment reverse P1.1 (reason `material_sekunder`) → penerimaan faktual K1 di pabrik pembeli → settlement penjual & payout. Pengiriman kedua di luar Logistics dilarang keras.
+  3. D24-3: Algoritma lelang periodik harga seragam `Market\CallAuctionClearing` dengan sertifikat matematis independen: harga memaksimalkan volume, meminimalkan ketimpangan permintaan-penawaran, midpoint half-up ke kelipatan Rp 10/kg; alokasi berbasis harga lalu waktu (penawar marginal terisi parsial); idempoten terhadap penutupan ronde ganda.
+  4. D24-4: Aturan posting pembukuan double-entry berimbang:
+     - Hold Escrow: Debit `wallet:user:{pembeli}:IDR` / Kredit `escrow:payment:IDR`
+     - Refund Susut: Debit `escrow:payment:IDR` / Kredit `wallet:user:{pembeli}:IDR`
+     - Settlement: Debit `escrow:payment:IDR` / Kredit `ap:cir:seller:{party}:IDR` + Kredit `cir:fee_revenue:IDR` (fee default 250 bps)
+     - Payout: Debit `ap:cir:seller:{party}:IDR` / Kredit `wallet:user:{penjual}:IDR`
+     Settlement ditolak bila dipicu sebelum status penerimaan faktual (`received`).
+  5. D24-5: Audit dua sumber `cir:audit` memvalidasi tiga invarian: tonase terjual = dikirim = diterima timbangan K1 per order; saldo escrow sama dengan order belum disettle; fee revenue sama dengan akumulasi fee bps dari transaksi yang diselesaikan.
+- **Verification:**
+  - Vektor uji lelang D24-3 (B1 10t @1500, B2 15t @1400, B3 10t @1200; S1 12t @1100, S2 10t @1300, S3 10t @1450) menghasilkan volume 22t, harga Rp 1350/kg, tereksekusi S1 12t, S2 10t, B1 10t, B2 12t (sisa 3t).
+  - Acceptance test `tests/Acceptance/Circular/CircularMarketplaceAcceptanceTest.php` lulus ≥ 12 skenario.
+  - Command `cir:audit` bersih exit 0, dan exit 1 pada fixture korupsi.
+
 <a id="2026-11-04-mutation-testing-manual"></a>
 ## 2026-11-04: Mutation Testing Dipindah ke Manual
 - **Anchor:** `2026-11-04-mutation-testing-manual`

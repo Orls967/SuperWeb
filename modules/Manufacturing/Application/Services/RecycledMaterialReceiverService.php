@@ -10,6 +10,7 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\ClockInterface;
+use Modules\Logistics\Contracts\Shipment;
 use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
 use Modules\Manufacturing\Domain\Models\Material;
 use Modules\Manufacturing\Domain\Models\MaterialLot;
@@ -95,6 +96,16 @@ class RecycledMaterialReceiverService implements RecycledMaterialReceiver
                 'updated_at' => $now,
             ]);
 
+            // Sinkronkan status penerimaan pada Shipment reverse melalui kontrak Shipment
+            Shipment::where('id', $reverseShipmentId)->update([
+                'status' => 'received',
+                'net_weight_grams' => $quantityGrams,
+                'verified_weight_grams' => $quantityGrams,
+                'grade_code' => $gradeCode,
+                'plant_receipt_id' => $receiptId,
+                'updated_at' => $now,
+            ]);
+
             // D79-3 Posting:
             // Debit: inv:materials:IDR
             // Kredit: mfg:recycled_material_clearing:IDR
@@ -114,5 +125,12 @@ class RecycledMaterialReceiverService implements RecycledMaterialReceiver
 
             return (int) $receiptId;
         });
+    }
+
+    public function getReceiptQuantityGrams(int $receiptId): ?int
+    {
+        $row = DB::table('mfg_recycled_receipts')->where('id', $receiptId)->first();
+
+        return $row !== null ? (int) $row->quantity_grams : null;
     }
 }
