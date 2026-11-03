@@ -10,6 +10,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        @ini_set('memory_limit', '1024M');
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
         Schema::create('htl_properties', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('property_code')->unique();

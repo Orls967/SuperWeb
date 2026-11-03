@@ -137,4 +137,12 @@ class HotelLedgerAndReconciliationAuditTest extends TestCase
         $this->assertNotEquals(0, $exitCode);
         $this->assertEquals(1, $exitCode);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

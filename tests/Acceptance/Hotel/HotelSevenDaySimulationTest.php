@@ -599,4 +599,12 @@ class HotelSevenDaySimulationTest extends TestCase
         $this->assertEquals(0, Artisan::call('htl:audit'));
         $this->assertEquals(0, Artisan::call('bank:reconcile'));
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

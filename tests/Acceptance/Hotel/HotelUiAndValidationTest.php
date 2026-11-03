@@ -73,4 +73,12 @@ class HotelUiAndValidationTest extends TestCase
         $response = $this->actingAs($fo)->post('/hotel/reservations', []);
         $this->assertTrue(in_array($response->getStatusCode(), [302, 422]));
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

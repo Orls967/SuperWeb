@@ -430,4 +430,12 @@ class HotelReservationAndInventoryTest extends TestCase
         $nights = HotelRoomNight::where('reservation_id', $res['reservation']->id)->get();
         $this->assertCount(3, $nights);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

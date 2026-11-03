@@ -347,4 +347,12 @@ class HotelCheckInOutAndHousekeepingTest extends TestCase
         $room = $action->updateHousekeepingStatus($room->id, 'available', (int) $this->hkStaff->id);
         $this->assertEquals('available', $room->status);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

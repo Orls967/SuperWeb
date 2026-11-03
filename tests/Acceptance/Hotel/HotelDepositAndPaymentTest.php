@@ -305,4 +305,12 @@ class HotelDepositAndPaymentTest extends TestCase
         $this->assertEquals('CASH', $resCash['deposit']->payment_method);
         $this->assertEquals('CARD', $resCard['deposit']->payment_method);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

@@ -291,4 +291,12 @@ class HotelCancellationAndWalkTest extends TestCase
             idempotencyKey: null,
         );
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

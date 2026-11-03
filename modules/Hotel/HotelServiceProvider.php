@@ -17,13 +17,19 @@ class HotelServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        @ini_set('memory_limit', '1024M');
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
         $this->app->bind(HotelFolioPort::class, HotelFolioAdapter::class);
         $this->app->singleton(HotelOperationsService::class);
     }
 
     public function boot(): void
     {
-        if ($this->app->environment('testing')) {
+        @ini_set('memory_limit', '1024M');
+        if (function_exists('gc_collect_cycles')) {
             gc_collect_cycles();
         }
 

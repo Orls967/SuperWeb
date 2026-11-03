@@ -232,4 +232,12 @@ class HotelOccupancyAdrRevparReportTest extends TestCase
         $this->assertEquals(1875000, $report['ledger_room_revenue_idr']);
         $this->assertTrue($report['is_reconciled']);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

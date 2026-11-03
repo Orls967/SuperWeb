@@ -174,4 +174,12 @@ class HotelLegacyForeignKeyOrphanTest extends TestCase
         $cleanOutput = Artisan::output();
         $this->assertStringContainsString('No orphan records found', $cleanOutput);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

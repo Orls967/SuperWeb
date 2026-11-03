@@ -372,4 +372,12 @@ class HotelFolioAndOutletTest extends TestCase
         $this->assertEquals(110000, $line->tax_pbjt_idr);
         $this->assertEquals(1210000, $line->amount_idr);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

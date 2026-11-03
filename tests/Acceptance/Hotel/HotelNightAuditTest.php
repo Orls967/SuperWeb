@@ -417,4 +417,12 @@ class HotelNightAuditTest extends TestCase
         $folioCancelled = HotelFolio::where('reservation_id', $cancelled->id)->first();
         $this->assertEquals(0, $folioCancelled->total_room_charges);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }

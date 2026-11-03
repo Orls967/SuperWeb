@@ -140,4 +140,12 @@ class HotelAccessControlTest extends TestCase
         $response = $this->get('/hotel/reservations');
         $response->assertRedirect('/login');
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+    }
 }
