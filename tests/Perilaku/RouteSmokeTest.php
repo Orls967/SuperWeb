@@ -6,7 +6,9 @@ namespace Tests\Perilaku;
 
 use App\Models\User;
 use Closure;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -33,16 +35,16 @@ use Throwable;
 #[Group('perilaku')]
 class RouteSmokeTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @var array<string, User> */
     protected static array $userCache = [];
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        self::$userCache = [];
+        $this->seed(DatabaseSeeder::class);
     }
 
     /**

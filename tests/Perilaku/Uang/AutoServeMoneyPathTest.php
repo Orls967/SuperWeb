@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Tests\Perilaku\Uang;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Enums\TransactionType;
 use PHPUnit\Framework\Attributes\Group;
@@ -19,12 +20,12 @@ use Throwable;
 #[Group('perilaku-uang')]
 class AutoServeMoneyPathTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        $this->seed(BankingSeeder::class);
     }
 
     public function test_autoserve_backorder_ledger_posting_balance_and_idempotency(): void

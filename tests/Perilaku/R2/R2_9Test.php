@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Modules\Esg\Application\Services\EsgService;
 use Modules\Hcm\Application\Services\HcmService;
-use Modules\Telematics\Application\Services\TelematicsIngestService;
+use Modules\Mobility\Telematics\Application\Services\TelematicsIngestService;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 

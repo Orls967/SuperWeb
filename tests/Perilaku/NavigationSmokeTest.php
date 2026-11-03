@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Tests\Perilaku;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Modules\Core\Domain\Models\Role;
 use PHPUnit\Framework\Attributes\Group;
@@ -15,15 +16,16 @@ use Throwable;
 #[Group('perilaku')]
 class NavigationSmokeTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @var array<string, User> */
     protected static array $userCache = [];
 
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        self::$userCache = [];
+        $this->seed(DatabaseSeeder::class);
     }
 
     protected function getUserForRole(string $role): User

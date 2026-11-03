@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Perilaku;
 
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -17,14 +19,15 @@ use Throwable;
 #[Group('perilaku')]
 class WriteSmokeTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected static array $userCache = [];
 
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        self::$userCache = [];
+        $this->seed(DatabaseSeeder::class);
     }
 
     protected function getUserForRole(string $role): User

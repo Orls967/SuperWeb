@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Perilaku\Uang;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerEntry;
@@ -14,6 +14,7 @@ use Modules\Resto\Application\Actions\CalculateHidangBillAction;
 use Modules\Resto\Application\Actions\OpenShiftAction;
 use Modules\Resto\Application\Actions\OpenTableSessionAction;
 use Modules\Resto\Application\Actions\PresentHidangAction;
+use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Enums\BatchStatus;
 use Modules\Resto\Domain\Enums\TrayStatus;
 use Modules\Resto\Domain\Models\DisplayTray;
@@ -29,6 +30,8 @@ use Throwable;
 #[Group('perilaku-uang')]
 class RestoMoneyPathTest extends TestCase
 {
+    use RefreshDatabase;
+
     private Outlet $outlet;
 
     private User $cashier;
@@ -38,9 +41,7 @@ class RestoMoneyPathTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        $this->seed(RestoMenuSeeder::class);
 
         $this->outlet = Outlet::firstOrCreate(
             ['code' => 'DM-01'],

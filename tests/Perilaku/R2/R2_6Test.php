@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Modules\Core\Domain\Models\Vehicle;
-use Modules\Telematics\Application\Services\TelematicsIngestService;
-use Modules\Telematics\Domain\Events\VehicleAnomalyDetected;
-use Modules\Telematics\Domain\Models\TelematicsDevice;
-use Modules\Telematics\Domain\Models\TelematicsTick;
+use Modules\Mobility\Telematics\Application\Services\TelematicsIngestService;
+use Modules\Mobility\Telematics\Domain\Events\VehicleAnomalyDetected;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
+use Modules\Mobility\Telematics\Domain\Models\TelematicsTick;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 

@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Tests\Perilaku;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Contract\database\seeders\ContractSeeder;
 use Modules\Contract\Domain\Models\Contract;
+use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Core\Domain\Models\Role;
+use Modules\Party\database\seeders\PartySeeder;
 use Modules\Party\Domain\Models\Party;
+use Modules\Resto\database\seeders\RestoMenuSeeder;
 use Modules\Resto\Domain\Models\Ingredient;
 use Modules\Resto\Domain\Models\MenuItem;
 use PHPUnit\Framework\Attributes\Group;
@@ -17,13 +21,18 @@ use Tests\TestCase;
 #[Group('perilaku')]
 class RouteSmokeRegressionTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        $this->seed([
+            RbacSeeder::class,
+            PartySeeder::class,
+            ContractSeeder::class,
+            RestoMenuSeeder::class,
+        ]);
     }
 
     /**

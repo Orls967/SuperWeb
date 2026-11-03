@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Perilaku\Uang;
 
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\LedgerAccountsSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerTransaction;
 use Modules\Logistics\Application\Services\Reverse\ReverseLogisticsService;
@@ -14,12 +15,12 @@ use Tests\TestCase;
 #[Group('perilaku-uang')]
 class LogisticsMoneyPathTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_logistics_circular_intake_posting_balance_and_idempotency(): void

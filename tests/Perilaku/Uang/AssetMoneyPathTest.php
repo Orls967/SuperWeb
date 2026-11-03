@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Tests\Perilaku\Uang;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\LedgerAccountsSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Asset\Application\Services\AssetService;
 use Modules\Asset\Domain\Models\AssetCategory;
 use Modules\Asset\Domain\Models\AssetLocation;
@@ -17,12 +18,12 @@ use Tests\TestCase;
 #[Group('perilaku-uang')]
 class AssetMoneyPathTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
-        DB::purge('sqlite');
-        DB::reconnect('sqlite');
+        $this->seed(LedgerAccountsSeeder::class);
     }
 
     public function test_asset_acquisition_ledger_posting_balance_and_idempotency(): void
