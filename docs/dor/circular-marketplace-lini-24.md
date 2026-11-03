@@ -23,4 +23,3 @@
   - D24-5: Audit dua sumber `cir:audit`: verifikasi integritas rantai tonase (terjual = dikirim = diterima), saldo escrow sama dengan nilai belum disettle, dan fee revenue konsisten terhadap basis poin.
 - **Item yang ditunda (Register Minus):**
   - M-174-1: Multi-currency settlement (hanya IDR yang didukung pada slice ini).
-
