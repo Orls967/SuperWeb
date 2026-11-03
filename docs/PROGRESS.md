@@ -1073,6 +1073,18 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 |---|---|---|---|---|---|
 | - | - | Tidak ada minus terbuka (seluruh deliverable R2.1 s/d R2.9 serta minus masuk M-R0-10 & M-R0-11 tuntas 100%) | - | - | - |
 | M-R2-1 | R2.3 / R2.5 | Temuan F-02: 26 pelanggaran disembunyikan oleh pelemahan nama test scanner lama | Pelanggaran fungsional dan error path berpotensi lolos | P1 | Diperbaiki di Bagian II (pagar dipulihkan ketat); ditargetkan tuntas verifikasi mandiri |
+| M-R2-2 | AutoDex | Rute GET sukses 66.7% (< 90%) pada rute berhak | Sebagian rute mengembalikan 4xx | P2 | Lengkapi seeding data/parameter rute dinamis |
+| M-R2-3 | AutoServe | Rute GET sukses 84.6% (< 90%) | Rute riwayat servis/inspeksi membutuhkan parameter spesifik | P2 | Perbaiki route parameter resolver dan default data |
+| M-R2-4 | Crypto | Aksi tulis utama WriteSmoke menghasilkan 422 (Unprocessable) | Endpoint deposit/withdraw memerlukan payload validasi ketat | P2 | Sesuaikan skema payload uji dengan schema kontrak |
+| M-R2-5 | Distribution | Rute GET sukses 83.3% (< 90%) | Rute pengiriman/distribusi mengembalikan 4xx | P2 | Lengkapi seeding armada/surat jalan |
+| M-R2-6 | Finance | Rute GET sukses 33.3% (< 50% - klasifikasi rusak) | 8 rute kredit/fasilitas pinjaman mengembalikan 4xx | P1 | Sinkronisasi parameter dan model binding modul Finance |
+| M-R2-7 | Fleet | Aksi tulis utama WriteSmoke menghasilkan 403 (Forbidden) untuk admin | Memerlukan role eksplisit fleet_manager / izin armada | P2 | Perbarui role permissions di controller atau definisikan role tepat |
+| M-R2-8 | Hotel | Rute GET sukses 77.8% (< 90%) | 10 rute siklus tamu/kamar mengembalikan 4xx | P2 | Penyesuaian data kamar/folio tamu |
+| M-R2-9 | Logistics | Rute GET sukses 88.8% (< 90%) | 16 rute tracking/manifest logistik mengembalikan 4xx | P2 | Lengkapi seeding manifest dan rute reverse logistics |
+| M-R2-10 | Procurement | Rute GET sukses 83.3% (< 90%) | Rute purchase order/tender mengembalikan 4xx | P2 | Lengkapi vendor/item procurement |
+| M-R2-11 | Resto | Aksi tulis utama WriteSmoke status 200 tanpa persistensi (fake success) | Endpoint kalkulasi biaya pos kalkulasi murni tanpa simpan order | P2 | Arahkan write smoke ke rute create order definitif |
+| M-R2-12 | Store | Rute GET sukses 70.4% (< 90%) | 8 rute katalog/checkout toko ritel mengembalikan 4xx | P2 | Lengkapi seeding inventory produk dan varian |
+| M-R2-13 | Telematics | Aksi tulis utama WriteSmoke menghasilkan 404 (Not Found) | Prefix rute berubah seiring refactoring modul ke Mobility | P2 | Sesuaikan URI rute ingest telematics di endpoint baru |
 
 ### FASE R3 — OTORISASI & DATA SENSITIF (P0)
 > **Status audit:** 🔁 DIBUKA KEMBALI (2026-10-31, audit keamanan S-01..S-06)

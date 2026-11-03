@@ -1,9 +1,9 @@
 {
-    "generated_at": "2026-10-29T19:27:05+00:00",
-    "total_get_routes": 378,
-    "total_executions": 1103,
-    "tested_routes_count": 349,
-    "untested_routes_count": 29,
+    "generated_at": "2026-11-03T05:13:42+00:00",
+    "total_get_routes": 423,
+    "total_executions": 1230,
+    "tested_routes_count": 387,
+    "untested_routes_count": 36,
     "untested_routes": [
         {
             "uri_pattern": "resto/pos/session/{session}",
@@ -202,6 +202,39 @@
             ]
         },
         {
+            "uri_pattern": "api/oto/sessions/{session}",
+            "module": "Mobility",
+            "reason": "tidak teruji: parameter (session)",
+            "roles": [
+                "admin",
+                "driver",
+                "ev_operator",
+                "fleet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "hospital/outpatient/encounters/{encounter}",
+            "module": "Hospital",
+            "reason": "tidak teruji: parameter (encounter)",
+            "roles": [
+                "admin",
+                "doctor",
+                "nurse",
+                "patient"
+            ]
+        },
+        {
+            "uri_pattern": "hospital/outpatient/invoices/{invoice}",
+            "module": "Hospital",
+            "reason": "tidak teruji: parameter (invoice)",
+            "roles": [
+                "admin",
+                "cashier",
+                "hospital_finance",
+                "patient"
+            ]
+        },
+        {
             "uri_pattern": "energy/ppa/{id}",
             "module": "Egy",
             "reason": "tidak teruji: parameter (id)",
@@ -214,39 +247,75 @@
             ]
         },
         {
-            "uri_pattern": "media/studios/{id}",
+            "uri_pattern": "api/energy/invoices/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "energy_manager",
+                "genco_trader"
+            ]
+        },
+        {
+            "uri_pattern": "telecom/billing/connectivity/{id}",
+            "module": "Tlx",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "telecom_billing",
+                "tlx_admin"
+            ]
+        },
+        {
+            "uri_pattern": "media/royalties/{id}",
             "module": "Med",
             "reason": "tidak teruji: parameter (id)",
             "roles": [
                 "admin",
-                "producer",
-                "studio_ops",
-                "ip_manager",
-                "talent_mgmt"
+                "media_admin",
+                "rights_manager"
             ]
         },
         {
-            "uri_pattern": "media/licensing/{id}",
+            "uri_pattern": "media/production/studios/{id}",
             "module": "Med",
             "reason": "tidak teruji: parameter (id)",
             "roles": [
                 "admin",
+                "ip_manager",
                 "producer",
                 "studio_ops",
-                "ip_manager",
                 "talent_mgmt"
             ]
         },
         {
-            "uri_pattern": "education/cohorts/{id}",
+            "uri_pattern": "media/production/licensing/{id}",
+            "module": "Med",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "ip_manager",
+                "producer",
+                "studio_ops",
+                "talent_mgmt"
+            ]
+        },
+        {
+            "uri_pattern": "academy/student/certificates/{id}",
             "module": "Edu",
             "reason": "tidak teruji: parameter (id)",
             "roles": [
                 "admin",
-                "edu_admin",
-                "instructor",
-                "cert_officer",
-                "corp_lnd"
+                "student"
+            ]
+        },
+        {
+            "uri_pattern": "academy/student/attempts/{id}",
+            "module": "Edu",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "student"
             ]
         },
         {
@@ -644,65 +713,47 @@
             "4xx": 0,
             "500": 0
         },
-        "Telematics": {
-            "total": 15,
-            "tested": 15,
-            "untested": 0,
-            "2xx": 15,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Ev": {
-            "total": 20,
-            "tested": 20,
-            "untested": 0,
-            "2xx": 20,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Fleet": {
-            "total": 15,
-            "tested": 15,
-            "untested": 0,
-            "2xx": 15,
+        "Mobility": {
+            "total": 59,
+            "tested": 58,
+            "untested": 1,
+            "2xx": 58,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "Rwa": {
-            "total": 20,
-            "tested": 20,
+            "total": 32,
+            "tested": 32,
             "untested": 0,
-            "2xx": 20,
+            "2xx": 32,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "Insurance": {
-            "total": 20,
-            "tested": 20,
+            "total": 24,
+            "tested": 24,
             "untested": 0,
-            "2xx": 20,
+            "2xx": 24,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "Wealth": {
-            "total": 25,
-            "tested": 25,
+            "total": 35,
+            "tested": 35,
             "untested": 0,
-            "2xx": 25,
+            "2xx": 35,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "CloudKitchen": {
-            "total": 20,
-            "tested": 20,
+            "total": 15,
+            "tested": 15,
             "untested": 0,
-            "2xx": 20,
+            "2xx": 15,
             "3xx": 0,
             "4xx": 0,
             "500": 0
@@ -726,75 +777,75 @@
             "500": 0
         },
         "Hospital": {
-            "total": 22,
-            "tested": 22,
-            "untested": 0,
-            "2xx": 22,
+            "total": 40,
+            "tested": 38,
+            "untested": 2,
+            "2xx": 38,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "Venue": {
-            "total": 24,
-            "tested": 24,
-            "untested": 0,
-            "2xx": 24,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Hotel": {
-            "total": 27,
-            "tested": 27,
-            "untested": 0,
-            "2xx": 27,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Mining": {
-            "total": 27,
-            "tested": 27,
-            "untested": 0,
-            "2xx": 27,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Egy": {
-            "total": 31,
-            "tested": 30,
-            "untested": 1,
-            "2xx": 30,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Tlx": {
-            "total": 35,
-            "tested": 35,
-            "untested": 0,
-            "2xx": 35,
-            "3xx": 0,
-            "4xx": 0,
-            "500": 0
-        },
-        "Med": {
-            "total": 27,
+            "total": 25,
             "tested": 25,
-            "untested": 2,
+            "untested": 0,
             "2xx": 25,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
-        "Edu": {
-            "total": 23,
-            "tested": 20,
-            "untested": 3,
-            "2xx": 20,
+        "Hotel": {
+            "total": 45,
+            "tested": 45,
+            "untested": 0,
+            "2xx": 35,
+            "3xx": 0,
+            "4xx": 10,
+            "500": 0
+        },
+        "Mining": {
+            "total": 49,
+            "tested": 49,
+            "untested": 0,
+            "2xx": 49,
             "3xx": 0,
             "4xx": 0,
+            "500": 0
+        },
+        "Egy": {
+            "total": 42,
+            "tested": 40,
+            "untested": 2,
+            "2xx": 40,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Tlx": {
+            "total": 45,
+            "tested": 44,
+            "untested": 1,
+            "2xx": 44,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Med": {
+            "total": 39,
+            "tested": 36,
+            "untested": 3,
+            "2xx": 36,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Edu": {
+            "total": 35,
+            "tested": 31,
+            "untested": 4,
+            "2xx": 29,
+            "3xx": 0,
+            "4xx": 2,
             "500": 0
         },
         "Ret": {
@@ -823,8 +874,8 @@
             "uri": "/admin/health",
             "module": "Core",
             "role": "admin",
-            "query_count": 233,
-            "duration_ms": 150.71,
+            "query_count": 249,
+            "duration_ms": 73.12,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"bank_ledger_accounts\"",
@@ -843,7 +894,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 97,
-            "duration_ms": 17.79,
+            "duration_ms": 21.91,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -862,7 +913,7 @@
             "module": "Resto",
             "role": "auditor",
             "query_count": 97,
-            "duration_ms": 16.16,
+            "duration_ms": 19.1,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -881,7 +932,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 96,
-            "duration_ms": 16.82,
+            "duration_ms": 18.69,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -898,47 +949,47 @@
         {
             "uri": "/crypto/portfolio",
             "module": "Crypto",
-            "role": "admin",
-            "query_count": 37,
-            "duration_ms": 9.94,
-            "queries": [
-                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
-                "select * from \"crypto_assets\" where \"is_active\" = ?",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
-                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
-                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
-                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
-                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
-            ]
-        },
-        {
-            "uri": "/crypto/portfolio",
-            "module": "Crypto",
             "role": "customer",
-            "query_count": 37,
-            "duration_ms": 8.26,
+            "query_count": 42,
+            "duration_ms": 12.02,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
                 "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
                 "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
                 "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
                 "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
                 "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1"
             ]
         },
         {
             "uri": "/crypto/portfolio",
             "module": "Crypto",
             "role": "auditor",
-            "query_count": 37,
-            "duration_ms": 8.23,
+            "query_count": 42,
+            "duration_ms": 12.25,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "admin",
+            "query_count": 41,
+            "duration_ms": 13.04,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -949,64 +1000,64 @@
                 "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
                 "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
                 "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
-            ]
-        },
-        {
-            "uri": "/resto/menu",
-            "module": "Resto",
-            "role": "admin",
-            "query_count": 37,
-            "duration_ms": 9.03,
-            "queries": [
-                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
-                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
-                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
-                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
-                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
-                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
-                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
-                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
-                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
-                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
-            ]
-        },
-        {
-            "uri": "/resto/menu",
-            "module": "Resto",
-            "role": "auditor",
-            "query_count": 37,
-            "duration_ms": 7.86,
-            "queries": [
-                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
-                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
-                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
-                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
-                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
-                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
-                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
-                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
-                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
-                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             ]
         },
         {
             "uri": "/crypto/portfolio",
             "module": "Crypto",
             "role": "treasury",
-            "query_count": 36,
-            "duration_ms": 8.09,
+            "query_count": 41,
+            "duration_ms": 11.17,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
                 "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
                 "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
                 "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
                 "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
                 "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1"
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/menu",
+            "module": "Resto",
+            "role": "admin",
+            "query_count": 37,
+            "duration_ms": 13.57,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
+                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
+            ]
+        },
+        {
+            "uri": "/resto/menu",
+            "module": "Resto",
+            "role": "auditor",
+            "query_count": 37,
+            "duration_ms": 11.94,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select count(*) as \"aggregate\" from \"resto_menu_items\"",
+                "select * from \"resto_menu_items\" order by \"category_id\" asc, \"sort\" asc limit 20 offset 0",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1, 2, 3, 4)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3, 4)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 3, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1, 2)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
             ]
         },
         {
@@ -1014,7 +1065,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 36,
-            "duration_ms": 7.76,
+            "duration_ms": 9.34,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -1033,7 +1084,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 34,
-            "duration_ms": 5.61,
+            "duration_ms": 7.47,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -1052,7 +1103,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 33,
-            "duration_ms": 4.52,
+            "duration_ms": 5.9,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -1067,11 +1118,11 @@
             ]
         },
         {
-            "uri": "/assets/01a18919-7390-71ab-9954-05f932a844f7",
+            "uri": "/assets/01a19fd3-bd6a-72a9-b23e-8f83f1cd8d08",
             "module": "Asset",
             "role": "admin",
             "query_count": 29,
-            "duration_ms": 7.99,
+            "duration_ms": 8.79,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -1086,11 +1137,11 @@
             ]
         },
         {
-            "uri": "/assets/01a18919-7390-71ab-9954-05f932a844f7",
+            "uri": "/assets/01a19fd3-bd6a-72a9-b23e-8f83f1cd8d08",
             "module": "Asset",
             "role": "asset_manager",
             "query_count": 28,
-            "duration_ms": 6.16,
+            "duration_ms": 6.58,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -1109,7 +1160,7 @@
             "module": "Crypto",
             "role": "guest",
             "query_count": 24,
-            "duration_ms": 12.02,
+            "duration_ms": 12.08,
             "queries": [
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
                 "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
@@ -1128,7 +1179,7 @@
             "module": "Core",
             "role": "admin",
             "query_count": 24,
-            "duration_ms": 7.77,
+            "duration_ms": 8.53,
             "queries": [
                 "select count(*) as \"aggregate\" from \"store_orders\"",
                 "select count(*) as \"aggregate\" from \"store_orders\" where \"status\" = ?",
@@ -1147,7 +1198,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 23,
-            "duration_ms": 5.49,
+            "duration_ms": 8.21,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -1166,7 +1217,7 @@
             "module": "Resto",
             "role": "auditor",
             "query_count": 23,
-            "duration_ms": 4.66,
+            "duration_ms": 6.16,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -1185,7 +1236,7 @@
             "module": "Logistics",
             "role": "admin",
             "query_count": 23,
-            "duration_ms": 11.55,
+            "duration_ms": 10.56,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"lgx_trucks\"",
