@@ -2177,6 +2177,27 @@
   - Acceptance test `tests/Acceptance/ColdChainDrone/ColdChainDroneAcceptanceTest.php` lulus 6 test v3.
   - Command `lgx:audit-coldchain` membuktikan kesesuaian saldo ledger `lgx:carrier_payable_on_hold:IDR` dengan total hold aktif.
 
+<a id="2026-11-03-g6-p1-port-terminal"></a>
+<a id="d27-1"></a>
+## 2026-11-03: [G6-P1.4] Pelabuhan & Terminal (modul Port prt_, Fase 179, D27-1..D27-5)
+- **Anchor:** `2026-11-03-g6-p1-port-terminal` / `d27-1`
+- **Context:**
+  - Modernisasi pelabuhan laut dan terminal peti kemas memerlukan modul khusus `Port` (`prt_`) untuk mengatur alur sandar kapal, perencanaan tambatan dermaga diskrit, pergerakan lapangan penumpukan (yard block/slot), dan penagihan terpadu (THC, dockage, storage, D&D) tanpa duplikasi tabel master kapal/kontainer.
+- **Decision:**
+  1. D27-1: Modul baru `Port` (`prt_`) disetujui resmi (G6-K1), terdiri dari 6 tabel: `prt_berths`, `prt_vessel_calls`, `prt_yard_blocks`, `prt_yard_slots`, `prt_gate_passes`, `prt_terminal_bills`. Master kapal dan kontainer tetap berada di Logistics via Kontrak K4 `VesselRegistry` dan K5 `DemurrageDetentionQuote`. Tabel kapal kedua dilarang keras.
+  2. D27-2: Invarian kontainer per terminal per hari: `masuk = keluar + di lapangan`. Dihitung dari fakta pergerakan append-only (gate passes dan slot allocations), bukan counter mutabel.
+  3. D27-3: Algoritma alokasi tambatan `Scheduling\BerthAllocation` meminimalkan total waktu tunggu tertimbang ($\sum \text{bobot} \times \text{tunggu}$) secara eksak (branch & bound) untuk $\le 8$ kapal dan heuristik untuk $> 8$ kapal, dengan tie-break deterministik dan sertifikat bebas tumpang tindih.
+  4. D27-4: Aturan posting akuntansi buku besar:
+     - THC: Debit `ar:prt:line:{party}:IDR` / Kredit `rev:prt:thc:IDR`
+     - Dermaga: Debit `ar:prt:line:{party}:IDR` / Kredit `rev:prt:dockage:IDR`
+     - Penumpukan: Debit `ar:prt:line:{party}:IDR` / Kredit `rev:prt:storage:IDR`
+     - D&D (nilai dari K5): Debit `ar:prt:line:{party}:IDR` / Kredit `prt:dnd_revenue:IDR`
+  5. D27-5: Audit dua sumber `prt:audit` memvalidasi invarian yard harian dan rekonsiliasi total tagihan terminal terhadap akun buku besar.
+- **Verification:**
+  - Vektor tambatan D27-3: 2 tambatan, 5 kapal (V1: 0,10,1; V2: 1,4,2; V3: 2,6,1; V4: 3,3,3; V5: 5,5,1) menghasilkan nilai optimal 14 dengan alokasi valid T1: V4(3-6), V1(6-16); T2: V2(1-5), V5(5-10), V3(10-16).
+  - Acceptance test `tests/Acceptance/Port/PortTerminalAcceptanceTest.php` lulus 6 test v3.
+  - Command `prt:audit` membuktikan invarian kontainer yard dan rekonsiliasi tagihan terminal nol selisih.
+
 <a id="2026-11-04-mutation-testing-manual"></a>
 ## 2026-11-04: Mutation Testing Dipindah ke Manual
 - **Anchor:** `2026-11-04-mutation-testing-manual`
