@@ -6,9 +6,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Modules\ProServices\Domain\Models\ProServicesProject;
-use Modules\ProServices\Domain\Models\ProServicesProjectMember;
-use Modules\ProServices\Domain\Models\ProServicesTimesheet;
 
 final class ProServicesT1Seeder extends Seeder
 {
@@ -42,7 +39,7 @@ final class ProServicesT1Seeder extends Seeder
                     'id' => $memberId++,
                     'project_id' => $p,
                     'employee_id' => ($p * 10) + $m,
-                    'role_name' => 'Consultant Level ' . $m,
+                    'role_name' => 'Consultant Level '.$m,
                     'hourly_rate_idr' => 200000 * $m,
                     'active' => true,
                     'created_at' => $now,

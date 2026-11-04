@@ -83136,9 +83136,10 @@
                     "ProServices"
                 ],
                 "summary": "Index Invoices (ProServices)",
-                "description": "Operational endpoint for ProServices module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for ProServices module. Protected by role matrix: [admin, client].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "client"
                 ],
                 "parameters": [
                     {
@@ -83228,9 +83229,10 @@
                     "ProServices"
                 ],
                 "summary": "Show Client Project (ProServices)",
-                "description": "Operational endpoint for ProServices module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for ProServices module. Protected by role matrix: [admin, client].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "client"
                 ],
                 "parameters": [
                     {
@@ -83326,9 +83328,11 @@
                     "ProServices"
                 ],
                 "summary": "Index Projects (ProServices)",
-                "description": "Operational endpoint for ProServices module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for ProServices module. Protected by role matrix: [admin, project_manager, superadmin].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "project_manager",
+                    "superadmin"
                 ],
                 "parameters": [
                     {
@@ -83418,9 +83422,10 @@
                     "ProServices"
                 ],
                 "summary": "Index Timesheets (ProServices)",
-                "description": "Operational endpoint for ProServices module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for ProServices module. Protected by role matrix: [admin, consultant].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "consultant"
                 ],
                 "parameters": [
                     {
@@ -83510,9 +83515,10 @@
                     "ProServices"
                 ],
                 "summary": "Show Timesheet (ProServices)",
-                "description": "Operational endpoint for ProServices module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for ProServices module. Protected by role matrix: [admin, consultant].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "consultant"
                 ],
                 "parameters": [
                     {

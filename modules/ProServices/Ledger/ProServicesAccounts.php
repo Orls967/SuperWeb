@@ -15,6 +15,7 @@ final class ProServicesAccounts
     {
         $code = "psv:contract_asset:{$projectId}:IDR";
         self::ensureAccountExists($code, "Project {$projectId} Contract Asset", AccountKind::ASSET);
+
         return $code;
     }
 
@@ -22,6 +23,7 @@ final class ProServicesAccounts
     {
         $code = "psv:contract_liability:{$projectId}:IDR";
         self::ensureAccountExists($code, "Project {$projectId} Contract Liability", AccountKind::LIABILITY);
+
         return $code;
     }
 
@@ -29,6 +31,7 @@ final class ProServicesAccounts
     {
         $code = "ar:psv:client:{$partyId}:IDR";
         self::ensureAccountExists($code, "Client {$partyId} Receivable", AccountKind::ASSET);
+
         return $code;
     }
 

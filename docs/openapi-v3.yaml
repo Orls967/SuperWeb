@@ -52834,9 +52834,10 @@ paths:
       tags:
         - ProServices
       summary: 'Index Invoices (ProServices)'
-      description: 'Operational endpoint for ProServices module. Protected by role matrix: [auth].'
+      description: 'Operational endpoint for ProServices module. Protected by role matrix: [admin, client].'
       x-allowed-roles:
-        - auth
+        - admin
+        - client
       parameters:
         -
           $ref: '#/components/parameters/CorrelationIdHeader'
@@ -52891,9 +52892,10 @@ paths:
       tags:
         - ProServices
       summary: 'Show Client Project (ProServices)'
-      description: 'Operational endpoint for ProServices module. Protected by role matrix: [auth].'
+      description: 'Operational endpoint for ProServices module. Protected by role matrix: [admin, client].'
       x-allowed-roles:
-        - auth
+        - admin
+        - client
       parameters:
         -
           name: id
@@ -52953,9 +52955,11 @@ paths:
       tags:
         - ProServices
       summary: 'Index Projects (ProServices)'
-      description: 'Operational endpoint for ProServices module. Protected by role matrix: [auth].'
+      description: 'Operational endpoint for ProServices module. Protected by role matrix: [admin, project_manager, superadmin].'
       x-allowed-roles:
-        - auth
+        - admin
+        - project_manager
+        - superadmin
       parameters:
         -
           $ref: '#/components/parameters/CorrelationIdHeader'
@@ -53010,9 +53014,10 @@ paths:
       tags:
         - ProServices
       summary: 'Index Timesheets (ProServices)'
-      description: 'Operational endpoint for ProServices module. Protected by role matrix: [auth].'
+      description: 'Operational endpoint for ProServices module. Protected by role matrix: [admin, consultant].'
       x-allowed-roles:
-        - auth
+        - admin
+        - consultant
       parameters:
         -
           $ref: '#/components/parameters/CorrelationIdHeader'
@@ -53067,9 +53072,10 @@ paths:
       tags:
         - ProServices
       summary: 'Show Timesheet (ProServices)'
-      description: 'Operational endpoint for ProServices module. Protected by role matrix: [auth].'
+      description: 'Operational endpoint for ProServices module. Protected by role matrix: [admin, consultant].'
       x-allowed-roles:
-        - auth
+        - admin
+        - consultant
       parameters:
         -
           name: id

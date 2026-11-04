@@ -15,6 +15,7 @@ use Modules\ProServices\Ledger\ProServicesAccounts;
 final class AuditProServicesCommand extends Command
 {
     protected $signature = 'psv:audit';
+
     protected $description = 'Audit modul ProServices terhadap konsistensi jam, pendapatan, dan ledger';
 
     public function handle(): int
@@ -81,6 +82,7 @@ final class AuditProServicesCommand extends Command
         }
 
         $this->info('Audit ProServices sukses: Semua integritas jam, kontrak, dan buku besar valid.');
+
         return 0;
     }
 }

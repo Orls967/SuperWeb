@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\ProServices\Application\Services;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
@@ -62,7 +61,7 @@ final class ProServicesProjectService
     public function submitTimesheet(int $projectId, int $projectMemberId, array $payload): ProServicesTimesheet
     {
         $member = ProServicesProjectMember::findOrFail($projectMemberId);
-        $code = 'TS-' . $projectId . '-' . $projectMemberId . '-' . time() . '-' . random_int(100, 999);
+        $code = 'TS-'.$projectId.'-'.$projectMemberId.'-'.time().'-'.random_int(100, 999);
 
         return ProServicesTimesheet::create([
             'timesheet_code' => $code,
@@ -93,7 +92,7 @@ final class ProServicesProjectService
     public function reverseTimesheet(int $timesheetId, string $reason): ProServicesTimesheet
     {
         $original = ProServicesTimesheet::findOrFail($timesheetId);
-        $code = 'REV-' . $original->timesheet_code;
+        $code = 'REV-'.$original->timesheet_code;
 
         return ProServicesTimesheet::create([
             'timesheet_code' => $code,
@@ -148,7 +147,7 @@ final class ProServicesProjectService
 
         return DB::transaction(function () use ($project, $cumulativeCostIdr, $totalEstimatedCostIdr, $result, $idempotencyKey) {
             $recognition = ProServicesRevenueRecognition::create([
-                'recognition_code' => 'REC-' . $project->id . '-' . time() . '-' . random_int(100, 999),
+                'recognition_code' => 'REC-'.$project->id.'-'.time().'-'.random_int(100, 999),
                 'project_id' => $project->id,
                 'cumulative_cost_idr' => $cumulativeCostIdr,
                 'total_estimated_cost_idr' => $totalEstimatedCostIdr,
@@ -194,7 +193,7 @@ final class ProServicesProjectService
 
         return DB::transaction(function () use ($project, $amountIdr, $idempotencyKey) {
             $invoice = ProServicesInvoice::create([
-                'invoice_code' => 'INV-' . $project->id . '-' . time() . '-' . random_int(100, 999),
+                'invoice_code' => 'INV-'.$project->id.'-'.time().'-'.random_int(100, 999),
                 'project_id' => $project->id,
                 'client_party_id' => $project->client_party_id,
                 'subtotal_idr' => $amountIdr,

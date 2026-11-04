@@ -589,7 +589,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 4 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
-| **ProServices** | 5 | `proservices/projects`, `proservices/timesheets`, `proservices/timesheets/{id}` ... | web, auth |
+| **ProServices** | 5 | `proservices/projects`, `proservices/timesheets`, `proservices/timesheets/{id}` ... | web, auth, role:admin,project_manager,superadmin |
 | **Procurement** | 29 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 21 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 81 | `resto/menu/calculate-cost`, `resto/menu/create`, `resto/menu` ... | web, auth, role:admin,outlet_manager |

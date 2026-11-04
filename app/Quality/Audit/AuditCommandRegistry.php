@@ -59,6 +59,7 @@ use App\Quality\Audit\Fixtures\ProcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechBimCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechFlexCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
+use App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrtAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
@@ -90,7 +91,6 @@ final class AuditCommandRegistry
     public static function fixtures(): array
     {
         return [
-
 
             'agri:audit' => new AgriAuditCorruptionFixture,
             'agy:audit' => new AgyAuditCorruptionFixture,
@@ -150,7 +150,7 @@ final class AuditCommandRegistry
             'prp:audit-bim' => new ProptechBimCorruptionFixture,
             'prp:audit-flex' => new ProptechFlexCorruptionFixture,
             'mar:audit' => new MarineAuditCorruptionFixture,
-            'psv:audit' => new \App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture,
+            'psv:audit' => new ProServicesAuditCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'prt:audit' => new PrtAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,

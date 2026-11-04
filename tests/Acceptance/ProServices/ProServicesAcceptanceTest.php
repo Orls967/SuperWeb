@@ -5,15 +5,10 @@ declare(strict_types=1);
 namespace Tests\Acceptance\ProServices;
 
 use App\Models\User;
-use Database\Seeders\LedgerAccountsSeeder;
+use App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Core\Contracts\ClockInterface;
-use Modules\Hcm\Contracts\EmployeeDirectory;
 use Modules\ProServices\Application\Services\ProServicesProjectService;
-use Modules\ProServices\Domain\Models\ProServicesProject;
-use Modules\ProServices\Domain\Models\ProServicesTimesheet;
-use Modules\Shared\Domain\Algorithms\Revenue\CostToCostRecognition;
 use Tests\TestCase;
 
 final class ProServicesAcceptanceTest extends TestCase
@@ -177,7 +172,7 @@ final class ProServicesAcceptanceTest extends TestCase
         $this->assertSame(0, $exitClean);
 
         // Fixture corrupted run
-        $fixture = new \App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture();
+        $fixture = new ProServicesAuditCorruptionFixture;
         $fixture->corrupt();
         $exitCorrupt = Artisan::call('psv:audit');
         $this->assertNotSame(0, $exitCorrupt);
