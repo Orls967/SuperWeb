@@ -50,9 +50,9 @@
             "count": 5
         },
         {
-            "key": "mar_",
-            "module": "Marine",
-            "decision": "D22-1"
+            "key": "table_prefixes",
+            "decision": "DECISIONS.md#2026-11-05-g6-p4-perikanan-marine-fase-170",
+            "count": 1
         }
     ]
 }
