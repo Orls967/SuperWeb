@@ -6927,67 +6927,67 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 *Roadmap strategis lanjutan berskala industri konglomerasi multi-sektor, memperluas rantai nilai dari hulu agrikultur, teknik rekayasa R&D, konstruksi EPC, SDM terpadu, hingga ketahanan bencana multi-region.*
 
 ## FASE 58 — HUMAN CAPITAL MANAGEMENT (HCM), TALENT & PRODUCTION PAYROLL
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 SELESAI VERTICAL SLICE (2026-11-05) — Diselesaikan penuh sebagai modul HCM inti sesuai kriteria terima wajib DoR dan keputusan arsitektur DECISIONS.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hcm (`hcm_`) · **Prasyarat:** R1, R3 ✅ · **Acuan:** KONSEP 8F
 > **Jalan pintas terlarang di fase ini:** pajak/BPJS tarif datar tanpa label simulasi & persetujuan P10; payroll tanpa jurnal; status payroll di-hard-code; gaji/rekening default diam-diam (X25); halaman gaji tanpa role — ditambah seluruh X1–X25.
-- [ ] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+- [x] 58.1 **Master Karyawan, Struktur Organisasi & Jabatan Terpadu**:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
-    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
-    - akses: command hcm:audit
-    - (dibatalkan) gate: docs/gates/fase-58.md
+    - commit: ab332378
+    - file: modules/Hcm/Application/Actions/ManageOrgStructureAndJobGradeAction.php
+    - test: tests/Acceptance/HcmCore/HcmCoreAcceptanceTest.php::test_58_3_org_cycle_rejected
+    - akses: route GET /hcm [role: admin, hcm_manager]
+    - keputusan: docs/DECISIONS.md#2026-11-05-g6-p4-hcm-inti-fase-58
   - Struktur organisasi hierarkis: Holding → Anak Perusahaan → Direktorat → Divisi → Departemen → Seksi → Posisi/Jabatan.
   - Profil karyawan 360°: identitas kependudukan terenkripsi (NIK/Paspor), riwayat pendidikan, rekam jejak kepangkatan, grade gaji, dan rekening penggajian bank.
   - Jenis hubungan kerja: PKWT (kontrak waktu tertentu), PKWTT (karyawan tetap), tenaga kerja lepas (*casual worker*), magang, dan tenaga alih daya (*outsourcing*).
-- [ ] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+- [x] 58.2 **Manajemen Waktu, Absensi Biometrik & Penjadwalan Shift Pabrik Kompleks**:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
-    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
-    - akses: command hcm:audit
-    - (dibatalkan) gate: docs/gates/fase-58.md
+    - commit: ab332378
+    - file: modules/Hcm/Application/Services/HcmRosterOptimizationService.php
+    - test: tests/Acceptance/HcmCore/HcmCoreAcceptanceTest.php::test_58_5_roster_hungarian_assignment_vector
+    - akses: route GET /hcm [role: admin, hcm_manager]
+    - keputusan: docs/DECISIONS.md#2026-11-05-g6-p4-hcm-inti-fase-58
   - Penjadwalan shift multi-pola: shift 3/1, shift 2/2, shift bergilir 24/7 di lantai pabrik manufaktur dan operasional hub logistik.
   - Integrasi mesin absensi biometrik & geofencing mobile: pencatatan clock-in/out, dispensasi toleransi keterlambatan, dan approval lembur (SPL - Surat Perintah Lembur).
   - Manajemen cuti, izin sakit dengan surat dokter, dan akumulasi hak cuti tahunan (*leave accrual engine*).
-- [ ] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+- [x] 58.3 **Mesin Penggajian Terotomasi (Enterprise Payroll & Tax Engine)**:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
-    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
-    - akses: command hcm:audit
-    - (dibatalkan) gate: docs/gates/fase-58.md
+    - commit: ab332378
+    - file: modules/Hcm/Application/Services/HcmPayrollCalculationService.php
+    - test: tests/Acceptance/HcmCore/HcmCoreAcceptanceTest.php::test_58_2_e2e_payroll_calculation_posting_and_idempotency
+    - akses: route GET /hcm [role: admin, hcm_manager]
+    - keputusan: docs/DECISIONS.md#2026-11-05-g6-p4-hcm-inti-fase-58
   - Perhitungan gaji bruto: gaji pokok, tunjangan tetap/tidak tetap, premi kehadiran, dan kalkulasi upah lembur resmi Depnaker (1.5x jam pertama, 2x jam berikutnya).
   - Pemotongan jaminan sosial tenaga kerja nasional: BPJS Ketenagakerjaan (JKK, JKM, JHT, JP) dan BPJS Kesehatan dengan pembagian porsi perusahaan vs porsi pekerja.
   - Engine PPh Pasal 21 Terintegrasi (TER - Tarif Efektif Rata-Rata bulanan & kalkulasi masa pajak Desember dengan PTKP dinamis).
   - Alur approval penggajian bertingkat (HR Manager → CFO) dan penerbitan slip gaji terenkripsi PDF.
-- [ ] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+- [x] 58.4 **Alokasi Biaya Tenaga Kerja Langsung ke Modul Manufaktur (Direct Labor Costing)**:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
-    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
-    - akses: command hcm:audit
-    - (dibatalkan) gate: docs/gates/fase-58.md
+    - commit: ab332378
+    - file: modules/Hcm/Ledger/HcmAccounts.php
+    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_allocate_direct_labor_cost_to_manufacturing_work_order
+    - akses: route POST /hcm/operations/labor-allocation/{payroll} [role: admin, hcm_manager]
+    - keputusan: docs/DECISIONS.md#2026-11-05-g6-p4-hcm-inti-fase-58
   - Integrasi langsung ke `CostingService` Manufaktur (Fase 38): menggantikan placeholder biaya tenaga kerja dengan jam kerja aktual operator per Work Order SPK.
   - Rekonsiliasi payroll clearing: pencatatan jurnal `DR mfg:labor_wip / CR clearing:payroll_payable`.
-- [ ] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Hcm/Application/Actions/CalculateEnterprisePayrollWithPph21AndBpjsAction.php
-    - test: modules/Hcm/tests/Feature/HcmEnterprisePayrollAndLaborTest.php::test_manage_department_hierarchy_creation_and_update
+- [x] 58.5 `hcm:audit` (Total gaji kotor - potongan = payroll transfer, PPh 21 disetor = SPT Masa, 0 diskrepansi).
+  Bukti:
+    - jenis: tooling
+    - commit: ab332378
+    - file: modules/Hcm/Console/Commands/RunPayrollCommand.php
+    - test: tests/Acceptance/HcmCore/HcmCoreAcceptanceTest.php::test_58_6_hcm_audit_passes_and_fails_on_corruption
     - akses: command hcm:audit
-    - (dibatalkan) gate: docs/gates/fase-58.md
+    - keputusan: docs/DECISIONS.md#2026-11-05-g6-p4-hcm-inti-fase-58
+
+### Register Minus Fase 58
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-58-01 | 58.3 | PDF generator slip gaji terenkripsi belum memuat watermarking dinamis per sesi unduhan | Slip gaji tetap terdistribusi aman melalui policy IDOR dan respon JSON terproteksi | P3 | Penambahan fitur watermarking PDF dinamis pada iterasi HCM lanjutan Fase 223 |
 
 ## FASE 59 — RESEARCH & DEVELOPMENT (R&D) & PRODUCT LIFECYCLE MANAGEMENT (PLM)
 > **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
