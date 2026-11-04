@@ -40,6 +40,7 @@ return [
         'intl_' => 'International',
         'inv_' => 'Inventory',
         'lgx_' => 'Logistics',
+        'mar_' => 'Marine',
         'mall_' => 'Mall',
         'mfg_' => 'Manufacturing',
         'med_' => 'Med',

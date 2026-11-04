@@ -2440,3 +2440,34 @@
 - **Verification:**
   - Unit test `tests/Unit/Algorithms/MerkleTreeTest.php` memverifikasi vektor wajib prompt, sertifikat verifier, dan proof traversal.
   - Acceptance test `tests/Acceptance/NdviDao/NdviDaoAcceptanceTest.php` memverifikasi 6 skenario kritis: RBAC & IDOR petak/proposal, presisi rasional NDVI & ratchet penundaan/restrukturisasi pinjaman, voting snapshot Merkle & pencegahan double-voting, integrasi K9 & K10 draf proyek EPC status draft_pending_approval, seeder skala T1 (100 petani + 20 proposal), serta audit `governance:audit` dan deteksi fixture korupsi.
+
+
+<a id="g6-p4-d22"></a>
+<a id="d22-1"></a>
+<a id="d22-2"></a>
+<a id="d22-3"></a>
+<a id="d22-4"></a>
+<a id="d22-5"></a>
+<a id="d22-6"></a>
+## 2026-11-05: [G6-P4.4] Lini 22 Perikanan, Aquaculture & Marine Supply Chain — Siklus Kolam, Log Pakan, FCR Rasional Eksak, Grading Panen, dan Settlement Double-Entry Ledger (Fase 170, D22-1..D22-6)
+- **Anchor:** `2026-11-05-g6-p4-perikanan-marine-fase-170` / `g6-p4-d22` / `d22-1` / `d22-2` / `d22-3` / `d22-4` / `d22-5` / `d22-6`
+- **Context:**
+  - Fase 170 mencakup Lini 22 (Perikanan, Aquaculture & Marine Supply Chain) yang sebelumnya hanya berupa service mentah DB::table `MarineAquacultureService` di modul Integration tanpa registrasi modul resmi, rute HTTP, UI, command audit, seeder, maupun integrasi ledger. Sesuai arsitektur enterprise KONSEP §A1, seluruh siklus marikultur dan budidaya tambak dikembangkan di modul baru `Marine` (`mar_`), meliputi pendaftaran kolam/keramba, siklus budidaya tebar benih, log pakan append-only, penerimaan dan grading panen, perhitungan Feed Conversion Ratio (FCR) rasional, serta settlement pembayaran pembudidaya dengan pemotongan uang muka dan pinjaman pakan input yang terintegrasi ke akuntansi double-entry Ledger (`Modules\Marine\Ledger\MarineAccounts`).
+- **Decision:**
+  1. D22-1: Modul berdedikasi `Marine` dibuat dengan namespace `Modules\Marine` dan prefiks tabel resmi `mar_` yang didaftarkan di `config/modules.php`, `bootstrap/providers.php`, `tests/Architecture/baselines/config-allowlists.json`, dan `docs/KONSEP.md` §A1.
+  2. D22-2: Skema database perikanan laut dimodelkan dalam lima entitas relasional berintegritas penuh: `mar_ponds` (kolam/tambak), `mar_cycles` (siklus budidaya aktif), `mar_feed_logs` (pencatatan konsumsi pakan), `mar_harvests` (hasil panen & grading A/B/C), dan `mar_payouts` (subledger penyelesaian hak pembudidaya). Seluruh relasi ID menggunakan foreign key constraints dan dilarang penggunaan tipe float pada nominal rupiah maupun bobot gram.
+  3. D22-3: Formula metrik budidaya dihitung secara rasional eksak tanpa floating point inaccuracy:
+     - Biomasa awal (kg) = $(\text{ekor tebar} \times \text{bobot awal gram}) / 1000$
+     - Panen total (kg) = $(\text{ekor panen} \times \text{bobot rata-rata gram}) / 1000$
+     - Feed Conversion Ratio (FCR) = $\text{Total Pakan (kg)} / (\text{Total Panen (kg)} - \text{Biomasa Awal (kg)})$. FCR disimpan dan diekspos dengan presisi scaled 3 desimal integer (misal FCR 1,330 disimpan sebagai 1330).
+     - Nilai bruto panen dihitung bertingkat berdasarkan grading mutu: Grade A, Grade B, dan Grade C.
+     - Vektor uji prompt terpenuhi eksak: Tebar 10.000 ekor @2g (biomasa 20 kg); Survival 85% (8.500 ekor @250g = 2.125 kg panen); Pakan 2.800 kg; Delta biomasa 2.105 kg $\to$ FCR 1,330; Gross Rp125.375.000 (A: 425kg@75rb + B: 1.275kg@60rb + C: 425kg@40rb); Potongan DP Rp20.000.000 + Pakan Rp28.000.000 $\to$ Net Payout Rp77.375.000.
+  4. D22-4: Akuntansi double-entry terikat penuh via `MarineAccounts`:
+     - Pencairan uang muka pembudidaya: Debit `mar:farmer_advance:{farmer_id}:IDR` dan Kredit `wallet:user:{farmer_id}:IDR`.
+     - Pengeluaran pakan input: Debit `mar:farmer_input_loan:{farmer_id}:IDR` dan Kredit `mar:feed_issued_clearing:IDR`.
+     - Penerimaan panen bruto: Debit `mar:harvest_inventory:IDR` dan Kredit `ap:mar:farmer:{farmer_id}:IDR`.
+     - Settlement net payout panen: Debit `ap:mar:farmer:{farmer_id}:IDR` (Rp125.375.000), Kredit `mar:farmer_advance:{farmer_id}:IDR` (Rp20.000.000), Kredit `mar:farmer_input_loan:{farmer_id}:IDR` (Rp28.000.000), dan Kredit `wallet:user:{farmer_id}:IDR` (Rp77.375.000). Total Debit = Total Kredit ($\Sigma = 0$) secara idempoten via `MAR-SETTLE-{cycle_number}`.
+  5. D22-5: Pagar keamanan RBAC & anti-IDOR: Endpoint `/marine` hanya dapat diakses oleh peran berwenang (`farmer`, `officer`, `admin`) dan akses rincian kolam atau klaim payout milik pembudidaya lain wajib menghasilkan HTTP 403 Forbidden bila aktor bukan pemilik sah atau pengawas berwenang.
+  6. D22-6: Rekonsiliasi audit `mar:audit` memvalidasi integritas dua sumber independen: subledger operasional `mar_payouts` diverifikasi silang terhadap mutasi jurnal ledger akuntansi double-entry pembudidaya. Fixture sabotase `MarineAuditCorruptionFixture` didaftarkan di `AuditCommandRegistry` untuk membuktikan audit gagal saat integritas dirusak.
+- **Verification:**
+  - Acceptance test `tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php` memverifikasi 6 skenario kritis: perlindungan RBAC/IDOR, kalkulasi rasional FCR & grading panen sesuai vektor angka prompt, double-entry settlement ledger & pencegahan duplikasi payout, deterministik seeder skala T1 (100 kolam, 50 siklus), verifikasi audit `mar:audit` kondisi bersih, serta deteksi sabotase diskrepansi oleh fixture audit.

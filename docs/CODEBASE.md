@@ -512,33 +512,34 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 32 | **Logistics** | `lgx_` | 31 |
 | 33 | **Mall** | `mall_` | 7 |
 | 34 | **Manufacturing** | `mfg_` | 14 |
-| 35 | **Med** | `med_` | 3 |
-| 36 | **Mining** | `min_` | 11 |
-| 37 | **Mobility** | `oto_` | 0 |
-| 38 | **Partner** | `ptn_` | 1 |
-| 39 | **Party** | `pty_` | 3 |
-| 40 | **Payment** | `pay_` | 3 |
-| 41 | **Plm** | `plm_` | 1 |
-| 42 | **Port** | `prt_` | 1 |
-| 43 | **Pricing** | `pric_` | 7 |
-| 44 | **Procurement** | `prc_` | 6 |
-| 45 | **Proptech** | `prp_` | 3 |
-| 46 | **Resto** | `resto_` | 10 |
-| 47 | **Ret** | `ret_` | 4 |
-| 48 | **Rwa** | `rwa_` | 3 |
-| 49 | **Shared** | — | 0 |
-| 50 | **Store** | `store_` | 5 |
-| 51 | **Supplier** | `sup_` | 3 |
-| 52 | **Syariah** | `syb_` | 1 |
-| 53 | **Tlx** | `tlx_` | 4 |
-| 54 | **Trade** | `trd_` | 3 |
-| 55 | **TradeFinance** | `tf_` | 4 |
-| 56 | **Treasury** | `trs_` | 1 |
-| 57 | **Vending** | `vnd_` | 3 |
-| 58 | **Venue** | `ven_` | 6 |
-| 59 | **Wealth** | `wm_` | 2 |
-| 60 | **Wms** | `wms_` | 2 |
-| | **Total: 60 Modul** | | **614 Migrasi** |
+| 35 | **Marine** | `mar_` | 1 |
+| 36 | **Med** | `med_` | 3 |
+| 37 | **Mining** | `min_` | 11 |
+| 38 | **Mobility** | `oto_` | 0 |
+| 39 | **Partner** | `ptn_` | 1 |
+| 40 | **Party** | `pty_` | 3 |
+| 41 | **Payment** | `pay_` | 3 |
+| 42 | **Plm** | `plm_` | 1 |
+| 43 | **Port** | `prt_` | 1 |
+| 44 | **Pricing** | `pric_` | 7 |
+| 45 | **Procurement** | `prc_` | 6 |
+| 46 | **Proptech** | `prp_` | 3 |
+| 47 | **Resto** | `resto_` | 10 |
+| 48 | **Ret** | `ret_` | 4 |
+| 49 | **Rwa** | `rwa_` | 3 |
+| 50 | **Shared** | — | 0 |
+| 51 | **Store** | `store_` | 5 |
+| 52 | **Supplier** | `sup_` | 3 |
+| 53 | **Syariah** | `syb_` | 1 |
+| 54 | **Tlx** | `tlx_` | 4 |
+| 55 | **Trade** | `trd_` | 3 |
+| 56 | **TradeFinance** | `tf_` | 4 |
+| 57 | **Treasury** | `trs_` | 1 |
+| 58 | **Vending** | `vnd_` | 3 |
+| 59 | **Venue** | `ven_` | 6 |
+| 60 | **Wealth** | `wm_` | 2 |
+| 61 | **Wms** | `wms_` | 2 |
+| | **Total: 61 Modul** | | **615 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -577,6 +578,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 68 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
+| **Marine** | 2 | `marine`, `marine/ponds/{id}` | web, auth, role:admin,farmer,manager,officer |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
 | **Mining** | 18 | `mining`, `mining/pits/{pit}/dispatch`, `mining/operations/block-planning` ... | web, auth, role:admin,mining_admin,site_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
@@ -603,7 +605,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1092 Rute** | | |
+| **Total** | **1094 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -703,6 +705,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `mall:renew-parking-members` | **`dailyAt('06:00')`** | Kirim pengingat H-3 dan proses perpanjangan otomatis langganan parkir bulanan yang jatuh tempo |
 | `mall:settle-vouchers` | **`weeklyOn(1, '08:00')`** | Disburse settlement voucher belanja mall yang telah digunakan ke wallet tenant |
 | `mall:simulate-footfall` | `manual` | Bangkitkan data kunjungan (footfall) per gate per jam untuk analitik dan demo mall |
+| `mar:audit` | `manual` | Rekonsiliasi subledger budidaya marikultur dan payout ledger |
 | `mcp:inspector` | `manual` | Open the MCP Inspector tool to debug and test MCP Servers |
 | `mcp:start` | `manual` | Start the MCP Server for a given handle |
 | `med:audit` | `manual` | Audit industri kreatif & media: integritas anggaran proyek studio, lisensi HAKI, dan kliring royalti talent |
@@ -783,7 +786,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 175 Command** | **37 Terjadwal** | |
+| **Total: 176 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -806,6 +809,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Mall** | `MallAccounts` | 28 | `expense:mall:points_issued:PTS`, `revenue:mall:points_redeemed:PTS` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
 | **Manufacturing** | `RecycledMaterialAccounts` | 2 | `inv:materials:IDR`, `mfg:recycled_material_clearing:IDR` |
+| **Marine** | `MarineAccounts` | 6 | `mar:farmer_advance_receivable:IDR`, `mar:farmer_input_loan_receivable:IDR` ... |
 | **Med** | `MedAccounts` | 9 | `med:ad_platform_revenue:IDR`, `med:ad_publisher_payable:IDR` ... |
 | **Mining** | `MiningAccounts` | 27 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
@@ -822,6 +826,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 34 Registry** | | **374 Akun** | |
+| **Total: 35 Registry** | | **380 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

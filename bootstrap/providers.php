@@ -35,6 +35,7 @@ use Modules\Inventory\InventoryServiceProvider;
 use Modules\Logistics\LogisticsServiceProvider;
 use Modules\Mall\MallServiceProvider;
 use Modules\Manufacturing\ManufacturingServiceProvider;
+use Modules\Marine\MarineServiceProvider;
 use Modules\Med\MedServiceProvider;
 use Modules\Mining\MiningServiceProvider;
 use Modules\Mobility\Ev\EvServiceProvider;
@@ -128,4 +129,5 @@ return [
     EduServiceProvider::class,
     RetServiceProvider::class,
     SyariahServiceProvider::class,
+    MarineServiceProvider::class,
 ];

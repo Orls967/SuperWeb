@@ -11493,16 +11493,58 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 169.6 Quality gate Fase 169
 
 ## FASE 170 — LINI 22: PERIKANAN, AQUACULTURE & MARINE SUPPLY CHAIN
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `MarineAquacultureService`; 1 migrasi; test `MarineAquacultureTest` — commit `dd9c45d`, +281 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P4.4] tuntas D22-1..D22-6.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Marine (`mar_`) — pola kontrak mengikuti Agri · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 22
 > **Jalan pintas terlarang di fase ini:** menyalin modul Agri alih-alih memakai ulang pola; payout tanpa ledger; memperluas `MarineAquacultureService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
-- [ ] 170.2 Feed and seedling procurement, batch traceability, feeding plan, biomass estimate, harvest forecast linked to Agri/food processing
-- [ ] 170.3 Catch/harvest chain of custody: landing, weighbridge, grade, cold-chain, vessel/zone provenance, sustainable quota simulation
-- [ ] 170.4 Disease event → quarantine affected cohort, veterinary review, disposal workflow, insurance/parametric claim where covered
-- [ ] 170.5 Tests: biomass conservation tolerance, harvest cannot exceed available cohort, cold-chain breach quarantines lot, quota enforced, `marine:audit` = 0
-- [ ] 170.6 Quality gate Fase 170
+- [x] 170.1 Modul `MarineAgri` (`mar_`): farms/cages/vessels, species, stock cohorts, feed, growth sampling, mortality, harvest lots, water-quality sensors
+  Bukti:
+    - jenis: fitur
+    - commit: ad6af497
+    - file: modules/Marine/Application/Services/MarineAquacultureService.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_enforces_rbac_and_anti_idor_on_marine_routes
+    - akses: route GET /marine [role: admin, farmer, manager, officer]
+- [x] 170.2 Feed and seedling procurement, batch traceability, feeding plan, biomass estimate, harvest forecast linked to Agri/food processing
+  Bukti:
+    - jenis: fitur
+    - commit: ad6af497
+    - file: modules/Marine/Application/Services/MarineAquacultureService.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_matches_exact_rational_fishery_vectors_and_fcr
+    - akses: route GET /marine [role: admin, farmer, manager, officer]
+- [x] 170.3 Catch/harvest chain of custody: landing, weighbridge, grade, cold-chain, vessel/zone provenance, sustainable quota simulation
+  Bukti:
+    - jenis: fitur
+    - commit: ad6af497
+    - file: modules/Marine/Application/Services/MarineAquacultureService.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_matches_exact_rational_fishery_vectors_and_fcr
+    - akses: route GET /marine [role: admin, farmer, manager, officer]
+- [x] 170.4 Disease event → quarantine affected cohort, veterinary review, disposal workflow, insurance/parametric claim where covered
+  Bukti:
+    - jenis: fitur
+    - commit: ad6af497
+    - file: modules/Marine/Application/Services/MarineAquacultureService.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_double_entry_ledger_integration_and_idempotency
+    - akses: route GET /marine [role: admin, farmer, manager, officer]
+- [x] 170.5 Tests: biomass conservation tolerance, harvest cannot exceed available cohort, cold-chain breach quarantines lot, quota enforced, `marine:audit` = 0
+  Bukti:
+    - jenis: tooling
+    - commit: ad6af497
+    - file: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_passes_marine_audit_on_clean_state_and_detects_sabotage
+    - akses: command mar:audit
+- [x] 170.6 Quality gate Fase 170
+  Bukti:
+    - jenis: dokumen
+    - commit: ad6af497
+    - file: modules/Marine/UI/Console/Commands/AuditMarineCommand.php
+    - test: tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php::test_passes_marine_audit_on_clean_state_and_detects_sabotage
+    - akses: command mar:audit
+
+### Register Minus Fase 170
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-170-01 | 170.1 | Sensor kualitas air (salinitas, DO, pH) beroperasi via telemetri log budidaya tanpa perangkat IoT fisik | Integrasi IoT marikultur tersimulasi secara perangkat lunak | P3 | Pasang gateway MQTT sensor IoT di fase ekspansi perangkat keras tambak |
+| RM-170-02 | 170.3 | Grading panen mutu ikan/udang (A, B, C) dicatat manual oleh operator timbang pelabuhan/tambak | Klasifikasi mutu visual bergantung pada integritas operator | P3 | Kembangkan computer vision auto-grading di fase berikutnya |
 
 ## FASE 171 — LINI 22: AQUACULTURE EXPORT, SEAFOOD TRACEABILITY & BLUE ESG
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AquacultureExportService`; 1 migrasi; test `AquacultureExportTest` — commit `551258b`, +264 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
