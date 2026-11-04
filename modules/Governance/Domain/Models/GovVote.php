@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Modules\Agri\Domain\Models\Ndvi;
+namespace Modules\Governance\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GovVote extends Model
 {
-    protected $table = 'agri_votes';
+    protected $table = 'gov_votes';
 
     protected $fillable = [
         'proposal_id',
@@ -18,6 +18,12 @@ class GovVote extends Model
         'weight_cast',
         'previous_vote_hash',
         'vote_receipt_hash',
+        'merkle_proof',
+    ];
+
+    protected $casts = [
+        'weight_cast' => 'integer',
+        'merkle_proof' => 'array',
     ];
 
     public function proposal(): BelongsTo

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\Agri\Application\Services\HarvestLotSourceService;
 use Modules\Agri\Console\Commands\AuditAgriCommand;
-use Modules\Agri\Console\Commands\AuditGovernanceCommand;
 use Modules\Agri\Contracts\HarvestLotSource;
 
 class AgriServiceProvider extends ServiceProvider
@@ -19,7 +18,6 @@ class AgriServiceProvider extends ServiceProvider
 
         $this->commands([
             AuditAgriCommand::class,
-            AuditGovernanceCommand::class,
         ]);
     }
 

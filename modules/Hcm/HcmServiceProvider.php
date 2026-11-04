@@ -6,12 +6,14 @@ namespace Modules\Hcm;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Hcm\Application\Services\HcmEmployeeDirectoryService;
 use Modules\Hcm\Application\Services\HcmPayrollCalculationService;
 use Modules\Hcm\Application\Services\HcmRosterOptimizationService;
 use Modules\Hcm\Application\Services\HcmService;
 use Modules\Hcm\Console\Commands\AuditHcmCommand;
 use Modules\Hcm\Console\Commands\EncryptLegacyEmployeeNikCommand;
 use Modules\Hcm\Console\Commands\RunPayrollCommand;
+use Modules\Hcm\Contracts\EmployeeDirectory;
 use Modules\Hcm\Domain\Models\Employee;
 use Modules\Hcm\Domain\Models\Payroll;
 use Modules\Hcm\Domain\Policies\EmployeePolicy;
@@ -22,6 +24,7 @@ class HcmServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(EmployeeDirectory::class, HcmEmployeeDirectoryService::class);
         $this->app->singleton(HcmService::class);
         $this->app->singleton(HcmPayrollCalculationService::class);
         $this->app->singleton(HcmRosterOptimizationService::class);

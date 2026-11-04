@@ -947,6 +947,7 @@ return [
     ],
     'food.brands.index' => ['roles' => ['admin', 'brand_manager']],
     'food.brands.store' => ['roles' => ['admin', 'brand_manager']],
+    'governance.index' => ['roles' => ['admin', 'governance_admin', 'voter']],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
     'hcm.bounties.index' => ['roles' => ['admin', 'hcm_manager']],
     'hcm.bounties.store' => ['roles' => ['admin', 'hcm_manager']],

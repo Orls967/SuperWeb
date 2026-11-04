@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Modules\Agri\Console\Commands;
+namespace Modules\Governance\Console\Commands;
 
 use Illuminate\Console\Command;
-use Modules\Agri\Domain\Models\Ndvi\GovProposal;
-use Modules\Agri\Domain\Models\Ndvi\GovVote;
+use Modules\Governance\Domain\Models\GovProposal;
+use Modules\Governance\Domain\Models\GovVote;
 
 class AuditGovernanceCommand extends Command
 {

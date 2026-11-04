@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Quality\Audit\Fixtures;
 
 use App\Quality\Audit\CorruptionFixture;
-use Modules\Agri\Domain\Models\Ndvi\GovProposal;
+use Modules\Governance\Domain\Models\GovProposal;
 
 final class GovernanceAuditCorruptionFixture implements CorruptionFixture
 {
