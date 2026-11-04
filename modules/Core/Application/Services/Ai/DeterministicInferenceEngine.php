@@ -8,11 +8,11 @@ use Modules\Core\Domain\Models\CoreAiInference;
 use Modules\Core\Domain\Models\CoreAiModel;
 use Modules\Shared\Domain\Algorithms\Forecast\SimpleExponentialSmoothing;
 use Modules\Shared\Domain\Algorithms\Stats\ModifiedZScore;
-use RuntimeException;
 
 class DeterministicInferenceEngine
 {
     private readonly ModifiedZScore $modifiedZScore;
+
     private readonly SimpleExponentialSmoothing $ses;
 
     public function __construct()
@@ -175,4 +175,3 @@ class DeterministicInferenceEngine
         ]);
     }
 }
-

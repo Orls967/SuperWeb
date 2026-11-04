@@ -45,4 +45,3 @@ final class ModifiedZScoreCertificateVerifier
         return true;
     }
 }
-

@@ -14,6 +14,7 @@ use Modules\Shared\Domain\Algorithms\Forecast\SimpleExponentialSmoothing;
 class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
 {
     private readonly SimpleExponentialSmoothing $ses;
+
     private readonly DeterministicInferenceEngine $inferenceEngine;
 
     public function __construct(

@@ -7,11 +7,10 @@ namespace Tests\Acceptance\AiCore;
 use App\Models\User;
 use App\Quality\Audit\Fixtures\AiAuditCorruptionFixture;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Application\Services\Ai\DeterministicInferenceEngine;
 use Modules\Core\Application\Services\Ai\SettlementGuardService;
-use Modules\Core\Application\Services\Ai\TransactionAnomalyDetectorService;
 use Modules\Core\Application\Services\Ai\StockPrescriptionEngineService;
+use Modules\Core\Application\Services\Ai\TransactionAnomalyDetectorService;
 use Modules\Core\Domain\Exceptions\TransactionQuarantinedException;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreAiInference;
@@ -243,4 +242,3 @@ class AiCoreAcceptanceTest extends TestCase
         $inf1->update(['output' => ['tampered' => true]]);
     }
 }
-

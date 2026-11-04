@@ -78,4 +78,3 @@ class AiRbacSeeder extends Seeder
         ]);
     }
 }
-

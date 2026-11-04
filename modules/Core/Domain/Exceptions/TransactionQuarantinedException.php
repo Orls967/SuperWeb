@@ -6,7 +6,4 @@ namespace Modules\Core\Domain\Exceptions;
 
 use RuntimeException;
 
-class TransactionQuarantinedException extends RuntimeException
-{
-}
-
+class TransactionQuarantinedException extends RuntimeException {}

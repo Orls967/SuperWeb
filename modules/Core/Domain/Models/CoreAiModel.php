@@ -21,4 +21,3 @@ class CoreAiModel extends Model
         'canonical_parameters' => 'array',
     ];
 }
-

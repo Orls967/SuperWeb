@@ -73,4 +73,3 @@ class AiStockRecommendationController extends Controller
             ->with('success', "Rekomendasi disetujui. PO {$poRef} diterbitkan ke pengadaan.");
     }
 }
-

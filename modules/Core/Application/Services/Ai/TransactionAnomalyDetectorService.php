@@ -14,6 +14,7 @@ use Modules\Shared\Domain\Algorithms\Stats\ModifiedZScore;
 class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInterface
 {
     private readonly ModifiedZScore $modifiedZScore;
+
     private readonly DeterministicInferenceEngine $inferenceEngine;
 
     public function __construct(

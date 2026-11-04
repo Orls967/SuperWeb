@@ -45,4 +45,3 @@ final class SimpleExponentialSmoothingCertificateVerifier
         return true;
     }
 }
-

@@ -18,6 +18,7 @@ use InvalidArgumentException;
 final class ModifiedZScore
 {
     private readonly RobustStatistics $robustStats;
+
     private readonly ModifiedZScoreCertificateVerifier $verifier;
 
     public function __construct()

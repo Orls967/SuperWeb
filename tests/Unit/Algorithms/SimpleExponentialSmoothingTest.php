@@ -34,4 +34,3 @@ test('sertifikat rusak simple exponential smoothing ditolak dengan exception', f
     $verifier = new SimpleExponentialSmoothingCertificateVerifier;
     $verifier->verify($corruptedResult);
 })->throws(InvalidCertificateException::class);
-

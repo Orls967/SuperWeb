@@ -41,4 +41,3 @@ class CoreAiInference extends Model
         });
     }
 }
-

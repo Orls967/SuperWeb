@@ -49,4 +49,3 @@ class AiAnomalyController extends Controller
         return redirect()->route('core.ai.anomalies.index')->with('success', $msg);
     }
 }
-

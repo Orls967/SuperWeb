@@ -61,4 +61,3 @@ class AiQuarantineController extends Controller
             ->with('success', "Karantina transaksi {$quarantine->transaction_ref} berhasil dirilis oleh {$user->name}.");
     }
 }
-

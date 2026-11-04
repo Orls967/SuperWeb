@@ -49,4 +49,3 @@ test('sertifikat rusak modified z-score ditolak dengan exception', function () {
     $verifier = new ModifiedZScoreCertificateVerifier;
     $verifier->verify($corruptedResult);
 })->throws(InvalidCertificateException::class);
-
