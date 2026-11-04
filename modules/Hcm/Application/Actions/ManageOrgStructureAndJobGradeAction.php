@@ -12,7 +12,7 @@ use Modules\Hcm\Domain\Models\Employee;
 class ManageOrgStructureAndJobGradeAction
 {
     /**
-     * Create or update organizational department structure.
+     * Create or update organizational department structure with cycle prevention.
      *
      * @param array{
      *     code: string,
@@ -27,11 +27,30 @@ class ManageOrgStructureAndJobGradeAction
             throw new InvalidArgumentException('Department code and name are required.');
         }
 
+        $dept = Department::where('code', $data['code'])->first();
+        $parentId = $data['parent_id'] ?? null;
+
+        if ($dept && $parentId) {
+            if ($dept->id === $parentId) {
+                throw new InvalidArgumentException('Siklus organisasi terdeteksi: departemen tidak dapat berinduk ke dirinya sendiri.');
+            }
+
+            // Traversal ke atas untuk mendeteksi apakah parentId adalah descendant dari dept
+            $currParentId = $parentId;
+            while ($currParentId !== null) {
+                if ($currParentId === $dept->id) {
+                    throw new InvalidArgumentException('Siklus organisasi terdeteksi: relasi hierarki memuat perulangan.');
+                }
+                $parentDept = Department::find($currParentId);
+                $currParentId = $parentDept?->parent_id;
+            }
+        }
+
         return Department::updateOrCreate(
             ['code' => $data['code']],
             [
                 'name' => $data['name'],
-                'parent_id' => $data['parent_id'] ?? null,
+                'parent_id' => $parentId,
                 'is_active' => $data['is_active'] ?? true,
             ]
         );

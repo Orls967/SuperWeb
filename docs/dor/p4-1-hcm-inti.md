@@ -1,0 +1,29 @@
+# DoR (Definition of Ready) P4.1 — Fase 58: HCM Inti
+
+- **Modul & Prefiks**: `Hcm` (`hcm_`)
+- **Tabel**:
+  - `hcm_departments`: id, code, name, parent_id, is_active, timestamps
+  - `hcm_employees`: id, user_id, employee_number, name, nik (encrypted), nik_bidx (index), email, department_id, position, employment_type, basic_salary_idr, allowances_idr, bank_name, bank_account_number, is_active, timestamps
+  - `hcm_shift_schedules`: id, shift_code, name, start_time, end_time, break_minutes, is_night_shift, timestamps
+  - `hcm_attendance_logs`: id, employee_id, shift_id, log_date, clock_in, clock_out, late_minutes, overtime_hours, status, timestamps (unique employee_id, log_date)
+  - `hcm_roster_slots`: id, employee_id, shift_id, slot_date, cost_idr, timestamps
+  - `hcm_payrolls`: id, employee_id, period (YYYY-MM), gross_salary_idr, deductions_idr, net_salary_idr, pph21_idr, bpjs_tk_idr, bpjs_kes_idr, status, timestamps (unique employee_id, period)
+  - `hcm_production_labor_allocations`: id, payroll_id, work_order_ref, hours_worked, allocated_cost_idr, timestamps
+- **Akun & Arah Posting**:
+  - `expense:hcm:salary:{cost_center}:IDR` (Debit)
+  - `hcm:salary_payable:{employee}:IDR` (Kredit / Debit saat bayar)
+  - `hcm:pph21_payable:IDR` (Kredit)
+  - `hcm:bpjs_payable:IDR` (Kredit)
+  - `expense:hcm:employer_contribution:{cost_center}:IDR` (Debit)
+  - `wallet:user:{id}:IDR` / `clearing:external:IDR` (Kredit saat pembayaran gaji)
+- **Event**: `hcm.payroll.calculated.v1`, `hcm.payroll.paid.v1`
+- **Role & Rute**:
+  - Rute `/hcm` dan `/hcm/payrolls`: `admin`, `hcm_manager`
+  - Rute `/hcm/my-slip`: `employee`, `admin`, `hcm_manager` (anti-IDOR via PayrollPolicy)
+- **Command**:
+  - `hcm:run-payroll {periode}` (idempoten)
+  - `hcm:audit` (Σ baris payroll = posting; slip = baris)
+- **Simulasi & Skala**:
+  - Simulasi biometrik S3, aturan pajak/BPJS berparameter berversi S2.
+  - Skala T1: 500 karyawan, 3 bulan absensi.
+- **Keputusan**: D58-1 s.d. D58-6 (DECISIONS anchor `g6-p4-d58`).
