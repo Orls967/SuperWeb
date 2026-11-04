@@ -11,11 +11,11 @@ class HcmRosterOptimizationService
 {
     public function __construct(private ?HungarianSolver $solver = null)
     {
-        $this->solver = $solver ?? new HungarianSolver();
+        $this->solver = $solver ?? new HungarianSolver;
     }
 
     /**
-     * @param list<list<int>> $costMatrix
+     * @param  list<list<int>>  $costMatrix
      */
     public function optimizeWeeklyRoster(array $costMatrix): AssignmentResult
     {
