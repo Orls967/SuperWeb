@@ -7313,7 +7313,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   - Command `epc:audit` (Realisasi termin tagihan = klaim MC tersertifikasi, nilai kapitalisasi aset = total biaya CIP di ledger, batas progres maksimal 100%, 0 diskrepansi).
 
 ## FASE 64 — ANALITIK PREDIKTIF, AI-DRIVEN REVENUE MANAGEMENT & ANOMALY DETECTION
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 SELESAI VERTICAL SLICE (2026-11-04) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul Analytics/AI (keputusan di DoR; boleh di Core `core_ai_*`) · **Prasyarat:** Fase R ✅ · **Acuan:** KONSEP §A3, §A10
 > **Jalan pintas terlarang di fase ini:** 'AI' berupa angka acak/rumus tanpa snapshot input & seed; eksekusi otomatis tanpa approval di atas ambang; `ai:audit` yang hanya menghitung baris — ditambah seluruh X1–X25.
@@ -7327,34 +7327,37 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - file: modules/Pricing/Application/Services/DynamicTickEngine.php
     - test: tests/Acceptance/SurgePricing/SurgePricingAcceptanceTest.php::test_error_handling_and_elasticity_projection
     - akses: route GET /pricing/surge [role: pricing_manager]
-- [ ] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
+- [x] 64.2 **Deteksi Anomali Transaksi & Anti-Fraud Machine Learning**:
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Skor anomali transaksi real-time: pola belanja abnormal, split bill mencurigakan, order fiktif agen, atau deviasi konsumsi bahan bakar logistik.
   - Trigger otomatis karantina transaksi berisiko tinggi sebelum settlement bank dieksekusi.
-  (dibatalkan) Bukti:
-    - commit: fcabdd5
+  Bukti:
+    - jenis: fitur
+    - commit: cbe3cca8
+    - file: modules/Shared/Domain/Algorithms/Stats/ModifiedZScore.php
     - file: modules/Core/Application/Services/Ai/TransactionAnomalyDetectorService.php
     - file: modules/Core/Domain/Models/CoreAiAnomalyQuarantine.php
-    - test: modules/Core/tests/Feature/Ai/TransactionAnomalyDetectorTest.php::evaluates normal transactions as low risk without triggering quarantine
-    - akses: route POST /admin/ai-governance/screen-anomaly [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-64.md
-- [ ] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
+    - test: tests/Acceptance/AiCore/AiCoreAcceptanceTest.php::test_2_e2e_anomaly_detection_quarantine_and_settlement_blocked
+    - akses: route GET /ai/anomalies [role: risk_officer]
+- [x] 64.3 **Rekomendasi Preskriptif Perencanaan Stok & Pengadaan Cerdas**:
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Analisis tren musiman eksternal (hari libur nasional, musim hujan, tren pasar) menghasilkan usulan rekomendasi revisi safety stock dan rilis PO ke vendor secara otomatis.
-  (dibatalkan) Bukti:
-    - commit: fcabdd5
+  Bukti:
+    - jenis: fitur
+    - commit: cbe3cca8
+    - file: modules/Shared/Domain/Algorithms/Forecast/SimpleExponentialSmoothing.php
     - file: modules/Core/Application/Services/Ai/StockPrescriptionEngineService.php
     - file: modules/Core/Domain/Models/CoreAiStockRecommendation.php
-    - test: modules/Core/tests/Feature/Ai/StockPrescriptionTest.php::calculates adaptive safety stock and ROP higher during peak holiday seasons
-    - akses: route POST /admin/ai-governance/generate-stock-recommendation [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-64.md
-- [ ] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
+    - test: tests/Acceptance/AiCore/AiCoreAcceptanceTest.php::test_4_stock_recommendation_planner_manager_approval
+    - akses: route GET /ai/stock-recommendations [role: planner]
+- [x] 64.4 `ai:audit` (Keputusan model AI deterministik, dapat diaudit kembali dengan parameter input historis yang sama).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - commit: fcabdd5
+  Bukti:
+    - jenis: tooling
+    - commit: cbe3cca8
     - file: modules/Core/Console/Commands/AuditAiCommand.php
     - file: app/Quality/Audit/Fixtures/AiAuditCorruptionFixture.php
-    - test: modules/Core/tests/Feature/Ai/AiAuditCommandTest.php::ai:audit succeeds on clean state with valid deterministic snapshots
+    - test: tests/Acceptance/AiCore/AiCoreAcceptanceTest.php::test_5_ai_audit_clean_and_corruption_fixture
     - akses: command ai:audit
     - audit: ai:audit
     - (dibatalkan) gate: docs/gates/fase-64.md

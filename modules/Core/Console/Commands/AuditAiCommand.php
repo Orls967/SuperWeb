@@ -6,8 +6,10 @@ namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
+use Modules\Core\Application\Services\Ai\DeterministicInferenceEngine;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreAiDecisionSnapshot;
+use Modules\Core\Domain\Models\CoreAiInference;
 use Modules\Core\Domain\Models\CoreAiStockRecommendation;
 
 class AuditAiCommand extends Command
@@ -88,6 +90,38 @@ class AuditAiCommand extends Command
             foreach ($expensiveRecommendations as $rec) {
                 if (! $rec->requires_human_approval && $rec->status === 'APPROVED_AS_PO') {
                     $this->error("AI audit FAILED: Autonomous threshold violated without human approval on recommendation {$rec->recommendation_code}");
+
+                    return self::FAILURE;
+                }
+            }
+        }
+
+        // Phase 5: Deterministic Inference Replay & Integrity Audit (D64-1, D64-4)
+        if (Schema::hasTable('core_ai_inferences')) {
+            $inferences = CoreAiInference::take(100)->get();
+            $this->line("5. Verifying byte-per-byte deterministic replay of {$inferences->count()} inferences...");
+
+            $engine = app(DeterministicInferenceEngine::class);
+            foreach ($inferences as $inf) {
+                $canonicalInput = $engine->canonicalizeArray($inf->input_snapshot);
+                $expectedInputHash = hash('sha256', (string) json_encode($canonicalInput, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                if ($expectedInputHash !== $inf->input_hash) {
+                    $this->error("AI audit FAILED: Input hash mismatch on inference ID {$inf->id}");
+
+                    return self::FAILURE;
+                }
+
+                $canonicalOutput = $engine->canonicalizeArray($inf->output);
+                $expectedOutputHash = hash('sha256', (string) json_encode($canonicalOutput, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                if ($expectedOutputHash !== $inf->output_hash) {
+                    $this->error("AI audit FAILED: Output hash mismatch on inference ID {$inf->id}");
+
+                    return self::FAILURE;
+                }
+
+                $replay = $engine->replay($inf->id);
+                if (! $replay['is_identical']) {
+                    $this->error("AI audit FAILED: Deterministic replay output mismatch on inference ID {$inf->id}");
 
                     return self::FAILURE;
                 }
