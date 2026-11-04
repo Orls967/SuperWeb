@@ -13,11 +13,11 @@ use Modules\Agri\Domain\Models\AgriContract;
 use Modules\Agri\Domain\Models\AgriFarmer;
 use Modules\Agri\Domain\Models\Ndvi\AgriFinancingInstallment;
 use Modules\Agri\Domain\Models\Ndvi\AgriSatelliteScan;
-use Modules\Agri\Domain\Models\Ndvi\GovProposal;
+use Modules\Governance\Contracts\ProposalDirectory;
 
 class AgriController extends Controller
 {
-    public function index(Request $request, AgriService $service)
+    public function index(Request $request, AgriService $service, ProposalDirectory $proposalDirectory)
     {
         $farmers = AgriFarmer::latest()->take(20)->get();
         $contracts = AgriContract::with('farmer')->latest()->take(20)->get();
@@ -26,7 +26,7 @@ class AgriController extends Controller
         $audit = $service->auditAgri();
         $satelliteScans = AgriSatelliteScan::latest()->take(10)->get();
         $financingInstallments = AgriFinancingInstallment::latest()->take(10)->get();
-        $daoProposals = GovProposal::with('votes')->latest()->take(10)->get();
+        $daoProposals = $proposalDirectory->getRecentProposals(10);
 
         return view('agri::agri.index', compact(
             'farmers',

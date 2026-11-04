@@ -8,12 +8,16 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Rwa\Application\Services\RwaTokenService;
+use Modules\Rwa\Application\Services\RwaVotingWeightReaderService;
 use Modules\Rwa\Console\Commands\AuditRwaCommand;
+use Modules\Rwa\Contracts\VotingWeightReader;
 
 class RwaServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(VotingWeightReader::class, RwaVotingWeightReaderService::class);
+
         $this->app->singleton(RwaTokenService::class, function ($app) {
             return new RwaTokenService(
                 $app->make(SimClockInterface::class),

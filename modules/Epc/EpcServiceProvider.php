@@ -6,12 +6,16 @@ namespace Modules\Epc;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Epc\Application\Services\EpcProjectDraftFactoryService;
 use Modules\Epc\Console\Commands\AuditEpcCommand;
+use Modules\Epc\Contracts\ProjectDraftFactory;
 
 class EpcServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(ProjectDraftFactory::class, EpcProjectDraftFactoryService::class);
+
         $this->commands([
             AuditEpcCommand::class,
         ]);

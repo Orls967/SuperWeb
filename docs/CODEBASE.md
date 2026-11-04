@@ -479,7 +479,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | No | Modul | Prefiks Tabel Resmi (`config/modules.php`) | Jumlah Migrasi |
 |---|---|---|---|
 | 1 | **Agency** | `agy_` | 2 |
-| 2 | **Agri** | `agri_` | 4 |
+| 2 | **Agri** | `agri_` | 5 |
 | 3 | **Asset** | `ast_` | 3 |
 | 4 | **AutoDex** | `dex_` | 0 |
 | 5 | **AutoServe** | `serve_` | 1 |
@@ -500,51 +500,52 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 20 | **Fashion** | `fsh_` | 1 |
 | 21 | **Finance** | `fin_` | 1 |
 | 22 | **Food** | `food_` | 1 |
-| 23 | **Hcm** | `hcm_` | 7 |
-| 24 | **Hospital** | `hsp_` | 14 |
-| 25 | **Hotel** | `htl_` | 16 |
-| 26 | **Insurance** | `ins_` | 2 |
-| 27 | **Integration** | `intg_` | 340 |
-| 28 | **Intercompany** | `ic_` | 1 |
-| 29 | **International** | `intl_` | 1 |
-| 30 | **Inventory** | `inv_` | 2 |
-| 31 | **Logistics** | `lgx_` | 31 |
-| 32 | **Mall** | `mall_` | 7 |
-| 33 | **Manufacturing** | `mfg_` | 14 |
-| 34 | **Med** | `med_` | 3 |
-| 35 | **Mining** | `min_` | 11 |
-| 36 | **Mobility** | `oto_` | 0 |
-| 37 | **Partner** | `ptn_` | 1 |
-| 38 | **Party** | `pty_` | 3 |
-| 39 | **Payment** | `pay_` | 3 |
-| 40 | **Plm** | `plm_` | 1 |
-| 41 | **Port** | `prt_` | 1 |
-| 42 | **Pricing** | `pric_` | 7 |
-| 43 | **Procurement** | `prc_` | 6 |
-| 44 | **Proptech** | `prp_` | 3 |
-| 45 | **Resto** | `resto_` | 10 |
-| 46 | **Ret** | `ret_` | 4 |
-| 47 | **Rwa** | `rwa_` | 3 |
-| 48 | **Shared** | — | 0 |
-| 49 | **Store** | `store_` | 5 |
-| 50 | **Supplier** | `sup_` | 3 |
-| 51 | **Syariah** | `syb_` | 1 |
-| 52 | **Tlx** | `tlx_` | 4 |
-| 53 | **Trade** | `trd_` | 3 |
-| 54 | **TradeFinance** | `tf_` | 4 |
-| 55 | **Treasury** | `trs_` | 1 |
-| 56 | **Vending** | `vnd_` | 3 |
-| 57 | **Venue** | `ven_` | 6 |
-| 58 | **Wealth** | `wm_` | 2 |
-| 59 | **Wms** | `wms_` | 2 |
-| | **Total: 59 Modul** | | **612 Migrasi** |
+| 23 | **Governance** | `gov_` | 1 |
+| 24 | **Hcm** | `hcm_` | 7 |
+| 25 | **Hospital** | `hsp_` | 14 |
+| 26 | **Hotel** | `htl_` | 16 |
+| 27 | **Insurance** | `ins_` | 2 |
+| 28 | **Integration** | `intg_` | 340 |
+| 29 | **Intercompany** | `ic_` | 1 |
+| 30 | **International** | `intl_` | 1 |
+| 31 | **Inventory** | `inv_` | 2 |
+| 32 | **Logistics** | `lgx_` | 31 |
+| 33 | **Mall** | `mall_` | 7 |
+| 34 | **Manufacturing** | `mfg_` | 14 |
+| 35 | **Med** | `med_` | 3 |
+| 36 | **Mining** | `min_` | 11 |
+| 37 | **Mobility** | `oto_` | 0 |
+| 38 | **Partner** | `ptn_` | 1 |
+| 39 | **Party** | `pty_` | 3 |
+| 40 | **Payment** | `pay_` | 3 |
+| 41 | **Plm** | `plm_` | 1 |
+| 42 | **Port** | `prt_` | 1 |
+| 43 | **Pricing** | `pric_` | 7 |
+| 44 | **Procurement** | `prc_` | 6 |
+| 45 | **Proptech** | `prp_` | 3 |
+| 46 | **Resto** | `resto_` | 10 |
+| 47 | **Ret** | `ret_` | 4 |
+| 48 | **Rwa** | `rwa_` | 3 |
+| 49 | **Shared** | — | 0 |
+| 50 | **Store** | `store_` | 5 |
+| 51 | **Supplier** | `sup_` | 3 |
+| 52 | **Syariah** | `syb_` | 1 |
+| 53 | **Tlx** | `tlx_` | 4 |
+| 54 | **Trade** | `trd_` | 3 |
+| 55 | **TradeFinance** | `tf_` | 4 |
+| 56 | **Treasury** | `trs_` | 1 |
+| 57 | **Vending** | `vnd_` | 3 |
+| 58 | **Venue** | `ven_` | 6 |
+| 59 | **Wealth** | `wm_` | 2 |
+| 60 | **Wms** | `wms_` | 2 |
+| | **Total: 60 Modul** | | **614 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
 |---|---|---|---|
 | **Agency** | 17 | `agency`, `agency/{agent}`, `agency/agents` ... | web, auth, verified |
 | **Agri** | 8 | `agri`, `agri/dashboard`, `agri/contracts` ... | web, auth, role:admin,farmer,procurement |
-| **App** | 36 | `api/v1/integration/ping`, `api/oto/telematics/clear-grounding`, `api/oto/sessions/{session}` ... | throttle:api-client, web, auth |
+| **App** | 37 | `api/v1/integration/ping`, `governance`, `api/oto/telematics/clear-grounding` ... | throttle:api-client, web, auth |
 | **Asset** | 24 | `assets/audit`, `assets/depreciation`, `assets/depreciation/run` ... | web, auth, verified |
 | **AutoDex** | 5 | `autodex`, `autodex/car/{car}`, `autodex/garage` ... | web, auth, verified |
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
@@ -602,7 +603,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1091 Rute** | | |
+| **Total** | **1092 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

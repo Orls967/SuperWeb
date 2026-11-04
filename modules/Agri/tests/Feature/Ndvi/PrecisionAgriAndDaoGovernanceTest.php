@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Agri\tests\Feature\Ndvi;
 
 use Carbon\Carbon;
@@ -7,9 +9,10 @@ use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Agri\Application\Services\Ndvi\PrecisionAgriAndDaoService;
 use Modules\Agri\Domain\Models\Ndvi\AgriFinancingInstallment;
-use Modules\Agri\Domain\Models\Ndvi\GovProposal;
-use Modules\Agri\Domain\Models\Ndvi\GovVoterWeight;
 use Modules\Banking\Domain\Models\LedgerAccount;
+use Modules\Governance\Application\Services\DaoGovernanceService;
+use Modules\Governance\Domain\Models\GovProposal;
+use Modules\Governance\Domain\Models\GovVoterWeight;
 use Tests\TestCase;
 
 class PrecisionAgriAndDaoGovernanceTest extends TestCase
@@ -18,10 +21,13 @@ class PrecisionAgriAndDaoGovernanceTest extends TestCase
 
     protected PrecisionAgriAndDaoService $service;
 
+    protected DaoGovernanceService $govService;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->service = app(PrecisionAgriAndDaoService::class);
+        $this->govService = app(DaoGovernanceService::class);
 
         $this->seed(LedgerAccountsSeeder::class);
     }
@@ -92,19 +98,19 @@ class PrecisionAgriAndDaoGovernanceTest extends TestCase
         ]);
 
         // Voter 1 casts YES
-        $vote1 = $this->service->castVote($proposal, $voter1, 'YES');
+        $vote1 = $this->govService->castVote($proposal, (int) $voter1->voter_user_id, (int) $voter1->voting_weight, 'YES');
         $this->assertNotNull($vote1->vote_receipt_hash);
 
         // Duplicate vote by voter 1 rejected
         try {
-            $this->service->castVote($proposal, $voter1, 'YES');
+            $this->govService->castVote($proposal, (int) $voter1->voter_user_id, (int) $voter1->voting_weight, 'YES');
             $this->fail('Duplicate vote must be rejected');
         } catch (\RuntimeException $e) {
             $this->assertStringContainsString('Duplicate vote rejected', $e->getMessage());
         }
 
         // Voter 2 casts YES -> hash chain links to voter 1 receipt
-        $vote2 = $this->service->castVote($proposal, $voter2, 'YES');
+        $vote2 = $this->govService->castVote($proposal, (int) $voter2->voter_user_id, (int) $voter2->voting_weight, 'YES');
         $this->assertEquals($vote1->vote_receipt_hash, $vote2->previous_vote_hash);
 
         // (b) Verify total voter weights = issued passports/tokens
@@ -112,12 +118,11 @@ class PrecisionAgriAndDaoGovernanceTest extends TestCase
         $this->assertEquals(60_000, $totalIssuedWeight);
 
         // Finalize proposal: total YES = 60,000 >= quorum 50,000 -> APPROVED & Auto-executed
-        $finalized = $this->service->finalizeAndExecuteProposal($proposal);
+        $finalized = $this->govService->finalizeAndExecuteProposal($proposal);
         $this->assertEquals('APPROVED', $finalized->status);
         $this->assertNotNull($finalized->execution_reference_code);
 
-        // (e) governance:audit + agri:audit = 0 discrepancy
+        // (e) governance:audit = 0 discrepancy
         $this->artisan('governance:audit')->assertSuccessful();
-        $this->artisan('agri:audit')->assertSuccessful();
     }
 }

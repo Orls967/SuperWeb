@@ -2419,3 +2419,24 @@
 
 
 
+<a id="g6-p4-d86"></a>
+<a id="d86-1"></a>
+<a id="d86-2"></a>
+<a id="d86-3"></a>
+<a id="d86-4"></a>
+<a id="d86-5"></a>
+## 2026-11-05: [G6-P4.3] NDVI Satelit & DAO Corporate Governance — Ratchet Pencairan Pinjaman Tani, Merkle Tree Voting, dan Eksekusi Draf Proyek EPC (Fase 86, D86-1..D86-5)
+- **Anchor:** `2026-11-05-g6-p4-ndvi-dao-fase-86` / `g6-p4-d86` / `d86-1` / `d86-2` / `d86-3` / `d86-4` / `d86-5`
+- **Context:**
+  - Fase 86 precision agri-tech & DAO corporate governance menggabungkan automasi analitik satelit NDVI presisi dengan mekanisme tata kelola desentralisasi DAO. Analitik NDVI mengevaluasi reflektansi kanopi tanaman untuk menentukan kelayakan pencairan pinjaman modal tani secara rasional eksak tanpa kesalahan pembulatan float, mengikat kontrak ratchet yang menahan dana bila vegetasi mengalami stres. Di sisi tata kelola, proposal strategis voting berbobot voter snapshots (karyawan HCM, pemegang token RWA K9, franchisee) disegel dengan Merkle Tree SHA-256 binary concatenated, memastikan integritas pemungutan suara dan memicu pembuatan draf proyek EPC K10 tanpa langsung eksekusi final tanpa persetujuan manusia.
+- **Decision:**
+  1. D86-1: Feed simulasi NDVI satelit S3 menghitung reflektansi spektral $(NIR - RED) / (NIR + RED)$ secara rasional eksak per piksel (mengabaikan piksel berawan) dan rata-rata rasional eksak per petak plasma lahan. Vektor wajib prompt terbukti: Petak 1 menghasilkan NDVI 2/5 (0,4) di bawah ambang 0,45 sehingga tidak cair; Petak 2 menghasilkan NDVI 53/90 (~0,5889) di atas ambang sehingga cair.
+  2. D86-2: Ratchet kontrak pembiayaan tani (`agri_financing_installments`): tranche pencairan pinjaman hanya diproses bila scan NDVI terbaru periode tersebut $\ge$ ambang standar kualitas dan tranche belum cair. Apabila NDVI berada di bawah ambang standar, status tranche ditahan dengan rencana aksi korektif (`HELD_CORRECTIVE_PLAN`); kegagalan beruntun 2x memicu eskalasi restrukturisasi pembiayaan. Posting ledger mencatat Debit piutang pinjaman petani `agri:farmer_loan_ar:IDR` dan Kredit rekening pencairan escrow `agri:escrow_disbursement:IDR`.
+  3. D86-3: Pemisahan domain tabel tata kelola DAO ke modul baru berdedikasi `Governance` (`gov_`): tabel `gov_proposals`, `gov_voter_weights`, dan `gov_votes` dikembalikan/dimigrasikan ke namespace `Governance` dengan prefix resmi `gov_` yang telah terdaftar di `config/modules.php`.
+  4. D86-4: Pustaka kriptografis `Modules\Shared\Domain\Algorithms\Hash\MerkleTree` dibangun dengan aturan: daun berupa `hash('sha256', "voter_id:weight")`, penggabungan simpul induk menggunakan byte mentah `hash('sha256', leftRaw || rightRaw, true)`, dan duplikasi simpul terakhir untuk jumlah daun ganjil. Vektor wajib prompt lulus deterministik: daun '1:500' daun0 = `717fe51487c76cc00d488b8732176a4cde5af558fa448d43456e0cef035597c4`, root 4 daun = `b275384498573111f4ae43c74765a6b2b3edbe3be4fc87f14ae49f797bf5eacb`, dan 3 daun pertama = `0a1f0ee26b0d17d73015540eca2c076c67bf266d288b96bd79f35f995ed568da`.
+  5. D86-5: Integrasi kontrak lintas modul:
+     - K9 `Modules\Rwa\Contracts\VotingWeightReader` diimplementasikan di modul `Rwa` untuk menyuplai snapshot unit token per pemegang aset.
+     - K10 `Modules\Epc\Contracts\ProjectDraftFactory` diimplementasikan di modul `Epc` untuk menghasilkan proyek berstatus `draft_pending_approval` secara idempoten saat proposal disetujui (event `gov.proposal.passed.v1`). Dilarang keras melakukan eksekusi final otomatis tanpa review dewan/approval engine.
+- **Verification:**
+  - Unit test `tests/Unit/Algorithms/MerkleTreeTest.php` memverifikasi vektor wajib prompt, sertifikat verifier, dan proof traversal.
+  - Acceptance test `tests/Acceptance/NdviDao/NdviDaoAcceptanceTest.php` memverifikasi 6 skenario kritis: RBAC & IDOR petak/proposal, presisi rasional NDVI & ratchet penundaan/restrukturisasi pinjaman, voting snapshot Merkle & pencegahan double-voting, integrasi K9 & K10 draf proyek EPC status draft_pending_approval, seeder skala T1 (100 petani + 20 proposal), serta audit `governance:audit` dan deteksi fixture korupsi.

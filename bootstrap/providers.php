@@ -23,6 +23,7 @@ use Modules\Esg\EsgServiceProvider;
 use Modules\Fashion\FashionServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Food\FoodServiceProvider;
+use Modules\Governance\GovernanceServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Hospital\HospitalServiceProvider;
 use Modules\Hotel\HotelServiceProvider;
@@ -107,6 +108,7 @@ return [
     B2bServiceProvider::class,
     AgriServiceProvider::class,
     EpcServiceProvider::class,
+    GovernanceServiceProvider::class,
     TelematicsServiceProvider::class,
     EvServiceProvider::class,
     FleetServiceProvider::class,
