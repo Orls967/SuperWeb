@@ -53,6 +53,7 @@ use Modules\Rwa\RwaServiceProvider;
 use Modules\Shared\SharedServiceProvider;
 use Modules\Store\StoreServiceProvider;
 use Modules\Supplier\SupplierServiceProvider;
+use Modules\Syariah\SyariahServiceProvider;
 use Modules\Tlx\TlxServiceProvider;
 use Modules\Trade\TradeServiceProvider;
 use Modules\TradeFinance\TradeFinanceServiceProvider;
@@ -124,4 +125,5 @@ return [
     MedServiceProvider::class,
     EduServiceProvider::class,
     RetServiceProvider::class,
+    SyariahServiceProvider::class,
 ];

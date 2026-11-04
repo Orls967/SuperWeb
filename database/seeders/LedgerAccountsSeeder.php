@@ -34,6 +34,7 @@ use Modules\Port\Ledger\PortAccounts;
 use Modules\Proptech\Ledger\ProptechAccounts;
 use Modules\Ret\Ledger\RetAccounts;
 use Modules\Rwa\Ledger\RwaAccounts;
+use Modules\Syariah\Ledger\SyariahAccounts;
 use Modules\Tlx\Ledger\TlxAccounts;
 use Modules\Trade\Ledger\TradeAccounts;
 use Modules\TradeFinance\Ledger\TradeFinanceAccounts;
@@ -78,6 +79,7 @@ class LedgerAccountsSeeder extends Seeder
         ProptechAccounts::class,
         RetAccounts::class,
         RwaAccounts::class,
+        SyariahAccounts::class,
         TlxAccounts::class,
         TradeAccounts::class,
         TradeFinanceAccounts::class,

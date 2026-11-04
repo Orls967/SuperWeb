@@ -58,6 +58,7 @@ return [
         'rwa_' => 'Rwa',
         'store_' => 'Store',
         'sup_' => 'Supplier',
+        'syb_' => 'Syariah',
         'tlx_' => 'Tlx',
         'trd_' => 'Trade',
         'tf_' => 'TradeFinance',

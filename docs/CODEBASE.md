@@ -528,15 +528,16 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 48 | **Shared** | — | 0 |
 | 49 | **Store** | `store_` | 5 |
 | 50 | **Supplier** | `sup_` | 3 |
-| 51 | **Tlx** | `tlx_` | 4 |
-| 52 | **Trade** | `trd_` | 3 |
-| 53 | **TradeFinance** | `tf_` | 4 |
-| 54 | **Treasury** | `trs_` | 1 |
-| 55 | **Vending** | `vnd_` | 3 |
-| 56 | **Venue** | `ven_` | 6 |
-| 57 | **Wealth** | `wm_` | 2 |
-| 58 | **Wms** | `wms_` | 2 |
-| | **Total: 58 Modul** | | **611 Migrasi** |
+| 51 | **Syariah** | `syb_` | 1 |
+| 52 | **Tlx** | `tlx_` | 4 |
+| 53 | **Trade** | `trd_` | 3 |
+| 54 | **TradeFinance** | `tf_` | 4 |
+| 55 | **Treasury** | `trs_` | 1 |
+| 56 | **Vending** | `vnd_` | 3 |
+| 57 | **Venue** | `ven_` | 6 |
+| 58 | **Wealth** | `wm_` | 2 |
+| 59 | **Wms** | `wms_` | 2 |
+| | **Total: 59 Modul** | | **612 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -592,6 +593,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
 | **Store** | 35 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
+| **Syariah** | 11 | `syariah/murabahah`, `syariah/murabahah/{contract}/approve-officer`, `syariah/murabahah/{contract}/purchase-asset` ... | web, auth, role:admin,syariah_officer |
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
@@ -600,7 +602,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1080 Rute** | | |
+| **Total** | **1091 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -755,6 +757,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
 | `sup:scan-risks` | **`dailyAt('06:45')`** | Pindai risiko pemasok: konsentrasi, sertifikasi kedaluwarsa, sanksi, dan skor rendah |
 | `super:health-check` | `manual` | Jalankan diagnosa komprehensif kesehatan seluruh ekosistem platform 12 pilar (DB, Cache, Storage, Ledger, Passport, Mall, Resto, Logistik, Aset, Pembelian, Kontrak, Manufaktur) |
+| `syb:audit` | `manual` | Audit dua sumber Keuangan Syariah Murabahah: piutang jadwal, margin ditangguhkan/diakui, dana kebajikan ta'zir, dan 0 akun bunga |
 | `telemetry:snapshot` | `manual` | Generate real-time live telemetry snapshot across 6 enterprise command centers in JSON or SSE format |
 | `test` | `manual` | Run the application tests |
 | `test:mutate` | `manual` | Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60% |
@@ -778,7 +781,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 173 Command** | **37 Terjadwal** | |
+| **Total: 174 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -809,6 +812,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Proptech** | `ProptechAccounts` | 10 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 23 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
 | **Rwa** | `RwaAccounts` | 12 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
+| **Syariah** | `SyariahAccounts` | 4 | `syb:murabahah_asset:IDR`, `syb:margin_income:IDR` ... |
 | **Tlx** | `TlxAccounts` | 14 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
 | **TradeFinance** | `TradeFinanceAccounts` | 5 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
@@ -816,6 +820,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 33 Registry** | | **368 Akun** | |
+| **Total: 34 Registry** | | **372 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

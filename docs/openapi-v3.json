@@ -99747,6 +99747,1176 @@
                 }
             }
         },
+        "/syariah/murabahah": {
+            "get": {
+                "operationId": "getSyariahMurabahahIndex",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Index (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "postSyariahMurabahahPropose",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Propose (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahPropose",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/murabahah/{contract}/approve-officer": {
+            "post": {
+                "operationId": "postSyariahMurabahahApproveOfficer",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Approve Officer (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahApproveOfficer",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/murabahah/{contract}/pay-installment": {
+            "post": {
+                "operationId": "postSyariahMurabahahPayInstallment",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Pay Installment (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, nasabah, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "nasabah",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahPayInstallment",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/murabahah/{contract}/purchase-asset": {
+            "post": {
+                "operationId": "postSyariahMurabahahPurchaseAsset",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Purchase Asset (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahPurchaseAsset",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/murabahah/{contract}/sign": {
+            "post": {
+                "operationId": "postSyariahMurabahahSign",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Sign Contract (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahSign",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/murabahah/{contract}/tazir": {
+            "post": {
+                "operationId": "postSyariahMurabahahTazir",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Collect Tazir (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahMurabahahTazir",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/syariah/portal": {
+            "get": {
+                "operationId": "getSyariahPortalIndex",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Portal Index (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, dps_reviewer, nasabah, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dps_reviewer",
+                    "nasabah",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/syariah/portal/{contract}": {
+            "get": {
+                "operationId": "getSyariahPortalShow",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Portal Show (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, dps_reviewer, nasabah, syariah_officer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dps_reviewer",
+                    "nasabah",
+                    "syariah_officer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/syariah/review": {
+            "get": {
+                "operationId": "getSyariahReviewIndex",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Review Index (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, dps_reviewer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dps_reviewer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/syariah/review/{contract}/approve": {
+            "post": {
+                "operationId": "postSyariahReviewApprove",
+                "tags": [
+                    "Syariah"
+                ],
+                "summary": "Review Approve (Syariah)",
+                "description": "Operational endpoint for Syariah module. Protected by role matrix: [admin, dps_reviewer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dps_reviewer"
+                ],
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter contract for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postSyariahReviewApprove",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/telecom": {
             "get": {
                 "operationId": "getTlxNetworkIndex",

@@ -2351,3 +2351,29 @@
   - Kontrak K6 `CustodyVerifier` dan K7 `VerifiedEmissionReader` terdaftar di ServiceProvider masing-masing.
   - Acceptance test `tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php` memverifikasi 6 skenario (RBAC, E2E escrow + K6 + revaluasi kurs + idempotensi, jalur galat rantai custody rusak & K7 hilang, vektor CBAM + immutabilitas, anti-IDOR, dan audit `clearing:audit` + `tf:audit` di atas skala T1).
 
+<a id="2026-11-04-g6-p3-syariah-murabahah-fase-161"></a>
+<a id="d19-1"></a>
+<a id="d19-2"></a>
+<a id="d19-3"></a>
+<a id="d19-4"></a>
+<a id="d19-5"></a>
+## 2026-11-04: [G6-P3.4] Modul Baru Syariah (`syb_`) — Pembiayaan Murabahah, Governance DPS Four-Eyes & Jadwal Angsuran Tanpa Bunga (Fase 161, D19-1..D19-5)
+- **Anchor:** `2026-11-04-g6-p3-syariah-murabahah-fase-161` / `d19-1` / `d19-2` / `d19-3` / `d19-4` / `d19-5`
+- **Context:**
+  - Lini 19 Keuangan Syariah membutuhkan pemisahan tegas dari akuntansi bunga konvensional: pembiayaan berbasis jual-beli (*murabahah*) mengharuskan bank membeli barang dari pemasok terlebih dahulu, lalu menjualnya kepada nasabah dengan harga jual tetap ($\text{biaya perolehan} + \text{margin tetap}$) setelah melewati reviu kepatuhan Dewan Pengawas Syariah (DPS).
+  - Sesuai fatwa DSN-MUI dan PSAK 102 (simulasi S2), tidak boleh ada satu pun akun bunga (`interest`/`bunga`) yang terlibat dalam transaksi syariah; margin keuntungan diakui secara proporsional seiring kas angsuran diterima; dan denda keterlambatan (*ta'zir*) bagi nasabah mampu wajib disalurkan seluruhnya ke dana kebajikan (`syb:qardhul_hasan_fund:IDR`), bukan diakui sebagai pendapatan bank.
+- **Decision:**
+  1. D19-1: Pembukaan modul baru `Modules\Syariah` dengan prefiks tabel resmi `syb_` di `config/modules.php`, `docs/KONSEP.md` §A1, dan `tests/Architecture/baselines/config-allowlists.json`. Larangan mutlak akun bunga ditegakkan di service posting dan command audit `syb:audit` (0 transaksi syariah yang menyentuh kode/nama akun mengandung `interest` atau `bunga`).
+  2. D19-2: Alur siklus hidup akad murabahah (`syb_murabahah_contracts`): (1) pengajuan (`PROPOSED`), (2) persetujuan `syariah_officer` (`OFFICER_APPROVED`) + reviu `dps_reviewer` (`DPS_APPROVED`, four-eyes mandatori: `dps_reviewer_user_id` $\ne$ `officer_approved_by_user_id` dan $\ne$ `proposed_by_user_id`), (3) pembelian barang oleh bank dari pemasok (`ASSET_PURCHASED`), (4) penandatanganan akad jual dengan margin tetap (`ACTIVE`), (5) pembentukan jadwal angsuran tanpa bunga (`syb_murabahah_schedules`), dan (6) pembayaran angsuran hingga lunas (`SETTLED`).
+  3. D19-3: Posting buku besar double-entry (`LedgerService`):
+     - Beli barang (`SYB_MURABAHAH_PURCHASE`): Debit `syb:murabahah_asset:IDR`, Kredit `ap:syb:supplier:{supplier_party_id}:IDR` sebesar biaya perolehan.
+     - Akad jual (`SYB_MURABAHAH_SIGN`): Debit `syb:murabahah_receivable:{contract_id}:IDR` ($\text{biaya} + \text{margin}$), Kredit `syb:murabahah_asset:IDR` ($\text{biaya}$) dan Kredit `syb:deferred_margin:{contract_id}:IDR` ($\text{margin}$).
+     - Pembayaran angsuran (`SYB_MURABAHAH_INSTALLMENT`): Debit `wallet:user:{nasabah_user_id}:IDR`, Kredit `syb:murabahah_receivable:{contract_id}:IDR` sebesar nilai angsuran; sekaligus pengakuan margin proporsional (`SYB_MURABAHAH_MARGIN_REC`): Debit `syb:deferred_margin:{contract_id}:IDR`, Kredit `syb:margin_income:IDR` sebesar porsi margin angsuran tersebut.
+     - Denda keterlambatan *ta'zir* (`SYB_MURABAHAH_TAZIR`): Debit `wallet:user:{nasabah_user_id}:IDR`, Kredit `syb:qardhul_hasan_fund:IDR` (dana kebajikan, bukan pendapatan bank).
+  4. D19-4: Jadwal angsuran dihitung secara deterministik menggunakan `Modules\Shared\Domain\Algorithms\Apportionment\LargestRemainder` dengan bobot sama rata per bulan dan indeks angsuran berformat dua digit (`01`..`N`) sehingga sisa pembagian 1 rupiah jatuh ke angsuran awal secara berurutan ($\Sigma \text{pokok} = \text{biaya}$, $\Sigma \text{margin} = \text{margin total}$, $\Sigma \text{angsuran} = \text{harga jual}$).
+  5. D19-5: Command audit `syb:audit` (beserta `SybAuditCorruptionFixture`) memverifikasi 5 invarian: (a) $\Sigma$ sisa jadwal angsuran belum dibayar = saldo piutang `syb:murabahah_receivable:{contract_id}:IDR`, (b) total margin diakui = saldo `syb:margin_income:IDR`, (c) saldo `syb:deferred_margin:{contract_id}:IDR` = margin total $-$ margin diakui, (d) 0 akun `interest`/`bunga` pada transaksi `syb`, dan (e) saldo `syb:qardhul_hasan_fund:IDR` = $\Sigma$ denda *ta'zir*.
+- **Verification:**
+  - Vektor wajib jadwal angsuran: biaya `100.000.000`, margin `18.000.000`, tenor `12` bulan $\implies$ angsuran 1–4 = `9.833.334` dan angsuran 5–12 = `9.833.333` ($\Sigma = 118.000.000$); margin per angsuran = `1.500.000` ($\Sigma = 18.000.000$); pokok 1–4 = `8.333.334` dan pokok 5–12 = `8.333.333` ($\Sigma = 100.000.000$).
+  - Acceptance test `tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php` memverifikasi 6 skenario termasuk matriks RBAC, E2E akad + jadwal + angsuran + ta'zir, larangan tanda tangan tanpa DPS & larangan akun bunga, vektor jadwal, anti-IDOR portal nasabah, dan `syb:audit` di atas skala T1 (1.000 akad).
+
+

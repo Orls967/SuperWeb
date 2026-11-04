@@ -100,6 +100,7 @@ use Modules\Rwa\Domain\Models\RwaAsset;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Product;
 use Modules\Supplier\Domain\Models\Supplier;
+use Modules\Syariah\Domain\Models\MurabahahContract;
 use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
@@ -544,6 +545,33 @@ if (! function_exists('routeRolesClearingEscrow')) {
             'escrow_code' => 'CLR-ROUTE-TEST', 'letter_of_credit_id' => $lc->id, 'importer_user_id' => $importer->id,
             'exporter_user_id' => $exporter->id, 'usdt_micro' => 1_000_000, 'deposit_fx_rate_idr' => 16200,
             'status' => 'DEPOSITED', 'deposit_idempotency_key' => 'route-roles-clearing', 'deposited_at' => now(),
+        ]);
+    }
+}
+
+if (! function_exists('routeRolesMurabahahContract')) {
+    /** Fixture akad murabahah untuk matriks otorisasi rute (route-roles). */
+    function routeRolesMurabahahContract(): MurabahahContract
+    {
+        $existing = MurabahahContract::where('contract_code', 'MRB-ROUTE-TEST')->first();
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        $nasabah = User::factory()->create(['role' => 'nasabah']);
+
+        return MurabahahContract::create([
+            'contract_code' => 'MRB-ROUTE-TEST',
+            'customer_user_id' => $nasabah->id,
+            'supplier_party_ref' => 1,
+            'asset_description' => 'Mesin Produksi Murabahah Uji',
+            'cost_price_idr' => 100_000_000,
+            'margin_amount_idr' => 18_000_000,
+            'total_selling_price_idr' => 118_000_000,
+            'tenor_months' => 12,
+            'status' => 'PROPOSED',
+            'proposed_by_user_id' => $nasabah->id,
+            'idempotency_key' => 'route-roles-murabahah',
         ]);
     }
 }
@@ -3618,4 +3646,46 @@ return [
     ],
     'trade.cbam.index' => ['roles' => ['admin', 'compliance_officer']],
     'trade.cbam.declare' => ['roles' => ['admin', 'compliance_officer']],
+    'syariah.murabahah.index' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.murabahah.propose' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.murabahah.approve-officer' => [
+        'roles' => ['admin', 'syariah_officer'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+    ],
+    'syariah.murabahah.purchase-asset' => [
+        'roles' => ['admin', 'syariah_officer'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+    ],
+    'syariah.murabahah.sign' => [
+        'roles' => ['admin', 'syariah_officer'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+    ],
+    'syariah.murabahah.tazir' => [
+        'roles' => ['admin', 'syariah_officer'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+    ],
+    'syariah.murabahah.pay-installment' => [
+        'roles' => ['admin', 'syariah_officer', 'nasabah'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+        'setup' => function (User $user): void {
+            if ($user->role === 'nasabah') {
+                DB::table('syb_murabahah_financings')->where('contract_code', 'MRB-ROUTE-TEST')->update(['customer_user_id' => $user->id]);
+            }
+        },
+    ],
+    'syariah.review.index' => ['roles' => ['admin', 'dps_reviewer']],
+    'syariah.review.approve' => [
+        'roles' => ['admin', 'dps_reviewer'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+    ],
+    'syariah.portal.index' => ['roles' => ['admin', 'syariah_officer', 'dps_reviewer', 'nasabah']],
+    'syariah.portal.show' => [
+        'roles' => ['admin', 'syariah_officer', 'dps_reviewer', 'nasabah'],
+        'params' => fn () => ['contract' => routeRolesMurabahahContract()->id],
+        'setup' => function (User $user): void {
+            if ($user->role === 'nasabah') {
+                DB::table('syb_murabahah_financings')->where('contract_code', 'MRB-ROUTE-TEST')->update(['customer_user_id' => $user->id]);
+            }
+        },
+    ],
 ];
