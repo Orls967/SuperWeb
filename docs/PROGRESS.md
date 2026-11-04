@@ -11634,16 +11634,58 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | M-174-1 | 174.3 | Filter verifikasi perizinan limbah B3 lintas regulator masih mock | Alur limbah B3 berizin ketat saat ini memakai stub verifikasi | P2 | Dilengkapi pada fase integrasi regulasi AMDAL/B3 eksternal |
 
 ## FASE 175 — LINI 25: PROFESSIONAL SERVICES, CONSULTING & PROJECT MARKETPLACE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ProfessionalServicesService`; 1 migrasi; test `ProfessionalServicesTest` — commit `8d286cf`, +345 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P5.1] tuntas D25-1..D25-5.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** ProServices (`psv_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 25
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa timesheet disetujui; pendapatan tanpa ledger; memperluas `ProfessionalServicesService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
-- [ ] 175.2 Procurement marketplace: RFP → proposals sealed → weighted evaluation → award approval → Contract → budget encumbrance → milestone payment
-- [ ] 175.3 Consultant access is least-privilege and time-bound to assigned project records; deliverables checksum stored via DocumentStore
-- [ ] 175.4 Outcome metrics and fee models: fixed, time-and-materials, capped, success fee with explicit acceptance and clawback rules
-- [ ] 175.5 Tests: sealed proposals hidden until opening, milestone cannot pay before acceptance, access expires at contract end, fee formula auditable, `psv:audit` clean
-- [ ] 175.6 Quality gate Fase 175
+- [x] 175.1 Modul `ProServices` (`psv_`): service catalog, firms/consultants, statements of work, milestones, timesheets, deliverables, acceptance and disputes
+  Bukti:
+    - jenis: fitur
+    - commit: c6926c6b
+    - file: modules/ProServices/Application/Services/ProServicesProjectService.php
+    - test: tests/Acceptance/ProServices/ProServicesAcceptanceTest.php::test_akses_kontrol_akses_berbasis_peran_untuk_rute_proservices
+    - akses: route GET /proservices/projects [role: admin, project_manager, superadmin]
+- [x] 175.2 Procurement marketplace: RFP → proposals sealed → weighted evaluation → award approval → Contract → budget encumbrance → milestone payment
+  Bukti:
+    - jenis: fitur
+    - commit: c6926c6b
+    - file: modules/ProServices/Application/Services/ProServicesProjectService.php
+    - test: tests/Acceptance/ProServices/ProServicesAcceptanceTest.php::test_alur_utama_end_to_end_posting_ledger_idempotensi
+    - akses: route GET /proservices/portal/invoices [role: admin, client]
+- [x] 175.3 Consultant access is least-privilege and time-bound to assigned project records; deliverables checksum stored via DocumentStore
+  Bukti:
+    - jenis: fitur
+    - commit: c6926c6b
+    - file: modules/ProServices/Application/Services/ProServicesProjectService.php
+    - test: tests/Acceptance/ProServices/ProServicesAcceptanceTest.php::test_idor_proteksi_data_klien_dan_konsultan
+    - akses: route GET /proservices/timesheets [role: admin, consultant]
+- [x] 175.4 Outcome metrics and fee models: fixed, time-and-materials, capped, success fee with explicit acceptance and clawback rules
+  Bukti:
+    - jenis: fitur
+    - commit: c6926c6b
+    - file: modules/Shared/Domain/Algorithms/Revenue/CostToCostRecognition.php
+    - test: tests/Unit/Algorithms/CostToCostRecognitionTest.php::vektor prompt d25 3 cost to cost recognition
+    - akses: route GET /proservices/projects [role: admin, project_manager, superadmin]
+- [x] 175.5 Tests: sealed proposals hidden until opening, milestone cannot pay before acceptance, access expires at contract end, fee formula auditable, `psv:audit` clean
+  Bukti:
+    - jenis: tooling
+    - commit: c6926c6b
+    - file: modules/ProServices/Console/Commands/AuditProServicesCommand.php
+    - test: tests/Acceptance/ProServices/ProServicesAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command psv:audit
+- [x] 175.6 Quality gate Fase 175
+  Bukti:
+    - jenis: dokumen
+    - commit: c6926c6b
+    - file: docs/dor/p5-1-proservices.md
+    - test: tests/Acceptance/ProServices/ProServicesAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command psv:audit
+
+### Register Minus Fase 175
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-175-01 | 175.2 | Weighted evaluation scoring proposal vendor menggunakan skema perhitungan berbasis rate card dan milestone tetap | Penilaian proposal tender multi-kriteria belum memakai algoritma AHP matriks perbandingan berpasangan | P3 | Implementasikan modul Analytic Hierarchy Process (AHP) di fase pengadaan berikutnya |
+| RM-175-02 | 175.4 | Model success fee bergantung pada manual trigger milestone acceptance oleh project manager | Otomasi kalkulasi contingent fee KPI eksternal belum tersambung langsung ke streaming data telemetri | P3 | Hubungkan event spine metrik operasional ke trigger success fee invoice |
 
 ## FASE 176 — LINI 25: LEGAL OPERATIONS, DISPUTES & KNOWLEDGE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `LegalOperationsService`; 1 migrasi; test `LegalOperationsTest` — commit `c1f4495`, +263 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

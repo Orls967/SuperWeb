@@ -509,13 +509,7 @@ $distributorParamHelper = function (): array {
         ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
     );
 
-    return [
-    'proservices.projects.index' => ['project_manager', 'admin', 'superadmin'],
-    'proservices.timesheets.index' => ['consultant', 'admin'],
-    'proservices.timesheets.show' => ['consultant', 'admin'],
-    'proservices.portal.invoices' => ['client', 'admin'],
-    'proservices.portal.projects.show' => ['client', 'admin'],
-'distributor' => $dist->id];
+    return ['distributor' => $dist->id];
 };
 
 $partnerParamHelper = function (): array {
@@ -3697,4 +3691,9 @@ return [
             }
         },
     ],
+    'proservices.projects.index' => ['roles' => ['admin', 'project_manager', 'superadmin']],
+    'proservices.timesheets.index' => ['roles' => ['admin', 'consultant']],
+    'proservices.timesheets.show' => ['roles' => ['admin', 'consultant'], 'params' => fn () => ['id' => 1]],
+    'proservices.portal.invoices' => ['roles' => ['admin', 'client']],
+    'proservices.portal.projects.show' => ['roles' => ['admin', 'client'], 'params' => fn () => ['id' => 1]],
 ];

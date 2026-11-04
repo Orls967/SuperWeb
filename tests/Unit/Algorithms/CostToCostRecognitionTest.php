@@ -6,7 +6,7 @@ use Modules\Shared\Domain\Algorithms\Revenue\CostToCostCertificateVerifier;
 use Modules\Shared\Domain\Algorithms\Revenue\CostToCostRecognition;
 use Modules\Shared\Domain\Algorithms\Revenue\CostToCostResult;
 
-test('vektor prompt D25-3 cost-to-cost recognition', function () {
+test('vektor prompt d25 3 cost to cost recognition', function () {
     $contract = 1000000000;
 
     // P1 biaya 200 jt dari estimasi 800 jt -> 250.000.000
