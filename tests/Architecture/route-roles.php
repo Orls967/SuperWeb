@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\AutoDex\Domain\Models\Brand;
 use Modules\AutoDex\Domain\Models\Car;
@@ -103,7 +104,9 @@ use Modules\Tlx\Domain\Models\IotConnectivityInvoice;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
+use Modules\TradeFinance\Domain\Models\Clearing\ClearingEscrow;
 use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
+use Modules\TradeFinance\Domain\Models\LetterOfCredit;
 use Modules\Vending\Domain\Models\VendingUnit;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
@@ -516,6 +519,34 @@ $partnerParamHelper = function (): array {
 
     return ['partner' => $ptn->id];
 };
+
+if (! function_exists('routeRolesClearingEscrow')) {
+    /** Fixture escrow clearing untuk matriks otorisasi rute (route-roles). */
+    function routeRolesClearingEscrow(): ClearingEscrow
+    {
+        $existing = ClearingEscrow::where('escrow_code', 'CLR-ROUTE-TEST')->first();
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        $importer = User::factory()->create(['role' => 'importer']);
+        $exporter = User::factory()->create(['role' => 'exporter']);
+
+        $lc = new LetterOfCredit;
+        $lc->forceFill([
+            'lc_number' => 'LC-ROUTE-TEST', 'type' => 'sight', 'issuing_bank' => 'Bank Uji', 'advising_bank' => 'Bank Uji',
+            'applicant_name' => 'Importir Uji', 'beneficiary_name' => 'Eksportir Uji', 'currency' => 'USD',
+            'amount_foreign' => 100000, 'amount_functional_idr' => 1600000000, 'issue_date' => '2026-11-01',
+            'expiry_date' => '2027-11-01', 'tenor_days' => 0, 'status' => 'issued',
+        ])->save();
+
+        return ClearingEscrow::create([
+            'escrow_code' => 'CLR-ROUTE-TEST', 'letter_of_credit_id' => $lc->id, 'importer_user_id' => $importer->id,
+            'exporter_user_id' => $exporter->id, 'usdt_micro' => 1_000_000, 'deposit_fx_rate_idr' => 16200,
+            'status' => 'DEPOSITED', 'deposit_idempotency_key' => 'route-roles-clearing', 'deposited_at' => now(),
+        ]);
+    }
+}
 
 return [
     'GET /' => 'public',
@@ -3564,4 +3595,27 @@ return [
             return ['recommendation' => $rec->id];
         },
     ],
+    'trade_finance.clearing.index' => ['roles' => ['admin', 'tf_officer', 'importer', 'exporter']],
+    'trade_finance.clearing.show' => [
+        'roles' => ['admin', 'tf_officer', 'importer', 'exporter'],
+        'params' => function () {
+            return ['escrow' => routeRolesClearingEscrow()->id];
+        },
+        // Peran importir/eksportir hanya boleh melihat escrow miliknya: pengguna uji dijadikan pihak escrow fixture.
+        'setup' => function ($user) {
+            $column = $user->role === 'importer' ? 'importer_user_id' : ($user->role === 'exporter' ? 'exporter_user_id' : null);
+            if ($column !== null) {
+                DB::table('tf_clearing_escrows')->where('escrow_code', 'CLR-ROUTE-TEST')->update([$column => $user->id]);
+            }
+        },
+    ],
+    'trade_finance.clearing.deposit' => ['roles' => ['admin', 'tf_officer', 'importer']],
+    'trade_finance.clearing.release' => [
+        'roles' => ['admin', 'tf_officer'],
+        'params' => function () {
+            return ['escrow' => routeRolesClearingEscrow()->id];
+        },
+    ],
+    'trade.cbam.index' => ['roles' => ['admin', 'compliance_officer']],
+    'trade.cbam.declare' => ['roles' => ['admin', 'compliance_officer']],
 ];

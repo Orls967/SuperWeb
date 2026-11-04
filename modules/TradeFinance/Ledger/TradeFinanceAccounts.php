@@ -33,6 +33,22 @@ final class TradeFinanceAccounts
                 'allow_negative' => true,
             ],
             [
+                // Posisi revaluasi kurs IDR/USDT escrow clearing; boleh negatif (lawan akun untung/rugi kurs Treasury).
+                'code' => 'tf:fx_position:IDR',
+                'name' => 'Clearing USDT FX Revaluation Position',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                // Sumber likuiditas USDT (on-ramp tersimulasi); boleh negatif karena akun clearing sumber dana.
+                'code' => 'tf:usdt_liquidity_source:USDT',
+                'name' => 'Clearing USDT Liquidity Source (simulated)',
+                'kind' => AccountKind::CLEARING,
+                'asset_code' => 'USDT',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'tf:importer_wallet:IDR',
                 'name' => 'Importer Wallet Account',
                 'kind' => AccountKind::LIABILITY,

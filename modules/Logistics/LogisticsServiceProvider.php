@@ -11,6 +11,7 @@ use Modules\Logistics\Application\Commands\InvoiceShippersCommand;
 use Modules\Logistics\Application\Listeners\CreateShipmentOnOrderPaid;
 use Modules\Logistics\Application\Listeners\HandleFleetServiceDue;
 use Modules\Logistics\Application\Listeners\RecognizeFreightRevenueOnDelivery;
+use Modules\Logistics\Application\Services\CustodyVerifierService;
 use Modules\Logistics\Application\Services\LogisticsDemurrageDetentionQuote;
 use Modules\Logistics\Application\Services\LogisticsUsageReaderService;
 use Modules\Logistics\Application\Services\LogisticsVesselRegistry;
@@ -25,6 +26,7 @@ use Modules\Logistics\Console\Commands\PayCarriersCommand;
 use Modules\Logistics\Console\Commands\RetryWebhooksCommand;
 use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
+use Modules\Logistics\Contracts\CustodyVerifier;
 use Modules\Logistics\Contracts\DemurrageDetentionQuote;
 use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
 use Modules\Logistics\Contracts\ShipmentBooking;
@@ -51,6 +53,7 @@ class LogisticsServiceProvider extends ServiceProvider
             DemurrageDetentionQuote::class,
             LogisticsDemurrageDetentionQuote::class
         );
+        $this->app->bind(CustodyVerifier::class, CustodyVerifierService::class);
     }
 
     public function boot(): void

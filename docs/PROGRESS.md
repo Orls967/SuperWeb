@@ -8788,77 +8788,78 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 ## PILAR 7 — PERDAGANGAN INTERNASIONAL & PENGADAAN
 
 ## FASE 83 — CROSS-BORDER CLEARING HOUSE BERBASIS KRIPTO & CBAM COMPLIANCE
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 SELESAI VERTICAL SLICE (2026-11-04) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** TradeFinance (`tf_`) + Trade + Esg + Logistics custody · **Prasyarat:** R1–R4 ✅, R6.4 ✅ · **Acuan:** KONSEP 7F slice 1–2
 > **Jalan pintas terlarang di fase ini:** rilis escrow tanpa verifikasi hash custody; CBAM dari masukan emisi bebas — ditambah seluruh X1–X25.
-- [ ] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
+- [x] 83.1 **Stablecoin escrow lintas batas**: importir men-deposit stablecoin internal (Fase 71/aset ledger USD-simulasi) ke `tf:crossborder_escrow` → **Bill of Lading / POD diunggah** → hash dicocokkan dengan chain of custody Logistik (Fase 22.5) → smart-contract simulasi **release otomatis** ke penjual (multi-currency settlement Fase 48)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_1_and_83_2_stablecoin_escrow_deposit_anti_duplicate_bl_and_release
-    - akses: route POST /trade-finance/cross-border/deposit [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
+    - commit: 10d79597
+    - file: modules/TradeFinance/Application/Services/Clearing/ClearingEscrowService.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_2_e2e_usdt_escrow_k6_custody_release_fx_revaluation_and_idempotency
+    - akses: route POST /trade-finance/clearing/deposit [role: admin, tf_officer, importer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.2 Anti-fraud: BL ganda ditolak (hash uniqueness), Jaminan kredit FX, rate kurs terkunci saat deposit (tabel kurs ber-versi Fase 48.1), dispute window 24 jam (hold manual four-eyes)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_2_dispute_window_hold_and_resolution_refund
-    - akses: route POST /trade-finance/cross-border/{escrow}/dispute [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
+    - commit: 10d79597
+    - file: modules/Logistics/Application/Services/CustodyVerifierService.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_3_rejects_unverified_or_tampered_custody_chain_and_missing_k7_emission
+    - akses: route POST /trade-finance/clearing/{escrow}/release [role: admin, tf_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.3 **CBAM compliance**: Trade membaca data emisi dari ESG per pabrik per komoditas (Fase 60.1) → menghitung embedded carbon per kontainer ekspor ke UE → **mencetak dokumen sertifikasi jejak karbon** (dokumen gapless, metodologi & faktor emisi tercatat) → kredit karbon terkait dihubungkan (Fase 60.2)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
-    - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
+    - commit: 10d79597
+    - file: modules/TradeFinance/Application/Services/Clearing/CbamDeclarationService.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_4_cbam_vector_calculation_gapless_numbering_and_immutability
+    - akses: route POST /trade/cbam [role: admin, compliance_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.4 Biaya bea karbon: simulasi nilai CBAM per kontainer → mengurangi margin ekspor → masuk perhitungan landed cost & pricing ekspor (Fase 49.3)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_3_and_83_4_cbam_carbon_emission_certification_and_margin_impact
-    - akses: route POST /trade-finance/cross-border/cbam [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
+    - commit: 10d79597
+    - file: modules/Esg/Application/Services/VerifiedEmissionReaderService.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_4_cbam_vector_calculation_gapless_numbering_and_immutability
+    - akses: route POST /trade/cbam [role: admin, compliance_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.5 Dashboard: posisi dana escrow per koridor, BL menunggu verifikasi, sertifikat karbon per kontainer, exposure CBAM
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/Application/Services/CrossBorder/CrossBorderClearingService.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_5_escrow_and_cbam_summaries
-    - akses: route GET /trade-finance/cross-border [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
+    - commit: 10d79597
+    - file: modules/TradeFinance/Http/Controllers/ClearingController.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_1_rbac_clearing_and_cbam_routes
+    - akses: route GET /trade-finance/clearing [role: admin, tf_officer, importer, exporter]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.6 Tests: (a) BL valid → release 1x, duplikat ditolak (b) escrow = komitmen aktif + dispute (c) sertifikat karbon konsisten dengan emisi ESG sumber (d) release multi-currency Σ seimbang (e) `clearing:audit` = 0 selisih
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_6_clearing_audit_command_enforces_zero_discrepancy
-    - (dibatalkan) gate: docs/gates/fase-83.md
-- [ ] 83.7 Quality gate Fase 83
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: dokumen
-    - commit: 22c1dbe5
-    - file: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php
-    - test: modules/TradeFinance/tests/Feature/CrossBorder/CrossBorderClearingAndCbamTest.php::test_83_http_endpoints_and_rbac
+    - commit: 10d79597
+    - file: modules/TradeFinance/Console/Commands/AuditClearingCommand.php
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_6_audit_commands_pass_on_t1_and_fail_on_corruption
     - akses: command clearing:audit
-    - (dibatalkan) gate: docs/gates/fase-83.md
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
+- [x] 83.7 Quality gate Fase 83
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: dokumen
+    - commit: 10d79597
+    - file: docs/dor/p3-3-fase-83.md
+    - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_5_anti_idor_on_clearing_escrow
+    - akses: command clearing:audit
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
 
 ### Register Minus Fase 83
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
 |---|---|---|---|---|---|
-| — | — | Nihil (seluruh deliverable 83.1–83.7 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+| RM-83-01 | 83.1, 83.3 | Parameter harga sertifikat CBAM (`tf_cbam_parameters`) berlabel S2 dan on-ramp likuiditas USDT menggunakan simulasi internal S3 (belum terhubung ke jaringan blockchain publik atau registri otoritas CBAM Uni Eropa eksternal) | Hanya memengaruhi integrasi keluar jaringan; perhitungan emisi tertanam K7, verifikasi hash rantai custody K6, dan buku besar escrow double-entry telah berjalan penuh secara deterministik | P3 | Integrasi gateway settlement eksternal dan feed harga otoritas CBAM resmi pada fase konektor eksternal produksi |
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
 > **Status audit:** 🔵 SELESAI VERTICAL SLICE (2026-11-04) · Dipulihkan audit forensik F-03.
