@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Modules\Governance\Application\Services;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Epc\Contracts\ProjectDraftFactory;
+use Modules\Governance\Contracts\ProposalDirectory;
 use Modules\Governance\Domain\Models\GovProposal;
 use Modules\Governance\Domain\Models\GovVote;
 use Modules\Governance\Domain\Models\GovVoterWeight;
@@ -17,8 +19,13 @@ use Modules\Shared\Domain\Algorithms\Hash\MerkleCertificateVerifier;
 use Modules\Shared\Domain\Algorithms\Hash\MerkleTree;
 use RuntimeException;
 
-final class DaoGovernanceService
+final class DaoGovernanceService implements ProposalDirectory
 {
+    public function getRecentProposals(int $limit = 10): Collection
+    {
+        return GovProposal::with('votes')->latest()->take($limit)->get();
+    }
+
     public function __construct(
         protected MerkleTree $merkleTree,
         protected MerkleCertificateVerifier $merkleVerifier,
