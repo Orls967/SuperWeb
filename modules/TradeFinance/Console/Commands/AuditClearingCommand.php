@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\TradeFinance\Console\Commands;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Esg\Contracts\VerifiedEmissionReader;
+use Modules\Logistics\Contracts\CustodyVerifier;
+use Modules\TradeFinance\Application\Services\Clearing\CbamDeclarationService;
 
 /**
  * 83.6 Audit Cross-border Clearing House: reconcile escrow crypto ledger balances,
@@ -68,6 +73,64 @@ class AuditClearingCommand extends Command
         if ($invalidCbam > 0) {
             $rows[] = ['clearing.invalid_cbam_emissions', '0', (string) $invalidCbam, (string) $invalidCbam, 'SELISIH'];
             $issues++;
+        }
+
+        // 5. D83-4 Escrow USDT per L/C: saldo akun escrow = Σ escrow terbuka; escrow dirilis = 0
+        if (Schema::hasTable('tf_clearing_escrows') && Schema::hasTable('bank_ledger_accounts')) {
+            $custody = app(CustodyVerifier::class);
+            $escrows = DB::table('tf_clearing_escrows')->orderBy('id')->get();
+            $sumOpen = 0;
+
+            foreach ($escrows as $escrow) {
+                $expected = $escrow->status === 'DEPOSITED' ? (int) $escrow->usdt_micro : 0;
+                $sumOpen += $expected;
+                $row = LedgerAccount::query()->where('code', "tf:escrow:{$escrow->letter_of_credit_id}:USDT")->first();
+                $actual = (int) ($row->cached_balance ?? 0);
+
+                if ($expected !== $actual) {
+                    $rows[] = ["clearing.escrow_usdt_mismatch {$escrow->escrow_code}", (string) $expected, (string) $actual, (string) abs($expected - $actual), 'SELISIH'];
+                    $issues++;
+                }
+
+                // Σ rilis = Σ BL/POD terverifikasi: hitung ulang lewat K6 (hash harus ada dan rantai custody valid)
+                if ($escrow->status === 'RELEASED') {
+                    $verified = $escrow->release_document_hash === null
+                        ? null
+                        : $custody->verifyDocumentHash((string) $escrow->release_document_type, (string) $escrow->release_document_hash);
+                    if ($verified === null || ! $verified['chain_valid']) {
+                        $rows[] = ["clearing.release_not_verified {$escrow->escrow_code}", '1', '0', '1', 'SELISIH'];
+                        $issues++;
+                    }
+                }
+            }
+
+            $openLedger = (int) LedgerAccount::query()->where('code', 'like', 'tf:escrow:%:USDT')->sum('cached_balance');
+            if ($sumOpen !== $openLedger) {
+                $rows[] = ['clearing.escrow_usdt_total', (string) $sumOpen, (string) $openLedger, (string) abs($sumOpen - $openLedger), 'SELISIH'];
+                $issues++;
+            }
+        }
+
+        // 6. D83-3 Sertifikat CBAM per kontainer: hitung ulang emisi (K7) dan hash sertifikat
+        if (Schema::hasTable('tf_cbam_declarations')) {
+            $reader = app(VerifiedEmissionReader::class);
+            foreach (DB::table('tf_cbam_declarations')->orderBy('id')->get() as $d) {
+                $recomputed = CbamDeclarationService::embeddedMilliTco2e((int) $d->net_mass_kg, (string) $d->specific_t_co2e_per_t);
+                $source = $reader->specificEmissionPerTonne($d->product_code, $d->origin_country, CarbonImmutable::parse($d->declared_at, 'UTC'));
+                $sourceOk = $source !== null && (string) $source['t_co2e_per_t'] === number_format((float) $d->specific_t_co2e_per_t, 6, '.', '');
+                $hash = CbamDeclarationService::certificateHash([
+                    'certificate_number' => $d->certificate_number, 'container_number' => $d->container_number,
+                    'product_code' => $d->product_code, 'origin_country' => $d->origin_country, 'net_mass_kg' => (int) $d->net_mass_kg,
+                    'specific_t_co2e_per_t' => number_format((float) $d->specific_t_co2e_per_t, 6, '.', ''),
+                    'verification_ref' => $d->verification_ref, 'embedded_milli_tco2e' => (int) $d->embedded_milli_tco2e,
+                    'parameter_version' => $d->parameter_version, 'levy_idr' => (int) $d->levy_idr, 'document_checksum' => $d->document_checksum,
+                ]);
+
+                if ($recomputed !== (int) $d->embedded_milli_tco2e || ! $sourceOk || $hash !== $d->certificate_hash) {
+                    $rows[] = ["clearing.cbam_certificate_mismatch {$d->certificate_number}", (string) $recomputed, (string) $d->embedded_milli_tco2e, (string) abs($recomputed - (int) $d->embedded_milli_tco2e), 'SELISIH'];
+                    $issues++;
+                }
+            }
         }
 
         $this->table(

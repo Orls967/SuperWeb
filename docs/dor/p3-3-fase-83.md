@@ -1,0 +1,38 @@
+# Definition of Ready (DoR) — Fase 83: Clearing House Stablecoin & Sertifikasi CBAM (P3.3)
+
+#### DoR Fase 83 (Item 83.1–83.7) — Cross-Border Clearing House, Stablecoin Escrow & CBAM Engine Vertical Slice
+- **Disetujui pemilik:** Internal Gate G6-P3 (Pelaksana Perdagangan & Keuangan)
+- **Tujuan bisnis (1–2 kalimat):** Mengoperasikan *clearing house* lintas batas berbasis stablecoin (USDT micro-unit) yang mengunci dana importir di akun escrow L/C dan hanya merilis pembayaran ke eksportir secara otomatis satu kali setelah hash dokumen pengapalan (Bill of Lading/POD) terverifikasi valid di rantai custody modul Logistics via kontrak K6 (`CustodyVerifier`), mencatat revaluasi selisih kurs IDR/USDT ke buku besar Treasury, serta menerbitkan sertifikat deklarasi emisi tertanam CBAM (*Carbon Border Adjustment Mechanism*) yang tak-terubah (*immutable*) berdasarkan faktor emisi spesifik terverifikasi dari modul Esg via kontrak K7 (`VerifiedEmissionReader`), lengkap dengan audit dua sumber `clearing:audit` dan `tf:audit` berselisih nol.
+- **Kutipan Dokumen Rujukan:**
+  - `docs/KONSEP.md` §7A (baris 858–861): *Cross-Border Clearing House* menyelesaikan transaksi dagang multi-valuta dengan jaminan kriptografi dan kepatuhan emisi karbon lintas batas (CBAM).
+  - `docs/KONSEP.md` §7C (baris 867–871): Alur escrow L/C stablecoin yang terikat ke bukti pengapalan terverifikasi dan sertifikasi emisi karbon produk ekspor.
+  - `docs/KONSEP.md` §7F Slice 1 & Slice 2 (baris 884–896):
+    - Slice 1: Clearing & Escrow Stablecoin — setoran USDT (`wallet:user:{importir}:USDT` $\to$ `tf:escrow:{lc}:USDT`), verifikasi hash dokumen BL/POD melalui `Modules\Logistics\Contracts\CustodyVerifier`, rilis sekali saja ke `wallet:user:{eksportir}:USDT` untuk pasangan `(lc_id, document_sha256)`, dan revaluasi kurs IDR/USDT dari `Modules\Crypto\Contracts\PriceFeed` ke `trs:fx_gain_loss:IDR` vs `tf:fx_position:IDR`.
+    - Slice 2: Deklarasi & Sertifikat CBAM — perhitungan emisi tertanam ($\text{massa ton} \times \text{emisi spesifik K7}$, pembulatan `HalfUp` 3 desimal tCO2e / integer milli-tCO2e), penolakan keras bila data emisi terverifikasi K7 belum tersedia, penomoran sertifikat gapless via `DocumentNumberingInterface`, penyimpanan payload sertifikat di `DocumentStoreInterface`, dan larangan perubahan pasca-terbit.
+    - Rute wajib: `/trade-finance/clearing` (`tf_officer`, `importer`, `exporter`) dan `/trade/cbam` (`compliance_officer`).
+    - Audit wajib: `clearing:audit` dan `tf:audit`.
+  - `docs/KONSEP.md` §A1 (baris 20–105): Prefiks modul `TradeFinance` (`tf_`), `Logistics` (`lgx_`), `Esg` (`esg_`), dan `Treasury` (`trs_`).
+  - `docs/KONSEP.md` §A2 & §A3 (baris 108–165): Larangan float uang dan kuantitas; seluruh saldo USDT disimpan dalam integer micro-USDT ($1\text{ USDT} = 10^6\text{ micro-USDT}$), massa dalam integer kilogram, dan emisi CBAM dalam integer milli-tCO2e ($1\text{ tCO2e} = 1.000\text{ milli-tCO2e}$) dengan `BigRational` + `RoundingMode::HalfUp`.
+  - `docs/KONSEP.md` §A4 (baris 181–210): Idempotency key deterministik pada setiap mutasi finansial dan penerbitan sertifikat.
+  - `docs/KONSEP.md` §A10 (Katalog Kontrak G6): K6 `CustodyVerifier` (`Modules\Logistics\Contracts\CustodyVerifier`) beserta event `lgx.custody.bl_verified.v1` dan K7 `VerifiedEmissionReader` (`Modules\Esg\Contracts\VerifiedEmissionReader`).
+  - `docs/PROGRESS.md` Fase 83 item 83.1–83.7 (baris 8794–8868).
+- **Modul pemilik & prefiks:**
+  - Modul Utama: `TradeFinance` (`tf_`).
+  - Modul Kontrak Lintas Modul (Aditif): `Logistics` (`lgx_`) untuk K6 `CustodyVerifier`, `Esg` (`esg_`) untuk K7 `VerifiedEmissionReader`, dan `Treasury` (`trs_`) untuk akun `trs:fx_gain_loss:IDR`.
+- **Prasyarat & status:**
+  - PR [G6-P3.1] (#58) dan PR [G6-P3.2] (#59) telah merged ke `master`.
+  - Kontrak `PriceFeed` (`Modules\Crypto\Contracts\PriceFeed`) telah mendukung simbol `'USDT'`.
+  - Kontrak `DocumentNumberingInterface` dan `DocumentStoreInterface` tersedia di modul Shared/Core.
+- **Item yang dikerjakan sesi ini:**
+  - D83-1 (`d83-1`): Kontrak K6 `CustodyVerifier` di modul Logistics yang memverifikasi ulang keutuhan hash-chain `lgx_custody_logs` untuk dokumen `BL`/`POD` dan memancarkan event `lgx.custody.bl_verified.v1` ke `EventSpineInterface` pada verifikasi valid pertama.
+  - D83-2 (`d83-2`): Kontrak K7 `VerifiedEmissionReader` di modul Esg beserta tabel `esg_verified_product_emissions` untuk menyajikan faktor emisi spesifik terverifikasi (`milli_tco2e_per_tonne`) berdasarkan kode produk/HS, negara asal, dan masa berlaku efektif.
+  - D83-3 (`d83-3`): Mesin Escrow Stablecoin (`ClearingEscrowService`) untuk setoran USDT (`wallet:user:{importir}:USDT` $\to$ `tf:escrow:{lc}:USDT`), rilis otomatis satu kali ke `wallet:user:{eksportir}:USDT` pasca-verifikasi K6, revaluasi selisih kurs IDR/USDT ke `trs:fx_gain_loss:IDR` vs `tf:fx_position:IDR`, serta penegakan idempotensi dan anti-IDOR antara importir/eksportir.
+  - D83-4 (`d83-4`): Mesin Deklarasi & Sertifikat CBAM (`CbamDeclarationService`) dengan perhitungan eksak `BigRational` (`RoundingMode::HalfUp` ke 3 desimal tCO2e), nomor sertifikat gapless (`DocumentNumberingInterface`), penyimpanan dokumen (`DocumentStoreInterface`), immutabilitas model `CbamDeclaration`, serta perluasan `clearing:audit` dan `tf:audit`.
+- **Rute & role:**
+  - `/trade-finance/clearing` (`tf_officer`, `importer`, `exporter`, `admin`, `auditor`, `treasury`)
+  - `/trade-finance/clearing/deposit` (`importer`, `tf_officer`, `admin`, `treasury`)
+  - `/trade-finance/clearing/escrows/{escrow}` (`tf_officer`, `importer`, `exporter`, `admin`, `auditor`, `treasury` — dengan otorisasi `ClearingEscrowPolicy` anti-IDOR untuk `importer`/`exporter`)
+  - `/trade-finance/clearing/escrows/{escrow}/release` dan `/revalue` (`tf_officer`, `admin`, `treasury`)
+  - `/trade/cbam` (`compliance_officer`, `admin`, `auditor`, `tf_officer`) dan `POST /trade/cbam/declarations` (`compliance_officer`, `admin`)
+- **Item yang ditunda (Register Minus):**
+  - Nihil untuk deliverable vertikal Slice 1–2 Fase 83.

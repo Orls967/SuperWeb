@@ -2329,3 +2329,25 @@
   - Kontrak K13 `ClauseTemplateReader` terikat dan teruji di modul Contract.
   - Acceptance test `tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php` memverifikasi 6 skenario kritis.
   - Command audit `bidding:audit` membuktikan 0 selisih dan menolak anomali pada rekaman terkorupsi.
+
+<a id="2026-11-04-g6-p3-clearing-cbam-fase-83"></a>
+<a id="d83-1"></a>
+<a id="d83-2"></a>
+<a id="d83-3"></a>
+<a id="d83-4"></a>
+## 2026-11-04: [G6-P3.3] Clearing House Stablecoin USDT, Verifikasi Custody K6 & Sertifikasi CBAM K7 (Fase 83, D83-1..D83-4)
+- **Anchor:** `2026-11-04-g6-p3-clearing-cbam-fase-83` / `d83-1` / `d83-2` / `d83-3` / `d83-4`
+- **Context:**
+  - Settlement perdagangan lintas batas berbasis L/C memerlukan mekanisme escrow stablecoin (USDT) yang tidak dapat dicairkan secara prematur maupun dicairkan ganda, melainkan hanya dapat dirilis ke eksportir setelah dokumen pengapalan (`BL`/`POD`) terbukti utuh di rantai custody modul Logistics.
+  - Fluktuasi kurs IDR/USDT antara saat penyetoran escrow dan penilaian ulang harus dicatat secara transparan ke akun selisih kurs buku besar Treasury tanpa menggunakan floating-point.
+  - Ekspor komoditas ke yurisdiksi dengan regulasi *Carbon Border Adjustment Mechanism* (CBAM) menuntut sertifikat deklarasi emisi tertanam yang dihitung secara deterministik dari faktor emisi spesifik terverifikasi modul Esg dan tidak boleh diubah setelah diterbitkan.
+- **Decision:**
+  1. D83-1: Kontrak K6 `Modules\Logistics\Contracts\CustodyVerifier` diimplementasikan oleh `CustodyVerifierService` untuk menghitung ulang hash-chain `lgx_custody_logs` pada dokumen pengapalan (`DOC_BL`/`DOC_POD`) dan memancarkan event `lgx.custody.bl_verified.v1` ke `EventSpineInterface` pada verifikasi valid pertama.
+  2. D83-2: Kontrak K7 `Modules\Esg\Contracts\VerifiedEmissionReader` diimplementasikan oleh `VerifiedEmissionReaderService` di atas tabel `esg_verified_product_emissions` untuk menyajikan faktor emisi spesifik produk per ton (`milli_tco2e_per_tonne`) berdasarkan kode produk, negara asal, dan masa berlaku efektif.
+  3. D83-3: `ClearingEscrowService` membukukan setoran USDT (`wallet:user:{importir}:USDT` $\to$ `tf:escrow:{lc}:USDT` dalam integer micro-USDT), memvalidasi rilis melalui K6 dengan indeks unik `(lc_id, verified_document_sha256)` agar pencairan ke `wallet:user:{eksportir}:USDT` terjadi tepat satu kali, serta membukukan selisih revaluasi kurs dari `PriceFeed` ke `trs:fx_gain_loss:IDR` vs `tf:fx_position:IDR`.
+  4. D83-4: `CbamDeclarationService` menghitung emisi tertanam dengan `BigRational` (`RoundingMode::HalfUp` ke 3 desimal tCO2e / integer `milli_tco2e`), menolak deklarasi apabila faktor emisi K7 tidak tersedia, menerbitkan nomor sertifikat gapless melalui `DocumentNumberingInterface`, menyimpan dokumen di `DocumentStoreInterface`, mengunci model `CbamDeclaration` sebagai *immutable*, serta memverifikasi seluruh invarian melalui `clearing:audit` dan `tf:audit`.
+- **Verification:**
+  - Vektor wajib CBAM: massa $20.000\text{ kg}$ ($20\text{ t}$) $\times$ emisi spesifik $1,85\text{ tCO2e/t}$ ($1.850\text{ milli-tCO2e/t}$) $\implies 37.000\text{ milli-tCO2e} = 37,000\text{ tCO2e}$.
+  - Kontrak K6 `CustodyVerifier` dan K7 `VerifiedEmissionReader` terdaftar di ServiceProvider masing-masing.
+  - Acceptance test `tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php` memverifikasi 6 skenario (RBAC, E2E escrow + K6 + revaluasi kurs + idempotensi, jalur galat rantai custody rusak & K7 hilang, vektor CBAM + immutabilitas, anti-IDOR, dan audit `clearing:audit` + `tf:audit` di atas skala T1).
+

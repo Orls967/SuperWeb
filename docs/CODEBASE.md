@@ -496,7 +496,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 16 | **Egy** | `egy_` | 6 |
 | 17 | **EnterpriseFinance** | `ef_` | 2 |
 | 18 | **Epc** | `epc_` | 1 |
-| 19 | **Esg** | `esg_` | 4 |
+| 19 | **Esg** | `esg_` | 5 |
 | 20 | **Fashion** | `fsh_` | 1 |
 | 21 | **Finance** | `fin_` | 1 |
 | 22 | **Food** | `food_` | 1 |
@@ -530,13 +530,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 50 | **Supplier** | `sup_` | 3 |
 | 51 | **Tlx** | `tlx_` | 4 |
 | 52 | **Trade** | `trd_` | 3 |
-| 53 | **TradeFinance** | `tf_` | 3 |
+| 53 | **TradeFinance** | `tf_` | 4 |
 | 54 | **Treasury** | `trs_` | 1 |
 | 55 | **Vending** | `vnd_` | 3 |
 | 56 | **Venue** | `ven_` | 6 |
 | 57 | **Wealth** | `wm_` | 2 |
 | 58 | **Wms** | `wms_` | 2 |
-| | **Total: 58 Modul** | | **609 Migrasi** |
+| | **Total: 58 Modul** | | **611 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -594,13 +594,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
-| **TradeFinance** | 12 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
+| **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 4 | `treasury`, `treasury/fx-revalue`, `treasury/cash-pools/{cashPool}/sweep` ... | web, auth, role:admin,auditor,treasury |
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1074 Rute** | | |
+| **Total** | **1080 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -811,11 +811,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Rwa** | `RwaAccounts` | 12 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
 | **Tlx** | `TlxAccounts` | 14 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
-| **TradeFinance** | `TradeFinanceAccounts` | 3 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
-| **Treasury** | `TreasuryAccounts` | 4 | `TRS_USD_SRC`, `TRS_USD_DEST` ... |
+| **TradeFinance** | `TradeFinanceAccounts` | 5 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
+| **Treasury** | `TreasuryAccounts` | 5 | `TRS_USD_SRC`, `TRS_USD_DEST` ... |
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 33 Registry** | | **365 Akun** | |
+| **Total: 33 Registry** | | **368 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

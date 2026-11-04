@@ -290,7 +290,13 @@ class TradeFinanceService
         // Validasi invariant loan: repaid tidak melampaui 150% principal
         $invalidLoans = TradeLoan::whereRaw('repaid_amount_idr > principal_amount_idr * 1.5')->count();
 
-        $discrepancyCount = $invalidClaims + $invalidLoans;
+        // Validasi invariant clearing escrow: tidak ada escrow RELEASED tanpa release_document_hash
+        $invalidClearing = DB::table('tf_clearing_escrows')
+            ->where('status', 'RELEASED')
+            ->whereNull('release_document_hash')
+            ->count();
+
+        $discrepancyCount = $invalidClaims + $invalidLoans + $invalidClearing;
 
         return [
             'status' => ($discrepancyCount === 0) ? 'OK' : 'DISCREPANCY',

@@ -40,6 +40,14 @@ final class TreasuryAccounts
                 'allow_negative' => true,
             ],
             [
+                // Untung/rugi kurs bersih: tanda ditentukan arah selisih, sehingga boleh negatif.
+                'code' => 'trs:fx_gain_loss:IDR',
+                'name' => 'Treasury FX Gain/Loss IDR',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'treasury:intercompany_sweep:default:IDR',
                 'name' => 'Treasury Intercompany Sweep Default',
                 'kind' => AccountKind::LIABILITY,
