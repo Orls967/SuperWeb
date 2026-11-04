@@ -1,5 +1,5 @@
 {
-    "about": "Baseline ratchet allowlist konfigurasi config/modules.php (K-2, KONSEP §A14.1). Jumlah entri tidak boleh bertambah dari baseline 37aebb76 kecuali dicatat di approved_additions dengan anchor DECISIONS.md yang sah.",
+    "about": "Baseline ratchet allowlist konfigurasi config/modules.php (K-2, KONSEP \u00a7A14.1). Jumlah entri tidak boleh bertambah dari baseline 37aebb76 kecuali dicatat di approved_additions dengan anchor DECISIONS.md yang sah.",
     "baselines": {
         "table_prefixes": 58,
         "legacy_tables": 22,
@@ -48,6 +48,11 @@
             "key": "shared_tables",
             "decision": "DECISIONS.md#2026-10-30-pemulihan-baseline",
             "count": 5
+        },
+        {
+            "key": "mar_",
+            "module": "Marine",
+            "decision": "D22-1"
         }
     ]
 }

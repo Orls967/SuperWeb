@@ -23,6 +23,7 @@ use Modules\Hotel\Ledger\HotelTransactionTypes;
 use Modules\Insurance\Ledger\InsuranceTransactionTypes;
 use Modules\Logistics\Ledger\LogisticsTransactionTypes;
 use Modules\Manufacturing\Ledger\ManufacturingTransactionTypes;
+use Modules\Marine\Ledger\MarineTransactionTypes;
 use Modules\Med\Ledger\MedTransactionTypes;
 use Modules\Mining\Ledger\MiningTransactionTypes;
 use Modules\Mobility\Fleet\Ledger\FleetTransactionTypes;
@@ -61,6 +62,7 @@ final class TransactionTypeRegistry
         LogisticsTransactionTypes::class,
         ManufacturingTransactionTypes::class,
         MedTransactionTypes::class,
+        MarineTransactionTypes::class,
         MiningTransactionTypes::class,
         PricingTransactionTypes::class,
         ProptechTransactionTypes::class,

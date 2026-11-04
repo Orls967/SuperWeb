@@ -45,6 +45,7 @@ use App\Quality\Audit\Fixtures\LgxVerifyCustodyCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsCircularCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsColdChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
+use App\Quality\Audit\Fixtures\MarineAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MedAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgAuditCostingCorruptionFixture;
 use App\Quality\Audit\Fixtures\MfgQmsAuditCorruptionFixture;
@@ -146,6 +147,7 @@ final class AuditCommandRegistry
             'prp:audit' => new PrpAuditCorruptionFixture,
             'prp:audit-bim' => new ProptechBimCorruptionFixture,
             'prp:audit-flex' => new ProptechFlexCorruptionFixture,
+            'mar:audit' => new MarineAuditCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'prt:audit' => new PrtAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
