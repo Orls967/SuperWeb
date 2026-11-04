@@ -57,7 +57,8 @@
         {
             "date": "2026-11-05",
             "decision": "DECISIONS.md#2026-11-05-modul-proservices-lini-25-g6-p51",
-            "entries": "tambah prefiks psv ProServices"
+            "key": "table_prefixes",
+            "count": 1
         }
     ]
 }

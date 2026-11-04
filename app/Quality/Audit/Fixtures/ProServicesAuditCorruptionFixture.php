@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Quality\Audit\Fixtures;
 
-use Illuminate\Database\Seeder;
+use App\Quality\Audit\CorruptionFixture;
 use Illuminate\Support\Facades\DB;
 use Modules\ProServices\Domain\Models\ProServicesProject;
 
-final class ProServicesAuditCorruptionFixture extends Seeder
+class ProServicesAuditCorruptionFixture implements CorruptionFixture
 {
-    public function run(): void
+    public function command(): string
     {
-        // Masukkan manipulasi data: timesheet ditandai billed tanpa approved
+        return 'psv:audit';
+    }
+
+    public function corrupt(): string
+    {
         $project = ProServicesProject::first();
         if (! $project) {
             $projectId = DB::table('psv_projects')->insertGetId([
@@ -47,11 +51,13 @@ final class ProServicesAuditCorruptionFixture extends Seeder
             'hours_worked' => 10,
             'description' => 'Unapproved but billed corruption fixture',
             'hourly_rate_idr' => 100000,
-            'status' => 'submitted', // Belum disetujui!
-            'is_billed' => true,      // Sengaja ditagihkan!
+            'status' => 'submitted', // Belum disetujui
+            'is_billed' => true,      // Sengaja ditagihkan
             'is_reversal' => false,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        return 'timesheet belum disetujui';
     }
 }

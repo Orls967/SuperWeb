@@ -177,7 +177,8 @@ final class ProServicesAcceptanceTest extends TestCase
         $this->assertSame(0, $exitClean);
 
         // Fixture corrupted run
-        Artisan::call('db:seed', ['--class' => 'App\\Quality\\Audit\\Fixtures\\ProServicesAuditCorruptionFixture']);
+        $fixture = new \App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture();
+        $fixture->corrupt();
         $exitCorrupt = Artisan::call('psv:audit');
         $this->assertNotSame(0, $exitCorrupt);
     }
