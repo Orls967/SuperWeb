@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Edu\Contracts\CredentialVerifier;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hcm\Domain\Models\Gig\GovBountyPof;
@@ -18,9 +19,11 @@ use RuntimeException;
 class InternalGigEconomyService
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
+        protected ?LedgerService $ledgerService = null,
+        protected ?CredentialVerifier $credentialVerifier = null
     ) {
         $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+        $this->credentialVerifier = $credentialVerifier ?? (app()->bound(CredentialVerifier::class) ? app(CredentialVerifier::class) : null);
     }
 
     /**
@@ -87,9 +90,13 @@ class InternalGigEconomyService
                 throw new RuntimeException("Bounty is no longer open ({$lockedBounty->status})");
             }
 
-            // Check certification
-            if ($lockedBounty->required_certification && ! in_array($lockedBounty->required_certification, $employeeCertifications, true)) {
-                throw new RuntimeException("Employee lacks required certification: {$lockedBounty->required_certification}");
+            // Check certification via array or Edu CredentialVerifier
+            if ($lockedBounty->required_certification) {
+                $hasInArray = in_array($lockedBounty->required_certification, $employeeCertifications, true);
+                $hasInVerifier = $this->credentialVerifier?->hasValid($employeeId, $lockedBounty->required_certification) ?? false;
+                if (! $hasInArray && ! $hasInVerifier) {
+                    throw new RuntimeException("Employee lacks required certification: {$lockedBounty->required_certification}");
+                }
             }
 
             // 85.4 Safety: High-risk work permit check (Fase 40.6)

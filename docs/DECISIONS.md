@@ -2399,5 +2399,23 @@
      - Alokasi biaya tenaga kerja langsung ke Manufaktur: Debit `mfg:labor_wip:IDR`, Kredit `expense:hcm:labor_absorbed:IDR`.
   6. D58-6: Idempotensi penggajian via command `hcm:run-payroll {periode}` (menjalankan periode yang sama 2x tidak menduplikasi slip maupun jurnal). Command `hcm:audit` memverifikasi konsistensi baris payroll vs posting ledger dan integritas slip gaji.
 
+<a id="g6-p4-d85"></a>
+<a id="d85-1"></a>
+<a id="d85-2"></a>
+<a id="d85-3"></a>
+<a id="d85-4"></a>
+## 2026-11-05: [G6-P4.2] Gig Internal — Bounty Marketplace, Kualifikasi Edu, Bipartite Matching Hungarian & Payroll Ledger Integration (Fase 85, D85-1..D85-4)
+- **Anchor:** `2026-11-05-g6-p4-gig-internal-fase-85` / `g6-p4-d85` / `d85-1` / `d85-2` / `d85-3` / `d85-4`
+- **Context:**
+  - Fase 85 internal gig economy (talent marketplace & shift bounty) mengatur mobilisasi tenaga kerja fleksibel antar unit bisnis tanpa melanggar batas legal jam kerja UU Ketenagakerjaan (maks 8 jam/hari, maks 14 jam lembur/minggu), memvalidasi sertifikasi keahlian lintas modul via kontrak `Modules\Edu\Contracts\CredentialVerifier`, mengoptimalkan alokasi bounty dengan bipartite matching berbobot, dan mengintegrasikan pembayaran upah lembur secara idempoten ke ledger.
+- **Decision:**
+  1. D85-1: Skema tabel gig bounty menggunakan prefix `hcm_` (`hcm_bounties`, `hcm_bounty_claims`, `hcm_bounty_pofs`), menggantikan nama lama `gov_*` melalui migrasi rename dengan backward compatibility mapping pada Eloquent models `GovBounty`, `GovBountyClaim`, dan `GovBountyPof`.
+  2. D85-2: Verifikasi sertifikasi penugasan terintegrasi dengan kontrak `Modules\Edu\Contracts\CredentialVerifier::hasValid(int|string $userId, string $credentialCode, ?CarbonImmutable $at = null)`. Karyawan tanpa kredensial aktif otomatis ditolak saat klaim bounty bersyarat sertifikasi. Batas akumulasi jam kerja harian dan lembur mingguan ditegakkan secara preventif.
+  3. D85-3: Layanan `GigBountyMatchingService` mengimplementasikan bipartite matching menggunakan `Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver` + `AssignmentCertificateVerifier`. Matriks skor kecocokan ditransformasi menjadi minimasi biaya $C_{ij} = \max(\text{score}) - \text{score}_{ij}$, menghasilkan penugasan deterministik dengan sertifikat dual bounds terverifikasi.
+  4. D85-4: Integrasi POF (Proof of Work) supervisor approval dengan akuntansi double-entry: upah lembur 1,5x dihitung dan diposting ke ledger secara idempoten (`GIG-PAY-{pof_code}`): Debit biaya tenaga kerja gig `hcm:gig_cost_expense:IDR` (atau `expense:{cost_center}:gig_labor:IDR`) dan Kredit kewajiban pembayaran bounty `hcm:bounty_payout:IDR` (atau `hcm:salary_payable:{employee}:IDR`). Validasi anti self-approval supervisor dan pencegahan double-payout ditegakkan.
+- **Verification:**
+  - Acceptance test `tests/Acceptance/Gig/GigInternalAcceptanceTest.php` memverifikasi 6 skenario: RBAC & anti-IDOR protection, integrasi kualifikasi Edu CredentialVerifier, bipartite Hungarian matching dengan dual certificate, E2E POF approval & ledger idempotensi, eksekusi seeder skala T1 (200 bounty + 50 klaim), serta rekonsiliasi audit `hcm:audit` dan deteksi sabotase diskrepansi.
+
+
 
 
