@@ -16,6 +16,7 @@ class BidSubmission extends Model
         'bid_run_id',
         'submitted_bid_price_idr',
         'requires_four_eyes',
+        'proposed_by_user_id',
         'approved_by_user_id',
         'approved_at',
         'status',

@@ -8861,86 +8861,78 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 | — | — | Nihil (seluruh deliverable 83.1–83.7 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
 
 ## FASE 84 — AI CONTRACT BIDDING AGENT (LELANG PENGADAAN OTOMATIS)
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 SELESAI VERTICAL SLICE (2026-11-04) · Dipulihkan audit forensik F-03.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Procurement + Trade (asisten penawaran) · **Prasyarat:** Fase 64 ✅ · **Acuan:** KONSEP 7F slice 3
 > **Jalan pintas terlarang di fase ini:** usulan AI langsung submit tanpa approval; tanpa snapshot input (tidak bisa direkonstruksi) — ditambah seluruh X1–X25.
-- [ ] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
+- [x] 84.1 Tabel `trd_bidding_agents` (konfigurasi per entitas: komoditas, batas harga, margin target, risiko maks), `trd_bid_runs` (lelang yang dipantau), `trd_bid_submissions` (penawaran + jejak persetujuan)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 86ff6761
+    - commit: cffbf647
     - file: modules/Trade/database/migrations/2026_10_19_840200_add_feedback_reason_to_trd_bid_submissions.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_1_bidding_agent_configuration_and_boundaries
     - akses: table trd_bidding_agents, trd_bid_runs, trd_bid_submissions
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
+- [x] 84.2 **Agent merayapi**: harga komoditas global (feed simulasi), riwayat menang/kalah lelang (Fase 33.3 tender), skor risiko buyer (Party credit Fase 27.7), biaya logistik (Fase 80.5 rate card) → menghitung harga penawaran optimal (deterministik, dapat diulang → selaras `ai:audit` Fase 64)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 86ff6761
+    - commit: cffbf647
+    - file: modules/Shared/Domain/Algorithms/Bidding/ExpectedProfitBidOptimizer.php
+    - test: tests/Unit/Algorithms/ExpectedProfitBidOptimizerTest.php::vektor prompt d84-2 expected profit bid optimizer
+    - akses: route POST /procurement/bid-assistant/evaluate [role: admin, procurement]
+- [x] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: fitur
+    - commit: cffbf647
+    - file: modules/Contract/Application/Services/ClauseTemplateReaderService.php
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_2_deterministic_optimizer_evaluates_bid_and_clause_drafting
+    - akses: route POST /procurement/bid-assistant/evaluate [role: admin, procurement]
+- [x] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: fitur
+    - commit: cffbf647
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
-    - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.3 **Draf klausul di modul Contract**: agent menyusun klausul komersial (termin, penalti, force majeure) dari library klausul Fase 28.2 → masuk status draft untuk review
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_4_four_eyes_approval_authorizes_submission
+    - akses: route POST /procurement/bid-assistant/submissions/{submission}/approve [role: admin, procurement_manager]
+- [x] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 86ff6761
+    - commit: cffbf647
     - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_2_deterministic_ai_bid_evaluation_and_clause_drafting
-    - akses: route POST /trade/bidding/runs [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.4 **Four-eyes wajib**: staf manusia membaca & menyetujui sebelum submit (ApprovalEngine Fase 26.9); tanpa persetujuan → submit ditolak sistem; batas nilai otomatis per reviewer
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_5_won_auction_issues_contract_and_ledger_commitment
+    - akses: route POST /procurement/bid-assistant/submissions/{submission}/result [role: admin, procurement]
+- [x] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 86ff6761
-    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
-    - akses: route POST /trade/bidding/submissions/{submission}/approve [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.5 Pasca-menang: kontrak terbit (state machine Fase 28.3) → commitment anggaran (Fase 54.1) → jadwal pengiriman via Logistics → penagihan sesuai termin; pasca-kalah: umpan balik model (win/loss tercatat)
+    - commit: cffbf647
+    - file: modules/Procurement/resources/views/procurement/bid-assistant/index.blade.php
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_4_four_eyes_approval_authorizes_submission
+    - akses: route GET /procurement/bid-assistant [role: admin, procurement, procurement_manager]
+- [x] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: fitur
-    - commit: 86ff6761
-    - file: modules/Trade/Application/Services/Bidding/AiBiddingAgentService.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_4_and_84_5_four_eyes_approval_mandatory_and_post_win_budget_commitment
-    - akses: route POST /trade/bidding/submissions/{submission}/result [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.6 Dashboard bid desk: lelang terpantau, rekomendasi tertunda, win rate, margin vs benchmark, biaya vs kompetitor (simulasi)
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: fitur
-    - commit: 86ff6761
-    - file: modules/Trade/resources/views/trade/bidding.blade.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_3_and_84_6_lost_auction_feedback_and_bid_desk_summary
-    - akses: route GET /trade/bidding [role: admin, auditor, procurement, treasury]
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.7 Tests: (a) submit tanpa approval ditolak (b) harga di luar batas agent ditolak (c) run agent deterministik dua kali identik (d) menang → kontrak + budget commitment konsisten (e) `ai:audit` = keputusan dapat direkonstruksi
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 86ff6761
-    - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_audit_command_and_corruption_detection
-    - (dibatalkan) gate: docs/gates/fase-84.md
-- [ ] 84.8 Quality gate Fase 84
+    - commit: cffbf647
+    - file: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_6_bidding_audit_verifies_two_sources_and_detects_corruption
+- [x] 84.8 Quality gate Fase 84
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: dokumen
-    - commit: 86ff6761
-    - file: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php
-    - test: modules/Trade/tests/Feature/Bidding/AiContractBiddingAgentTest.php::test_84_http_endpoints_and_rbac
+    - commit: cffbf647
+    - file: docs/design/p3-2-fase-84.md
+    - test: tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php::test_84_6_bidding_audit_verifies_two_sources_and_detects_corruption
     - akses: command bidding:audit
-    - (dibatalkan) gate: docs/gates/fase-84.md
 
 ### Register Minus Fase 84
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
 |---|---|---|---|---|---|
-| — | — | Nihil (seluruh deliverable 84.1–84.8 tuntas 100% dan terverifikasi di Gerbang 1–6) | Tidak ada dampak negatif | P3 | — |
+| RM-84-1 | 84.2 | Kurva distribusi penawaran kompetitor diambil dari sampel historis/simulasi lelang internal (S3) dan parameter elastisitas memakai tolok ukur industri (S2), bukan feed pasar real-time eksternal | Akurasi probabilitas menang bergantung pada kelengkapan data historis tender internal | P3 | Integrasi feed e-procurement eksternal pada fase konektor B2B lanjutan |
 
 ## PILAR 8 — TATA KELOLA, KORPORASI & INTEGRASI ENTERPRISE
 

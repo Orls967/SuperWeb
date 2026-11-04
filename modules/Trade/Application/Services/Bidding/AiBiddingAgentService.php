@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Trade\Application\Services\Bidding;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Contract\Contracts\ClauseTemplateReader;
+use Modules\Shared\Domain\Algorithms\Bidding\ExpectedProfitBidOptimizer;
 use Modules\Trade\Domain\Models\Bidding\BiddingAgent;
 use Modules\Trade\Domain\Models\Bidding\BidRun;
 use Modules\Trade\Domain\Models\Bidding\BidSubmission;
@@ -17,9 +20,11 @@ use RuntimeException;
 class AiBiddingAgentService
 {
     public function __construct(
-        protected ?LedgerService $ledgerService = null
+        protected ?LedgerService $ledgerService = null,
+        protected ?ClauseTemplateReader $clauseReader = null
     ) {
         $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+        $this->clauseReader = $clauseReader ?? (app()->bound(ClauseTemplateReader::class) ? app(ClauseTemplateReader::class) : null);
     }
 
     /**
@@ -52,13 +57,18 @@ class AiBiddingAgentService
 
     /**
      * 84.2 Deterministic AI evaluation run for tender auctions
+     *
+     * @param  list<int>|null  $competitorBids
      */
     public function runEvaluation(
         BiddingAgent $agent,
         string $tenderCode,
         int $commodityFeedPriceIdr,
         int $logisticsCostIdr,
-        float $buyerRiskScore
+        float $buyerRiskScore,
+        ?array $competitorBids = null,
+        int $stepIdr = 10_000_000,
+        int $minWinProbabilityBps = 3000
     ): BidRun {
         if ($commodityFeedPriceIdr <= 0 || $logisticsCostIdr < 0) {
             throw new InvalidArgumentException('Commodity and logistics costs must be positive');
@@ -70,21 +80,44 @@ class AiBiddingAgentService
 
         // Deterministic price calculation: cost = commodity + logistics
         $totalCost = $commodityFeedPriceIdr + $logisticsCostIdr;
-        $targetMarginMultiplier = 1.0 + ((float) $agent->target_margin_pct / 100.0);
-        $rawBid = (int) round($totalCost * $targetMarginMultiplier);
+
+        if ($competitorBids !== null && count($competitorBids) > 0) {
+            $minMarginBps = (int) round(((float) $agent->target_margin_pct) * 100);
+            $optimizer = new ExpectedProfitBidOptimizer;
+            $optResult = $optimizer->optimize(
+                costIdr: $totalCost,
+                competitorBids: $competitorBids,
+                stepIdr: $stepIdr,
+                minWinProbabilityBps: $minWinProbabilityBps,
+                minMarginBps: $minMarginBps,
+                priceFloorIdr: $agent->min_price_floor_idr,
+                priceCeilingIdr: $agent->max_price_ceiling_idr
+            );
+            $rawBid = $optResult->optimalPriceIdr;
+        } else {
+            $targetMarginMultiplier = 1.0 + ((float) $agent->target_margin_pct / 100.0);
+            $rawBid = (int) round($totalCost * $targetMarginMultiplier);
+        }
 
         // Clamp to agent configured boundaries
         if ($rawBid < $agent->min_price_floor_idr || $rawBid > $agent->max_price_ceiling_idr) {
             throw new RuntimeException("Optimal bid price ({$rawBid}) falls outside agent allowed boundaries [{$agent->min_price_floor_idr} - {$agent->max_price_ceiling_idr}]");
         }
 
-        // 84.3 Standard contract commercial clause drafts
+        // 84.3 Standard contract commercial clause drafts via K13 ClauseTemplateReader
         $clauses = [
             'payment_terms' => 'NET_30_LC',
             'delivery_incoterm' => 'FOB_JAKARTA',
             'penalty_rate_per_day' => '0.001',
             'force_majeure' => 'ICC_FORCE_MAJEURE_2020',
         ];
+
+        if ($this->clauseReader !== null) {
+            $templates = $this->clauseReader->templatesForCategory('COMMERCIAL_DEFAULT');
+            if ($templates !== []) {
+                $clauses['templates'] = array_map(fn (array $t): string => $t['code'], $templates);
+            }
+        }
 
         // Deterministic run code generation (A4 compliant)
         $entropy = hash('sha256', "{$agent->agent_code}:{$tenderCode}:{$commodityFeedPriceIdr}:{$logisticsCostIdr}");
@@ -109,7 +142,7 @@ class AiBiddingAgentService
     /**
      * Create draft submission requiring four-eyes approval
      */
-    public function prepareSubmission(BidRun $run): BidSubmission
+    public function prepareSubmission(BidRun $run, ?int $proposerUserId = null): BidSubmission
     {
         // Deterministic code generation (A4 compliant)
         $subEntropy = hash('sha256', "{$run->run_code}:SUB:{$run->id}");
@@ -120,6 +153,7 @@ class AiBiddingAgentService
             'bid_run_id' => $run->id,
             'submitted_bid_price_idr' => $run->optimal_bid_price_idr,
             'requires_four_eyes' => true,
+            'proposed_by_user_id' => $proposerUserId,
             'status' => 'PENDING_APPROVAL',
         ]);
     }
@@ -134,6 +168,10 @@ class AiBiddingAgentService
 
             if ($locked->status !== 'PENDING_APPROVAL') {
                 throw new RuntimeException("Cannot approve submission in status {$locked->status}");
+            }
+
+            if ($locked->proposed_by_user_id !== null && (int) $locked->proposed_by_user_id === $approverUserId) {
+                throw new RuntimeException('Pelanggaran Four-Eyes: Pengusul penawaran tidak boleh menyetujui penawarannya sendiri.');
             }
 
             $locked->update([
@@ -235,5 +273,35 @@ class AiBiddingAgentService
             'win_rate_percent' => $winRate,
             'total_won_value_idr' => $wonValueIdr,
         ];
+    }
+
+    public function getAgents(): Collection
+    {
+        return BiddingAgent::orderByDesc('created_at')->get();
+    }
+
+    public function getRecentRuns(int $limit = 50): Collection
+    {
+        return BidRun::with('agent')->orderByDesc('created_at')->limit($limit)->get();
+    }
+
+    public function getRecentSubmissions(int $limit = 50): Collection
+    {
+        return BidSubmission::with('run.agent')->orderByDesc('created_at')->limit($limit)->get();
+    }
+
+    public function findAgent(int $id): BiddingAgent
+    {
+        return BiddingAgent::findOrFail($id);
+    }
+
+    public function findRun(int $id): BidRun
+    {
+        return BidRun::findOrFail($id);
+    }
+
+    public function findSubmission(int $id): BidSubmission
+    {
+        return BidSubmission::findOrFail($id);
     }
 }

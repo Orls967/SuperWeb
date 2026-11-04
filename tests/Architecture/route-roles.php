@@ -1730,6 +1730,122 @@ return [
     'pricing.surge.calculate' => ['roles' => ['pricing_manager']],
     'pricing.ticks' => ['roles' => ['admin', 'auditor', 'procurement']],
     'pricing.ticks.store' => ['roles' => ['admin', 'procurement']],
+    'procurement.bid-assistant.index' => ['roles' => ['admin', 'procurement', 'procurement_manager']],
+    'procurement.bid-assistant.evaluate' => ['roles' => ['admin', 'procurement']],
+    'procurement.bid-assistant.prepare' => [
+        'roles' => ['admin', 'procurement'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
+    'procurement.bid-assistant.approve' => [
+        'roles' => ['admin', 'procurement_manager'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => true,
+                    'status' => 'PENDING_APPROVAL',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
+    'procurement.bid-assistant.result' => [
+        'roles' => ['admin', 'procurement'],
+        'params' => function () {
+            $agent = BiddingAgent::firstOrCreate(
+                ['agent_code' => 'AGT-ROUTE-TEST'],
+                [
+                    'entity_code' => 'ENT-001',
+                    'commodity_code' => 'COAL-GAR4200',
+                    'min_price_floor_idr' => 1000000,
+                    'max_price_ceiling_idr' => 1500000,
+                    'target_margin_pct' => 15.0,
+                    'max_risk_score' => 0.40,
+                    'status' => 'ACTIVE',
+                ]
+            );
+            $run = BidRun::firstOrCreate(
+                ['run_code' => 'RUN-ROUTE-TEST'],
+                [
+                    'bidding_agent_id' => $agent->id,
+                    'tender_reference_code' => 'TDR-ROUTE-001',
+                    'commodity_feed_price_idr' => 1100000,
+                    'estimated_logistics_cost_idr' => 50000,
+                    'buyer_risk_score' => 0.20,
+                    'optimal_bid_price_idr' => 1322500,
+                    'clause_drafts' => ['payment_terms' => 'LC_AT_SIGHT'],
+                    'evaluation_hash' => hash('sha256', 'RUN-ROUTE-TEST'),
+                ]
+            );
+            $submission = BidSubmission::firstOrCreate(
+                ['submission_code' => 'SUB-ROUTE-TEST'],
+                [
+                    'bid_run_id' => $run->id,
+                    'submitted_bid_price_idr' => 1322500,
+                    'requires_four_eyes' => true,
+                    'status' => 'PENDING_APPROVAL',
+                ]
+            );
+
+            return ['submission' => $submission->id];
+        },
+    ],
     'procurement.dashboard' => ['roles' => ['admin', 'procurement']],
     'procurement.pos.cancel' => ['roles' => ['admin', 'procurement'], 'params' => fn () => ['po' => 1]],
     'procurement.pos.close' => ['roles' => ['admin', 'procurement'], 'params' => fn () => ['po' => 1]],
