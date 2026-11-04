@@ -665,6 +665,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `group:audit` | `manual` | Audit intercompany transactions, elimination entries, loans, and transfer pricing margins |
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
+| `hcm:run-payroll` | `manual` | Menjalankan kalkulasi penggajian bulanan enterprise secara idempoten |
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, integritas subjek, dan rekonsiliasi dua-sumber rawat jalan |
 | `hotel:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `hotel:close-day` | `manual` | Menjalankan proses tutup hari (close-day) untuk properti hotel |
@@ -781,7 +782,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 174 Command** | **37 Terjadwal** | |
+| **Total: 175 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -796,7 +797,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
 | **Epc** | `EpcAccounts` | 8 | `asset:epc:construction_in_progress:IDR`, `ast:cip:default:IDR` ... |
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
-| **Hcm** | `HcmAccounts` | 15 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
+| **Hcm** | `HcmAccounts` | 17 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 39 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 7 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
@@ -820,6 +821,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 34 Registry** | | **372 Akun** | |
+| **Total: 34 Registry** | | **374 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
