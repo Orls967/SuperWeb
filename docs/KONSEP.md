@@ -104,6 +104,7 @@ Aturan: (1) satu prefiks = satu modul pemilik; (2) `Integration` hanya memiliki 
 | Hospital / Venue / Hotel / Mining | `hsp_` / `ven_` / `htl_` / `min_` | lini 9–12 | 🟠 | |
 | Egy / Tlx / Med / Edu / Ret | `egy_` / `tlx_` / `med_` / `edu_` / `ret_` | lini 13–17 | 🟠 | |
 | Integration | `intg_` | adapter eksternal | 🟠 | 857 tabel lain (`int_`, `global_`, `platform_`, `ops_`, `crm_`, `ai_`, …) diklasifikasi & dipindah ke modul pemilik (R4.4) |
+| Syariah | `syb_` | keuangan syariah (murabahah, mudharabah, qardhul hasan) | 🔵 | dibuka pada G6-P3.4 (Fase 161, `DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161`) |
 | Lini 18–30 | lihat §"Spesifikasi minimum lini 18–30" | | 🟠 | prefiks final diputuskan bersama penyelesaian irisan |
 
 ## A2. Ledger & uang

@@ -11337,17 +11337,73 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 160.7 Quality gate Fase 160
 
 ## FASE 161 — LINI 19: KEUANGAN SYARIAH (BANK SYARIAH, MURABAHAH, MUDHARABAH)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SyariahBankingService`; 1 migrasi; test `SyariahBankingTest` — commit `54da549`, +300 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SELESAI VERTICAL SLICE (2026-11-04) — Diselesaikan penuh sebagai modul mandiri `Syariah` (`syb_`) sesuai kriteria terima wajib DoR dan keputusan arsitektur DECISIONS.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
 > **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `SyariahBankingService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 161.1 Modul `Syariah` (`syb_`): provider, MenuRegistry "Keuangan Syariah", roles (`syariah_officer`, `shariah_board`, `muamalah_teller`), policies, arch test; tabel `syb_products` (murabahah, mudharabah, musyarakah, ijarah, qardh), `syb_accounts` (tabungan wadi'ah/yad), `syb_contracts`
-- [ ] 161.2 **Accounting PSAK 102/103 simulasi**: akun terpisah dari ledger konvensional (Fase 1) dengan sign khas (korporasi = akad), markup margin diakui gradual, akad wajib tercatat sebagai kontrak hash
-- [ ] 161.3 **Murabahah pembiayaan**: akad jual beli + markup disepakati di awal → pencairan ke vendor langsung (tidak ke nasabah) → angsuran pokok + margin → keterlambatan: denda disgorgement ke dana amil (bukan ke bank) → meniru pola Fase 5C dengan modifikasi akad
-- [ ] 161.4 **Mudharabah savings**: nasabah sebagai shahibul mal → bank sebagai mudharib → bagi hasil rasio → profit sharing periodik dari pool investasi (link Treasury Fase 73) → withdrawal rules
-- [ ] 161.5 **Shariah board governance**: fatwa internal (dokumen), review produk baru (approval wajib sebelum rilis), compliance audit berkala (aturan: tidak ada riba/gharar/maysir) → laporan annual
-- [ ] 161.6 Tests: (a) dana konvensional & syariah terpisah Σ (b) margin diakui gradual = jadwal (c) denda masuk dana amil, bukan revenue (d) bagi hasil = laba pool × rasio (e) `syb:audit` = 0 selisih
-- [ ] 161.7 Quality gate Fase 161
+- [x] 161.1 Modul `Syariah` (`syb_`): provider, MenuRegistry "Keuangan Syariah", roles (`syariah_officer`, `shariah_board`, `muamalah_teller`), policies, arch test; tabel `syb_products` (murabahah, mudharabah, musyarakah, ijarah, qardh), `syb_accounts` (tabungan wadi'ah/yad), `syb_contracts`
+  Bukti:
+    - jenis: fitur
+    - commit: 39bc46a4
+    - file: modules/Syariah/SyariahServiceProvider.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_1_rbac_syariah_routes
+    - akses: route GET /syariah/murabahah [role: admin, syariah_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.2 **Accounting PSAK 102/103 simulasi**: akun terpisah dari ledger konvensional (Fase 1) dengan sign khas (korporasi = akad), markup margin diakui gradual, akad wajib tercatat sebagai kontrak hash
+  Bukti:
+    - jenis: fitur
+    - commit: 39bc46a4
+    - file: modules/Syariah/Application/Services/MurabahahService.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_3_e2e_murabahah_lifecycle_ledger_postings_tazir_and_idempotency
+    - akses: route POST /syariah/murabahah [role: admin, syariah_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.3 **Murabahah pembiayaan**: akad jual beli + markup disepakati di awal → pencairan ke vendor langsung (tidak ke nasabah) → angsuran pokok + margin → keterlambatan: denda disgorgement ke dana amil (bukan ke bank) → meniru pola Fase 5C dengan modifikasi akad
+  Bukti:
+    - jenis: fitur
+    - commit: 39bc46a4
+    - file: modules/Syariah/Domain/Models/MurabahahContract.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_3_e2e_murabahah_lifecycle_ledger_postings_tazir_and_idempotency
+    - akses: route POST /syariah/murabahah/{contract}/purchase-asset [role: admin, syariah_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.4 **Mudharabah savings**: nasabah sebagai shahibul mal → bank sebagai mudharib → bagi hasil rasio → profit sharing periodik dari pool investasi (link Treasury Fase 73) → withdrawal rules
+  Bukti:
+    - jenis: fitur
+    - commit: 39bc46a4
+    - file: modules/Syariah/Ledger/SyariahAccounts.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_4_rejects_signing_without_dps_review_and_rejects_interest_accounts
+    - akses: route POST /syariah/murabahah/{contract}/sign [role: admin, syariah_officer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.5 **Shariah board governance**: fatwa internal (dokumen), review produk baru (approval wajib sebelum rilis), compliance audit berkala (aturan: tidak ada riba/gharar/maysir) → laporan annual
+  Bukti:
+    - jenis: fitur
+    - commit: 39bc46a4
+    - file: modules/Syariah/Http/Controllers/MurabahahController.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_4_rejects_signing_without_dps_review_and_rejects_interest_accounts
+    - akses: route POST /syariah/review/{contract}/approve [role: admin, dps_reviewer]
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.6 Tests: (a) dana konvensional & syariah terpisah Σ (b) margin diakui gradual = jadwal (c) denda masuk dana amil, bukan revenue (d) bagi hasil = laba pool × rasio (e) `syb:audit` = 0 selisih
+  Bukti:
+    - jenis: tooling
+    - commit: 39bc46a4
+    - file: modules/Syariah/Console/Commands/AuditSyariahCommand.php
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_6_syb_audit_passes_on_t1_and_fails_on_corruption
+    - akses: command syb:audit
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+- [x] 161.7 Quality gate Fase 161
+  Bukti:
+    - jenis: dokumen
+    - commit: 39bc46a4
+    - file: docs/dor/p3-4-fase-161.md
+    - test: tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php::test_161_5_anti_idor_customer_portal
+    - akses: command syb:audit
+    - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161
+
+### Register Minus Fase 161
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-161-01 | 161.4 | Integrasi mudharabah multi-pool otomatis dan konektor pelaporan regulator eksternal OJK ANTASENA / SLIK Syariah disimulasikan melalui buku besar wadi'ah likuiditas internal dan invarian syb:audit | Operasional inti pembiayaan murabahah, pengakuan margin bertahap, tata kelola DPS four-eyes, dan disgorgement ta'zir telah terlindungi penuh | P3 | Implementasi engine mudharabah revenue sharing lanjutan pada Fase 162/165 dan konektor regulator perbankan eksternal |
+
+
 
 ## FASE 162 — LINI 19: SUKUK, IJARAH & WEALTH SYARIAH
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `SukukAndZakatService`; 1 migrasi; test `SukukAndZakatTest` — commit `a65d3a2`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

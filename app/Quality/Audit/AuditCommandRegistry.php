@@ -65,6 +65,7 @@ use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\SybAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlxAuditCorruptionFixture;
@@ -152,6 +153,7 @@ final class AuditCommandRegistry
             'rwa:audit' => new RwaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
             'sim:audit' => new SimAuditCorruptionFixture,
+            'syb:audit' => new SybAuditCorruptionFixture,
             'tf:audit' => new TfAuditCorruptionFixture,
             'tlm:audit' => new TlmAuditCorruptionFixture,
             'tlx:audit' => new TlxAuditCorruptionFixture,
