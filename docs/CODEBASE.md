@@ -522,24 +522,25 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 42 | **Plm** | `plm_` | 1 |
 | 43 | **Port** | `prt_` | 1 |
 | 44 | **Pricing** | `pric_` | 7 |
-| 45 | **Procurement** | `prc_` | 6 |
-| 46 | **Proptech** | `prp_` | 3 |
-| 47 | **Resto** | `resto_` | 10 |
-| 48 | **Ret** | `ret_` | 4 |
-| 49 | **Rwa** | `rwa_` | 3 |
-| 50 | **Shared** | — | 0 |
-| 51 | **Store** | `store_` | 5 |
-| 52 | **Supplier** | `sup_` | 3 |
-| 53 | **Syariah** | `syb_` | 1 |
-| 54 | **Tlx** | `tlx_` | 4 |
-| 55 | **Trade** | `trd_` | 3 |
-| 56 | **TradeFinance** | `tf_` | 4 |
-| 57 | **Treasury** | `trs_` | 1 |
-| 58 | **Vending** | `vnd_` | 3 |
-| 59 | **Venue** | `ven_` | 6 |
-| 60 | **Wealth** | `wm_` | 2 |
-| 61 | **Wms** | `wms_` | 2 |
-| | **Total: 61 Modul** | | **615 Migrasi** |
+| 45 | **ProServices** | `psv_` | 1 |
+| 46 | **Procurement** | `prc_` | 6 |
+| 47 | **Proptech** | `prp_` | 3 |
+| 48 | **Resto** | `resto_` | 10 |
+| 49 | **Ret** | `ret_` | 4 |
+| 50 | **Rwa** | `rwa_` | 3 |
+| 51 | **Shared** | — | 0 |
+| 52 | **Store** | `store_` | 5 |
+| 53 | **Supplier** | `sup_` | 3 |
+| 54 | **Syariah** | `syb_` | 1 |
+| 55 | **Tlx** | `tlx_` | 4 |
+| 56 | **Trade** | `trd_` | 3 |
+| 57 | **TradeFinance** | `tf_` | 4 |
+| 58 | **Treasury** | `trs_` | 1 |
+| 59 | **Vending** | `vnd_` | 3 |
+| 60 | **Venue** | `ven_` | 6 |
+| 61 | **Wealth** | `wm_` | 2 |
+| 62 | **Wms** | `wms_` | 2 |
+| | **Total: 62 Modul** | | **616 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -588,6 +589,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 4 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
+| **ProServices** | 5 | `proservices/projects`, `proservices/timesheets`, `proservices/timesheets/{id}` ... | web, auth |
 | **Procurement** | 29 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 21 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 81 | `resto/menu/calculate-cost`, `resto/menu/create`, `resto/menu` ... | web, auth, role:admin,outlet_manager |
@@ -605,7 +607,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1094 Rute** | | |
+| **Total** | **1099 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -738,6 +740,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `prp:audit-flex` | `manual` | Perform two-source verification of flex-space booking anti-overlap and ledger deposit balances |
 | `prp:audit-smartbuilding` | `manual` | Perform two-source verification of smart building zones, sensor readings, and utility billings |
 | `prt:audit` | `manual` | Audit rekonsiliasi dua sumber operasi pelabuhan: pergerakan kontainer yard dan penagihan terminal |
+| `psv:audit` | `manual` | Audit modul ProServices terhadap konsistensi jam, pendapatan, dan ledger |
 | `ptn:audit` | `manual` | Audit kemitraan: bagi hasil, due diligence, dan siklus hidup mitra (0 selisih) |
 | `reload` | `manual` | Reload running services |
 | `resto:check-stock` | **`dailyAt('07:30')`** | Pantau level stok minimum bahan baku, buat saran PO draft, dan kirim peringatan bahan kedaluwarsa |
@@ -786,7 +789,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 176 Command** | **37 Terjadwal** | |
+| **Total: 177 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -815,6 +818,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
 | **Mobility** | `FleetAccounts` | 7 | `oto:fleet_lease_revenue:IDR`, `expense:oto:fleet_sla_credit:IDR` ... |
 | **Port** | `PortAccounts` | 4 | `rev:prt:thc:IDR`, `rev:prt:dockage:IDR` ... |
+| **ProServices** | `ProServicesAccounts` | 4 | `psv:revenue:IDR`, `psv:contract_asset:1:IDR` ... |
 | **Proptech** | `ProptechAccounts` | 10 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 23 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
 | **Rwa** | `RwaAccounts` | 12 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
@@ -826,6 +830,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 35 Registry** | | **380 Akun** | |
+| **Total: 36 Registry** | | **384 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

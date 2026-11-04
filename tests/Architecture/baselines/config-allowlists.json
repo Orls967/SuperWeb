@@ -53,6 +53,11 @@
             "key": "table_prefixes",
             "decision": "DECISIONS.md#2026-11-05-g6-p4-perikanan-marine-fase-170",
             "count": 1
+        },
+        {
+            "date": "2026-11-05",
+            "decision": "DECISIONS.md#2026-11-05-modul-proservices-lini-25-g6-p51",
+            "entries": "tambah prefiks psv ProServices"
         }
     ]
 }

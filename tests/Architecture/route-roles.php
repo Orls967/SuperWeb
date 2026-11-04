@@ -509,7 +509,13 @@ $distributorParamHelper = function (): array {
         ['name' => 'Dist Dynamic', 'tier' => 'bronze', 'is_active' => true]
     );
 
-    return ['distributor' => $dist->id];
+    return [
+    'proservices.projects.index' => ['project_manager', 'admin', 'superadmin'],
+    'proservices.timesheets.index' => ['consultant', 'admin'],
+    'proservices.timesheets.show' => ['consultant', 'admin'],
+    'proservices.portal.invoices' => ['client', 'admin'],
+    'proservices.portal.projects.show' => ['client', 'admin'],
+'distributor' => $dist->id];
 };
 
 $partnerParamHelper = function (): array {

@@ -66,6 +66,7 @@ use Modules\Wealth\WealthServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
 return [
+    Modules\ProServices\ProServicesServiceProvider::class,
     AppServiceProvider::class,
     SharedServiceProvider::class,
     CoreServiceProvider::class,

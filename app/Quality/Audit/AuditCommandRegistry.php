@@ -90,6 +90,11 @@ final class AuditCommandRegistry
     public static function fixtures(): array
     {
         return [
+        'psv:audit' => [
+            'fixture' => \App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture::class,
+            'description' => 'Audit modul ProServices terhadap konsistensi jam, pendapatan, dan ledger',
+        ],
+
             'agri:audit' => new AgriAuditCorruptionFixture,
             'agy:audit' => new AgyAuditCorruptionFixture,
             'ai:audit' => new AiAuditCorruptionFixture,
