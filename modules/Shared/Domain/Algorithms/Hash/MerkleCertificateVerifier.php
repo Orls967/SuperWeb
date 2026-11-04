@@ -14,9 +14,9 @@ final class MerkleCertificateVerifier
     /**
      * Memverifikasi apakah daun dengan proof yang diberikan menghasilkan root yang cocok.
      *
-     * @param string $leaf Data daun asli (string)
-     * @param list<array{position: string, hash: string}> $proof Bukti lintasan Merkle
-     * @param string $expectedRoot Hex root hash yang diharapkan (64 chars)
+     * @param  string  $leaf  Data daun asli (string)
+     * @param  list<array{position: string, hash: string}>  $proof  Bukti lintasan Merkle
+     * @param  string  $expectedRoot  Hex root hash yang diharapkan (64 chars)
      */
     public function verify(string $leaf, array $proof, string $expectedRoot): bool
     {
@@ -38,9 +38,9 @@ final class MerkleCertificateVerifier
             $siblingHash = hex2bin($step['hash']);
 
             if ($step['position'] === 'left') {
-                $currentHash = hash('sha256', $siblingHash . $currentHash, true);
+                $currentHash = hash('sha256', $siblingHash.$currentHash, true);
             } elseif ($step['position'] === 'right') {
-                $currentHash = hash('sha256', $currentHash . $siblingHash, true);
+                $currentHash = hash('sha256', $currentHash.$siblingHash, true);
             } else {
                 throw new InvalidArgumentException('Posisi proof tidak valid: harus "left" atau "right"');
             }
