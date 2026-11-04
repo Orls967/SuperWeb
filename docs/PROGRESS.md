@@ -8797,7 +8797,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: fitur
     - commit: 10d79597
-    - file: modules/TradeFinance/Application/Services/Clearing/ClearingEscrowService.php, modules/Logistics/Application/Services/CustodyVerifierService.php
+    - file: modules/TradeFinance/Application/Services/Clearing/ClearingEscrowService.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_2_e2e_usdt_escrow_k6_custody_release_fx_revaluation_and_idempotency
     - akses: route POST /trade-finance/clearing/deposit [role: admin, tf_officer, importer]
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8806,7 +8806,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: fitur
     - commit: 10d79597
-    - file: modules/TradeFinance/Application/Services/Clearing/ClearingEscrowService.php
+    - file: modules/Logistics/Application/Services/CustodyVerifierService.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_3_rejects_unverified_or_tampered_custody_chain_and_missing_k7_emission
     - akses: route POST /trade-finance/clearing/{escrow}/release [role: admin, tf_officer]
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8815,7 +8815,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: fitur
     - commit: 10d79597
-    - file: modules/TradeFinance/Application/Services/Clearing/CbamDeclarationService.php, modules/Esg/Application/Services/VerifiedEmissionReaderService.php
+    - file: modules/TradeFinance/Application/Services/Clearing/CbamDeclarationService.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_4_cbam_vector_calculation_gapless_numbering_and_immutability
     - akses: route POST /trade/cbam [role: admin, compliance_officer]
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8824,7 +8824,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: fitur
     - commit: 10d79597
-    - file: modules/TradeFinance/Application/Services/Clearing/CbamDeclarationService.php
+    - file: modules/Esg/Application/Services/VerifiedEmissionReaderService.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_4_cbam_vector_calculation_gapless_numbering_and_immutability
     - akses: route POST /trade/cbam [role: admin, compliance_officer]
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8833,7 +8833,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: fitur
     - commit: 10d79597
-    - file: modules/TradeFinance/Http/Controllers/ClearingController.php, modules/TradeFinance/Http/Controllers/CbamDeclarationController.php
+    - file: modules/TradeFinance/Http/Controllers/ClearingController.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_1_rbac_clearing_and_cbam_routes
     - akses: route GET /trade-finance/clearing [role: admin, tf_officer, importer, exporter]
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8842,7 +8842,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: tooling
     - commit: 10d79597
-    - file: modules/TradeFinance/Console/Commands/AuditClearingCommand.php, tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php
+    - file: modules/TradeFinance/Console/Commands/AuditClearingCommand.php
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_6_audit_commands_pass_on_t1_and_fail_on_corruption
     - akses: command clearing:audit
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
@@ -8851,7 +8851,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
   Bukti:
     - jenis: dokumen
     - commit: 10d79597
-    - file: docs/dor/p3-3-fase-83.md, docs/design/p3-3-fase-83.md
+    - file: docs/dor/p3-3-fase-83.md
     - test: tests/Acceptance/Clearing/ClearingCbamAcceptanceTest.php::test_83_5_anti_idor_on_clearing_escrow
     - akses: command clearing:audit
     - keputusan: docs/DECISIONS.md#2026-11-04-g6-p3-clearing-cbam-fase-83
