@@ -52,7 +52,7 @@ final class PrecisionAgriAndDaoService
         return AgriSatelliteScan::firstOrCreate(
             ['idempotency_key' => $key],
             [
-                'scan_code' => 'SCN-' . strtoupper(substr(hash('sha256', "{$plotCode}:{$dateStr}"), 0, 12)),
+                'scan_code' => 'SCN-'.strtoupper(substr(hash('sha256', "{$plotCode}:{$dateStr}"), 0, 12)),
                 'plot_code' => $plotCode,
                 'scan_date' => $dateStr,
                 'ndvi_score' => $score,

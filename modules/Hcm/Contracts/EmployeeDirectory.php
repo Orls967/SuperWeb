@@ -9,16 +9,10 @@ use Carbon\CarbonImmutable;
 interface EmployeeDirectory
 {
     /**
-     * @param int $employeeId
      * @return array{id: int, name: string, department_id: int, cost_center: string, active: bool}|null
      */
     public function find(int $employeeId): ?array;
 
-    /**
-     * @param int $employeeId
-     * @param CarbonImmutable $at
-     * @return bool
-     */
     public function isActiveAt(int $employeeId, CarbonImmutable $at): bool;
 
     /**
