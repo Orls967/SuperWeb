@@ -92,4 +92,3 @@ class BidAssistantT1Seeder extends Seeder
         }
     }
 }
-
