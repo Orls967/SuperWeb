@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\Ai\AiAnomalyController;
+use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
+use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\HealthCheckController;
@@ -28,6 +31,29 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // Activity Feed
     Route::get('/activity', [ActivityFeedController::class, 'index'])->name('activity.index');
+
+    // AI & Predictive Governance (Fase 64, D64-1..D64-4)
+    Route::prefix('ai')->group(function () {
+        Route::middleware('role:admin,risk_officer')->group(function () {
+            Route::get('/anomalies', [AiAnomalyController::class, 'index'])->name('core.ai.anomalies.index');
+            Route::post('/anomalies', [AiAnomalyController::class, 'screen'])->name('core.ai.anomalies.screen');
+        });
+
+        Route::middleware('role:admin,risk_officer,risk_manager')->group(function () {
+            Route::get('/quarantine', [AiQuarantineController::class, 'index'])->name('core.ai.quarantine.index');
+        });
+        Route::middleware('role:admin,risk_manager')->group(function () {
+            Route::post('/quarantine/{quarantine}/release', [AiQuarantineController::class, 'release'])->name('core.ai.quarantine.release');
+        });
+
+        Route::middleware('role:admin,planner')->group(function () {
+            Route::get('/stock-recommendations', [AiStockRecommendationController::class, 'index'])->name('core.ai.stock-recommendations.index');
+            Route::post('/stock-recommendations', [AiStockRecommendationController::class, 'store'])->name('core.ai.stock-recommendations.store');
+        });
+        Route::middleware('role:admin,planner_manager')->group(function () {
+            Route::post('/stock-recommendations/{recommendation}/approve', [AiStockRecommendationController::class, 'approve'])->name('core.ai.stock-recommendations.approve');
+        });
+    });
 
     // Admin System Health & Observability
     Route::middleware('role:admin')->prefix('admin')->group(function () {

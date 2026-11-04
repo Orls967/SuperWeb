@@ -18,6 +18,7 @@ use Modules\CloudKitchen\Domain\Models\CateringSubscription;
 use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
+use Modules\Core\Domain\Models\CoreAiStockRecommendation;
 use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\Role;
@@ -3390,5 +3391,61 @@ return [
     ],
     'fashion.orders.allocate' => [
         'roles' => ['admin', 'fashion_buyer', 'merchandiser'],
+    ],
+    'core.ai.anomalies.index' => [
+        'roles' => ['admin', 'risk_officer'],
+    ],
+    'core.ai.anomalies.screen' => [
+        'roles' => ['admin', 'risk_officer'],
+    ],
+    'core.ai.quarantine.index' => [
+        'roles' => ['admin', 'risk_officer', 'risk_manager'],
+    ],
+    'core.ai.quarantine.release' => [
+        'roles' => ['admin', 'risk_manager'],
+        'params' => function () {
+            $q = CoreAiAnomalyQuarantine::firstOrCreate(
+                ['transaction_ref' => 'TX-ARCH-ROUTE-001'],
+                [
+                    'customer_ref' => 'CUST-ARCH-001',
+                    'amount_idr' => 1000000,
+                    'risk_score' => 0.95,
+                    'anomaly_reasons' => ['EXTREME_DEVIATION'],
+                    'status' => 'QUARANTINED',
+                    'quarantined_at' => now(),
+                    'created_by' => 'Other Officer',
+                ]
+            );
+
+            return ['quarantine' => $q->id];
+        },
+    ],
+    'core.ai.stock-recommendations.index' => [
+        'roles' => ['admin', 'planner'],
+    ],
+    'core.ai.stock-recommendations.store' => [
+        'roles' => ['admin', 'planner'],
+    ],
+    'core.ai.stock-recommendations.approve' => [
+        'roles' => ['admin', 'planner_manager'],
+        'params' => function () {
+            $rec = CoreAiStockRecommendation::firstOrCreate(
+                ['recommendation_code' => 'REC-ARCH-001'],
+                [
+                    'item_code' => 'SKU-ARCH-001',
+                    'item_name' => 'Item Arch',
+                    'current_stock' => 5,
+                    'calculated_rop' => 20,
+                    'safety_stock' => 10,
+                    'suggested_order_qty' => 50,
+                    'seasonal_factor' => 1.0,
+                    'estimated_cost_idr' => 15000000,
+                    'requires_human_approval' => true,
+                    'status' => 'PROPOSED',
+                ]
+            );
+
+            return ['recommendation' => $rec->id];
+        },
     ],
 ];

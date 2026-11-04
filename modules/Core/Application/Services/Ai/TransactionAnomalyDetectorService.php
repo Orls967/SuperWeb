@@ -9,9 +9,24 @@ use Modules\Core\Application\DTOs\Ai\AnomalyEvaluationResult;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreAiDecisionSnapshot;
+use Modules\Shared\Domain\Algorithms\Stats\ModifiedZScore;
 
 class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInterface
 {
+    private readonly ModifiedZScore $modifiedZScore;
+    private readonly DeterministicInferenceEngine $inferenceEngine;
+
+    public function __construct(
+        ?ModifiedZScore $modifiedZScore = null,
+        ?DeterministicInferenceEngine $inferenceEngine = null
+    ) {
+        $this->modifiedZScore = $modifiedZScore ?? new ModifiedZScore;
+        $this->inferenceEngine = $inferenceEngine ?? new DeterministicInferenceEngine;
+    }
+
+    /**
+     * @param  list<int>  $historicalAmounts
+     */
     public function evaluateTransaction(
         string $transactionRef,
         string $customerRef,
@@ -22,12 +37,23 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
         int $stdDevHistoricalAmountIdr = 0,
         bool $isLateNight = false,
         bool $isSplitBillPattern = false,
-        int $seed = 42
+        int $seed = 42,
+        array $historicalAmounts = []
     ): AnomalyEvaluationResult {
         $reasons = [];
+        $isModifiedZAnomaly = false;
+        $modifiedZFormatted = '0.000';
 
-        // 1. Z-Score Amount Deviation (Weight: 0.40)
-        if ($avgHistoricalAmountIdr > 0) {
+        // 1. Modified Z-Score Evaluator (D64-2)
+        if ($historicalAmounts !== []) {
+            $zRes = $this->modifiedZScore->evaluate($amountIdr, $historicalAmounts);
+            $modifiedZFormatted = $zRes->zFormatted;
+            if ($zRes->isAnomaly) {
+                $isModifiedZAnomaly = true;
+                $reasons[] = "Skor Modified Z-Score ({$modifiedZFormatted}) melampaui ambang anomali (|z| > 3.5)";
+            }
+            $zScoreNormalized = $isModifiedZAnomaly ? 0.95 : min(0.60, max(0.0, abs((float) $modifiedZFormatted) / 3.5));
+        } elseif ($avgHistoricalAmountIdr > 0) {
             $stdDev = max(1, $stdDevHistoricalAmountIdr ?: (int) round($avgHistoricalAmountIdr * 0.30));
             $z = ($amountIdr - $avgHistoricalAmountIdr) / (float) $stdDev;
             $zScoreNormalized = min(1.0, max(0.0, $z / 3.0));
@@ -56,7 +82,7 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
         // 4. Split-Bill Pattern (Weight: 0.15)
         $splitBillScore = $isSplitBillPattern ? 1.0 : 0.0;
         if ($isSplitBillPattern) {
-            $reasons[] = 'Terdeteksi pola pemecahan tagihan berulang (split-bill structing)';
+            $reasons[] = 'Terdeteksi pola pemecahan tagihan berulang (split-bill structuring)';
         }
 
         // Multivariate Risk Score
@@ -68,7 +94,11 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
             4
         );
 
-        $isQuarantined = $riskScore >= 0.80;
+        if ($isModifiedZAnomaly) {
+            $riskScore = max($riskScore, 0.90);
+        }
+
+        $isQuarantined = $riskScore >= 0.80 || $isModifiedZAnomaly;
         if ($isQuarantined && empty($reasons)) {
             $reasons[] = "Skor risiko gabungan melampaui ambang batas karantina (Skor: {$riskScore})";
         }
@@ -86,6 +116,7 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
             'std_dev_historical_amount_idr' => $stdDevHistoricalAmountIdr,
             'is_late_night' => $isLateNight,
             'is_split_bill_pattern' => $isSplitBillPattern,
+            'historical_amounts' => $historicalAmounts,
         ];
 
         $decisionOutput = [
@@ -98,6 +129,7 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
                 'channel' => round($channelScore, 4),
                 'split_bill' => round($splitBillScore, 4),
             ],
+            'modified_z_score' => $modifiedZFormatted,
         ];
 
         $decisionHash = hash('sha256', (string) $seed.json_encode($inputSnapshot).json_encode($decisionOutput));
@@ -113,20 +145,34 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
             'decision_hash' => $decisionHash,
         ]);
 
+        // Catat inferensi deterministik ke core_ai_inferences
+        $this->inferenceEngine->inferAndRecord(
+            modelCode: 'ANOMALY_DETECTOR',
+            version: '1.0.0',
+            input: [
+                'amount_idr' => $amountIdr,
+                'history' => $historicalAmounts !== [] ? $historicalAmounts : [$amountIdr],
+            ],
+            seed: $seed
+        );
+
         $quarantineCode = null;
         if ($isQuarantined) {
-            $quarantine = CoreAiAnomalyQuarantine::create([
-                'id' => (string) Str::uuid(),
-                'quarantine_code' => 'QRN-'.Str::upper(Str::random(8)),
-                'transaction_ref' => $transactionRef,
-                'customer_ref' => $customerRef,
-                'amount_idr' => $amountIdr,
-                'risk_score' => $riskScore,
-                'anomaly_reasons' => $reasons,
-                'decision_snapshot_id' => $snapshotId,
-                'status' => 'QUARANTINED',
-                'quarantined_at' => now(),
-            ]);
+            $quarantine = CoreAiAnomalyQuarantine::where('transaction_ref', $transactionRef)->first();
+            if ($quarantine === null) {
+                $quarantine = CoreAiAnomalyQuarantine::create([
+                    'id' => (string) Str::uuid(),
+                    'quarantine_code' => 'QRN-'.Str::upper(Str::random(8)),
+                    'transaction_ref' => $transactionRef,
+                    'customer_ref' => $customerRef,
+                    'amount_idr' => $amountIdr,
+                    'risk_score' => $riskScore,
+                    'anomaly_reasons' => $reasons,
+                    'decision_snapshot_id' => $snapshotId,
+                    'status' => 'QUARANTINED',
+                    'quarantined_at' => now(),
+                ]);
+            }
             $quarantineCode = $quarantine->quarantine_code;
         }
 
@@ -141,6 +187,7 @@ class TransactionAnomalyDetectorService implements TransactionAnomalyDetectorInt
                 'velocity_score' => round($velocityScore, 4),
                 'channel_score' => round($channelScore, 4),
                 'split_bill_score' => round($splitBillScore, 4),
+                'modified_z_score' => $modifiedZFormatted,
             ],
             decisionHash: $decisionHash,
             decisionCode: $decisionCode,

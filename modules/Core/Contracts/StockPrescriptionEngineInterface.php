@@ -9,8 +9,10 @@ use Modules\Core\Application\DTOs\Ai\StockRecommendationResult;
 interface StockPrescriptionEngineInterface
 {
     /**
-     * Prescribe adaptive stock and calculate statistical Reorder Point (ROP) with seasonal index weighting.
+     * Prescribe adaptive stock and calculate statistical Reorder Point (ROP) with seasonal index weighting and SES (D64-3).
      * Generates PO draft proposal; flags human approval required if estimated cost > autonomous ceiling (Rp 10.000.000).
+     *
+     * @param  list<int>  $historicalDemands
      */
     public function generateRecommendation(
         string $itemCode,
@@ -22,6 +24,7 @@ interface StockPrescriptionEngineInterface
         string $seasonCode = 'REGULAR',
         float $demandStdDev = 5.0,
         float $leadTimeStdDev = 1.0,
-        int $seed = 42
+        int $seed = 42,
+        array $historicalDemands = []
     ): StockRecommendationResult;
 }

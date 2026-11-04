@@ -27,6 +27,7 @@ class CoreAiAnomalyQuarantine extends Model
         'anomaly_reasons',
         'decision_snapshot_id',
         'status',
+        'created_by',
         'quarantined_at',
         'released_at',
         'released_by',

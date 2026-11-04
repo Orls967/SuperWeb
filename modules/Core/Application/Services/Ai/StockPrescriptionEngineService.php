@@ -9,9 +9,24 @@ use Modules\Core\Application\DTOs\Ai\StockRecommendationResult;
 use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Domain\Models\CoreAiDecisionSnapshot;
 use Modules\Core\Domain\Models\CoreAiStockRecommendation;
+use Modules\Shared\Domain\Algorithms\Forecast\SimpleExponentialSmoothing;
 
 class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
 {
+    private readonly SimpleExponentialSmoothing $ses;
+    private readonly DeterministicInferenceEngine $inferenceEngine;
+
+    public function __construct(
+        ?SimpleExponentialSmoothing $ses = null,
+        ?DeterministicInferenceEngine $inferenceEngine = null
+    ) {
+        $this->ses = $ses ?? new SimpleExponentialSmoothing;
+        $this->inferenceEngine = $inferenceEngine ?? new DeterministicInferenceEngine;
+    }
+
+    /**
+     * @param  list<int>  $historicalDemands
+     */
     public function generateRecommendation(
         string $itemCode,
         string $itemName,
@@ -22,7 +37,8 @@ class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
         string $seasonCode = 'REGULAR',
         float $demandStdDev = 5.0,
         float $leadTimeStdDev = 1.0,
-        int $seed = 42
+        int $seed = 42,
+        array $historicalDemands = []
     ): StockRecommendationResult {
         // 1. Seasonal weighting factor
         $seasonalFactor = match (strtoupper($seasonCode)) {
@@ -31,16 +47,44 @@ class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
             'RAINY_SEASON' => 1.20,
             default => 1.00,
         };
+        $holidayFactorBps = match (strtoupper($seasonCode)) {
+            'RAMADAN_LEBARAN' => 14000,
+            'YEAR_END_HOLIDAY' => 13000,
+            'RAINY_SEASON' => 12000,
+            default => 10000,
+        };
 
-        // 2. Statistical Safety Stock Calculation (95% Service Level => Z = 1.65)
-        $z = 1.65;
-        $variance = ($leadTimeDays * ($demandStdDev ** 2)) + (($avgDailyDemand ** 2) * ($leadTimeStdDev ** 2));
-        $stdDevCombined = sqrt(max(1.0, $variance));
-        $safetyStock = (int) ceil($z * $stdDevCombined * $seasonalFactor);
+        if ($historicalDemands !== []) {
+            // D64-3 SES dengan alpha 3000 bps
+            $sesResult = $this->ses->forecastWithHolidayAdjustment(
+                demands: $historicalDemands,
+                alphaBps: 3000,
+                holidayFactorBps: $holidayFactorBps
+            );
+            $effectiveDailyDemand = $sesResult->suggestedUnitsPerDay;
+            $safetyStock = max(10, (int) ceil($effectiveDailyDemand * 0.35));
+            $calculatedRop = ($effectiveDailyDemand * $leadTimeDays) + $safetyStock;
 
-        // 3. Reorder Point (ROP) Calculation
-        $leadTimeDemand = $avgDailyDemand * $leadTimeDays;
-        $calculatedRop = $leadTimeDemand + $safetyStock;
+            // Catat ke core_ai_inferences
+            $this->inferenceEngine->inferAndRecord(
+                modelCode: 'STOCK_SES',
+                version: '1.0.0',
+                input: [
+                    'demands' => $historicalDemands,
+                    'alpha_bps' => 3000,
+                    'holiday_factor_bps' => $holidayFactorBps,
+                ],
+                seed: $seed
+            );
+        } else {
+            // Statistical Safety Stock Calculation (95% Service Level => Z = 1.65)
+            $z = 1.65;
+            $variance = ($leadTimeDays * ($demandStdDev ** 2)) + (($avgDailyDemand ** 2) * ($leadTimeStdDev ** 2));
+            $stdDevCombined = sqrt(max(1.0, $variance));
+            $safetyStock = (int) ceil($z * $stdDevCombined * $seasonalFactor);
+            $leadTimeDemand = $avgDailyDemand * $leadTimeDays;
+            $calculatedRop = $leadTimeDemand + $safetyStock;
+        }
 
         // 4. Order Quantity & Autonomous Ladder Threshold
         $suggestedOrderQty = 0;
@@ -68,6 +112,7 @@ class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
             'season_code' => $seasonCode,
             'demand_std_dev' => $demandStdDev,
             'lead_time_std_dev' => $leadTimeStdDev,
+            'historical_demands' => $historicalDemands,
         ];
 
         $decisionOutput = [
@@ -78,8 +123,8 @@ class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
             'estimated_cost_idr' => $estimatedCostIdr,
             'requires_human_approval' => $requiresHumanApproval,
             'parameters' => [
-                'z_service_level' => $z,
-                'lead_time_demand' => $leadTimeDemand,
+                'seasonal_factor' => $seasonalFactor,
+                'lead_time_days' => $leadTimeDays,
             ],
         ];
 
@@ -119,13 +164,13 @@ class StockPrescriptionEngineService implements StockPrescriptionEngineInterface
             calculatedRop: $calculatedRop,
             safetyStock: $safetyStock,
             suggestedOrderQty: $suggestedOrderQty,
-            seasonalFactor: $seasonalFactor,
+            seasonalFactor: (float) $seasonalFactor,
             estimatedCostIdr: $estimatedCostIdr,
             requiresHumanApproval: $requiresHumanApproval,
             status: 'PROPOSED',
             parameters: [
-                'z_service_level' => $z,
-                'lead_time_demand' => $leadTimeDemand,
+                'seasonal_factor' => $seasonalFactor,
+                'calculated_rop' => $calculatedRop,
             ],
             decisionHash: $decisionHash,
             decisionCode: $decisionCode,

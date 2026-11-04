@@ -2282,3 +2282,27 @@
   - Vektor uji pembagian proporsional Hamilton: kuota 1.000 unit dengan bobot [2, 3, 3, 1] menghasilkan alokasi [222, 334, 333, 111]; kuota 250 unit dengan bobot [1, 2, 2, 1] menghasilkan [42, 83, 83, 42].
   - Acceptance test `tests/Acceptance/FashionTextile/FashionTextileAcceptanceTest.php` lulus 6 skenario.
   - Command `fsh:audit` membuktikan 0 selisih alokasi kuota dan mendeteksi anomali pada fixture korupsi `FashionAuditCorruptionFixture`.
+
+
+<a id="2026-11-04-g6-p3-ai-deterministik-fase-64"></a>
+<a id="d64-1"></a>
+<a id="d64-2"></a>
+<a id="d64-3"></a>
+<a id="d64-4"></a>
+## 2026-11-04: [G6-P3.1] AI Deterministik, Deteksi Anomali Anti-Fraud & Perencanaan Stok (Fase 64, D64-1..D64-4)
+- **Anchor:** `2026-11-04-g6-p3-ai-deterministik-fase-64` / `d64-1` / `d64-2` / `d64-3` / `d64-4`
+- **Context:**
+  - Operasional enterprise multi-lini membutuhkan model AI dan analitik yang deterministik: setiap inferensi harus dapat direproduksi byte-per-byte dengan seed dan snapshot input yang sama tanpa komponen keacakan yang tidak tercatat.
+  - Deteksi anomali transaksi harus melindungi integritas settlement bank sebelum uang berpindah, menggunakan statistik robust yang tidak bias terhadap outlier ekstrem serta aturan multi-fitur (split bill, deviasi BBM, order agen).
+  - Rekomendasi stok preskriptif harus menggunakan peramalan eksponensial adaptif musiman (SES) dengan perlindungan persetujuan manusia sebelum pemesanan otonom.
+- **Decision:**
+  1. D64-1: Registrasi model (`core_ai_models`) dan jejak inferensi append-only (`core_ai_inferences`) dengan penyimpanan canonical JSON terurut dan hash sha256 input/output. Replay inferensi wajib menghasilkan output identik secara deterministik.
+  2. D64-2: Deteksi anomali berbasis `Modules\Shared\Domain\Algorithms\Stats\ModifiedZScore` ($z = 0,6745 \times (x - \text{median}) / \text{MAD}$, atau fallback ke $\text{MeanAD} \times 1,253314$ saat $\text{MAD} = 0$). Nilai $|z| > 3,5$ atau pelanggaran aturan terstruktur mengkarantina transaksi (`QUARANTINED`) dan memblokir eksekusi settlement. Pembukaan karantina wajib melalui persetujuan four-eyes (`risk_manager` $\ne$ pemohon/pengaju).
+  3. D64-3: Rekomendasi stok preskriptif dihitung menggunakan `Modules\Shared\Domain\Algorithms\Forecast\SimpleExponentialSmoothing` ($\alpha = 3.000$ bps) dikalikan faktor musiman/libur (bps berversi) dengan pembulatan ke atas (`ceil`) unit/hari. Rekomendasi bernilai besar memerlukan persetujuan `planner_manager`.
+  4. D64-4: Command `ai:audit` memvalidasi integritas replay deterministik terhadap sampel inferensi tersimpan serta menegakkan batasan karantina transaksi dan approval PO stok.
+- **Verification:**
+  - Vektor ModifiedZScore prompt: `[100, 102, 98, 101, 99, 100, 103, 97, 100, 150]` menghasilkan median 100, MAD 1,5, $z(150) = 22,483$ (anomali), $z(103) = 1,349$ dan $z(97) = -1,349$ (normal).
+  - Vektor MAD=0: `[100, 100, 100, 100, 130]` menghasilkan median 100, MAD 0, MeanAD 6, $z(130) = 3,989$ (anomali).
+  - Vektor SES stok prompt: `[100, 120, 110, 130]`, $\alpha = 0,3$ menghasilkan level $114,04$; dikali faktor libur $12.500$ bps ($1,25$) menjadi $142,55$ dibulatkan ke atas menjadi $143$ unit/hari.
+  - Acceptance test `tests/Acceptance/AiCore/AiCoreAcceptanceTest.php` lulus 6 skenario.
+
