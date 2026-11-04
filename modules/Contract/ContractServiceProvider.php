@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Contract;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Contract\Application\Services\ClauseTemplateReaderService;
 use Modules\Contract\Application\Services\ContractAmendmentService;
 use Modules\Contract\Application\Services\ContractFinanceService;
 use Modules\Contract\Application\Services\ContractLookupService;
@@ -17,6 +18,7 @@ use Modules\Contract\Application\Services\ContractUsageSyncService;
 use Modules\Contract\Console\Commands\AuditContractCommand;
 use Modules\Contract\Console\Commands\RemindContractObligationsCommand;
 use Modules\Contract\Console\Commands\VerifyContractChainsCommand;
+use Modules\Contract\Contracts\ClauseTemplateReader;
 use Modules\Contract\Contracts\ContractLookupInterface;
 use Modules\Logistics\Contracts\RateCardOverrideResolver;
 use Modules\Shared\Application\MenuRegistry;
@@ -39,6 +41,11 @@ class ContractServiceProvider extends ServiceProvider
         $this->app->bind(
             ContractLookupInterface::class,
             ContractLookupService::class
+        );
+
+        $this->app->bind(
+            ClauseTemplateReader::class,
+            ClauseTemplateReaderService::class
         );
     }
 

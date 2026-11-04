@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Procurement\Http\Controllers\BidAssistantController;
 use Modules\Procurement\Http\Controllers\ProcurementController;
 use Modules\Procurement\Http\Controllers\VmiPortalController;
 
@@ -69,4 +70,23 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::post('/portal/vmi/{replenishment}/approve', [VmiPortalController::class, 'approve'])
         ->middleware('role:admin,procurement,procurement_manager')
         ->name('vmi.approve');
+});
+
+// KONSEP §7F Slice 3 & Fase 84 — Asisten Penawaran Tender
+Route::middleware(['web', 'auth', 'verified'])->prefix('procurement/bid-assistant')->name('procurement.bid-assistant.')->group(function () {
+    Route::get('/', [BidAssistantController::class, 'index'])
+        ->middleware('role:admin,procurement,procurement_manager')
+        ->name('index');
+    Route::post('/evaluate', [BidAssistantController::class, 'evaluate'])
+        ->middleware('role:admin,procurement')
+        ->name('evaluate');
+    Route::post('/prepare/{run}', [BidAssistantController::class, 'prepare'])
+        ->middleware('role:admin,procurement')
+        ->name('prepare');
+    Route::post('/submissions/{submission}/approve', [BidAssistantController::class, 'approve'])
+        ->middleware('role:admin,procurement_manager')
+        ->name('approve');
+    Route::post('/submissions/{submission}/result', [BidAssistantController::class, 'result'])
+        ->middleware('role:admin,procurement')
+        ->name('result');
 });

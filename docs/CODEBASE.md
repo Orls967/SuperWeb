@@ -487,7 +487,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 7 | **Banking** | `bank_` | 11 |
 | 8 | **Circular** | `cir_` | 1 |
 | 9 | **CloudKitchen** | `ckt_` | 3 |
-| 10 | **Contract** | `ctr_` | 3 |
+| 10 | **Contract** | `ctr_` | 4 |
 | 11 | **ControlTower** | `sct_` | 1 |
 | 12 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 26 |
 | 13 | **Crypto** | `crypto_` | 4 |
@@ -536,7 +536,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 56 | **Venue** | `ven_` | 6 |
 | 57 | **Wealth** | `wm_` | 2 |
 | 58 | **Wms** | `wms_` | 2 |
-| | **Total: 58 Modul** | | **608 Migrasi** |
+| | **Total: 58 Modul** | | **609 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -584,7 +584,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 4 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
-| **Procurement** | 24 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
+| **Procurement** | 29 | `procurement`, `procurement/requisitions`, `procurement/requisitions/{requisition}` ... | web, auth, verified |
 | **Proptech** | 21 | `proptech`, `proptech/zones/{zone}/bill`, `proptech/bim` ... | web, auth, role:admin,proptech_admin,facility_manager |
 | **Resto** | 81 | `resto/menu/calculate-cost`, `resto/menu/create`, `resto/menu` ... | web, auth, role:admin,outlet_manager |
 | **Ret** | 13 | `retail`, `retail/overview`, `retail/orders/{id}` ... | web, auth, role:admin,retail_ops,marketplace_mgr,category_mgr,last_mile_cs |
@@ -600,7 +600,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1069 Rute** | | |
+| **Total** | **1074 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

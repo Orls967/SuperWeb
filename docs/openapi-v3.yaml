@@ -49243,6 +49243,350 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /procurement/bid-assistant:
+    get:
+      operationId: getProcurementBidAssistantIndex
+      tags:
+        - Procurement
+      summary: 'Index (Procurement)'
+      description: 'Operational endpoint for Procurement module. Protected by role matrix: [admin, procurement, procurement_manager].'
+      x-allowed-roles:
+        - admin
+        - procurement
+        - procurement_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /procurement/bid-assistant/evaluate:
+    post:
+      operationId: postProcurementBidAssistantEvaluate
+      tags:
+        - Procurement
+      summary: 'Evaluate (Procurement)'
+      description: 'Operational endpoint for Procurement module. Protected by role matrix: [admin, procurement].'
+      x-allowed-roles:
+        - admin
+        - procurement
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postProcurementBidAssistantEvaluate'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  '/procurement/bid-assistant/prepare/{run}':
+    post:
+      operationId: postProcurementBidAssistantPrepare
+      tags:
+        - Procurement
+      summary: 'Prepare (Procurement)'
+      description: 'Operational endpoint for Procurement module. Protected by role matrix: [admin, procurement].'
+      x-allowed-roles:
+        - admin
+        - procurement
+      parameters:
+        -
+          name: run
+          in: path
+          required: true
+          description: 'Identifier parameter run for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postProcurementBidAssistantPrepare'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  '/procurement/bid-assistant/submissions/{submission}/approve':
+    post:
+      operationId: postProcurementBidAssistantApprove
+      tags:
+        - Procurement
+      summary: 'Approve (Procurement)'
+      description: 'Operational endpoint for Procurement module. Protected by role matrix: [admin, procurement_manager].'
+      x-allowed-roles:
+        - admin
+        - procurement_manager
+      parameters:
+        -
+          name: submission
+          in: path
+          required: true
+          description: 'Identifier parameter submission for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postProcurementBidAssistantApprove'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  '/procurement/bid-assistant/submissions/{submission}/result':
+    post:
+      operationId: postProcurementBidAssistantResult
+      tags:
+        - Procurement
+      summary: 'Result (Procurement)'
+      description: 'Operational endpoint for Procurement module. Protected by role matrix: [admin, procurement].'
+      x-allowed-roles:
+        - admin
+        - procurement
+      parameters:
+        -
+          name: submission
+          in: path
+          required: true
+          description: 'Identifier parameter submission for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postProcurementBidAssistantResult'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   /procurement/pos:
     post:
       operationId: postProcurementPosStore

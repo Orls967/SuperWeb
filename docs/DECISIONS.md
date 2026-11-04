@@ -2306,3 +2306,26 @@
   - Vektor SES stok prompt: `[100, 120, 110, 130]`, $\alpha = 0,3$ menghasilkan level $114,04$; dikali faktor libur $12.500$ bps ($1,25$) menjadi $142,55$ dibulatkan ke atas menjadi $143$ unit/hari.
   - Acceptance test `tests/Acceptance/AiCore/AiCoreAcceptanceTest.php` lulus 6 skenario.
 
+
+
+<a id="2026-11-04-g6-p3-asisten-tender-fase-84"></a>
+<a id="d84-1"></a>
+<a id="d84-2"></a>
+<a id="d84-3"></a>
+<a id="d84-4"></a>
+## 2026-11-04: [G6-P3.2] Asisten Penawaran Lelang Tender Deterministik & Draf Klausul (Fase 84, D84-1..D84-4)
+- **Anchor:** `2026-11-04-g6-p3-asisten-tender-fase-84` / `d84-1` / `d84-2` / `d84-3` / `d84-4`
+- **Context:**
+  - Proses lelang pengadaan (tender) B2B/B2G memerlukan penetapan harga penawaran yang optimal dengan memaksimalkan ekspektasi keuntungan ($\mathbb{E} = (p - c) \times P(\text{menang})$) tanpa melanggar batas margin atau batas risiko entitas bisnis.
+  - Penawaran tender membutuhkan perakitan draf klausul komersial standar yang sesuai (termin pembayaran, incoterm, sanksi keterlambatan) yang diambil dari pustaka klausul modul Contract.
+  - Untuk mematuhi tata kelola enterprise dan mitigasi risiko, seluruh usulan harga dan draf klausul buatan asisten tender wajib ditinjau dan disetujui oleh manusia melalui mekanisme four-eyes (`procurement_manager` $\ne$ staf pengaju) sebelum dapat diserahkan ke tender resmi.
+- **Decision:**
+  1. D84-1: Optimasi harga penawaran menggunakan algoritma `Modules\Shared\Domain\Algorithms\Bidding\ExpectedProfitBidOptimizer` berbasis grid search diskrit dengan langkah IDR tetap (`step_idr`), mengevaluasi probabilitas empiris menang terhadap data historis penawaran lawan, serta menegakkan syarat batas peluang menang minimal ($\ge 30\%$) dan batas harga agen ($[\text{floor}, \text{ceiling}]$).
+  2. D84-2: Perakitan draf klausul kontrak komersial dinamis diintegrasikan melalui kontrak K13 `Modules\Contract\Contracts\ClauseTemplateReader` di modul Contract untuk membaca template teruji dan menyusun paket klausul penawaran tender terstruktur.
+  3. D84-3: Penegakan kontrol four-eyes mandatori (`requires_four_eyes = true`): penawaran tidak dapat diajukan (`SUBMITTED`) tanpa persetujuan eksplisit dari pejabat berwenang (`procurement_manager` atau `admin` yang bukan merupakan inisiator pembuatan draf evaluasi).
+  4. D84-4: Pasca penetapan pemenang lelang (`WON`), sistem secara deterministik menerbitkan kode kontrak (`CTR-TND-...`) dan membukukan akrual komitmen anggaran tender ke subledger keuangan (`trd:tender_contract_ar:IDR` dan `trd:tender_revenue_unearned:IDR`). Seluruh rantai proses diverifikasi oleh command audit `bidding:audit` dengan 0 selisih.
+- **Verification:**
+  - Vektor uji prompt `ExpectedProfitBidOptimizerTest`: biaya $900$, riwayat penawaran `[950, 980, 1000, 1000, 1050, 1100, 1200, 1250]`, langkah $5 \implies$ harga optimal tanpa syarat $P$: $1.195$ ($\mathbb{E} = 73,750$); harga optimal dengan syarat $P \ge 30\%$: $1.095$ ($\mathbb{E} = 73,125$, $P = 37,5\%$).
+  - Kontrak K13 `ClauseTemplateReader` terikat dan teruji di modul Contract.
+  - Acceptance test `tests/Acceptance/BidAssistant/BidAssistantAcceptanceTest.php` memverifikasi 6 skenario kritis.
+  - Command audit `bidding:audit` membuktikan 0 selisih dan menolak anomali pada rekaman terkorupsi.
