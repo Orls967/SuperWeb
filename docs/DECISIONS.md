@@ -2376,4 +2376,28 @@
   - Vektor wajib jadwal angsuran: biaya `100.000.000`, margin `18.000.000`, tenor `12` bulan $\implies$ angsuran 1–4 = `9.833.334` dan angsuran 5–12 = `9.833.333` ($\Sigma = 118.000.000$); margin per angsuran = `1.500.000` ($\Sigma = 18.000.000$); pokok 1–4 = `8.333.334` dan pokok 5–12 = `8.333.333` ($\Sigma = 100.000.000$).
   - Acceptance test `tests/Acceptance/Syariah/SyariahMurabahahAcceptanceTest.php` memverifikasi 6 skenario termasuk matriks RBAC, E2E akad + jadwal + angsuran + ta'zir, larangan tanda tangan tanpa DPS & larangan akun bunga, vektor jadwal, anti-IDOR portal nasabah, dan `syb:audit` di atas skala T1 (1.000 akad).
 
+<a id="g6-p4-d58"></a>
+<a id="d58-1"></a>
+<a id="d58-2"></a>
+<a id="d58-3"></a>
+<a id="d58-4"></a>
+<a id="d58-5"></a>
+<a id="d58-6"></a>
+## 2026-11-05: [G6-P4.1] HCM Inti — Karyawan, Shift Absensi, Optimasi Roster Hungarian & Mesin Payroll Berparameter S2 (Fase 58, D58-1..D58-6)
+- **Anchor:** `2026-11-05-g6-p4-hcm-inti-fase-58` / `g6-p4-d58` / `d58-1` / `d58-2` / `d58-3` / `d58-4` / `d58-5` / `d58-6`
+- **Context:**
+  - Fase 58 HCM Inti (prasyarat KONSEP §8F dan R6.3) mewajibkan perombakan sistem SDM enterprise: enkripsi NIK dengan blind index deterministik, hierarki departemen bebas siklus, pencatatan absensi biometrik S3 append-only, optimasi roster shift menggunakan `HungarianSolver` dengan sertifikat dual, serta mesin penggajian berparameter berversi S2 dengan pembukuan double-entry presisi rupiah.
+- **Decision:**
+  1. D58-1: NIK karyawan dienkripsi (`encrypted`) dengan blind index HMAC-SHA256 (`nik_bidx`). Struktur hierarki departemen memvalidasi relasi parent-child sehingga siklus ditolak (`InvalidArgumentException`).
+  2. D58-2: Jadwal shift interval setengah terbuka `[start, end)`. Absensi biometrik mencatat log secara append-only, menghitung menit keterlambatan dan lembur.
+  3. D58-3: Penugasan roster shift karyawan meminimalkan biaya menggunakan `Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver` + `AssignmentCertificateVerifier`. Vektor prompt 4x4 biaya `[[9,2,7,8],[6,4,3,7],[5,8,1,8],[7,6,9,4]]` menghasilkan penugasan unik E1->S2, E2->S1, E3->S3, E4->S4 dengan total biaya 13.
+  4. D58-4: Komponen penggajian berparameter S2 berversi: BPJS Kesehatan pekerja 1% / pemberi kerja 4% (plafon upah 12.000.000); JHT 2% / 3,7%; JP 1% / 2% (plafon upah 10.547.400); JKK 0,24%; JKM 0,3%. PPh 21 menggunakan TER fixture (`<= 5.4m: 0%`, `<= 10m: 2%`, `<= 20m: 5%`). Vektor gaji Rp 10.000.000: bruto PPh 10.454.000, PPh21 522.700, potongan pekerja 400.000, take-home net 9.077.300, iuran pemberi kerja 1.024.000, biaya total 11.024.000.
+  5. D58-5: Posting ledger double-entry sesuai §8F:
+     - Pengakuan payroll: Debit `expense:hcm:salary:{cost_center}:IDR` (10.000.000), Kredit `hcm:salary_payable:{employee}:IDR` (9.077.300) + `hcm:pph21_payable:IDR` (522.700) + `hcm:bpjs_payable:IDR` (400.000).
+     - Iuran pemberi kerja: Debit `expense:hcm:employer_contribution:{cost_center}:IDR` (1.024.000), Kredit `hcm:bpjs_payable:IDR` (1.024.000).
+     - Pembayaran gaji: Debit `hcm:salary_payable:{employee}:IDR`, Kredit `wallet:user:{id}:IDR` / `clearing:external:IDR`.
+     - Alokasi biaya tenaga kerja langsung ke Manufaktur: Debit `mfg:labor_wip:IDR`, Kredit `expense:hcm:labor_absorbed:IDR`.
+  6. D58-6: Idempotensi penggajian via command `hcm:run-payroll {periode}` (menjalankan periode yang sama 2x tidak menduplikasi slip maupun jurnal). Command `hcm:audit` memverifikasi konsistensi baris payroll vs posting ledger dan integritas slip gaji.
+
+
 

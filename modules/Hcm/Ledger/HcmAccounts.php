@@ -123,6 +123,21 @@ final class HcmAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            // KONSEP §8F HCM Inti
+            [
+                'code' => 'hcm:pph21_payable:IDR',
+                'name' => 'Utang PPh Pasal 21 Karyawan',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hcm:bpjs_payable:IDR',
+                'name' => 'Utang BPJS Ketenagakerjaan & Kesehatan',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }
