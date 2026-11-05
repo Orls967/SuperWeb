@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Modules\Insurance\Domain\Enums\CatBondStatus;
 use Modules\Insurance\Domain\Enums\TreatyStatus;
@@ -17,6 +16,7 @@ use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
 use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
 use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 use Modules\Insurance\Domain\Models\ReinsuranceTreatyPanel;
+use Modules\Party\Domain\Enums\PartyStatus;
 use Modules\Party\Domain\Enums\PartyType;
 use Modules\Party\Domain\Models\Party;
 use Modules\Rwa\Contracts\CatBondTokenRegistry;
@@ -211,7 +211,7 @@ final class InsuranceT1Seeder extends Seeder
                     'name_normalized' => strtolower(trim($rName)),
                     'type' => PartyType::Company,
                     'short_name' => 'REINS-'.($idx + 1),
-                    'status' => \Modules\Party\Domain\Enums\PartyStatus::Verified,
+                    'status' => PartyStatus::Verified,
                     'is_active' => true,
                 ]
             );
