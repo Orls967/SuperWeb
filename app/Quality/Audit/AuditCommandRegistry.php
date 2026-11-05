@@ -64,6 +64,7 @@ use App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrtAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\ReinsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
@@ -129,6 +130,7 @@ final class AuditCommandRegistry
             'htl:audit' => new HtlAuditCorruptionFixture,
             'hotel:audit' => new HtlAuditCorruptionFixture,
             'ins:audit' => new InsAuditCorruptionFixture,
+            'ins:reinsurance-audit' => new ReinsAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,
             'lgx:audit-circular' => new LogisticsCircularCorruptionFixture,

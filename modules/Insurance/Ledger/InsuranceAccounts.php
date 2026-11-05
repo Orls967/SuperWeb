@@ -15,6 +15,32 @@ use Modules\Banking\Domain\Enums\AccountKind;
  */
 final class InsuranceAccounts
 {
+    public const string CEDED_PREMIUM_EXPENSE = 'reins:ceded_premium_expense:IDR';
+
+    public const string COMMISSION_INCOME = 'reins:commission_income:IDR';
+
+    public const string REINSTATEMENT_EXPENSE = 'reins:reinstatement_premium_expense:IDR';
+
+    public const string CLAIM_EXPENSE = 'ins:claim_expense:IDR';
+
+    public const string CLAIM_CLEARING = 'ins:claim_clearing:IDR';
+
+    public const string UNEARNED_PREMIUM = 'ins:unearned_premium:IDR';
+
+    public const string PREMIUM_RECEIVABLE = 'ar:ins:premium:IDR';
+
+    public const string COMMUTATION_LOSS = 'reins:commutation_loss:IDR';
+
+    public const string OWN_FUNDS = 'ins:own_funds:IDR';
+
+    public const string RESERVE_POOL = 'ins:reserve_pool:IDR';
+
+    public const string CATBOND_COUPON_EXPENSE = 'ins:catbond_coupon_expense:IDR';
+
+    public const string CATBOND_RECOVERABLE = 'ins:catbond_recoverable:IDR';
+
+    public const string BANK_CLEARING = 'clearing:external:IDR';
+
     /**
      * @return list<array{code: string, name: string, kind: AccountKind, asset_code: string, allow_negative: bool}>
      */
@@ -85,6 +111,48 @@ final class InsuranceAccounts
                 'allow_negative' => true,
             ],
             [
+                'code' => 'reins:commission_income:IDR',
+                'name' => 'Reinsurance Ceding Commission Income',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'reins:reinstatement_premium_expense:IDR',
+                'name' => 'Reinsurance Reinstatement Premium Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'reins:commutation_loss:IDR',
+                'name' => 'Reinsurance Commutation Discount Loss',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ins:own_funds:IDR',
+                'name' => 'Insurer Own Funds (Available Capital)',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ins:catbond_coupon_expense:IDR',
+                'name' => 'Cat Bond Coupon Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ins:catbond_recoverable:IDR',
+                'name' => 'Cat Bond Trigger Recoverable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
                 'code' => 'ar:ins:premium:IDR',
                 'name' => 'Accounts Receivable Insurance Premium',
                 'kind' => AccountKind::ASSET,
@@ -92,6 +160,36 @@ final class InsuranceAccounts
                 'allow_negative' => true,
             ],
         ];
+    }
+
+    /** Utang ke reinsurer (kredit-normal; boleh negatif saat settlement mendahului akrual). */
+    public static function reinsurerPayable(string $partyId): string
+    {
+        return self::ensureSubject("reins:payable:{$partyId}:IDR", "Reinsurance Payable {$partyId}", AccountKind::AP);
+    }
+
+    /** Piutang recoverable dari reinsurer (debit-normal). */
+    public static function reinsurerRecoverable(string $partyId): string
+    {
+        return self::ensureSubject("reins:recoverable:{$partyId}:IDR", "Reinsurance Recoverable {$partyId}", AccountKind::ASSET);
+    }
+
+    private static function ensureSubject(string $code, string $name, AccountKind $kind): string
+    {
+        LedgerAccount::firstOrCreate(
+            ['code' => $code],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => $name,
+                'asset_code' => 'IDR',
+                'kind' => $kind->value,
+                'allow_negative' => true,
+                'cached_balance' => '0',
+                'is_frozen' => false,
+            ]
+        );
+
+        return $code;
     }
 
     public static function unearnedPremium(): LedgerAccount

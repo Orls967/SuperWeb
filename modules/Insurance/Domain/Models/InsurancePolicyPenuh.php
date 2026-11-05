@@ -16,6 +16,8 @@ final class InsurancePolicyPenuh extends Model
         'policy_number',
         'product_id',
         'customer_party_ref',
+        'region_code',
+        'idempotency_key',
         'sum_insured_idr',
         'gross_premium_idr',
         'ceded_premium_idr',
@@ -43,6 +45,11 @@ final class InsurancePolicyPenuh extends Model
     public function schedules(): HasMany
     {
         return $this->hasMany(InsurancePremiumSchedule::class, 'policy_id');
+    }
+
+    public function cessionEvents(): HasMany
+    {
+        return $this->hasMany(CessionEvent::class, 'policy_id');
     }
 
     public function claims(): HasMany

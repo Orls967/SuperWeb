@@ -16,6 +16,10 @@ class InsuranceRbacSeeder extends Seeder
         // Roles
         $underwriter = $rbac->ensureRole('insurance_underwriter', 'Insurance Underwriter', 'Underwriter penerbit polis dan konfigurasi oracle.');
         $claimsOfficer = $rbac->ensureRole('insurance_claims_officer', 'Insurance Claims Officer', 'Petugas investigasi dan penyelesaian klaim.');
+        $reinsuranceMgr = $rbac->ensureRole('reinsurance_mgr', 'Reinsurance Manager', 'Manajer treaty reasuransi, bordereaux, dan cat bond.');
+        $actuary = $rbac->ensureRole('actuary', 'Actuary & Risk Modeler', 'Aktuaris penghitung solvabilitas RBC dan pemodelan CAT.');
+        $cfoView = $rbac->ensureRole('cfo_view', 'CFO Read-Only View', 'Pengamat keuangan dan modal eksekutif.');
+        $investor = $rbac->ensureRole('investor', 'Cat Bond & RWA Investor', 'Investor pemegang unit Cat Bond.');
 
         // Permissions
         $permissions = [

@@ -16,6 +16,7 @@ final class InsuranceClaimPenuh extends Model
         'policy_id',
         'incident_date',
         'incident_description',
+        'cat_event_code',
         'claimed_amount_idr',
         'approved_amount_idr',
         'subrogation_recovered_idr',
