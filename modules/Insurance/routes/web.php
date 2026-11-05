@@ -10,12 +10,16 @@ use Modules\Insurance\Http\Controllers\CatController;
 use Modules\Insurance\Http\Controllers\CustomerHubController;
 use Modules\Insurance\Http\Controllers\EmbeddedInsuranceController;
 use Modules\Insurance\Http\Controllers\FullInsuranceController;
+use Modules\Insurance\Http\Controllers\HealthInsuranceController;
 use Modules\Insurance\Http\Controllers\InsuranceClaimsWorkflowController;
 use Modules\Insurance\Http\Controllers\InsuranceController;
 use Modules\Insurance\Http\Controllers\InsurancePoliciesController;
 use Modules\Insurance\Http\Controllers\InvestorCatBondController;
+use Modules\Insurance\Http\Controllers\LifeInsuranceController;
 use Modules\Insurance\Http\Controllers\ReinsuranceController;
 use Modules\Insurance\Http\Controllers\SiuInvestigationController;
+use Modules\Insurance\Http\Controllers\UnitLinkController;
+use Modules\Insurance\Http\Controllers\WellnessController;
 
 Route::middleware(['web', 'auth'])->prefix('insurance')->group(function () {
     Route::middleware('role:admin,insurance_admin,underwriter,customer')->group(function () {
@@ -119,6 +123,58 @@ Route::middleware(['web', 'auth'])->prefix('insurance')->group(function () {
         Route::get('/', [SiuInvestigationController::class, 'index'])->name('index');
         Route::get('/{id}', [SiuInvestigationController::class, 'show'])->name('show');
         Route::post('/{id}/decide', [SiuInvestigationController::class, 'decide'])->name('decide');
+    });
+
+    // Life Insurance & Saving Plans (Fase 159)
+    Route::prefix('life')->name('insurance.life.')->group(function () {
+        Route::middleware('role:admin,superadmin,underwriter,insurance_admin')->group(function () {
+            Route::get('/', [LifeInsuranceController::class, 'index'])->name('index');
+            Route::get('/actuarial', [LifeInsuranceController::class, 'actuarial'])->name('actuarial');
+            Route::get('/{id}', [LifeInsuranceController::class, 'show'])->name('show');
+            Route::post('/', [LifeInsuranceController::class, 'store'])->name('store');
+            Route::post('/{id}/underwrite', [LifeInsuranceController::class, 'underwrite'])->name('underwrite');
+        });
+        Route::middleware('role:admin,superadmin,claims_adjuster,underwriter')->group(function () {
+            Route::post('/claim', [LifeInsuranceController::class, 'claim'])->name('claim');
+        });
+        Route::middleware('role:admin,superadmin,underwriter,customer')->group(function () {
+            Route::post('/{id}/surrender', [LifeInsuranceController::class, 'surrender'])->name('surrender');
+        });
+    });
+
+    // Health Insurance & Cashless Admission (Fase 159)
+    Route::prefix('health')->name('insurance.health.')->group(function () {
+        Route::middleware('role:admin,superadmin,underwriter,insurance_admin')->group(function () {
+            Route::get('/', [HealthInsuranceController::class, 'index'])->name('index');
+            Route::get('/analytics', [HealthInsuranceController::class, 'analytics'])->name('analytics');
+        });
+        Route::middleware('role:admin,superadmin,claims_adjuster,underwriter')->group(function () {
+            Route::get('/guarantee-letters', [HealthInsuranceController::class, 'guaranteeLetters'])->name('gl.index');
+            Route::post('/guarantee-letters', [HealthInsuranceController::class, 'requestGl'])->name('gl.request');
+            Route::get('/claims', [HealthInsuranceController::class, 'claims'])->name('claims.index');
+            Route::post('/claims/adjudicate', [HealthInsuranceController::class, 'adjudicate'])->name('claims.adjudicate');
+            Route::post('/claims/{id}/appeal', [HealthInsuranceController::class, 'appeal'])->name('claims.appeal');
+        });
+    });
+
+    // Wellness Rewards (Fase 159)
+    Route::prefix('wellness')->name('insurance.wellness.')->middleware('role:admin,superadmin,customer,underwriter')->group(function () {
+        Route::get('/', [WellnessController::class, 'dashboard'])->name('dashboard');
+        Route::post('/record', [WellnessController::class, 'record'])->name('record');
+    });
+
+    // Unit Link Portfolio (Fase 159)
+    Route::prefix('unit-link')->name('insurance.unitlink.')->group(function () {
+        Route::middleware('role:admin,superadmin,underwriter,investor')->group(function () {
+            Route::get('/', [UnitLinkController::class, 'portfolio'])->name('portfolio');
+            Route::get('/analytics', [UnitLinkController::class, 'analytics'])->name('analytics');
+        });
+        Route::middleware('role:admin,superadmin,underwriter,actuary')->group(function () {
+            Route::post('/valuate', [UnitLinkController::class, 'valuate'])->name('valuate');
+        });
+        Route::middleware('role:admin,superadmin,underwriter,customer')->group(function () {
+            Route::post('/switch', [UnitLinkController::class, 'switch'])->name('switch');
+        });
     });
 });
 

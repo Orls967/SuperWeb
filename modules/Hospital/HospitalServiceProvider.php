@@ -6,13 +6,16 @@ namespace Modules\Hospital;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
+use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
+use Modules\Hospital\Contracts\EncounterBillReader;
 
 class HospitalServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(HospitalEmrAndBedService::class);
+        $this->app->bind(EncounterBillReader::class, HospitalEncounterBillReaderService::class);
     }
 
     public function boot(): void

@@ -11406,12 +11406,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
 > **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `LifeHealthWellnessService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 159.1 **Term life & saving plans**: premi periodik → death benefit / maturity → underwriting medis (link ke RS Fase 87 data dengan consent) → beneficiary management (Party) → claim wafat (dokumen + verifikasi)
-- [ ] 159.2 **Health insurance full**: reimburse vs cashless di RS jaringan (Fase 88.2 diperluas) → e-claim real-time → cashless authorization ke RS (guarantee letter gapless) → settlement RS → denial reason coded → appeal workflow
-- [ ] 159.3 **Wellness rewards**: wearable data (Fase 108.4) → healthy behavior → diskon premi / bonus poin → data privacy via vault (Fase 144.2) → anti-gaming rules
-- [ ] 159.4 **Unit link portfolio (simulasi)**: premi → investasi (memperluas Fase 73) → NAV harian → manfaat tergantung kinerja → fee & cost ratio terdisclose → reconciliation holdings = ledger
-- [ ] 159.5 **Underwriting rules engine**: decline/loaded/delayed risk → alasan kode → appeal dokter independen → keputusan final tercatat → konsistensi aturan
-- [ ] 159.6 Tests: (a) cashless authorization ≤ limit polis (b) wellness reward tak bisa di-gaming (c) NAV Σ = dana kelolaan (d) beneficiary change butuh auth kuat (e) `ins:audit` + `hosp:audit` = 0 selisih
+- [🔵] 159.1 **Term life & saving plans**: premi periodik → death benefit / maturity → underwriting medis (link ke RS Fase 87 data dengan consent) → beneficiary management (Party) → claim wafat (dokumen + verifikasi)
+- [🔵] 159.2 **Health insurance full**: reimburse vs cashless di RS jaringan (Fase 88.2 diperluas) → e-claim real-time → cashless authorization ke RS (guarantee letter gapless) → settlement RS → denial reason coded → appeal workflow
+- [🔵] 159.3 **Wellness rewards**: wearable data (Fase 108.4) → healthy behavior → diskon premi / bonus poin → data privacy via vault (Fase 144.2) → anti-gaming rules
+- [🔵] 159.4 **Unit link portfolio (simulasi)**: premi → investasi (memperluas Fase 73) → NAV harian → manfaat tergantung kinerja → fee & cost ratio terdisclose → reconciliation holdings = ledger
+- [🔵] 159.5 **Underwriting rules engine**: decline/loaded/delayed risk → alasan kode → appeal dokter independen → keputusan final tercatat → konsistensi aturan
+- [🔵] 159.6 Tests: (a) cashless authorization ≤ limit polis (b) wellness reward tak bisa di-gaming (c) NAV Σ = dana kelolaan (d) beneficiary change butuh auth kuat (e) `ins:audit` + `hosp:audit` = 0 selisih
 - [ ] 159.7 Quality gate Fase 159
 
 ## FASE 160 — LINI 18: TAKAFUL, AGRI-INSURANCE & INSURANCE OPS COMMAND
