@@ -17,7 +17,7 @@ final class ForestAuditCorruptionFixture implements CorruptionFixture
     public function corrupt(): string
     {
         // Masukkan data tebangan kayu ilegal yang melebihi kuota petak
-        DB::table('for_concession_plots')->insert([
+        DB::table('for_concession_areas')->insert([
             'plot_code' => 'PLT-CORRUPT-FOR',
             'concession_name' => 'Concession Corrupt',
             'area_hectares' => 100,

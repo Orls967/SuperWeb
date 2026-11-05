@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ForestConcessionPlot extends Model
 {
-    protected $table = 'for_concession_plots';
+    protected $table = 'for_concession_areas';
 
     protected $fillable = [
         'plot_code',

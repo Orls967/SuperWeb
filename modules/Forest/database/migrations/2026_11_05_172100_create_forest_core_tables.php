@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('for_concession_plots', function (Blueprint $table) {
+        Schema::create('for_concession_areas', function (Blueprint $table) {
             $table->id();
             $table->string('plot_code')->unique();
             $table->string('concession_name');
@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::create('for_tree_inventories', function (Blueprint $table) {
             $table->id();
             $table->string('tree_tag')->unique();
-            $table->foreignId('plot_id')->constrained('for_concession_plots')->cascadeOnDelete();
+            $table->foreignId('plot_id')->constrained('for_concession_areas')->cascadeOnDelete();
             $table->string('species_name');
             $table->unsignedInteger('dbh_cm');
             $table->unsignedInteger('height_m');
@@ -37,7 +37,7 @@ return new class extends Migration
         Schema::create('for_harvest_permits', function (Blueprint $table) {
             $table->id();
             $table->string('permit_code')->unique();
-            $table->foreignId('plot_id')->constrained('for_concession_plots')->cascadeOnDelete();
+            $table->foreignId('plot_id')->constrained('for_concession_areas')->cascadeOnDelete();
             $table->unsignedInteger('authorized_volume_m3');
             $table->unsignedInteger('harvested_volume_m3')->default(0);
             $table->date('valid_from');
@@ -52,7 +52,7 @@ return new class extends Migration
         Schema::create('for_timber_logs', function (Blueprint $table) {
             $table->id();
             $table->string('log_code')->unique();
-            $table->foreignId('plot_id')->constrained('for_concession_plots')->cascadeOnDelete();
+            $table->foreignId('plot_id')->constrained('for_concession_areas')->cascadeOnDelete();
             $table->foreignId('permit_id')->constrained('for_harvest_permits')->cascadeOnDelete();
             $table->string('tree_tag')->index();
             $table->unsignedInteger('volume_dm3');
@@ -80,7 +80,7 @@ return new class extends Migration
         Schema::create('for_restoration_plots', function (Blueprint $table) {
             $table->id();
             $table->string('restoration_code')->unique();
-            $table->foreignId('plot_id')->constrained('for_concession_plots')->cascadeOnDelete();
+            $table->foreignId('plot_id')->constrained('for_concession_areas')->cascadeOnDelete();
             $table->unsignedInteger('planted_hectares');
             $table->unsignedInteger('trees_planted');
             $table->unsignedInteger('survival_rate_pct');
@@ -97,6 +97,6 @@ return new class extends Migration
         Schema::dropIfExists('for_timber_logs');
         Schema::dropIfExists('for_harvest_permits');
         Schema::dropIfExists('for_tree_inventories');
-        Schema::dropIfExists('for_concession_plots');
+        Schema::dropIfExists('for_concession_areas');
     }
 };
