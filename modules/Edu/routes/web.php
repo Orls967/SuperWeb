@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Edu\Http\Controllers\CampusAcademicController;
 use Modules\Edu\Http\Controllers\EduAcademyController;
 use Modules\Edu\Http\Controllers\EduAdminProgramController;
 use Modules\Edu\Http\Controllers\EduCertificationController;
@@ -41,4 +42,19 @@ Route::middleware(['web', 'auth', 'role:admin,edu_admin,instructor,cert_officer,
     Route::get('/grants', [EduResearchGrantController::class, 'index'])->name('edu.grants.index');
     Route::get('/grants/{id}', [EduResearchGrantController::class, 'show'])->name('edu.grants.show');
     Route::post('/grants/milestones/{milestoneId}/disburse', [EduResearchGrantController::class, 'disburseMilestone'])->name('edu.grants.disburse');
+});
+
+// Lini 20 Edu Campus (Fase 166)
+Route::prefix('campus')->name('edu.campus.')->middleware(['web', 'auth'])->group(function () {
+    Route::middleware('role:admin,superadmin,academic_admin,lecturer')->group(function () {
+        Route::get('/institutions', [CampusAcademicController::class, 'institutions'])->name('institutions.index');
+        Route::get('/courses', [CampusAcademicController::class, 'courses'])->name('courses.index');
+        Route::get('/classes', [CampusAcademicController::class, 'classes'])->name('classes.index');
+    });
+
+    Route::middleware('role:admin,superadmin,academic_admin,lecturer,student')->group(function () {
+        Route::get('/krs', [CampusAcademicController::class, 'krs'])->name('krs.index');
+        Route::get('/transcripts', [CampusAcademicController::class, 'transcripts'])->name('transcripts.index');
+        Route::get('/tuition', [CampusAcademicController::class, 'tuitionInvoices'])->name('tuition.index');
+    });
 });

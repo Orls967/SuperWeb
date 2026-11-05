@@ -3708,4 +3708,10 @@ return [
     'insurance.full.claims.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer']],
     'insurance.full.claims.show' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer'], 'params' => fn () => ['id' => 1]],
     'insurance.full.actuarial.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr']],
+    'edu.campus.institutions.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer']],
+    'edu.campus.courses.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer']],
+    'edu.campus.classes.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer']],
+    'edu.campus.krs.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer', 'student']],
+    'edu.campus.transcripts.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer', 'student']],
+    'edu.campus.tuition.index' => ['roles' => ['admin', 'superadmin', 'academic_admin', 'lecturer', 'student']],
 ];
