@@ -45,8 +45,15 @@ final class ShariahLedgerPoster
         array $entries
     ): void {
         $entryDtos = [];
-        foreach ($entries as $code => $amount) {
-            $entryDtos[] = PostingEntryDTO::forCode((string) $code, 'IDR', $amount);
+        foreach ($entries as $key => $val) {
+            if (is_array($val) && isset($val['account_code'], $val['amount'])) {
+                $accountCode = (string) $val['account_code'];
+                $amount = (int) $val['amount'];
+            } else {
+                $accountCode = (string) $key;
+                $amount = (int) $val;
+            }
+            $entryDtos[] = PostingEntryDTO::forCode($accountCode, 'IDR', $amount);
         }
 
         $dto = new PostingDTO(

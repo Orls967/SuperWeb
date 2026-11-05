@@ -3761,6 +3761,18 @@ return [
     'syariah.social.graduations.index' => ['roles' => ['admin', 'syariah_officer']],
     'syariah.social.graduations.store' => ['roles' => ['admin', 'syariah_officer']],
     'syariah.social.graduations.verify' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+
+    // 10. Perdagangan Internasional & SCF Syariah (Fase 164)
+    'syariah.trade.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.lc.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.lc.show' => ['roles' => ['admin', 'syariah_officer', 'trade_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.trade.salam.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.salam.show' => ['roles' => ['admin', 'syariah_officer', 'trade_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.trade.scf.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.scf.show' => ['roles' => ['admin', 'syariah_officer', 'trade_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.trade.tawarruq.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.custody.index' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
+    'syariah.trade.calculator' => ['roles' => ['admin', 'syariah_officer', 'trade_officer']],
     'forest.plots.index' => ['roles' => ['admin', 'forester', 'superadmin']],
     'forest.plots.show' => ['roles' => ['admin', 'forester', 'superadmin'], 'params' => fn () => ['id' => 1]],
     'forest.permits.index' => ['roles' => ['admin', 'forester', 'superadmin']],
