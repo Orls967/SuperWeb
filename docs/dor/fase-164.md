@@ -36,3 +36,4 @@
 - **Role & Rute:** `syariah_officer`, `trade_officer`, `customs_agent`, `importer_party`, `exporter_party`; rute `/syb/trade/lc`, `/syb/trade/salam`, `/syb/trade/scf`, `/syb/trade/tawarruq`, `/syb/trade/custody`.
 - **Tingkat simulasi:** S1 (kurs acuan komoditas & tarif ujrah berversi di `syb_parameters`). **Tier skala:** T1 (200 Islamic LC aktif, 500 kontrak salam tani/tambang, 1.000 transaksi supply chain murabahah, 300 tawarruq FX hedge).
 - **Keputusan Terkait:** `g7-d14`..`g7-d18`.
+

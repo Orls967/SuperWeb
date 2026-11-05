@@ -92,3 +92,4 @@ flowchart TD
 | `syb:tawarruq_commodity_holding:IDR` | ASSET | Kepemilikan sementara komoditas tawarruq bursa |
 | `syb:tawarruq_fx_clearing:IDR` | ASSET | Rekening kliring valuta asing hasil penjualan tawarruq |
 | `syb:trade_ujrah_fee_income:IDR` | REVENUE | Pendapatan fee/ujrah keagenan wakalah dan administrasi LC |
+
