@@ -30,3 +30,4 @@ final class SybWaqfDistribution extends Model
         return $this->belongsTo(SybWaqfPrincipal::class, 'waqf_principal_id');
     }
 }
+
