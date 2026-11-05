@@ -59,6 +59,12 @@
             "decision": "DECISIONS.md#2026-11-05-modul-proservices-lini-25-g6-p51",
             "key": "table_prefixes",
             "count": 1
+        },
+        {
+            "date": "2026-11-05",
+            "key": "table_prefixes",
+            "decision": "DECISIONS.md#2026-11-05-modul-forest-lini-23-g6-p52",
+            "count": 1
         }
     ]
 }

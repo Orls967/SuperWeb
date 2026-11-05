@@ -11563,12 +11563,18 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Forest (`for_`) + Esg · **Prasyarat:** R6.4 ✅ · **Acuan:** KONSEP Lini 23
 > **Jalan pintas terlarang di fase ini:** volume tebang tanpa izin (approval); kredit karbon di luar Esg; memperluas `ForestryTimberService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
-- [ ] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks
-- [ ] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence
-- [ ] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade
-- [ ] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0
-- [ ] 172.6 Quality gate Fase 172
+- [x] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history <!-- 🔵 implementasi Lini 23 Kehutanan D23-1, models, migration, seeder T1 -->
+- [x] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks <!-- 🔵 SHA-256 hash-chain custody logs & PSDH DR ledger posting D23-2 -->
+- [x] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence <!-- 🔵 ForestRestorationPlot & CarbonCreditIssuer Esg integration D23-4 -->
+- [x] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade <!-- 🔵 Timber sales, invoice, PSDH levy journal posting D23-3 -->
+- [x] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0 <!-- 🔵 ForestAcceptanceTest, TreeVolumeCalculatorTest, AuditForestCommand -->
+- [x] 172.6 Quality gate Fase 172 <!-- 🔵 Lulus A1-A13, Pint, CodebaseInventorySyncTest, Psr4, ConfigAllowlistGovernanceTest -->
+
+### Register Minus Fase 172
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-172-01 | 172.1 | Polygon batas konsesi kehutanan tersimpan dalam format deskripsi koordinat GeoJSON string tanpa ekstensi PostGIS native | Analisis spasial overlap mengandalkan verifikasi bounding box atribut numerik | P3 | Pasang ekstensi PostGIS spasial native pada migrasi infrastruktur GIS tingkat lanjut |
+| RM-172-02 | 172.3 | Pemantauan tingkat kelangsungan hidup restorasi mengandalkan sampling verifikasi lapangan berkala tanpa integrasi citra satelit langsung Sentinel-2/Landsat | Indeks kehijauan NDVI restorasi didasarkan pada laporan sampling kanopi | P3 | Tambahkan pipeline auto-ingest Sentinel-2 Copernicus API di fase ekspansi remote sensing |
 
 ## FASE 173 — LINI 23: NATURE FINANCE, BIODIVERSITY & ECOSYSTEM SERVICES
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `NatureFinanceService`; 1 migrasi; test `NatureFinanceTest` — commit `5c9d904`, +302 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

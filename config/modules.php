@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return [
     'table_prefixes' => [
+        'for_' => 'Forest',
         'psv_' => 'ProServices',
         'agy_' => 'Agency',
         'agri_' => 'Agri',

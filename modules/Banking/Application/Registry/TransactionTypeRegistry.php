@@ -17,6 +17,7 @@ use Modules\Egy\Ledger\EgyTransactionTypes;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceTransactionTypes;
 use Modules\Epc\Ledger\EpcTransactionTypes;
 use Modules\Esg\Ledger\EsgTransactionTypes;
+use Modules\Forest\Ledger\ForestTransactionTypes;
 use Modules\Hcm\Ledger\HcmTransactionTypes;
 use Modules\Hospital\Ledger\HospitalTransactionTypes;
 use Modules\Hotel\Ledger\HotelTransactionTypes;
@@ -65,6 +66,7 @@ final class TransactionTypeRegistry
         MedTransactionTypes::class,
         MarineTransactionTypes::class,
         ProServicesTransactionTypes::class,
+        ForestTransactionTypes::class,
         MiningTransactionTypes::class,
         PricingTransactionTypes::class,
         ProptechTransactionTypes::class,

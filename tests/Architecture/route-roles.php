@@ -3691,6 +3691,12 @@ return [
             }
         },
     ],
+    'forest.plots.index' => ['admin', 'forester', 'superadmin'],
+    'forest.plots.show' => ['admin', 'forester', 'superadmin'],
+    'forest.permits.index' => ['admin', 'forester', 'superadmin'],
+    'forest.logs.index' => ['admin', 'forester', 'timber_inspector', 'superadmin'],
+    'forest.sales.index' => ['admin', 'forester', 'timber_buyer', 'superadmin'],
+    'forest.restoration.index' => ['admin', 'forester', 'esg_officer', 'superadmin'],
     'proservices.projects.index' => ['roles' => ['admin', 'project_manager', 'superadmin']],
     'proservices.timesheets.index' => ['roles' => ['admin', 'consultant']],
     'proservices.timesheets.show' => ['roles' => ['admin', 'consultant'], 'params' => fn () => ['id' => 1]],

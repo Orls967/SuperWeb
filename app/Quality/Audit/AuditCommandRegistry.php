@@ -33,6 +33,7 @@ use App\Quality\Audit\Fixtures\EvAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FashionAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FltAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\FoodAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\ForestAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\GovernanceAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\GroupAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\HcmAuditCorruptionFixture;
@@ -151,6 +152,7 @@ final class AuditCommandRegistry
             'prp:audit-flex' => new ProptechFlexCorruptionFixture,
             'mar:audit' => new MarineAuditCorruptionFixture,
             'psv:audit' => new ProServicesAuditCorruptionFixture,
+            'for:audit' => new ForestAuditCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'prt:audit' => new PrtAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
