@@ -26,6 +26,7 @@ use App\Quality\Audit\Fixtures\DrAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EcosystemAudit12LinesCorruptionFixture;
 use App\Quality\Audit\Fixtures\EduAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EgyAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\EmbeddedAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EnterpriseAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EpcAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EsgAuditCorruptionFixture;
@@ -130,6 +131,7 @@ final class AuditCommandRegistry
             'htl:audit' => new HtlAuditCorruptionFixture,
             'hotel:audit' => new HtlAuditCorruptionFixture,
             'ins:audit' => new InsAuditCorruptionFixture,
+            'ins:embedded-audit' => new EmbeddedAuditCorruptionFixture,
             'ins:reinsurance-audit' => new ReinsAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,

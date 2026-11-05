@@ -9,6 +9,7 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Insurance\Application\Services\FullInsuranceService;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
+use Modules\Insurance\Console\Commands\AuditEmbeddedCommand;
 use Modules\Insurance\Console\Commands\AuditInsuranceCommand;
 use Modules\Insurance\Console\Commands\AuditReinsuranceCommand;
 use Modules\Insurance\Console\Commands\CatRunCommand;
@@ -42,6 +43,7 @@ class InsuranceServiceProvider extends ServiceProvider
             $this->commands([
                 AuditInsuranceCommand::class,
                 AuditReinsuranceCommand::class,
+                AuditEmbeddedCommand::class,
                 CatRunCommand::class,
                 CedePeriodCommand::class,
                 SolvencySnapshotCommand::class,

@@ -9,11 +9,14 @@ use Modules\Insurance\Domain\Enums\CatBondStatus;
 use Modules\Insurance\Domain\Enums\TreatyStatus;
 use Modules\Insurance\Domain\Enums\TreatyType;
 use Modules\Insurance\Domain\Models\CatBond;
+use Modules\Insurance\Domain\Models\EmbedProduct;
 use Modules\Insurance\Domain\Models\InsuranceActuarialTriangle;
 use Modules\Insurance\Domain\Models\InsuranceClaimPenuh;
 use Modules\Insurance\Domain\Models\InsuranceParameter;
 use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
 use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
+use Modules\Insurance\Domain\Models\MarketBroker;
+use Modules\Insurance\Domain\Models\ParametricTrigger;
 use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 use Modules\Insurance\Domain\Models\ReinsuranceTreatyPanel;
 use Modules\Party\Domain\Enums\PartyStatus;
@@ -97,6 +100,9 @@ final class InsuranceT1Seeder extends Seeder
         $this->seedCatBond();
 
         // 6. Seeding Polis
+        InsuranceClaimPenuh::where('idempotency_key', 'like', 't1:clm:%')->delete();
+        InsurancePolicyPenuh::where('policy_number', 'like', 'POL-T1-%')->delete();
+
         $policyCount = app()->environment('testing') ? 200 : 20000;
         $policyRows = [];
 
@@ -185,6 +191,9 @@ final class InsuranceT1Seeder extends Seeder
                 ]
             );
         }
+
+        // 9. Embedded Insurance & Broker Marketplace (Fase 158)
+        $this->seedEmbeddedAndBrokers();
     }
 
     /**
@@ -402,5 +411,104 @@ final class InsuranceT1Seeder extends Seeder
                 'maturity_date' => '2029-01-01',
             ]
         );
+    }
+
+    private function seedEmbeddedAndBrokers(): void
+    {
+        $now = now();
+
+        // 1. Embedded Products
+        $embedProducts = [
+            [
+                'code' => 'EMB-FLIGHT-01',
+                'name' => 'Automated Flight Delay Guarantee',
+                'line_domain' => 'AVI',
+                'coverage_type' => 'DELAY',
+                'default_sum_insured_idr' => 5000000,
+                'premium_rate_bps' => 200,
+                'min_premium_idr' => 100000,
+                'is_active' => true,
+            ],
+            [
+                'code' => 'EMB-GADGET-01',
+                'name' => 'E-Commerce Gadget Screen Shield',
+                'line_domain' => 'MALL',
+                'coverage_type' => 'DAMAGE',
+                'default_sum_insured_idr' => 3000000,
+                'premium_rate_bps' => 150,
+                'min_premium_idr' => 50000,
+                'is_active' => true,
+            ],
+            [
+                'code' => 'EMB-AGRI-01',
+                'name' => 'Micro-Crop Parametric Drought Shield',
+                'line_domain' => 'AGRI',
+                'coverage_type' => 'PARAMETRIC',
+                'default_sum_insured_idr' => 10000000,
+                'premium_rate_bps' => 300,
+                'min_premium_idr' => 250000,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($embedProducts as $pData) {
+            EmbedProduct::updateOrCreate(['code' => $pData['code']], $pData);
+        }
+
+        // 2. Parametric Triggers
+        $triggers = [
+            [
+                'trigger_code' => 'TRG-NDVI-PLOT-01',
+                'metric_name' => 'NDVI',
+                'region_or_plot' => 'PLOT-WEST-JAVA-001',
+                'threshold_value' => 350,
+                'comparison_operator' => '<',
+                'payout_percentage_bps' => 10000,
+                'is_active' => true,
+            ],
+            [
+                'trigger_code' => 'TRG-FLIGHT-DELAY-120',
+                'metric_name' => 'FLIGHT_DELAY_MINUTES',
+                'region_or_plot' => 'CGK-DPS',
+                'threshold_value' => 120,
+                'comparison_operator' => '>=',
+                'payout_percentage_bps' => 5000,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($triggers as $tData) {
+            ParametricTrigger::updateOrCreate(['trigger_code' => $tData['trigger_code']], $tData);
+        }
+
+        // 3. Broker Parties & Profiles
+        $brokerParties = [
+            'PT Pialang Asuransi Digital Mandiri' => 'BROKER-LIC-001',
+            'PT Proteksi Finansial Terpadu' => 'BROKER-LIC-002',
+        ];
+
+        foreach ($brokerParties as $bName => $bLic) {
+            $party = Party::firstOrCreate(
+                ['name' => $bName],
+                [
+                    'name_normalized' => strtolower(trim($bName)),
+                    'type' => PartyType::Company,
+                    'short_name' => $bLic,
+                    'status' => PartyStatus::Verified,
+                    'is_active' => true,
+                ]
+            );
+
+            MarketBroker::updateOrCreate(
+                ['license_number' => $bLic],
+                [
+                    'party_id' => $party->id,
+                    'tier' => 'gold',
+                    'commission_rate_bps' => 1500,
+                    'rating_score' => 92,
+                    'status' => 'active',
+                ]
+            );
+        }
     }
 }
