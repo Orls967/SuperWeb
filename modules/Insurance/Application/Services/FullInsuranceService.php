@@ -8,13 +8,20 @@ use DomainException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Insurance\Application\Actions\CedeClaimAction;
+use Modules\Insurance\Application\Actions\CedePolicyPremiumAction;
+use Modules\Insurance\Application\Support\InsuranceNumbering;
+use Modules\Insurance\Domain\Exceptions\IdempotencyKeyConflictException;
 use Modules\Insurance\Domain\Models\InsuranceActuarialTriangle;
 use Modules\Insurance\Domain\Models\InsuranceClaimPenuh;
 use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
 use Modules\Insurance\Domain\Models\InsurancePremiumSchedule;
 use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
+use Modules\Insurance\Ledger\InsuranceAccounts;
 use Modules\Insurance\Ledger\InsuranceTransactionTypes;
 use Modules\Shared\Domain\Algorithms\Actuarial\ChainLadder;
 
@@ -23,13 +30,17 @@ final class FullInsuranceService
     public const FOUR_EYES_THRESHOLD_IDR = 50000000; // Rp50.000.000
 
     public function __construct(
-        private readonly LedgerService $ledgerService
+        private readonly LedgerService $ledgerService,
+        private readonly ClockInterface $clock,
+        private readonly DocumentNumberingInterface $numbering,
+        private readonly CedePolicyPremiumAction $cedePremium,
+        private readonly CedeClaimAction $cedeClaim,
     ) {}
 
     /**
      * Rating engine: deterministically calculates gross, ceded, and retained premiums.
      *
-     * @param  array{product_id: int, customer_party_ref: int, sum_insured_idr: int, risk_multiplier_bps?: int, starts_at: string, expires_at: string, installments?: int}  $payload
+     * @param  array{product_id: int, customer_party_ref: int, sum_insured_idr: int, risk_multiplier_bps?: int, starts_at: string, expires_at: string, installments?: int, region_code?: string|null}  $payload
      */
     public function quoteAndBindPolicy(array $payload, string $idempotencyKey): InsurancePolicyPenuh
     {
@@ -58,79 +69,71 @@ final class FullInsuranceService
         $calculatedPremium = (int) intdiv($rawNumerator, 100000000);
         $grossPremium = max((int) $product->min_premium_idr, $calculatedPremium);
 
-        // Treaty quota share allocation (misal 40% ceded, 60% retained)
-        $quotaSharePct = (int) $product->quota_share_pct;
-        $cededPremium = (int) intdiv($grossPremium * $quotaSharePct, 100);
-        $retainedPremium = $grossPremium - $cededPremium;
+        $existing = InsurancePolicyPenuh::query()->where('idempotency_key', $idempotencyKey)->first();
+        if ($existing !== null) {
+            if ($existing->product_id !== $product->id || $existing->sum_insured_idr !== $sumInsured || $existing->customer_party_ref !== (int) $payload['customer_party_ref']) {
+                throw new IdempotencyKeyConflictException($idempotencyKey);
+            }
 
-        return DB::transaction(function () use (
-            $payload,
-            $product,
-            $sumInsured,
-            $grossPremium,
-            $cededPremium,
-            $retainedPremium,
-            $idempotencyKey
-        ) {
-            $policyCount = InsurancePolicyPenuh::count() + 1;
-            $policyNumber = sprintf('POL-%s-%06d', $product->line_category, $policyCount);
+            return $existing;
+        }
 
+        return DB::transaction(function () use ($payload, $product, $sumInsured, $grossPremium, $idempotencyKey) {
+            $policyNumber = InsuranceNumbering::policy($this->numbering, $product->line_category);
+
+            // Cession ke program treaty dilakukan CedePolicyPremiumAction; di sini seluruh premi bruto menjadi piutang & UPR.
             $policy = InsurancePolicyPenuh::create([
                 'policy_number' => $policyNumber,
                 'product_id' => $product->id,
                 'customer_party_ref' => (int) $payload['customer_party_ref'],
+                'region_code' => $payload['region_code'] ?? null,
+                'idempotency_key' => $idempotencyKey,
                 'sum_insured_idr' => $sumInsured,
                 'gross_premium_idr' => $grossPremium,
-                'ceded_premium_idr' => $cededPremium,
-                'retained_premium_idr' => $retainedPremium,
+                'ceded_premium_idr' => 0,
+                'retained_premium_idr' => $grossPremium,
                 'starts_at' => $payload['starts_at'],
                 'expires_at' => $payload['expires_at'],
                 'status' => 'active',
             ]);
 
-            // Buat jadwal premi (default 1 installment penuh atau berkala)
             $installments = max(1, (int) ($payload['installments'] ?? 1));
             $installmentAmount = (int) intdiv($grossPremium, $installments);
             $remainder = $grossPremium % $installments;
 
             for ($i = 1; $i <= $installments; $i++) {
-                $amt = $installmentAmount + ($i === $installments ? $remainder : 0);
                 InsurancePremiumSchedule::create([
                     'policy_id' => $policy->id,
                     'installment_number' => $i,
                     'due_date' => $payload['starts_at'],
-                    'amount_idr' => $amt,
+                    'amount_idr' => $installmentAmount + ($i === $installments ? $remainder : 0),
                     'payment_status' => 'paid',
-                    'paid_at' => now(),
+                    'paid_at' => $this->clock->now(),
                 ]);
             }
 
-            // Double-entry ledger booking:
-            // 1. Piutang premi & liabilitas premi belum dihasilkan (UPR)
-            // Debit ar:ins:premium:IDR / Kredit ins:unearned_premium:IDR
-            // 2. Alokasi reasuransi ceded treaty
-            // Debit reins:ceded_premium_expense:IDR / Kredit ar:ins:premium:IDR
             $this->ledgerService->post(new PostingDTO(
                 type: InsuranceTransactionTypes::INSURANCE_PREMIUM->value,
                 description: "Penerbitan Polis Asuransi {$policyNumber}",
-                idempotencyKey: "ins:bind:{$policyNumber}:{$idempotencyKey}",
-                entries: [
-                    PostingEntryDTO::forCode('ar:ins:premium:IDR', 'IDR', $retainedPremium),
-                    PostingEntryDTO::forCode('reins:ceded_premium_expense:IDR', 'IDR', $cededPremium),
-                    PostingEntryDTO::forCode('ins:unearned_premium:IDR', 'IDR', -$grossPremium),
-                ],
+                idempotencyKey: "ins:bind:{$policy->id}",
+                entries: Posting::lines()
+                    ->debit(InsuranceAccounts::PREMIUM_RECEIVABLE, $grossPremium)
+                    ->credit(InsuranceAccounts::UNEARNED_PREMIUM, $grossPremium)
+                    ->toEntries('IDR'),
                 referenceType: 'ins_policy_penuh',
                 referenceId: (string) $policy->id,
             ));
 
-            return $policy;
+            $this->cedePremium->execute($policy->id);
+
+            return $policy->refresh();
         });
     }
 
     /**
      * Submit a claim against a policy with duplicate prevention.
      *
-     * @param  array{policy_id: int, incident_date: string, incident_description: string, claimed_amount_idr: int}  $payload
+     * @param  array{policy_id: int, incident_date: string, incident_description: string, claimed_amount_idr: int, cat_event_code?: string|null}  $payload
      */
     public function registerClaim(array $payload, string $idempotencyKey): InsuranceClaimPenuh
     {
@@ -161,14 +164,14 @@ final class FullInsuranceService
             throw new DomainException("Duplikasi klaim terdeteksi untuk insiden pada polis {$policy->policy_number}.");
         }
 
-        $claimCount = InsuranceClaimPenuh::count() + 1;
-        $claimNumber = sprintf('CLM-%s-%06d', $policy->product->line_category, $claimCount);
+        $claimNumber = InsuranceNumbering::claim($this->numbering, $policy->product->line_category);
 
         return InsuranceClaimPenuh::create([
             'claim_number' => $claimNumber,
             'policy_id' => $policy->id,
             'incident_date' => $payload['incident_date'],
             'incident_description' => $payload['incident_description'],
+            'cat_event_code' => $payload['cat_event_code'] ?? null,
             'claimed_amount_idr' => $claimedAmount,
             'approved_amount_idr' => 0,
             'subrogation_recovered_idr' => 0,
@@ -209,55 +212,39 @@ final class FullInsuranceService
 
         $subrogation = (int) ($payload['subrogation_recovered_idr'] ?? 0);
         $subrogation = min($subrogation, $approvedAmount);
+        $grossLoss = $approvedAmount - $subrogation;
 
-        // Treaty reinsurance recovery: ceded quota share % of (approved - subrogation)
-        $quotaSharePct = (int) ($claim->policy->product->quota_share_pct ?? 40);
-        $netBeforeReins = $approvedAmount - $subrogation;
-        $reinsuranceRecovery = (int) intdiv($netBeforeReins * $quotaSharePct, 100);
-        $netPayout = $netBeforeReins - $reinsuranceRecovery;
-
-        return DB::transaction(function () use (
-            $claim,
-            $approvedAmount,
-            $subrogation,
-            $reinsuranceRecovery,
-            $netPayout,
-            $approverUserRef,
-            $idempotencyKey
-        ) {
+        return DB::transaction(function () use ($claim, $approvedAmount, $subrogation, $grossLoss, $approverUserRef) {
             $claim->update([
                 'approved_amount_idr' => $approvedAmount,
                 'subrogation_recovered_idr' => $subrogation,
-                'reinsurance_recovered_idr' => $reinsuranceRecovery,
-                'net_payout_idr' => $netPayout,
+                'reinsurance_recovered_idr' => 0,
+                'net_payout_idr' => $grossLoss,
                 'status' => 'paid',
                 'approved_by_user_ref' => $approverUserRef,
-                'approved_at' => now(),
+                'approved_at' => $this->clock->now(),
             ]);
 
-            // Update status polis jika klaim total sum insured
             if ($approvedAmount >= $claim->policy->sum_insured_idr) {
                 $claim->policy->update(['status' => 'claimed']);
             }
 
-            // Double-entry ledger settlement:
-            // Debit ins:claim_expense:IDR (netPayout)
-            // Debit reins:claims_recoverable:IDR (reinsuranceRecovery)
-            // Kredit ins:claim_clearing:IDR (approvedAmount - subrogation)
+            // Beban klaim bruto (setelah subrogasi); recoverable reasuransi dibukukan CedeClaimAction.
             $this->ledgerService->post(new PostingDTO(
                 type: InsuranceTransactionTypes::INSURANCE_CLAIM_PAYOUT->value,
                 description: "Penyelesaian Klaim {$claim->claim_number}",
-                idempotencyKey: "ins:claim:settle:{$claim->claim_number}:{$idempotencyKey}",
-                entries: [
-                    PostingEntryDTO::forCode('ins:claim_expense:IDR', 'IDR', $netPayout),
-                    PostingEntryDTO::forCode('reins:claims_recoverable:IDR', 'IDR', $reinsuranceRecovery),
-                    PostingEntryDTO::forCode('ins:claim_clearing:IDR', 'IDR', -($approvedAmount - $subrogation)),
-                ],
+                idempotencyKey: "ins:claim:settle:{$claim->id}",
+                entries: Posting::lines()
+                    ->debit(InsuranceAccounts::CLAIM_EXPENSE, $grossLoss)
+                    ->credit(InsuranceAccounts::CLAIM_CLEARING, $grossLoss)
+                    ->toEntries('IDR'),
                 referenceType: 'ins_claim_penuh',
                 referenceId: (string) $claim->id,
             ));
 
-            return $claim;
+            $this->cedeClaim->execute($claim->id);
+
+            return $claim->refresh();
         });
     }
 
@@ -266,7 +253,7 @@ final class FullInsuranceService
      */
     public function calculateUnearnedPremium(InsurancePolicyPenuh $policy, ?string $asOfDate = null): int
     {
-        $asOf = $asOfDate ? strtotime($asOfDate) : time();
+        $asOf = $asOfDate ? strtotime($asOfDate) : $this->clock->now()->getTimestamp();
         $start = strtotime((string) $policy->starts_at);
         $end = strtotime((string) $policy->expires_at);
 

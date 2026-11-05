@@ -22,6 +22,8 @@ class InsuranceServiceProvider extends ServiceProvider
             );
         });
 
+        $this->mergeConfigFrom(__DIR__.'/config/insurance.php', 'insurance');
+
         $this->app->singleton(FullInsuranceService::class);
     }
 
