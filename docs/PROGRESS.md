@@ -11257,16 +11257,52 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 155.7 Quality gate Fase 155
 
 ## FASE 156 — LINI 18: ASURANSI & REASURANSI PENUH (UNDERWRITING, ACTUARIAL, TREATY)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FullInsuranceService`; 1 migrasi; test `FullInsuranceTest` — commit `3b1cdcf`, +368 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P5.3] tuntas D18-1..D18-4.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
 > **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `FullInsuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`
-- [ ] 156.2 **Underwriting engine**: risk assessment (data telematik kendaraan Fase 68, gedung Fase 76, kesehatan Fase 87, tambang Fase 93) → rating engine (faktor risiko deterministik) → quote → bind (kontrak asuransi hash) → policy terbit gapless
-- [ ] 156.3 **Actuarial & pricing**: loss triangle simulasi, relasi IBNR, expected loss ratio → harga produk ulang berkala → approval aktuaris → jejak perubahan tarif
-- [ ] 156.4 **Premium collection**: invoice berkala → auto-debit wallet/bank (Fase 13.3 pattern) → grace period → lapse → reinstatement; composite premium lintas lini grup (diskon grup)
-- [ ] 156.5 **Claims full workflow** (memperluas Fase 72): registrasi → adjuster survey (field app) → coverage check → estimasi → approval (four-eyes > ambang) → recovery/subrogation → reserve update → payment → salvage (barang rusak → lelang Fase 61.3)
-- [ ] 156.6 Tests: (a) rating engine deterministik dua run identik (b) reserve ≥ kewajiban (c) claim ganda atas polis sama ditolak (d) subrogation recovery mengurangi loss (e) `ins:audit` = premium + claims = ledger 0 selisih
+- [x] 156.1 Modul `Ins` (`ins_` lanjutan dari 72): provider, MenuRegistry "Asuransi & Reasuransi", roles (`underwriter`, `actuary`, `claims_adjuster`, `reinsurance_mgr`, `broker_agent`), policies, arch test; tabel `ins_products_penuh` (kendaraan, properti, marine cargo, kesehatan, jiwa, liability, weather index), `ins_policies_penuh`, `ins_premium_schedule`
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Insurance/Domain/Models/InsuranceProductPenuh.php
+    - test: tests/Acceptance/Insurance/InsuranceAcceptanceTest.php::test_akses_kontrol_akses_berbasis_peran_untuk_rute_asuransi
+    - akses: route GET /insurance/full/products [role: admin, superadmin, underwriter, actuary, claims_adjuster, reinsurance_mgr]
+- [x] 156.2 **Underwriting engine**: risk assessment (data telematik kendaraan Fase 68, gedung Fase 76, kesehatan Fase 87, tambang Fase 93) → rating engine (faktor risiko deterministik) → quote → bind (kontrak asuransi hash) → policy terbit gapless
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Insurance/Application/Services/FullInsuranceService.php
+    - test: tests/Acceptance/Insurance/InsuranceAcceptanceTest.php::test_alur_utama_end_to_end_rating_treaty_reinsurance_dan_ledger
+    - akses: route GET /insurance/full/policies [role: admin, superadmin, underwriter, actuary, claims_adjuster, reinsurance_mgr, customer]
+- [x] 156.3 **Actuarial & pricing**: loss triangle simulasi, relasi IBNR, expected loss ratio → harga produk ulang berkala → approval aktuaris → jejak perubahan tarif
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Shared/Domain/Algorithms/Actuarial/ChainLadder.php
+    - test: tests/Unit/Algorithms/ChainLadderTest.php::it estimates ibnr reserves correctly using chain ladder link ratios
+    - akses: route GET /insurance/full/actuarial [role: admin, superadmin, underwriter, actuary, claims_adjuster, reinsurance_mgr]
+- [x] 156.4 **Premium collection**: invoice berkala → auto-debit wallet/bank (Fase 13.3 pattern) → grace period → lapse → reinstatement; composite premium lintas lini grup (diskon grup)
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Insurance/Domain/Models/InsurancePremiumSchedule.php
+    - test: tests/Acceptance/Insurance/InsuranceAcceptanceTest.php::test_alur_utama_end_to_end_rating_treaty_reinsurance_dan_ledger
+    - akses: route GET /insurance/full/policies/{id} [role: admin, superadmin, underwriter, actuary, claims_adjuster, reinsurance_mgr, customer]
+- [x] 156.5 **Claims full workflow** (memperluas Fase 72): registrasi → adjuster survey (field app) → coverage check → estimasi → approval (four-eyes > ambang) → recovery/subrogation → reserve update → payment → salvage (barang rusak → lelang Fase 61.3)
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Insurance/Application/Services/FullInsuranceService.php
+    - test: tests/Acceptance/Insurance/InsuranceAcceptanceTest.php::test_aturan_bisnis_pencegahan_klaim_duplikat_dan_four_eyes
+    - akses: route GET /insurance/full/claims [role: admin, superadmin, underwriter, actuary, claims_adjuster, reinsurance_mgr, customer]
+- [x] 156.6 Tests: (a) rating engine deterministik dua run identik (b) reserve ≥ kewajiban (c) claim ganda atas polis sama ditolak (d) subrogation recovery mengurangi loss (e) `ins:audit` = premium + claims = ledger 0 selisih
+  Bukti:
+    - jenis: fitur
+    - commit: ce0ccc55
+    - file: modules/Insurance/Console/Commands/AuditInsuranceCommand.php
+    - test: tests/Acceptance/Insurance/InsuranceAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command ins:audit
 - [ ] 156.7 Quality gate Fase 156
 
 ## FASE 157 — LINI 18: REASURANSI, KAPITAL & CAT MODELLING
