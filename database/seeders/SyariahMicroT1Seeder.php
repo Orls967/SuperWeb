@@ -186,5 +186,43 @@ class SyariahMicroT1Seeder extends Seeder
                 'notes' => 'Simulasi deterministik skala T1 pemberdayaan ekonomi syariah.',
             ]
         );
+
+        // 7. Seed Restrukturisasi & Graduasi Mustahik (T1)
+        for ($r = 1; $r <= 5; $r++) {
+            DB::table('syb_micro_restructurings')->insertOrIgnore([
+                'restruct_code' => sprintf('RST-T1-%04d', $r),
+                'facility_code' => sprintf('GRP-BMT-%04d', $r),
+                'reason' => 'Penyesuaian dampak siklus musim panen dan perpanjangan tenor usaha mikro',
+                'loss_type' => 'NON_NEGLIGENCE_LOSS',
+                'previous_nisbah_bps' => 4000,
+                'new_nisbah_bps' => 3500,
+                'previous_tenor_months' => 12,
+                'new_tenor_months' => 18,
+                'restructured_principal_idr' => 1500000000,
+                'moral_hazard_detected' => false,
+                'approved_by' => 'DPS-SUPERVISOR-T1',
+                'approved_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+
+        for ($g = 1; $g <= 10; $g++) {
+            DB::table('syb_mustahik_graduations')->insertOrIgnore([
+                'graduation_code' => sprintf('GRD-T1-%04d', $g),
+                'party_ref' => sprintf('PARTY-MUSTAHIK-%04d', $g),
+                'current_stage' => 'MIKRO_BERTUMBUH',
+                'target_stage' => 'MUZAKKI_MANDIRI',
+                'omzet_baseline_idr' => 1500000000, // Rp 15jt
+                'omzet_current_idr' => 2500000000,  // Rp 25jt (+66%)
+                'growth_rate_bps' => 6667,
+                'field_officer_verifier' => 'OFFICER-FIELD-01',
+                'amil_supervisor_verifier' => 'SUPERVISOR-AMIL-01',
+                'verified_at' => $now,
+                'status' => 'GRADUATED',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
     }
 }

@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Syariah\Application\Services\MustahikGraduationTracker;
 use Modules\Syariah\Application\Services\SocialImpactScoringService;
+use Modules\Syariah\Domain\Models\SybMustahikGraduation;
 use Modules\Syariah\Domain\Models\SybSocialImpactMetric;
 
 class SocialImpactController extends Controller
@@ -39,7 +41,7 @@ class SocialImpactController extends Controller
 
     public function graduationsIndex(): View
     {
-        $graduations = \Modules\Syariah\Domain\Models\SybMustahikGraduation::orderBy('id', 'desc')->paginate(15);
+        $graduations = SybMustahikGraduation::orderBy('id', 'desc')->paginate(15);
 
         return view('syariah::social.graduation', [
             'graduations' => $graduations,
@@ -48,7 +50,7 @@ class SocialImpactController extends Controller
 
     public function storeGraduation(
         Request $request,
-        \Modules\Syariah\Application\Services\MustahikGraduationTracker $tracker
+        MustahikGraduationTracker $tracker
     ): JsonResponse {
         $validated = $request->validate([
             'party_ref' => ['required', 'string', 'max:64'],
@@ -76,9 +78,9 @@ class SocialImpactController extends Controller
     public function verifyGraduation(
         Request $request,
         int $id,
-        \Modules\Syariah\Application\Services\MustahikGraduationTracker $tracker
+        MustahikGraduationTracker $tracker
     ): JsonResponse {
-        $grad = \Modules\Syariah\Domain\Models\SybMustahikGraduation::findOrFail($id);
+        $grad = SybMustahikGraduation::findOrFail($id);
         $result = $tracker->verifyGraduation($grad->graduation_code, (string) auth()->id());
 
         return response()->json([

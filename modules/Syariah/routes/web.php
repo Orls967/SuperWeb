@@ -137,6 +137,7 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer,field_officer'])->
     Route::post('/agri/{id}/disburse-milestone', [MicroFacilityController::class, 'disburseMilestone'])->name('agri.disburse');
     Route::get('/restructures', [MicroFacilityController::class, 'restructureIndex'])->name('restructure.index');
     Route::post('/restructures', [MicroFacilityController::class, 'storeRestructure'])->name('restructure.store');
+    Route::get('/calculator', [MicroFacilityController::class, 'calculator'])->name('calculator');
 });
 
 // 9. Dampak Sosial (Fase 163)

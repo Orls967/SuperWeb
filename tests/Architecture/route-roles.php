@@ -3754,6 +3754,7 @@ return [
     'syariah.micro.agri.disburse' => ['roles' => ['admin', 'field_officer', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
     'syariah.micro.restructure.index' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
     'syariah.micro.restructure.store' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
+    'syariah.micro.calculator' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
 
     'syariah.social.index' => ['roles' => ['admin', 'syariah_officer']],
     'syariah.social.calculate' => ['roles' => ['admin', 'syariah_officer']],

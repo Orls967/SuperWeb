@@ -10,9 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Syariah\Application\Services\AgriSalamMicrofinanceService;
 use Modules\Syariah\Application\Services\BmtMicrofinanceService;
+use Modules\Syariah\Application\Services\MicroRestructuringService;
 use Modules\Syariah\Domain\Models\SybAgriMicroFacility;
 use Modules\Syariah\Domain\Models\SybGigMicroloan;
 use Modules\Syariah\Domain\Models\SybGroupFinancing;
+use Modules\Syariah\Domain\Models\SybMicroRestructuring;
 
 class MicroFacilityController extends Controller
 {
@@ -152,7 +154,7 @@ class MicroFacilityController extends Controller
 
     public function restructureIndex(): View
     {
-        $restructurings = \Modules\Syariah\Domain\Models\SybMicroRestructuring::with('facility')
+        $restructurings = SybMicroRestructuring::with('facility')
             ->orderBy('id', 'desc')
             ->paginate(15);
 
@@ -163,7 +165,7 @@ class MicroFacilityController extends Controller
 
     public function storeRestructure(
         Request $request,
-        \Modules\Syariah\Application\Services\MicroRestructuringService $restructService
+        MicroRestructuringService $restructService
     ): JsonResponse {
         $validated = $request->validate([
             'facility_code' => ['required', 'string', 'max:32'],
@@ -186,5 +188,10 @@ class MicroFacilityController extends Controller
             'message' => 'Restrukturisasi pembiayaan berhasil diproses.',
             'restructuring' => $rst,
         ], 201);
+    }
+
+    public function calculator(): View
+    {
+        return view('syariah::micro.calculator');
     }
 }
