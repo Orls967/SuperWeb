@@ -11559,16 +11559,52 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 171.6 Quality gate Fase 171
 
 ## FASE 172 — LINI 23: KEHUTANAN, TIMBER & RESTORATION VALUE CHAIN
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ForestryTimberService`; 1 migrasi; test `ForestryTimberTest` — commit `425c55e`, +251 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P5.2] tuntas D23-1..D23-4.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Forest (`for_`) + Esg · **Prasyarat:** R6.4 ✅ · **Acuan:** KONSEP Lini 23
 > **Jalan pintas terlarang di fase ini:** volume tebang tanpa izin (approval); kredit karbon di luar Esg; memperluas `ForestryTimberService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [x] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history <!-- 🔵 implementasi Lini 23 Kehutanan D23-1, models, migration, seeder T1 -->
-- [x] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks <!-- 🔵 SHA-256 hash-chain custody logs & PSDH DR ledger posting D23-2 -->
-- [x] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence <!-- 🔵 ForestRestorationPlot & CarbonCreditIssuer Esg integration D23-4 -->
-- [x] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade <!-- 🔵 Timber sales, invoice, PSDH levy journal posting D23-3 -->
-- [x] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0 <!-- 🔵 ForestAcceptanceTest, TreeVolumeCalculatorTest, AuditForestCommand -->
-- [x] 172.6 Quality gate Fase 172 <!-- 🔵 Lulus A1-A13, Pint, CodebaseInventorySyncTest, Psr4, ConfigAllowlistGovernanceTest -->
+- [x] 172.1 Modul `Forest` (`for_`): concessions/simulation plots, species, inventory, harvest plans, permits, restoration polygons, geospatial history
+  Bukti:
+    - jenis: fitur
+    - commit: e74394de
+    - file: modules/Forest/Domain/Models/ForestConcessionPlot.php
+    - test: tests/Acceptance/Forest/ForestAcceptanceTest.php::test_akses_kontrol_akses_berbasis_peran_untuk_rute_kehutanan
+    - akses: route GET /forest/plots [role: admin, forester, superadmin]
+- [x] 172.2 Sustainable harvest quota and chain-of-custody tickets from stump/plot → mill → finished timber → buyer; permit, volume and location checks
+  Bukti:
+    - jenis: fitur
+    - commit: e74394de
+    - file: modules/Forest/Application/Services/ForestConcessionService.php
+    - test: tests/Acceptance/Forest/ForestAcceptanceTest.php::test_alur_utama_end_to_end_kuota_pohon_izin_kayu_dan_ledger
+    - akses: route GET /forest/logs [role: admin, forester, timber_inspector, superadmin]
+- [x] 172.3 Restoration operations: nursery procurement, planting tasks, survival monitoring via satellite/field checks, maintenance cost and outcome evidence
+  Bukti:
+    - jenis: fitur
+    - commit: e74394de
+    - file: modules/Forest/Domain/Models/ForestRestorationPlot.php
+    - test: tests/Acceptance/Forest/ForestAcceptanceTest.php::test_alur_utama_end_to_end_kuota_pohon_izin_kayu_dan_ledger
+    - akses: route GET /forest/restoration [role: admin, forester, esg_officer, superadmin]
+- [x] 172.4 Timber processing integrates Manufacturing; by-products (sawdust) routed to board/biomass; export documentation via Trade
+  Bukti:
+    - jenis: fitur
+    - commit: e74394de
+    - file: modules/Shared/Domain/Algorithms/Forestry/TreeVolumeCalculator.php
+    - test: tests/Unit/Algorithms/TreeVolumeCalculatorTest.php::it calculates tree volume in dm3 with silviculture formula
+    - akses: route GET /forest/sales [role: admin, forester, timber_buyer, superadmin]
+- [x] 172.5 Tests: harvest ≤ quota, volume reconciliation at every custody handoff, restoration survival evidence required for claims, `forest:audit` = 0
+  Bukti:
+    - jenis: tooling
+    - commit: e74394de
+    - file: modules/Forest/Console/Commands/AuditForestCommand.php
+    - test: tests/Acceptance/Forest/ForestAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command for:audit
+- [x] 172.6 Quality gate Fase 172
+  Bukti:
+    - jenis: dokumen
+    - commit: e74394de
+    - file: docs/dor/p5-2-forest.md
+    - test: tests/Acceptance/Forest/ForestAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command for:audit
 
 ### Register Minus Fase 172
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
