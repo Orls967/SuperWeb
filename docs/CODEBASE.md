@@ -532,7 +532,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 52 | **Shared** | — | 0 |
 | 53 | **Store** | `store_` | 5 |
 | 54 | **Supplier** | `sup_` | 3 |
-| 55 | **Syariah** | `syb_` | 23 |
+| 55 | **Syariah** | `syb_` | 24 |
 | 56 | **Tlx** | `tlx_` | 4 |
 | 57 | **Trade** | `trd_` | 3 |
 | 58 | **TradeFinance** | `tf_` | 4 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **647 Migrasi** |
+| | **Total: 63 Modul** | | **648 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -600,7 +600,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
 | **Store** | 35 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
-| **Syariah** | 90 | `syariah/murabahah`, `syariah/murabahah/{contract}/approve-officer`, `syariah/murabahah/{contract}/purchase-asset` ... | web, auth, role:admin,syariah_officer |
+| **Syariah** | 93 | `syariah/murabahah`, `syariah/murabahah/{contract}/approve-officer`, `syariah/murabahah/{contract}/purchase-asset` ... | web, auth, role:admin,syariah_officer |
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1275 Rute** | | |
+| **Total** | **1278 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

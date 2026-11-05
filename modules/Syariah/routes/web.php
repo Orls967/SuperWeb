@@ -11,6 +11,7 @@ use Modules\Syariah\Http\Controllers\MurabahahController;
 use Modules\Syariah\Http\Controllers\SocialImpactController;
 use Modules\Syariah\Http\Controllers\SukukController;
 use Modules\Syariah\Http\Controllers\SyariahOperationsController;
+use Modules\Syariah\Http\Controllers\SyariahRegulatoryController;
 use Modules\Syariah\Http\Controllers\WaqfController;
 use Modules\Syariah\Http\Controllers\WealthController;
 use Modules\Syariah\Http\Controllers\ZakatController;
@@ -179,4 +180,7 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer,risk_officer,dps_b
     Route::get('/merchants', [SyariahOperationsController::class, 'merchantsIndex'])->name('merchants.index');
     Route::get('/dps', [SyariahOperationsController::class, 'dpsIndex'])->name('dps.index');
     Route::get('/incidents', [SyariahOperationsController::class, 'incidentsIndex'])->name('incidents.index');
+    Route::get('/regulatory/lbbs', [SyariahRegulatoryController::class, 'lbbsIndex'])->name('regulatory.lbbs');
+    Route::get('/regulatory/recovery', [SyariahRegulatoryController::class, 'recoveryIndex'])->name('regulatory.recovery');
+    Route::post('/regulatory/recovery/auctions/{id}/settle', [SyariahRegulatoryController::class, 'settleAuction'])->name('regulatory.auctions.settle');
 });

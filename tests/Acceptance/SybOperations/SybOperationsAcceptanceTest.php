@@ -247,5 +247,30 @@ final class SybOperationsAcceptanceTest extends TestCase
         $audit = $this->commandCenter->auditOperations();
         $this->assertTrue($audit['is_clean']);
         $this->assertEmpty($audit['findings']);
+
+        // 4. Laporan Regulator LBBS & Pemulihan Lelang Agunan
+        $reportService = app(\Modules\Syariah\Application\Services\SyariahRegulatoryReportService::class);
+        $lbbs = $reportService->generateLbbsReport('2026-11');
+        $this->assertArrayHasKey('portfolio_summary', $lbbs);
+        $this->assertNotEmpty($lbbs['report_hash']);
+
+        $recoveryService = app(\Modules\Syariah\Application\Services\SyariahRecoveryWaterfallService::class);
+        $auction = $recoveryService->scheduleCollateralAuction(
+            financingRef: 'FIN-MACET-001',
+            collateralDescription: 'Tanah Ruko Pasar Halal',
+            appraisedValueMinor: 500_000_000,
+            reservePriceMinor: 400_000_000,
+            auctionDate: Carbon::now()->addDays(7)
+        );
+
+        $settled = $recoveryService->settleAuction(
+            auctionRef: $auction->auction_ref,
+            winningBidMinor: 450_000_000,
+            buyerRef: 'PEMBELI-LELANG-01',
+            outstandingDebtMinor: 420_000_000
+        );
+
+        $this->assertSame('COMPLETED', $settled->status);
+        $this->assertSame(30_000_000, $settled->surplus_refunded_to_customer_minor); // Kelebihan Rp 30jt dikembalikan
     }
 }
