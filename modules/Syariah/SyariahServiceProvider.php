@@ -18,6 +18,7 @@ use Modules\Syariah\Console\Commands\NpfClassificationDailySweepCommand;
 use Modules\Syariah\Console\Commands\SalamMaturitySweepCommand;
 use Modules\Syariah\Console\Commands\ScfInvoiceDueSweepCommand;
 use Modules\Syariah\Console\Commands\SukukDistributeScheduledCommand;
+use Modules\Syariah\Console\Commands\SyariahInterbankMaturitySweepCommand;
 use Modules\Syariah\Console\Commands\ZakatHaulAssessScheduledCommand;
 use Modules\Syariah\Contracts\GigPayoutHistory;
 use Modules\Syariah\Contracts\SyariahWalletPayment;
@@ -61,6 +62,7 @@ class SyariahServiceProvider extends ServiceProvider
                 ScfInvoiceDueSweepCommand::class,
                 NpfClassificationDailySweepCommand::class,
                 HalalCertificateExpirySweepCommand::class,
+                SyariahInterbankMaturitySweepCommand::class,
             ]);
         }
     }
