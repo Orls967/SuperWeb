@@ -37,11 +37,10 @@ final class TawarruqFxCertificateVerifier
 
         if (! hash_equals($recomputed, $result->certificateHash)) {
             throw new RuntimeException(
-                "Integritas sertifikat TawarruqFx tidak valid! Terindikasi manipulasi kurs atau penetapan margin bunga terselubung."
+                'Integritas sertifikat TawarruqFx tidak valid! Terindikasi manipulasi kurs atau penetapan margin bunga terselubung.'
             );
         }
 
         return true;
     }
 }
-

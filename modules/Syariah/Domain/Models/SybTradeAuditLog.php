@@ -22,4 +22,3 @@ final class SybTradeAuditLog extends Model
         'shariah_compliance_status',
     ];
 }
-

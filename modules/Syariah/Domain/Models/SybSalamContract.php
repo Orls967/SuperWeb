@@ -55,4 +55,3 @@ final class SybSalamContract extends Model
         return $this->hasMany(SybSalamDelivery::class, 'salam_id');
     }
 }
-

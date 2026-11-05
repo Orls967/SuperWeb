@@ -29,4 +29,3 @@ final readonly class TawarruqFxResult
         public string $certificateHash,
     ) {}
 }
-

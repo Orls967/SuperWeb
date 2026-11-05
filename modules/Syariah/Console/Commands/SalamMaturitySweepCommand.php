@@ -64,4 +64,3 @@ final class SalamMaturitySweepCommand extends Command
         return self::SUCCESS;
     }
 }
-
