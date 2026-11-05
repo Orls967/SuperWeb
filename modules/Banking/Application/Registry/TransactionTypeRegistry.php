@@ -29,6 +29,7 @@ use Modules\Mining\Ledger\MiningTransactionTypes;
 use Modules\Mobility\Fleet\Ledger\FleetTransactionTypes;
 use Modules\Pricing\Ledger\PricingTransactionTypes;
 use Modules\Proptech\Ledger\ProptechTransactionTypes;
+use Modules\ProServices\Ledger\ProServicesTransactionTypes;
 use Modules\Ret\Ledger\RetTransactionTypes;
 use Modules\Rwa\Ledger\RwaTransactionTypes;
 use Modules\Tlx\Ledger\TlxTransactionTypes;
@@ -63,6 +64,7 @@ final class TransactionTypeRegistry
         ManufacturingTransactionTypes::class,
         MedTransactionTypes::class,
         MarineTransactionTypes::class,
+        ProServicesTransactionTypes::class,
         MiningTransactionTypes::class,
         PricingTransactionTypes::class,
         ProptechTransactionTypes::class,

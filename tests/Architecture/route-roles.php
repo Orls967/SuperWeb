@@ -3691,4 +3691,9 @@ return [
             }
         },
     ],
+    'proservices.projects.index' => ['roles' => ['admin', 'project_manager', 'superadmin']],
+    'proservices.timesheets.index' => ['roles' => ['admin', 'consultant']],
+    'proservices.timesheets.show' => ['roles' => ['admin', 'consultant'], 'params' => fn () => ['id' => 1]],
+    'proservices.portal.invoices' => ['roles' => ['admin', 'client']],
+    'proservices.portal.projects.show' => ['roles' => ['admin', 'client'], 'params' => fn () => ['id' => 1]],
 ];

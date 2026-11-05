@@ -2471,3 +2471,13 @@
   6. D22-6: Rekonsiliasi audit `mar:audit` memvalidasi integritas dua sumber independen: subledger operasional `mar_payouts` diverifikasi silang terhadap mutasi jurnal ledger akuntansi double-entry pembudidaya. Fixture sabotase `MarineAuditCorruptionFixture` didaftarkan di `AuditCommandRegistry` untuk membuktikan audit gagal saat integritas dirusak.
 - **Verification:**
   - Acceptance test `tests/Acceptance/Marine/MarineFisheryAcceptanceTest.php` memverifikasi 6 skenario kritis: perlindungan RBAC/IDOR, kalkulasi rasional FCR & grading panen sesuai vektor angka prompt, double-entry settlement ledger & pencegahan duplikasi payout, deterministik seeder skala T1 (100 kolam, 50 siklus), verifikasi audit `mar:audit` kondisi bersih, serta deteksi sabotase diskrepansi oleh fixture audit.
+
+## 2026-11-05: [G6-P5.1] Modul ProServices Lini 25 (G6-P5.1)
+- **Anchor:** `2026-11-05-modul-proservices-lini-25-g6-p51` / `g6-p5-d25` / `d25-1` / `d25-2` / `d25-3` / `d25-4` / `d25-5`
+- **Konteks**: Implementasi Lini 25 Professional Services & Legal ops (Fase 175).
+- **Keputusan**:
+  - D25-1: Membentuk modul `ProServices` (`psv_`). Legal ops dan kontrak tetap memakai modul Contract (`ContractLookupInterface`), tidak menduplikasi data kontrak.
+  - D25-2: Proyek mendukung Time & Materials (T&M) dan Fixed Fee. Anggota proyek tervalidasi via K12 EmployeeDirectory, dengan rate card per role. Timesheet bersifat append-only dengan entri pembalik untuk koreksi.
+  - D25-3: Pengakuan pendapatan fixed fee menggunakan metode persentase penyelesaian cost-to-cost dengan catch-up kumulatif bersertifikat (`CostToCostRecognition`), sedangkan T&M diakui berbasis jam disetujui dikali tarif.
+  - D25-4: Integrasi double-entry ledger membukukan pendapatan, piutang klien, aset kontrak (`psv:contract_asset`), dan liabilitas kontrak (`psv:contract_liability`).
+  - D25-5: Audit dua sumber `psv:audit` memverifikasi keselarasan jam tertagih, konsistensi saldo ledger, batas pendapatan <= nilai kontrak, dan saldo aset/liabilitas kontrak.

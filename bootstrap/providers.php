@@ -49,6 +49,7 @@ use Modules\Port\PortServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
 use Modules\Procurement\ProcurementServiceProvider;
 use Modules\Proptech\ProptechServiceProvider;
+use Modules\ProServices\ProServicesServiceProvider;
 use Modules\Resto\RestoServiceProvider;
 use Modules\Ret\RetServiceProvider;
 use Modules\Rwa\RwaServiceProvider;
@@ -66,6 +67,7 @@ use Modules\Wealth\WealthServiceProvider;
 use Modules\Wms\WmsServiceProvider;
 
 return [
+    ProServicesServiceProvider::class,
     AppServiceProvider::class,
     SharedServiceProvider::class,
     CoreServiceProvider::class,
