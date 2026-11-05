@@ -3,8 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Syariah\Http\Controllers\BmtController;
 use Modules\Syariah\Http\Controllers\IjarahController;
+use Modules\Syariah\Http\Controllers\MicroFacilityController;
 use Modules\Syariah\Http\Controllers\MurabahahController;
+use Modules\Syariah\Http\Controllers\SocialImpactController;
 use Modules\Syariah\Http\Controllers\SukukController;
 use Modules\Syariah\Http\Controllers\WaqfController;
 use Modules\Syariah\Http\Controllers\WealthController;
@@ -109,4 +112,33 @@ Route::middleware(['web', 'auth', 'role:admin,nazhir'])->prefix('syariah/waqf')-
     Route::post('/{id}/withdraw-principal', [WaqfController::class, 'withdrawPrincipal'])->name('withdraw-principal');
     Route::post('/{id}/distribute-benefit', [WaqfController::class, 'distributeBenefit'])->name('distribute-benefit');
     Route::get('/certificates/{id}', [WaqfController::class, 'showCertificate'])->name('certificates.show');
+});
+
+// 7. BMT & Koperasi Syariah (Fase 163) - Petugas Syariah / BMT Manager
+Route::middleware(['web', 'auth', 'role:admin,syariah_officer,bmt_manager'])->prefix('syb/bmt')->name('syariah.bmt.')->group(function () {
+    Route::get('/', [BmtController::class, 'index'])->name('index');
+    Route::post('/cooperatives', [BmtController::class, 'storeCooperative'])->name('cooperatives.store');
+    Route::get('/cooperatives/{id}', [BmtController::class, 'show'])->name('show');
+    Route::post('/savings', [BmtController::class, 'openSavings'])->name('savings.open');
+    Route::get('/savings/{id}', [BmtController::class, 'showSavings'])->name('savings.show');
+    Route::post('/savings/{id}/deposit', [BmtController::class, 'depositSavings'])->name('savings.deposit');
+    Route::post('/savings/{id}/withdraw', [BmtController::class, 'withdrawSavings'])->name('savings.withdraw');
+});
+
+// 8. Pembiayaan Mikro Syariah (Fase 163)
+Route::middleware(['web', 'auth', 'role:admin,syariah_officer,field_officer'])->prefix('syb/micro')->name('syariah.micro.')->group(function () {
+    Route::get('/', [MicroFacilityController::class, 'index'])->name('index');
+    Route::post('/groups', [MicroFacilityController::class, 'storeGroup'])->name('group.store');
+    Route::get('/groups/{id}', [MicroFacilityController::class, 'showGroup'])->name('group.show');
+    Route::post('/gigs', [MicroFacilityController::class, 'storeGig'])->name('gig.store');
+    Route::get('/gigs/{id}', [MicroFacilityController::class, 'showGig'])->name('gig.show');
+    Route::post('/agri', [MicroFacilityController::class, 'storeAgri'])->name('agri.store');
+    Route::get('/agri/{id}', [MicroFacilityController::class, 'showAgri'])->name('agri.show');
+    Route::post('/agri/{id}/disburse-milestone', [MicroFacilityController::class, 'disburseMilestone'])->name('agri.disburse');
+});
+
+// 9. Dampak Sosial (Fase 163)
+Route::middleware(['web', 'auth', 'role:admin,syariah_officer'])->prefix('syb/social-impact')->name('syariah.social.')->group(function () {
+    Route::get('/', [SocialImpactController::class, 'index'])->name('index');
+    Route::post('/calculate', [SocialImpactController::class, 'calculate'])->name('calculate');
 });

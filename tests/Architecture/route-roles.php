@@ -3734,6 +3734,27 @@ return [
     'syariah.waqf.withdraw-principal' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
     'syariah.waqf.distribute-benefit' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
     'syariah.waqf.certificates.show' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
+
+    // Syariah Lanjutan Fase 163 — BMT, Microfinance & Dampak Sosial
+    'syariah.bmt.index' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer']],
+    'syariah.bmt.cooperatives.store' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer']],
+    'syariah.bmt.show' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.bmt.savings.open' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer']],
+    'syariah.bmt.savings.show' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.bmt.savings.deposit' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.bmt.savings.withdraw' => ['roles' => ['admin', 'bmt_manager', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+
+    'syariah.micro.index' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
+    'syariah.micro.group.store' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
+    'syariah.micro.group.show' => ['roles' => ['admin', 'field_officer', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.micro.gig.store' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
+    'syariah.micro.gig.show' => ['roles' => ['admin', 'field_officer', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.micro.agri.store' => ['roles' => ['admin', 'field_officer', 'syariah_officer']],
+    'syariah.micro.agri.show' => ['roles' => ['admin', 'field_officer', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.micro.agri.disburse' => ['roles' => ['admin', 'field_officer', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+
+    'syariah.social.index' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.social.calculate' => ['roles' => ['admin', 'syariah_officer']],
     'forest.plots.index' => ['roles' => ['admin', 'forester', 'superadmin']],
     'forest.plots.show' => ['roles' => ['admin', 'forester', 'superadmin'], 'params' => fn () => ['id' => 1]],
     'forest.permits.index' => ['roles' => ['admin', 'forester', 'superadmin']],

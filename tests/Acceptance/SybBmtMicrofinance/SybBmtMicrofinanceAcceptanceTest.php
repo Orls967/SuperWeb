@@ -13,7 +13,6 @@ use Modules\Shared\Domain\Algorithms\Islamic\GigCreditLimit;
 use Modules\Shared\Domain\Algorithms\Islamic\RepaymentWaterfall;
 use Modules\Syariah\Application\Services\BmtMicrofinanceService;
 use Modules\Syariah\Contracts\GigPayoutHistory;
-use Modules\Syariah\Domain\Models\SybBmtCooperative;
 use Tests\TestCase;
 
 class SybBmtMicrofinanceAcceptanceTest extends TestCase
@@ -44,7 +43,7 @@ class SybBmtMicrofinanceAcceptanceTest extends TestCase
         $cust = User::factory()->create(['role' => 'customer']);
         $saveResp = $this->actingAs($officer)->post('/syb/bmt/savings', [
             'cooperative_code' => 'BMT-AL-AMANAH-01',
-            'customer_party_id' => (string) $cust->id,
+            'customer_party_ref' => (string) $cust->id,
             'contract_type' => 'WADIAH_YAD_DHAMANAH',
             'initial_deposit_idr' => 50000000, // Rp 500.000
         ]);

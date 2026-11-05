@@ -6,8 +6,10 @@ namespace Modules\Syariah\Application\Services;
 
 use DomainException;
 use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Syariah\Ledger\SyariahAccounts;
+use Modules\Syariah\Ledger\SyariahTransactionTypes;
 
 /**
  * Service pembukuan syariah (G7-D5 & D19-1).
@@ -31,5 +33,31 @@ final class ShariahLedgerPoster
         }
 
         $this->ledgerService->post($dto);
+    }
+
+    /**
+     * @param  array<string, int>  $entries
+     */
+    public function postSimple(
+        SyariahTransactionTypes $type,
+        string $reference,
+        string $description,
+        array $entries
+    ): void {
+        $entryDtos = [];
+        foreach ($entries as $code => $amount) {
+            $entryDtos[] = PostingEntryDTO::forCode((string) $code, 'IDR', $amount);
+        }
+
+        $dto = new PostingDTO(
+            type: $type->value,
+            description: $description,
+            idempotencyKey: 'syb:post:'.hash('sha256', $type->value.':'.$reference),
+            entries: $entryDtos,
+            referenceType: 'SYB_TRANSACTION',
+            referenceId: $reference,
+        );
+
+        $this->post($dto);
     }
 }
