@@ -3702,4 +3702,10 @@ return [
     'proservices.timesheets.show' => ['roles' => ['admin', 'consultant'], 'params' => fn () => ['id' => 1]],
     'proservices.portal.invoices' => ['roles' => ['admin', 'client']],
     'proservices.portal.projects.show' => ['roles' => ['admin', 'client'], 'params' => fn () => ['id' => 1]],
+    'insurance.full.products.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr']],
+    'insurance.full.policies.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer']],
+    'insurance.full.policies.show' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer'], 'params' => fn () => ['id' => 1]],
+    'insurance.full.claims.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer']],
+    'insurance.full.claims.show' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr', 'customer'], 'params' => fn () => ['id' => 1]],
+    'insurance.full.actuarial.index' => ['roles' => ['admin', 'superadmin', 'underwriter', 'actuary', 'claims_adjuster', 'reinsurance_mgr']],
 ];

@@ -7,6 +7,7 @@ namespace Modules\Insurance;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Insurance\Application\Services\FullInsuranceService;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
 use Modules\Insurance\Console\Commands\AuditInsuranceCommand;
 
@@ -20,6 +21,8 @@ class InsuranceServiceProvider extends ServiceProvider
                 $app->make(LedgerService::class)
             );
         });
+
+        $this->app->singleton(FullInsuranceService::class);
     }
 
     public function boot(): void

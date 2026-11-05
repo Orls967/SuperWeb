@@ -2491,3 +2491,13 @@ Pekerjaan G6-P5.2 mengimplementasikan Lini 23 Kehutanan (Forest `for_`, Fase 172
 2. **D23-2 Algoritma Volume Pohon Kanonikal**: Perhitungan volume pohon menggunakan rumus silvikultur standar $V = \frac{\pi}{4} \times (DBH/100)^2 \times T \times f$ diimplementasikan di `Modules\Shared\Domain\Algorithms\Forestry\TreeVolumeCalculator` dengan unit desimeter kubik ($dm^3$) / liter untuk menjaga integritas presisi integer tanpa floating point.
 3. **D23-3 Four-Eyes Kuota & Chain-of-Custody**: Izin tebang memvalidasi kuota tahunan petak dan mewajibkan four-eyes approval (`requester !== approver`). Batang kayu memiliki serial gapless dan rantai hash SHA-256 kanonikal.
 4. **D23-4 Kredit Karbon & Double-Entry Ledger**: Restorasi terhubung ke modul `Esg` via `CarbonCreditIssuer` interface kontrak resmi; penjualan kayu mencatat double-entry ledger lengkap memisahkan pendapatan kayu dan utang pungutan kehutanan (PSDH/DR).
+
+## 2026-11-05-modul-insurance-lini-18-g6-p53
+### Konteks
+Pekerjaan G6-P5.3 mengimplementasikan Lini 18 Asuransi & Reasuransi Penuh (Insurance `ins_`, Fase 156) menggantikan implementasi lama yang tersisa di `Integration`. Membutuhkan algoritma aktuaria, pemodelan treaty reasuransi, dan pembukuan ledger.
+
+### Keputusan
+1. **D18-1 Modul & Katalog Multi-Lini**: Modul Asuransi memperluas tabel inti di `Modules\Insurance` dengan prefiks `ins_` (`ins_products_penuh`, `ins_policies_penuh`, `ins_premium_schedules`, `ins_claims_penuh`, `ins_actuarial_triangles`).
+2. **D18-2 Algoritma Aktuaria Chain-Ladder**: Perhitungan estimasi cadangan IBNR (Incurred But Not Reported) diimplementasikan secara kanonikal di `Modules\Shared\Domain\Algorithms\Actuarial\ChainLadder` menggunakan metode faktor rasio pengembangan tertimbang kumulatif berbasis bilangan bulat integer Rupiah.
+3. **D18-3 Underwriting & Treaty Quota Share Reasuransi**: Penilaian risiko menghasilkan premi bruto deterministik. Secara otomatis dialokasikan 40% treaty quota share ke reasuradur (ceded premium) dan 60% ditahan perusahaan (retained). Klaim diproteksi dari pengajuan ganda dan memisahkan subrogation recovery serta reinsurance recovery.
+4. **D18-4 Integritas Akuntansi & Audit Dua Sumber**: Double-entry ledger mencatat pemisahan piutang premi, liabilitas premi belum dihasilkan (UPR pro-rata temporis), premi reasuransi diserahkan, beban klaim neto, dan klaim terpulihkan reasuransi. Audit dua sumber `ins:audit` memverifikasi keselarasan polis, jadwal pembayaran, ketiadaan klaim duplikat, dan kecukupan cadangan modal IBNR.

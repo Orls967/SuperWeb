@@ -505,7 +505,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 25 | **Hcm** | `hcm_` | 7 |
 | 26 | **Hospital** | `hsp_` | 14 |
 | 27 | **Hotel** | `htl_` | 16 |
-| 28 | **Insurance** | `ins_` | 2 |
+| 28 | **Insurance** | `ins_` | 3 |
 | 29 | **Integration** | `intg_` | 340 |
 | 30 | **Intercompany** | `ic_` | 1 |
 | 31 | **International** | `intl_` | 1 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **618 Migrasi** |
+| | **Total: 63 Modul** | | **619 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -573,7 +573,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 26 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
-| **Insurance** | 12 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
+| **Insurance** | 18 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1105 Rute** | | |
+| **Total** | **1111 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -680,7 +680,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hotel:report-orphans` | `manual` | Report orphan records violating hotel foreign key relationships |
 | `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, integritas subjek, dan rekonsiliasi dua-sumber rawat jalan |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
-| `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, and autopilot claim payouts |
+| `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
 | `inspire` | `manual` | Display an inspiring quote |
 | `install:api` | `manual` | Create an API routes file and install Laravel Sanctum or Laravel Passport |
 | `install:broadcasting` | `manual` | Create a broadcasting channel routes file |
@@ -811,7 +811,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hcm** | `HcmAccounts` | 17 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 39 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
-| **Insurance** | `InsuranceAccounts` | 7 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
+| **Insurance** | `InsuranceAccounts` | 10 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 7 | `lgx:carrier_cost:IDR`, `lgx:carrier_payable:IDR` ... |
 | **Mall** | `MallAccounts` | 28 | `expense:mall:points_issued:PTS`, `revenue:mall:points_redeemed:PTS` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
@@ -834,6 +834,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **387 Akun** | |
+| **Total: 37 Registry** | | **390 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
