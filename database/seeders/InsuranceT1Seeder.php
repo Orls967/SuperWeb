@@ -8,20 +8,27 @@ use Illuminate\Database\Seeder;
 use Modules\Insurance\Domain\Enums\CatBondStatus;
 use Modules\Insurance\Domain\Enums\TreatyStatus;
 use Modules\Insurance\Domain\Enums\TreatyType;
+use Modules\Insurance\Domain\Models\AgriInsuranceClaim;
+use Modules\Insurance\Domain\Models\AgriInsurancePolicy;
 use Modules\Insurance\Domain\Models\CatBond;
 use Modules\Insurance\Domain\Models\EmbedProduct;
 use Modules\Insurance\Domain\Models\HealthPolicy;
 use Modules\Insurance\Domain\Models\InsuranceActuarialTriangle;
 use Modules\Insurance\Domain\Models\InsuranceClaimPenuh;
+use Modules\Insurance\Domain\Models\InsuranceCommandSnapshot;
+use Modules\Insurance\Domain\Models\InsuranceGrievanceTicket;
 use Modules\Insurance\Domain\Models\InsuranceParameter;
 use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
 use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
 use Modules\Insurance\Domain\Models\LifeBeneficiary;
 use Modules\Insurance\Domain\Models\LifePolicy;
 use Modules\Insurance\Domain\Models\MarketBroker;
+use Modules\Insurance\Domain\Models\MicroInsurancePolicy;
 use Modules\Insurance\Domain\Models\ParametricTrigger;
 use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 use Modules\Insurance\Domain\Models\ReinsuranceTreatyPanel;
+use Modules\Insurance\Domain\Models\TakafulFund;
+use Modules\Insurance\Domain\Models\TakafulParticipant;
 use Modules\Insurance\Domain\Models\UnitLinkFund;
 use Modules\Insurance\Domain\Models\UnitLinkHolding;
 use Modules\Party\Domain\Enums\PartyStatus;
@@ -202,6 +209,9 @@ final class InsuranceT1Seeder extends Seeder
 
         // 10. Life, Health & Wellness Insurance (Fase 159)
         $this->seedLifeHealthWellness();
+
+        // 11. Takaful, Agri-Insurance & Command Center (Fase 160)
+        $this->seedTakafulAgriOps();
     }
 
     /**
@@ -618,5 +628,112 @@ final class InsuranceT1Seeder extends Seeder
                 );
             }
         }
+    }
+
+    private function seedTakafulAgriOps(): void
+    {
+        $now = now();
+
+        // 1. Dana Takaful
+        $fund = TakafulFund::updateOrCreate(
+            ['fund_code' => 'TK-TABARRU-NATIONAL'],
+            [
+                'fund_type' => 'TABARRU',
+                'name' => 'Dana Kebajikan Tabarru Nasional',
+                'balance_idr' => 15000000000,
+                'total_contributions_idr' => 20000000000,
+                'total_claims_paid_idr' => 5000000000,
+                'contingency_reserve_idr' => 2500000000,
+                'is_active' => true,
+            ]
+        );
+
+        TakafulParticipant::updateOrCreate(
+            ['policy_number' => 'POL-TK-FAMILY-001'],
+            [
+                'participant_party_id' => '00000000-0000-0000-0000-000000000001',
+                'fund_id' => $fund->id,
+                'plan_type' => 'FAMILY_TAKAFUL',
+                'contribution_annual_idr' => 12000000,
+                'tabarru_portion_bps' => 7000,
+                'ujrah_portion_bps' => 3000,
+                'sum_covered_idr' => 250000000,
+                'status' => 'active',
+                'effective_date' => $now->toDateString(),
+                'expiry_date' => $now->copy()->addYear()->toDateString(),
+            ]
+        );
+
+        // 2. Asuransi Pertanian Berbasis Indeks
+        $agriPolicy = AgriInsurancePolicy::updateOrCreate(
+            ['policy_number' => 'POL-AGRI-PADI-IND-01'],
+            [
+                'farmer_party_id' => '00000000-0000-0000-0000-000000000003',
+                'commodity' => 'PADI',
+                'farm_area_ha' => 10,
+                'sum_insured_idr' => 50000000,
+                'premium_annual_idr' => 1500000,
+                'index_type' => 'RAINFALL',
+                'trigger_threshold_val' => 350,
+                'status' => 'active',
+                'effective_date' => $now->toDateString(),
+                'expiry_date' => $now->copy()->addYear()->toDateString(),
+            ]
+        );
+
+        AgriInsuranceClaim::updateOrCreate(
+            ['claim_number' => 'CLM-AGRI-FLOOD-001'],
+            [
+                'policy_id' => $agriPolicy->id,
+                'actual_index_val' => 410,
+                'gross_claim_idr' => 50000000,
+                'loan_offset_amount_idr' => 20000000,
+                'net_farmer_payout_idr' => 30000000,
+                'status' => 'settled',
+                'adjudicated_at' => $now,
+            ]
+        );
+
+        // 3. Asuransi Mikro Massal
+        MicroInsurancePolicy::updateOrCreate(
+            ['policy_number' => 'POL-MICRO-TRANSIT-SEED'],
+            [
+                'member_party_id' => '00000000-0000-0000-0000-000000000004',
+                'product_type' => 'TRANSIT_DAILY',
+                'daily_premium_idr' => 5000,
+                'sum_insured_idr' => 25000000,
+                'duration_days' => 7,
+                'status' => 'active',
+                'issued_at' => $now,
+                'expires_at' => $now->copy()->addDays(7),
+            ]
+        );
+
+        // 4. Command Center Snapshot
+        InsuranceCommandSnapshot::updateOrCreate(
+            ['snapshot_date' => $now->toDateString()],
+            [
+                'gross_written_premium_idr' => 450000000000,
+                'net_earned_premium_idr' => 382500000000,
+                'claims_incurred_idr' => 210375000000,
+                'loss_ratio_bps' => 5500,
+                'solvency_rbc_bps' => 24500,
+                'total_technical_reserve_idr' => 292500000000,
+                'reinsurance_recoverable_idr' => 42075000000,
+            ]
+        );
+
+        // 5. Keluhan Nasabah & Kepatuhan Regulasi
+        InsuranceGrievanceTicket::updateOrCreate(
+            ['ticket_number' => 'TCK-OJK-2026-001'],
+            [
+                'policy_ref' => 'POL-LIFE-TERM-001',
+                'complainant_party_id' => '00000000-0000-0000-0000-000000000002',
+                'category' => 'CLAIM_DENIAL',
+                'grievance_text' => 'Permintaan peninjauan ulang klaim rawat inap tindakan darurat sesuai rekomendasi dokter spesialis.',
+                'sla_deadline' => $now->copy()->addDays(14)->toDateString(),
+                'status' => 'in_investigation',
+            ]
+        );
     }
 }

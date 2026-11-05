@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Insurance\Http\Controllers\AgriInsuranceController;
 use Modules\Insurance\Http\Controllers\BrokerMarketplaceController;
 use Modules\Insurance\Http\Controllers\CapitalController;
 use Modules\Insurance\Http\Controllers\CatBondController;
@@ -12,12 +13,15 @@ use Modules\Insurance\Http\Controllers\EmbeddedInsuranceController;
 use Modules\Insurance\Http\Controllers\FullInsuranceController;
 use Modules\Insurance\Http\Controllers\HealthInsuranceController;
 use Modules\Insurance\Http\Controllers\InsuranceClaimsWorkflowController;
+use Modules\Insurance\Http\Controllers\InsuranceCommandCenterController;
 use Modules\Insurance\Http\Controllers\InsuranceController;
 use Modules\Insurance\Http\Controllers\InsurancePoliciesController;
 use Modules\Insurance\Http\Controllers\InvestorCatBondController;
 use Modules\Insurance\Http\Controllers\LifeInsuranceController;
+use Modules\Insurance\Http\Controllers\MicroInsuranceController;
 use Modules\Insurance\Http\Controllers\ReinsuranceController;
 use Modules\Insurance\Http\Controllers\SiuInvestigationController;
+use Modules\Insurance\Http\Controllers\TakafulController;
 use Modules\Insurance\Http\Controllers\UnitLinkController;
 use Modules\Insurance\Http\Controllers\WellnessController;
 
@@ -175,6 +179,50 @@ Route::middleware(['web', 'auth'])->prefix('insurance')->group(function () {
         Route::middleware('role:admin,superadmin,underwriter,customer')->group(function () {
             Route::post('/switch', [UnitLinkController::class, 'switch'])->name('switch');
         });
+    });
+
+    // Takaful Window (Fase 160)
+    Route::prefix('takaful')->name('insurance.takaful.')->group(function () {
+        Route::middleware('role:admin,superadmin,underwriter,insurance_admin')->group(function () {
+            Route::get('/', [TakafulController::class, 'index'])->name('index');
+            Route::get('/actuarial-board', [TakafulController::class, 'actuarialBoard'])->name('actuarial-board');
+            Route::get('/surplus', [TakafulController::class, 'surplus'])->name('surplus');
+            Route::post('/', [TakafulController::class, 'store'])->name('store');
+            Route::post('/distribute-surplus', [TakafulController::class, 'distribute'])->name('distribute');
+        });
+    });
+
+    // Agri Insurance (Fase 160)
+    Route::prefix('agri')->name('insurance.agri.')->group(function () {
+        Route::middleware('role:admin,superadmin,underwriter,insurance_admin')->group(function () {
+            Route::get('/', [AgriInsuranceController::class, 'index'])->name('index');
+            Route::get('/weather-stations', [AgriInsuranceController::class, 'weatherStations'])->name('weather-stations');
+            Route::get('/claims', [AgriInsuranceController::class, 'claims'])->name('claims');
+            Route::get('/{id}', [AgriInsuranceController::class, 'show'])->name('show');
+            Route::post('/', [AgriInsuranceController::class, 'store'])->name('store');
+        });
+        Route::middleware('role:admin,superadmin,claims_adjuster,underwriter')->group(function () {
+            Route::post('/settle', [AgriInsuranceController::class, 'settle'])->name('settle');
+        });
+    });
+
+    // Micro Insurance (Fase 160)
+    Route::prefix('micro')->name('insurance.micro.')->middleware('role:admin,superadmin,customer,underwriter')->group(function () {
+        Route::get('/', [MicroInsuranceController::class, 'index'])->name('index');
+        Route::get('/analytics', [MicroInsuranceController::class, 'analytics'])->name('analytics');
+        Route::post('/', [MicroInsuranceController::class, 'store'])->name('store');
+    });
+
+    // Insurance Command Center & Regulatory (Fase 160)
+    Route::prefix('command')->name('insurance.command.')->middleware('role:admin,superadmin,underwriter,insurance_admin')->group(function () {
+        Route::get('/', [InsuranceCommandCenterController::class, 'dashboard'])->name('dashboard');
+        Route::get('/aml', [InsuranceCommandCenterController::class, 'aml'])->name('aml');
+        Route::get('/calendar', [InsuranceCommandCenterController::class, 'complianceCalendar'])->name('calendar');
+        Route::get('/stress-test', [InsuranceCommandCenterController::class, 'stressTest'])->name('stress-test');
+        Route::post('/snapshot', [InsuranceCommandCenterController::class, 'snapshot'])->name('snapshot');
+        Route::get('/regulatory', [InsuranceCommandCenterController::class, 'regulatory'])->name('regulatory');
+        Route::post('/grievance', [InsuranceCommandCenterController::class, 'grievance'])->name('grievance');
+        Route::post('/grievance/resolve', [InsuranceCommandCenterController::class, 'resolveGrievance'])->name('resolve-grievance');
     });
 });
 
