@@ -8,7 +8,7 @@ use Modules\Shared\Domain\Algorithms\Islamic\AsnafDistributionResult;
 use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 
 test('vektor algoritma asnaf distribution zakat', function (): void {
-    $algo = new AsnafDistribution();
+    $algo = new AsnafDistribution;
 
     // Vektor prompt:
     // dana 1.000.003, bobot fakir 2500, miskin 2500, amil 1250, mualaf 500, riqab 250, gharimin 1000, fisabilillah 1000, ibnu sabil 1000
@@ -55,5 +55,5 @@ test('sertifikat rusak pada asnaf distribution memicu exception', function (): v
         ]
     );
 
-    (new AsnafDistributionCertificateVerifier())->verify($corrupt);
+    (new AsnafDistributionCertificateVerifier)->verify($corrupt);
 })->throws(InvalidCertificateException::class);

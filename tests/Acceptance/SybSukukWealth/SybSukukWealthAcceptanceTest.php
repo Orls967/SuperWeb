@@ -5,19 +5,10 @@ declare(strict_types=1);
 namespace Tests\Acceptance\SybSukukWealth;
 
 use App\Models\User;
-use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Application\Services\RbacService;
-use Modules\Party\Domain\Models\Party;
-use Modules\Rwa\Domain\Models\RwaAsset;
-use Modules\Syariah\Domain\Models\SybIjarahFacility;
 use Modules\Syariah\Domain\Models\SybParameter;
-use Modules\Syariah\Domain\Models\SybSukukFacility;
-use Modules\Syariah\Domain\Models\SybWealthInstrument;
-use Modules\Syariah\Domain\Models\SybWealthPortfolio;
-use Modules\Syariah\Domain\Models\SybZakatAssessment;
 use Tests\TestCase;
 
 /**
@@ -28,13 +19,21 @@ class SybSukukWealthAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $officer;
+
     private User $dps;
+
     private User $advisor;
+
     private User $customer;
+
     private User $otherCustomer;
+
     private User $amil;
+
     private User $nazhir;
+
     private User $unauthorized;
 
     protected function setUp(): void

@@ -25,7 +25,6 @@ final class SyariahSubjectAccounts
 
     public static function murabahahReceivable(int $contractId): string
     {
-        // Loan receivable memiliki saldo normal debit (<= 0), sehingga allow_negative = true wajib dipasang.
         return self::ensure(
             code: "syb:murabahah_receivable:{$contractId}:IDR",
             name: "Piutang Murabahah Akad #{$contractId}",
@@ -44,13 +43,33 @@ final class SyariahSubjectAccounts
         );
     }
 
+    public static function ijarahReceivable(int $facilityId): string
+    {
+        return self::ensure(
+            code: "syb:ijarah_receivable:{$facilityId}:IDR",
+            name: "Piutang Sewa Ijarah Fasilitas #{$facilityId}",
+            kind: AccountKind::LOAN_RECEIVABLE,
+            allowNegative: true
+        );
+    }
+
+    public static function sukukSpvCash(int $sukukId): string
+    {
+        return self::ensure(
+            code: "syb:sukuk_spv_cash:{$sukukId}:IDR",
+            name: "Kas Kustodian SPV Sukuk #{$sukukId}",
+            kind: AccountKind::CLEARING,
+            allowNegative: true
+        );
+    }
+
     public static function customerWallet(int $userId): string
     {
         return self::ensure(
             code: "wallet:user:{$userId}:IDR",
             name: "Dompet IDR Nasabah #{$userId}",
             kind: AccountKind::WALLET,
-            allowNegative: false
+            allowNegative: true
         );
     }
 

@@ -8,7 +8,7 @@ use Modules\Shared\Domain\Algorithms\Islamic\IjarahScheduleCertificateVerifier;
 use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 
 test('vektor algoritma ijarah schedule dan amortisasi imbt', function (): void {
-    $algo = new IjarahSchedule();
+    $algo = new IjarahSchedule;
 
     // Vektor prompt: biaya aset 120.000.000; 12 bulan; total ujrah 132.000.000
     // -> ujrah 11.000.000/bulan; penyusutan 10.000.000/bulan; harga opsi IMBT 1.000.000
@@ -27,7 +27,7 @@ test('vektor algoritma ijarah schedule dan amortisasi imbt', function (): void {
         ->and($result->periods[11]['carrying_book_value_idr'])->toBe(0);
 
     // Eksekusi opsi IMBT dengan harga 1.000.000
-    $imbtResult = (new IjarahSchedule())->generate(
+    $imbtResult = (new IjarahSchedule)->generate(
         assetCostIdr: 120_000_000,
         tenorMonths: 12,
         totalUjrahIdr: 132_000_000,
@@ -60,5 +60,5 @@ test('sertifikat rusak pada ijarah schedule memicu exception', function (): void
         endingBookValueIdr: 110_000_000
     );
 
-    (new IjarahScheduleCertificateVerifier())->verify($corrupt);
+    (new IjarahScheduleCertificateVerifier)->verify($corrupt);
 })->throws(InvalidCertificateException::class);

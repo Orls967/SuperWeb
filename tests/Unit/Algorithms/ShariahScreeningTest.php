@@ -8,7 +8,7 @@ use Modules\Shared\Domain\Algorithms\Islamic\ShariahScreeningResult;
 use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 
 test('vektor algoritma shariah screening daft dan purifikasi dividen', function (): void {
-    $algo = new ShariahScreening();
+    $algo = new ShariahScreening;
 
     // Vektor prompt:
     // utang 400 / aset 1.000 = 4000 bps lolos;
@@ -54,5 +54,5 @@ test('sertifikat rusak pada shariah screening memicu exception', function (): vo
         isCompliant: true
     );
 
-    (new ShariahScreeningCertificateVerifier())->verify($corrupt);
+    (new ShariahScreeningCertificateVerifier)->verify($corrupt);
 })->throws(InvalidCertificateException::class);

@@ -8,7 +8,7 @@ use Modules\Shared\Domain\Algorithms\Islamic\ZakatAssessmentResult;
 use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 
 test('vektor algoritma zakat assessment mal', function (): void {
-    $algo = new ZakatAssessment();
+    $algo = new ZakatAssessment;
 
     // Vektor prompt:
     // Harga emas 1.500.000/g -> nisab 127.500.000
@@ -53,5 +53,5 @@ test('sertifikat rusak pada zakat assessment memicu exception', function (): voi
         zakatAmountIdr: 4_500_000
     );
 
-    (new ZakatAssessmentCertificateVerifier())->verify($corrupt);
+    (new ZakatAssessmentCertificateVerifier)->verify($corrupt);
 })->throws(InvalidCertificateException::class);
