@@ -780,6 +780,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `syb:bmt-waterfall-sweep` | `manual` | Menyapu angsuran pembiayaan mikro jatuh tempo dari saldo tabungan BMT nasabah via algoritma waterfall |
 | `syb:halal-expiry-sweep` | `manual` | Sweep harian untuk mendeteksi dan menonaktifkan sertifikat halal merchant yang telah kedaluwarsa |
 | `syb:ijarah-billing` | `manual` | Proses terjadwal idempoten penagihan ujrah dan penyusutan berkala akad ijarah |
+| `syb:interbank-sweep` | `manual` | Sweep harian untuk memantau jatuh tempo pasar uang antarbank syariah (PUAS/SiKA) |
 | `syb:npf-daily-sweep` | `manual` | Sweep harian untuk evaluasi kolektibilitas portofolio syariah dan penetapan CKPN (POJK) |
 | `syb:salam-maturity-sweep` | `manual` | Pemeriksaan berkala jatuh tempo komoditas salam, monitoring wanprestasi dan pencocokan parallel hedge |
 | `syb:scf-invoice-due-sweep` | `manual` | Pemeriksaan harian jatuh tempo tagihan SCF Murabahah dan monitoring keterlambatan |
@@ -808,7 +809,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 194 Command** | **37 Terjadwal** | |
+| **Total: 195 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

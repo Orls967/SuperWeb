@@ -10,6 +10,8 @@ use Modules\Syariah\Application\Services\HalalTransactionFilterService;
 use Modules\Syariah\Application\Services\NpfClassificationService;
 use Modules\Syariah\Application\Services\ShariahLedgerPoster;
 use Modules\Syariah\Application\Services\SyariahOperationsCommandCenterService;
+use Modules\Syariah\Application\Services\SyariahRecoveryWaterfallService;
+use Modules\Syariah\Application\Services\SyariahRegulatoryReportService;
 use Modules\Syariah\Application\Services\SyariahRestructuringService;
 use Modules\Syariah\Application\Services\UniversalSyariahWalletService;
 use Modules\Syariah\Domain\Models\SybHalalCategory;
@@ -249,12 +251,12 @@ final class SybOperationsAcceptanceTest extends TestCase
         $this->assertEmpty($audit['findings']);
 
         // 4. Laporan Regulator LBBS & Pemulihan Lelang Agunan
-        $reportService = app(\Modules\Syariah\Application\Services\SyariahRegulatoryReportService::class);
+        $reportService = app(SyariahRegulatoryReportService::class);
         $lbbs = $reportService->generateLbbsReport('2026-11');
         $this->assertArrayHasKey('portfolio_summary', $lbbs);
         $this->assertNotEmpty($lbbs['report_hash']);
 
-        $recoveryService = app(\Modules\Syariah\Application\Services\SyariahRecoveryWaterfallService::class);
+        $recoveryService = app(SyariahRecoveryWaterfallService::class);
         $auction = $recoveryService->scheduleCollateralAuction(
             financingRef: 'FIN-MACET-001',
             collateralDescription: 'Tanah Ruko Pasar Halal',

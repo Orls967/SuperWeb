@@ -27,8 +27,8 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-            $table->index(['merchant_code', 'business_line_code']);
-            $table->index(['customer_account_ref', 'status']);
+            $table->index(['merchant_code', 'business_line_code'], 'syb_uwt_mch_line_idx');
+            $table->index(['customer_account_ref', 'status'], 'syb_uwt_cust_status_idx');
             $table->index('order_reference');
         });
     }
