@@ -505,7 +505,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 25 | **Hcm** | `hcm_` | 7 |
 | 26 | **Hospital** | `hsp_` | 14 |
 | 27 | **Hotel** | `htl_` | 16 |
-| 28 | **Insurance** | `ins_` | 6 |
+| 28 | **Insurance** | `ins_` | 7 |
 | 29 | **Integration** | `intg_` | 340 |
 | 30 | **Intercompany** | `ic_` | 1 |
 | 31 | **International** | `intl_` | 1 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **623 Migrasi** |
+| | **Total: 63 Modul** | | **624 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -573,7 +573,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 26 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
-| **Insurance** | 55 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
+| **Insurance** | 75 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1154 Rute** | | |
+| **Total** | **1174 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -684,6 +684,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ins:cat-run` | `manual` | Jalankan simulasi pemodelan bencana katastrofe deterministik berseed (Fase 157) |
 | `ins:cede-period` | `manual` | Proses evaluasi stop loss dan penutupan cession berkala (Fase 157) |
 | `ins:embedded-audit` | `manual` | Audit dua-sumber embedded insurance, komisi broker, trigger parametrik, dan investigasi SIU (Fase 158) |
+| `ins:life-health-audit` | `manual` | Menjalankan audit dua-sumber untuk asuransi jiwa, kesehatan & portofolio unit link (Fase 159) |
 | `ins:reinsurance-audit` | `manual` | Audit dua-sumber reasuransi, kapital, dan cat bond (Fase 157) |
 | `ins:solvency-snapshot` | `manual` | Hitung snapshot rasio solvabilitas Risk-Based Capital (RBC) berkorelasi (Fase 157) |
 | `inspire` | `manual` | Display an inspiring quote |
@@ -797,7 +798,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 183 Command** | **37 Terjadwal** | |
+| **Total: 184 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

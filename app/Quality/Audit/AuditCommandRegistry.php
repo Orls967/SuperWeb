@@ -44,6 +44,7 @@ use App\Quality\Audit\Fixtures\InsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\IntlAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxAuditBillingCorruptionFixture;
 use App\Quality\Audit\Fixtures\LgxVerifyCustodyCorruptionFixture;
+use App\Quality\Audit\Fixtures\LifeHealthAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsCircularCorruptionFixture;
 use App\Quality\Audit\Fixtures\LogisticsColdChainCorruptionFixture;
 use App\Quality\Audit\Fixtures\MallAuditBillingCorruptionFixture;
@@ -132,6 +133,7 @@ final class AuditCommandRegistry
             'hotel:audit' => new HtlAuditCorruptionFixture,
             'ins:audit' => new InsAuditCorruptionFixture,
             'ins:embedded-audit' => new EmbeddedAuditCorruptionFixture,
+            'ins:life-health-audit' => new LifeHealthAuditCorruptionFixture,
             'ins:reinsurance-audit' => new ReinsAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,

@@ -10,15 +10,20 @@ use Modules\Insurance\Domain\Enums\TreatyStatus;
 use Modules\Insurance\Domain\Enums\TreatyType;
 use Modules\Insurance\Domain\Models\CatBond;
 use Modules\Insurance\Domain\Models\EmbedProduct;
+use Modules\Insurance\Domain\Models\HealthPolicy;
 use Modules\Insurance\Domain\Models\InsuranceActuarialTriangle;
 use Modules\Insurance\Domain\Models\InsuranceClaimPenuh;
 use Modules\Insurance\Domain\Models\InsuranceParameter;
 use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
 use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
+use Modules\Insurance\Domain\Models\LifeBeneficiary;
+use Modules\Insurance\Domain\Models\LifePolicy;
 use Modules\Insurance\Domain\Models\MarketBroker;
 use Modules\Insurance\Domain\Models\ParametricTrigger;
 use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 use Modules\Insurance\Domain\Models\ReinsuranceTreatyPanel;
+use Modules\Insurance\Domain\Models\UnitLinkFund;
+use Modules\Insurance\Domain\Models\UnitLinkHolding;
 use Modules\Party\Domain\Enums\PartyStatus;
 use Modules\Party\Domain\Enums\PartyType;
 use Modules\Party\Domain\Models\Party;
@@ -194,6 +199,9 @@ final class InsuranceT1Seeder extends Seeder
 
         // 9. Embedded Insurance & Broker Marketplace (Fase 158)
         $this->seedEmbeddedAndBrokers();
+
+        // 10. Life, Health & Wellness Insurance (Fase 159)
+        $this->seedLifeHealthWellness();
     }
 
     /**
@@ -509,6 +517,106 @@ final class InsuranceT1Seeder extends Seeder
                     'status' => 'active',
                 ]
             );
+        }
+    }
+
+    private function seedLifeHealthWellness(): void
+    {
+        $now = now();
+
+        // 1. Dana Investasi Unit Link
+        $funds = [
+            [
+                'fund_code' => 'UL-EQ-AGGRESSIVE',
+                'name' => 'Nusantara Aggressive Equity Fund',
+                'asset_class' => 'EQUITY',
+                'current_nav_per_unit_idr' => 1750,
+                'total_aum_idr' => 17500000000,
+                'total_units' => 10000000,
+                'management_fee_bps' => 150,
+                'is_active' => true,
+            ],
+            [
+                'fund_code' => 'UL-BALANCED-GROWTH',
+                'name' => 'Nusantara Balanced Dynamic Fund',
+                'asset_class' => 'BALANCED',
+                'current_nav_per_unit_idr' => 1400,
+                'total_aum_idr' => 14000000000,
+                'total_units' => 10000000,
+                'management_fee_bps' => 125,
+                'is_active' => true,
+            ],
+            [
+                'fund_code' => 'UL-FIXED-SECURE',
+                'name' => 'Nusantara Sovereign Bond Fund',
+                'asset_class' => 'FIXED_INCOME',
+                'current_nav_per_unit_idr' => 1150,
+                'total_aum_idr' => 11500000000,
+                'total_units' => 10000000,
+                'management_fee_bps' => 100,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($funds as $fData) {
+            UnitLinkFund::updateOrCreate(['fund_code' => $fData['fund_code']], $fData);
+        }
+
+        // 2. Polis Asuransi Kesehatan
+        HealthPolicy::updateOrCreate(
+            ['policy_number' => 'POL-HLTH-PLATINUM-001'],
+            [
+                'member_party_id' => '00000000-0000-0000-0000-000000000001',
+                'plan_tier' => 'PLATINUM',
+                'annual_limit_idr' => 500000000,
+                'annual_utilized_idr' => 0,
+                'room_daily_limit_idr' => 2000000,
+                'deductible_idr' => 0,
+                'status' => 'active',
+                'effective_date' => $now->toDateString(),
+                'expiry_date' => $now->copy()->addYear()->toDateString(),
+            ]
+        );
+
+        // 3. Polis Asuransi Jiwa
+        $lifePolicy = LifePolicy::updateOrCreate(
+            ['policy_number' => 'POL-LIFE-TERM-001'],
+            [
+                'insured_party_id' => '00000000-0000-0000-0000-000000000001',
+                'plan_type' => 'TERM_LIFE',
+                'entry_age' => 35,
+                'term_years' => 20,
+                'sum_insured_idr' => 1000000000,
+                'annual_premium_idr' => 3500000,
+                'saving_accumulated_idr' => 0,
+                'status' => 'active',
+                'issued_date' => $now->toDateString(),
+                'maturity_date' => $now->copy()->addYears(20)->toDateString(),
+            ]
+        );
+
+        LifeBeneficiary::updateOrCreate(
+            ['life_policy_id' => $lifePolicy->id, 'beneficiary_party_id' => '00000000-0000-0000-0000-000000000002'],
+            [
+                'relationship' => 'SPOUSE',
+                'share_percentage_bps' => 10000,
+                'is_primary' => true,
+            ]
+        );
+
+        // Seed initial holdings for funds
+        foreach ($funds as $fData) {
+            $fund = UnitLinkFund::where('fund_code', $fData['fund_code'])->first();
+            if ($fund) {
+                UnitLinkHolding::updateOrCreate(
+                    ['life_policy_id' => $lifePolicy->id, 'fund_id' => $fund->id],
+                    [
+                        'units_held' => $fund->total_units,
+                        'acquisition_cost_idr' => $fund->total_aum_idr,
+                        'current_valuation_idr' => $fund->total_aum_idr,
+                    ]
+                );
+            }
         }
     }
 }
