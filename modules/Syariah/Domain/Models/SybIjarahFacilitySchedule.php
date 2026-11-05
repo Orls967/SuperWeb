@@ -42,4 +42,3 @@ final class SybIjarahFacilitySchedule extends Model
         return $this->belongsTo(SybIjarahFacility::class, 'facility_id');
     }
 }
-

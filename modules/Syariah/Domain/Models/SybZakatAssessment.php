@@ -58,4 +58,3 @@ final class SybZakatAssessment extends Model
         return $this->belongsTo(User::class, 'customer_user_id');
     }
 }
-

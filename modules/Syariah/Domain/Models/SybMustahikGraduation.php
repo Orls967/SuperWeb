@@ -31,4 +31,3 @@ class SybMustahikGraduation extends Model
         'verified_at' => 'datetime',
     ];
 }
-

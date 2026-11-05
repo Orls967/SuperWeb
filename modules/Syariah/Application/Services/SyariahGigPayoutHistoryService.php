@@ -51,4 +51,3 @@ class SyariahGigPayoutHistoryService implements GigPayoutHistory
         return 65 + (int) ($seedInt * 33 / 100);
     }
 }
-

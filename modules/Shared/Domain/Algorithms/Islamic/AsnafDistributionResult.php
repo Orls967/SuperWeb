@@ -24,4 +24,3 @@ final class AsnafDistributionResult
         return $this->allocations[$asnaf] ?? 0;
     }
 }
-

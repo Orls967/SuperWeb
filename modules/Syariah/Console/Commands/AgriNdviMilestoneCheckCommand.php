@@ -34,4 +34,3 @@ class AgriNdviMilestoneCheckCommand extends Command
         return self::SUCCESS;
     }
 }
-

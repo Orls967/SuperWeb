@@ -41,4 +41,3 @@ class SybMicroRestructuring extends Model
         return $this->belongsTo(SybMicroFacility::class, 'facility_code', 'facility_code');
     }
 }
-

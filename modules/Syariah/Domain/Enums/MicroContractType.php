@@ -25,4 +25,3 @@ enum MicroContractType: string
         };
     }
 }
-

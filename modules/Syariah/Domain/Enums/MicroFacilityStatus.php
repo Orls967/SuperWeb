@@ -30,4 +30,3 @@ enum MicroFacilityStatus: string
         };
     }
 }
-

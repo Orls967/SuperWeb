@@ -34,4 +34,3 @@ final class SybSukukDistribution extends Model
         return $this->belongsTo(SybSukukFacility::class, 'sukuk_facility_id');
     }
 }
-
