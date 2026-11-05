@@ -11514,12 +11514,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
 > **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `BmtMicrofinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 163.1 **BMT/koperasi simulasi**: kelompok anggota → simpanan pokok/wajib/sukarela → pembiayaan mikro kelompok (musyarakah/qardh) → angsuran kolektif → denda ke kas amil
-- [ ] 163.2 **Gig worker financing** (bridge ke Fase 85/136): riwayat penghasilan bounty/payout → skor → plafon mikro → angsuran auto-deduct saat payout masuk (waterfall) → default ditangani bertahap
-- [ ] 163.3 **Farmer microfinance upgrade** (memperluas Fase 62.2/86.2): gabungan NDVI ratchet + weather insurance (Fase 160.2) → pencairan bertahap per milestone tanam → panen → repayment dari hasil jual
-- [ ] 163.4 **Financial literacy & simulation**: kelas Edu (Fase 135) modul keuangan syariah → sertifikat → diskon biaya administrasi bagi lulusan → engagement loop
-- [ ] 163.5 **Social impact metrics**: penerima manfaat terukur, jumlah pengangguran terserap (job matching Fase 136), UMKM naik kelas → laporan impact investing ke investor (Fase 141.5)
-- [ ] 163.6 Tests: (a) waterfall angsuran deterministik (b) group liability tercatat benar (c) NDVI gate pencairan dihormati (d) impact metrics = agregasi data nyata (e) `syb:audit` = 0 selisih
+- [🔵] 163.1 **BMT/koperasi simulasi**: kelompok anggota → simpanan pokok/wajib/sukarela → pembiayaan mikro kelompok (musyarakah/qardh) → angsuran kolektif → denda ke kas amil
+- [🔵] 163.2 **Gig worker financing** (bridge ke Fase 85/136): riwayat penghasilan bounty/payout → skor → plafon mikro → angsuran auto-deduct saat payout masuk (waterfall) → default ditangani bertahap
+- [🔵] 163.3 **Farmer microfinance upgrade** (memperluas Fase 62.2/86.2): gabungan NDVI ratchet + weather insurance (Fase 160.2) → pencairan bertahap per milestone tanam → panen → repayment dari hasil jual
+- [🔵] 163.4 **Financial literacy & simulation**: kelas Edu (Fase 135) modul keuangan syariah → sertifikat → diskon biaya administrasi bagi lulusan → engagement loop
+- [🔵] 163.5 **Social impact metrics**: penerima manfaat terukur, jumlah pengangguran terserap (job matching Fase 136), UMKM naik kelas → laporan impact investing ke investor (Fase 141.5)
+- [🔵] 163.6 Tests: (a) waterfall angsuran deterministik (b) group liability tercatat benar (c) NDVI gate pencairan dihormati (d) impact metrics = agregasi data nyata (e) `syb:audit` = 0 selisih
 - [ ] 163.7 Quality gate Fase 163
 
 ## FASE 164 — LINI 19: ISLAMIC TRADE FINANCE & CROSS-BORDER SYARIAH

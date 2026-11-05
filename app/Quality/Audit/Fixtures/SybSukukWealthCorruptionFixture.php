@@ -34,3 +34,4 @@ final class SybSukukWealthCorruptionFixture implements CorruptionFixture
         return 'syb.forbidden_interest_account';
     }
 }
+

@@ -73,3 +73,4 @@ Semua transaksi diposting double-entry presisi integer Rupiah tanpa akun bunga:
   - `issue(string $assetCode, int $faceValueIdr, int $units, CarbonImmutable $maturity, string $idempotencyKey): int`
   - `redeem(string $assetCode, CarbonImmutable $at, string $idempotencyKey): void`
   Dibuat aditif di `Modules\Rwa` bersama implementasi `RwaSukukTokenRegistryService` dan binding di `RwaServiceProvider`.
+

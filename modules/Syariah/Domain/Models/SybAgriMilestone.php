@@ -36,3 +36,4 @@ class SybAgriMilestone extends Model
         return $this->belongsTo(SybAgriMicroFacility::class, 'facility_code', 'facility_code');
     }
 }
+

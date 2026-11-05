@@ -122,3 +122,4 @@ Semua akun terdaftar di `SyariahAccounts`:
 - Offset Asuransi Pertanian (G7-K2):
   - `DEBIT` `syb:takaful_claim_offset_clearing:IDR`
   - `CREDIT` `syb:agri_financing_receivable:IDR`
+

@@ -36,3 +36,4 @@
 - **Role & Rute:** `syariah_officer`, `bmt_manager`, `field_officer`, `customer`; rute `/syb/bmt`, `/syb/micro`, `/syb/social-impact`.
 - **Tingkat simulasi:** S1 (parameter margin & scoring berversi di `syb_parameters`). **Tier skala:** T1 (100 kelompok tanggung renteng, 5.000 anggota mikro, 1.000 gig worker, 500 petani salam).
 - **Keputusan Terkait:** `g7-d9`..`g7-d13`.
+

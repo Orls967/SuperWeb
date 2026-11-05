@@ -23,3 +23,4 @@ final class ShariahScreeningResult
         public readonly bool $isCompliant
     ) {}
 }
+

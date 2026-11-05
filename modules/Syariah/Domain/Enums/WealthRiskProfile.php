@@ -24,3 +24,4 @@ enum WealthRiskProfile: string
         };
     }
 }
+

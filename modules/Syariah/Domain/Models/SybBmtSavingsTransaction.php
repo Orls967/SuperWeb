@@ -30,3 +30,4 @@ class SybBmtSavingsTransaction extends Model
         return $this->belongsTo(SybBmtSavings::class, 'account_number', 'account_number');
     }
 }
+

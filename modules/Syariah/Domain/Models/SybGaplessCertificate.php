@@ -32,3 +32,4 @@ final class SybGaplessCertificate extends Model
         return $this->belongsTo(User::class, 'recipient_user_id');
     }
 }
+

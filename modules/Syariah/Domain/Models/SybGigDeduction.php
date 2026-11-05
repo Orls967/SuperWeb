@@ -35,3 +35,4 @@ class SybGigDeduction extends Model
         return $this->belongsTo(SybGigMicroloan::class, 'loan_code', 'loan_code');
     }
 }
+

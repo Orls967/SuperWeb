@@ -22,3 +22,4 @@ final class ZakatAssessmentResult
         public readonly int $zakatAmountIdr
     ) {}
 }
+

@@ -15,3 +15,4 @@ enum ZakatAsnafType: string
     case FISABILILLAH = 'fisabilillah';
     case IBNU_SABIL = 'ibnu_sabil';
 }
+

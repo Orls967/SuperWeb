@@ -57,3 +57,4 @@ final class RwaSukukTokenRegistryService implements SukukTokenRegistry
         ])->save();
     }
 }
+
