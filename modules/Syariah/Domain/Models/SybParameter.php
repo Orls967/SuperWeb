@@ -52,3 +52,4 @@ final class SybParameter extends Model
         return $param ? (array) $param->value : $default;
     }
 }
+

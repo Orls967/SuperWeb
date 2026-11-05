@@ -34,3 +34,4 @@ final class SybStatusTransition extends Model
         return $this->belongsTo(User::class, 'actor_user_id');
     }
 }
+
