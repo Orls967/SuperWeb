@@ -159,7 +159,7 @@ final class SyariahOperationsT1Seeder extends Seeder
             );
 
             if ($r <= 15) {
-                $restructuringService->reviewByDps($req->request_ref, 'DPS-DR-AZIZ', 'Sesuai fatwa DSN-MUI restrukturisasi pembiayaan', true);
+                $restructuringService->reviewByDps($req->request_ref, 'DPS-DR-AZIZ', 'Sesuai fatwa DSN-MUI restrukturisasi pembiayaan', 'DPS_REVIEWED');
             }
 
             if ($r <= 10) {

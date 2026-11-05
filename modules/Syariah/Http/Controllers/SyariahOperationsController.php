@@ -123,12 +123,13 @@ final class SyariahOperationsController extends Controller
         ]);
 
         $req = SybRestructuringRequest::findOrFail($id);
+        $verdict = ! empty($validated['is_approved']) ? 'DPS_REVIEWED' : 'REJECTED';
 
         $this->restructuringService->reviewByDps(
             requestRef: $req->request_ref,
             dpsReviewerRef: (string) ($request->user()?->id ?? 'DPS-BOARD'),
             notes: $validated['notes'],
-            isApproved: (bool) $validated['is_approved']
+            verdict: $verdict
         );
 
         return redirect()->route('syariah.ops.restructuring.show', $req->id)

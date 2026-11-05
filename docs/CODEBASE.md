@@ -532,7 +532,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 52 | **Shared** | — | 0 |
 | 53 | **Store** | `store_` | 5 |
 | 54 | **Supplier** | `sup_` | 3 |
-| 55 | **Syariah** | `syb_` | 18 |
+| 55 | **Syariah** | `syb_` | 23 |
 | 56 | **Tlx** | `tlx_` | 4 |
 | 57 | **Trade** | `trd_` | 3 |
 | 58 | **TradeFinance** | `tf_` | 4 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **642 Migrasi** |
+| | **Total: 63 Modul** | | **647 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -600,7 +600,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Shared** | 1 | `api/global-search` | web, auth, verified |
 | **Store** | 35 | `store`, `store/products/{slug}`, `store/mobil-bekas` ... | web, auth, role:admin,customer,auditor |
 | **Supplier** | 15 | `suppliers/scan-risks`, `suppliers`, `suppliers/create` ... | web, auth, verified |
-| **Syariah** | 78 | `syariah/murabahah`, `syariah/murabahah/{contract}/approve-officer`, `syariah/murabahah/{contract}/purchase-asset` ... | web, auth, role:admin,syariah_officer |
+| **Syariah** | 90 | `syariah/murabahah`, `syariah/murabahah/{contract}/approve-officer`, `syariah/murabahah/{contract}/purchase-asset` ... | web, auth, role:admin,syariah_officer |
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1263 Rute** | | |
+| **Total** | **1275 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -778,7 +778,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `syb:agri-ndvi-check` | `manual` | Memeriksa indeks NDVI satelit dan memicu pencairan bertahap pembiayaan salam tani |
 | `syb:audit` | `manual` | Audit dua sumber Keuangan Syariah: Murabahah, Sukuk, Ijarah, Wealth, Zakat, Wakaf, dan 0 akun bunga |
 | `syb:bmt-waterfall-sweep` | `manual` | Menyapu angsuran pembiayaan mikro jatuh tempo dari saldo tabungan BMT nasabah via algoritma waterfall |
+| `syb:halal-expiry-sweep` | `manual` | Sweep harian untuk mendeteksi dan menonaktifkan sertifikat halal merchant yang telah kedaluwarsa |
 | `syb:ijarah-billing` | `manual` | Proses terjadwal idempoten penagihan ujrah dan penyusutan berkala akad ijarah |
+| `syb:npf-daily-sweep` | `manual` | Sweep harian untuk evaluasi kolektibilitas portofolio syariah dan penetapan CKPN (POJK) |
+| `syb:salam-maturity-sweep` | `manual` | Pemeriksaan berkala jatuh tempo komoditas salam, monitoring wanprestasi dan pencocokan parallel hedge |
+| `syb:scf-invoice-due-sweep` | `manual` | Pemeriksaan harian jatuh tempo tagihan SCF Murabahah dan monitoring keterlambatan |
 | `syb:sukuk-distribute` | `manual` | Proses terjadwal idempoten distribusi kupon/ujrah sukuk ke pemegang token |
 | `syb:zakat-haul-assess` | `manual` | Proses terjadwal idempoten evaluasi haul dan kewajiban zakat mal muzakki |
 | `telemetry:snapshot` | `manual` | Generate real-time live telemetry snapshot across 6 enterprise command centers in JSON or SSE format |
@@ -804,7 +808,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 190 Command** | **37 Terjadwal** | |
+| **Total: 194 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -838,7 +842,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Proptech** | `ProptechAccounts` | 10 | `ast:fixed_assets:IDR`, `epc:cip_liability:IDR` ... |
 | **Ret** | `RetAccounts` | 23 | `ret:bill_payment_fee_revenue:IDR`, `ret:bill_payment_receivable:IDR` ... |
 | **Rwa** | `RwaAccounts` | 12 | `rwa:rounding_reserve:IDR`, `rwa:dividend_source:default:IDR` ... |
-| **Syariah** | `SyariahAccounts` | 36 | `syb:murabahah_asset:IDR`, `syb:margin_income:IDR` ... |
+| **Syariah** | `SyariahAccounts` | 43 | `syb:murabahah_asset:IDR`, `syb:margin_income:IDR` ... |
 | **Tlx** | `TlxAccounts` | 14 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
 | **TradeFinance** | `TradeFinanceAccounts` | 5 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
@@ -846,6 +850,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **428 Akun** | |
+| **Total: 37 Registry** | | **435 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

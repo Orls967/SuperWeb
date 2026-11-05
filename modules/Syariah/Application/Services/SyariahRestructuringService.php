@@ -74,7 +74,7 @@ final class SyariahRestructuringService
     /**
      * Penelaahan dan persetujuan kepatuhan syariah oleh Dewan Pengawas Syariah (DPS).
      */
-    public function reviewByDps(string $requestRef, string $dpsReviewerRef, string $notes, bool $isApproved): SybRestructuringRequest
+    public function reviewByDps(string $requestRef, string $dpsReviewerRef, string $notes, string $verdict = 'DPS_REVIEWED'): SybRestructuringRequest
     {
         $req = SybRestructuringRequest::where('request_ref', $requestRef)->firstOrFail();
 
@@ -82,10 +82,12 @@ final class SyariahRestructuringService
             throw new RuntimeException("Cannot review restructuring request in status {$req->status}.");
         }
 
+        $finalStatus = strtoupper($verdict) === 'REJECTED' ? 'REJECTED' : 'DPS_REVIEWED';
+
         $req->update([
             'dps_reviewer_ref' => $dpsReviewerRef,
             'dps_notes' => $notes,
-            'status' => $isApproved ? 'DPS_REVIEWED' : 'REJECTED',
+            'status' => $finalStatus,
         ]);
 
         return $req->fresh();

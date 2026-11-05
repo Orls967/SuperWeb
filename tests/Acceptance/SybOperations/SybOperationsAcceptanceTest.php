@@ -70,7 +70,7 @@ final class SybOperationsAcceptanceTest extends TestCase
             requestRef: $req->request_ref,
             dpsReviewerRef: 'DPS-USTADZ-AHMAD',
             notes: 'Restrukturisasi sesuai syariah tanpa pertambahan margin di atas akad awal',
-            isApproved: true
+            verdict: 'DPS_REVIEWED'
         );
         $this->assertSame('DPS_REVIEWED', $req->status);
 
