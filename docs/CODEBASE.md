@@ -496,51 +496,52 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 16 | **Egy** | `egy_` | 6 |
 | 17 | **EnterpriseFinance** | `ef_` | 2 |
 | 18 | **Epc** | `epc_` | 1 |
-| 19 | **Esg** | `esg_` | 5 |
+| 19 | **Esg** | `esg_` | 6 |
 | 20 | **Fashion** | `fsh_` | 1 |
 | 21 | **Finance** | `fin_` | 1 |
 | 22 | **Food** | `food_` | 1 |
-| 23 | **Governance** | `gov_` | 1 |
-| 24 | **Hcm** | `hcm_` | 7 |
-| 25 | **Hospital** | `hsp_` | 14 |
-| 26 | **Hotel** | `htl_` | 16 |
-| 27 | **Insurance** | `ins_` | 2 |
-| 28 | **Integration** | `intg_` | 340 |
-| 29 | **Intercompany** | `ic_` | 1 |
-| 30 | **International** | `intl_` | 1 |
-| 31 | **Inventory** | `inv_` | 2 |
-| 32 | **Logistics** | `lgx_` | 31 |
-| 33 | **Mall** | `mall_` | 7 |
-| 34 | **Manufacturing** | `mfg_` | 14 |
-| 35 | **Marine** | `mar_` | 1 |
-| 36 | **Med** | `med_` | 3 |
-| 37 | **Mining** | `min_` | 11 |
-| 38 | **Mobility** | `oto_` | 0 |
-| 39 | **Partner** | `ptn_` | 1 |
-| 40 | **Party** | `pty_` | 3 |
-| 41 | **Payment** | `pay_` | 3 |
-| 42 | **Plm** | `plm_` | 1 |
-| 43 | **Port** | `prt_` | 1 |
-| 44 | **Pricing** | `pric_` | 7 |
-| 45 | **ProServices** | `psv_` | 1 |
-| 46 | **Procurement** | `prc_` | 6 |
-| 47 | **Proptech** | `prp_` | 3 |
-| 48 | **Resto** | `resto_` | 10 |
-| 49 | **Ret** | `ret_` | 4 |
-| 50 | **Rwa** | `rwa_` | 3 |
-| 51 | **Shared** | — | 0 |
-| 52 | **Store** | `store_` | 5 |
-| 53 | **Supplier** | `sup_` | 3 |
-| 54 | **Syariah** | `syb_` | 1 |
-| 55 | **Tlx** | `tlx_` | 4 |
-| 56 | **Trade** | `trd_` | 3 |
-| 57 | **TradeFinance** | `tf_` | 4 |
-| 58 | **Treasury** | `trs_` | 1 |
-| 59 | **Vending** | `vnd_` | 3 |
-| 60 | **Venue** | `ven_` | 6 |
-| 61 | **Wealth** | `wm_` | 2 |
-| 62 | **Wms** | `wms_` | 2 |
-| | **Total: 62 Modul** | | **616 Migrasi** |
+| 23 | **Forest** | `for_` | 1 |
+| 24 | **Governance** | `gov_` | 1 |
+| 25 | **Hcm** | `hcm_` | 7 |
+| 26 | **Hospital** | `hsp_` | 14 |
+| 27 | **Hotel** | `htl_` | 16 |
+| 28 | **Insurance** | `ins_` | 2 |
+| 29 | **Integration** | `intg_` | 340 |
+| 30 | **Intercompany** | `ic_` | 1 |
+| 31 | **International** | `intl_` | 1 |
+| 32 | **Inventory** | `inv_` | 2 |
+| 33 | **Logistics** | `lgx_` | 31 |
+| 34 | **Mall** | `mall_` | 7 |
+| 35 | **Manufacturing** | `mfg_` | 14 |
+| 36 | **Marine** | `mar_` | 1 |
+| 37 | **Med** | `med_` | 3 |
+| 38 | **Mining** | `min_` | 11 |
+| 39 | **Mobility** | `oto_` | 0 |
+| 40 | **Partner** | `ptn_` | 1 |
+| 41 | **Party** | `pty_` | 3 |
+| 42 | **Payment** | `pay_` | 3 |
+| 43 | **Plm** | `plm_` | 1 |
+| 44 | **Port** | `prt_` | 1 |
+| 45 | **Pricing** | `pric_` | 7 |
+| 46 | **ProServices** | `psv_` | 1 |
+| 47 | **Procurement** | `prc_` | 6 |
+| 48 | **Proptech** | `prp_` | 3 |
+| 49 | **Resto** | `resto_` | 10 |
+| 50 | **Ret** | `ret_` | 4 |
+| 51 | **Rwa** | `rwa_` | 3 |
+| 52 | **Shared** | — | 0 |
+| 53 | **Store** | `store_` | 5 |
+| 54 | **Supplier** | `sup_` | 3 |
+| 55 | **Syariah** | `syb_` | 1 |
+| 56 | **Tlx** | `tlx_` | 4 |
+| 57 | **Trade** | `trd_` | 3 |
+| 58 | **TradeFinance** | `tf_` | 4 |
+| 59 | **Treasury** | `trs_` | 1 |
+| 60 | **Vending** | `vnd_` | 3 |
+| 61 | **Venue** | `ven_` | 6 |
+| 62 | **Wealth** | `wm_` | 2 |
+| 63 | **Wms** | `wms_` | 2 |
+| | **Total: 63 Modul** | | **618 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -568,6 +569,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Fashion** | 3 | `fashion/collections`, `fashion/orders/allocate` ... | web, auth, role:fashion_buyer,merchandiser,admin |
 | **Finance** | 8 | `pembiayaan`, `pembiayaan/simulasi/{product}`, `pembiayaan/{loan}` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Food** | 2 | `food/brands` ... | web, auth, role:brand_manager,admin |
+| **Forest** | 6 | `forest/plots`, `forest/plots/{id}`, `forest/permits` ... | web, auth, role:admin,forester,superadmin |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 26 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
@@ -607,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1099 Rute** | | |
+| **Total** | **1105 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -663,6 +665,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `finance:charge-installments` | **`dailyAt('01:00')`** | Debit cicilan pembiayaan yang jatuh tempo dari dompet peminjam |
 | `flt:audit` | `manual` | Perform two-source verification of B2B fleet leasing contracts, units, and amortization integrity |
 | `food:audit` | `manual` | Audit dua sumber integritas komoditas pangan, neraca massa pengolahan, dan mutu ekspor (Lini 21) |
+| `for:audit` | `manual` | Audit integritas kuota tebang kehutanan, gapless hash-chain log kayu, dan pungutan PSDH DR |
 | `fsh:audit` | `manual` | Audit integritas alokasi ukuran/warna, approval sampel desain, dan rencana beli busana (Lini 28) |
 | `gate:report` | `manual` | Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite |
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
@@ -789,7 +792,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 177 Command** | **37 Terjadwal** | |
+| **Total: 178 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -804,6 +807,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
 | **Epc** | `EpcAccounts` | 8 | `asset:epc:construction_in_progress:IDR`, `ast:cip:default:IDR` ... |
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
+| **Forest** | `ForestAccounts` | 3 | `ar:for:timber:IDR`, `for:revenue:IDR` ... |
 | **Hcm** | `HcmAccounts` | 17 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
 | **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 39 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
@@ -830,6 +834,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 36 Registry** | | **384 Akun** | |
+| **Total: 37 Registry** | | **387 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

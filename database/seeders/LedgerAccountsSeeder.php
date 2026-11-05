@@ -18,6 +18,7 @@ use Modules\Egy\Ledger\EgyAccounts;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceAccounts;
 use Modules\Epc\Ledger\EpcAccounts;
 use Modules\Esg\Ledger\EsgAccounts;
+use Modules\Forest\Ledger\ForestAccounts;
 use Modules\Hcm\Ledger\HcmAccounts;
 use Modules\Hospital\Ledger\HospitalAccounts;
 use Modules\Hotel\Ledger\HotelAccounts;
@@ -78,6 +79,7 @@ class LedgerAccountsSeeder extends Seeder
         MedAccounts::class,
         MarineAccounts::class,
         ProServicesAccounts::class,
+        ForestAccounts::class,
         MiningAccounts::class,
         PortAccounts::class,
         ProptechAccounts::class,

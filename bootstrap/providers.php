@@ -23,6 +23,7 @@ use Modules\Esg\EsgServiceProvider;
 use Modules\Fashion\FashionServiceProvider;
 use Modules\Finance\FinanceServiceProvider;
 use Modules\Food\FoodServiceProvider;
+use Modules\Forest\ForestServiceProvider;
 use Modules\Governance\GovernanceServiceProvider;
 use Modules\Hcm\HcmServiceProvider;
 use Modules\Hospital\HospitalServiceProvider;
@@ -68,6 +69,7 @@ use Modules\Wms\WmsServiceProvider;
 
 return [
     ProServicesServiceProvider::class,
+    ForestServiceProvider::class,
     AppServiceProvider::class,
     SharedServiceProvider::class,
     CoreServiceProvider::class,

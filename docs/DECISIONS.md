@@ -2481,3 +2481,13 @@
   - D25-3: Pengakuan pendapatan fixed fee menggunakan metode persentase penyelesaian cost-to-cost dengan catch-up kumulatif bersertifikat (`CostToCostRecognition`), sedangkan T&M diakui berbasis jam disetujui dikali tarif.
   - D25-4: Integrasi double-entry ledger membukukan pendapatan, piutang klien, aset kontrak (`psv:contract_asset`), dan liabilitas kontrak (`psv:contract_liability`).
   - D25-5: Audit dua sumber `psv:audit` memverifikasi keselarasan jam tertagih, konsistensi saldo ledger, batas pendapatan <= nilai kontrak, dan saldo aset/liabilitas kontrak.
+
+## 2026-11-05-modul-forest-lini-23-g6-p52
+### Konteks
+Pekerjaan G6-P5.2 mengimplementasikan Lini 23 Kehutanan (Forest `for_`, Fase 172) secara vertical slice penuh menggantikan kerangka lama di Integration. Modul membutuhkan entri allowlist dan keputusan arsitektur.
+
+### Keputusan
+1. **D23-1 Modul & Prefiks**: Modul Kehutanan ditempatkan di `Modules\Forest` dengan prefiks tabel `for_`. Ditambahkan pada `config/modules.php` dan `tests/Architecture/baselines/config-allowlists.json`.
+2. **D23-2 Algoritma Volume Pohon Kanonikal**: Perhitungan volume pohon menggunakan rumus silvikultur standar $V = \frac{\pi}{4} \times (DBH/100)^2 \times T \times f$ diimplementasikan di `Modules\Shared\Domain\Algorithms\Forestry\TreeVolumeCalculator` dengan unit desimeter kubik ($dm^3$) / liter untuk menjaga integritas presisi integer tanpa floating point.
+3. **D23-3 Four-Eyes Kuota & Chain-of-Custody**: Izin tebang memvalidasi kuota tahunan petak dan mewajibkan four-eyes approval (`requester !== approver`). Batang kayu memiliki serial gapless dan rantai hash SHA-256 kanonikal.
+4. **D23-4 Kredit Karbon & Double-Entry Ledger**: Restorasi terhubung ke modul `Esg` via `CarbonCreditIssuer` interface kontrak resmi; penjualan kayu mencatat double-entry ledger lengkap memisahkan pendapatan kayu dan utang pungutan kehutanan (PSDH/DR).

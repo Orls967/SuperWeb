@@ -34986,6 +34986,579 @@
                 }
             }
         },
+        "/forest/logs": {
+            "get": {
+                "operationId": "getForestLogsIndex",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Logs (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, forester, superadmin, timber_inspector].",
+                "x-allowed-roles": [
+                    "admin",
+                    "forester",
+                    "superadmin",
+                    "timber_inspector"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/forest/permits": {
+            "get": {
+                "operationId": "getForestPermitsIndex",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Permits (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, forester, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "forester",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/forest/plots": {
+            "get": {
+                "operationId": "getForestPlotsIndex",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Index (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, forester, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "forester",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/forest/plots/{id}": {
+            "get": {
+                "operationId": "getForestPlotsShow",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Plot Detail (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, forester, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "forester",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/forest/restoration": {
+            "get": {
+                "operationId": "getForestRestorationIndex",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Restoration (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, esg_officer, forester, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "esg_officer",
+                    "forester",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/forest/sales": {
+            "get": {
+                "operationId": "getForestSalesIndex",
+                "tags": [
+                    "Forest"
+                ],
+                "summary": "Sales (Forest)",
+                "description": "Operational endpoint for Forest module. Protected by role matrix: [admin, forester, superadmin, timber_buyer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "forester",
+                    "superadmin",
+                    "timber_buyer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
         "/forgot-password": {
             "get": {
                 "operationId": "getPasswordRequest",
