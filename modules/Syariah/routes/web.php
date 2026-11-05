@@ -10,6 +10,7 @@ use Modules\Syariah\Http\Controllers\MicroFacilityController;
 use Modules\Syariah\Http\Controllers\MurabahahController;
 use Modules\Syariah\Http\Controllers\SocialImpactController;
 use Modules\Syariah\Http\Controllers\SukukController;
+use Modules\Syariah\Http\Controllers\SyariahOperationsController;
 use Modules\Syariah\Http\Controllers\WaqfController;
 use Modules\Syariah\Http\Controllers\WealthController;
 use Modules\Syariah\Http\Controllers\ZakatController;
@@ -162,4 +163,20 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer,trade_officer'])->
     Route::get('/tawarruq', [IslamicTradeController::class, 'tawarruqIndex'])->name('tawarruq.index');
     Route::get('/custody', [IslamicTradeController::class, 'custodyIndex'])->name('custody.index');
     Route::get('/calculator', [IslamicTradeController::class, 'calculator'])->name('calculator');
+});
+
+// 11. Operasional, NPF & Kepatuhan Syariah 30 Lini (Fase 165)
+Route::middleware(['web', 'auth', 'role:admin,syariah_officer,risk_officer,dps_board'])->prefix('syb/ops')->name('syariah.ops.')->group(function () {
+    Route::get('/', [SyariahOperationsController::class, 'index'])->name('index');
+    Route::get('/npf', [SyariahOperationsController::class, 'npfIndex'])->name('npf.index');
+    Route::get('/npf/{id}', [SyariahOperationsController::class, 'npfShow'])->name('npf.show');
+    Route::get('/restructuring', [SyariahOperationsController::class, 'restructuringIndex'])->name('restructuring.index');
+    Route::get('/restructuring/{id}', [SyariahOperationsController::class, 'restructuringShow'])->name('restructuring.show');
+    Route::post('/restructuring', [SyariahOperationsController::class, 'storeRestructuring'])->name('restructuring.store');
+    Route::post('/restructuring/{id}/dps-review', [SyariahOperationsController::class, 'dpsReviewRestructuring'])->name('restructuring.dps-review');
+    Route::post('/restructuring/{id}/execute', [SyariahOperationsController::class, 'executeRestructuring'])->name('restructuring.execute');
+    Route::get('/wallet', [SyariahOperationsController::class, 'walletIndex'])->name('wallet.index');
+    Route::get('/merchants', [SyariahOperationsController::class, 'merchantsIndex'])->name('merchants.index');
+    Route::get('/dps', [SyariahOperationsController::class, 'dpsIndex'])->name('dps.index');
+    Route::get('/incidents', [SyariahOperationsController::class, 'incidentsIndex'])->name('incidents.index');
 });

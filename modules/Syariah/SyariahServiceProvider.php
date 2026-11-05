@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Syariah\Application\Services\SyariahGigPayoutHistoryService;
+use Modules\Syariah\Application\Services\UniversalSyariahWalletService;
 use Modules\Syariah\Console\Commands\AgriNdviMilestoneCheckCommand;
 use Modules\Syariah\Console\Commands\AuditSyariahCommand;
 use Modules\Syariah\Console\Commands\BmtDailyWaterfallSweepCommand;
+use Modules\Syariah\Console\Commands\HalalCertificateExpirySweepCommand;
 use Modules\Syariah\Console\Commands\IjarahBillingScheduledCommand;
+use Modules\Syariah\Console\Commands\NpfClassificationDailySweepCommand;
+use Modules\Syariah\Console\Commands\SalamMaturitySweepCommand;
+use Modules\Syariah\Console\Commands\ScfInvoiceDueSweepCommand;
 use Modules\Syariah\Console\Commands\SukukDistributeScheduledCommand;
 use Modules\Syariah\Console\Commands\ZakatHaulAssessScheduledCommand;
 use Modules\Syariah\Contracts\GigPayoutHistory;
+use Modules\Syariah\Contracts\SyariahWalletPayment;
 use Modules\Syariah\Domain\Models\MurabahahContract;
 use Modules\Syariah\Http\Policies\MurabahahContractPolicy;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
@@ -26,6 +32,11 @@ class SyariahServiceProvider extends ServiceProvider
         $this->app->bind(
             GigPayoutHistory::class,
             SyariahGigPayoutHistoryService::class
+        );
+
+        $this->app->bind(
+            SyariahWalletPayment::class,
+            UniversalSyariahWalletService::class
         );
     }
 
@@ -46,6 +57,10 @@ class SyariahServiceProvider extends ServiceProvider
                 ZakatHaulAssessScheduledCommand::class,
                 BmtDailyWaterfallSweepCommand::class,
                 AgriNdviMilestoneCheckCommand::class,
+                SalamMaturitySweepCommand::class,
+                ScfInvoiceDueSweepCommand::class,
+                NpfClassificationDailySweepCommand::class,
+                HalalCertificateExpirySweepCommand::class,
             ]);
         }
     }

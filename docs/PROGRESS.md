@@ -11540,11 +11540,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
 > **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `SyariahOperationsService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
-- [ ] 165.2 **NPF management**: restructuring akad (reschedule tanpa tambahan margin ilegal), tagih, write-off dengan approval shariah board → recovery waterfall
-- [ ] 165.3 **Integration 30 lini**: wallet syariah bisa dipakai di seluruh lini (resto halal Fase 7, hotel Fase 91, venue Fase 89, marketplace Fase 137) → merchant fee mode syariah (tanpa penalty berlebih) → sertifikasi halal lintas produk (Fase 100.3)
-- [ ] 165.4 **Shariah audit command**: `syb:audit` final (dana terpisah, margin schedule, zakat correct, no riba pattern) → masuk `super:health-check` pilar
-- [ ] 165.5 Tests: (a) wallet syariah bayar di 30 lini idempoten (b) NPF calculation = aturan (c) halal certificate gate penjualan produk makanan (d) integration E2E hijau (e) `syb:audit` = 0 selisih
+- [🔵] 165.1 **Syariah operations dashboard**: portfolio pembiayaan, NPF (non-performing financing) ratio, bagi hasil pool, zakat terkumpul & terdistribusi, sukuk outstanding
+- [🔵] 165.2 **NPF management**: restructuring akad (reschedule tanpa tambahan margin ilegal), tagih, write-off dengan approval shariah board → recovery waterfall
+- [🔵] 165.3 **Integration 30 lini**: wallet syariah bisa dipakai di seluruh lini (resto halal Fase 7, hotel Fase 91, venue Fase 89, marketplace Fase 137) → merchant fee mode syariah (tanpa penalty berlebih) → sertifikasi halal lintas produk (Fase 100.3)
+- [🔵] 165.4 **Shariah audit command**: `syb:audit` final (dana terpisah, margin schedule, zakat correct, no riba pattern) → masuk `super:health-check` pilar
+- [🔵] 165.5 Tests: (a) wallet syariah bayar di 30 lini idempoten (b) NPF calculation = aturan (c) halal certificate gate penjualan produk makanan (d) integration E2E hijau (e) `syb:audit` = 0 selisih
 - [ ] 165.6 Quality gate Fase 165
 
 ## FASE 166 — LINI 20: PENDIDIKAN FORMAL & SEKOLAH (K-12, VOKASI, KAMPUS)

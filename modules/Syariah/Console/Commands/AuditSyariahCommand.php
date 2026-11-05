@@ -278,7 +278,29 @@ final class AuditSyariahCommand extends Command
             }
         }
 
-        // 9. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
+        // 9. Audit Operasional, Restrukturisasi Bebas Bunga & Dompet Halal 30 Lini (Fase 165)
+        if (Schema::hasTable('syb_universal_wallet_transactions')) {
+            $unverifiedHalalTxs = DB::table('syb_universal_wallet_transactions')
+                ->where('status', 'SUCCESS')
+                ->where('is_halal_verified', false)
+                ->count();
+            if ($unverifiedHalalTxs > 0) {
+                $rows[] = ['syb.unverified_halal_wallet_transaction', '0', (string) $unverifiedHalalTxs, (string) $unverifiedHalalTxs, 'SELISIH'];
+                $issues++;
+            }
+        }
+
+        if (Schema::hasTable('syb_restructuring_requests')) {
+            $ribaRestructuring = DB::table('syb_restructuring_requests')
+                ->whereColumn('revised_margin_minor', '>', 'original_margin_minor')
+                ->count();
+            if ($ribaRestructuring > 0) {
+                $rows[] = ['syb.riba_restructuring_margin', '0', (string) $ribaRestructuring, (string) $ribaRestructuring, 'SELISIH'];
+                $issues++;
+            }
+        }
+
+        // 10. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
         $interestAccounts = LedgerAccount::query()
             ->where('code', 'like', 'syb:%')
             ->where(function ($q) {
