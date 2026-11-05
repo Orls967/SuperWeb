@@ -32,7 +32,7 @@ final class ProServicesProjectController extends Controller
         }
 
         $timesheets = ProServicesTimesheet::whereHas('member', function ($q) use ($user) {
-            $q->where('employee_id', $user->id);
+            $q->where('employee_ref', $user->id);
         })->paginate(20);
 
         return response()->view('proservices::timesheets', ['timesheets' => $timesheets]);
@@ -43,7 +43,7 @@ final class ProServicesProjectController extends Controller
         $user = $request->user();
         $ts = ProServicesTimesheet::with('member')->findOrFail($id);
 
-        if (! $user || ($user->role !== 'admin' && $ts->member->employee_id !== $user->id)) {
+        if (! $user || ($user->role !== 'admin' && $ts->member->employee_ref !== $user->id)) {
             abort(403, 'Forbidden timesheet access');
         }
 
@@ -57,7 +57,7 @@ final class ProServicesProjectController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $invoices = ProServicesInvoice::where('client_party_id', $user->id)->paginate(20);
+        $invoices = ProServicesInvoice::where('client_party_ref', $user->id)->paginate(20);
 
         return response()->view('proservices::invoices', ['invoices' => $invoices]);
     }
@@ -67,7 +67,7 @@ final class ProServicesProjectController extends Controller
         $user = $request->user();
         $project = ProServicesProject::findOrFail($id);
 
-        if (! $user || ($user->role !== 'admin' && $project->client_party_id !== $user->id)) {
+        if (! $user || ($user->role !== 'admin' && $project->client_party_ref !== $user->id)) {
             abort(403, 'Forbidden client project access');
         }
 

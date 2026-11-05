@@ -18,7 +18,7 @@ final class ProServicesT1Seeder extends Seeder
             $projects[] = [
                 'id' => $i,
                 'project_code' => sprintf('PRJ-T1-%04d', $i),
-                'client_party_id' => 100 + ($i % 10),
+                'client_party_ref' => 100 + ($i % 10),
                 'contract_reference' => sprintf('CTR-T1-%04d', $i),
                 'billing_type' => ($i % 2 === 0) ? 'fixed_fee' : 'time_and_materials',
                 'total_contract_idr' => 1000000000,
@@ -38,7 +38,7 @@ final class ProServicesT1Seeder extends Seeder
                 $members[] = [
                     'id' => $memberId++,
                     'project_id' => $p,
-                    'employee_id' => ($p * 10) + $m,
+                    'employee_ref' => ($p * 10) + $m,
                     'role_name' => 'Consultant Level '.$m,
                     'hourly_rate_idr' => 200000 * $m,
                     'active' => true,
@@ -68,7 +68,7 @@ final class ProServicesT1Seeder extends Seeder
                     'description' => 'T1 regular consulting work',
                     'hourly_rate_idr' => 300000,
                     'status' => 'approved',
-                    'approved_by_user_id' => 1,
+                    'approved_by_user_ref' => 1,
                     'approved_at' => $now,
                     'is_billed' => false,
                     'is_reversal' => false,

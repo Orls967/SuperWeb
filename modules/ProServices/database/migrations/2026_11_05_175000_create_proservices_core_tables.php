@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('psv_projects', function (Blueprint $table) {
             $table->id();
             $table->string('project_code')->unique();
-            $table->unsignedBigInteger('client_party_id');
+            $table->unsignedBigInteger('client_party_ref')->index();
             $table->string('contract_reference');
             $table->string('billing_type'); // 'time_and_materials' or 'fixed_fee'
             $table->unsignedBigInteger('total_contract_idr')->default(0);
@@ -25,13 +25,13 @@ return new class extends Migration
         Schema::create('psv_project_members', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained('psv_projects')->cascadeOnDelete();
-            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('employee_ref')->index();
             $table->string('role_name');
             $table->unsignedBigInteger('hourly_rate_idr')->default(0);
             $table->boolean('active')->default(true);
             $table->timestamps();
 
-            $table->unique(['project_id', 'employee_id']);
+            $table->unique(['project_id', 'employee_ref']);
         });
 
         Schema::create('psv_timesheets', function (Blueprint $table) {
@@ -44,11 +44,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('hourly_rate_idr')->default(0);
             $table->string('status')->default('submitted'); // 'submitted', 'approved', 'rejected'
-            $table->unsignedBigInteger('approved_by_user_id')->nullable();
+            $table->unsignedBigInteger('approved_by_user_ref')->nullable()->index();
             $table->timestamp('approved_at')->nullable();
             $table->boolean('is_billed')->default(false);
             $table->boolean('is_reversal')->default(false);
-            $table->unsignedBigInteger('reversed_timesheet_id')->nullable();
+            $table->foreignId('reversed_timesheet_id')->nullable()->constrained('psv_timesheets')->nullOnDelete();
             $table->timestamps();
         });
 
@@ -56,7 +56,7 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_code')->unique();
             $table->foreignId('project_id')->constrained('psv_projects')->cascadeOnDelete();
-            $table->unsignedBigInteger('client_party_id');
+            $table->unsignedBigInteger('client_party_ref')->index();
             $table->unsignedBigInteger('subtotal_idr');
             $table->string('idempotency_key')->unique();
             $table->string('status')->default('issued'); // 'issued', 'paid', 'cancelled'

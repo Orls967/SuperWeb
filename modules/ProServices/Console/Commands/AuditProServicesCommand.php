@@ -45,11 +45,11 @@ final class AuditProServicesCommand extends Command
         // 3. Verifikasi konsistensi invoice terhadap ledger piutang
         $invoices = ProServicesInvoice::all();
         foreach ($invoices as $inv) {
-            $accountCode = ProServicesAccounts::clientReceivable($inv->client_party_id);
+            $accountCode = ProServicesAccounts::clientReceivable($inv->client_party_ref);
             $account = LedgerAccount::query()->where('code', $accountCode)->first();
             $ledgerBalance = $account ? (int) $account->cached_balance : 0;
 
-            $totalInvoiced = (int) ProServicesInvoice::where('client_party_id', $inv->client_party_id)->sum('subtotal_idr');
+            $totalInvoiced = (int) ProServicesInvoice::where('client_party_ref', $inv->client_party_ref)->sum('subtotal_idr');
             if ($ledgerBalance !== $totalInvoiced) {
                 $this->error("Audit gagal: Saldo ledger piutang {$accountCode} ({$ledgerBalance}) tidak sama dengan total invoice ({$totalInvoiced}).");
                 $hasError = true;

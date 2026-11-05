@@ -14,7 +14,7 @@ final class ProServicesInvoice extends Model
     protected $fillable = [
         'invoice_code',
         'project_id',
-        'client_party_id',
+        'client_party_ref',
         'subtotal_idr',
         'idempotency_key',
         'status',
@@ -22,7 +22,7 @@ final class ProServicesInvoice extends Model
 
     protected $casts = [
         'project_id' => 'integer',
-        'client_party_id' => 'integer',
+        'client_party_ref' => 'integer',
         'subtotal_idr' => 'integer',
     ];
 

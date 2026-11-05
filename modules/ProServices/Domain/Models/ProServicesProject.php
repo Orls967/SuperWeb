@@ -13,7 +13,7 @@ final class ProServicesProject extends Model
 
     protected $fillable = [
         'project_code',
-        'client_party_id',
+        'client_party_ref',
         'contract_reference',
         'billing_type',
         'total_contract_idr',
@@ -22,7 +22,7 @@ final class ProServicesProject extends Model
     ];
 
     protected $casts = [
-        'client_party_id' => 'integer',
+        'client_party_ref' => 'integer',
         'total_contract_idr' => 'integer',
         'estimated_cost_idr' => 'integer',
     ];

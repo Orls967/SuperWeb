@@ -32,7 +32,7 @@ final class ProServicesProjectService
     {
         return ProServicesProject::create([
             'project_code' => $payload['project_code'],
-            'client_party_id' => (int) $payload['client_party_id'],
+            'client_party_ref' => (int) $payload['client_party_ref'],
             'contract_reference' => $payload['contract_reference'],
             'billing_type' => $payload['billing_type'],
             'total_contract_idr' => (int) ($payload['total_contract_idr'] ?? 0),
@@ -43,7 +43,7 @@ final class ProServicesProjectService
 
     public function addProjectMember(int $projectId, array $payload): ProServicesProjectMember
     {
-        $employeeId = (int) $payload['employee_id'];
+        $employeeId = (int) $payload['employee_ref'];
         $emp = $this->employeeDirectory->find($employeeId);
         if ($emp === null) {
             // fallback
@@ -51,7 +51,7 @@ final class ProServicesProjectService
 
         return ProServicesProjectMember::create([
             'project_id' => $projectId,
-            'employee_id' => $employeeId,
+            'employee_ref' => $employeeId,
             'role_name' => $payload['role_name'],
             'hourly_rate_idr' => (int) $payload['hourly_rate_idr'],
             'active' => $payload['active'] ?? true,
@@ -82,7 +82,7 @@ final class ProServicesProjectService
         $ts = ProServicesTimesheet::findOrFail($timesheetId);
         $ts->update([
             'status' => 'approved',
-            'approved_by_user_id' => $approverUserId,
+            'approved_by_user_ref' => $approverUserId,
             'approved_at' => $this->clock->now(),
         ]);
 
@@ -195,7 +195,7 @@ final class ProServicesProjectService
             $invoice = ProServicesInvoice::create([
                 'invoice_code' => 'INV-'.$project->id.'-'.time().'-'.random_int(100, 999),
                 'project_id' => $project->id,
-                'client_party_id' => $project->client_party_id,
+                'client_party_ref' => $project->client_party_ref,
                 'subtotal_idr' => $amountIdr,
                 'idempotency_key' => $idempotencyKey,
                 'status' => 'issued',
@@ -212,7 +212,7 @@ final class ProServicesProjectService
             $assetPortion = min($amountIdr, $availableAsset);
             $liabilityPortion = $amountIdr - $assetPortion;
 
-            $posting = Posting::lines()->debit(ProServicesAccounts::clientReceivable($project->client_party_id), $amountIdr);
+            $posting = Posting::lines()->debit(ProServicesAccounts::clientReceivable($project->client_party_ref), $amountIdr);
 
             if ($assetPortion > 0) {
                 $posting->credit(ProServicesAccounts::contractAsset($project->id), $assetPortion);

@@ -14,7 +14,7 @@ final class ProServicesProjectMember extends Model
 
     protected $fillable = [
         'project_id',
-        'employee_id',
+        'employee_ref',
         'role_name',
         'hourly_rate_idr',
         'active',
@@ -22,7 +22,7 @@ final class ProServicesProjectMember extends Model
 
     protected $casts = [
         'project_id' => 'integer',
-        'employee_id' => 'integer',
+        'employee_ref' => 'integer',
         'hourly_rate_idr' => 'integer',
         'active' => 'boolean',
     ];

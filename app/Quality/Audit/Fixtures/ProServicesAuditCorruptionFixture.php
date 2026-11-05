@@ -21,7 +21,7 @@ class ProServicesAuditCorruptionFixture implements CorruptionFixture
         if (! $project) {
             $projectId = DB::table('psv_projects')->insertGetId([
                 'project_code' => 'PRJ-CORRUPT-001',
-                'client_party_id' => 999,
+                'client_party_ref' => 999,
                 'contract_reference' => 'CTR-CORRUPT',
                 'billing_type' => 'fixed_fee',
                 'total_contract_idr' => 1000000,
@@ -35,7 +35,7 @@ class ProServicesAuditCorruptionFixture implements CorruptionFixture
 
         $memberId = DB::table('psv_project_members')->insertGetId([
             'project_id' => $project->id,
-            'employee_id' => 999,
+            'employee_ref' => 999,
             'role_name' => 'Ghost Consultant',
             'hourly_rate_idr' => 100000,
             'active' => true,

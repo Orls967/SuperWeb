@@ -51,7 +51,7 @@ final class ProServicesAcceptanceTest extends TestCase
         // Setup Project Fixed Fee
         $project = $service->createProject([
             'project_code' => 'PRJ-2026-001',
-            'client_party_id' => 101,
+            'client_party_ref' => 101,
             'contract_reference' => 'CTR-PSV-001',
             'billing_type' => 'fixed_fee',
             'total_contract_idr' => 1000000000,
@@ -60,7 +60,7 @@ final class ProServicesAcceptanceTest extends TestCase
 
         // Add Member via K12
         $member = $service->addProjectMember($project->id, [
-            'employee_id' => 1,
+            'employee_ref' => 1,
             'role_name' => 'Lead Consultant',
             'hourly_rate_idr' => 500000,
         ]);
@@ -98,7 +98,7 @@ final class ProServicesAcceptanceTest extends TestCase
         $service = app(ProServicesProjectService::class);
         $project = $service->createProject([
             'project_code' => 'PRJ-TM-001',
-            'client_party_id' => 102,
+            'client_party_ref' => 102,
             'contract_reference' => 'CTR-PSV-002',
             'billing_type' => 'time_and_materials',
             'total_contract_idr' => 500000000,
@@ -106,7 +106,7 @@ final class ProServicesAcceptanceTest extends TestCase
         ]);
 
         $member = $service->addProjectMember($project->id, [
-            'employee_id' => 2,
+            'employee_ref' => 2,
             'role_name' => 'Engineer',
             'hourly_rate_idr' => 250000,
         ]);
@@ -137,7 +137,7 @@ final class ProServicesAcceptanceTest extends TestCase
         $service = app(ProServicesProjectService::class);
         $project = $service->createProject([
             'project_code' => 'PRJ-IDOR-001',
-            'client_party_id' => $client1->id,
+            'client_party_ref' => $client1->id,
             'contract_reference' => 'CTR-PSV-IDOR',
             'billing_type' => 'fixed_fee',
             'total_contract_idr' => 100000000,
@@ -145,7 +145,7 @@ final class ProServicesAcceptanceTest extends TestCase
         ]);
 
         $member1 = $service->addProjectMember($project->id, [
-            'employee_id' => $user1->id,
+            'employee_ref' => $user1->id,
             'role_name' => 'Consultant A',
             'hourly_rate_idr' => 300000,
         ]);
