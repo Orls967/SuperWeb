@@ -17,7 +17,10 @@ final class ForestServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/Database/migrations');
+        $this->loadMigrationsFrom([
+            __DIR__.'/database/migrations',
+            __DIR__.'/Database/migrations',
+        ]);
         $this->loadViewsFrom(__DIR__.'/resources/views', 'forest');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
