@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Syariah\Console\Commands\AuditSyariahCommand;
+use Modules\Syariah\Console\Commands\IjarahBillingScheduledCommand;
+use Modules\Syariah\Console\Commands\SukukDistributeScheduledCommand;
+use Modules\Syariah\Console\Commands\ZakatHaulAssessScheduledCommand;
 use Modules\Syariah\Domain\Models\MurabahahContract;
 use Modules\Syariah\Http\Policies\MurabahahContractPolicy;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
@@ -31,6 +34,9 @@ class SyariahServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditSyariahCommand::class,
+                IjarahBillingScheduledCommand::class,
+                SukukDistributeScheduledCommand::class,
+                ZakatHaulAssessScheduledCommand::class,
             ]);
         }
     }

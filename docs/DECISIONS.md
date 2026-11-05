@@ -2511,3 +2511,38 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
 2. **D20-2 Deteksi Bentrok Jadwal KRS (IntervalIndex)**: Algoritma `Modules\Shared\Domain\Numerics\IntervalIndex` digunakan untuk sweep-line interval clash detection half-open $[start, end)$ pada pemilihan jadwal mahasiswa, ruangan kelas, dan dosen pengajar.
 3. **D20-3 Transkrip Nilai Append-Only & Hash-Chain**: Transkrip nilai mahasiswa bersifat immutable setelah dikunci, dan diikat secara kriptografis menggunakan `Modules\Shared\Domain\Numerics\CanonicalHashChain` dari genesis `GENESIS_PREV_HASH`.
 4. **D20-4 Penagihan UKT & Alokasi Hamilton**: Penagihan UKT membatasi beasiswa $\le$ tagihan kotor dan mencatat double-entry ledger (`edu:tuition_receivable:IDR` dan `edu:tuition_revenue:IDR`). Skema cicilan UKT memanfaatkan `Modules\Shared\Domain\Math\HamiltonApportionment` untuk membagi nilai tagihan secara presisi tanpa sisa pembulatan. Audit dua sumber diperluas di `edu:audit`.
+
+
+<a id="g7-p2-syariah-lanjutan-fase-162"></a>
+<a id="g7-d5"></a>
+<a id="g7-d6"></a>
+<a id="g7-d7"></a>
+<a id="g7-d8"></a>
+<a id="d162-1"></a>
+<a id="d162-2"></a>
+<a id="d162-3"></a>
+<a id="d162-4"></a>
+<a id="d162-5"></a>
+<a id="d162-6"></a>
+<a id="d162-7"></a>
+## 2026-11-06: [G7-P2.1] Modul Syariah Lanjutan — Sukuk Ijarah, IMBT, Wealth Syariah, Zakat Mal & Wakaf Abadi (Fase 162, D162-1..D162-7)
+- **Anchor:** `2026-11-06-g7-p2-syariah-lanjutan-fase-162` / `g7-d5` / `g7-d6` / `g7-d7` / `g7-d8` / `d162-1` / `d162-2` / `d162-3` / `d162-4` / `d162-5` / `d162-6` / `d162-7`
+- **Konteks:**
+  - Melanjutkan pembangunan sistem perbankan dan pasar keuangan syariah enterprise (Lini 19, Fase 162) di atas arsitektur ledger double-entry. Seluruh produk berbasis aset riil, bebas riba/bunga, dan mematuhi fatwa DSN-MUI dan regulasi OJK syariah (simulasi S1).
+- **Keputusan:**
+  1. **G7-D5 & G7-D6 (Tata Kelola Bebas Bunga & Parameter Berversi)**: Larangan mutlak istilah, akun, atau perhitungan bunga. Denda keterlambatan disalurkan ke dana kebajikan (*ta'zir*). Seluruh parameter syariah (harga emas, nisab, tarif ujrah, rasio screening DAFT, bobot asnaf) disimpan di tabel berversi `syb_parameters` dengan label simulasi S1.
+  2. **G7-D7 & G7-D8 (DPS Four-Eyes & Subjek Pihak)**: Setiap produk/akad wajib melewati reviu four-eyes Dewan Pengawas Syariah (`shariah_board`). Muzakki, mustahik, wakif, nazhir, dan investor terdaftar sebagai Party unik tanpa tabel pihak ganda.
+  3. **D162-1 (Sukuk Ijarah & SPV Token RWA G7-K5)**: Fasilitas sukuk terikat aset dasar riil melalui SPV simulasi, diterbitkan sebagai token RWA via kontrak `Modules\Rwa\Contracts\SukukTokenRegistry`. Distribusi kupon/ujrah periodik ke seluruh pemegang token dihitung presisi menggunakan `LargestRemainder`. State machine 8 status: `structuring` -> `dps_review` -> `approved` -> `issued` -> `distributing` -> `matured` -> `redeemed` | `defaulted`.
+  4. **D162-2 (Ijarah & IMBT Algoritma B1)**: Sewa aset dengan janji pengalihan kepemilikan (IMBT). Jadwal sewa ujrah dan amortisasi penyusutan garis lurus dihitung via `Modules\Shared\Domain\Algorithms\Islamic\IjarahSchedule`. Eksekusi opsi beli mengalihkan kepemilikan dan menyisakan nilai buku nol.
+  5. **D162-3 (Wealth Syariah, Screening B4 & Purifikasi Dividen)**: Katalog produk investasi syariah menerapkan screening DAFT ketat (utang berbasis bunga <= 4500 bps, pendapatan non-halal <= 1000 bps). Robo-advisor mode syariah menolak mengalokasikan instrumen yang tidak lolos screening. Dividen non-halal dipurifikasi otomatis ke dana kebajikan `syb:charity_fund:IDR`.
+  6. **D162-4 (Zakat Engine B2, B3 & Sertifikat Gapless)**: Penilaian zakat mal tahunan per haul hijriah (354 hari) memotong 2,5% dari basis harta kena zakat jika mencapai nisab 85g emas. Penyaluran ke 8 asnaf dihitung proporsional via `AsnafDistribution` (amil <= 1250 bps). Sertifikat zakat gapless diterbitkan melalui `DocumentNumberingInterface`.
+  7. **D162-5 (Wakaf Uang & Aset)**: Penerimaan wakaf uang dikelola mudharabah dengan jaminan pokok abadi tidak boleh berkurang. Penyaluran manfaat ke mauquf alaih tercatat transparan disertai sertifikat wakif gapless.
+  8. **D162-6 (Posting Ledger Double-Entry Presisi Integer Rupiah)**:
+     - Ujrah ijarah: Debit `syb:ijarah_receivable:{party}:IDR`, Kredit `syb:ijarah_income:IDR`.
+     - Penyusutan aset: Debit `syb:ijarah_depreciation_expense:IDR`, Kredit `syb:ijarah_accum_depreciation:IDR`.
+     - Distribusi sukuk: Debit `syb:sukuk_spv_cash:IDR`, Kredit `wallet:user:{holder}:IDR`.
+     - Pungutan zakat: Debit `wallet:user:{muzakki}:IDR`, Kredit `syb:zakat_fund:IDR`.
+     - Penyaluran zakat: Debit `syb:zakat_fund:IDR`, Kredit `wallet:user:{mustahik}:IDR`.
+     - Purifikasi dividen: Debit `wallet:user:{investor}:IDR`, Kredit `syb:charity_fund:IDR`.
+     - Wakaf uang diterima: Debit `wallet:user:{wakif}:IDR`, Kredit `syb:waqf_principal:IDR`.
+  9. **D162-7 (Audit Dua-Sumber & Sabotase)**: Command `syb:audit` memverifikasi keselarasan distribusi sukuk vs jadwal, zakat unik per haul, keutuhan pokok wakaf, screening wajib sebelum transaksi beli, dan saldo dana amanah tidak menjadi pendapatan.

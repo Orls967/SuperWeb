@@ -3691,6 +3691,49 @@ return [
             }
         },
     ],
+    // Syariah Lanjutan Fase 162 — Sukuk
+    'syariah.sukuk.index' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.sukuk.export' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.sukuk.propose' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.sukuk.show' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.sukuk.issue' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.sukuk.distribute-coupon' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.sukuk.redeem' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.sukuk.dps-approve' => ['roles' => ['admin', 'dps_reviewer', 'shariah_board'], 'params' => fn () => ['id' => 1]],
+
+    // Syariah Lanjutan Fase 162 — Ijarah
+    'syariah.ijarah.index' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.ijarah.export' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.ijarah.propose' => ['roles' => ['admin', 'syariah_officer']],
+    'syariah.ijarah.show' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.ijarah.activate' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.ijarah.exercise-imbt' => ['roles' => ['admin', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+    'syariah.ijarah.dps-approve' => ['roles' => ['admin', 'dps_reviewer', 'shariah_board'], 'params' => fn () => ['id' => 1]],
+    'syariah.ijarah.pay-period' => ['roles' => ['admin', 'customer', 'nasabah', 'syariah_officer'], 'params' => fn () => ['id' => 1]],
+
+    // Syariah Lanjutan Fase 162 — Wealth
+    'syariah.wealth.index' => ['roles' => ['admin', 'wealth_advisor']],
+    'syariah.wealth.export' => ['roles' => ['admin', 'wealth_advisor']],
+    'syariah.wealth.instruments.store' => ['roles' => ['admin', 'wealth_advisor']],
+    'syariah.wealth.portfolios.store' => ['roles' => ['admin', 'customer', 'wealth_advisor']],
+    'syariah.wealth.portfolios.show' => ['roles' => ['admin', 'customer', 'wealth_advisor'], 'params' => fn () => ['id' => 1]],
+    'syariah.wealth.orders.store' => ['roles' => ['admin', 'customer', 'wealth_advisor']],
+    'syariah.wealth.purify-dividend' => ['roles' => ['admin', 'customer', 'wealth_advisor']],
+
+    // Syariah Lanjutan Fase 162 — Zakat
+    'syariah.zakat.index' => ['roles' => ['admin', 'amil']],
+    'syariah.zakat.export' => ['roles' => ['admin', 'amil']],
+    'syariah.zakat.assess' => ['roles' => ['admin', 'amil']],
+    'syariah.zakat.distribute' => ['roles' => ['admin', 'amil']],
+    'syariah.zakat.calculate' => ['roles' => ['admin', 'amil', 'customer', 'nasabah']],
+    'syariah.zakat.certificates.show' => ['roles' => ['admin', 'amil', 'customer', 'nasabah'], 'params' => fn () => ['id' => 1]],
+
+    // Syariah Lanjutan Fase 162 — Waqf
+    'syariah.waqf.index' => ['roles' => ['admin', 'nazhir']],
+    'syariah.waqf.receive-money' => ['roles' => ['admin', 'nazhir']],
+    'syariah.waqf.withdraw-principal' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
+    'syariah.waqf.distribute-benefit' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
+    'syariah.waqf.certificates.show' => ['roles' => ['admin', 'nazhir'], 'params' => fn () => ['id' => 1]],
     'forest.plots.index' => ['roles' => ['admin', 'forester', 'superadmin']],
     'forest.plots.show' => ['roles' => ['admin', 'forester', 'superadmin'], 'params' => fn () => ['id' => 1]],
     'forest.permits.index' => ['roles' => ['admin', 'forester', 'superadmin']],

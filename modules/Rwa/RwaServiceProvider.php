@@ -8,10 +8,12 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
 use Modules\Rwa\Application\Services\RwaCatBondTokenRegistryService;
+use Modules\Rwa\Application\Services\RwaSukukTokenRegistryService;
 use Modules\Rwa\Application\Services\RwaTokenService;
 use Modules\Rwa\Application\Services\RwaVotingWeightReaderService;
 use Modules\Rwa\Console\Commands\AuditRwaCommand;
 use Modules\Rwa\Contracts\CatBondTokenRegistry;
+use Modules\Rwa\Contracts\SukukTokenRegistry;
 use Modules\Rwa\Contracts\VotingWeightReader;
 
 class RwaServiceProvider extends ServiceProvider
@@ -20,6 +22,7 @@ class RwaServiceProvider extends ServiceProvider
     {
         $this->app->bind(VotingWeightReader::class, RwaVotingWeightReaderService::class);
         $this->app->bind(CatBondTokenRegistry::class, RwaCatBondTokenRegistryService::class);
+        $this->app->bind(SukukTokenRegistry::class, RwaSukukTokenRegistryService::class);
 
         $this->app->singleton(RwaTokenService::class, function ($app) {
             return new RwaTokenService(
