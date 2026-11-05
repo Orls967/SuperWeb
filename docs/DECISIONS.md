@@ -2546,3 +2546,20 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
      - Purifikasi dividen: Debit `wallet:user:{investor}:IDR`, Kredit `syb:charity_fund:IDR`.
      - Wakaf uang diterima: Debit `wallet:user:{wakif}:IDR`, Kredit `syb:waqf_principal:IDR`.
   9. **D162-7 (Audit Dua-Sumber & Sabotase)**: Command `syb:audit` memverifikasi keselarasan distribusi sukuk vs jadwal, zakat unik per haul, keutuhan pokok wakaf, screening wajib sebelum transaksi beli, dan saldo dana amanah tidak menjadi pendapatan.
+
+<a id="g7-p2-syariah-lanjutan-fase-163"></a>
+<a id="g7-d9"></a>
+<a id="g7-d10"></a>
+<a id="g7-d11"></a>
+<a id="g7-d12"></a>
+<a id="g7-d13"></a>
+## 2026-11-06: [G7-P2.2] Modul Syariah Lanjutan — Microfinance, BMT & Pemberdayaan Ekonomi Syariah (Fase 163, G7-D9..G7-D13)
+- **Anchor:** `2026-11-06-g7-p2-syariah-lanjutan-fase-163` / `g7-d9` / `g7-d10` / `g7-d11` / `g7-d12` / `g7-d13`
+- **Konteks:**
+  - Melanjutkan Lini 19 Syariah Lanjutan (Fase 163) untuk mendigitalkan pembiayaan mikro syariah, Baitul Maal wat Tamwil (BMT), koperasi syariah, serta integrasi gig worker (G7-K6) dan pertanian salam berbasis cuaca/NDVI (G7-K1/G7-K2).
+- **Keputusan:**
+  1. **G7-D9 (Mudharabah Bertingkat & Moral Hazard Guard)**: Pembiayaan mikro mudharabah/musyarakah menerapkan pembagian hasil berkala sesuai nisbah riil. Kerugian non-kelalaian (force majeure / risiko bisnis murni) ditanggung shohibul maal, sedangkan kerugian akibat kelalaian atau pelanggaran covenant ditanggung oleh mudharib.
+  2. **G7-D10 (BMT Wadiah Yad Dhamanah & Larangan Janji Bonus)**: Simpanan wadiah yad dhamanah dijamin penuh keamanannya dan dapat dimanfaatkan BMT. Pemberian bonus/athaya hanya boleh bersifat sukarela tanpa ada janji persentase di awal akad.
+  3. **G7-D11 (Kontrak G7-K6 GigPayoutHistory & Algoritma B6 GigCreditLimit)**: Penilaian kelayakan pembiayaan mikro pekerja lepas/gig dihitung berbasis riwayat pendapatan 6 bulan, volatilitas pendapatan (koefisien variasi), dan skor amanah penyelesaian tugas.
+  4. **G7-D12 (Integrasi Salam & Muzaraah Pertanian Terikat G7-K1 & G7-K2)**: Pembiayaan tani salam/muzaraah divalidasi dengan pembacaan indeks vegetasi satelit dan curah hujan (`NdviIndexReader`). Mitigasi gagal panen dilakukan otomatis dengan pemotongan sisa pembiayaan via santunan klaim asuransi tani (`FarmerLoanOffset`).
+  5. **G7-D13 (Waterfall Repayment B5 & Alokasi Ta'zir Kebajikan)**: Angsuran pembiayaan mikro dialokasikan berjenjang melalui algoritma `RepaymentWaterfall` (Ujrah/Bagi Hasil -> Pokok -> Ta'zir). Denda keterlambatan (ta'zir) wajib dialokasikan ke dana kebajikan qardh al-hasan `syb:tazir_social_fund:IDR`, dilarang keras diakui sebagai pendapatan operasional bank/BMT.
