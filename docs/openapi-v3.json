@@ -43356,9 +43356,10 @@
                     "Insurance"
                 ],
                 "summary": "Register (Insurance)",
-                "description": "Operational endpoint for Insurance module. Protected by role matrix: [admin, insurance_admin, superadmin].",
+                "description": "Operational endpoint for Insurance module. Protected by role matrix: [admin, broker, insurance_admin, superadmin].",
                 "x-allowed-roles": [
                     "admin",
+                    "broker",
                     "insurance_admin",
                     "superadmin"
                 ],
@@ -43557,9 +43558,10 @@
                     "Insurance"
                 ],
                 "summary": "Settle (Insurance)",
-                "description": "Operational endpoint for Insurance module. Protected by role matrix: [admin, insurance_admin, superadmin].",
+                "description": "Operational endpoint for Insurance module. Protected by role matrix: [admin, broker, insurance_admin, superadmin].",
                 "x-allowed-roles": [
                     "admin",
+                    "broker",
                     "insurance_admin",
                     "superadmin"
                 ],
