@@ -3,15 +3,19 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Insurance\Http\Controllers\BrokerMarketplaceController;
 use Modules\Insurance\Http\Controllers\CapitalController;
 use Modules\Insurance\Http\Controllers\CatBondController;
 use Modules\Insurance\Http\Controllers\CatController;
+use Modules\Insurance\Http\Controllers\CustomerHubController;
+use Modules\Insurance\Http\Controllers\EmbeddedInsuranceController;
 use Modules\Insurance\Http\Controllers\FullInsuranceController;
 use Modules\Insurance\Http\Controllers\InsuranceClaimsWorkflowController;
 use Modules\Insurance\Http\Controllers\InsuranceController;
 use Modules\Insurance\Http\Controllers\InsurancePoliciesController;
 use Modules\Insurance\Http\Controllers\InvestorCatBondController;
 use Modules\Insurance\Http\Controllers\ReinsuranceController;
+use Modules\Insurance\Http\Controllers\SiuInvestigationController;
 
 Route::middleware(['web', 'auth'])->prefix('insurance')->group(function () {
     Route::middleware('role:admin,insurance_admin,underwriter,customer')->group(function () {
@@ -88,6 +92,33 @@ Route::middleware(['web', 'auth'])->prefix('insurance')->group(function () {
         Route::post('/', [CatBondController::class, 'store'])->name('store');
         Route::post('/{id}/coupon', [CatBondController::class, 'distributeCoupon'])->name('coupon');
         Route::post('/{id}/trigger', [CatBondController::class, 'trigger'])->name('trigger');
+    });
+
+    // Embedded Insurance (Fase 158)
+    Route::prefix('embedded')->name('insurance.embedded.')->middleware('role:admin,superadmin,underwriter,insurance_admin,broker')->group(function () {
+        Route::get('/matrix', [EmbeddedInsuranceController::class, 'matrix'])->name('matrix');
+        Route::get('/policies', [EmbeddedInsuranceController::class, 'policies'])->name('policies');
+        Route::post('/issue', [EmbeddedInsuranceController::class, 'issue'])->name('issue');
+    });
+
+    // Broker Marketplace (Fase 158)
+    Route::prefix('brokers')->name('insurance.brokers.')->middleware('role:admin,superadmin,insurance_admin,broker')->group(function () {
+        Route::get('/', [BrokerMarketplaceController::class, 'index'])->name('index');
+        Route::post('/', [BrokerMarketplaceController::class, 'register'])->name('register');
+        Route::get('/commissions', [BrokerMarketplaceController::class, 'commissions'])->name('commissions');
+        Route::post('/commissions/{id}/settle', [BrokerMarketplaceController::class, 'settle'])->name('settle');
+    });
+
+    // Customer Hub (Fase 158)
+    Route::prefix('hub')->name('insurance.hub.')->middleware('role:admin,superadmin,customer,underwriter,broker')->group(function () {
+        Route::get('/', [CustomerHubController::class, 'dashboard'])->name('dashboard');
+    });
+
+    // SIU Investigation (Fase 158)
+    Route::prefix('siu')->name('insurance.siu.')->middleware('role:admin,superadmin,claims_adjuster,underwriter')->group(function () {
+        Route::get('/', [SiuInvestigationController::class, 'index'])->name('index');
+        Route::get('/{id}', [SiuInvestigationController::class, 'show'])->name('show');
+        Route::post('/{id}/decide', [SiuInvestigationController::class, 'decide'])->name('decide');
     });
 });
 

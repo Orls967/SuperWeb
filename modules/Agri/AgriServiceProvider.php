@@ -6,15 +6,18 @@ namespace Modules\Agri;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Agri\Application\Services\AgriNdviIndexReaderService;
 use Modules\Agri\Application\Services\HarvestLotSourceService;
 use Modules\Agri\Console\Commands\AuditAgriCommand;
 use Modules\Agri\Contracts\HarvestLotSource;
+use Modules\Agri\Contracts\NdviIndexReader;
 
 class AgriServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->bind(HarvestLotSource::class, HarvestLotSourceService::class);
+        $this->app->bind(NdviIndexReader::class, AgriNdviIndexReaderService::class);
 
         $this->commands([
             AuditAgriCommand::class,
