@@ -36,4 +36,3 @@ final class AsnafDistributionCertificateVerifier
         return true;
     }
 }
-

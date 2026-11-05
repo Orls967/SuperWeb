@@ -38,4 +38,3 @@ final class SybWealthOrder extends Model
         return $this->belongsTo(SybWealthInstrument::class, 'instrument_id');
     }
 }
-

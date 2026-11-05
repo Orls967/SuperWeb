@@ -72,4 +72,3 @@ final class SybIjarahFacility extends Model
         return $this->hasMany(SybIjarahFacilitySchedule::class, 'facility_id');
     }
 }
-

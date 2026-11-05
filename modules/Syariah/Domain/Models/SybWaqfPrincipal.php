@@ -46,4 +46,3 @@ final class SybWaqfPrincipal extends Model
         return $this->hasMany(SybWaqfDistribution::class, 'waqf_principal_id');
     }
 }
-

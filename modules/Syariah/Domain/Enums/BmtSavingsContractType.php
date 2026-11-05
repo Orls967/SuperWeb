@@ -19,4 +19,3 @@ enum BmtSavingsContractType: string
         };
     }
 }
-

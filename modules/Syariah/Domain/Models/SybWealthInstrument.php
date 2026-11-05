@@ -45,4 +45,3 @@ final class SybWealthInstrument extends Model
         return $this->hasMany(SybWealthOrder::class, 'instrument_id');
     }
 }
-

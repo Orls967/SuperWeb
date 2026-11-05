@@ -29,4 +29,3 @@ interface SukukTokenRegistry
      */
     public function redeem(string $assetCode, CarbonImmutable $at, string $idempotencyKey): void;
 }
-

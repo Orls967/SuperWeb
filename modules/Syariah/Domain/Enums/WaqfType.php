@@ -9,4 +9,3 @@ enum WaqfType: string
     case MONEY = 'MONEY';
     case ASSET = 'ASSET';
 }
-

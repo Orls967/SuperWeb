@@ -28,4 +28,3 @@ interface GigPayoutHistory
      */
     public function getAmanahScore(string $workerPartyId): int;
 }
-

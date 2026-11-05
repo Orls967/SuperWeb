@@ -20,4 +20,3 @@ final readonly class GigCreditLimitResult
         public array $certificate
     ) {}
 }
-

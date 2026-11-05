@@ -29,4 +29,3 @@ class SybSocialImpactMetric extends Model
         'micro_npf_ratio_bps' => 'integer',
     ];
 }
-

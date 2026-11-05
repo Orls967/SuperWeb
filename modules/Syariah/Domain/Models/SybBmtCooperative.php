@@ -40,4 +40,3 @@ class SybBmtCooperative extends Model
         return $this->hasMany(SybGroupFinancing::class, 'cooperative_code', 'cooperative_code');
     }
 }
-
