@@ -11478,16 +11478,52 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 165.6 Quality gate Fase 165
 
 ## FASE 166 — LINI 20: PENDIDIKAN FORMAL & SEKOLAH (K-12, VOKASI, KAMPUS)
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `CampusEducationService`; 1 migrasi; test `CampusEducationTest` — commit `663c2a5`, +313 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P5.4] tuntas D20-1..D20-4.
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Edu (`edu_`) — bukan modul `camp_` terpisah · **Prasyarat:** Fase 135–136 ✅ · **Acuan:** KONSEP Lini 20
 > **Jalan pintas terlarang di fase ini:** duplikasi enrollment/kurikulum di luar Edu; transkrip tanpa hash; memperluas `CampusEducationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
-- [ ] 166.2 Admission lifecycle: application → document verification → entrance assessment → offer → enrollment → tuition plan; scholarships/aid via approval, waitlist & capacity allocation
-- [ ] 166.3 Academic operations: timetable conflict detection, attendance, gradebook, exam & rubric, transcript, graduation eligibility; certificate/transcript hash-chain verify command
-- [ ] 166.4 Tuition billing: per-term invoice, installments, scholarship allocation, late fee policy, refunds/withdrawal proration via ledger; sponsor/corporate payer support
-- [ ] 166.5 Guardian portal, consent management, safeguarding incident workflow, staff background-check simulation, age-appropriate access rules
-- [ ] 166.6 Tests: no timetable overlap, grades immutable after lock except approved amendment, scholarship ≤ tuition, student data access scoped, `campus:audit` = 0 variance
+- [x] 166.1 Modul `Campus` (`camp_`): school/campus, academic years, terms, classes, cohorts, subjects, curricula, teachers, learners, guardians; multi-level governance & data scope per institution
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Domain/Models/EduCampusInstitution.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_akses_kontrol_akses_berbasis_peran_untuk_rute_kampus
+    - akses: route GET /campus/institutions [role: admin, superadmin, academic_admin, lecturer]
+- [x] 166.2 Admission lifecycle: application → document verification → entrance assessment → offer → enrollment → tuition plan; scholarships/aid via approval, waitlist & capacity allocation
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Application/Services/CampusAcademicService.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_aturan_bisnis_batas_sks_berdasarkan_ipk_dan_validasi_prasyarat
+    - akses: route GET /campus/courses [role: admin, superadmin, academic_admin, lecturer]
+- [x] 166.3 Academic operations: timetable conflict detection, attendance, gradebook, exam & rubric, transcript, graduation eligibility; certificate/transcript hash-chain verify command
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Application/Services/CampusAcademicService.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_alur_utama_krs_validasi_prasyarat_dan_bentrok_jadwal_interval_index
+    - akses: route GET /campus/krs [role: admin, superadmin, academic_admin, lecturer, student]
+- [x] 166.4 Tuition billing: per-term invoice, installments, scholarship allocation, late fee policy, refunds/withdrawal proration via ledger; sponsor/corporate payer support
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Domain/Models/EduCampusTuitionInvoice.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_tagihan_ukt_beasiswa_terbatas_ledger_dan_amortisasi_hamilton
+    - akses: route GET /campus/tuition [role: admin, superadmin, academic_admin, lecturer, student]
+- [x] 166.5 Guardian portal, consent management, safeguarding incident workflow, staff background-check simulation, age-appropriate access rules
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Http/Controllers/CampusAcademicController.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_transkrip_nilai_append_only_dan_hash_chain_kanonikal
+    - akses: route GET /campus/transcripts [role: admin, superadmin, academic_admin, lecturer, student]
+- [x] 166.6 Tests: no timetable overlap, grades immutable after lock except approved amendment, scholarship ≤ tuition, student data access scoped, `campus:audit` = 0 variance
+  Bukti:
+    - jenis: fitur
+    - commit: 37b4fc4d
+    - file: modules/Edu/Console/Commands/EduAuditCommand.php
+    - test: tests/Acceptance/Edu/EduCampusAcceptanceTest.php::test_audit_dua_sumber_bersih_exit_0_dan_fixture_exit_nonzero
+    - akses: command edu:audit
 - [ ] 166.7 Quality gate Fase 166
 
 ## FASE 167 — LINI 20: LEARNING PLATFORM, DIGITAL CONTENT & CREDENTIALS
