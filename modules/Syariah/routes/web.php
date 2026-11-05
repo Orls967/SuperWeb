@@ -148,3 +148,17 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer'])->prefix('syb/so
     Route::post('/graduations', [SocialImpactController::class, 'storeGraduation'])->name('graduations.store');
     Route::post('/graduations/{id}/verify', [SocialImpactController::class, 'verifyGraduation'])->name('graduations.verify');
 });
+
+// 10. Perdagangan Internasional & SCF Syariah (Fase 164)
+Route::middleware(['web', 'auth', 'role:admin,syariah_officer,trade_officer'])->prefix('syb/trade')->name('syariah.trade.')->group(function () {
+    Route::get('/', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'index'])->name('index');
+    Route::get('/lc', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'lcIndex'])->name('lc.index');
+    Route::get('/lc/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'lcShow'])->name('lc.show');
+    Route::get('/salam', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'salamIndex'])->name('salam.index');
+    Route::get('/salam/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'salamShow'])->name('salam.show');
+    Route::get('/scf', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'scfIndex'])->name('scf.index');
+    Route::get('/scf/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'scfShow'])->name('scf.show');
+    Route::get('/tawarruq', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'tawarruqIndex'])->name('tawarruq.index');
+    Route::get('/custody', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'custodyIndex'])->name('custody.index');
+    Route::get('/calculator', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'calculator'])->name('calculator');
+});
