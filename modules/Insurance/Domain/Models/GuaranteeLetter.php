@@ -48,4 +48,3 @@ class GuaranteeLetter extends Model
         return $this->hasMany(HealthClaim::class, 'guarantee_letter_id');
     }
 }
-

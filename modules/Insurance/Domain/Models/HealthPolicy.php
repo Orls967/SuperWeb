@@ -50,4 +50,3 @@ class HealthPolicy extends Model
         return $this->hasMany(HealthClaim::class, 'health_policy_id');
     }
 }
-

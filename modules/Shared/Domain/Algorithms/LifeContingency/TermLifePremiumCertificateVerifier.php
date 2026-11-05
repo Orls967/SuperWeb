@@ -44,4 +44,3 @@ final class TermLifePremiumCertificateVerifier
         return true;
     }
 }
-

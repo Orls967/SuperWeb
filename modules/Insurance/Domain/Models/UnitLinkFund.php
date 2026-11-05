@@ -47,4 +47,3 @@ class UnitLinkFund extends Model
         return $this->hasMany(UnitLinkHolding::class, 'fund_id');
     }
 }
-

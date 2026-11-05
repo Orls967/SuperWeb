@@ -54,4 +54,3 @@ class LifePolicy extends Model
         return $this->hasMany(UnitLinkHolding::class, 'life_policy_id');
     }
 }
-

@@ -51,4 +51,3 @@ class HealthClaim extends Model
         return $this->belongsTo(GuaranteeLetter::class, 'guarantee_letter_id');
     }
 }
-

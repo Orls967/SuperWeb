@@ -163,4 +163,3 @@ final class TermLifePremium
         return min(1.0, 0.18000 + (($age - 90) * 0.03500));
     }
 }
-

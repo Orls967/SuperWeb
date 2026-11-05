@@ -82,4 +82,3 @@ final class WellnessVaultPrivacyService
         return (array) json_decode($plaintext, true, 512, JSON_THROW_ON_ERROR);
     }
 }
-

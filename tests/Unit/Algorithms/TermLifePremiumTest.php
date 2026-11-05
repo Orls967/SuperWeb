@@ -46,4 +46,3 @@ test('sertifikat term life yang dimanipulasi melempar exception', function (): v
     expect(fn () => $verifier->verify($corrupted))
         ->toThrow(InvalidArgumentException::class, 'Sertifikat hash kalkulasi premi Term Life tidak valid');
 });
-

@@ -149,4 +149,3 @@ final class LifeHealthReportService
         ];
     }
 }
-

@@ -51,4 +51,3 @@ final class WellnessController extends Controller
         ], 201);
     }
 }
-

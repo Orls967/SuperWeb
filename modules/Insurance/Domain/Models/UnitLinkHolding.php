@@ -44,4 +44,3 @@ class UnitLinkHolding extends Model
         return $this->belongsTo(UnitLinkFund::class, 'fund_id');
     }
 }
-

@@ -36,4 +36,3 @@ class LifeBeneficiary extends Model
         return $this->belongsTo(LifePolicy::class, 'life_policy_id');
     }
 }
-

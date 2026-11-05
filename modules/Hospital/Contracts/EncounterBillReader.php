@@ -26,4 +26,3 @@ interface EncounterBillReader
      */
     public function readEncounterBill(string $encounterRef): array;
 }
-

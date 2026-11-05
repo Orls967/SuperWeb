@@ -56,4 +56,3 @@ final class HospitalEncounterBillReaderService implements EncounterBillReader
         ];
     }
 }
-
