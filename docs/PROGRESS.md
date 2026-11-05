@@ -11354,16 +11354,51 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 157.7 Quality gate Fase 157
 
 ## FASE 158 — LINI 18: INSURANCE EMBEDDED 30 LINI & BROKER MARKETPLACE
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `EmbeddedInsuranceService`; 1 migrasi; test `EmbeddedInsuranceTest` — commit `0ba3cab`, +319 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status 2026-11-06:** 🔵 SELESAI DIKERJAKAN (L.0–L.6) — menunggu verifikasi silang (Protokol P7).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
 > **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `EmbeddedInsuranceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)
-- [ ] 158.2 **Parametric trigger otomatis** (memperluas Fase 72.2): cuaca index (curah hujan < ambang → petani), batal event (Fase 113.3), bencana per region (Fase 157.4) → payout tanpa survey → reserve terukur
-- [ ] 158.3 **Broker & agent marketplace**: broker (Party role, Fase 45 extended) menawarkan produk multi-perusahaan → komisi → penilaian kinerja → settlement via escrow
-- [ ] 158.4 **Customer insurance hub**: satu papan polis aktif per pengguna/entitas (dari 30 lini) → klaim terpusat → riwayat → bundling discount
-- [ ] 158.5 **Fraud detection insurance** (memperluas Fase 72.4): pola klaim lintas polis, telematik kontradiktif, penyakit berulang → skor → SIU investigation workflow → denial + blacklist industry simulasi
-- [ ] 158.6 Tests: (a) embedded offer muncul di konteks benar (b) parametric payout = parameter terukur (c) komisi broker = rate × premium (d) fraud score tinggi → hold (e) `ins:audit` lintas lini = 0 selisih
+- [x] 158.1 **Embedded insurance matrix**: satu katalog proteksi tertanam di seluruh lini — kredit HODL-to-Drive (Fase 5C), booking hotel (cancellation), tiket venue, pengiriman (cargo Fase 50.6), sewa mall, kontrak EPC (performance bond bridge), tambang (liability), panen tani (weather index Fase 156.2)
+  Bukti:
+    - jenis: fitur
+    - commit: 849a4cdb
+    - file: modules/Insurance/Application/Actions/IssueEmbeddedPolicyAction.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_2_alur_utama_embedded_policy_issuance_broker_commission_dan_ledger
+    - akses: route GET /insurance/embedded/matrix [role: underwriter]
+- [x] 158.2 **Parametric trigger otomatis** (memperluas Fase 72.2): cuaca index (curah hujan < ambang → petani), batal event (Fase 113.3), bencana per region (Fase 157.4) → payout tanpa survey → reserve terukur
+  Bukti:
+    - jenis: fitur
+    - commit: 849a4cdb
+    - file: modules/Insurance/Application/Actions/ExecuteParametricTriggerAction.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_3_parametric_trigger_otomatis_vektor_ndvi_agri_dan_payout
+    - akses: command ins:embedded-audit
+- [x] 158.3 **Broker & agent marketplace**: broker (Party role, Fase 45 extended) menawarkan produk multi-perusahaan → komisi → penilaian kinerja → settlement via escrow
+  Bukti:
+    - jenis: fitur
+    - commit: 849a4cdb
+    - file: modules/Insurance/Application/Actions/RegisterBrokerAction.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_2_alur_utama_embedded_policy_issuance_broker_commission_dan_ledger
+    - akses: route GET /insurance/brokers [role: broker]
+- [x] 158.4 **Customer insurance hub**: satu papan polis aktif per pengguna/entitas (dari 30 lini) → klaim terpusat → riwayat → bundling discount
+  Bukti:
+    - jenis: fitur
+    - commit: 849a4cdb
+    - file: modules/Insurance/Application/Services/CustomerHubService.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_1_akses_kontrol_rute_embedded_broker_hub_dan_siu
+    - akses: route GET /insurance/hub [role: customer]
+- [x] 158.5 **Fraud detection insurance** (memperluas Fase 72.4): pola klaim lintas polis, telematik kontradiktif, penyakit berulang → skor → SIU investigation workflow → denial + blacklist industry simulasi
+  Bukti:
+    - jenis: fitur
+    - commit: 849a4cdb
+    - file: modules/Insurance/Application/Actions/AssessFraudRiskAction.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_4_fraud_detection_scoring_a6_union_find_dan_siu_hold
+    - akses: route GET /insurance/siu [role: claims_adjuster]
+- [x] 158.6 Tests: (a) embedded offer muncul di konteks benar (b) parametric payout = parameter terukur (c) komisi broker = rate × premium (d) fraud score tinggi → hold (e) `ins:audit` lintas lini = 0 selisih
+  Bukti:
+    - jenis: tooling
+    - commit: 849a4cdb
+    - file: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php
+    - test: tests/Acceptance/InsEmbedded/InsEmbeddedAcceptanceTest.php::test_5_four_eyes_siu_putusan_blacklist_dan_audit_dua_sumber
 - [ ] 158.7 Quality gate Fase 158
 
 ## FASE 159 — LINI 18: LIFE, HEALTH & WELLNESS INSURANCE ADVANCED
