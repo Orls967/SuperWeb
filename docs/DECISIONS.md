@@ -2563,3 +2563,21 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   3. **G7-D11 (Kontrak G7-K6 GigPayoutHistory & Algoritma B6 GigCreditLimit)**: Penilaian kelayakan pembiayaan mikro pekerja lepas/gig dihitung berbasis riwayat pendapatan 6 bulan, volatilitas pendapatan (koefisien variasi), dan skor amanah penyelesaian tugas.
   4. **G7-D12 (Integrasi Salam & Muzaraah Pertanian Terikat G7-K1 & G7-K2)**: Pembiayaan tani salam/muzaraah divalidasi dengan pembacaan indeks vegetasi satelit dan curah hujan (`NdviIndexReader`). Mitigasi gagal panen dilakukan otomatis dengan pemotongan sisa pembiayaan via santunan klaim asuransi tani (`FarmerLoanOffset`).
   5. **G7-D13 (Waterfall Repayment B5 & Alokasi Ta'zir Kebajikan)**: Angsuran pembiayaan mikro dialokasikan berjenjang melalui algoritma `RepaymentWaterfall` (Ujrah/Bagi Hasil -> Pokok -> Ta'zir). Denda keterlambatan (ta'zir) wajib dialokasikan ke dana kebajikan qardh al-hasan `syb:tazir_social_fund:IDR`, dilarang keras diakui sebagai pendapatan operasional bank/BMT.
+
+
+<a id="g7-p2-syariah-lanjutan-fase-164"></a>
+<a id="g7-d14"></a>
+<a id="g7-d15"></a>
+<a id="g7-d16"></a>
+<a id="g7-d17"></a>
+<a id="g7-d18"></a>
+## 2026-11-06: [G7-P2.3] Modul Syariah Lanjutan — Islamic Trade Finance & Cross-Border Syariah (Fase 164, G7-D14..G7-D18)
+- **Anchor:** `2026-11-06-g7-p2-syariah-lanjutan-fase-164` / `g7-d14` / `g7-d15` / `g7-d16` / `g7-d17` / `g7-d18`
+- **Konteks:**
+  - Melanjutkan Lini 19 Syariah Lanjutan (Fase 164) untuk mengimplementasikan perdagangan internasional dan pembiayaan rantai pasok syariah: Islamic Letter of Credit (LC), Salam komoditas berjangka, Supply Chain Finance Murabahah, Tawarruq Munazzam FX, serta verifikasi qabdh lintas batas.
+- **Keputusan:**
+  1. **G7-D14 (Islamic LC Impor & Cost-to-Cost POC)**: Penerbitan LC impor menggunakan kombinasi akad Istisna' (pembiayaan manufaktur pesanan bertahap) dan Wakalah bil Ujrah (keagenan kepabeanan/dokumen). Pengakuan pendapatan kontrak istisna' mengikuti metode persentase penyelesaian biaya riil (*cost-to-cost percentage of completion*), dan ujrah keagenan diakui terpisah secara proposional tanpa unsur bunga diskonto.
+  2. **G7-D15 (Salam & Parallel Salam Komoditas Tanpa Safqatayn fi Safqah)**: Pembayaran komoditas salam dibayar tunai 100% di muka (*muslam fiih*) kepada produsen dengan kuantum, grade, waktu, dan lokasi penyerahan terdefinisi tegas. Lindung nilai komoditas dilakukan melalui akad Parallel Salam terpisah yang tidak saling mensyaratkan (*independent contracts*), dilarang menggabungkan dua akad jual beli dalam satu ikatan bersyarat (*safqatayn fi safqah*).
+  3. **G7-D16 (Murabahah Supply Chain Finance & Qabdh Verification Gate)**: Pembiayaan rantai pasok murabahah mewajibkan bank melakukan pembelian riil atas barang pemasok terlebih dahulu dan memverifikasi kepemilikan/penguasaan fisik atau konstruktif (*qabdh hussy / hukmy*) sebelum menjualnya ke nasabah pembeli secara tangguh (*bai' bi tsaman 'ajil*). Margin keuntungan dinyatakan secara transparan, dilarang mengenakan bunga majemuk atas tunggakan cicilan.
+  4. **G7-D17 (Commodity Murabahah FX / Tawarruq Munazzam Bebas Inah)**: Transaksi lindung nilai valas syariah dan konversi mata uang dijalankan melalui tawarruq tiga pihak terorganisir di bursa komoditas internasional riil. Setiap transaksi wajib mengikat lot komoditas spesifik dengan serial number fisik unik dan sertifikat kepemilikan terverifikasi untuk mencegah transaksi semu / kembali ke penjual pertama (*bai' al-inah*).
+  5. **G7-D18 (Cross-Border Custody Hash Verifier & Larangan Bai' Qabla al-Qabdh)**: Seluruh dokumen pengapalan dan logistik (Bill of Lading, Sea Waybill, Air Waybill, Warehouse Receipt) diverifikasi integritas kriptografisnya melalui digest SHA-256. Sistem memberlakukan hard gate yang menolak eksekusi akad penjualan jika dokumen custody belum terverifikasi oleh pejabat berwenang (*custody officer*).
