@@ -72,6 +72,7 @@ use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SybAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\TakafulAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlxAuditCorruptionFixture;
@@ -135,6 +136,7 @@ final class AuditCommandRegistry
             'ins:embedded-audit' => new EmbeddedAuditCorruptionFixture,
             'ins:life-health-audit' => new LifeHealthAuditCorruptionFixture,
             'ins:reinsurance-audit' => new ReinsAuditCorruptionFixture,
+            'ins:takaful-audit' => new TakafulAuditCorruptionFixture,
             'intl:audit' => new IntlAuditCorruptionFixture,
             'lgx:audit-billing' => new LgxAuditBillingCorruptionFixture,
             'lgx:audit-circular' => new LogisticsCircularCorruptionFixture,

@@ -13,6 +13,7 @@ use Modules\Insurance\Console\Commands\AuditEmbeddedCommand;
 use Modules\Insurance\Console\Commands\AuditInsuranceCommand;
 use Modules\Insurance\Console\Commands\AuditLifeHealthCommand;
 use Modules\Insurance\Console\Commands\AuditReinsuranceCommand;
+use Modules\Insurance\Console\Commands\AuditTakafulCommand;
 use Modules\Insurance\Console\Commands\CatRunCommand;
 use Modules\Insurance\Console\Commands\CedePeriodCommand;
 use Modules\Insurance\Console\Commands\SolvencySnapshotCommand;
@@ -46,6 +47,7 @@ class InsuranceServiceProvider extends ServiceProvider
                 AuditReinsuranceCommand::class,
                 AuditEmbeddedCommand::class,
                 AuditLifeHealthCommand::class,
+                AuditTakafulCommand::class,
                 CatRunCommand::class,
                 CedePeriodCommand::class,
                 SolvencySnapshotCommand::class,

@@ -11419,12 +11419,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Insurance (`ins_`) (+ Syariah untuk takaful, Agri untuk agri-insurance) · **Prasyarat:** Fase 72 ✅ · **Acuan:** KONSEP Lini 18
 > **Jalan pintas terlarang di fase ini:** klaim via flag; premi/klaim tanpa ledger; aktuaria berupa konstanta tanpa label S1; memperluas `TakafulAndAgriService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 160.1 **Takaful window** (jembatan ke Lini 19 Syariah): dana partisipasi (mutual), wakalah fee, contribution → klaim dari dana → surplus dibagi (hibah/retensi) → syariah board approval simulasi → terpisah dari dana konvensional
-- [ ] 160.2 **Agri insurance lanjutan** (memperluas 156.5): parametric yield/curah hujan (link NDVI Fase 86) → payout ke petani plasma (Fase 62) → dikurangi otomatis dari cicilan (offset) → loss ratio per komoditas
-- [ ] 160.3 **Micro-insurance massal**: premi harian sangat kecil (kendaraan harian, perjalanan harian, product warranty) → agregasi via platform (Fase 158) → claims autopilot tetap (Fase 72) → volume tinggi, reserve terkendali
-- [ ] 160.4 **Insurance command center**: GWP, loss ratio per produk/region, reserve development, reinsurance recoverable aging, solvabilitas → papan C-suite (Fase 141.4 risk integration)
-- [ ] 160.5 **Regulasi & reporting**: pelaporan regulator simulasi (rute premi, keluhan nasabah), compliance kalender (Fase 144.3), anti-money laundering polis (Fase 27.6 diperluas)
-- [ ] 160.6 Tests: (a) dana takaful terpisah & Σ konsisten (b) parametric agric payout = parameter (c) micro premium volume = Σ polis aktif (d) reserve development backward-compatible (e) `ins:audit` final Lini 18 = 0 selisih
+- [🔵] 160.1 **Takaful window** (jembatan ke Lini 19 Syariah): dana partisipasi (mutual), wakalah fee, contribution → klaim dari dana → surplus dibagi (hibah/retensi) → syariah board approval simulasi → terpisah dari dana konvensional
+- [🔵] 160.2 **Agri insurance lanjutan** (memperluas 156.5): parametric yield/curah hujan (link NDVI Fase 86) → payout ke petani plasma (Fase 62) → dikurangi otomatis dari cicilan (offset) → loss ratio per komoditas
+- [🔵] 160.3 **Micro-insurance massal**: premi harian sangat kecil (kendaraan harian, perjalanan harian, product warranty) → agregasi via platform (Fase 158) → claims autopilot tetap (Fase 72) → volume tinggi, reserve terkendali
+- [🔵] 160.4 **Insurance command center**: GWP, loss ratio per produk/region, reserve development, reinsurance recoverable aging, solvabilitas → papan C-suite (Fase 141.4 risk integration)
+- [🔵] 160.5 **Regulasi & reporting**: pelaporan regulator simulasi (rute premi, keluhan nasabah), compliance kalender (Fase 144.3), anti-money laundering polis (Fase 27.6 diperluas)
+- [🔵] 160.6 Tests: (a) dana takaful terpisah & Σ konsisten (b) parametric agric payout = parameter (c) micro premium volume = Σ polis aktif (d) reserve development backward-compatible (e) `ins:audit` final Lini 18 = 0 selisih
 - [ ] 160.7 Quality gate Fase 160
 
 ## FASE 161 — LINI 19: KEUANGAN SYARIAH (BANK SYARIAH, MURABAHAH, MUDHARABAH)
