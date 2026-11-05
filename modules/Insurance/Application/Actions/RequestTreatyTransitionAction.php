@@ -6,7 +6,6 @@ namespace Modules\Insurance\Application\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Insurance\Application\Services\TreatyLifecycleService;
@@ -66,4 +65,3 @@ final class RequestTreatyTransitionAction
         });
     }
 }
-

@@ -71,4 +71,3 @@ final class ExceedanceCurveTest extends TestCase
         $verifier->verify($corrupt);
     }
 }
-

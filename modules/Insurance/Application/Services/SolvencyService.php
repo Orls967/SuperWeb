@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Insurance\Application\Services;
 
-use Brick\Math\BigInteger;
-use Brick\Math\RoundingMode;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
@@ -232,4 +230,3 @@ final class SolvencyService
         return 1500000000;
     }
 }
-

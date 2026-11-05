@@ -31,4 +31,3 @@ final class SendBordereauAction
         return $bordereau;
     }
 }
-

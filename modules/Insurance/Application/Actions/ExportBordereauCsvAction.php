@@ -48,4 +48,3 @@ final class ExportBordereauCsvAction
         return $csv !== false ? $csv : '';
     }
 }
-

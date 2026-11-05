@@ -53,4 +53,3 @@ final class CatController extends Controller
         return view('insurance::cat.show', compact('run', 'plans'));
     }
 }
-

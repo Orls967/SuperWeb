@@ -10,26 +10,17 @@ use Carbon\CarbonImmutable;
 use Database\Seeders\InsuranceT1Seeder;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Banking\Contracts\Ledger;
-use Modules\Insurance\Application\Actions\CedeClaimAction;
-use Modules\Insurance\Application\Actions\CedePolicyPremiumAction;
 use Modules\Insurance\Application\Actions\RecordCessionAction;
-use Modules\Insurance\Application\Services\CatBondService;
-use Modules\Insurance\Application\Services\CessionEngine;
 use Modules\Insurance\Application\Services\SolvencyService;
 use Modules\Insurance\Domain\DTOs\CessionLineData;
 use Modules\Insurance\Domain\DTOs\CessionPlan;
-use Modules\Insurance\Domain\Enums\CatBondStatus;
 use Modules\Insurance\Domain\Enums\CessionKind;
 use Modules\Insurance\Domain\Enums\SolvencyActionType;
 use Modules\Insurance\Domain\Enums\SolvencyAlertLevel;
 use Modules\Insurance\Domain\Enums\TreatyStatus;
 use Modules\Insurance\Domain\Enums\TreatyType;
 use Modules\Insurance\Domain\Models\CatBond;
-use Modules\Insurance\Domain\Models\CessionEvent;
-use Modules\Insurance\Domain\Models\InsuranceClaimPenuh;
 use Modules\Insurance\Domain\Models\InsurancePolicyPenuh;
-use Modules\Insurance\Domain\Models\InsuranceProductPenuh;
 use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 use Modules\Insurance\Domain\Models\ReinsuranceTreatyPanel;
 use Modules\Party\Domain\Models\Party;
@@ -211,7 +202,8 @@ final class InsReinsuranceAcceptanceTest extends TestCase
 
         // Mock holder token RWA agar User A memiliki unit dan User B 0 unit
         $this->app->bind(VotingWeightReader::class, function () use ($userA) {
-            return new class($userA->id) implements VotingWeightReader {
+            return new class($userA->id) implements VotingWeightReader
+            {
                 public function __construct(private readonly int $userId) {}
 
                 public function tokenUnitsByHolderAt(string $assetCode, CarbonImmutable $at): array

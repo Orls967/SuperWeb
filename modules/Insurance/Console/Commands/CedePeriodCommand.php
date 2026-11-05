@@ -28,4 +28,3 @@ final class CedePeriodCommand extends Command
         return self::SUCCESS;
     }
 }
-

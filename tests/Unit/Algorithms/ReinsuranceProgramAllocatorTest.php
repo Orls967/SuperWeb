@@ -81,4 +81,3 @@ final class ReinsuranceProgramAllocatorTest extends TestCase
         $verifier->verify($corrupt);
     }
 }
-

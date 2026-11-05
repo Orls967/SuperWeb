@@ -18,4 +18,3 @@ interface CatBondTokenRegistry
      */
     public function writeDown(string $assetCode, int $principalReductionIdr, CarbonImmutable $at, string $idempotencyKey): void;
 }
-

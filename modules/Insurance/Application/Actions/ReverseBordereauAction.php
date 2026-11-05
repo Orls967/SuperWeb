@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Insurance\Application\Actions;
 
-use DomainException;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
@@ -61,4 +60,3 @@ final class ReverseBordereauAction
         });
     }
 }
-

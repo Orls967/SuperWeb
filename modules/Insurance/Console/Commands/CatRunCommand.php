@@ -39,4 +39,3 @@ final class CatRunCommand extends Command
         return self::SUCCESS;
     }
 }
-

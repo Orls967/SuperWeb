@@ -7,7 +7,6 @@ namespace Modules\Insurance\Application\Services;
 use Brick\Math\BigRational;
 use Brick\Math\RoundingMode;
 use Carbon\CarbonImmutable;
-use DomainException;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
@@ -263,4 +262,3 @@ final class CatBondService
         ];
     }
 }
-

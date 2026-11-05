@@ -33,4 +33,3 @@ final class AuditReinsuranceCommand extends Command
         return self::FAILURE;
     }
 }
-

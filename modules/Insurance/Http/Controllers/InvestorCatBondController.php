@@ -46,4 +46,3 @@ final class InvestorCatBondController extends Controller
         ]);
     }
 }
-

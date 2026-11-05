@@ -27,4 +27,3 @@ final class MinStdTest extends TestCase
         new MinStd(0);
     }
 }
-

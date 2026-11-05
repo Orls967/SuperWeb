@@ -55,4 +55,3 @@ final class RiskBasedCapitalTest extends TestCase
         $verifier->verify($corrupt);
     }
 }
-

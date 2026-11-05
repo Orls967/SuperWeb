@@ -76,7 +76,6 @@ final class CatBondController extends Controller
         $event = $service->triggerIndemnity($bond, (int) $validated['industry_loss_idr'], $validated['event_key'], $key);
 
         return redirect()->route('insurance.cat-bonds.show', $bond->id)
-            ->with('status', "Trigger bencana diaplikasikan. Reduksi pokok: Rp ".number_format($event->reduction_idr, 0, ',', '.'));
+            ->with('status', 'Trigger bencana diaplikasikan. Reduksi pokok: Rp '.number_format($event->reduction_idr, 0, ',', '.'));
     }
 }
-

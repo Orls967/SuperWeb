@@ -58,4 +58,3 @@ final class RwaCatBondTokenRegistryService implements CatBondTokenRegistry
         ])->save();
     }
 }
-

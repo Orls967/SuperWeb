@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Modules\Insurance\Application\Actions;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
-use Modules\Insurance\Application\Services\CessionEngine;
 use Modules\Insurance\Application\Services\TreatyCatalog;
 use Modules\Insurance\Domain\DTOs\CessionLineData;
 use Modules\Insurance\Domain\DTOs\CessionPlan;
@@ -47,6 +45,7 @@ final class CedePeriodAction
             $existing = CessionEvent::query()->where('event_key', $eventKey)->first();
             if ($existing !== null) {
                 $events[] = $existing;
+
                 continue;
             }
 
@@ -117,4 +116,3 @@ final class CedePeriodAction
         return $events;
     }
 }
-

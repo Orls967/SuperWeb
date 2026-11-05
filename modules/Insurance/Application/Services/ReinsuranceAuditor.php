@@ -8,7 +8,6 @@ use Modules\Banking\Contracts\Ledger;
 use Modules\Insurance\Domain\Models\CatBondCoupon;
 use Modules\Insurance\Domain\Models\CessionEvent;
 use Modules\Insurance\Domain\Models\ReinsuranceBordereau;
-use Modules\Insurance\Domain\Models\ReinsuranceTreaty;
 
 final class ReinsuranceAuditor
 {
@@ -53,4 +52,3 @@ final class ReinsuranceAuditor
         return $errors;
     }
 }
-

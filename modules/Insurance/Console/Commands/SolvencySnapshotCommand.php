@@ -33,4 +33,3 @@ final class SolvencySnapshotCommand extends Command
         return self::SUCCESS;
     }
 }
-
