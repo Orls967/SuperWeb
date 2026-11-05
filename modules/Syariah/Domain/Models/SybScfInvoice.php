@@ -22,7 +22,7 @@ final class SybScfInvoice extends Model
         'principal_cost_cents',
         'margin_profit_cents',
         'total_sale_price_cents',
-        'custody_document_id',
+        'custody_document_ref',
         'qabdh_verified_at',
         'due_date',
         'status',
@@ -35,7 +35,6 @@ final class SybScfInvoice extends Model
         'principal_cost_cents' => 'integer',
         'margin_profit_cents' => 'integer',
         'total_sale_price_cents' => 'integer',
-        'custody_document_id' => 'integer',
         'qabdh_verified_at' => 'datetime',
         'due_date' => 'date',
     ];

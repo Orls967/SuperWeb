@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 final class SybTradeAuditLog extends Model
 {
-    public const bool UPDATED_AT = false;
+    public const ?string UPDATED_AT = null;
 
     protected $table = 'syb_trade_audit_logs';
 
@@ -22,3 +22,4 @@ final class SybTradeAuditLog extends Model
         'shariah_compliance_status',
     ];
 }
+

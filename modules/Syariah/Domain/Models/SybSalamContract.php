@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class SybSalamContract extends Model
 {
-    protected $table = 'syb_salam_contracts';
+    protected $table = 'syb_salam_trade_contracts';
 
     /**
      * @var array<int, string>
@@ -55,3 +55,4 @@ final class SybSalamContract extends Model
         return $this->hasMany(SybSalamDelivery::class, 'salam_id');
     }
 }
+

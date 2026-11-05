@@ -10,13 +10,11 @@ use InvalidArgumentException;
 use Modules\Shared\Domain\Algorithms\Islamic\SalamPositionBook;
 use Modules\Shared\Domain\Algorithms\Islamic\SalamPositionBookCertificateVerifier;
 use Modules\Shared\Domain\Algorithms\Islamic\SalamPositionBookResult;
-use Modules\Syariah\Domain\Enums\IslamicTradeContractType;
 use Modules\Syariah\Domain\Enums\IslamicTradeStatus;
 use Modules\Syariah\Domain\Models\SybParallelSalamHedge;
 use Modules\Syariah\Domain\Models\SybSalamContract;
 use Modules\Syariah\Domain\Models\SybSalamDelivery;
 use Modules\Syariah\Domain\Models\SybTradeAuditLog;
-use Modules\Syariah\Ledger\ShariahLedgerPoster;
 use Modules\Syariah\Ledger\SyariahAccounts;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
 

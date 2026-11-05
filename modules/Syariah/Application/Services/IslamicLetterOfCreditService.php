@@ -14,7 +14,6 @@ use Modules\Syariah\Domain\Models\SybIstisnaMilestone;
 use Modules\Syariah\Domain\Models\SybLetterOfCredit;
 use Modules\Syariah\Domain\Models\SybTradeAuditLog;
 use Modules\Syariah\Domain\Models\SybTradeSettlement;
-use Modules\Syariah\Ledger\ShariahLedgerPoster;
 use Modules\Syariah\Ledger\SyariahAccounts;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
 

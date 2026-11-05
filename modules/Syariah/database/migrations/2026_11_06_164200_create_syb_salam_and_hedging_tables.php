@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('syb_salam_contracts', function (Blueprint $table) {
+        Schema::create('syb_salam_trade_contracts', function (Blueprint $table) {
             $table->id();
             $table->string('contract_number', 64)->unique();
             $table->string('seller_party_ref', 64)->index();
@@ -27,7 +27,7 @@ return new class extends Migration
 
         Schema::create('syb_parallel_salam_hedges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('salam_id')->constrained('syb_salam_contracts')->cascadeOnDelete();
+            $table->foreignId('salam_id')->constrained('syb_salam_trade_contracts')->cascadeOnDelete();
             $table->string('hedge_contract_number', 64)->unique();
             $table->string('offtaker_party_ref', 64)->index();
             $table->unsignedBigInteger('agreed_sale_price_cents');
@@ -39,7 +39,7 @@ return new class extends Migration
 
         Schema::create('syb_salam_deliveries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('salam_id')->constrained('syb_salam_contracts')->cascadeOnDelete();
+            $table->foreignId('salam_id')->constrained('syb_salam_trade_contracts')->cascadeOnDelete();
             $table->string('delivery_batch_ref', 64)->unique();
             $table->unsignedInteger('quantity_received');
             $table->string('warehouse_receipt_number', 64)->nullable();
@@ -53,6 +53,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('syb_salam_deliveries');
         Schema::dropIfExists('syb_parallel_salam_hedges');
-        Schema::dropIfExists('syb_salam_contracts');
+        Schema::dropIfExists('syb_salam_trade_contracts');
     }
 };
+

@@ -11,7 +11,6 @@ use Modules\Syariah\Application\Services\MurabahahSupplyChainService;
 use Modules\Syariah\Application\Services\SalamTradeService;
 use Modules\Syariah\Application\Services\TawarruqFxService;
 use Modules\Syariah\Application\Services\TradeCustodyService;
-use Modules\Syariah\Domain\Enums\IslamicTradeContractType;
 use Modules\Syariah\Domain\Enums\IslamicTradeStatus;
 use Tests\TestCase;
 
@@ -22,7 +21,6 @@ class SybIslamicTradeFinanceAcceptanceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('module:migrate', ['module' => 'Syariah']);
     }
 
     public function test_islamic_lc_with_istisna_poc_and_wakalah_fees(): void

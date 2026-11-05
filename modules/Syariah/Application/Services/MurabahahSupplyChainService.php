@@ -13,7 +13,6 @@ use Modules\Syariah\Domain\Models\SybScfInvoice;
 use Modules\Syariah\Domain\Models\SybScfRepayment;
 use Modules\Syariah\Domain\Models\SybTradeAuditLog;
 use Modules\Syariah\Domain\Models\SybTradeCustodyDocument;
-use Modules\Syariah\Ledger\ShariahLedgerPoster;
 use Modules\Syariah\Ledger\SyariahAccounts;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
 use RuntimeException;
@@ -103,7 +102,7 @@ final class MurabahahSupplyChainService
                 'principal_cost_cents' => $principalCostCents,
                 'margin_profit_cents' => $marginProfitCents,
                 'total_sale_price_cents' => $totalSalePriceCents,
-                'custody_document_id' => $custodyDoc->id,
+                'custody_document_ref' => (string) $custodyDoc->id,
                 'qabdh_verified_at' => $custodyDoc->verified_qabdh_at,
                 'due_date' => $dueDate->toDateString(),
                 'status' => IslamicTradeStatus::ACTIVE->value,

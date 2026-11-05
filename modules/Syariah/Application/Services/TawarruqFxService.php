@@ -14,7 +14,6 @@ use Modules\Syariah\Domain\Models\SybCommodityLot;
 use Modules\Syariah\Domain\Models\SybTawarruqOrder;
 use Modules\Syariah\Domain\Models\SybTawarruqTransaction;
 use Modules\Syariah\Domain\Models\SybTradeAuditLog;
-use Modules\Syariah\Ledger\ShariahLedgerPoster;
 use Modules\Syariah\Ledger\SyariahAccounts;
 use Modules\Syariah\Ledger\SyariahTransactionTypes;
 
@@ -60,7 +59,7 @@ final class TawarruqFxService
 
             // 1. Dapatkan atau daftarkan lot komoditas bursa fisik yang terisolasi
             $commodityLot = SybCommodityLot::create([
-                'lot_number' => 'LOT-EXCH-' . uniqid(),
+                'lot_number' => 'LOT-EXCH-'.uniqid(),
                 'exchange_name' => $exchangeName,
                 'commodity_type' => 'METALS_ALUMINUM_GRADE_A',
                 'physical_serial_number' => $serialNumber,
@@ -137,7 +136,7 @@ final class TawarruqFxService
                 'order_id' => $order->id,
                 'leg_number' => 3,
                 'transaction_reference' => "LEG3-{$orderNumber}",
-                'counterparty_name' => "Global Trade Liquidator",
+                'counterparty_name' => 'Global Trade Liquidator',
                 'amount_cents' => $fxResult->targetReceivedCents,
                 'currency' => $targetCurrency,
                 'executed_at' => $now->addSeconds(2),

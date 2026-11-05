@@ -266,7 +266,19 @@ final class AuditSyariahCommand extends Command
             }
         }
 
-        // 8. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
+        // 8. Audit Islamic Trade Finance & SCF (Fase 164)
+        if (Schema::hasTable('syb_scf_invoices')) {
+            $unverifiedQabdh = DB::table('syb_scf_invoices')
+                ->where('status', 'active')
+                ->whereNull('qabdh_verified_at')
+                ->count();
+            if ($unverifiedQabdh > 0) {
+                $rows[] = ['syb.unverified_qabdh_scf_invoice', '0', (string) $unverifiedQabdh, (string) $unverifiedQabdh, 'SELISIH'];
+                $issues++;
+            }
+        }
+
+        // 9. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
         $interestAccounts = LedgerAccount::query()
             ->where('code', 'like', 'syb:%')
             ->where(function ($q) {

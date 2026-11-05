@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Syariah\Http\Controllers\BmtController;
 use Modules\Syariah\Http\Controllers\IjarahController;
+use Modules\Syariah\Http\Controllers\IslamicTradeController;
 use Modules\Syariah\Http\Controllers\MicroFacilityController;
 use Modules\Syariah\Http\Controllers\MurabahahController;
 use Modules\Syariah\Http\Controllers\SocialImpactController;
@@ -151,14 +152,14 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer'])->prefix('syb/so
 
 // 10. Perdagangan Internasional & SCF Syariah (Fase 164)
 Route::middleware(['web', 'auth', 'role:admin,syariah_officer,trade_officer'])->prefix('syb/trade')->name('syariah.trade.')->group(function () {
-    Route::get('/', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'index'])->name('index');
-    Route::get('/lc', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'lcIndex'])->name('lc.index');
-    Route::get('/lc/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'lcShow'])->name('lc.show');
-    Route::get('/salam', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'salamIndex'])->name('salam.index');
-    Route::get('/salam/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'salamShow'])->name('salam.show');
-    Route::get('/scf', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'scfIndex'])->name('scf.index');
-    Route::get('/scf/{id}', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'scfShow'])->name('scf.show');
-    Route::get('/tawarruq', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'tawarruqIndex'])->name('tawarruq.index');
-    Route::get('/custody', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'custodyIndex'])->name('custody.index');
-    Route::get('/calculator', [\Modules\Syariah\Http\Controllers\IslamicTradeController::class, 'calculator'])->name('calculator');
+    Route::get('/', [IslamicTradeController::class, 'index'])->name('index');
+    Route::get('/lc', [IslamicTradeController::class, 'lcIndex'])->name('lc.index');
+    Route::get('/lc/{id}', [IslamicTradeController::class, 'lcShow'])->name('lc.show');
+    Route::get('/salam', [IslamicTradeController::class, 'salamIndex'])->name('salam.index');
+    Route::get('/salam/{id}', [IslamicTradeController::class, 'salamShow'])->name('salam.show');
+    Route::get('/scf', [IslamicTradeController::class, 'scfIndex'])->name('scf.index');
+    Route::get('/scf/{id}', [IslamicTradeController::class, 'scfShow'])->name('scf.show');
+    Route::get('/tawarruq', [IslamicTradeController::class, 'tawarruqIndex'])->name('tawarruq.index');
+    Route::get('/custody', [IslamicTradeController::class, 'custodyIndex'])->name('custody.index');
+    Route::get('/calculator', [IslamicTradeController::class, 'calculator'])->name('calculator');
 });

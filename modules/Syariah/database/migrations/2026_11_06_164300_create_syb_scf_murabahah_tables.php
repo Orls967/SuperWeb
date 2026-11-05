@@ -29,7 +29,7 @@ return new class extends Migration
             $table->unsignedBigInteger('principal_cost_cents');
             $table->unsignedBigInteger('margin_profit_cents');
             $table->unsignedBigInteger('total_sale_price_cents');
-            $table->unsignedBigInteger('custody_document_id')->nullable()->index();
+            $table->string('custody_document_ref', 64)->nullable()->index();
             $table->timestamp('qabdh_verified_at')->nullable();
             $table->date('due_date');
             $table->string('status', 32)->index();

@@ -11527,12 +11527,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Syariah (`syb_`) di atas Ledger · **Prasyarat:** R1 ✅ · **Acuan:** KONSEP Lini 19
 > **Jalan pintas terlarang di fase ini:** memakai akun bunga; akad hanya label tanpa jadwal & posting margin/bagi hasil; memperluas `IslamicTradeFinanceService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 164.1 **Islamic LC (istisna' + wakalah)**: LC syariah untuk impor (Fase 50.1 diperluas) → akad istisna' untuk produksi + wakalah bi jualah untuk distribusi → settlement via stablecoin (Fase 83) → fee syariah terpisah
-- [ ] 164.2 **Salam & parallel salam** untuk komoditas agro (Fase 171): pembayaran di muka petani → pengiriman kemudian → hedge via parallel contract → meniru pola forward Fase 48.6 dengan akad sah
-- [ ] 164.3 **Murabahah supply chain finance** (memperluas Fase 50.5): bank beli dari pemasok → jual ke pembeli dengan margin → tenor → settlement → AR/AP terkait tetap tercatat
-- [ ] 164.4 **Commodity murabahah FX**: convert mata uang via tawarruq (transaksi komoditas arbitrase simulasi) → kurs efektif → fee → compliance shariah board
-- [ ] 164.5 **ZIS-rebate untuk ekspor**: eksportir syariah → konsesi zakat/khums tidak masuk revenue → pelaporan terpisah (memperluas Fase 162.4)
-- [ ] 164.6 Tests: (a) istisna' milestone billing berurutan (b) salam + parallel Σ posisi seimbang (c) tawarruq flow tercatat penuh (d) fee syariah ≠ riba pattern (e) `tf:audit` + `syb:audit` = 0 selisih
+- [🔵] 164.1 **Islamic LC (istisna' + wakalah)**: LC syariah untuk impor (Fase 50.1 diperluas) → akad istisna' untuk produksi + wakalah bi jualah untuk distribusi → settlement via stablecoin (Fase 83) → fee syariah terpisah
+- [🔵] 164.2 **Salam & parallel salam** untuk komoditas agro (Fase 171): pembayaran di muka petani → pengiriman kemudian → hedge via parallel contract → meniru pola forward Fase 48.6 dengan akad sah
+- [🔵] 164.3 **Murabahah supply chain finance** (memperluas Fase 50.5): bank beli dari pemasok → jual ke pembeli dengan margin → tenor → settlement → AR/AP terkait tetap tercatat
+- [🔵] 164.4 **Commodity murabahah FX**: convert mata uang via tawarruq (transaksi komoditas arbitrase simulasi) → kurs efektif → fee → compliance shariah board
+- [🔵] 164.5 **ZIS-rebate untuk ekspor**: eksportir syariah → konsesi zakat/khums tidak masuk revenue → pelaporan terpisah (memperluas Fase 162.4)
+- [🔵] 164.6 Tests: (a) istisna' milestone billing berurutan (b) salam + parallel Σ posisi seimbang (c) tawarruq flow tercatat penuh (d) fee syariah ≠ riba pattern (e) `tf:audit` + `syb:audit` = 0 selisih
 - [ ] 164.7 Quality gate Fase 164
 
 ## FASE 165 — LINI 19: SYARIAH OPERATIONS, COMPLIANCE & INTEGRATION 30 LINI
