@@ -249,7 +249,24 @@ final class AuditSyariahCommand extends Command
             }
         }
 
-        // 7. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
+        // 7. Audit Microfinance & BMT (Fase 163)
+        if (Schema::hasTable('syb_bmt_savings')) {
+            $negativeSavings = DB::table('syb_bmt_savings')->where('balance_idr', '<', 0)->count();
+            if ($negativeSavings > 0) {
+                $rows[] = ['syb.negative_bmt_savings_balance', '0', (string) $negativeSavings, (string) $negativeSavings, 'SELISIH'];
+                $issues++;
+            }
+
+            $negativeOutstanding = DB::table('syb_micro_facilities')->where('outstanding_balance_idr', '<', 0)->count()
+                + DB::table('syb_agri_micro_facilities')->where('outstanding_balance_idr', '<', 0)->count()
+                + DB::table('syb_gig_microloans')->where('remaining_balance_idr', '<', 0)->count();
+            if ($negativeOutstanding > 0) {
+                $rows[] = ['syb.negative_micro_outstanding', '0', (string) $negativeOutstanding, (string) $negativeOutstanding, 'SELISIH'];
+                $issues++;
+            }
+        }
+
+        // 8. Larangan Riba Mutlak: 0 akun bunga pada bagan akun syb:
         $interestAccounts = LedgerAccount::query()
             ->where('code', 'like', 'syb:%')
             ->where(function ($q) {

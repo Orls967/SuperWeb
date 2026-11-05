@@ -21,3 +21,4 @@
 - **Tingkat simulasi:** S1 (parameter berversi syb_parameters, label S1, fixture ditandai). **Tier skala:** T1 (5.000 nasabah wealth, 20 sukuk, 2.000 akad ijarah, 30.000 muzakki).
 - **Kontrak lintas modul:** G7-K5 `Modules\Rwa\Contracts\SukukTokenRegistry` (dibuat di Rwa), `VotingWeightReader` (dipakai).
 - **Keputusan D-x:** G7-D5, G7-D6, G7-D7, G7-D8, D162-1..D162-7 (DECISIONS).
+

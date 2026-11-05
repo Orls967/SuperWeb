@@ -53,6 +53,13 @@ final class SyariahAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'syb:cash_pool:IDR',
+                'name' => 'Syariah Microfinance & BMT Operational Cash Pool',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
             // D162-6 Ijarah & IMBT
             [
                 'code' => 'syb:ijarah_income:IDR',
@@ -111,6 +118,70 @@ final class SyariahAccounts
                 'kind' => AccountKind::REVENUE,
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
+            ],
+            // G7-D10 & G7-D13 Microfinance, BMT & Agri (Fase 163)
+            [
+                'code' => 'syb:customer_savings_wadiah:IDR',
+                'name' => 'Syariah Customer BMT Savings Wadiah',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'syb:customer_savings_mudharabah:IDR',
+                'name' => 'Syariah Customer BMT Savings Mudharabah',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'syb:micro_financing_receivable:IDR',
+                'name' => 'Syariah Micro Financing Receivables Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'syb:agri_financing_receivable:IDR',
+                'name' => 'Syariah Agri Salam Financing Receivables Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'syb:qardh_receivable:IDR',
+                'name' => 'Syariah Qardh al-Hasan Benevolent Receivables Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'syb:micro_ujrah_income:IDR',
+                'name' => 'Syariah Micro Ujrah Realized Income',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'syb:mudharabah_profit_share_income:IDR',
+                'name' => 'Syariah Mudharabah Profit Share Income',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'syb:tazir_social_fund:IDR',
+                'name' => 'Syariah Micro Tazir Social Benevolent Fund',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'syb:takaful_claim_offset_clearing:IDR',
+                'name' => 'Syariah Takaful Agri Claim Offset Clearing',
+                'kind' => AccountKind::CLEARING,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
             ],
         ];
     }
