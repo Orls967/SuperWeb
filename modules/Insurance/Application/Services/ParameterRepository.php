@@ -47,7 +47,22 @@ final class ParameterRepository
     /** @return array<string, mixed> */
     public function value(string $code, ?CarbonImmutable $at = null): array
     {
-        return $this->resolve($code, $at)->value;
+        return (array) $this->resolve($code, $at)->value;
+    }
+
+    public function json(string $code, ?CarbonImmutable $at = null, mixed $default = null): mixed
+    {
+        try {
+            $val = $this->resolve($code, $at)->value;
+
+            return $val ?? $default;
+        } catch (InsuranceDomainException $e) {
+            if ($default !== null) {
+                return $default;
+            }
+
+            throw $e;
+        }
     }
 
     /**
