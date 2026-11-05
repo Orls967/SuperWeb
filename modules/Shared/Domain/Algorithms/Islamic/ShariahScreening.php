@@ -22,6 +22,7 @@ use InvalidArgumentException;
 final class ShariahScreening
 {
     public const MAX_DEBT_RATIO_BPS = 4500; // 45.00%
+
     public const MAX_NON_HALAL_REVENUE_BPS = 1000; // 10.00%
 
     public const PROHIBITED_SECTORS = [
@@ -91,7 +92,7 @@ final class ShariahScreening
             isCompliant: $isCompliant
         );
 
-        (new ShariahScreeningCertificateVerifier())->verify($result);
+        (new ShariahScreeningCertificateVerifier)->verify($result);
 
         return $result;
     }

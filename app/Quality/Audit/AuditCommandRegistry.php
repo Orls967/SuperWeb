@@ -72,7 +72,6 @@ use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SybAuditCorruptionFixture;
-use App\Quality\Audit\Fixtures\SybSukukWealthCorruptionFixture;
 use App\Quality\Audit\Fixtures\TakafulAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;

@@ -21,19 +21,27 @@ use Modules\Shared\Domain\Algorithms\Apportionment\LargestRemainder;
 final class AsnafDistribution
 {
     public const MAX_AMIL_BPS = 1250;
+
     public const TOTAL_BPS = 10000;
 
     public const ASNAF_FAKIR = 'fakir';
+
     public const ASNAF_MISKIN = 'miskin';
+
     public const ASNAF_AMIL = 'amil';
+
     public const ASNAF_MUALAF = 'mualaf';
+
     public const ASNAF_RIQAB = 'riqab';
+
     public const ASNAF_GHARIMIN = 'gharimin';
+
     public const ASNAF_FISABILILLAH = 'fisabilillah';
+
     public const ASNAF_IBNU_SABIL = 'ibnu_sabil';
 
     public function __construct(
-        private readonly LargestRemainder $largestRemainder = new LargestRemainder()
+        private readonly LargestRemainder $largestRemainder = new LargestRemainder
     ) {}
 
     /**
@@ -86,7 +94,7 @@ final class AsnafDistribution
             allocations: $allocations
         );
 
-        (new AsnafDistributionCertificateVerifier())->verify($result);
+        (new AsnafDistributionCertificateVerifier)->verify($result);
 
         return $result;
     }

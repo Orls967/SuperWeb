@@ -21,7 +21,9 @@ use InvalidArgumentException;
 final class ZakatAssessment
 {
     public const NISAB_GOLD_GRAMS = 85;
+
     public const HIJRIAH_HAUL_DAYS = 354;
+
     public const ZAKAT_RATE_BPS = 250; // 2.50%
 
     /**
@@ -73,7 +75,7 @@ final class ZakatAssessment
             zakatAmountIdr: $zakatAmountIdr
         );
 
-        (new ZakatAssessmentCertificateVerifier())->verify($result);
+        (new ZakatAssessmentCertificateVerifier)->verify($result);
 
         return $result;
     }

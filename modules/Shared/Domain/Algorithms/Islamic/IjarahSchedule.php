@@ -18,7 +18,7 @@ use Modules\Shared\Domain\Algorithms\Apportionment\LargestRemainder;
 final class IjarahSchedule
 {
     public function __construct(
-        private readonly LargestRemainder $largestRemainder = new LargestRemainder()
+        private readonly LargestRemainder $largestRemainder = new LargestRemainder
     ) {}
 
     /**
@@ -93,7 +93,7 @@ final class IjarahSchedule
             endingBookValueIdr: $assetCostIdr - $accumDeprec
         );
 
-        (new IjarahScheduleCertificateVerifier())->verify($result);
+        (new IjarahScheduleCertificateVerifier)->verify($result);
 
         return $result;
     }
