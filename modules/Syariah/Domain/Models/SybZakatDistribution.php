@@ -26,3 +26,4 @@ final class SybZakatDistribution extends Model
         'mustahik_party_ref' => 'integer',
     ];
 }
+

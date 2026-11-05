@@ -44,3 +44,4 @@ final class SybWealthPortfolio extends Model
         return $this->hasMany(SybWealthOrder::class, 'portfolio_id');
     }
 }
+
