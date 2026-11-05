@@ -135,10 +135,15 @@ Route::middleware(['web', 'auth', 'role:admin,syariah_officer,field_officer'])->
     Route::post('/agri', [MicroFacilityController::class, 'storeAgri'])->name('agri.store');
     Route::get('/agri/{id}', [MicroFacilityController::class, 'showAgri'])->name('agri.show');
     Route::post('/agri/{id}/disburse-milestone', [MicroFacilityController::class, 'disburseMilestone'])->name('agri.disburse');
+    Route::get('/restructures', [MicroFacilityController::class, 'restructureIndex'])->name('restructure.index');
+    Route::post('/restructures', [MicroFacilityController::class, 'storeRestructure'])->name('restructure.store');
 });
 
 // 9. Dampak Sosial (Fase 163)
 Route::middleware(['web', 'auth', 'role:admin,syariah_officer'])->prefix('syb/social-impact')->name('syariah.social.')->group(function () {
     Route::get('/', [SocialImpactController::class, 'index'])->name('index');
     Route::post('/calculate', [SocialImpactController::class, 'calculate'])->name('calculate');
+    Route::get('/graduations', [SocialImpactController::class, 'graduationsIndex'])->name('graduations.index');
+    Route::post('/graduations', [SocialImpactController::class, 'storeGraduation'])->name('graduations.store');
+    Route::post('/graduations/{id}/verify', [SocialImpactController::class, 'verifyGraduation'])->name('graduations.verify');
 });

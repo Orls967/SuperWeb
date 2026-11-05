@@ -149,4 +149,42 @@ class MicroFacilityController extends Controller
             'milestone' => $milestone,
         ], 200);
     }
+
+    public function restructureIndex(): View
+    {
+        $restructurings = \Modules\Syariah\Domain\Models\SybMicroRestructuring::with('facility')
+            ->orderBy('id', 'desc')
+            ->paginate(15);
+
+        return view('syariah::micro.restructure', [
+            'restructurings' => $restructurings,
+        ]);
+    }
+
+    public function storeRestructure(
+        Request $request,
+        \Modules\Syariah\Application\Services\MicroRestructuringService $restructService
+    ): JsonResponse {
+        $validated = $request->validate([
+            'facility_code' => ['required', 'string', 'max:32'],
+            'reason' => ['required', 'string', 'max:255'],
+            'new_nisbah_bps' => ['required', 'integer', 'min:500', 'max:9000'],
+            'extension_months' => ['required', 'integer', 'min:1', 'max:24'],
+            'loss_cause' => ['nullable', 'string', 'in:business_risk,force_majeure,negligence,covenant_breach'],
+        ]);
+
+        $rst = $restructService->restructureFacility(
+            facilityCode: $validated['facility_code'],
+            reason: $validated['reason'],
+            newNisbahBps: $validated['new_nisbah_bps'],
+            extensionMonths: $validated['extension_months'],
+            lossCause: (string) ($validated['loss_cause'] ?? 'business_risk'),
+            approverUserId: (string) auth()->id()
+        );
+
+        return response()->json([
+            'message' => 'Restrukturisasi pembiayaan berhasil diproses.',
+            'restructuring' => $rst,
+        ], 201);
+    }
 }
