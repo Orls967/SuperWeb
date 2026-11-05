@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Modules\Edu\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 use Modules\Banking\Contracts\LedgerEntry;
+use Modules\Edu\Domain\Models\EduCampusTranscript;
+use Modules\Edu\Domain\Models\EduCampusTuitionInvoice;
 use Modules\Edu\Domain\Models\EduCertificate;
 use Modules\Edu\Domain\Models\EduCohort;
 use Modules\Edu\Domain\Models\EduCorporateQuota;
@@ -139,6 +142,52 @@ class EduAuditCommand extends Command
             $this->error($msg);
             $errorMessages[] = $msg;
             $discrepancies += $overdrawnGrants;
+        }
+
+        // 8. Verify Edu Campus Tuition Invoices Bounded Scholarship (Fase 166)
+        if (Schema::hasTable('edu_campus_tuition_invoices')) {
+            $excessScholarships = EduCampusTuitionInvoice::whereColumn('scholarship_deduction_idr', '>', 'gross_amount_idr')->count();
+            if ($excessScholarships > 0) {
+                $msg = "TUITION_SCHOLARSHIP_EXCESS: Found {$excessScholarships} tuition invoices where scholarship exceeds gross amount";
+                $this->error($msg);
+                $errorMessages[] = $msg;
+                $discrepancies += $excessScholarships;
+            }
+        }
+
+        // 9. Verify Edu Campus Transcripts Hash-Chain Integrity (Fase 166)
+        if (Schema::hasTable('edu_campus_transcripts')) {
+            $students = EduCampusTranscript::select('student_user_id')->distinct()->pluck('student_user_id');
+            foreach ($students as $studentId) {
+                $transcripts = EduCampusTranscript::where('student_user_id', $studentId)->orderBy('id')->get();
+                $expectedPrevHash = CanonicalHashChain::GENESIS_PREV_HASH;
+
+                foreach ($transcripts as $t) {
+                    if ($t->prev_hash !== $expectedPrevHash) {
+                        $msg = "TRANSCRIPT_HASH_CHAIN_BROKEN: Student {$studentId} transcript ID {$t->id} prev_hash mismatch";
+                        $this->error($msg);
+                        $errorMessages[] = $msg;
+                        $discrepancies++;
+                    }
+
+                    $expectedHash = CanonicalHashChain::computeHash($expectedPrevHash, [
+                        'student_user_id' => (int) $t->student_user_id,
+                        'course_id' => (int) $t->course_id,
+                        'term_id' => (int) $t->term_id,
+                        'grade_point' => number_format((float) $t->grade_point, 2, '.', ''),
+                        'letter_grade' => strtoupper(trim((string) $t->letter_grade)),
+                    ]);
+
+                    if ($t->certificate_hash !== $expectedHash) {
+                        $msg = "TRANSCRIPT_HASH_MISMATCH: Student {$studentId} transcript ID {$t->id} hash invalid";
+                        $this->error($msg);
+                        $errorMessages[] = $msg;
+                        $discrepancies++;
+                    }
+
+                    $expectedPrevHash = $t->certificate_hash;
+                }
+            }
         }
 
         if ($this->option('json')) {

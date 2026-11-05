@@ -56,7 +56,7 @@ final class EduAccounts
                 'name' => 'Edu Tuition Revenue',
                 'kind' => AccountKind::REVENUE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'edu:research_grant_expense:IDR',
