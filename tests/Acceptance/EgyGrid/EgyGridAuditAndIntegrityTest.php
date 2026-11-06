@@ -7,8 +7,7 @@ namespace Tests\Acceptance\EgyGrid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
-use Modules\Egy\Domain\Models\GenerationAsset;
-use Modules\Egy\Domain\Models\MeterReading;
+use Modules\Egy\database\seeders\EgyRbacSeeder;
 use Modules\Egy\Domain\Models\SmartMeter;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Tests\TestCase;
@@ -20,7 +19,7 @@ class EgyGridAuditAndIntegrityTest extends TestCase
     public function test_audit_passes_on_clean_data_and_fails_on_corruption_fixture(): void
     {
         $this->seed();
-        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
+        (new EgyRbacSeeder)->run();
 
         $service = app(EnergyGridAndMeteringService::class);
 

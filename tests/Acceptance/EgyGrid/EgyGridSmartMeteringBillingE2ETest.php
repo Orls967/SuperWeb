@@ -9,9 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Banking\Domain\Models\Posting;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
+use Modules\Egy\database\seeders\EgyRbacSeeder;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\SmartMeter;
-use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Tests\TestCase;
 
 class EgyGridSmartMeteringBillingE2ETest extends TestCase
@@ -21,7 +21,7 @@ class EgyGridSmartMeteringBillingE2ETest extends TestCase
     public function test_smart_metering_ingest_tou_billing_posting_and_idempotency(): void
     {
         $this->seed();
-        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
+        (new EgyRbacSeeder)->run();
 
         $user = User::factory()->create();
         $user->assignRole('energy_billing');

@@ -20,7 +20,7 @@ class EgyT1Seeder extends Seeder
 {
     public function run(): void
     {
-        (new EgyRbacSeeder())->run();
+        (new EgyRbacSeeder)->run();
 
         // 1. Grid Nodes (Trafo Kawasan)
         $substations = [
@@ -120,7 +120,7 @@ class EgyT1Seeder extends Seeder
             $service->generateBilling(
                 propertyId: (string) $meter1->property_id,
                 period: $now->format('Y-m'),
-                idempotencyKey: "SEED-BILL-{$meter1->property_id}-" . $now->format('Ym')
+                idempotencyKey: "SEED-BILL-{$meter1->property_id}-".$now->format('Ym')
             );
         }
 

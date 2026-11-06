@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Egy\Ledger;
 
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Contracts\LedgerAccount;
+use Modules\Banking\Domain\Enums\AccountKind;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul Egy.

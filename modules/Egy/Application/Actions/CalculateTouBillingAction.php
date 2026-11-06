@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\EgyParameter;
 use Modules\Egy\Domain\Models\MeterReading;
@@ -208,8 +209,8 @@ class CalculateTouBillingAction extends BaseAction
             // Double-entry posting per D126-6:
             // Debit ar:egy:customer:{party}:IDR / Credit egy:grid_electricity_revenue:IDR
             $customerArAccount = EgyAccounts::getOrCreateCustomerAr($customerPartyId);
-            EgyAccounts::ensureAccount('egy:grid_electricity_revenue:IDR', 'Grid Electricity Revenue', \Modules\Banking\Domain\Enums\AccountKind::REVENUE, 'IDR', false);
-            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', \Modules\Banking\Domain\Enums\AccountKind::EXPENSE, 'IDR', true);
+            EgyAccounts::ensureAccount('egy:grid_electricity_revenue:IDR', 'Grid Electricity Revenue', AccountKind::REVENUE, 'IDR', false);
+            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', AccountKind::EXPENSE, 'IDR', true);
 
             $postingLines = Posting::lines()
                 ->debit($customerArAccount->code, $touResult->totalChargeIdr)

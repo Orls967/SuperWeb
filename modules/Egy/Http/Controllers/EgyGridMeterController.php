@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Modules\Egy\Application\Actions\DetectGridTransformerLoadAnomalyAction;
 use Modules\Egy\Application\Actions\IngestSmartGridMeterTelemetryAction;
+use Modules\Egy\Domain\Models\GenerationAsset;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\SmartMeter;
@@ -21,11 +22,11 @@ class EgyGridMeterController extends Controller
     {
         $nodes = GridNode::query()->latest()->take(15)->get();
         $meters = SmartMeter::query()->latest()->take(15)->get();
-        $generationAssets = \Modules\Egy\Domain\Models\GenerationAsset::orderBy('marginal_cost_idr')->get();
+        $generationAssets = GenerationAsset::orderBy('marginal_cost_idr')->get();
 
-        $totalOnlineCapacityMw = (float) \Modules\Egy\Domain\Models\GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('capacity_mw');
+        $totalOnlineCapacityMw = (float) GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('capacity_mw');
         if ($totalOnlineCapacityMw <= 0) {
-            $totalOnlineCapacityMw = (float) \Modules\Egy\Domain\Models\GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('installed_capacity_mw');
+            $totalOnlineCapacityMw = (float) GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('installed_capacity_mw');
         }
         $totalCurrentLoadMw = (float) $nodes->sum('current_load_mw');
         $forecastLoadMw = $totalCurrentLoadMw > 0 ? $totalCurrentLoadMw * 1.15 : 120.0;

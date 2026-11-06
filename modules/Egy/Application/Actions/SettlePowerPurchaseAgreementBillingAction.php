@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Support\Posting;
 use Modules\Egy\Domain\Models\PpaContract;
 use Modules\Egy\Domain\Models\PpaSettlement;
@@ -46,7 +47,7 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
 
             $generatorParty = (string) ($ppa->generator_party_id ?? $ppa->producer_entity_id ?? 'GENCO-DEFAULT');
             $generatorAp = EgyAccounts::getOrCreateGeneratorAp($generatorParty);
-            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', \Modules\Banking\Domain\Enums\AccountKind::EXPENSE, 'IDR', true);
+            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', AccountKind::EXPENSE, 'IDR', true);
 
             $tx = $this->ledgerService->post(new PostingDTO(
                 type: 'ENERGY_PPA_NET_METER_SETTLE',
@@ -114,7 +115,7 @@ class SettlePowerPurchaseAgreementBillingAction extends BaseAction
 
             // Ledger posting: Debit egy:power_purchase_expense:IDR / Credit ap:egy:generator:{party}:IDR
             $generatorAp = EgyAccounts::getOrCreateGeneratorAp($generatorParty);
-            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', \Modules\Banking\Domain\Enums\AccountKind::EXPENSE, 'IDR', true);
+            EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', AccountKind::EXPENSE, 'IDR', true);
 
             $this->ledgerService->post(new PostingDTO(
                 type: EgyTransactionTypes::EGY_POWER_PURCHASE->value,

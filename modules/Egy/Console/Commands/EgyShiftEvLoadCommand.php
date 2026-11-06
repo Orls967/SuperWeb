@@ -25,7 +25,7 @@ class EgyShiftEvLoadCommand extends Command
 
         $event = $service->shiftEvChargingLoad($siteId, $date, $idempotencyKey);
 
-        $this->info("Demand Response Event [{$event->event_code}]: Shifted {$event->shifted_load_kwh} kWh, Savings: Rp ".number_format($event->cost_savings_idr).", Reward: Rp ".number_format($event->total_reward_idr));
+        $this->info("Demand Response Event [{$event->event_code}]: Shifted {$event->shifted_load_kwh} kWh, Savings: Rp ".number_format($event->cost_savings_idr).', Reward: Rp '.number_format($event->total_reward_idr));
 
         return Command::SUCCESS;
     }

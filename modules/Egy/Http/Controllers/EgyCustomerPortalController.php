@@ -22,7 +22,7 @@ class EgyCustomerPortalController extends Controller
         if (! $isAdmin) {
             $metersQuery->where(function ($q) use ($partyId) {
                 $q->where('customer_party_id', $partyId)
-                  ->orWhere('consumer_property_id', $partyId);
+                    ->orWhere('consumer_property_id', $partyId);
             });
         }
         $meters = $metersQuery->get();
@@ -34,7 +34,7 @@ class EgyCustomerPortalController extends Controller
         $invoices = $invoicesQuery->orderBy('created_at', 'desc')->paginate(10);
 
         return view('egy::customer.index', [
-            'customerId' => $user?->name ?? ('User #' . $partyId),
+            'customerId' => $user?->name ?? ('User #'.$partyId),
             'propertyId' => $meters->first()?->property_id ?? 'PROP-DEFAULT',
             'meters' => $meters,
             'invoices' => $invoices,

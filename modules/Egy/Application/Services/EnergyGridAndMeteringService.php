@@ -7,8 +7,10 @@ namespace Modules\Egy\Application\Services;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
+use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Contracts\LedgerEntry;
+use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Egy\Application\Actions\AdjustUtilityInvoiceAction;
 use Modules\Egy\Application\Actions\CalculateTouBillingAction;
 use Modules\Egy\Application\Actions\IngestSmartGridMeterTelemetryAction;
@@ -24,7 +26,9 @@ use Modules\Egy\Domain\Models\PpaContract;
 use Modules\Egy\Domain\Models\PpaSettlement;
 use Modules\Egy\Domain\Models\SmartMeter;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
+use Modules\Egy\Ledger\EgyAccounts;
 use Modules\Shared\Domain\Numerics\UnitCommitment;
+use Modules\Shared\Support\Posting;
 use RuntimeException;
 
 class EnergyGridAndMeteringService
@@ -273,14 +277,14 @@ class EnergyGridAndMeteringService
         $meter->increment('total_kwh_accumulated', $kwh);
 
         // Post balanced ledger entry for legacy test
-        $customerAr = \Modules\Egy\Ledger\EgyAccounts::getOrCreateCustomerAr((string) ($meter->consumer_property_id ?? $meter->property_id ?? 'PROP-001'));
-        \Modules\Egy\Ledger\EgyAccounts::ensureAccount('egy:grid_electricity_revenue:IDR', 'Grid Revenue', \Modules\Banking\Domain\Enums\AccountKind::REVENUE, 'IDR', false);
+        $customerAr = EgyAccounts::getOrCreateCustomerAr((string) ($meter->consumer_property_id ?? $meter->property_id ?? 'PROP-001'));
+        EgyAccounts::ensureAccount('egy:grid_electricity_revenue:IDR', 'Grid Revenue', AccountKind::REVENUE, 'IDR', false);
 
-        $this->ledgerService->post(new \Modules\Banking\Application\DTOs\PostingDTO(
+        $this->ledgerService->post(new PostingDTO(
             type: 'ENERGY_METER_READING_BILL',
             description: "Meter reading bill for {$meter->meter_serial_number}",
             idempotencyKey: "POST-LEGACY-{$reading->id}",
-            entries: \Modules\Shared\Support\Posting::lines()
+            entries: Posting::lines()
                 ->debit($customerAr->code, $totalChargeMinor)
                 ->credit('egy:grid_electricity_revenue:IDR', $totalChargeMinor)
                 ->toEntries('IDR'),
@@ -334,14 +338,14 @@ class EnergyGridAndMeteringService
             'status' => 'ACTIVE',
         ]);
 
-        $generatorAp = \Modules\Egy\Ledger\EgyAccounts::getOrCreateGeneratorAp($params['producer_entity_id']);
-        \Modules\Egy\Ledger\EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', \Modules\Banking\Domain\Enums\AccountKind::EXPENSE, 'IDR', true);
+        $generatorAp = EgyAccounts::getOrCreateGeneratorAp($params['producer_entity_id']);
+        EgyAccounts::ensureAccount('egy:power_purchase_expense:IDR', 'Power Purchase Expense', AccountKind::EXPENSE, 'IDR', true);
 
-        $tx = $this->ledgerService->post(new \Modules\Banking\Application\DTOs\PostingDTO(
+        $tx = $this->ledgerService->post(new PostingDTO(
             type: 'ENERGY_PPA_NET_METER_SETTLE',
             description: "Net metering settlement for {$ppa->contract_number}",
             idempotencyKey: "POST-NETMETER-{$ppa->id}",
-            entries: \Modules\Shared\Support\Posting::lines()
+            entries: Posting::lines()
                 ->debit('egy:power_purchase_expense:IDR', $totalSettlement)
                 ->credit($generatorAp->code, $totalSettlement)
                 ->toEntries('IDR'),

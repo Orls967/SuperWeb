@@ -6,6 +6,7 @@ namespace Tests\Acceptance\EgyGrid;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Egy\database\seeders\EgyRbacSeeder;
 use Modules\Egy\Domain\Models\SmartMeter;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Tests\TestCase;
@@ -17,7 +18,7 @@ class EgyGridCustomerPortalIdorTest extends TestCase
     public function test_customer_portal_prevents_idor_access(): void
     {
         $this->seed();
-        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
+        (new EgyRbacSeeder)->run();
 
         $userA = User::factory()->create();
         $userA->assignRole('customer');

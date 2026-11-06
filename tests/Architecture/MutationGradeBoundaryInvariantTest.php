@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Architecture;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +19,7 @@ use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\PrescriptionSafetyEvaluator;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hotel\Application\Actions\ReserveRoomWithInventoryNightLockAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Inventory\Application\Services\InventoryService;
@@ -233,10 +235,10 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         'status' => 'available',
     ]);
 
-    $bizDate = app(\Modules\Hotel\Application\Services\HotelBusinessDateService::class)->getCurrentBusinessDate($property->id);
+    $bizDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($property->id);
     $inDate = $bizDate;
-    $outPast = \Carbon\Carbon::parse($bizDate)->subDay()->toDateString();
-    $outNext = \Carbon\Carbon::parse($bizDate)->addDay()->toDateString();
+    $outPast = Carbon::parse($bizDate)->subDay()->toDateString();
+    $outNext = Carbon::parse($bizDate)->addDay()->toDateString();
 
     // Boundary: Check-out == Check-in (0 duration)
     expect(fn () => $reserveAction->handle(

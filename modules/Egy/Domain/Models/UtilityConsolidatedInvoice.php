@@ -64,7 +64,7 @@ class UtilityConsolidatedInvoice extends Model
     {
         static::creating(function (self $model): void {
             if (empty($model->invoice_number)) {
-                $model->invoice_number = 'INV-EGY-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+                $model->invoice_number = 'INV-EGY-'.date('Ymd').'-'.strtoupper(substr(uniqid(), -5));
             }
             if (empty($model->billing_period)) {
                 $model->billing_period = $model->period ?? date('Y-m');

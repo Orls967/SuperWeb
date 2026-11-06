@@ -47,7 +47,7 @@ class SmartMeter extends Model
     {
         static::creating(function (self $model): void {
             if (empty($model->meter_serial_number)) {
-                $model->meter_serial_number = $model->meter_code ?? ('MTR-' . uniqid());
+                $model->meter_serial_number = $model->meter_code ?? ('MTR-'.uniqid());
             }
             if (empty($model->meter_code)) {
                 $model->meter_code = $model->meter_serial_number;

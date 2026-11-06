@@ -7,6 +7,7 @@ namespace Tests\Acceptance\EgyGrid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
+use Modules\Egy\database\seeders\EgyRbacSeeder;
 use Modules\Egy\Domain\Models\GenerationAsset;
 use Modules\Egy\Domain\Models\PpaContract;
 use Tests\TestCase;
@@ -18,7 +19,7 @@ class EgyGridDispatchAndBusinessRulesTest extends TestCase
     public function test_merit_order_dispatch_ppa_settlement_and_net_metering_rules(): void
     {
         $this->seed();
-        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
+        (new EgyRbacSeeder)->run();
         $service = app(EnergyGridAndMeteringService::class);
 
         // 1. Generation units setup
