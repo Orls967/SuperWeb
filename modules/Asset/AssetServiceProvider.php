@@ -36,6 +36,10 @@ class AssetServiceProvider extends ServiceProvider
             AssetRegistryLookupInterface::class,
             AssetRegistryLookupService::class
         );
+        $this->app->bind(
+            \Modules\Asset\Contracts\MaintenanceWorkOrderRequester::class,
+            \Modules\Asset\Application\Services\MaintenanceWorkOrderRequesterService::class
+        );
     }
 
     public function boot(): void

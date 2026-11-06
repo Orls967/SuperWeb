@@ -9,6 +9,7 @@ use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
+use Modules\Egy\Domain\Models\EscoSettlement;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\PpaContract;
@@ -137,6 +138,21 @@ class EgyAuditCommand extends Command
         if (abs($icAr + $icAp) > 0.001) {
             $this->error("Intercompany AR ({$icAr}) and AP ({$icAp}) do not eliminate to zero! Net diff: ".($icAr + $icAp));
             $discrepancies++;
+        }
+
+        // 8. ESCO Settlement vs Ledger Consistency Check (Fase 127)
+        $escoSettlements = EscoSettlement::where('status', 'settled')->get();
+        foreach ($escoSettlements as $st) {
+            $expectedEscoShare = (int) $st->esco_share_idr;
+            $ledgerEntry = LedgerEntry::where('transaction_id', $st->ledger_transaction_id)
+                ->whereHas('account', fn ($q) => $q->where('code', "ar:egy:esco_client:{$st->contract->client_party_id}:IDR"))
+                ->first();
+
+            $ledgerAmount = $ledgerEntry !== null ? (int) abs((float) $ledgerEntry->amount) : 0;
+            if ($expectedEscoShare !== $ledgerAmount) {
+                $this->error("ESCO Settlement [#{$st->id}] share ({$expectedEscoShare}) does not match ledger AR ({$ledgerAmount})");
+                $discrepancies++;
+            }
         }
 
         $this->table(
