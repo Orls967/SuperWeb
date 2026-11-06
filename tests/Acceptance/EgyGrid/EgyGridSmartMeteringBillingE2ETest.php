@@ -21,6 +21,7 @@ class EgyGridSmartMeteringBillingE2ETest extends TestCase
     public function test_smart_metering_ingest_tou_billing_posting_and_idempotency(): void
     {
         $this->seed();
+        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
 
         $user = User::factory()->create();
         $user->assignRole('energy_billing');
@@ -108,7 +109,7 @@ class EgyGridSmartMeteringBillingE2ETest extends TestCase
         $this->assertEquals('issued', $invoice->status);
 
         // 4. Verify Ledger Posting exact values
-        $this->assertDatabaseHas('postings', [
+        $this->assertDatabaseHas('bank_ledger_transactions', [
             'type' => 'egy:grid_electricity_revenue',
         ]);
 

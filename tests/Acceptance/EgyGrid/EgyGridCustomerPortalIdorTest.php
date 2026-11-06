@@ -17,6 +17,7 @@ class EgyGridCustomerPortalIdorTest extends TestCase
     public function test_customer_portal_prevents_idor_access(): void
     {
         $this->seed();
+        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
 
         $userA = User::factory()->create();
         $userA->assignRole('customer');

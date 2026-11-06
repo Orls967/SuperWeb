@@ -20,6 +20,7 @@ class EgyGridAuditAndIntegrityTest extends TestCase
     public function test_audit_passes_on_clean_data_and_fails_on_corruption_fixture(): void
     {
         $this->seed();
+        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
 
         $service = app(EnergyGridAndMeteringService::class);
 

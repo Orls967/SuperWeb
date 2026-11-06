@@ -10853,12 +10853,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
-- [ ] 126.2 **Smart metering massal**: 5 juta meter (mall, pabrik, RS, hotel, venue, kantor) → reading 15-menit → time-of-use tariff → tagihan distribusi per properti → terhubung tagihan utilitas lini (Fase 76.3, 13.2) sebagai sumber harga beli
-- [ ] 126.3 **Grid dispatch (simulasi)**: beban prediksi (pola jam, cuaca, event venue) → unit commitment sederhana (urutan murah) → dispatch order → realtime generation tercatat → curtailment saat surplus
-- [ ] 126.4 **PPA & net metering**: kontrak beli listrik (Contract Fase 28) dengan fasilitas gr → surplus solar site dijual ke grid (feed-in tariff) → revenue energi tercatat per entitas
-- [ ] 126.5 **EV charging load** (Fase 69.5) dijadwalkan ke off-peak → mengurangi beban puncak → penghematan dibagi (demand response reward) → masuk ESG
-- [ ] 126.6 Tests: (a) dispatch tak melebihi kapasitas terpasang (b) tagihan meter = Σ reading × TOU tariff (c) net metering surplus = produksi − konsumsi terukur (d) PPA settlement sesuai kontrak (e) `egy:audit` = 0 selisih vs ledger
+- [🔵] 126.1 Modul `Egy` (`egy_`): provider, MenuRegistry "Energi & Utilitas", roles (`grid_operator`, `genco_trader`, `energy_auditor`, `renewable_dev`), policies, arch test; tabel `egy_generation_assets` (PLTU simulasi, solar farm Fase 123.1, battery, genset) , `egy_grid_nodes`, `egy_smart_meters`
+- [🔵] 126.2 **Smart metering massal**: 5 juta meter (mall, pabrik, RS, hotel, venue, kantor) → reading 15-menit → time-of-use tariff → tagihan distribusi per properti → terhubung tagihan utilitas lini (Fase 76.3, 13.2) sebagai sumber harga beli
+- [🔵] 126.3 **Grid dispatch (simulasi)**: beban prediksi (pola jam, cuaca, event venue) → unit commitment sederhana (urutan murah) → dispatch order → realtime generation tercatat → curtailment saat surplus
+- [🔵] 126.4 **PPA & net metering**: kontrak beli listrik (Contract Fase 28) dengan fasilitas gr → surplus solar site dijual ke grid (feed-in tariff) → revenue energi tercatat per entitas
+- [🔵] 126.5 **EV charging load** (Fase 69.5) dijadwalkan ke off-peak → mengurangi beban puncak → penghematan dibagi (demand response reward) → masuk ESG
+- [🔵] 126.6 Tests: (a) dispatch tak melebihi kapasitas terpasang (b) tagihan meter = Σ reading × TOU tariff (c) net metering surplus = produksi − konsumsi terukur (d) PPA settlement sesuai kontrak (e) `egy:audit` = 0 selisih vs ledger
 - [ ] 126.7 Quality gate Fase 126
 
 ## FASE 127 — ENERGI & UTILITAS: WATER, WASTE & DISTRICT UTILITIES

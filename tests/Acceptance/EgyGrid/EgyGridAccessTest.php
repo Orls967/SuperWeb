@@ -15,6 +15,7 @@ class EgyGridAccessTest extends TestCase
     public function test_route_access_matrix_for_energy_grid_and_metering(): void
     {
         $this->seed();
+        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
 
         $routes = [
             ['url' => '/energy/grid', 'authorized' => ['admin', 'grid_operator'], 'unauthorized' => ['customer']],

@@ -18,6 +18,7 @@ class EgyGridDispatchAndBusinessRulesTest extends TestCase
     public function test_merit_order_dispatch_ppa_settlement_and_net_metering_rules(): void
     {
         $this->seed();
+        (new \Modules\Egy\database\seeders\EgyRbacSeeder())->run();
         $service = app(EnergyGridAndMeteringService::class);
 
         // 1. Generation units setup
@@ -110,7 +111,7 @@ class EgyGridDispatchAndBusinessRulesTest extends TestCase
         );
 
         $this->assertEquals(90000000, $settlement->total_payout_idr);
-        $this->assertDatabaseHas('postings', [
+        $this->assertDatabaseHas('bank_ledger_transactions', [
             'type' => 'egy:power_purchase_expense',
         ]);
 

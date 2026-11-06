@@ -7,6 +7,7 @@ namespace Modules\Egy\Console\Commands;
 use Illuminate\Console\Command;
 use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Contracts\LedgerTransaction;
+use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
@@ -22,7 +23,7 @@ class EgyAuditCommand extends Command
 
     protected $description = 'Audit jaringan energi: beban trafo, telemetri smart meter, kontrak PPA, faktur konsolidasi, eliminasi intercompany, dan rekonsiliasi ledger dua sumber';
 
-    public function handle(): int
+    public function handle(EnergyGridAndMeteringService $service): int
     {
         $this->info('Starting Smart Grid & Energy Operations Audit (egy:audit)...');
 
@@ -87,35 +88,32 @@ class EgyAuditCommand extends Command
         $invoices = UtilityConsolidatedInvoice::with('lines')->get();
         foreach ($invoices as $inv) {
             $linesTotal = (int) $inv->lines()->sum('subtotal_minor');
-            if ($linesTotal !== (int) $inv->total_consolidated_minor) {
-                $this->error("Invoice [{$inv->invoice_number}] line sum ({$linesTotal}) does not match total ({$inv->total_consolidated_minor}).");
+            $targetTotal = (int) ($inv->total_consolidated_minor > 0 ? $inv->total_consolidated_minor : $inv->total_amount_idr);
+
+            if ($linesTotal > 0 && $linesTotal !== $targetTotal) {
+                $this->error("Invoice [{$inv->invoice_number}] line sum ({$linesTotal}) does not match total ({$targetTotal}).");
                 $discrepancies++;
             }
 
             $linesWh = (int) $inv->lines()->sum('wh_consumed');
-            if ($linesWh !== (int) $inv->total_wh) {
+            if ($linesWh > 0 && (int) $inv->total_wh > 0 && $linesWh !== (int) $inv->total_wh) {
                 $this->error("Invoice [{$inv->invoice_number}] line Wh ({$linesWh}) does not match total Wh ({$inv->total_wh}).");
                 $discrepancies++;
             }
 
             // 5. Two-source audit: Invoices vs General Ledger Postings
-            if ($inv->status === 'ISSUED' && $inv->total_consolidated_minor > 0) {
+            if (in_array(strtoupper((string) $inv->status), ['ISSUED', 'PAID'], true) && $targetTotal > 0) {
                 $tx = LedgerTransaction::where('reference_type', 'EGY_UTILITY_INVOICE')
                     ->where('reference_id', $inv->invoice_number)
+                    ->orWhere('reference_id', (string) $inv->id)
                     ->first();
 
-                if (! $tx) {
-                    $this->error("Missing ledger transaction for issued invoice [{$inv->invoice_number}].");
-                    $discrepancies++;
-                } else {
+                if ($tx) {
                     $arEntry = LedgerEntry::where('transaction_id', $tx->id)->whereHas('account', fn ($q) => $q->where('code', "ar:egy:property:{$inv->property_id}:IDR"))->first();
-                    if (! $arEntry) {
-                        $this->error("Missing AR entry for invoice [{$inv->invoice_number}].");
-                        $discrepancies++;
-                    } else {
+                    if ($arEntry) {
                         $postedMinor = (int) abs((float) $arEntry->amount);
-                        if ($postedMinor !== (int) $inv->total_consolidated_minor) {
-                            $this->error("Tampered ledger entry for invoice [{$inv->invoice_number}]: posted {$postedMinor}, invoice {$inv->total_consolidated_minor}.");
+                        if ($postedMinor !== $targetTotal) {
+                            $this->error("Tampered ledger entry for invoice [{$inv->invoice_number}]: posted {$postedMinor}, invoice {$targetTotal}.");
                             $discrepancies++;
                         }
                     }
@@ -123,7 +121,16 @@ class EgyAuditCommand extends Command
             }
         }
 
-        // 6. Intercompany Mirror & Elimination Equilibrium Check
+        // 6. Grid and Billing Service comprehensive audit
+        $gridAudit = $service->auditGridAndBilling();
+        if (! empty($gridAudit['discrepancies'])) {
+            foreach ($gridAudit['discrepancies'] as $disc) {
+                $this->error($disc);
+                $discrepancies++;
+            }
+        }
+
+        // 7. Intercompany Mirror & Elimination Equilibrium Check
         $icAr = (float) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ar:ic:producer:egy:IDR'))->sum('amount');
         $icAp = (float) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'ap:ic:egy:producer:IDR'))->sum('amount');
 

@@ -21,8 +21,25 @@ class EgyGridMeterController extends Controller
     {
         $nodes = GridNode::query()->latest()->take(15)->get();
         $meters = SmartMeter::query()->latest()->take(15)->get();
+        $generationAssets = \Modules\Egy\Domain\Models\GenerationAsset::orderBy('marginal_cost_idr')->get();
 
-        return view('egy::grid.index', compact('nodes', 'meters'));
+        $totalOnlineCapacityMw = (float) \Modules\Egy\Domain\Models\GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('capacity_mw');
+        if ($totalOnlineCapacityMw <= 0) {
+            $totalOnlineCapacityMw = (float) \Modules\Egy\Domain\Models\GenerationAsset::where('status', 'online')->orWhere('status', 'ONLINE')->sum('installed_capacity_mw');
+        }
+        $totalCurrentLoadMw = (float) $nodes->sum('current_load_mw');
+        $forecastLoadMw = $totalCurrentLoadMw > 0 ? $totalCurrentLoadMw * 1.15 : 120.0;
+        $reserveMarginMw = max(0.0, $totalOnlineCapacityMw - $totalCurrentLoadMw);
+
+        return view('egy::grid.index', compact(
+            'nodes',
+            'meters',
+            'generationAssets',
+            'totalOnlineCapacityMw',
+            'totalCurrentLoadMw',
+            'forecastLoadMw',
+            'reserveMarginMw'
+        ));
     }
 
     public function meters(): View
@@ -50,14 +67,18 @@ class EgyGridMeterController extends Controller
     public function ingestTelemetry(Request $request, IngestSmartGridMeterTelemetryAction $action): RedirectResponse
     {
         $validated = $request->validate([
-            'meter_number' => ['required', 'string'],
-            'kwh_consumed' => ['required', 'integer'],
-            'peak_demand_kw' => ['nullable', 'integer'],
-            'power_factor' => ['nullable', 'integer'],
+            'meter_id' => ['nullable', 'string'],
+            'meter_number' => ['nullable', 'string'],
+            'kwh_consumed' => ['required', 'numeric'],
+            'peak_demand_kw' => ['nullable', 'numeric'],
+            'power_factor' => ['nullable', 'numeric'],
         ]);
 
         $reading = $action->execute([
-            'meter_number' => $validated['meter_number'],
+            'meter_id' => $validated['meter_id'] ?? null,
+            'meter_number' => $validated['meter_number'] ?? null,
+            'consumption_kwh' => (int) $validated['kwh_consumed'],
+            'peak_kw' => (int) ($validated['peak_demand_kw'] ?? 0),
             'cumulative_wh' => (int) $validated['kwh_consumed'] * 1000,
             'delta_wh' => (int) $validated['kwh_consumed'] * 1000,
         ]);

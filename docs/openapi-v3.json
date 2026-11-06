@@ -25507,6 +25507,198 @@
                 }
             }
         },
+        "/customer/energy": {
+            "get": {
+                "operationId": "getEgyCustomerIndex",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Index (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, customer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/customer/energy/bills/{id}": {
+            "get": {
+                "operationId": "getEgyCustomerBill",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Show Bill (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, customer].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
         "/dashboard": {
             "get": {
                 "operationId": "getDashboard",
@@ -28542,20 +28734,936 @@
                 ]
             }
         },
-        "/energy/dispatch": {
+        "/energy/bills": {
             "get": {
-                "operationId": "getEgyGridDispatch",
+                "operationId": "getEgyBillsIndex",
                 "tags": [
                     "Egy"
                 ],
-                "summary": "Dispatch View (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "summary": "Index (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
                 "x-allowed-roles": [
                     "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/bills/export": {
+            "get": {
+                "operationId": "getEgyBillsExport",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Export (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/bills/generate": {
+            "post": {
+                "operationId": "postEgyBillsGenerate",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Generate (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyBillsGenerate",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/bills/{id}": {
+            "get": {
+                "operationId": "getEgyBillsShow",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Show (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/bills/{id}/adjust": {
+            "post": {
+                "operationId": "postEgyBillsAdjust",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Adjust (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyBillsAdjust",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/bills/{id}/pay": {
+            "post": {
+                "operationId": "postEgyBillsPay",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Pay (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyBillsPay",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/dispatch": {
+            "get": {
+                "operationId": "getEgyDispatchIndex",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Index (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, grid_operator].",
+                "x-allowed-roles": [
+                    "admin",
+                    "grid_operator"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "postEgyDispatchStore",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Run (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, grid_operator].",
+                "x-allowed-roles": [
+                    "admin",
+                    "grid_operator"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyDispatchStore",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/dispatch/run": {
+            "post": {
+                "operationId": "postEgyDispatchRun",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Run (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, grid_operator].",
+                "x-allowed-roles": [
+                    "admin",
+                    "grid_operator"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyDispatchRun",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/grid": {
+            "get": {
+                "operationId": "getEgyGridDashboard",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Dashboard (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, grid_operator].",
+                "x-allowed-roles": [
+                    "admin",
+                    "grid_operator"
                 ],
                 "parameters": [
                     {
@@ -28734,7 +29842,103 @@
                 ]
             }
         },
-        "/energy/meters": {
+        "/energy/legacy/dispatch": {
+            "get": {
+                "operationId": "getEgyGridDispatch",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Dispatch View (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_auditor",
+                    "genco_trader",
+                    "grid_operator",
+                    "renewable_dev"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/legacy/meters": {
             "get": {
                 "operationId": "getEgyGridMeters",
                 "tags": [
@@ -28748,6 +29952,414 @@
                     "genco_trader",
                     "grid_operator",
                     "renewable_dev"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/legacy/ppa": {
+            "get": {
+                "operationId": "getEgyPpaIndex",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Index (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_auditor",
+                    "genco_trader",
+                    "grid_operator",
+                    "renewable_dev"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/legacy/ppa/{id}": {
+            "get": {
+                "operationId": "getEgyPpaShow",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Show (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_auditor",
+                    "genco_trader",
+                    "grid_operator",
+                    "renewable_dev"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/energy/legacy/ppa/{id}/settle": {
+            "post": {
+                "operationId": "postEgyPpaSettle",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Settle (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_auditor",
+                    "genco_trader",
+                    "grid_operator",
+                    "renewable_dev"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter id for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postEgyPpaSettle",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/energy/meters": {
+            "get": {
+                "operationId": "getEgyMetersIndex",
+                "tags": [
+                    "Egy"
+                ],
+                "summary": "Index (Egy)",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].",
+                "x-allowed-roles": [
+                    "admin",
+                    "energy_billing"
                 ],
                 "parameters": [
                     {
@@ -29034,13 +30646,13 @@
                 }
             }
         },
-        "/energy/microgrid/p2p": {
+        "/energy/microgrid/rec/mint": {
             "post": {
-                "operationId": "postEgyMicrogridP2p",
+                "operationId": "postEgyRecMint",
                 "tags": [
                     "Egy"
                 ],
-                "summary": "Trade P2P (Egy)",
+                "summary": "Mint Rec (Egy)",
                 "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
                 "x-allowed-roles": [
                     "admin",
@@ -29129,7 +30741,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Request payload for postEgyMicrogridP2p",
+                    "description": "Request payload for postEgyRecMint",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -29357,18 +30969,15 @@
         },
         "/energy/ppa": {
             "get": {
-                "operationId": "getEgyPpaIndex",
+                "operationId": "getEgyPpaList",
                 "tags": [
                     "Egy"
                 ],
                 "summary": "Index (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, genco_trader].",
                 "x-allowed-roles": [
                     "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
+                    "genco_trader"
                 ],
                 "parameters": [
                     {
@@ -29453,18 +31062,15 @@
         },
         "/energy/ppa/{id}": {
             "get": {
-                "operationId": "getEgyPpaShow",
+                "operationId": "getEgyPpaDetail",
                 "tags": [
                     "Egy"
                 ],
                 "summary": "Show (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, genco_trader].",
                 "x-allowed-roles": [
                     "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
+                    "genco_trader"
                 ],
                 "parameters": [
                     {
@@ -29555,18 +31161,15 @@
         },
         "/energy/ppa/{id}/settle": {
             "post": {
-                "operationId": "postEgyPpaSettle",
+                "operationId": "postEgyPpaProcessSettle",
                 "tags": [
                     "Egy"
                 ],
                 "summary": "Settle (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
+                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, genco_trader].",
                 "x-allowed-roles": [
                     "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
+                    "genco_trader"
                 ],
                 "parameters": [
                     {
@@ -29657,211 +31260,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Request payload for postEgyPpaSettle",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Dynamic payload attributes governed by module domain rules"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/energy/rec": {
-            "get": {
-                "operationId": "getEgyRecIndex",
-                "tags": [
-                    "Egy"
-                ],
-                "summary": "Rec Index (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
-                "x-allowed-roles": [
-                    "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/CorrelationIdHeader"
-                    },
-                    {
-                        "$ref": "#/components/parameters/CursorPaginationParam"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "Response envelope"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication credentials missing, expired, or invalid",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error or business invariant domain violation",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "SessionCookieAuth": []
-                    }
-                ]
-            }
-        },
-        "/energy/rec/mint": {
-            "post": {
-                "operationId": "postEgyRecMint",
-                "tags": [
-                    "Egy"
-                ],
-                "summary": "Mint Rec (Egy)",
-                "description": "Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor, genco_trader, grid_operator, renewable_dev].",
-                "x-allowed-roles": [
-                    "admin",
-                    "energy_auditor",
-                    "genco_trader",
-                    "grid_operator",
-                    "renewable_dev"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/CorrelationIdHeader"
-                    },
-                    {
-                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Resource successfully created or operation executed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "Response envelope"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication credentials missing, expired, or invalid",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error or business invariant domain violation",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    },
-                    "429": {
-                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
-                        "content": {
-                            "application/problem+json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    },
-                    {
-                        "SessionCookieAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "description": "Request payload for postEgyRecMint",
+                    "description": "Request payload for postEgyPpaProcessSettle",
                     "required": true,
                     "content": {
                         "application/json": {
