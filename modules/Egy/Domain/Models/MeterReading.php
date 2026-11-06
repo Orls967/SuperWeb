@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Egy\Domain\Models;
 
-use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RuntimeException;
 
 class MeterReading extends Model
 {
+    use HasUuids;
+
     protected $table = 'egy_meter_readings';
 
     public $incrementing = false;
@@ -21,59 +22,64 @@ class MeterReading extends Model
         'id',
         'meter_id',
         'reading_at',
+        'interval_start',
+        'interval_end',
+        'consumption_kwh',
+        'production_kwh',
+        'peak_kw',
+        'power_factor_bps',
+        'kwh_consumed',
         'cumulative_wh',
         'delta_wh',
         'interval_status',
         'is_wbp',
-        'kwh_consumed',
         'is_peak_hour',
         'rate_per_kwh_minor',
         'total_charge_minor',
-        'interval_start',
-        'interval_end',
+        'is_reversal',
+        'reversal_for_id',
+        'idempotency_key',
     ];
 
     protected $casts = [
-        'reading_at' => 'datetime',
-        'cumulative_wh' => 'integer',
-        'delta_wh' => 'integer',
-        'interval_status' => 'string',
-        'is_wbp' => 'boolean',
-        'kwh_consumed' => 'float',
-        'is_peak_hour' => 'boolean',
-        'rate_per_kwh_minor' => 'integer',
-        'total_charge_minor' => 'integer',
         'interval_start' => 'datetime',
         'interval_end' => 'datetime',
+        'reading_at' => 'datetime',
+        'consumption_kwh' => 'integer',
+        'production_kwh' => 'integer',
+        'peak_kw' => 'integer',
+        'power_factor_bps' => 'integer',
+        'cumulative_wh' => 'integer',
+        'delta_wh' => 'integer',
+        'is_peak_hour' => 'boolean',
+        'is_wbp' => 'boolean',
+        'is_reversal' => 'boolean',
     ];
 
     protected static function booted(): void
     {
         static::creating(function (self $model): void {
-            $readingAt = $model->reading_at ?? CarbonImmutable::now();
-            if ($model->kwh_consumed === null) {
-                $model->kwh_consumed = ($model->delta_wh ?? 0) / 1000.0;
+            if (empty($model->kwh_consumed)) {
+                $model->kwh_consumed = (float) ($model->consumption_kwh ?? 0);
             }
-            if ($model->rate_per_kwh_minor === null) {
-                $model->rate_per_kwh_minor = $model->is_wbp ? 2100 : 1450;
+            if (empty($model->consumption_kwh)) {
+                $model->consumption_kwh = (int) ($model->kwh_consumed ?? 0);
             }
-            if ($model->total_charge_minor === null) {
-                $model->total_charge_minor = (int) round(($model->kwh_consumed ?? 0.0) * $model->rate_per_kwh_minor);
+            if (empty($model->rate_per_kwh_minor)) {
+                $model->rate_per_kwh_minor = 144470;
             }
-            if ($model->interval_start === null) {
-                $model->interval_start = $readingAt;
+            if (! isset($model->total_charge_minor)) {
+                $model->total_charge_minor = (int) ($model->kwh_consumed * $model->rate_per_kwh_minor / 100);
             }
-            if ($model->interval_end === null) {
-                $model->interval_end = $readingAt;
+            if (empty($model->reading_at)) {
+                $model->reading_at = $model->interval_end ?? $model->interval_start ?? now();
             }
-        });
-
-        static::updating(function (): void {
-            throw new RuntimeException('Record is immutable append-only and cannot be updated.');
-        });
-
-        static::deleting(function (): void {
-            throw new RuntimeException('Record is immutable append-only and cannot be deleted.');
+            if (empty($model->interval_start)) {
+                $model->interval_start = now()->subMinutes(15);
+            }
+            if (empty($model->interval_end)) {
+                $model->interval_end = now();
+            }
         });
     }
 

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Egy\Domain\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UtilityInvoiceLine extends Model
 {
+    use HasUuids;
+
     protected $table = 'egy_utility_invoice_lines';
 
     public $incrementing = false;
@@ -21,15 +24,15 @@ class UtilityInvoiceLine extends Model
         'window_type',
         'wh_consumed',
         'rate_per_kwh_minor',
-        'subtotal_minor',
         'line_total_minor',
+        'subtotal_minor',
     ];
 
     protected $casts = [
         'wh_consumed' => 'integer',
         'rate_per_kwh_minor' => 'integer',
-        'subtotal_minor' => 'integer',
         'line_total_minor' => 'integer',
+        'subtotal_minor' => 'integer',
     ];
 
     public function invoice(): BelongsTo

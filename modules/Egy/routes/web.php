@@ -3,27 +3,63 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Egy\Http\Controllers\EgyBillController;
+use Modules\Egy\Http\Controllers\EgyCustomerPortalController;
+use Modules\Egy\Http\Controllers\EgyDispatchController;
+use Modules\Egy\Http\Controllers\EgyGridController;
 use Modules\Egy\Http\Controllers\EgyGridMeterController;
+use Modules\Egy\Http\Controllers\EgyMeterController;
 use Modules\Egy\Http\Controllers\EgyMicrogridRecController;
 use Modules\Egy\Http\Controllers\EgyPowerPurchaseController;
+use Modules\Egy\Http\Controllers\EgyPpaController;
 
-Route::middleware(['web', 'auth', 'role:admin,grid_operator,genco_trader,energy_auditor,renewable_dev'])->prefix('energy')->group(function () {
+// 1. Grid Operator & Admin: /energy/grid & /energy/dispatch
+Route::middleware(['web', 'auth', 'role:admin,grid_operator'])->prefix('energy')->group(function () {
+    Route::get('/grid', [EgyGridController::class, 'dashboard'])->name('egy.grid.dashboard');
+    Route::get('/dispatch', [EgyDispatchController::class, 'index'])->name('egy.dispatch.index');
+    Route::post('/dispatch', [EgyDispatchController::class, 'run'])->name('egy.dispatch.store');
+    Route::post('/dispatch/run', [EgyDispatchController::class, 'run'])->name('egy.dispatch.run');
+});
+
+// 2. Energy Billing & Admin: /energy/meters & /energy/bills
+Route::middleware(['web', 'auth', 'role:admin,energy_billing'])->prefix('energy')->group(function () {
+    Route::get('/meters', [EgyMeterController::class, 'index'])->name('egy.meters.index');
+    Route::get('/bills', [EgyBillController::class, 'index'])->name('egy.bills.index');
+    Route::get('/bills/export', [EgyBillController::class, 'export'])->name('egy.bills.export');
+    Route::get('/bills/{id}', [EgyBillController::class, 'show'])->name('egy.bills.show');
+    Route::post('/bills/generate', [EgyBillController::class, 'generate'])->name('egy.bills.generate');
+    Route::post('/bills/{id}/pay', [EgyBillController::class, 'pay'])->name('egy.bills.pay');
+    Route::post('/bills/{id}/adjust', [EgyBillController::class, 'adjust'])->name('egy.bills.adjust');
+});
+
+// 3. Genco Trader & Admin: /energy/ppa
+Route::middleware(['web', 'auth', 'role:admin,genco_trader'])->prefix('energy')->group(function () {
+    Route::get('/ppa', [EgyPpaController::class, 'index'])->name('egy.ppa.list');
+    Route::get('/ppa/{id}', [EgyPpaController::class, 'show'])->name('egy.ppa.detail');
+    Route::post('/ppa/{id}/settle', [EgyPpaController::class, 'settle'])->name('egy.ppa.process_settle');
+});
+
+// 4. Customer Portal: /customer/energy
+Route::middleware(['web', 'auth', 'role:admin,customer'])->prefix('customer/energy')->group(function () {
+    Route::get('/', [EgyCustomerPortalController::class, 'index'])->name('egy.customer.index');
+    Route::get('/bills/{id}', [EgyCustomerPortalController::class, 'showBill'])->name('egy.customer.bill');
+});
+
+// 5. Shared overview and legacy endpoints for backward compatibility
+Route::middleware(['web', 'auth', 'role:admin,energy_auditor,genco_trader,grid_operator,renewable_dev'])->prefix('energy')->group(function () {
     Route::get('/', [EgyGridMeterController::class, 'index'])->name('egy.grid.index');
     Route::get('/overview', [EgyGridMeterController::class, 'index'])->name('energy.index');
-    Route::get('/meters', [EgyGridMeterController::class, 'meters'])->name('egy.grid.meters');
-    Route::get('/dispatch', [EgyGridMeterController::class, 'dispatchView'])->name('egy.grid.dispatch');
+    Route::get('/legacy/meters', [EgyGridMeterController::class, 'meters'])->name('egy.grid.meters');
+    Route::get('/legacy/dispatch', [EgyGridMeterController::class, 'dispatchView'])->name('egy.grid.dispatch');
     Route::get('/invoices', [EgyGridMeterController::class, 'invoicesView'])->name('egy.grid.invoices');
     Route::post('/telemetry', [EgyGridMeterController::class, 'ingestTelemetry'])->name('egy.grid.telemetry');
     Route::post('/nodes/{nodeId}/anomaly', [EgyGridMeterController::class, 'scanAnomaly'])->name('egy.grid.anomaly');
 
-    Route::get('/ppa', [EgyPowerPurchaseController::class, 'index'])->name('egy.ppa.index');
-    Route::get('/ppa/{id}', [EgyPowerPurchaseController::class, 'show'])->name('egy.ppa.show');
-    Route::post('/ppa/{id}/settle', [EgyPowerPurchaseController::class, 'settle'])->name('egy.ppa.settle');
+    Route::get('/legacy/ppa', [EgyPowerPurchaseController::class, 'index'])->name('egy.ppa.index');
+    Route::get('/legacy/ppa/{id}', [EgyPowerPurchaseController::class, 'show'])->name('egy.ppa.show');
+    Route::post('/legacy/ppa/{id}/settle', [EgyPowerPurchaseController::class, 'settle'])->name('egy.ppa.settle');
 
     Route::get('/microgrid', [EgyMicrogridRecController::class, 'index'])->name('egy.microgrid.index');
     Route::post('/microgrid/dispatch', [EgyMicrogridRecController::class, 'dispatchBattery'])->name('egy.microgrid.dispatch');
-    Route::post('/microgrid/p2p', [EgyMicrogridRecController::class, 'tradeP2p'])->name('egy.microgrid.p2p');
-
-    Route::get('/rec', [EgyMicrogridRecController::class, 'recIndex'])->name('egy.rec.index');
-    Route::post('/rec/mint', [EgyMicrogridRecController::class, 'mintRec'])->name('egy.rec.mint');
+    Route::post('/microgrid/rec/mint', [EgyMicrogridRecController::class, 'mintRec'])->name('egy.rec.mint');
 });

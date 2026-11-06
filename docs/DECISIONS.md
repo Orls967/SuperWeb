@@ -2599,3 +2599,37 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   4. **G7-D22 (Halal Transaction Filter & Hard Blocking Kategori Haram)**: Seluruh transaksi pembayaran merchant melewati filter validasi kepatuhan halal: merchant pada industri berisiko makanan/minuman/perhotelan wajib memiliki sertifikat halal terdaftar yang masih berlaku dari BPJPH/MUI. Transaksi ke entitas atau kategori non-halal (perjudian, miras/alkohol, riba/rentenir, klub malam) diblokir seketika pada tingkat gateway pembayaran.
   5. **G7-D23 (DPS Four-Eyes Command Center & Incident Audit Trail)**: Papan kendali operasional syariah menyediakan jejak audit forensik lengkap bagi Dewan Pengawas Syariah (DPS) dan regulator, termasuk pelaporan insiden operasional, pemantauan status NPF portofolio, dan reviu berkala atas akad restrukturisasi pembiayaan.
 
+<a id="2026-11-06-g7-p3-energi-utilitas-fase-126"></a>
+<a id="g7-p3-d9"></a>
+<a id="g7-p3-d10"></a>
+<a id="g7-p3-d11"></a>
+<a id="g7-p3-d12"></a>
+<a id="d126-1"></a>
+<a id="d126-2"></a>
+<a id="d126-3"></a>
+<a id="d126-4"></a>
+<a id="d126-5"></a>
+<a id="d126-6"></a>
+<a id="d126-7"></a>
+## 2026-11-06: [G7-P3.1] Modul Energi & Utilitas — Genco, Grid & Smart Metering (Fase 126, G7-D9..G7-D12, D126-1..D126-7)
+- **Anchor:** `2026-11-06-g7-p3-energi-utilitas-fase-126` / `g7-p3-d9` / `g7-p3-d10` / `g7-p3-d11` / `g7-p3-d12` / `d126-1` / `d126-2` / `d126-3` / `d126-4` / `d126-5` / `d126-6` / `d126-7`
+- **Konteks:**
+  - Melaksanakan Lini 13 Energi & Utilitas (Fase 126) untuk implementasi genco, grid dispatch, smart metering massal 15-menit, PPA & net metering, serta optimasi beban EV charging demand response.
+- **Keputusan:**
+  1. **G7-D9 (Satuan Integer & Presisi Non-Float)**: Energi kWh disimpan dalam milli-kWh integer (Wh), daya kW dalam Watt integer, volume air dalam liter integer, energi termal dalam Wh_th integer, dan emisi dalam gram CO2e. Nilai tarif dalam integer Rupiah per kWh/m³, nilai antara menggunakan BigRational dan pembulatan HalfUp per baris tagihan.
+  2. **G7-D10 (Interval 15 Menit & Idempotensi Telemetri)**: Interval pembacaan smart meter berbasis 15 menit, setengah terbuka [mulai, selesai) pada zona waktu site. Pembacaan ganda untuk pasangan (meter_id, interval_start) bersifat idempoten (unique constraint). Pembacaan terlambat atau revisi dicatat lewat baris pembalik append-only tanpa menimpa fakta.
+  3. **G7-D11 (Parameter Berversi egy_parameters & Label S1)**: Seluruh tarif (TOU, feed-in, demand charge), faktor emisi, dan harga karbon dikelola dalam tabel parameter berversi `egy_parameters` berlabel simulasi S1 dan diverifikasi dengan fixture.
+  4. **G7-D12 (Registri Meter Terpadu Multi-Utility)**: Meter listrik, air, gas, dan termal dikelola dalam satu registri terpadu `egy_smart_meters` bertipe `utility_type` (bukan tabel per jenis). Aksi lama `Mall\RecordUtilityReadingAction` diintegrasikan via adapter tanpa duplikasi kode.
+  5. **D126-1 (Registri Meter & Node Grid)**: Pembangkit dan node grid terhubung ke registri aset `Asset` melalui `AssetRegistryLookupInterface`. Pembacaan 15 menit didukung ingest command `egy:ingest-readings`.
+  6. **D126-2 (Tagihan TOU & Demand Charge E1)**: Tagihan dihitung melalui algoritma bersertifikat `Utility\TouBilling` dengan state machine tagihan: `draft` -> `validated` -> `issued` -> `partially_paid` -> `paid` -> `overdue` -> `disputed` -> `adjusted`.
+  7. **D126-3 (Merit Order Dispatch E2 & Curtailment)**: Dispatch pembangkit per jam mengikuti urutan biaya marjinal terendah (`Energy\MeritOrderDispatch`) dengan unit komitmen wajib jalan (must-run min-stable), pembatasan kapasitas surya, dan pencatatan curtailment resmi bila terjadi kelebihan daya.
+  8. **D126-4 (PPA & Net Metering E3)**: Kontrak PPA diverifikasi via `ContractLookupInterface`. Settlement net metering per interval (`Energy\NetMeteringSettlement`) memperhitungkan ekspor dan impor secara presisi tanpa float.
+  9. **D126-5 (EV Demand Response & G7-K8)**: Sesi fleksibel pengisian EV dibaca dari `Modules\Mobility\Contracts\EvChargingSessionSource` dan dijadwalkan ulang ke jendela off-peak. Insentif penghematan dibagi menggunakan `LargestRemainder` dan manfaat emisi dicatat via `EmissionBenefitRecorder`.
+  10. **D126-6 (Posting Ledger Genco & Grid)**:
+      - Tagihan listrik properti: Debit `ar:egy:customer:{party}:IDR`, Kredit `egy:grid_electricity_revenue:IDR`.
+      - Beli dari pembangkit/PPA: Debit `egy:power_purchase_expense:IDR`, Kredit `ap:egy:generator:{party}:IDR`.
+      - Feed-in surplus pelanggan: Debit `egy:power_purchase_expense:IDR`, Kredit `ar:egy:customer:{party}:IDR`.
+      - Reward demand response: Debit `egy:demand_response_expense:IDR`, Kredit `wallet:user:{penerima}:IDR`.
+      - Pembayaran tagihan: Debit `wallet:clearing:IDR`, Kredit `ar:egy:customer:{party}:IDR`.
+  11. **D126-7 (Audit Dua-Sumber egy:audit)**: Verifikasi kesesuaian Σ(pembacaan × tarif berversi) = tagihan = saldo AR ledger, dispatch ≤ kapasitas unit, dan settlement PPA = nilai kontrak.
+

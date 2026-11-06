@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Architecture;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\LedgerAccountsSeeder;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,6 +19,7 @@ use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Hospital\Application\Services\PrescriptionSafetyEvaluator;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hotel\Application\Actions\ReserveRoomWithInventoryNightLockAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Inventory\Application\Services\InventoryService;
@@ -233,13 +235,18 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         'status' => 'available',
     ]);
 
+    $bizDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($property->id);
+    $inDate = $bizDate;
+    $outPast = Carbon::parse($bizDate)->subDay()->toDateString();
+    $outNext = Carbon::parse($bizDate)->addDay()->toDateString();
+
     // Boundary: Check-out == Check-in (0 duration)
     expect(fn () => $reserveAction->handle(
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-05',
+        checkInDate: $inDate,
+        checkOutDate: $inDate,
         dailyRateIdr: 1000000
     ))->toThrow(InvalidArgumentException::class, 'Check-out date must be after check-in date.');
 
@@ -248,8 +255,8 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-04',
+        checkInDate: $inDate,
+        checkOutDate: $outPast,
         dailyRateIdr: 1000000
     ))->toThrow(InvalidArgumentException::class, 'Check-out date must be after check-in date.');
 
@@ -258,8 +265,8 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-06',
+        checkInDate: $inDate,
+        checkOutDate: $outNext,
         dailyRateIdr: 1000000
     );
     expect($res['nights'])->toBe(1)

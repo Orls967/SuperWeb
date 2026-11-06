@@ -493,7 +493,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 13 | **Crypto** | `crypto_` | 4 |
 | 14 | **Distribution** | `dist_` | 5 |
 | 15 | **Edu** | `edu_` | 5 |
-| 16 | **Egy** | `egy_` | 6 |
+| 16 | **Egy** | `egy_` | 7 |
 | 17 | **EnterpriseFinance** | `ef_` | 2 |
 | 18 | **Epc** | `epc_` | 1 |
 | 19 | **Esg** | `esg_` | 6 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **648 Migrasi** |
+| | **Total: 63 Modul** | | **649 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -562,7 +562,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
-| **Egy** | 20 | `energy`, `energy/overview`, `energy/meters` ... | web, auth, role:admin,grid_operator,genco_trader,energy_auditor,renewable_dev |
+| **Egy** | 34 | `energy/grid`, `energy/dispatch`, `energy/dispatch/run` ... | web, auth, role:admin,grid_operator |
 | **EnterpriseFinance** | 6 | `enterprise-finance`, `enterprise-finance/budgets`, `enterprise-finance/governance` ... | web, auth, role:admin,auditor,treasury |
 | **Epc** | 8 | `epc`, `epc/dashboard`, `epc/claims` ... | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 6 | `esg`, `esg/operations`, `esg/operations/emissions` ... | web, auth, role:admin,esg_officer,auditor |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1278 Rute** | | |
+| **Total** | **1292 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -654,9 +654,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `egy:audit` | `manual` | Audit jaringan energi: beban trafo, telemetri smart meter, kontrak PPA, faktur konsolidasi, eliminasi intercompany, dan rekonsiliasi ledger dua sumber |
 | `egy:bill-properties` | `manual` | Generates consolidated monthly utility invoices for all consumer properties |
 | `egy:commit-units` | `manual` | Plans daily unit commitment and marginal merit order dispatch for generation assets |
+| `egy:dispatch-hour` | `manual` | Runs hourly merit-order grid dispatch and unit commitment |
 | `egy:ingest-readings` | `manual` | Ingests cumulative smart meter telemetry readings and calculates interval consumption |
 | `egy:island` | `manual` | Executes priority knapsack microgrid islanding emergency dispatch |
 | `egy:plan-battery` | `manual` | Plans battery energy storage system arbitrage schedule across TOU tariffs |
+| `egy:shift-ev-load` | `manual` | Shifts flexible EV charging sessions from peak to off-peak hours and distributes demand response rewards |
 | `enterprise:audit` | `manual` | Audit enterprise finance (budget encumbrances, tax summaries, and SoD compliance) |
 | `env` | `manual` | Display the current framework environment |
 | `epc:audit` | `manual` | Audit EPC construction WBS progress, Monthly Certificates, CIP and asset capitalization |
@@ -809,7 +811,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 195 Command** | **37 Terjadwal** | |
+| **Total: 197 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -820,7 +822,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | `CloudKitchenAccounts` | 5 | `hcm:meals_deduction:IDR`, `resto:catering_revenue:IDR` ... |
 | **Core** | `CoreAccounts` | 22 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 10 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
-| **Egy** | `EgyAccounts` | 18 | `egy:bess_arbitrage_revenue:IDR`, `egy:carbon_credit_inventory:IDR` ... |
+| **Egy** | `EgyAccounts` | 30 | `egy:bess_arbitrage_revenue:IDR`, `egy:bess_energy_cost:IDR` ... |
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
 | **Epc** | `EpcAccounts` | 8 | `asset:epc:construction_in_progress:IDR`, `ast:cip:default:IDR` ... |
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
@@ -851,6 +853,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **435 Akun** | |
+| **Total: 37 Registry** | | **447 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
