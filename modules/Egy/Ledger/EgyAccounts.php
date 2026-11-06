@@ -264,6 +264,13 @@ final class EgyAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'egy:utility_sales_revenue:IDR',
+                'name' => 'Utility Sales Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 

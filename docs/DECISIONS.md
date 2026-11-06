@@ -2700,3 +2700,28 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   9. **D128-5 (Kontrak Lintas Modul G7-K10 Pencatatan Pensiun ESG)**: Menerapkan antarmuka `Modules\Esg\Contracts\CarbonCreditRetirementRecorder` untuk sinkronisasi saldo emisi Scope 1/2/3 di modul ESG.
   10. **D128-6 (Peran Otorisasi RBAC)**: Rute orderbook dikelola peran `carbon_trader`, rute REC oleh `renewable_dev`, rute CBAM oleh `export_officer`, dan marketplace ESG terbuka untuk `customer` dan `energy_auditor`.
   11. **D128-7 (Rekonsiliasi Audit egy:audit)**: Verifikasi saldo inventori kredit karbon (Proyek = Terjual + Tersedia + Kedaluwarsa) dan integritas hash batch REC.
+
+<a id="2026-11-07-g7-p3-energi-utilitas-fase-129"></a>
+<a id="g7-p3-d21"></a>
+<a id="g7-p3-d22"></a>
+<a id="g7-p3-d23"></a>
+<a id="g7-p3-d24"></a>
+<a id="d129-1"></a>
+<a id="d129-2"></a>
+<a id="d129-3"></a>
+<a id="d129-4"></a>
+<a id="d129-5"></a>
+<a id="d129-6"></a>
+<a id="d129-7"></a>
+## 2026-11-07: [G7-P3.4] Modul Energi & Utilitas — Microgrid, Storage & Resilience (Fase 129, G7-D21..G7-D24, D129-1..D129-7)
+- **Anchor:** `2026-11-07-g7-p3-energi-utilitas-fase-129` / `g7-p3-d21` / `g7-p3-d22` / `g7-p3-d23` / `g7-p3-d24` / `d129-1` / `d129-2` / `d129-3` / `d129-4` / `d129-5` / `d129-6` / `d129-7`
+- **Konteks:**
+  - Melaksanakan Lini 13 Energi & Utilitas (Fase 129) untuk ketahanan microgrid mandiri (islanding & load shedding), optimalisasi arbitrase dan degradasi sistem baterai (BESS), kesiapan dan pengujian genset darurat, agregasi demand-response bersama PLN, serta prosedur pemulihan blackout (black-start sequencing).
+- **Keputusan:**
+  1. **G7-D21 (Skema Integer Murni Microgrid & Daya)**: Seluruh daya dalam Watt/kW integer, energi baterai dalam kWh integer, dan State of Charge (SoC) serta State of Health (SoH) dalam basis points (0 s/d 10.000 bps) untuk mematuhi zero float.
+  2. **G7-D22 (BESS Arbitrage & Akun Cadangan Penggantian Baterai)**: Optimasi pengisian off-peak dan pengosongan on-peak menggunakan algoritma `BatteryArbitrageOptimizer` (E12). Biaya degradasi baterai dibukukan ke beban `egy:bess_degradation_expense:IDR` dengan lawan cadangan penggantian `egy:bess_replacement_reserve:IDR`.
+  3. **G7-D23 (Pelepasan Beban Deterministik Knapsack E13)**: Transisi islanding otomatis menjalankan algoritma 0/1 Knapsack berbobot prioritas rank `MicrogridLoadSheddingKnapsack` (E13) untuk mempertahankan kestabilan frekuensi dan kontinuitas daya fasilitas kritis (Tier 1 Rumah Sakit, Server Room, Cold Storage).
+  4. **G7-D24 (Sekuensi Black-Start Topological Sorting E14)**: Prosedur pemulihan total blackout dipandu oleh `BlackStartSynchronizationSequencer` (E14) yang memverifikasi graf ketergantungan energisasi busbar bebas siklus dan sinkronisasi beda fasa.
+  5. **D129-1 (Pencatatan Jam Jalan & Emisi Scope 1 Genset)**: Setiap running test genset mencatat konsumsi BBM solar, runtime minutes, dan perhitungan otomatis emisi Scope 1.
+  6. **D129-2 (Demand-Response Aggregator & Insentif PLN)**: Respons pemangkasan beban fleksibel < 15 menit mencatat pendapatan insentif `egy:demand_response_incentive_revenue:IDR` dan piutang operator grid `ar:egy:grid_operator:IDR`.
+  7. **D129-3 (Audit Ketahanan egy:audit)**: Verifikasi saldo cadangan baterai, neraca energi microgrid, dan konsistensi status feeder islanded.

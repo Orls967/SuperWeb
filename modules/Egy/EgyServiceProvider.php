@@ -5,14 +5,26 @@ declare(strict_types=1);
 namespace Modules\Egy;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Egy\Application\Actions\SimulateBlackStartDrillAction;
+use Modules\Egy\Application\Services\BessDegradationModelService;
+use Modules\Egy\Application\Services\BessDegradationWarrantyAndCapacityFadeService;
+use Modules\Egy\Application\Services\BessPeakShavingAndValueStackingService;
 use Modules\Egy\Application\Services\CarbonAccountingAndGhgReportService;
 use Modules\Egy\Application\Services\CarbonRetirementProofService;
 use Modules\Egy\Application\Services\CarbonTradingAndEsgMarketplaceService;
 use Modules\Egy\Application\Services\CbamComplianceReportingService;
 use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
+use Modules\Egy\Application\Services\DemandResponsePortfolioAggregatorService;
+use Modules\Egy\Application\Services\DroopControlAndFrequencyRegulationService;
+use Modules\Egy\Application\Services\EmergencyPowerReadinessAuditService;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Application\Services\EsgLinkedPricingAndIncentiveService;
+use Modules\Egy\Application\Services\GeneratorFuelStockAndMaintenanceScheduleService;
 use Modules\Egy\Application\Services\MicrogridAndResilienceService;
+use Modules\Egy\Application\Services\MicrogridIslandRestorationManagerService;
+use Modules\Egy\Application\Services\MicrogridPowerFlowAndStateEstimationService;
+use Modules\Egy\Application\Services\MicrogridScadaTelemetryProcessorService;
+use Modules\Egy\Application\Services\ResilienceScorecardAndReliabilityIndexService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
 use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
 use Modules\Egy\Console\Commands\EgyCarbonMatchCommand;
@@ -42,6 +54,18 @@ class EgyServiceProvider extends ServiceProvider
         $this->app->singleton(EsgLinkedPricingAndIncentiveService::class);
         $this->app->singleton(CbamComplianceReportingService::class);
         $this->app->singleton(CarbonRetirementProofService::class);
+        $this->app->singleton(BessDegradationModelService::class);
+        $this->app->singleton(DroopControlAndFrequencyRegulationService::class);
+        $this->app->singleton(EmergencyPowerReadinessAuditService::class);
+        $this->app->singleton(DemandResponsePortfolioAggregatorService::class);
+        $this->app->singleton(MicrogridPowerFlowAndStateEstimationService::class);
+        $this->app->singleton(ResilienceScorecardAndReliabilityIndexService::class);
+        $this->app->singleton(BessPeakShavingAndValueStackingService::class);
+        $this->app->singleton(GeneratorFuelStockAndMaintenanceScheduleService::class);
+        $this->app->singleton(MicrogridScadaTelemetryProcessorService::class);
+        $this->app->singleton(MicrogridIslandRestorationManagerService::class);
+        $this->app->singleton(BessDegradationWarrantyAndCapacityFadeService::class);
+        $this->app->singleton(SimulateBlackStartDrillAction::class);
     }
 
     public function boot(): void
