@@ -18682,6 +18682,186 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /energy/consolidated-bills:
+    get:
+      operationId: getEgyBillsConsolidatedIndex
+      tags:
+        - Egy
+      summary: 'Index (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].'
+      x-allowed-roles:
+        - admin
+        - energy_billing
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/consolidated-bills/export:
+    get:
+      operationId: getEgyBillsConsolidatedExport
+      tags:
+        - Egy
+      summary: 'Export (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, energy_billing].'
+      x-allowed-roles:
+        - admin
+        - energy_billing
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/energy/consolidated-bills/{id}':
+    get:
+      operationId: getEgyBillsConsolidatedShow
+      tags:
+        - Egy
+      summary: 'Show (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, customer, energy_billing].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - energy_billing
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /energy/dispatch:
     get:
       operationId: getEgyDispatchIndex
@@ -18871,6 +19051,244 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /energy/district-cooling:
+    get:
+      operationId: getEgyCoolingIndex
+      tags:
+        - Egy
+      summary: 'Index (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/district-cooling/export:
+    get:
+      operationId: getEgyCoolingExport
+      tags:
+        - Egy
+      summary: 'Export Performance Report (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/esco:
+    get:
+      operationId: getEgyEscoIndex
+      tags:
+        - Egy
+      summary: 'Index (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, energy_auditor].'
+      x-allowed-roles:
+        - admin
+        - energy_auditor
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/energy/esco/{id}':
+    get:
+      operationId: getEgyEscoShow
+      tags:
+        - Egy
+      summary: 'Show (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, customer, energy_auditor].'
+      x-allowed-roles:
+        - admin
+        - customer
+        - energy_auditor
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          description: 'Identifier parameter id for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /energy/grid:
     get:
       operationId: getEgyGridDashboard
@@ -19972,6 +20390,296 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /energy/waste:
+    get:
+      operationId: getEgyWasteIndex
+      tags:
+        - Egy
+      summary: 'Index (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/waste/export:
+    get:
+      operationId: getEgyWasteExport
+      tags:
+        - Egy
+      summary: 'Export Production Report (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/water:
+    get:
+      operationId: getEgyWaterIndex
+      tags:
+        - Egy
+      summary: 'Index (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/water/export:
+    get:
+      operationId: getEgyWaterExport
+      tags:
+        - Egy
+      summary: 'Export Audit Report (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /energy/water/leaks:
+    get:
+      operationId: getEgyWaterLeaks
+      tags:
+        - Egy
+      summary: 'Leaks (Egy)'
+      description: 'Operational endpoint for Egy module. Protected by role matrix: [admin, utility_operator].'
+      x-allowed-roles:
+        - admin
+        - utility_operator
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /enterprise-finance:
     get:
       operationId: getEnterpriseFinanceIndex

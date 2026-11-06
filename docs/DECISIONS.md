@@ -2633,3 +2633,38 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
       - Pembayaran tagihan: Debit `wallet:clearing:IDR`, Kredit `ar:egy:customer:{party}:IDR`.
   11. **D126-7 (Audit Dua-Sumber egy:audit)**: Verifikasi kesesuaian Σ(pembacaan × tarif berversi) = tagihan = saldo AR ledger, dispatch ≤ kapasitas unit, dan settlement PPA = nilai kontrak.
 
+
+<a id="2026-11-06-g7-p3-energi-utilitas-fase-127"></a>
+<a id="g7-p3-d13"></a>
+<a id="g7-p3-d14"></a>
+<a id="g7-p3-d15"></a>
+<a id="g7-p3-d16"></a>
+<a id="d127-1"></a>
+<a id="d127-2"></a>
+<a id="d127-3"></a>
+<a id="d127-4"></a>
+<a id="d127-5"></a>
+<a id="d127-6"></a>
+<a id="d127-7"></a>
+## 2026-11-06: [G7-P3.2] Modul Energi & Utilitas — Water, Waste & District Utilities (Fase 127, G7-D13..G7-D16, D127-1..D127-7)
+- **Anchor:** `2026-11-06-g7-p3-energi-utilitas-fase-127` / `g7-p3-d13` / `g7-p3-d14` / `g7-p3-d15` / `g7-p3-d16` / `d127-1` / `d127-2` / `d127-3` / `d127-4` / `d127-5` / `d127-6` / `d127-7`
+- **Konteks:**
+  - Melaksanakan Lini 13 Energi & Utilitas (Fase 127) untuk utilitas distrik: distribusi air & DMA kebocoran, pengolahan limbah & waste-to-energy biogas, district cooling plant & COP chiller, ESCO performance contracting & split-savings, serta tagihan multi-utilitas konsolidasi.
+- **Keputusan:**
+  1. **G7-D13 (Multi-Utility Metering & District Networks)**: Registri meter `egy_smart_meters` diperluas melayani utility type `water_potable`, `water_non_potable`, `district_cooling_thermal`, dan `biogas`. Satuan telemetri distandarisasi: volume air dalam liter integer, tekanan pipa dalam kilo-Pascal (kPa) integer, energi termal pendingin dalam Wh_th (milli-kWh termal) integer, limbah dalam gram/kg integer, dan biogas dalam liter integer (milli-m³).
+  2. **G7-D14 (Neraca Massa & Energi Distrik Non-Float)**: Semua kalkulasi neraca massa (IWA Water Balance) dan neraca termal chiller menggunakan integer arithmetic murni tanpa float untuk memastikan zero leakage audit trace.
+  3. **G7-D15 (ESCO Performance Contracting & M&V IPMVP Option C)**: Formula verifikasi penghematan ESCO (`Modules\Shared\Domain\Algorithms\Utility\EscoMeasurementVerification`) menghitung gross savings kWh, baseline adjusted, guaranteed threshold, split savings untuk provider, dan klaim clawback/penalti bila underperform secara deterministik.
+  4. **G7-D16 (Integrasi Work Order Pemeliharaan Otomatis G7-K9)**: Saat telemetri mendeteksi anomali fisik (selisih debit inlet-outlet DMA > ambang kebocoran air, atau COP chiller anjlok di bawah ambang minimum), sistem otomatis memicu order kerja pemeliharaan melalui kontrak `Modules\Asset\Contracts\MaintenanceWorkOrderRequester`.
+  5. **D127-1 (Jaringan Distribusi Air & DMA)**: Pemodelan jaringan transmisi/distribusi air dengan District Metering Area (DMA) dan pemantauan sensor debit & tekanan dinamis.
+  6. **D127-2 (Neraca Air Bersertifikat E5)**: Perhitungan Non-Revenue Water (NRW), konsumsi resmi berbayar, kehilangan komersial, dan kehilangan fisik pipa melalui algoritma bersertifikat `Utility\WaterBalance`.
+  7. **D127-3 (Fasilitas Pengolahan Limbah & WTE Biogas)**: Manajemen limbah masuk per truk/timbangan, kalkulasi tipping fee per ton, dan pencatatan produksi biogas anaerobik yang dikonversi menjadi energi listrik bersih (kWh).
+  8. **D127-4 (District Cooling Plant, BTU Metering & COP)**: Pengoperasian sentral chiller, perhitungan koefisien performa (COP = kWh thermal out / kWh listrik in), monitoring delta T suplai/return, dan staging chiller berurutan efisiensi tertinggi.
+  9. **D127-5 (Tagihan Multi-Utilitas Konsolidasi Terpadu)**: Penyatuan seluruh tagihan pemakaian properti (listrik PLN/surya, air bersih, air limbah, pendingin ruangan BTU) dalam satu nomor invoice tunggal dengan perincian item transparan.
+  10. **D127-6 (Posting Ledger Utilitas Distrik & ESCO)**:
+      - Tagihan air pelanggan: Debit `ar:egy:customer:{party}:IDR`, Kredit `egy:district_water_revenue:IDR`.
+      - Tagihan pendingin distrik: Debit `ar:egy:customer:{party}:IDR`, Kredit `egy:district_cooling_revenue:IDR`.
+      - Tipping fee limbah: Debit `clearing:external:IDR` atau `ar:egy:waste_collector:{party}:IDR`, Kredit `egy:waste_treatment_revenue:IDR`.
+      - Biogas WTE generation internal: Debit `egy:power_purchase_expense:IDR`, Kredit `egy:wte_generation_revenue:IDR`.
+      - ESCO savings split payable: Debit `egy:energy_efficiency_expense:IDR`, Kredit `ap:egy:esco_provider:{party}:IDR`.
+      - ESCO clawback shortfall: Debit `ar:egy:esco_provider:{party}:IDR`, Kredit `egy:energy_efficiency_expense:IDR`.
+  11. **D127-7 (Audit Terpadu Neraca Distrik egy:audit)**: Verifikasi kesesuaian neraca volume air (inlet = billing + NRW), neraca energi chiller (thermal out / electric in = COP log), kesesuaian tipping fee limbah, dan rekonsiliasi ESCO payable/receivable terhadap ledger.

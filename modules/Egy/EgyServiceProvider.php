@@ -11,11 +11,15 @@ use Modules\Egy\Application\Services\MicrogridAndResilienceService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
 use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
 use Modules\Egy\Console\Commands\EgyCommitUnitsCommand;
+use Modules\Egy\Console\Commands\EgyConsolidateBillsCommand;
 use Modules\Egy\Console\Commands\EgyDispatchHourCommand;
+use Modules\Egy\Console\Commands\EgyEscoMvCommand;
 use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
 use Modules\Egy\Console\Commands\EgyIslandCommand;
+use Modules\Egy\Console\Commands\EgyLeakDetectCommand;
 use Modules\Egy\Console\Commands\EgyPlanBatteryCommand;
 use Modules\Egy\Console\Commands\EgyShiftEvLoadCommand;
+use Modules\Egy\Console\Commands\EgyWaterBalanceDailyCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class EgyServiceProvider extends ServiceProvider
@@ -44,10 +48,15 @@ class EgyServiceProvider extends ServiceProvider
                 EgyIngestReadingsCommand::class,
                 EgyBillPropertiesCommand::class,
                 EgyCommitUnitsCommand::class,
+                EgyConsolidateBillsCommand::class,
                 EgyDispatchHourCommand::class,
+                EgyEscoMvCommand::class,
+                EgyIngestReadingsCommand::class,
                 EgyIslandCommand::class,
+                EgyLeakDetectCommand::class,
                 EgyPlanBatteryCommand::class,
                 EgyShiftEvLoadCommand::class,
+                EgyWaterBalanceDailyCommand::class,
             ]);
         }
 
