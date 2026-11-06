@@ -2725,3 +2725,42 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   5. **D129-1 (Pencatatan Jam Jalan & Emisi Scope 1 Genset)**: Setiap running test genset mencatat konsumsi BBM solar, runtime minutes, dan perhitungan otomatis emisi Scope 1.
   6. **D129-2 (Demand-Response Aggregator & Insentif PLN)**: Respons pemangkasan beban fleksibel < 15 menit mencatat pendapatan insentif `egy:demand_response_incentive_revenue:IDR` dan piutang operator grid `ar:egy:grid_operator:IDR`.
   7. **D129-3 (Audit Ketahanan egy:audit)**: Verifikasi saldo cadangan baterai, neraca energi microgrid, dan konsistensi status feeder islanded.
+
+<a id="2026-11-07-g7-p4-pertambangan-fase-93"></a>
+<a id="g7-d25"></a>
+<a id="g7-d26"></a>
+<a id="g7-d27"></a>
+<a id="g7-d28"></a>
+<a id="g7-d29"></a>
+<a id="g7-d30"></a>
+<a id="g7-d31"></a>
+<a id="d93-1"></a>
+<a id="d93-2"></a>
+<a id="d93-3"></a>
+<a id="d93-4"></a>
+<a id="d93-5"></a>
+<a id="d93-6"></a>
+<a id="d93-7"></a>
+<a id="d93-8"></a>
+## 2026-11-07: [G7-P4.1] Modul Pertambangan — Mine Planning, Fleet Dispatch & Fuel Management (Fase 93, G7-D25..G7-D31, D93-1..D93-8)
+- **Anchor:** `2026-11-07-g7-p4-pertambangan-fase-93` / `g7-d25` / `g7-d26` / `g7-d27` / `g7-d28` / `g7-d29` / `g7-d30` / `g7-d31` / `d93-1` / `d93-2` / `d93-3` / `d93-4` / `d93-5` / `d93-6` / `d93-7` / `d93-8`
+- **Rujukan ADR:** [`docs/decisions/ADR-0093-mine-planning-and-fleet-dispatch.md`](decisions/ADR-0093-mine-planning-and-fleet-dispatch.md)
+- **Konteks:**
+  - Melaksanakan Lini 12F Pertambangan (Fase 93) dengan standar ketat W8 untuk perencanaan blok tambang, alokasi armada truk deterministik, pemantauan telemetri IoT alat berat, saga perawatan prediktif terintegrasi, dan deteksi anomali bahan bakar berbasis regresi linier.
+- **Keputusan:**
+  1. **G7-D25 (Satuan & Bilangan Bulat Integer)**: Massa dalam kg integer ($1\text{ ton} = 1.000\text{ kg}$), volume BBM dalam ml integer ($1\text{ liter} = 1.000\text{ ml}$), jarak meter integer, waktu detik, deviasi dan efisiensi dalam bps integer. Anti-float diterapkan di semua lapisan domain.
+  2. **G7-D26 (Tabel Parameter Berversi)**: Tarif royalti PP 19/2025 dan harga acuan komoditas (HBA/HMA) disimpan sebagai parameter berversi di `min_external_factors` dan tabel turunan, diakses via `MiningExternalFactors`.
+  3. **G7-D27 (Mata Uang Fungsional IDR)**: Transaksi USD mengacu pada kurs harian parameter. Selisih konversi diselesaikan lewat `min:fx_gain_loss:IDR`.
+  4. **G7-D28 (Tiket Timbang Hash-Chain)**: Menggunakan rantai hash kanonikal `Modules\Shared\Domain\Chain\CanonicalHashChain` untuk mengunci integritas timbangan muatan.
+  5. **G7-D29 (Registri Tunggal Alat Berat)**: `min_equipment` terintegrasi dengan modul Asset melalui `AssetRegistryLookupInterface`.
+  6. **G7-D30 (Gerbang Faktor Eksternal)**: Menghubungkan seluruh kalkulasi cuaca, kurs, dan indeks pasar melalui kelas gerbang `Modules\Mining\Domain\Services\MiningExternalFactors`.
+  7. **G7-D31 (Batas Zona Fase Lanjutan)**: Menjaga integritas tabel dan rute gelombang lanjutan (Fase 120, 122, 123, 124, 125) dengan interaksi aditif tanpa menghapus kelas warisan.
+  8. **D93-1 (Time-Phasing Rencana Tambang M1)**: Rencana bulanan dipecah ke hari dan shift menggunakan algoritma `WeightedTimePhasing` berbobot jam efektif dan ketersediaan, dikawal State Machine `MinePlan` 8 status.
+  9. **D93-2 (Need-Time Dispatcher & Match Factor M2)**: Penugasan armada truk ke shovel berdasarkan waktu mulai muat paling awal dipandu oleh algoritma `NeedTimeTruckDispatcher` disertai perhitungan Match Factor dan State Machine `HaulCycle` 8 status.
+  10. **D93-3 (Telemetri IoT Idempoten & OEE Alat Berat)**: Ingest telemetri idempoten berbasis pasangan kunci unik `(equipment_id, sequence_number)` dan perhitungan OEE (Availability, Performance, Quality) dalam bps, dikawal State Machine `Equipment` 8 status.
+  11. **D93-4 (Saga Perawatan Prediktif & Suku Cadang)**: Pelanggaran ambang batas jam mesin/getaran memicu saga otomatis penerbitan Work Order via `G7-K9` dan requisition suku cadang via `MrpRequisitionProposer`, dengan kompensasi pemulihan target shift jika terjadi pembatalan.
+  12. **D93-5 (Deteksi Anomali BBM M3 & Hold Bayaran Kontraktor)**: Deviasi konsumsi BBM terhadap baseline regresi kuadrat terkecil `LinearBaselineRegression` (> 1.500 bps) memicu pembekuan tagihan kontraktor `min:contractor_payment_hold:IDR` dan State Machine `FuelAnomalyCase` 8 status.
+  13. **D93-6 (Respons Kepekaan Curah Hujan)**: Curah hujan ekstrem di atas ambang batas secara otomatis menurunkan ketersediaan jam kerja efektif shift dan memicu penghitungan ulang target pit (`RePlanShiftTargetsAction`).
+  14. **D93-7 (Jurnal Akuntansi Double-Entry Operasional Tambang)**: Pembukuan tagihan kontraktor angkut, penahanan biaya deviasi BBM, dan rilis/pemotongan definitif ke akun ledger formal.
+  15. **D93-8 (Audit Dua Sumber mining:audit)**: Verifikasi saldo akun hold pembayaran kontraktor terhadap total kasus anomali aktif, batas ketersediaan armada, payload variance, dan ketunggalan Work Order terbit.
+
