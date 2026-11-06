@@ -11,6 +11,7 @@ use Modules\Asset\Application\Services\AssetService;
 use Modules\Asset\Application\Services\AssetTcoService;
 use Modules\Asset\Application\Services\DepreciationService;
 use Modules\Asset\Application\Services\LeaseService;
+use Modules\Asset\Application\Services\MaintenanceWorkOrderRequesterService;
 use Modules\Asset\Application\Services\RevaluationService;
 use Modules\Asset\Application\Services\WorkOrderService;
 use Modules\Asset\Console\Commands\AuditAssetCommand;
@@ -19,6 +20,7 @@ use Modules\Asset\Console\Commands\CapitalizeAssetsCommand;
 use Modules\Asset\Console\Commands\DepreciateAssetsCommand;
 use Modules\Asset\Console\Commands\VerifyAssetChainsCommand;
 use Modules\Asset\Contracts\AssetRegistryLookupInterface;
+use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
 use Modules\Shared\Application\MenuRegistry;
 
 class AssetServiceProvider extends ServiceProvider
@@ -37,8 +39,8 @@ class AssetServiceProvider extends ServiceProvider
             AssetRegistryLookupService::class
         );
         $this->app->bind(
-            \Modules\Asset\Contracts\MaintenanceWorkOrderRequester::class,
-            \Modules\Asset\Application\Services\MaintenanceWorkOrderRequesterService::class
+            MaintenanceWorkOrderRequester::class,
+            MaintenanceWorkOrderRequesterService::class
         );
     }
 
