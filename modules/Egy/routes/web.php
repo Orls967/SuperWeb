@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Egy\Http\Controllers\EgyBillController;
+use Modules\Egy\Http\Controllers\EgyCarbonExchangeController;
+use Modules\Egy\Http\Controllers\EgyCbamController;
 use Modules\Egy\Http\Controllers\EgyConsolidatedBillController;
 use Modules\Egy\Http\Controllers\EgyCoolingController;
 use Modules\Egy\Http\Controllers\EgyCustomerPortalController;
 use Modules\Egy\Http\Controllers\EgyDispatchController;
 use Modules\Egy\Http\Controllers\EgyEscoController;
+use Modules\Egy\Http\Controllers\EgyEsgMarketplaceController;
 use Modules\Egy\Http\Controllers\EgyGridController;
 use Modules\Egy\Http\Controllers\EgyGridMeterController;
 use Modules\Egy\Http\Controllers\EgyMeterController;
 use Modules\Egy\Http\Controllers\EgyMicrogridRecController;
 use Modules\Egy\Http\Controllers\EgyPowerPurchaseController;
 use Modules\Egy\Http\Controllers\EgyPpaController;
+use Modules\Egy\Http\Controllers\EgyRecController;
 use Modules\Egy\Http\Controllers\EgyWasteController;
 use Modules\Egy\Http\Controllers\EgyWaterController;
 
@@ -78,7 +82,35 @@ Route::middleware(['web', 'auth', 'role:admin,customer,energy_auditor'])->prefix
     Route::get('/esco/{id}', [EgyEscoController::class, 'show'])->name('egy.esco.show');
 });
 
-// 8. Shared overview and legacy endpoints for backward compatibility
+// 8. Fase 128: Carbon Trading — Internal Conglomerate Exchange
+Route::middleware(['web', 'auth', 'role:admin,carbon_trader'])->prefix('energy')->group(function () {
+    Route::get('/carbon', [EgyCarbonExchangeController::class, 'index'])->name('egy.carbon.index');
+    Route::post('/carbon/orders', [EgyCarbonExchangeController::class, 'storeOrder'])->name('egy.carbon.order.store');
+    Route::post('/carbon/match', [EgyCarbonExchangeController::class, 'matchOrders'])->name('egy.carbon.match');
+    Route::get('/carbon/export', [EgyCarbonExchangeController::class, 'exportTrades'])->name('egy.carbon.export');
+});
+
+// 9. Fase 128: Renewable Energy Certificates (REC / I-REC)
+Route::middleware(['web', 'auth', 'role:admin,renewable_dev'])->prefix('energy')->group(function () {
+    Route::get('/rec', [EgyRecController::class, 'index'])->name('egy.rec.index');
+    Route::post('/rec/retire', [EgyRecController::class, 'retire'])->name('egy.rec.retire');
+    Route::get('/rec/export', [EgyRecController::class, 'export'])->name('egy.rec.export');
+});
+
+// 10. Fase 128: EU Carbon Border Adjustment Mechanism (CBAM)
+Route::middleware(['web', 'auth', 'role:admin,export_officer'])->prefix('energy')->group(function () {
+    Route::get('/cbam', [EgyCbamController::class, 'index'])->name('egy.cbam.index');
+    Route::get('/cbam/export', [EgyCbamController::class, 'export'])->name('egy.cbam.export');
+});
+
+// 11. Fase 128: ESG Circularity Marketplace
+Route::middleware(['web', 'auth', 'role:admin,customer,energy_auditor'])->prefix('energy')->group(function () {
+    Route::get('/esg-marketplace', [EgyEsgMarketplaceController::class, 'index'])->name('egy.esg.marketplace.index');
+    Route::post('/esg-marketplace/purchase', [EgyEsgMarketplaceController::class, 'purchase'])->name('egy.esg.marketplace.purchase');
+    Route::get('/esg-marketplace/export', [EgyEsgMarketplaceController::class, 'export'])->name('egy.esg.marketplace.export');
+});
+
+// 12. Shared overview and legacy endpoints for backward compatibility
 Route::middleware(['web', 'auth', 'role:admin,energy_auditor,genco_trader,grid_operator,renewable_dev'])->prefix('energy')->group(function () {
     Route::get('/', [EgyGridMeterController::class, 'index'])->name('egy.grid.index');
     Route::get('/overview', [EgyGridMeterController::class, 'index'])->name('energy.index');

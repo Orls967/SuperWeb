@@ -2668,3 +2668,35 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
       - ESCO savings split payable: Debit `egy:energy_efficiency_expense:IDR`, Kredit `ap:egy:esco_provider:{party}:IDR`.
       - ESCO clawback shortfall: Debit `ar:egy:esco_provider:{party}:IDR`, Kredit `egy:energy_efficiency_expense:IDR`.
   11. **D127-7 (Audit Terpadu Neraca Distrik egy:audit)**: Verifikasi kesesuaian neraca volume air (inlet = billing + NRW), neraca energi chiller (thermal out / electric in = COP log), kesesuaian tipping fee limbah, dan rekonsiliasi ESCO payable/receivable terhadap ledger.
+
+<a id="2026-11-06-g7-p3-energi-utilitas-fase-128"></a>
+<a id="g7-p3-d17"></a>
+<a id="g7-p3-d18"></a>
+<a id="g7-p3-d19"></a>
+<a id="g7-p3-d20"></a>
+<a id="d128-1"></a>
+<a id="d128-2"></a>
+<a id="d128-3"></a>
+<a id="d128-4"></a>
+<a id="d128-5"></a>
+<a id="d128-6"></a>
+<a id="d128-7"></a>
+## 2026-11-06: [G7-P3.3] Modul Energi & Utilitas — Carbon Trading, REC & ESG Marketplace (Fase 128, G7-D17..G7-D20, D128-1..D128-7)
+- **Anchor:** `2026-11-06-g7-p3-energi-utilitas-fase-128` / `g7-p3-d17` / `g7-p3-d18` / `g7-p3-d19` / `g7-p3-d20` / `d128-1` / `d128-2` / `d128-3` / `d128-4` / `d128-5` / `d128-6` / `d128-7`
+- **Konteks:**
+  - Melaksanakan Lini 13 Energi & Utilitas (Fase 128) untuk perdagangan kredit karbon internal, sertifikat energi terbarukan (REC), kepatuhan bea perbatasan karbon Uni Eropa (CBAM), dan marketplace ESG sirkularitas terpadu.
+- **Keputusan:**
+  1. **G7-D17 (Orderbook Karbon Internal Konglomerat)**: Mekanisme perdagangan kredit karbon antar entitas 17 lini (misal Forestry & Biogas menjual kredit, Pabrik & Transportasi membeli penyeimbang emisi) menggunakan buku order dua arah (Buy/Sell) limit order berbasis algoritma `CarbonOrderbookMatching` (E9) dengan prioritas harga-waktu (price-time priority).
+  2. **G7-D18 (Siklus Hidup Terpadu REC & I-REC Standard)**: Setiap MWh listrik hijau yang dibangkitkan dari Solar Farm atau Biogas WTE dicetak sebagai unit REC unik (serial batch generator hash). Siklus hidup: `minted` -> `listed` -> `transferred` -> `retired`. Saat diklaim oleh penyewa gedung / properti green lease, status berubah menjadi `retired` dan dibekukan permanen untuk mencegah double-counting.
+  3. **G7-D19 (Perhitungan Beban CBAM Ekspor Manufaktur)**: Mengimplementasikan algoritma `CbamEmissionsTariff` (E10) untuk menghitung emisi tertanam (embedded emissions) produk ekspor ke Uni Eropa (baja, semen, pupuk, aluminium, listrik, hidrogen) dengan membandingkan intensitas emisi faktual terhadap benchmark default Uni Eropa.
+  4. **G7-D20 (Marketplace ESG Terpadu & Green Lease)**: Menyediakan platform marketplace untuk paket netralitas karbon tamu hotel, green lease tenant mall, dan pembelian material daur ulang anorganik.
+  5. **D128-1 (Proyek Karbon & Pengelompokan Batch Vintage)**: Kredit karbon disimpan dalam batch berdasarkan tahun vintage (`vintage_year`), mencegah penjualan kredit kedaluwarsa sesuai regulasi SRN PPI / Verra.
+  6. **D128-2 (Algoritma Pencocokan Harga-Waktu Bersertifikat E9)**: Engine order matching deterministik murni berakar integer basis points tanpa pembulatan float, diverifikasi melalui hash SHA-256 kanonikal.
+  7. **D128-3 (Pelacak Siklus Hidup REC Bersertifikat E11)**: Tracking transisi status REC dengan pembuktian kriptografis integritas sertifikat.
+  8. **D128-4 (Posting Buku Besar Perdagangan Karbon)**:
+     - Eksekusi jual beli kredit karbon: Debit piutang/kas pembeli `ar:egy:carbon_buyer:{party}:IDR`, Kredit pendapatan penjual `egy:carbon_credit_sales_revenue:IDR`, Kredit biaya komisi bursa `egy:carbon_exchange_fee_revenue:IDR`.
+     - Pembelian sertifikat REC: Debit `egy:rec_purchase_expense:IDR`, Kredit `egy:rec_sales_revenue:IDR`.
+     - Liabilitas kuota CBAM: Debit `egy:cbam_tax_expense:IDR`, Kredit `ap:egy:cbam_customs_authority:IDR`.
+  9. **D128-5 (Kontrak Lintas Modul G7-K10 Pencatatan Pensiun ESG)**: Menerapkan antarmuka `Modules\Esg\Contracts\CarbonCreditRetirementRecorder` untuk sinkronisasi saldo emisi Scope 1/2/3 di modul ESG.
+  10. **D128-6 (Peran Otorisasi RBAC)**: Rute orderbook dikelola peran `carbon_trader`, rute REC oleh `renewable_dev`, rute CBAM oleh `export_officer`, dan marketplace ESG terbuka untuk `customer` dan `energy_auditor`.
+  11. **D128-7 (Rekonsiliasi Audit egy:audit)**: Verifikasi saldo inventori kredit karbon (Proyek = Terjual + Tersedia + Kedaluwarsa) dan integritas hash batch REC.

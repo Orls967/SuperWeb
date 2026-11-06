@@ -229,6 +229,41 @@ final class EgyAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'egy:carbon_credit_sales_revenue:IDR',
+                'name' => 'Carbon Credit Sales Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'egy:carbon_exchange_fee_revenue:IDR',
+                'name' => 'Carbon Exchange Fee Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'egy:cbam_tax_expense:IDR',
+                'name' => 'CBAM Tax Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ap:egy:cbam_customs_authority:IDR',
+                'name' => 'AP CBAM Customs Authority',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'egy:esg_marketplace_revenue:IDR',
+                'name' => 'ESG Marketplace Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 
@@ -243,6 +278,11 @@ final class EgyAccounts
                 'allow_negative' => $allowNegative,
             ]
         );
+    }
+
+    public static function customerReceivable(string $partyId): LedgerAccount
+    {
+        return self::getOrCreateCustomerAr($partyId);
     }
 
     public static function getOrCreateCustomerAr(string $partyId): LedgerAccount

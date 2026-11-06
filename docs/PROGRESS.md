@@ -10872,20 +10872,20 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [🔵] 127.4 **Utility billing consolidation**: satu invoice per properti (listrik + air + gas + district cooling) → alokasi ke tenant (properti komersial) / beban biaya (pabrik) → aging & auto-debit (Fase 13.3 pola)
 - [🔵] 127.5 **Energy audit & ESCO model**: audit konsumsi → usulan efisiensi → kontrak performa (ESCO: bayar dari penghematan) → measurement & verification → split saving
 - [🔵] 127.6 Tests: (a) water balance input − loss − output terjelaskan (b) district cooling = meter × tarif (c) ESCO split = % × saving terverifikasi (d) consolidasi bill = Σ komponen (e) `egy:audit` + `mall:audit-billing` = 0 selisih
-- [ ] 127.7 Quality gate Fase 127
+- [🔵] 127.7 Quality gate Fase 127
 
 ## FASE 128 — ENERGI & UTILITAS: CARBON TRADING, REC & ESG MARKETPLACE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `CarbonTradingAndEsgMarketService`; 1 migrasi; test `CarbonTradingAndEsgMarketTest` — commit `654e54c`, +479 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
-- [ ] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
-- [ ] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
-- [ ] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
-- [ ] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
-- [ ] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
-- [ ] 128.7 Quality gate Fase 128
+- [🔵] 128.1 **Carbon exchange internal**: kredit karbon 17 lini (Fase 60 + 123.3) diperdagangkan antar entitas grup & mitra eksternal → orderbook (mirip Fase 71.3) → settlement ledger → retensi sebelum penjualan (kedaluwarsa vintage terhitung)
+- [🔵] 128.2 **REC (Renewable Energy Certificate)**: listrik hijau solar site → REC per MWh → dijual/dipakai agar properti (hotel, mall, venue) klaim 100% renewable → laporan ke green customer & tenant
+- [🔵] 128.3 **CBAM & carbon border connector** (memperluas Fase 83.3): emisi produk ekspor dari pabrik → sertifikat → harga karbon per kontainer → dikurangi dari margin atau ditagih ke buyer (sesuai terms)
+- [🔵] 128.4 **ESG marketplace**: kredit, REC, sirkularitas (tonase limbah) diperdagangkan → pembeli: mitra, tenant mall (green lease), hotel (carbon-neutral stay package) → laporan dampak terverifikasi
+- [🔵] 128.5 **ESG-linked pricing**: tenant/hotel/vendor dengan skor ESG bagus → diskon tarif utilitas/sewa (green lease) → akun insentif tercatat → mendorong perilaku hijau
+- [🔵] 128.6 Tests: (a) Σ kredit di exchange = neraca karbon grup terverifikasi (b) REC tak double-count antar pembeli (c) CBAM = emisi × tarif tercatat (d) green discount = ledger contra-revenue (e) `esg:audit` = 0 selisih
+- [🔵] 128.7 Quality gate Fase 128
 
 ## FASE 129 — ENERGI & UTILITAS: MICROGRID, STORAGE & RESILIENCE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Egy): service `MicrogridAndResilienceService`; 1 migrasi; test `BackupGeneratorTest`, `MicrogridAndResilienceTest` — commit `e62753d`, +439 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

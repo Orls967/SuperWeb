@@ -5,11 +5,18 @@ declare(strict_types=1);
 namespace Modules\Egy;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Egy\Application\Services\CarbonAccountingAndGhgReportService;
+use Modules\Egy\Application\Services\CarbonRetirementProofService;
+use Modules\Egy\Application\Services\CarbonTradingAndEsgMarketplaceService;
+use Modules\Egy\Application\Services\CbamComplianceReportingService;
 use Modules\Egy\Application\Services\ConsolidatedUtilityBillingService;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
+use Modules\Egy\Application\Services\EsgLinkedPricingAndIncentiveService;
 use Modules\Egy\Application\Services\MicrogridAndResilienceService;
 use Modules\Egy\Console\Commands\EgyAuditCommand;
 use Modules\Egy\Console\Commands\EgyBillPropertiesCommand;
+use Modules\Egy\Console\Commands\EgyCarbonMatchCommand;
+use Modules\Egy\Console\Commands\EgyCbamVerifyCommand;
 use Modules\Egy\Console\Commands\EgyCommitUnitsCommand;
 use Modules\Egy\Console\Commands\EgyConsolidateBillsCommand;
 use Modules\Egy\Console\Commands\EgyDispatchHourCommand;
@@ -18,6 +25,7 @@ use Modules\Egy\Console\Commands\EgyIngestReadingsCommand;
 use Modules\Egy\Console\Commands\EgyIslandCommand;
 use Modules\Egy\Console\Commands\EgyLeakDetectCommand;
 use Modules\Egy\Console\Commands\EgyPlanBatteryCommand;
+use Modules\Egy\Console\Commands\EgyRecMintCommand;
 use Modules\Egy\Console\Commands\EgyShiftEvLoadCommand;
 use Modules\Egy\Console\Commands\EgyWaterBalanceDailyCommand;
 use Modules\Shared\Application\MenuRegistry;
@@ -29,6 +37,11 @@ class EgyServiceProvider extends ServiceProvider
         $this->app->singleton(EnergyGridAndMeteringService::class);
         $this->app->singleton(ConsolidatedUtilityBillingService::class);
         $this->app->singleton(MicrogridAndResilienceService::class);
+        $this->app->singleton(CarbonTradingAndEsgMarketplaceService::class);
+        $this->app->singleton(CarbonAccountingAndGhgReportService::class);
+        $this->app->singleton(EsgLinkedPricingAndIncentiveService::class);
+        $this->app->singleton(CbamComplianceReportingService::class);
+        $this->app->singleton(CarbonRetirementProofService::class);
     }
 
     public function boot(): void
@@ -47,14 +60,16 @@ class EgyServiceProvider extends ServiceProvider
                 EgyAuditCommand::class,
                 EgyIngestReadingsCommand::class,
                 EgyBillPropertiesCommand::class,
+                EgyCarbonMatchCommand::class,
+                EgyCbamVerifyCommand::class,
                 EgyCommitUnitsCommand::class,
                 EgyConsolidateBillsCommand::class,
                 EgyDispatchHourCommand::class,
                 EgyEscoMvCommand::class,
-                EgyIngestReadingsCommand::class,
                 EgyIslandCommand::class,
                 EgyLeakDetectCommand::class,
                 EgyPlanBatteryCommand::class,
+                EgyRecMintCommand::class,
                 EgyShiftEvLoadCommand::class,
                 EgyWaterBalanceDailyCommand::class,
             ]);

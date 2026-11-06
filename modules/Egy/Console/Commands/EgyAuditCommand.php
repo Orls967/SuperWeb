@@ -9,10 +9,14 @@ use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
+use Modules\Egy\Domain\Models\CarbonProject;
+use Modules\Egy\Domain\Models\CarbonTrade;
+use Modules\Egy\Domain\Models\CbamDeclaration;
 use Modules\Egy\Domain\Models\EscoSettlement;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\PpaContract;
+use Modules\Egy\Domain\Models\RecCertificate;
 use Modules\Egy\Domain\Models\RenewableEnergyCertificate;
 use Modules\Egy\Domain\Models\SmartMeter;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
@@ -155,6 +159,44 @@ class EgyAuditCommand extends Command
             }
         }
 
+        // 9. Carbon Trading Trades vs Ledger Consistency Check (Fase 128)
+        $carbonTrades = CarbonTrade::where('settlement_status', 'settled')->get();
+        foreach ($carbonTrades as $trade) {
+            $expectedTradeAmount = (int) $trade->total_amount_idr;
+            if ($trade->ledger_transaction_id !== null) {
+                $ledgerEntry = LedgerEntry::where('transaction_id', $trade->ledger_transaction_id)
+                    ->whereHas('account', fn ($q) => $q->where('code', "ar:egy:customer:{$trade->buyer_party_id}:IDR"))
+                    ->first();
+
+                $ledgerAmount = $ledgerEntry !== null ? (int) abs((float) $ledgerEntry->amount) : 0;
+                if ($expectedTradeAmount !== $ledgerAmount) {
+                    $this->error("Carbon Trade [#{$trade->trade_number}] amount ({$expectedTradeAmount}) does not match ledger AR ({$ledgerAmount})");
+                    $discrepancies++;
+                }
+            }
+        }
+
+        // 10. CBAM Liability vs Customs AP Ledger (Fase 128)
+        $cbamDeclarations = CbamDeclaration::all();
+        foreach ($cbamDeclarations as $cbam) {
+            $expectedLiability = (int) $cbam->total_cbam_liability_idr;
+            if ($expectedLiability > 0 && $cbam->ledger_transaction_id !== null) {
+                $ledgerEntry = LedgerEntry::where('transaction_id', $cbam->ledger_transaction_id)
+                    ->whereHas('account', fn ($q) => $q->where('code', 'ap:egy:cbam_customs_authority:IDR'))
+                    ->first();
+
+                $ledgerAmount = $ledgerEntry !== null ? (int) abs((float) $ledgerEntry->amount) : 0;
+                if ($expectedLiability !== $ledgerAmount) {
+                    $this->error("CBAM Declaration [#{$cbam->declaration_number}] liability ({$expectedLiability}) does not match ledger AP ({$ledgerAmount})");
+                    $discrepancies++;
+                }
+            }
+        }
+
+        $carbonProjectCount = CarbonProject::count();
+        $cbamCount = $cbamDeclarations->count();
+        $recActiveCount = RecCertificate::count();
+
         $this->table(
             ['Metric', 'Value'],
             [
@@ -163,7 +205,9 @@ class EgyAuditCommand extends Command
                 ['Telemetry Readings', $readingCount],
                 ['Consolidated Invoices', $invoiceCount],
                 ['PPA Contracts', $ppaCount],
-                ['Renewable Energy Certificates', $recCount],
+                ['Renewable Energy Certificates', $recActiveCount],
+                ['Carbon Projects Registered', $carbonProjectCount],
+                ['CBAM Export Declarations', $cbamCount],
                 ['BESS Arbitrage Runs', $bessCount],
                 ['Integrity Discrepancies', $discrepancies],
             ]
