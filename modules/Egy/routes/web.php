@@ -3,19 +3,24 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Egy\Http\Controllers\EgyBessController;
 use Modules\Egy\Http\Controllers\EgyBillController;
 use Modules\Egy\Http\Controllers\EgyCarbonExchangeController;
 use Modules\Egy\Http\Controllers\EgyCbamController;
 use Modules\Egy\Http\Controllers\EgyConsolidatedBillController;
 use Modules\Egy\Http\Controllers\EgyCoolingController;
 use Modules\Egy\Http\Controllers\EgyCustomerPortalController;
+use Modules\Egy\Http\Controllers\EgyDemandResponseController;
 use Modules\Egy\Http\Controllers\EgyDispatchController;
 use Modules\Egy\Http\Controllers\EgyEscoController;
 use Modules\Egy\Http\Controllers\EgyEsgMarketplaceController;
+use Modules\Egy\Http\Controllers\EgyGeneratorController;
 use Modules\Egy\Http\Controllers\EgyGridController;
 use Modules\Egy\Http\Controllers\EgyGridMeterController;
 use Modules\Egy\Http\Controllers\EgyMeterController;
+use Modules\Egy\Http\Controllers\EgyMicrogridController;
 use Modules\Egy\Http\Controllers\EgyMicrogridRecController;
+use Modules\Egy\Http\Controllers\EgyPeerToPeerTradeController;
 use Modules\Egy\Http\Controllers\EgyPowerPurchaseController;
 use Modules\Egy\Http\Controllers\EgyPpaController;
 use Modules\Egy\Http\Controllers\EgyRecController;
@@ -110,7 +115,21 @@ Route::middleware(['web', 'auth', 'role:admin,customer,energy_auditor'])->prefix
     Route::get('/esg-marketplace/export', [EgyEsgMarketplaceController::class, 'export'])->name('egy.esg.marketplace.export');
 });
 
-// 12. Shared overview and legacy endpoints for backward compatibility
+// 12. Fase 129: Microgrid Controller, BESS, Genset & Demand Response
+Route::middleware(['web', 'auth', 'role:admin,grid_operator'])->prefix('energy')->group(function () {
+    Route::get('/microgrid/controllers', [EgyMicrogridController::class, 'index'])->name('egy.microgrid.controllers.index');
+    Route::post('/microgrid/controllers/{id}/island', [EgyMicrogridController::class, 'triggerIsland'])->name('egy.microgrid.controllers.island');
+    Route::get('/bess', [EgyBessController::class, 'index'])->name('egy.bess.index');
+    Route::post('/bess/{id}/dispatch-arbitrage', [EgyBessController::class, 'dispatchArbitrage'])->name('egy.bess.dispatch_arbitrage');
+    Route::get('/generators', [EgyGeneratorController::class, 'index'])->name('egy.generators.index');
+    Route::post('/generators/test', [EgyGeneratorController::class, 'recordTest'])->name('egy.generators.test');
+    Route::get('/demand-response', [EgyDemandResponseController::class, 'index'])->name('egy.demand_response.index');
+    Route::post('/demand-response/respond', [EgyDemandResponseController::class, 'respondCurtailment'])->name('egy.demand_response.respond');
+    Route::get('/p2p', [EgyPeerToPeerTradeController::class, 'index'])->name('egy.p2p.index');
+    Route::post('/p2p/trade', [EgyPeerToPeerTradeController::class, 'trade'])->name('egy.p2p.trade');
+});
+
+// 13. Shared overview and legacy endpoints for backward compatibility
 Route::middleware(['web', 'auth', 'role:admin,energy_auditor,genco_trader,grid_operator,renewable_dev'])->prefix('energy')->group(function () {
     Route::get('/', [EgyGridMeterController::class, 'index'])->name('egy.grid.index');
     Route::get('/overview', [EgyGridMeterController::class, 'index'])->name('energy.index');

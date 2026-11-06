@@ -2929,6 +2929,11 @@ return [
     'edu.student.dashboard' => ['roles' => ['admin', 'student']],
     'edu.web.certificates.verify' => 'public',
     'education.index' => ['roles' => ['admin', 'cert_officer', 'corp_lnd', 'edu_admin', 'instructor']],
+    'egy.bess.dispatch_arbitrage' => [
+        'roles' => ['admin', 'grid_operator'],
+        'params' => fn () => ['id' => 1],
+    ],
+    'egy.bess.index' => ['roles' => ['admin', 'grid_operator']],
     'egy.bills.adjust' => [
         'roles' => ['admin', 'energy_billing'],
         'params' => fn () => ['id' => 1],
@@ -2964,6 +2969,8 @@ return [
     ],
     'egy.customer.index' => ['roles' => ['admin', 'customer']],
     'egy.customer.portal' => ['roles' => ['admin', 'customer']],
+    'egy.demand_response.index' => ['roles' => ['admin', 'grid_operator']],
+    'egy.demand_response.respond' => ['roles' => ['admin', 'grid_operator']],
     'egy.dispatch.index' => ['roles' => ['admin', 'grid_operator']],
     'egy.dispatch.run' => ['roles' => ['admin', 'grid_operator']],
     'egy.dispatch.store' => ['roles' => ['admin', 'grid_operator']],
@@ -2975,6 +2982,8 @@ return [
     'egy.esg.marketplace.export' => ['roles' => ['admin', 'customer', 'energy_auditor']],
     'egy.esg.marketplace.index' => ['roles' => ['admin', 'customer', 'energy_auditor']],
     'egy.esg.marketplace.purchase' => ['roles' => ['admin', 'customer', 'energy_auditor']],
+    'egy.generators.index' => ['roles' => ['admin', 'grid_operator']],
+    'egy.generators.test' => ['roles' => ['admin', 'grid_operator']],
     'egy.grid.anomaly' => [
         'roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev'],
         'params' => fn () => ['nodeId' => 1],
@@ -2984,9 +2993,16 @@ return [
     'egy.grid.meters' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
     'egy.grid.telemetry' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
     'egy.meters.index' => ['roles' => ['admin', 'energy_billing']],
+    'egy.microgrid.controllers.index' => ['roles' => ['admin', 'grid_operator']],
+    'egy.microgrid.controllers.island' => [
+        'roles' => ['admin', 'grid_operator'],
+        'params' => fn () => ['id' => 1],
+    ],
     'egy.microgrid.dispatch' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
     'egy.microgrid.index' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
     'egy.microgrid.p2p' => ['roles' => ['admin', 'energy_auditor', 'genco_trader', 'grid_operator', 'renewable_dev']],
+    'egy.p2p.index' => ['roles' => ['admin', 'grid_operator']],
+    'egy.p2p.trade' => ['roles' => ['admin', 'grid_operator']],
     'egy.ppa.detail' => [
         'roles' => ['admin', 'genco_trader'],
         'params' => fn () => ['id' => 1],

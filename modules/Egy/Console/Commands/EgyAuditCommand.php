@@ -9,10 +9,12 @@ use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Egy\Application\Services\EnergyGridAndMeteringService;
 use Modules\Egy\Domain\Models\BessArbitrageRun;
+use Modules\Egy\Domain\Models\BessDispatch;
 use Modules\Egy\Domain\Models\CarbonProject;
 use Modules\Egy\Domain\Models\CarbonTrade;
 use Modules\Egy\Domain\Models\CbamDeclaration;
 use Modules\Egy\Domain\Models\EscoSettlement;
+use Modules\Egy\Domain\Models\GeneratorLog;
 use Modules\Egy\Domain\Models\GridNode;
 use Modules\Egy\Domain\Models\MeterReading;
 use Modules\Egy\Domain\Models\PpaContract;
@@ -193,9 +195,30 @@ class EgyAuditCommand extends Command
             }
         }
 
+        // 11. BESS Dispatch Profit & Degradation Reserve Integrity (Fase 129)
+        $bessDispatches = BessDispatch::all();
+        foreach ($bessDispatches as $disp) {
+            $expectedProfit = (int) ($disp->discharging_revenue_idr - ($disp->charging_cost_idr + $disp->degradation_cost_idr));
+            if ((int) $disp->net_profit_idr !== $expectedProfit) {
+                $this->error("BESS Dispatch [#{$disp->dispatch_number}] profit mismatch: stored {$disp->net_profit_idr}, expected {$expectedProfit}");
+                $discrepancies++;
+            }
+        }
+
+        // 12. Genset Fuel Consumption vs Scope 1 Emissions Integrity (Fase 129)
+        $generatorLogs = GeneratorLog::all();
+        foreach ($generatorLogs as $genLog) {
+            $expectedEmissions = (int) intdiv($genLog->fuel_consumed_liters * 2680, 1000);
+            if ((int) $genLog->emissions_kg_co2e !== $expectedEmissions) {
+                $this->error("Generator Log [#{$genLog->id}] emissions mismatch: stored {$genLog->emissions_kg_co2e}, expected {$expectedEmissions}");
+                $discrepancies++;
+            }
+        }
+
         $carbonProjectCount = CarbonProject::count();
         $cbamCount = $cbamDeclarations->count();
         $recActiveCount = RecCertificate::count();
+        $bessCount = $bessDispatches->count();
 
         $this->table(
             ['Metric', 'Value'],

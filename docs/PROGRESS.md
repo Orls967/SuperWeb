@@ -10892,12 +10892,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Egy (`egy_`) · **Prasyarat:** Fase 76 ✅ (meter), R1–R4 ✅ · **Acuan:** KONSEP Lini 13
 > **Jalan pintas terlarang di fase ini:** tagihan tanpa bacaan meter nyata; PPA antar-entitas tanpa eliminasi Intercompany; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
-- [ ] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
-- [ ] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
-- [ ] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
-- [ ] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
-- [ ] 129.6 Quality gate Fase 129
+- [🔵] 129.1 **Microgrid per site**: solar + battery + genset → islanding mode simulasi saat grid down → prioritas beban (RS > pabrik kritis > mall > umum) → ketersediaan terukur (SAIDI/SAIFI)
+- [🔵] 129.2 **Battery storage arbitrage**: charge saat tarif murah → discharge saat puncak → selisih = revenue → siklus baterai tercatat → degradation → replacement via Asset (Fase 31)
+- [🔵] 129.3 **Backup power compliance**: RS/venue/data center (Fase 134) wajib cadangan → uji beban berkala terjadwal → laporan kepatuhan → gagal uji → work order → alert compliance (Fase 100.3)
+- [🔵] 129.4 **Energy resilience scorecard**: ketersediaan per site, biaya per kWh effective, % renewable, resilience readiness → masuk health-check site → perbandingan antar lini
+- [🔵] 129.5 Tests: (a) islanding prioritas beban dihormati (b) arbitrage revenue = (tarif jual − beli) × kWh (c) siklus baterai ≥ aktual pengisian (d) uji backup terjadwal & hasil tercatat (e) `egy:audit` = 0 selisih
+- [🔵] 129.6 Quality gate Fase 129
 
 ## FASE 130 — TELEKOMUNIKASI & DATA CENTER: NETWORK, IoT BACKBONE & ISP (LINI 14)
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Tlx): service `TelecomNetworkAndIotService`; 1 migrasi; test `TelecomNetworkAndIotTest` — commit `fa7f9a0`, +569 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

@@ -493,7 +493,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 13 | **Crypto** | `crypto_` | 4 |
 | 14 | **Distribution** | `dist_` | 5 |
 | 15 | **Edu** | `edu_` | 5 |
-| 16 | **Egy** | `egy_` | 9 |
+| 16 | **Egy** | `egy_` | 10 |
 | 17 | **EnterpriseFinance** | `ef_` | 2 |
 | 18 | **Epc** | `epc_` | 1 |
 | 19 | **Esg** | `esg_` | 6 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **651 Migrasi** |
+| | **Total: 63 Modul** | | **652 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -562,7 +562,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
-| **Egy** | 58 | `energy/grid`, `energy/dispatch`, `energy/dispatch/run` ... | web, auth, role:admin,grid_operator |
+| **Egy** | 68 | `energy/grid`, `energy/dispatch`, `energy/dispatch/run` ... | web, auth, role:admin,grid_operator |
 | **EnterpriseFinance** | 6 | `enterprise-finance`, `enterprise-finance/budgets`, `enterprise-finance/governance` ... | web, auth, role:admin,auditor,treasury |
 | **Epc** | 8 | `epc`, `epc/dashboard`, `epc/claims` ... | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 6 | `esg`, `esg/operations`, `esg/operations/emissions` ... | web, auth, role:admin,esg_officer,auditor |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1316 Rute** | | |
+| **Total** | **1326 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -829,7 +829,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | `CloudKitchenAccounts` | 5 | `hcm:meals_deduction:IDR`, `resto:catering_revenue:IDR` ... |
 | **Core** | `CoreAccounts` | 22 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 10 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
-| **Egy** | `EgyAccounts` | 35 | `egy:bess_arbitrage_revenue:IDR`, `egy:bess_energy_cost:IDR` ... |
+| **Egy** | `EgyAccounts` | 36 | `egy:bess_arbitrage_revenue:IDR`, `egy:bess_energy_cost:IDR` ... |
 | **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
 | **Epc** | `EpcAccounts` | 8 | `asset:epc:construction_in_progress:IDR`, `ast:cip:default:IDR` ... |
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
@@ -860,6 +860,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **452 Akun** | |
+| **Total: 37 Registry** | | **453 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
