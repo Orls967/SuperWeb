@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Modules\Core\Domain\Models\Vehicle;
@@ -111,7 +112,7 @@ class SilentDefaultEliminationTest extends TestCase
         $tick = $tlm->ingestTick([
             'device_id' => 'DEV-EXP-001',
             'sequence' => 10,
-            'recorded_at' => \Carbon\Carbon::now()->subDays(5)->format('Y-m-d H:i:s'),
+            'recorded_at' => Carbon::now()->subDays(5)->format('Y-m-d H:i:s'),
             'oil_temp_c' => 84.5,
             'battery_voltage' => 12.4,
             'fuel_level_pct' => 65.0,
