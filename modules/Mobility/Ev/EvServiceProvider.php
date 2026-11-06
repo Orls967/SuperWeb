@@ -9,8 +9,10 @@ use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Mobility\Contracts\EvChargingSessionSource;
 use Modules\Mobility\Ev\Application\Services\BatteryPassportService;
 use Modules\Mobility\Ev\Application\Services\EvChargingService;
+use Modules\Mobility\Ev\Application\Services\EvChargingSessionSourceService;
 use Modules\Mobility\Ev\Console\Commands\AuditEvCommand;
 use Modules\Mobility\Ev\Ledger\EvTransactionTypes;
 
@@ -18,6 +20,8 @@ class EvServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(EvChargingSessionSource::class, EvChargingSessionSourceService::class);
+
         $this->app->singleton(EvChargingService::class, function ($app) {
             return new EvChargingService(
                 $app->make(SimClockInterface::class),
