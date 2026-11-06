@@ -233,13 +233,18 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         'status' => 'available',
     ]);
 
+    $bizDate = app(\Modules\Hotel\Application\Services\HotelBusinessDateService::class)->getCurrentBusinessDate($property->id);
+    $inDate = $bizDate;
+    $outPast = \Carbon\Carbon::parse($bizDate)->subDay()->toDateString();
+    $outNext = \Carbon\Carbon::parse($bizDate)->addDay()->toDateString();
+
     // Boundary: Check-out == Check-in (0 duration)
     expect(fn () => $reserveAction->handle(
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-05',
+        checkInDate: $inDate,
+        checkOutDate: $inDate,
         dailyRateIdr: 1000000
     ))->toThrow(InvalidArgumentException::class, 'Check-out date must be after check-in date.');
 
@@ -248,8 +253,8 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-04',
+        checkInDate: $inDate,
+        checkOutDate: $outPast,
         dailyRateIdr: 1000000
     ))->toThrow(InvalidArgumentException::class, 'Check-out date must be after check-in date.');
 
@@ -258,8 +263,8 @@ it('enforces hotel check-in and check-out date strict ordering boundary', functi
         propertyId: $property->id,
         roomId: $room->id,
         guestUserId: 'guest-1',
-        checkInDate: '2026-11-05',
-        checkOutDate: '2026-11-06',
+        checkInDate: $inDate,
+        checkOutDate: $outNext,
         dailyRateIdr: 1000000
     );
     expect($res['nights'])->toBe(1)
