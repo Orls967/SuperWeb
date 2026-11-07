@@ -8,9 +8,11 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Contracts\HotelFolioPort;
 use Modules\Hotel\Application\Services\HotelFolioAdapter;
 use Modules\Hotel\Application\Services\HotelOperationsService;
+use Modules\Hotel\Application\Services\RoomBlockReserverService;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
 use Modules\Hotel\Console\Commands\HotelCloseDayCommand;
 use Modules\Hotel\Console\Commands\HotelReportOrphansCommand;
+use Modules\Hotel\Contracts\RoomBlockReserver;
 use Modules\Shared\Application\MenuRegistry;
 
 class HotelServiceProvider extends ServiceProvider
@@ -23,6 +25,7 @@ class HotelServiceProvider extends ServiceProvider
         }
 
         $this->app->bind(HotelFolioPort::class, HotelFolioAdapter::class);
+        $this->app->bind(RoomBlockReserver::class, RoomBlockReserverService::class);
         $this->app->singleton(HotelOperationsService::class);
     }
 

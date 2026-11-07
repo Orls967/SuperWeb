@@ -3326,6 +3326,18 @@ return [
     'venue.artist.royalties.accrue' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.artist.royalties.release' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.artist.settle' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.bar-shifts.audit' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.artists' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.artists.settle' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.bar' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.bar.audit' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.bundles' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.bundles.allocate' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.members' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.members.evaluate' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.pnl' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.sponsors' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.economy.sponsors.milestones.valuate' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.events.close' => [
         'roles' => ['admin', 'venue_manager'],
         'params' => function () {
