@@ -124,6 +124,21 @@ class MiningExternalFactors
     }
 
     /**
+     * Mengambil kebijakan ekspor dan alasan regulasi.
+     *
+     * @return array{allowed: bool, reason: string}
+     */
+    public function getExportPolicy(string $commodity, ?CarbonImmutable $date = null): array
+    {
+        $banned = $this->isExportBanned($commodity, $date);
+
+        return [
+            'allowed' => ! $banned,
+            'reason' => $banned ? "Kebijakan larangan ekspor {$commodity} mentah per regulasi hilirisasi ESDM" : 'Ekspor diizinkan',
+        ];
+    }
+
+    /**
      * Mengambil versi parameter eksternal aktif berdasarkan tanggal berlakunya.
      */
     public function resolveFactor(string $key, ?CarbonImmutable $date = null): ?MiningExternalFactor

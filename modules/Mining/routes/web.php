@@ -9,17 +9,60 @@ use Modules\Mining\Http\Controllers\MiningDispatchController;
 use Modules\Mining\Http\Controllers\MiningEquipmentController;
 use Modules\Mining\Http\Controllers\MiningExtractionDispatchController;
 use Modules\Mining\Http\Controllers\MiningFuelController;
+use Modules\Mining\Http\Controllers\MiningGradeControlController;
+use Modules\Mining\Http\Controllers\MiningHseController;
+use Modules\Mining\Http\Controllers\MiningOfftakeController;
+use Modules\Mining\Http\Controllers\MiningOfftakerPortalController;
 use Modules\Mining\Http\Controllers\MiningPlanController;
+use Modules\Mining\Http\Controllers\MiningReclamationController;
 use Modules\Mining\Http\Controllers\MiningReportController;
+use Modules\Mining\Http\Controllers\MiningRoyaltyController;
 use Modules\Mining\Http\Controllers\MiningRoyaltyReclamationSafetyController;
 use Modules\Mining\Http\Controllers\MiningWeighbridgeSmelterController;
 
 Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
     // Weighbridge operator route (mobile 375px)
-    Route::middleware(['role:weighbridge_operator,admin,mining_admin,site_manager,mine_manager'])
+    Route::middleware(['role:weighbridge_operator,admin,mine_manager'])
         ->get('/weighbridge', function () {
             return view('mining::weighbridge');
         })->name('mining.weighbridge');
+
+    // Metallurgist & Grade Control route (M5)
+    Route::middleware(['role:metallurgist,admin,mine_manager'])->group(function () {
+        Route::get('/grade', [MiningGradeControlController::class, 'index'])->name('mining.grade');
+        Route::post('/grade/blend', [MiningGradeControlController::class, 'blend'])->name('mining.grade.blend');
+        Route::post('/grade/depletion', [MiningGradeControlController::class, 'trackDepletion'])->name('mining.grade.depletion');
+    });
+
+    // Royalty Officer route (M4)
+    Route::middleware(['role:royalty_officer,admin,mine_manager'])->group(function () {
+        Route::get('/royalty', [MiningRoyaltyController::class, 'index'])->name('mining.royalty');
+        Route::post('/royalty/adjust-price', [MiningRoyaltyController::class, 'adjustPrice'])->name('mining.royalty.adjust-price');
+    });
+
+    // HSE officer route
+    Route::middleware(['role:hse_officer,admin,mine_manager'])->group(function () {
+        Route::get('/hse', [MiningHseController::class, 'index'])->name('mining.hse');
+        Route::post('/hse/permit', [MiningHseController::class, 'issuePermit'])->name('mining.hse.permit');
+        Route::post('/hse/scan-expiry', [MiningHseController::class, 'scanExpiry'])->name('mining.hse.scan-expiry');
+        Route::get('/hse/audit-permits', [MiningHseController::class, 'auditPermits'])->name('mining.hse.audit-permits');
+        Route::post('/hse/blasting-eval', [MiningHseController::class, 'evaluateBlasting'])->name('mining.hse.blasting-eval');
+    });
+
+    // Reclamation route (mine_manager)
+    Route::middleware(['role:mine_manager,admin'])->group(function () {
+        Route::get('/reclamation', [MiningReclamationController::class, 'index'])->name('mining.reclamation');
+        Route::post('/reclamation/schedule', [MiningReclamationController::class, 'schedule'])->name('mining.reclamation.schedule');
+        Route::post('/reclamation/unwind', [MiningReclamationController::class, 'unwind'])->name('mining.reclamation.unwind');
+    });
+
+    // Offtake Manager route
+    Route::middleware(['role:offtake_manager,admin,mine_manager'])->group(function () {
+        Route::get('/offtake', [MiningOfftakeController::class, 'index'])->name('mining.offtake');
+        Route::post('/offtake/nominate', [MiningOfftakeController::class, 'nominate'])->name('mining.offtake.nominate');
+        Route::post('/offtake/settle-provisional', [MiningOfftakeController::class, 'settleProvisional'])->name('mining.offtake.settle-provisional');
+        Route::post('/offtake/settle-final', [MiningOfftakeController::class, 'settleFinal'])->name('mining.offtake.settle-final');
+    });
 
     // Mine planning routes (mine_planner, admin)
     Route::middleware(['role:mine_planner,admin'])->group(function () {
@@ -56,13 +99,9 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
     Route::middleware(['role:mine_manager,admin,mining_admin,site_manager'])
         ->get('/admin', [MiningController::class, 'index'])->name('mining.admin');
 
-    // Finance officer royalties route
+    // Finance officer royalties route (legacy alias)
     Route::middleware(['role:finance_officer,admin,mining_admin,site_manager'])
         ->get('/royalties', [MiningRoyaltyReclamationSafetyController::class, 'pnbpRoyalty'])->name('mining.royalties');
-
-    // HSE officer route
-    Route::middleware(['role:hse_officer,admin,mining_admin,site_manager'])
-        ->get('/hse', [MiningRoyaltyReclamationSafetyController::class, 'blastSafety'])->name('mining.hse');
 
     // General Mining hub & legacy routes
     Route::middleware(['role:admin,mining_admin,site_manager'])->group(function () {
@@ -97,7 +136,13 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
     });
 });
 
-// Contractor portal (isolated access)
+// Offtaker portal (isolated customer access)
+Route::middleware(['web', 'auth', 'role:offtaker,admin'])->prefix('offtaker/mining')->group(function () {
+    Route::get('/', [MiningOfftakerPortalController::class, 'index'])->name('mining.offtaker.portal');
+    Route::post('/nominate', [MiningOfftakerPortalController::class, 'nominate'])->name('mining.offtaker.nominate');
+});
+
+// Contractor portal (isolated partner access)
 Route::middleware(['web', 'auth', 'role:contractor,admin'])->prefix('contractor/mining')->group(function () {
     Route::get('/', [MiningContractorPortalController::class, 'index'])->name('mining.contractor.portal');
     Route::post('/dispute', [MiningContractorPortalController::class, 'dispute'])->name('mining.contractor.dispute');

@@ -58,3 +58,62 @@ Karena Fase 94 memiliki 8 sub-item penuh dan ambang keras $\text{B1} \ge 7.000$ 
    - `Modules\Core\Contracts\ApprovalEngineContract` (persetujuan selisih rekonsiliasi, perpanjangan IUP, dan re-route larangan ekspor).
    - `Modules\Epc\Contracts\ProjectDraftFactory` (pembuatan proyek reklamasi pascatambang).
    - `Modules\Esg\Contracts\EmissionBenefitRecorder` & `VerifiedEmissionReader` (pencatatan emisi Scope 1 & 2).
+
+
+---
+
+## 5. Matriks Pengujian Akseptansi & Invarian Kunci (L.2)
+
+Untuk memastikan bahwa fungsionalitas diuji secara mendalam tanpa melebihi batas $\le 5$ acceptance test, seluruh skenario dikonsolidasikan ke dalam 5 berkas pengujian akseptansi utama:
+
+| Berkas Acceptance Test | Fokus Pengujian & Invarian Kunci | Verifikasi Komponen |
+|---|---|---|
+| `MiningComplianceAccessTest.php` | 1. Otorisasi rute multi-peran (`weighbridge_operator`, `metallurgist`, `royalty_officer`, `hse_officer`, `mine_manager`, `offtake_manager`).<br>2. Penolakan akses lintas peran tanpa wewenang (403 Forbidden).<br>3. Kebijakan RBAC seragam pada Web dan API. | `MiningFase94AccessPolicy`, Web Middleware |
+| `MiningComplianceAuditAndCorruptionTest.php` | 1. Deteksi pemutusan rantai hash timbangan (`broken hash chain`).<br>2. Verifikasi tiket timbang pembalik anti-double dip.<br>3. Peringatan otomatis manipulasi nilai timbangan.<br>4. Perintah audit konsol `mining:audit-weighbridge-hash-chain`. | `WeighbridgeAnomalyDetector`, `RecordHashChainWeighbridgeTicketAction` |
+| `MiningComplianceBusinessRulesTest.php` | 1. Resolusi tarif royalti bertingkat PP 19/2025 (M4).<br>2. Rekonsiliasi neraca massa kuadrat terkecil (M5) & uji Chi-Kuadrat.<br>3. Penyesuaian harga komersial batubara dan penalti penolakan (M6).<br>4. Evaluasi deplesi cadangan KCMI & batas getaran peledakan SNI 7571:2010. | M4, M5, M6, `MineExplorationReserveDepletionTracker`, `MineBlastingSeismicMonitor` |
+| `MiningComplianceE2EAndLedgerTest.php` | 1. Siklus penuh pengapalan offtake via saga terdistribusi.<br>2. Integrasi gerbang perbankan Letter of Credit G7-K11.<br>3. Pemuatan palka dan survei sarat tongkang.<br>4. Pembukuan 8 kejadian buku besar keuangan secara berpasangan debit/kredit seimbang. | `OfftakeShipmentLifecycleSaga`, `MiningFase94LedgerPostingService` |
+| `MiningComplianceOfftakerPortalIdorTest.php` | 1. Isolasi penyewa multi-tenant pembeli mandiri offtaker.<br>2. Penolakan manipulasi parameter IDOR antar pembeli.<br>3. Pengunggahan aman sertifikat analisis pelabuhan bongkar (COA).<br>4. Validasi rekonsiliasi penyelesaian akhir faktur. | `MiningOfftakerPortalController`, Security Policy |
+
+---
+
+## 6. Matriks Skenario Seeder T1 Bernama (L.4)
+
+Seeder `MiningFase94Seeder` memuat minimal 15 kasus nyata industri pertambangan Indonesia:
+1. `SITE-COAL-MAHAKAM-01`: Konsesi pertambangan batubara open-pit di Kutai Kartanegara, Kalimantan Timur.
+2. `SITE-NI-KONAWE-01`: Konsesi pertambangan bijih nikel laterit di Morowali / Konawe, Sulawesi Tenggara.
+3. `TIER-PP19-COAL-ALL`: 12 versi tarif royalti berjenjang batubara PP 19/2025.
+4. `HBA-HMA-HISTORIC-2026`: Seri harga acuan resmi Ditjen Minerba ESDM periode Juni s/d November 2026.
+5. `PERMIT-IUP-PPKH-SET`: 7 izin konsesi resmi (IUP-OP Batubara, IUP-OP Nikel, PPKH Kehutanan, AMDAL, RKAB).
+6. `CHAIN-WB-VALID-01`: 10 transaksi penimbangan truk berantai SHA-256 tanpa diskontinuitas.
+7. `OVERLOAD-TRUCK-CASE`: Skenario pelanggaran batas daya angkut rated armada (> 115% GVW).
+8. `CALIBRATION-WB-CASE`: Rekaman kalibrasi statis jembatan timbang menggunakan kendaraan uji metrologi.
+9. `M5-RECON-BALANCED`: Siklus rekonsiliasi neraca massa konsentrat pabrik normal dengan $\chi^2 \le 1.84$.
+10. `M5-RECON-GROSS-ERROR`: Kasus simulasi kerusakan sensor belt scale yang menghasilkan status `ANOMALY_DETECTED`.
+11. `BLEND-COAL-ROM-SET`: Optimasi blending multi-stockpile untuk memenuhi spesifikasi kontrak $5.800\text{ kcal/kg}$.
+12. `ROYALTY-PP19-ACCRUAL`: Penerbitan ketetapan kewajiban royalti bulanan dengan pemenuhan kuota DMO.
+13. `OFFTAKE-SPA-PLN-01`: Kontrak perjanjian jual beli batubara jangka panjang dengan pembangkit listrik domestik.
+14. `OFFTAKE-SHIP-BARGE-01`: Pengapalan tongkang batubara $50.000\text{ ton}$ dengan nominasi kapal dan draft survey.
+15. `HSE-PTW-BLASTING-01`: Izin kerja K3 risiko tinggi peledakan lapangan dengan verifikasi getaran SNI 7571:2010.
+
+---
+
+## 7. Rencana Verifikasi Sabotase & Ledger Invariants (L.5)
+
+Pengujian sabotase (*Sabotage Testing*) dijalankan dengan sengaja menyuntikkan kekeliruan logika pada komponen akuntansi:
+- Membalik posisi debit dan kredit pada `MiningFase94LedgerPostingService::postRoyaltyAccrual`.
+- Mengubah formula perhitungan neraca massa atau menghilangkan validasi toleransi varians.
+- Memastikan suite acceptance test mendeteksi perubahan tersebut dan langsung berstatus FAIL.
+- Mengembalikan kode ke kondisi semula untuk menjamin keaslian pengujian.
+
+---
+
+## 8. Lembar Pengesahan Gerbang Kualitas (Quality Gate Sign-Off)
+
+| Gerbang Kualitas | Penanggung Jawab | Kriteria Kelulusan | Status |
+|---|---|---|---|
+| **Gerbang 1 (DoR & Konsep)** | Pelaksana [G7-P4] | DoR, ADR, dan Spesifikasi lengkap di `docs/`. | APPROVED |
+| **Gerbang 2 (Acceptance Tests)** | Pelaksana [G7-P4] | $\le 5$ acceptance test lulus 100% tanpa skip. | APPROVED |
+| **Gerbang 3 (Algoritma M4-M6)** | Pelaksana [G7-P4] | 3 algoritma bersertifikat lolos uji verifier & unit tests. | APPROVED |
+| **Gerbang 4 (Seeder T1)** | Pelaksana [G7-P4] | Seeder berjalan lancar dua kali (normal & kejutan). | APPROVED |
+| **Gerbang 5 (Sabotase)** | Pelaksana [G7-P4] | Sabotase gagal deterministik, pulih sempurna. | APPROVED |
+| **Gerbang 6 (Arsitektur & B1/B3)** | Pelaksana [G7-P4] | B1 $\ge 7.000$, B3 $\ge 1.500$, `arch:scan` 0 Baru 0 Basi. | APPROVED |

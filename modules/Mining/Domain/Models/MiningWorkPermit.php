@@ -4,64 +4,88 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Models;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Mining\Domain\Enums\WorkPermitStatus;
 
 class MiningWorkPermit extends Model
 {
+    use HasUuids;
+
     protected $table = 'min_work_permits';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
 
     protected $fillable = [
         'id',
-        'site_id',
-        'area_id',
         'permit_number',
+        'site_id',
+        'pit_id',
+        'worker_id',
         'permit_type',
-        'supervisor_name',
-        'worker_party_id',
-        'allowed_pit_id',
-        'allowed_latitude',
-        'allowed_longitude',
-        'allowed_radius_meters',
+        'activity_type',
         'valid_from',
         'valid_until',
-        'approval_status',
+        'supervisor_name',
+        'geofence_zone',
+        'risk_level',
         'status',
+        'approved_by_user_id',
+        'capa_ref',
     ];
 
     protected $casts = [
-        'allowed_latitude' => 'float',
-        'allowed_longitude' => 'float',
-        'allowed_radius_meters' => 'float',
+        'status' => WorkPermitStatus::class,
         'valid_from' => 'datetime',
         'valid_until' => 'datetime',
     ];
 
     protected static function booted(): void
     {
-        static::creating(function (self $model) {
+        static::creating(function (self $model): void {
+            if (empty($model->permit_type)) {
+                $model->permit_type = $model->activity_type ?? 'GENERAL_HIGH_RISK';
+            }
+            if (empty($model->activity_type)) {
+                $model->activity_type = $model->permit_type;
+            }
             if (empty($model->supervisor_name)) {
-                $model->supervisor_name = 'HSE Superintendent';
+                $model->supervisor_name = 'Pengawas K3 Tambang';
             }
         });
     }
 
-    public function isExpired(): bool
+    public function getValidToAttribute(): ?CarbonImmutable
     {
-        return $this->valid_until !== null && Carbon::now()->greaterThan($this->valid_until);
+        return $this->valid_until ? CarbonImmutable::instance($this->valid_until) : null;
     }
 
-    public function isValid(): bool
+    public function site(): BelongsTo
     {
-        return ! $this->isExpired() && ($this->approval_status === 'APPROVED' || $this->status === 'ACTIVE');
+        return $this->belongsTo(MiningSite::class, 'site_id');
     }
 
-    public function area()
+    public function pit(): BelongsTo
     {
-        return $this->belongsTo(MiningArea::class, 'area_id');
+        return $this->belongsTo(MiningPit::class, 'pit_id');
+    }
+
+    public function isCurrentlyValid(?CarbonImmutable $now = null): bool
+    {
+        $now = $now ?? CarbonImmutable::now();
+
+        if ($this->status !== WorkPermitStatus::ACTIVE) {
+            return false;
+        }
+
+        if ($this->valid_from && $now->lessThan($this->valid_from)) {
+            return false;
+        }
+
+        if ($this->valid_until && $now->greaterThan($this->valid_until)) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -10,7 +10,9 @@ use Modules\Shared\Application\MenuRegistry;
 use Modules\TradeFinance\Application\Services\Clearing\CbamDeclarationService;
 use Modules\TradeFinance\Application\Services\Clearing\ClearingEscrowService;
 use Modules\TradeFinance\Application\Services\CrossBorder\CrossBorderClearingService;
+use Modules\TradeFinance\Application\Services\OfftakeLetterOfCreditGatewayService;
 use Modules\TradeFinance\Application\Services\TradeFinanceService;
+use Modules\TradeFinance\Contracts\OfftakeLetterOfCreditGateway;
 use Modules\TradeFinance\Console\Commands\AuditClearingCommand;
 use Modules\TradeFinance\Console\Commands\AuditTradeFinanceCommand;
 use Modules\TradeFinance\Domain\Models\Clearing\ClearingEscrow;
@@ -24,6 +26,7 @@ class TradeFinanceServiceProvider extends ServiceProvider
         $this->app->singleton(CrossBorderClearingService::class);
         $this->app->singleton(ClearingEscrowService::class);
         $this->app->singleton(CbamDeclarationService::class);
+        $this->app->bind(OfftakeLetterOfCreditGateway::class, OfftakeLetterOfCreditGatewayService::class);
     }
 
     public function boot(): void

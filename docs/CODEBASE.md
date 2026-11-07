@@ -515,7 +515,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 35 | **Manufacturing** | `mfg_` | 14 |
 | 36 | **Marine** | `mar_` | 1 |
 | 37 | **Med** | `med_` | 3 |
-| 38 | **Mining** | `min_` | 13 |
+| 38 | **Mining** | `min_` | 14 |
 | 39 | **Mobility** | `oto_` | 0 |
 | 40 | **Partner** | `ptn_` | 1 |
 | 41 | **Party** | `pty_` | 3 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **654 Migrasi** |
+| | **Total: 63 Modul** | | **655 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
