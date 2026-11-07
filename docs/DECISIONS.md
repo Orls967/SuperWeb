@@ -2789,3 +2789,28 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   7. **D119-7 (Buku Besar Keuangan Operasi Bawah Tanah & Laut)**: Penjurnalan akrual bahan peledak ANFO, biaya survei fotogrametri, dan biaya sewa tongkang muatan curah melalui `MiningFase119LedgerPostingService`.
   8. **D119-8 (Pusat Komando Digital Twin & Verifikasi Lintas Modul)**: Menyediakan dashboard Web & antarmuka responsif mobile 375px untuk visualisasi real-time ventilasi, lereng, dan logistik laut.
 - [ADR-0119](decisions/ADR-0119-underground-digital-twin-blast-and-marine.md) — 2026-11-07 — Arsitektur Digital Twin Bawah Tanah, Simulasi Ventilasi Hardy Cross, Model Peledakan KCO, dan Rekonsiliasi Tongkang Curah {#ADR-0119}
+
+<a id="2026-11-07-g7-p4-pertambangan-fase-121"></a>
+<a id="d121-1"></a>
+<a id="d121-2"></a>
+<a id="d121-3"></a>
+<a id="d121-4"></a>
+<a id="d121-5"></a>
+<a id="d121-6"></a>
+<a id="d121-7"></a>
+<a id="d121-8"></a>
+## 2026-11-07: [G7-P4.4] Modul Pertambangan — Minerals Processing, Smelter & Metals Trading Desk (Fase 121, D121-1..D121-8)
+- **Anchor:** `2026-11-07-g7-p4-pertambangan-fase-121` / `d121-1` / `d121-2` / `d121-3` / `d121-4` / `d121-5` / `d121-6` / `d121-7` / `d121-8`
+- **Rujukan ADR:** [`docs/decisions/ADR-0121-minerals-processing-smelter-and-metals-trading.md`](decisions/ADR-0121-minerals-processing-smelter-and-metals-trading.md)
+- **Konteks:**
+  - Melaksanakan Lini 12F Pertambangan (Fase 121) dengan standar ketat W8 untuk pengolahan tanur pemurnian smelter (RKEF/HPAL), penentuan harga logam terhubung bursa internasional LME, meja lindung nilai perdagangan komoditas fisik dan derivatif, digitalisasi sistem resi gudang (SRG) beragun pembiayaan SCF, dan sirkularitas produk sampingan slag/sulfur.
+- **Keputusan:**
+  1. **D121-1 (Model Solver Kesetimbangan Energi Termal Smelter M10)**: Menghitung neraca massa bijih, konsumsi energi spesifik listrik (MWh/ton), reduktor batubara, perolehan logam murni (metal recovery yield), dan emisi GRK Scope 1 ($CO_2$) tanur listrik RKEF.
+  2. **D121-2 (Formula Harga LME & Penalti Kontaminan Mutu Logam)**: Menghitung harga jual bersih produk logam (NPI, feronikel, katoda tembaga) berbasis index resmi LME Cash Settlement dengan penyesuaian penalti kontaminan silika ($SiO_2$), magnesium ($MgO$), dan fosfor.
+  3. **D121-3 (Valuator Mark-to-Market Meja Perdagangan Logam M11)**: Menghitung valuasi harian portofolio hedging logam fisik/forward, laba-rugi belum terealisasi (*unrealized P&L*), contango/backwardation spread, dan batas pemanggilan margin variasi (*variation margin call*).
+  4. **D121-4 (Model Penjaminan Resi Gudang Digital & Dynamic Haircut M12)**: Menghitung batas pembiayaan rantai pasok (SCF) beragun resi gudang terakreditasi Bappebti dengan haircut risiko berbasis volatilitas harga historis 30-hari dan tingkat keyakinan assay 99%.
+  5. **D121-5 (State Machine Kontrak Hedging & Resi Gudang)**: Mengawal alur transaksi dengan `MetalsTradingContractStateMachine` (8 status) dan `WarehouseReceiptCollateralStateMachine` (8 status) dengan validasi guard ketat.
+  6. **D121-6 (Saga Hilirisasi Logam Terpadu)**: Orkestrasi siklus produksi peleburan, pengujian mutu assay, penerbitan resi gudang, dan pembukuan piutang offtake dengan mekanisme rollback dan kompensasi otomatis pada `MetalsHilirisasiLifecycleSaga`.
+  7. **D121-7 (Buku Besar Keuangan Pengolahan Logam & Hilirisasi)**: Menjurnal biaya bahan baku konsentrat, konsumsi listrik tanur smelter, persediaan logam murni, agunan SCF, dan pendapatan produk sampingan terak nikel/slag melalui `MiningFase121LedgerPostingService`.
+  8. **D121-8 (Antarmuka Pengolahan & Terminal Trading Logam)**: Menyediakan dashboard Web responsif 375px untuk monitoring parameter operasi smelter, grafik posisi trading LME, resi gudang digital, dan laporan ekspor terpadu.
+- [ADR-0121](decisions/ADR-0121-minerals-processing-smelter-and-metals-trading.md) — 2026-11-07 — Arsitektur Eksekusi Pemurnian Smelter, Integrasi LME Trading Desk, dan Resi Gudang Kolateral {#ADR-0121}
