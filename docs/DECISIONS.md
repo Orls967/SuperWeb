@@ -2789,3 +2789,29 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   7. **D119-7 (Buku Besar Keuangan Operasi Bawah Tanah & Laut)**: Penjurnalan akrual bahan peledak ANFO, biaya survei fotogrametri, dan biaya sewa tongkang muatan curah melalui `MiningFase119LedgerPostingService`.
   8. **D119-8 (Pusat Komando Digital Twin & Verifikasi Lintas Modul)**: Menyediakan dashboard Web & antarmuka responsif mobile 375px untuk visualisasi real-time ventilasi, lereng, dan logistik laut.
 - [ADR-0119](decisions/ADR-0119-underground-digital-twin-blast-and-marine.md) — 2026-11-07 — Arsitektur Digital Twin Bawah Tanah, Simulasi Ventilasi Hardy Cross, Model Peledakan KCO, dan Rekonsiliasi Tongkang Curah {#ADR-0119}
+
+<a id="2026-11-07-g7-p5-venue-fase-89"></a>
+<a id="d89-1"></a>
+<a id="d89-2"></a>
+<a id="d89-3"></a>
+<a id="d89-4"></a>
+<a id="d89-5"></a>
+<a id="d89-6"></a>
+<a id="d89-7"></a>
+<a id="d89-8"></a>
+## 2026-11-07: [G7-P5.1] Modul Venue — Ticketing, Access Control, Usia & Venue Operations (Fase 89, D89-1..D89-8)
+- **Anchor:** `2026-11-07-g7-p5-venue-fase-89` / `d89-1` / `d89-2` / `d89-3` / `d89-4` / `d89-5` / `d89-6` / `d89-7` / `d89-8`
+- **Rujukan ADR:** [`docs/decisions/ADR-0089-ticketing-access-control-and-venue-ops.md`](decisions/ADR-0089-ticketing-access-control-and-venue-ops.md)
+- **Konteks:**
+  - Melaksanakan Lini 15F Venue & Entertainment (Fase 89) dengan standar ketat W8 untuk penerbitan tiket digital hash-chain non-fungible, kendali akses gerbang anti-passback dan verifikasi usia tanpa PII, pengaturan kapasitas zona token bucket, pemesanan meja VIP dengan deposit escrow minimum spend, serta saga pembatalan event terdistribusi dengan kompensasi polis asuransi G7-K15.
+- **Keputusan:**
+  1. **D89-1 (Master Venue & SM Event)**: Pengelolaan master venue, zona, dan event dengan State Machine `EntertainmentEvent` 8 status (`draft` hingga `settled`/`cancelled`).
+  2. **D89-2 (Tiket Non-Fungible & Pindai Gerbang V2)**: Penetapan harga dinamis V1, penerbitan tiket nomor gapless dan hash-chain kanonik `CanonicalHashChain`, verifikasi batas usia legal via `PartyAgeVerificationInterface`, serta pembatasan re-entry gerbang melalui `AntiPassbackGate` (V2).
+  3. **D89-3 (Kapasitas & Keselamatan Kerumunan V3)**: Pengendalian arus pengunjung zona melalui `ZoneCapacityGovernor` (V3) dengan margin keselamatan 5% dan token bucket laju masuk per menit.
+  4. **D89-4 (Saga Meja VIP & Minimum Spend V4)**: Pemesanan meja dengan hold deposit escrow, pencatatan pesanan konsumsi F&B via `OutletSaleRecorder` (G7-K17), dan penyelesaian tagihan minimum spend V4 beserta pemotongan denda no-show 50%.
+  5. **D89-5 (Izin Keramaian Gapless & Kepatuhan)**: Pendaftaran izin kepolisian/pemda gapless, asuransi event tersemat melalui `EventCoverBinder` (G7-K15), dan pencatatan kepatuhan tanpa kebocoran data medis.
+  6. **D89-6 (Respons Kepekaan & Saga Pembatalan)**: Saga pembatalan otomatis saat izin dicabut atau cuaca ekstrem melanda dengan kompensasi pembalikan unearned tiket, pemulihan escrow meja, dan klaim asuransi kerugian event.
+  7. **D89-7 (Buku Besar Akrual Double-Entry)**: Penjurnalan akrual penjualan tiket ke `ven:ticket_unearned:IDR` dan kewajiban pajak PBJT `ven:entertainment_tax_payable:IDR`, serta pengakuan pendapatan definitif saat event ditutup.
+  8. **D89-8 (Audit Dua Sumber ven:audit)**: Rekonsiliasi integritas dua sumber antara ledger unearned vs tiket belum ditutup, hash-chain kanonik tanpa diskontinuitas, nomor tiket gapless, dan batas okupansi zona fisik.
+- [ADR-0089](decisions/ADR-0089-ticketing-access-control-and-venue-ops.md) — 2026-11-07 — Ticketing Hash-Chain, Access Control Anti-Passback, Usia & Operasional Venue (`G7-D32`, `G7-D33`, `G7-D34`, `G7-D35`, `G7-D36`, `G7-D37`, `G7-K15`, `G7-K17`) {#ADR-0089}
+
