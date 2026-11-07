@@ -29,13 +29,13 @@ use InvalidArgumentException;
 final class BestAvailableRateCalculator
 {
     /**
-     * @param int $baseRateIdr Tarif dasar kamar (IDR)
-     * @param float $occupancyRate Rasio okupansi (0.0 sampai 1.0)
-     * @param int $leadDays Jumlah hari menjelang check-in
-     * @param bool $isEventActive Apakah ada festival/event besar kota
-     * @param int|null $contractRateIdr Tarif khusus kontrak/korporat (jika ada)
-     * @param int $floorRateIdr Batas bawah (floor) tarif
-     * @param int $ceilingRateIdr Batas atas (ceiling) tarif
+     * @param  int  $baseRateIdr  Tarif dasar kamar (IDR)
+     * @param  float  $occupancyRate  Rasio okupansi (0.0 sampai 1.0)
+     * @param  int  $leadDays  Jumlah hari menjelang check-in
+     * @param  bool  $isEventActive  Apakah ada festival/event besar kota
+     * @param  int|null  $contractRateIdr  Tarif khusus kontrak/korporat (jika ada)
+     * @param  int  $floorRateIdr  Batas bawah (floor) tarif
+     * @param  int  $ceilingRateIdr  Batas atas (ceiling) tarif
      * @return array{
      *     rate_idr: int,
      *     applied_occupancy_bps: int,
@@ -55,10 +55,10 @@ final class BestAvailableRateCalculator
         int $ceilingRateIdr = 3_000_000
     ): array {
         if ($baseRateIdr <= 0) {
-            throw new InvalidArgumentException("Tarif dasar harus positif.");
+            throw new InvalidArgumentException('Tarif dasar harus positif.');
         }
         if ($floorRateIdr > $ceilingRateIdr) {
-            throw new InvalidArgumentException("Floor rate tidak boleh melampaui ceiling rate.");
+            throw new InvalidArgumentException('Floor rate tidak boleh melampaui ceiling rate.');
         }
 
         if ($contractRateIdr !== null) {

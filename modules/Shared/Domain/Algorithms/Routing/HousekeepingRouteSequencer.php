@@ -17,9 +17,9 @@ use InvalidArgumentException;
 final class HousekeepingRouteSequencer
 {
     /**
-     * @param list<array{room: int, credit: int, is_priority: bool, is_vip: bool}> $rooms
-     * @param list<string> $staffNames
-     * @param int $creditLimitPerStaff Batas kredit pembersihan per petugas (mis. 240)
+     * @param  list<array{room: int, credit: int, is_priority: bool, is_vip: bool}>  $rooms
+     * @param  list<string>  $staffNames
+     * @param  int  $creditLimitPerStaff  Batas kredit pembersihan per petugas (mis. 240)
      * @return array{
      *     assignments: array<string, list<int>>,
      *     routes: array<string, list<int>>,
@@ -34,10 +34,10 @@ final class HousekeepingRouteSequencer
         int $creditLimitPerStaff = 240
     ): array {
         if (empty($staffNames)) {
-            throw new InvalidArgumentException("Daftar petugas tidak boleh kosong.");
+            throw new InvalidArgumentException('Daftar petugas tidak boleh kosong.');
         }
         if ($creditLimitPerStaff <= 0) {
-            throw new InvalidArgumentException("Batas kredit per petugas harus positif.");
+            throw new InvalidArgumentException('Batas kredit per petugas harus positif.');
         }
 
         // Urutkan nama petugas untuk tie-break deterministik
@@ -63,6 +63,7 @@ final class HousekeepingRouteSequencer
             if ($a['credit'] !== $b['credit']) {
                 return $b['credit'] <=> $a['credit']; // Kredit menurun
             }
+
             return $a['room'] <=> $b['room']; // Nomor kamar menaik
         });
 
@@ -84,7 +85,7 @@ final class HousekeepingRouteSequencer
             $minLoad = PHP_INT_MAX;
 
             foreach ($staffNames as $name) {
-                if ($workloads[$name] + $rCredit <= $creditLimitPerStaff) {
+                if ($creditLimitPerStaff >= $workloads[$name] + $rCredit) {
                     if ($workloads[$name] < $minLoad) {
                         $minLoad = $workloads[$name];
                         $chosenStaff = $name;
@@ -113,6 +114,7 @@ final class HousekeepingRouteSequencer
                 if ($prioA !== $prioB) {
                     return $prioB ? 1 : -1; // Yang prioritas di depan
                 }
+
                 return $roomA <=> $roomB; // Nomor kamar menaik
             });
             $routes[$name] = $staffRooms;

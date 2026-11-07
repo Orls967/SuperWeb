@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hotel\Application\Actions;
 
 use Modules\Hotel\Domain\Models\HotelHousekeepingTask;
-use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\StateMachines\HousekeepingTaskStateMachine;
 
 /**

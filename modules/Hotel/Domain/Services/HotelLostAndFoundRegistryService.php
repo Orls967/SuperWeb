@@ -18,7 +18,7 @@ final class HotelLostAndFoundRegistryService
         string $finderStaffName,
         string $storageLocation = 'LOCKER_A3'
     ): array {
-        $trackingCode = 'LNF-' . date('Ymd') . '-' . substr(md5($itemDescription . $roomId), 0, 6);
+        $trackingCode = 'LNF-'.date('Ymd').'-'.substr(md5($itemDescription.$roomId), 0, 6);
 
         return [
             'tracking_code' => strtoupper($trackingCode),

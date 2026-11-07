@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Application\Actions;
 
-use Carbon\CarbonImmutable;
 use Modules\Hotel\Domain\Ledger\HotelPostingHelper;
 use Modules\Hotel\Domain\Models\HotelReservation;
 

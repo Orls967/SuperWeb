@@ -7,7 +7,7 @@ namespace Modules\Hotel\Domain\Algorithms;
 final readonly class OverbookingCertificate
 {
     /**
-     * @param list<int> $valuesByK
+     * @param  list<int>  $valuesByK
      */
     public function __construct(
         public int $capacity,

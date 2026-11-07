@@ -13,13 +13,21 @@ use InvalidArgumentException;
 final class ReservationStateMachine
 {
     public const STATUS_INQUIRY = 'inquiry';
+
     public const STATUS_TENTATIVE = 'tentative';
+
     public const STATUS_CONFIRMED = 'confirmed';
+
     public const STATUS_RECONFIRMED = 'reconfirmed';
+
     public const STATUS_CHECKED_IN = 'checked_in';
+
     public const STATUS_CHECKED_OUT = 'checked_out';
+
     public const STATUS_NO_SHOW = 'no_show';
+
     public const STATUS_CANCELLED = 'cancelled';
+
     public const STATUS_WALKED = 'walked';
 
     /**
@@ -44,7 +52,7 @@ final class ReservationStateMachine
 
     public static function assertCanTransition(string $fromStatus, string $toStatus): void
     {
-        if (!self::canTransition($fromStatus, $toStatus)) {
+        if (! self::canTransition($fromStatus, $toStatus)) {
             throw new InvalidArgumentException("Transisi status reservasi ilegal dari {$fromStatus} ke {$toStatus}.");
         }
     }

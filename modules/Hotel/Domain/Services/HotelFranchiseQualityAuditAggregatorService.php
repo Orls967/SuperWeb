@@ -10,7 +10,7 @@ namespace Modules\Hotel\Domain\Services;
 final class HotelFranchiseQualityAuditAggregatorService
 {
     /**
-     * @param array<string, int> $categoryScores (skala 0-100)
+     * @param  array<string, int>  $categoryScores  (skala 0-100)
      * @return array{composite_score: float, star_rating_recommendation: int, is_audit_passed: bool}
      */
     public function aggregateAuditScores(array $categoryScores): array

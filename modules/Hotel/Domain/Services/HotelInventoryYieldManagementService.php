@@ -24,6 +24,7 @@ final class HotelInventoryYieldManagementService
 
         if ($snapshots->isEmpty()) {
             $totalRooms = HotelRoom::where('property_id', (string) $propertyId)->count() ?: 100;
+
             return [
                 'average_adr_idr' => 1200000,
                 'average_revpar_idr' => 960000,

@@ -31,7 +31,7 @@ final class HotelComplianceController extends Controller
         $pendingReports = HotelApoaReport::where('status', ApoaReportStateMachine::STATUS_PENDING)->get();
 
         if ($pendingReports->isEmpty()) {
-            return back()->with('info', "Tidak ada laporan APOA pending.");
+            return back()->with('info', 'Tidak ada laporan APOA pending.');
         }
 
         $payload = [];

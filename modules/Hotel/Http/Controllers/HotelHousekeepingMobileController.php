@@ -23,11 +23,11 @@ final class HotelHousekeepingMobileController extends Controller
             ->where(function ($q) use ($user): void {
                 if ($user !== null) {
                     $q->where('assigned_user_id', $user->id)
-                      ->orWhereNull('assigned_user_id');
+                        ->orWhereNull('assigned_user_id');
                 }
             })
             ->where('task_date', $today)
-            ->orderByRaw("is_vip DESC, is_priority DESC, route_sequence ASC")
+            ->orderByRaw('is_vip DESC, is_priority DESC, route_sequence ASC')
             ->get();
 
         return view('hotel::housekeeping_mobile', compact('tasks', 'today'));

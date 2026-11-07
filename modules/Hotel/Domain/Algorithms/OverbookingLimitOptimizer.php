@@ -20,11 +20,11 @@ use InvalidArgumentException;
 final class OverbookingLimitOptimizer
 {
     /**
-     * @param int $capacity Kapasitas fisik kamar (mis. 100)
-     * @param list<int> $noShowDistributionBps Distribusi probabilitas no-show dalam basis points (sum = 10.000 bps)
-     * @param int $revenuePerRoomIdr Pendapatan kamar per malam (IDR)
-     * @param int $walkCostIdr Biaya kompensasi & relokasi walk per kamar (IDR)
-     * @param int $policyMaxPercentBps Batas kebijakan overbooking dalam bps (default 300 bps = 3%)
+     * @param  int  $capacity  Kapasitas fisik kamar (mis. 100)
+     * @param  list<int>  $noShowDistributionBps  Distribusi probabilitas no-show dalam basis points (sum = 10.000 bps)
+     * @param  int  $revenuePerRoomIdr  Pendapatan kamar per malam (IDR)
+     * @param  int  $walkCostIdr  Biaya kompensasi & relokasi walk per kamar (IDR)
+     * @param  int  $policyMaxPercentBps  Batas kebijakan overbooking dalam bps (default 300 bps = 3%)
      * @return array{
      *     optimal_k: int,
      *     expected_net_value_idr: int,
@@ -45,7 +45,7 @@ final class OverbookingLimitOptimizer
             throw new InvalidArgumentException("Kapasitas kamar harus positif: {$capacity}");
         }
         if ($revenuePerRoomIdr <= 0 || $walkCostIdr <= 0) {
-            throw new InvalidArgumentException("Pendapatan kamar dan biaya walk harus positif.");
+            throw new InvalidArgumentException('Pendapatan kamar dan biaya walk harus positif.');
         }
         $totalBps = array_sum($noShowDistributionBps);
         if ($totalBps !== 10000) {
@@ -54,24 +54,24 @@ final class OverbookingLimitOptimizer
 
         $policyCeilingK = intdiv($capacity * $policyMaxPercentBps, 10000);
         $maxPossibleK = count($noShowDistributionBps) - 1;
-        
+
         $valuesByK = [];
         $walkRoomsByK = [];
-        
+
         for ($k = 0; $k <= $maxPossibleK; $k++) {
             $sold = $capacity + $k;
             $expectedNetVal = 0.0;
             $expectedWalk = 0.0;
-            
+
             foreach ($noShowDistributionBps as $ns => $bps) {
                 $p = $bps / 10000.0;
                 $occupied = min($capacity, $sold - $ns);
                 $walk = max(0, $sold - $ns - $capacity);
-                
+
                 $expectedNetVal += $p * ($occupied * $revenuePerRoomIdr - $walk * $walkCostIdr);
                 $expectedWalk += $p * $walk;
             }
-            
+
             $valuesByK[$k] = (int) round($expectedNetVal);
             $walkRoomsByK[$k] = $expectedWalk;
         }
@@ -80,7 +80,7 @@ final class OverbookingLimitOptimizer
         // Tie-break k lebih kecil
         $bestK = 0;
         $bestVal = PHP_INT_MIN;
-        
+
         for ($k = 0; $k <= $policyCeilingK && $k <= $maxPossibleK; $k++) {
             if ($valuesByK[$k] > $bestVal) {
                 $bestVal = $valuesByK[$k];

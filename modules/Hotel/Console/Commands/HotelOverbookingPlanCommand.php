@@ -29,10 +29,11 @@ final class HotelOverbookingPlanCommand extends Command
                 walkCostIdr: 2500000,
                 policyMaxPercentBps: 300
             );
-            $this->line("Properti {$prop->name} pada {$date}: Optimal k = +{$opt['optimal_k']} kamar (E[Net] = Rp " . number_format($opt['expected_net_value_idr'], 0, ',', '.') . ")");
+            $this->line("Properti {$prop->name} pada {$date}: Optimal k = +{$opt['optimal_k']} kamar (E[Net] = Rp ".number_format($opt['expected_net_value_idr'], 0, ',', '.').')');
         }
 
-        $this->info("Rencana optimasi overbooking selesai dihitung.");
+        $this->info('Rencana optimasi overbooking selesai dihitung.');
+
         return self::SUCCESS;
     }
 }

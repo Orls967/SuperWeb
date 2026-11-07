@@ -32,7 +32,7 @@ final class HotelCorporateBillingContractManagerService
             ],
         ];
 
-        if (!isset($corporateRegistry[$corporateCode])) {
+        if (! isset($corporateRegistry[$corporateCode])) {
             return [
                 'is_contract_valid' => false,
                 'approved_credit_limit_idr' => 0,

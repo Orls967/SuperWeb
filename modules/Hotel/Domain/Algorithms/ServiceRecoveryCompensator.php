@@ -19,8 +19,8 @@ use InvalidArgumentException;
 final class ServiceRecoveryCompensator
 {
     /**
-     * @param int $nightRateIdr Tarif kamar per malam (IDR)
-     * @param float $excessHours Durasi keterlambatan pemulihan di atas SLA (jam)
+     * @param  int  $nightRateIdr  Tarif kamar per malam (IDR)
+     * @param  float  $excessHours  Durasi keterlambatan pemulihan di atas SLA (jam)
      * @return array{
      *     compensation_amount_idr: int,
      *     compensation_percent_bps: int,
@@ -34,10 +34,10 @@ final class ServiceRecoveryCompensator
         float $excessHours
     ): array {
         if ($nightRateIdr <= 0) {
-            throw new InvalidArgumentException("Tarif malam kamar harus positif.");
+            throw new InvalidArgumentException('Tarif malam kamar harus positif.');
         }
         if ($excessHours < 0.0) {
-            throw new InvalidArgumentException("Durasi keterlambatan SLA tidak boleh negatif.");
+            throw new InvalidArgumentException('Durasi keterlambatan SLA tidak boleh negatif.');
         }
 
         if ($excessHours <= 2.0) {

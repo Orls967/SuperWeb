@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hotel\Domain\Services;
 
 use Modules\Hotel\Domain\Models\HotelReservation;
-use Modules\Hotel\Domain\Models\HotelRoom;
 
 /**
  * Layanan Pemberian Upgrade Kamar Gratis (Complimentary VIP Room Upgrade).
@@ -19,7 +18,7 @@ final class HotelGuestComplimentaryUpgradeService
     {
         $reservation = HotelReservation::findOrFail((string) $reservationId);
 
-        if (!in_array($guestTier, ['PLATINUM', 'GOLD'], true)) {
+        if (! in_array($guestTier, ['PLATINUM', 'GOLD'], true)) {
             return [
                 'upgrade_approved' => false,
                 'from_room_type_id' => (string) $reservation->room_type_id,

@@ -13,11 +13,17 @@ use InvalidArgumentException;
 final class RatePlanVersionStateMachine
 {
     public const STATUS_DRAFT = 'draft';
+
     public const STATUS_SIMULATED = 'simulated';
+
     public const STATUS_REJECTED = 'rejected';
+
     public const STATUS_APPROVED = 'approved';
+
     public const STATUS_PUBLISHED = 'published';
+
     public const STATUS_SUPERSEDED = 'superseded';
+
     public const STATUS_RETIRED = 'retired';
 
     /**
@@ -40,7 +46,7 @@ final class RatePlanVersionStateMachine
 
     public static function assertCanTransition(string $fromStatus, string $toStatus): void
     {
-        if (!self::canTransition($fromStatus, $toStatus)) {
+        if (! self::canTransition($fromStatus, $toStatus)) {
             throw new InvalidArgumentException("Transisi versi rate plan ilegal dari {$fromStatus} ke {$toStatus}.");
         }
     }

@@ -21,7 +21,7 @@ final class ManageFrontDeskPackageDeliveryAction
         string $itemDescription
     ): array {
         $reservation = HotelReservation::findOrFail((string) $reservationId);
-        $tracking = 'PRC-' . date('md') . '-' . substr(md5($airwayBillNumber . $reservationId), 0, 5);
+        $tracking = 'PRC-'.date('md').'-'.substr(md5($airwayBillNumber.$reservationId), 0, 5);
 
         return [
             'parcel_tracking_code' => strtoupper($tracking),

@@ -12,7 +12,7 @@ use Modules\Hotel\Domain\Models\HotelHousekeepingTask;
 final class ManageRoomAmenityReplenishmentAction
 {
     /**
-     * @param list<string> $replenishedItems
+     * @param  list<string>  $replenishedItems
      * @return array{room_id: string, items_count: int, status: string}
      */
     public function execute(string|int $roomId, array $replenishedItems): array

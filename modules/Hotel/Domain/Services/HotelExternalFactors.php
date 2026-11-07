@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hotel\Domain\Services;
 
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 
 /**
  * G7-D43 Gerbang Kepekaan Eksternal HotelExternalFactors
@@ -21,10 +20,9 @@ use InvalidArgumentException;
 final class HotelExternalFactors
 {
     /**
-     * @param string $factorCode Kode faktor (mis. 'PBJT_HOTEL_RATE_BPS', 'BALI_FOREIGN_TOURIST_LEVY_IDR', 'NO_SHOW_DISTRIBUTION_BPS')
-     * @param string $city Kota tujuan (default 'Bali' atau 'All')
-     * @param mixed $default Nilai default jika belum tercatat
-     * @return mixed
+     * @param  string  $factorCode  Kode faktor (mis. 'PBJT_HOTEL_RATE_BPS', 'BALI_FOREIGN_TOURIST_LEVY_IDR', 'NO_SHOW_DISTRIBUTION_BPS')
+     * @param  string  $city  Kota tujuan (default 'Bali' atau 'All')
+     * @param  mixed  $default  Nilai default jika belum tercatat
      */
     public static function get(string $factorCode, string $city = 'All', mixed $default = null): mixed
     {
@@ -35,7 +33,7 @@ final class HotelExternalFactors
                     ->orWhere('city', 'All');
             })
             ->where('is_active', true)
-            ->orderByRaw("CASE WHEN city = ? THEN 0 ELSE 1 END", [$city])
+            ->orderByRaw('CASE WHEN city = ? THEN 0 ELSE 1 END', [$city])
             ->orderByDesc('version')
             ->first();
 
@@ -44,6 +42,7 @@ final class HotelExternalFactors
         }
 
         $decoded = json_decode($factor->value_json, true);
+
         return $decoded ?? $factor->value_json;
     }
 
@@ -74,6 +73,7 @@ final class HotelExternalFactors
     {
         /** @var list<int>|null $dist */
         $dist = self::get('NO_SHOW_DISTRIBUTION_BPS', 'All', [500, 1000, 2000, 2500, 2000, 1500, 500]);
+
         return $dist;
     }
 

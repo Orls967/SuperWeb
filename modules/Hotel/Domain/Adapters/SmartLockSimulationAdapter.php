@@ -30,6 +30,6 @@ final class SmartLockSimulationAdapter
 
     public static function verifyKeyAtTurnstile(string $sessionTokenHash, CarbonImmutable $validUntil): bool
     {
-        return !CarbonImmutable::now()->isAfter($validUntil);
+        return ! CarbonImmutable::now()->isAfter($validUntil);
     }
 }

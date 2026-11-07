@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Domain\Adapters;
 
-use Carbon\CarbonImmutable;
-
 /**
  * Adaptor Integrasi ESG Emission Benefit Recorder & Egy G7-K22 Meter Interval
  */
@@ -20,7 +18,7 @@ final class EsgEnergyBenefitAdapter
         $carbonOffsetKg = round(($energySavedWh / 1000.0) * 0.78, 3);
 
         return [
-            'esg_record_id' => "ESG-HTL-{$propertyId}-{$roomId}-" . time(),
+            'esg_record_id' => "ESG-HTL-{$propertyId}-{$roomId}-".time(),
             'energy_saved_wh' => $energySavedWh,
             'carbon_offset_kg' => $carbonOffsetKg,
         ];

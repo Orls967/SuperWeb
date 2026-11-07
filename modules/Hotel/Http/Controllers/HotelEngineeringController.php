@@ -11,7 +11,6 @@ use Illuminate\View\View;
 use Modules\Hotel\Application\Actions\ResolveServiceRecoveryAction;
 use Modules\Hotel\Domain\Adapters\AssetWorkOrderAdapter;
 use Modules\Hotel\Domain\Models\HotelProperty;
-use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 
 final class HotelEngineeringController extends Controller
@@ -57,7 +56,8 @@ final class HotelEngineeringController extends Controller
             idempotencyKey: $validated['idempotency_key']
         );
 
-        $freeNightMsg = $res['grants_free_night'] ? " dan 1 Free Night Certificate diterbitkan." : ".";
+        $freeNightMsg = $res['grants_free_night'] ? ' dan 1 Free Night Certificate diterbitkan.' : '.';
+
         return back()->with('success', "Kompensasi recovery sebesar Rp {$res['compensation_amount_idr']} dikreditkan ke folio{$freeNightMsg}");
     }
 }

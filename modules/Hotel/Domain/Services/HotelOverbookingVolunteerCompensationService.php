@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Domain\Services;
 
-use Modules\Hotel\Domain\Models\HotelReservation;
-
 /**
  * Layanan Perekrutan Relawan Pembatalan Sukarela Saat Overbooking (Denied Boarding Compensation).
  */

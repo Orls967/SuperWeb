@@ -342,7 +342,7 @@ final class HotelPmsAcceptanceTest extends TestCase
         $this->assertSame(0, $exitClean);
 
         // 2. Terapkan sabotase data korupsi lewat HtlAuditCorruptionFixture
-        $fixture = new HtlAuditCorruptionFixture();
+        $fixture = new HtlAuditCorruptionFixture;
         $fixture->corrupt();
 
         // Audit harus mendeteksi korupsi data kamar tanpa reservasi sah -> exit non-zero

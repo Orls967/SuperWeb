@@ -13,11 +13,17 @@ use InvalidArgumentException;
 final class ApoaReportStateMachine
 {
     public const STATUS_PENDING = 'pending';
+
     public const STATUS_SUBMITTED = 'submitted';
+
     public const STATUS_ACKNOWLEDGED = 'acknowledged';
+
     public const STATUS_LATE = 'late';
+
     public const STATUS_ESCALATED = 'escalated';
+
     public const STATUS_CORRECTED = 'corrected';
+
     public const STATUS_CLOSED = 'closed';
 
     /**
@@ -40,7 +46,7 @@ final class ApoaReportStateMachine
 
     public static function assertCanTransition(string $fromStatus, string $toStatus): void
     {
-        if (!self::canTransition($fromStatus, $toStatus)) {
+        if (! self::canTransition($fromStatus, $toStatus)) {
             throw new InvalidArgumentException("Transisi status pelaporan APOA ilegal dari {$fromStatus} ke {$toStatus}.");
         }
     }

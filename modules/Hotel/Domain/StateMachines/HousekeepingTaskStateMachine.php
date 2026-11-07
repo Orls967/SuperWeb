@@ -13,11 +13,17 @@ use InvalidArgumentException;
 final class HousekeepingTaskStateMachine
 {
     public const STATUS_ASSIGNED = 'assigned';
+
     public const STATUS_IN_PROGRESS = 'in_progress';
+
     public const STATUS_DONE = 'done';
+
     public const STATUS_INSPECTED = 'inspected';
+
     public const STATUS_FAILED_INSPECTION = 'failed_inspection';
+
     public const STATUS_REASSIGNED = 'reassigned';
+
     public const STATUS_CLOSED = 'closed';
 
     /**
@@ -40,7 +46,7 @@ final class HousekeepingTaskStateMachine
 
     public static function assertCanTransition(string $fromStatus, string $toStatus): void
     {
-        if (!self::canTransition($fromStatus, $toStatus)) {
+        if (! self::canTransition($fromStatus, $toStatus)) {
             throw new InvalidArgumentException("Transisi tugas housekeeping ilegal dari {$fromStatus} ke {$toStatus}.");
         }
     }

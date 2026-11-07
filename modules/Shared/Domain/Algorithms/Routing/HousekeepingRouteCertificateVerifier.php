@@ -17,9 +17,10 @@ final class HousekeepingRouteCertificateVerifier
         }
         foreach ($certificate->assignments as $staff => $assignedList) {
             if (count($assignedList) !== count($certificate->routes[$staff])) {
-                throw new InvalidArgumentException("Sertifikat rute housekeeping tidak valid: jumlah rute tidak sama dengan kamar yang dialokasikan.");
+                throw new InvalidArgumentException('Sertifikat rute housekeeping tidak valid: jumlah rute tidak sama dengan kamar yang dialokasikan.');
             }
         }
+
         return true;
     }
 }

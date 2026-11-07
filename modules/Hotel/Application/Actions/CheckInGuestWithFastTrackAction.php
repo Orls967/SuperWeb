@@ -22,7 +22,7 @@ final class CheckInGuestWithFastTrackAction
     ) {}
 
     /**
-     * @param array<string, mixed> $preferences
+     * @param  array<string, mixed>  $preferences
      * @return array{reservation_id: string, room_number: string, digital_key_id: int}
      */
     public function execute(string|int $reservationId, array $preferences = []): array
@@ -35,7 +35,7 @@ final class CheckInGuestWithFastTrackAction
             guestPreferences: $preferences
         );
 
-        if (!$optimal['assigned_room_id']) {
+        if (! $optimal['assigned_room_id']) {
             abort(422, 'Tidak ada kamar siap huni yang dapat dialokasikan.');
         }
 

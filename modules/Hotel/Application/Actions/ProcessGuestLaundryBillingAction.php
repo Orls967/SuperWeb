@@ -28,7 +28,7 @@ final class ProcessGuestLaundryBillingAction
         $folio = HotelFolio::where('reservation_id', (string) $reservationId)->firstOrFail();
 
         $finalBase = $isExpress ? (int) round($laundrySubtotalIdr * 1.50) : $laundrySubtotalIdr;
-        $desc = "Laundry " . ($isExpress ? "Express (+50%): " : "Regular: ") . "#{$ticketCode}";
+        $desc = 'Laundry '.($isExpress ? 'Express (+50%): ' : 'Regular: ')."#{$ticketCode}";
 
         $res = $this->postingService->postIncidentalCharge(
             folioId: $folio->id,

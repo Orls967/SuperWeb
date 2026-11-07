@@ -14,7 +14,7 @@ final class HotelLuggageStorageAndBellhopService
      */
     public function storeGuestLuggage(string $guestName, int $piecesCount, string $claimPhone): array
     {
-        $tag = 'LUG-' . date('His') . '-' . substr(md5($guestName . $claimPhone), 0, 4);
+        $tag = 'LUG-'.date('His').'-'.substr(md5($guestName.$claimPhone), 0, 4);
 
         return [
             'luggage_tag_code' => strtoupper($tag),

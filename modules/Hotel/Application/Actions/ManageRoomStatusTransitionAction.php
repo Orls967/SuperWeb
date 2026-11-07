@@ -30,7 +30,7 @@ final class ManageRoomStatusTransitionAction
             'out_of_order' => ['dirty', 'cleaning', 'available'],
         ];
 
-        if (!isset($validTransitions[$prev]) || !in_array($targetStatus, $validTransitions[$prev], true)) {
+        if (! isset($validTransitions[$prev]) || ! in_array($targetStatus, $validTransitions[$prev], true)) {
             abort(422, "Transisi status kamar tidak sah dari {$prev} ke {$targetStatus}.");
         }
 

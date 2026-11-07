@@ -4304,7 +4304,7 @@ return [
     'hotel.rates.publish' => ['roles' => ['admin', 'hotel_admin', 'revenue_mgr']],
     'hotel.rates.simulator' => ['roles' => ['admin', 'hotel_admin', 'revenue_mgr']],
     'hotel.housekeeping.mobile' => ['roles' => ['admin', 'front_office', 'hotel_admin', 'housekeeping']],
-        'hotel.housekeeping.tasks.status' => [
+    'hotel.housekeeping.tasks.status' => [
         'roles' => ['admin', 'front_office', 'hotel_admin', 'housekeeping'],
         'params' => fn () => ['taskId' => 1],
     ],

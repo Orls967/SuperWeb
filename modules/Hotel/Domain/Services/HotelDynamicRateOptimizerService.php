@@ -12,7 +12,7 @@ use Modules\Hotel\Domain\Algorithms\BestAvailableRateCalculator;
 final class HotelDynamicRateOptimizerService
 {
     /**
-     * @param array<string, mixed> $competitorRates
+     * @param  array<string, mixed>  $competitorRates
      * @return array{optimal_rate_idr: int, applied_multiplier_bps: int, parity_status: string, certificate: array<string, mixed>}
      */
     public function optimizeRoomTypeRate(
@@ -34,7 +34,7 @@ final class HotelDynamicRateOptimizerService
         $optimalRate = $barResult['rate_idr'];
         $parityStatus = 'in_parity';
 
-        if (!empty($competitorRates)) {
+        if (! empty($competitorRates)) {
             $avgCompetitor = (int) (array_sum($competitorRates) / count($competitorRates));
             if ($optimalRate > (int) round($avgCompetitor * 1.20)) {
                 $parityStatus = 'above_market_ceiling';

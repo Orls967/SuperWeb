@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hotel\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Hotel\Domain\Algorithms\ServiceRecoveryCompensator;
 use Modules\Hotel\Domain\Ledger\HotelPostingHelper;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -20,10 +19,6 @@ final class ResolveServiceRecoveryAction
     ) {}
 
     /**
-     * @param string $reservationId
-     * @param float $excessHours
-     * @param string $issueDescription
-     * @param string $idempotencyKey
      * @return array{compensation_amount_idr: int, grants_free_night: bool}
      */
     public function execute(
@@ -32,7 +27,7 @@ final class ResolveServiceRecoveryAction
         string $issueDescription,
         string $idempotencyKey
     ): array {
-        return DB::transaction(function () use ($reservationId, $excessHours, $issueDescription, $idempotencyKey): array {
+        return DB::transaction(function () use ($reservationId, $excessHours, $idempotencyKey): array {
             $reservation = HotelReservation::lockForUpdate()->findOrFail($reservationId);
             $nightRate = (int) ($reservation->daily_rate_idr ?? 1500000);
 

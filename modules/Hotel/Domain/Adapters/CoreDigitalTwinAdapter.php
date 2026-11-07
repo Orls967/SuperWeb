@@ -12,7 +12,7 @@ use Carbon\CarbonImmutable;
 final class CoreDigitalTwinAdapter
 {
     /**
-     * @param array<string, mixed> $telemetry
+     * @param  array<string, mixed>  $telemetry
      * @return array{twin_id: string, sync_status: string, updated_at: string}
      */
     public static function syncRoomTwin(int $roomId, array $telemetry): array

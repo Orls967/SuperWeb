@@ -20,7 +20,7 @@ final class HotelDailyFlashReportAggregatorService
             ->whereDate('business_date', $businessDate)
             ->first();
 
-        if (!$snapshot) {
+        if (! $snapshot) {
             return [
                 'report_date' => $businessDate,
                 'total_revenue_idr' => 0,

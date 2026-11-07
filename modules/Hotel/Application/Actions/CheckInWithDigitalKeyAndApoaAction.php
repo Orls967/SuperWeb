@@ -7,7 +7,6 @@ namespace Modules\Hotel\Application\Actions;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Modules\Hotel\Domain\Adapters\ApoaSimulationAdapter;
 use Modules\Hotel\Domain\Adapters\SmartLockSimulationAdapter;
 use Modules\Hotel\Domain\Models\HotelApoaReport;
 use Modules\Hotel\Domain\Models\HotelDigitalKey;
@@ -25,12 +24,7 @@ use Modules\Hotel\Domain\StateMachines\ReservationStateMachine;
 final class CheckInWithDigitalKeyAndApoaAction
 {
     /**
-     * @param string $reservationId
-     * @param string $roomId
-     * @param string|null $guestNationality (ID, US, SG, AU, dll)
-     * @param string|null $passportNumber
-     * @param bool $isBaliPwaPaid
-     * @param string|null $idempotencyKey
+     * @param  string|null  $guestNationality  (ID, US, SG, AU, dll)
      * @return array{digital_key: HotelDigitalKey, apoa_report: ?HotelApoaReport, room_number: string}
      */
     public function execute(
@@ -77,7 +71,7 @@ final class CheckInWithDigitalKeyAndApoaAction
             }
 
             $digitalKey = HotelDigitalKey::create([
-                'key_uuid' => 'KEY-' . bin2hex(random_bytes(8)),
+                'key_uuid' => 'KEY-'.bin2hex(random_bytes(8)),
                 'reservation_id' => $reservation->id,
                 'room_id' => $room->id,
                 'guest_user_id' => $userId,
@@ -92,7 +86,7 @@ final class CheckInWithDigitalKeyAndApoaAction
             $apoaReport = null;
             if ($guestNationality !== null && strtoupper($guestNationality) !== 'ID') {
                 if ($passportNumber === null || trim($passportNumber) === '') {
-                    throw new InvalidArgumentException("Nomor paspor wajib diisi untuk tamu WNA.");
+                    throw new InvalidArgumentException('Nomor paspor wajib diisi untuk tamu WNA.');
                 }
 
                 $passportBlindIndex = hash('sha256', strtoupper(trim($passportNumber)));

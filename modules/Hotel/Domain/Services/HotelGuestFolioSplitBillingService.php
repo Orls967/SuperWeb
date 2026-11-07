@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Domain\Services;
 
-use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelFolioLine;
 
 /**
@@ -13,7 +12,7 @@ use Modules\Hotel\Domain\Models\HotelFolioLine;
 final class HotelGuestFolioSplitBillingService
 {
     /**
-     * @param list<string> $corporateLineTypes
+     * @param  list<string>  $corporateLineTypes
      * @return array{personal_subtotal_idr: int, corporate_subtotal_idr: int, total_balance_idr: int}
      */
     public function calculateSplitSummary(

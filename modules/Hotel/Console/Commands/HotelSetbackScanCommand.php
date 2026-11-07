@@ -26,6 +26,7 @@ final class HotelSetbackScanCommand extends Command
         }
 
         $this->info("Pemindaian setback selesai. Total energi dihemat: {$totalWh} Wh.");
+
         return self::SUCCESS;
     }
 }

@@ -17,7 +17,7 @@ final class ManageRoomMinibarInspectionAction
     ) {}
 
     /**
-     * @param list<array{item_name: string, quantity: int, price_idr: int}> $consumedItems
+     * @param  list<array{item_name: string, quantity: int, price_idr: int}>  $consumedItems
      * @return array{total_billed_idr: int, items_count: int, folio_line_id: string|null}
      */
     public function execute(string|int $reservationId, array $consumedItems): array
@@ -41,7 +41,7 @@ final class ManageRoomMinibarInspectionAction
             ];
         }
 
-        $summary = 'Konsumsi Minibar: ' . implode(', ', $summaryParts);
+        $summary = 'Konsumsi Minibar: '.implode(', ', $summaryParts);
         $res = $this->postingService->postIncidentalCharge(
             folioId: $folio->id,
             incidentalType: 'MINIBAR',

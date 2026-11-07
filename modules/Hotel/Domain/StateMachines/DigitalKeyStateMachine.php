@@ -13,11 +13,17 @@ use InvalidArgumentException;
 final class DigitalKeyStateMachine
 {
     public const STATUS_PENDING_ACTIVATION = 'pending_activation';
+
     public const STATUS_ISSUED = 'issued';
+
     public const STATUS_ACTIVE = 'active';
+
     public const STATUS_SUSPENDED = 'suspended';
+
     public const STATUS_EXPIRED = 'expired';
+
     public const STATUS_REVOKED = 'revoked';
+
     public const STATUS_REISSUED = 'reissued';
 
     /**
@@ -40,7 +46,7 @@ final class DigitalKeyStateMachine
 
     public static function assertCanTransition(string $fromStatus, string $toStatus): void
     {
-        if (!self::canTransition($fromStatus, $toStatus)) {
+        if (! self::canTransition($fromStatus, $toStatus)) {
             throw new InvalidArgumentException("Transisi kunci digital ilegal dari {$fromStatus} ke {$toStatus}.");
         }
     }

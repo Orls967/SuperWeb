@@ -13,7 +13,6 @@ use Modules\Hotel\Domain\Ledger\HotelPostingHelper;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
-use Modules\Hotel\Domain\Models\HotelRoomNight;
 use Modules\Hotel\Domain\Models\HotelSaga;
 use Modules\Hotel\Domain\StateMachines\ReservationStateMachine;
 
@@ -27,9 +26,6 @@ final class RelocateOverbookingWalkSagaAction
     ) {}
 
     /**
-     * @param int $reservationId
-     * @param int $targetNeighborPropertyId
-     * @param string $idempotencyKey
      * @return array{saga_id: int, status: string, target_property_id: int, compensation_voucher_idr: int, shuttle_booking_id: string}
      */
     public function execute(
@@ -45,7 +41,7 @@ final class RelocateOverbookingWalkSagaAction
             // Validasi status transisi
             ReservationStateMachine::assertCanTransition($reservation->status, ReservationStateMachine::STATUS_WALKED);
 
-            $correlationId = "SAGA-WALK-RES-{$reservationId}-" . time();
+            $correlationId = "SAGA-WALK-RES-{$reservationId}-".time();
             $saga = HotelSaga::create([
                 'saga_type' => 'OVERBOOKING_WALK_RELOCATION',
                 'correlation_id' => $correlationId,
@@ -77,7 +73,7 @@ final class RelocateOverbookingWalkSagaAction
                         ['step' => 'HOLD_NEIGHBOR_ROOM_FAILED', 'time' => CarbonImmutable::now()->toIso8601String()],
                     ]),
                 ]);
-                throw new InvalidArgumentException("Relokasi overbooking gagal: kamar di properti tetangga penuh.");
+                throw new InvalidArgumentException('Relokasi overbooking gagal: kamar di properti tetangga penuh.');
             }
 
             // Step 2: Pesan Shuttle Transportasi (Logistics)

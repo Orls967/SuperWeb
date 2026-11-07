@@ -11,11 +11,12 @@ final class HvacSetbackCertificateVerifier
     public static function verify(HvacSetbackCertificate $certificate): bool
     {
         if ($certificate->energySavedWh < 0) {
-            throw new InvalidArgumentException("Sertifikat HVAC setback tidak valid: nilai penghematan energi negatif.");
+            throw new InvalidArgumentException('Sertifikat HVAC setback tidak valid: nilai penghematan energi negatif.');
         }
-        if (!$certificate->setbackActive && $certificate->energySavedWh > 0) {
-            throw new InvalidArgumentException("Sertifikat HVAC setback tidak valid: penghematan energi terdeteksi saat mode setback tidak aktif.");
+        if (! $certificate->setbackActive && $certificate->energySavedWh > 0) {
+            throw new InvalidArgumentException('Sertifikat HVAC setback tidak valid: penghematan energi terdeteksi saat mode setback tidak aktif.');
         }
+
         return true;
     }
 }

@@ -6,17 +6,14 @@ namespace Modules\Hotel\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Carbon\CarbonImmutable;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Hotel\Application\Actions\CheckInWithDigitalKeyAndApoaAction;
 use Modules\Hotel\Application\Actions\RelocateOverbookingWalkSagaAction;
-use Modules\Hotel\Application\Actions\ReserveRoomCentralizedCrsAction;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
-use Modules\Hotel\Domain\Models\HotelRoomType;
 
 final class HotelFrontDeskController extends Controller
 {

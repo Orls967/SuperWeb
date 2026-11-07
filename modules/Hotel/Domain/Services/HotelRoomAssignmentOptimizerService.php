@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Domain\Services;
 
-use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 
 /**
@@ -13,7 +12,7 @@ use Modules\Hotel\Domain\Models\HotelRoom;
 final class HotelRoomAssignmentOptimizerService
 {
     /**
-     * @param array<string, mixed> $guestPreferences
+     * @param  array<string, mixed>  $guestPreferences
      * @return array{assigned_room_id: string|null, score: int, match_reason: string}
      */
     public function findOptimalRoom(

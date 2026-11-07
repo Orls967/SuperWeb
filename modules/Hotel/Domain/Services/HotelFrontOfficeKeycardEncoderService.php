@@ -16,7 +16,7 @@ final class HotelFrontOfficeKeycardEncoderService
      */
     public function encodePhysicalRfidKey(string|int $roomId, CarbonImmutable $validUntil): array
     {
-        $cardUid = 'RFID-' . strtoupper(substr(hash('sha256', (string) $roomId . $validUntil->timestamp), 0, 10));
+        $cardUid = 'RFID-'.strtoupper(substr(hash('sha256', (string) $roomId.$validUntil->timestamp), 0, 10));
 
         return [
             'card_uid' => $cardUid,

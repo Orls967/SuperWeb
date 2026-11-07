@@ -22,6 +22,7 @@ final class HotelRatePublishCommand extends Command
         $res = $action->execute($propertyId, $from, $to);
 
         $this->info("Berhasil mempublikasikan {$res['published_records']} entri tarif BAR. Versi: {$res['version_code']}");
+
         return self::SUCCESS;
     }
 }

@@ -10,7 +10,7 @@ namespace Modules\Hotel\Domain\Services;
 final class HotelChannelRateParityGovernorService
 {
     /**
-     * @param array<string, int> $channelPricesIdr
+     * @param  array<string, int>  $channelPricesIdr
      * @return array{is_compliant: bool, violations: list<array<string, mixed>>, action_required: string}
      */
     public function auditParity(int $officialDirectRateIdr, array $channelPricesIdr): array

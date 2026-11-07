@@ -16,7 +16,7 @@ final class HotelGuestWakeUpCallSchedulerService
      */
     public function scheduleWakeUpCall(string $roomNumber, CarbonImmutable $targetTime, string $specialNotes = ''): array
     {
-        $callId = 'WUC-' . $roomNumber . '-' . $targetTime->format('Hi');
+        $callId = 'WUC-'.$roomNumber.'-'.$targetTime->format('Hi');
 
         return [
             'call_id' => $callId,

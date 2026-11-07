@@ -33,7 +33,7 @@ final class AuditRoomInventoryDiscrepancyAction
 
         foreach ($nights as $night) {
             $rsv = HotelReservation::find($night->reservation_id);
-            if (!$rsv || $rsv->status === 'checked_out') {
+            if (! $rsv || $rsv->status === 'checked_out') {
                 $sleepers++;
             }
         }

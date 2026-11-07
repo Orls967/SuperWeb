@@ -6,7 +6,6 @@ namespace Modules\Hotel\Application\Actions;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Hotel\Domain\Algorithms\BestAvailableRateCalculator;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRatePlanVersion;
@@ -20,10 +19,8 @@ use Modules\Hotel\Domain\StateMachines\RatePlanVersionStateMachine;
 final class PublishRatePlanAction
 {
     /**
-     * @param int $propertyId
-     * @param string $fromDate (Y-m-d)
-     * @param string $toDate (Y-m-d)
-     * @param int|null $approverUserId
+     * @param  string  $fromDate  (Y-m-d)
+     * @param  string  $toDate  (Y-m-d)
      * @return array{published_records: int, version_code: string}
      */
     public function execute(
@@ -40,7 +37,7 @@ final class PublishRatePlanAction
             $end = CarbonImmutable::parse($toDate);
             $days = (int) $start->diffInDays($end) + 1;
 
-            $versionCode = 'RPV-' . date('Ymd') . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
+            $versionCode = 'RPV-'.date('Ymd').'-'.substr(bin2hex(random_bytes(3)), 0, 6);
             $count = 0;
             $city = $property->city ?? 'Bali';
             $isEvent = HotelExternalFactors::isCityEventActive($city);

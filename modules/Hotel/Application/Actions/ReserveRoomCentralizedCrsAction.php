@@ -24,14 +24,9 @@ use Modules\Hotel\Domain\StateMachines\ReservationStateMachine;
 final class ReserveRoomCentralizedCrsAction
 {
     /**
-     * @param string|int $propertyId
-     * @param string|int $roomTypeId
-     * @param int|string $guestUserId
-     * @param string $checkInDate (Y-m-d)
-     * @param string $checkOutDate (Y-m-d)
-     * @param string $channel (web, app, ota, corporate, walk_in)
-     * @param int|null $customRateIdr
-     * @param string|null $idempotencyKey
+     * @param  string  $checkInDate  (Y-m-d)
+     * @param  string  $checkOutDate  (Y-m-d)
+     * @param  string  $channel  (web, app, ota, corporate, walk_in)
      * @return array{reservation: HotelReservation, is_overbooked: bool, total_amount_idr: int, nights: int}
      */
     public function execute(
@@ -45,7 +40,7 @@ final class ReserveRoomCentralizedCrsAction
         ?string $idempotencyKey = null
     ): array {
         if ($idempotencyKey === null || trim($idempotencyKey) === '') {
-            throw new InvalidArgumentException("Idempotency key wajib disertakan.");
+            throw new InvalidArgumentException('Idempotency key wajib disertakan.');
         }
 
         $propertyIdStr = (string) $propertyId;
@@ -55,6 +50,7 @@ final class ReserveRoomCentralizedCrsAction
         $existing = HotelReservation::where('idempotency_key', $idempotencyKey)->first();
         if ($existing !== null) {
             $nights = (int) CarbonImmutable::parse($existing->check_in_date)->diffInDays(CarbonImmutable::parse($existing->check_out_date));
+
             return [
                 'reservation' => $existing,
                 'is_overbooked' => $existing->status === ReservationStateMachine::STATUS_CONFIRMED && (bool) ($existing->is_overbooked ?? false),
@@ -66,7 +62,7 @@ final class ReserveRoomCentralizedCrsAction
         $checkIn = CarbonImmutable::parse($checkInDate);
         $checkOut = CarbonImmutable::parse($checkOutDate);
         if ($checkOut->isBefore($checkIn) || $checkOut->equalTo($checkIn)) {
-            throw new InvalidArgumentException("Tanggal check-out harus setelah check-in.");
+            throw new InvalidArgumentException('Tanggal check-out harus setelah check-in.');
         }
 
         $nights = (int) $checkIn->diffInDays($checkOut);
@@ -171,7 +167,7 @@ final class ReserveRoomCentralizedCrsAction
             $grandTotal = $totalRoomCharge + $taxAmount + $serviceAmount;
 
             $resId = (string) Str::uuid();
-            $resNumber = 'RSV-' . strtoupper(bin2hex(random_bytes(4)));
+            $resNumber = 'RSV-'.strtoupper(bin2hex(random_bytes(4)));
 
             // Buat record reservasi
             $reservation = HotelReservation::create([

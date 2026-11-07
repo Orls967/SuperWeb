@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hotel\Domain\Services;
 
-use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomEnergyLog;
 
 /**

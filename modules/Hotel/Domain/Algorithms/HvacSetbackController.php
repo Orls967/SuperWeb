@@ -17,11 +17,11 @@ use InvalidArgumentException;
 final class HvacSetbackController
 {
     /**
-     * @param bool $isOccupiedRoom Apakah kamar terjual/terhuni tamu
-     * @param int $minutesSinceLastMotion Durasi menit sejak deteksi gerak terakhir
-     * @param int $durationMinutes Total durasi periode observasi (menit)
-     * @param int $acPowerWatt Daya konsumsi pendingin ruangan (Watt, mis. 1.200 W)
-     * @param int $savingFactorBps Faktor efisiensi setback dalam basis points (mis. 3.000 bps = 30%)
+     * @param  bool  $isOccupiedRoom  Apakah kamar terjual/terhuni tamu
+     * @param  int  $minutesSinceLastMotion  Durasi menit sejak deteksi gerak terakhir
+     * @param  int  $durationMinutes  Total durasi periode observasi (menit)
+     * @param  int  $acPowerWatt  Daya konsumsi pendingin ruangan (Watt, mis. 1.200 W)
+     * @param  int  $savingFactorBps  Faktor efisiensi setback dalam basis points (mis. 3.000 bps = 30%)
      * @return array{
      *     setback_active: bool,
      *     setback_temp_delta_c: float,
@@ -38,10 +38,10 @@ final class HvacSetbackController
         int $savingFactorBps = 3000
     ): array {
         if ($durationMinutes < 0 || $minutesSinceLastMotion < 0 || $acPowerWatt < 0) {
-            throw new InvalidArgumentException("Parameter durasi dan daya tidak boleh negatif.");
+            throw new InvalidArgumentException('Parameter durasi dan daya tidak boleh negatif.');
         }
 
-        if (!$isOccupiedRoom) {
+        if (! $isOccupiedRoom) {
             // Kamar tidak terjual -> mode hemat penuh sepanjang durasi
             $setbackMinutes = $durationMinutes;
             $deltaC = 5.0; // Deep setback

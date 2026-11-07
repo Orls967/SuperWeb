@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Modules\Hotel\Application\Actions;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
 use Modules\Hotel\Domain\Adapters\CoreDigitalTwinAdapter;
 use Modules\Hotel\Domain\Adapters\EsgEnergyBenefitAdapter;
 use Modules\Hotel\Domain\Algorithms\HvacSetbackController;
-use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomEnergyLog;
 

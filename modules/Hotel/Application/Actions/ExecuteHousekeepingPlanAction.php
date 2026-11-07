@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Modules\Hotel\Application\Actions;
 
 use App\Models\User;
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Hotel\Domain\Models\HotelHousekeepingTask;
-use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\StateMachines\HousekeepingTaskStateMachine;
 use Modules\Shared\Domain\Algorithms\Routing\HousekeepingRouteSequencer;
@@ -20,8 +17,7 @@ use Modules\Shared\Domain\Algorithms\Routing\HousekeepingRouteSequencer;
 final class ExecuteHousekeepingPlanAction
 {
     /**
-     * @param int $propertyId
-     * @param string $taskDate (Y-m-d)
+     * @param  string  $taskDate  (Y-m-d)
      * @return array{total_tasks: int, assigned_staff_count: int, unassigned_count: int}
      */
     public function execute(int $propertyId, string $taskDate): array

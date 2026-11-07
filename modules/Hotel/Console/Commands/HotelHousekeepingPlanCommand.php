@@ -24,7 +24,8 @@ final class HotelHousekeepingPlanCommand extends Command
             $this->line("Properti {$prop->name}: {$res['total_tasks']} tugas dialokasikan ke {$res['assigned_staff_count']} petugas.");
         }
 
-        $this->info("Rencana rute housekeeping selesai disusun.");
+        $this->info('Rencana rute housekeeping selesai disusun.');
+
         return self::SUCCESS;
     }
 }

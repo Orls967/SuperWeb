@@ -19,7 +19,7 @@ final class LogisticsShuttleAdapter
         int $targetPropertyId,
         int $guestUserId
     ): array {
-        $bookingId = "LGX-SHTL-" . time() . "-{$guestUserId}";
+        $bookingId = 'LGX-SHTL-'.time()."-{$guestUserId}";
 
         return [
             'booking_id' => $bookingId,

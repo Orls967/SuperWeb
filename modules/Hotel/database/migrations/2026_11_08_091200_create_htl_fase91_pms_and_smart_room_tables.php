@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Parameter Faktor Eksternal Berversi (G7-D43)
-        if (!Schema::hasTable('htl_external_factors')) {
+        if (! Schema::hasTable('htl_external_factors')) {
             Schema::create('htl_external_factors', function (Blueprint $table): void {
                 $table->id();
                 $table->string('factor_code', 64);
@@ -30,7 +30,7 @@ return new class extends Migration
         }
 
         // 2. Kunci Digital Kamar Berbasis Sesi (D91-3)
-        if (!Schema::hasTable('htl_digital_keys')) {
+        if (! Schema::hasTable('htl_digital_keys')) {
             Schema::create('htl_digital_keys', function (Blueprint $table): void {
                 $table->id();
                 $table->string('key_uuid', 36)->unique();
@@ -53,7 +53,7 @@ return new class extends Migration
         }
 
         // 3. Antrean Kepatuhan Laporan Tamu WNA APOA UU 6/2011 (D91-3, T-8)
-        if (!Schema::hasTable('htl_apoa_reports')) {
+        if (! Schema::hasTable('htl_apoa_reports')) {
             Schema::create('htl_apoa_reports', function (Blueprint $table): void {
                 $table->id();
                 $table->string('reservation_id', 64);
@@ -79,7 +79,7 @@ return new class extends Migration
         }
 
         // 4. Versi Rate Plan & Penetapan Tarif Harian (D91-4)
-        if (!Schema::hasTable('htl_rate_plan_versions')) {
+        if (! Schema::hasTable('htl_rate_plan_versions')) {
             Schema::create('htl_rate_plan_versions', function (Blueprint $table): void {
                 $table->id();
                 $table->string('property_id', 64);
@@ -106,7 +106,7 @@ return new class extends Migration
         }
 
         // 5. Tugas Housekeeping Harian & Rute Kerja (D91-6)
-        if (!Schema::hasTable('htl_housekeeping_tasks')) {
+        if (! Schema::hasTable('htl_housekeeping_tasks')) {
             Schema::create('htl_housekeeping_tasks', function (Blueprint $table): void {
                 $table->id();
                 $table->string('property_id', 64);
@@ -132,7 +132,7 @@ return new class extends Migration
         }
 
         // 6. Log Saga Terdistribusi Hotel (D91-2 Overbooking Walk, dsb)
-        if (!Schema::hasTable('htl_sagas')) {
+        if (! Schema::hasTable('htl_sagas')) {
             Schema::create('htl_sagas', function (Blueprint $table): void {
                 $table->id();
                 $table->string('saga_type', 64);
@@ -149,7 +149,7 @@ return new class extends Migration
         }
 
         // 7. Sensor IoT Energi Kamar & Log Setback H4 (D91-5)
-        if (!Schema::hasTable('htl_room_energy_logs')) {
+        if (! Schema::hasTable('htl_room_energy_logs')) {
             Schema::create('htl_room_energy_logs', function (Blueprint $table): void {
                 $table->id();
                 $table->string('property_id', 64);

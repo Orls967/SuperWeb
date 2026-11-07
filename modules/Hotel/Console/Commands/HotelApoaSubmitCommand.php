@@ -20,7 +20,8 @@ final class HotelApoaSubmitCommand extends Command
     {
         $pending = HotelApoaReport::where('status', ApoaReportStateMachine::STATUS_PENDING)->get();
         if ($pending->isEmpty()) {
-            $this->info("Tidak ada laporan APOA tertunda.");
+            $this->info('Tidak ada laporan APOA tertunda.');
+
             return self::SUCCESS;
         }
 
@@ -44,6 +45,7 @@ final class HotelApoaSubmitCommand extends Command
         }
 
         $this->info("Berhasil mengirim batch APOA {$batch['batch_id']} ({$pending->count()} tamu WNA).");
+
         return self::SUCCESS;
     }
 }
