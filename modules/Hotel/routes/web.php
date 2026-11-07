@@ -3,11 +3,18 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Hotel\Http\Controllers\GuestStayPortalController;
 use Modules\Hotel\Http\Controllers\HotelBanquetTimesharePackageController;
+use Modules\Hotel\Http\Controllers\HotelComplianceController;
 use Modules\Hotel\Http\Controllers\HotelController;
 use Modules\Hotel\Http\Controllers\HotelCorporatePortalController;
+use Modules\Hotel\Http\Controllers\HotelEnergyController;
+use Modules\Hotel\Http\Controllers\HotelEngineeringController;
+use Modules\Hotel\Http\Controllers\HotelFrontDeskController;
 use Modules\Hotel\Http\Controllers\HotelGuestPortalController;
 use Modules\Hotel\Http\Controllers\HotelHousekeepingController;
+use Modules\Hotel\Http\Controllers\HotelHousekeepingMobileController;
+use Modules\Hotel\Http\Controllers\HotelInventoryRateController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditFolioController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditUiController;
 use Modules\Hotel\Http\Controllers\HotelReservationUiController;
@@ -71,4 +78,52 @@ Route::middleware(['web', 'auth', 'role:guest,customer,admin'])->prefix('hotel')
 // Siklus Tamu - Portal Korporat (City Ledger)
 Route::middleware(['web', 'auth', 'role:corporate_client,admin'])->prefix('hotel')->group(function () {
     Route::get('/portal/corporate', [HotelCorporatePortalController::class, 'index'])->name('hotel.portal.corporate');
+});
+
+// Rute Fase 91 PMS, Central Reservation, Rate Management & Smart Room
+Route::middleware(['web', 'auth'])->group(function (): void {
+    // Front Desk
+    Route::middleware(['role:admin,hotel_admin,front_office,front_desk'])->group(function (): void {
+        Route::get('/hotel/front-desk', [HotelFrontDeskController::class, 'index'])->name('hotel.front_desk');
+        Route::post('/hotel/front-desk/check-in', [HotelFrontDeskController::class, 'checkIn'])->name('hotel.front_desk.check_in');
+        Route::post('/hotel/front-desk/walk', [HotelFrontDeskController::class, 'relocateWalk'])->name('hotel.front_desk.walk');
+    });
+
+    // Inventory & Rates Grid
+    Route::middleware(['role:admin,hotel_admin,revenue_mgr'])->group(function (): void {
+        Route::get('/hotel/inventory', [HotelInventoryRateController::class, 'inventoryGrid'])->name('hotel.inventory');
+        Route::get('/hotel/rates', [HotelInventoryRateController::class, 'ratesView'])->name('hotel.rates');
+        Route::post('/hotel/rates/publish', [HotelInventoryRateController::class, 'publishRates'])->name('hotel.rates.publish');
+        Route::get('/hotel/rates/simulator', [HotelInventoryRateController::class, 'overbookingSimulator'])->name('hotel.rates.simulator');
+    });
+
+    // Housekeeping Mobile (375px)
+    Route::middleware(['role:admin,hotel_admin,front_office,housekeeping'])->group(function (): void {
+        Route::get('/hotel/housekeeping', [HotelHousekeepingMobileController::class, 'index'])->name('hotel.housekeeping.mobile');
+        Route::post('/hotel/housekeeping/tasks/{taskId}/status', [HotelHousekeepingMobileController::class, 'updateStatus'])->name('hotel.housekeeping.tasks.status');
+    });
+
+    // Engineering Board & Maintenance
+    Route::middleware(['role:admin,hotel_admin,engineering'])->group(function (): void {
+        Route::get('/hotel/engineering', [HotelEngineeringController::class, 'index'])->name('hotel.engineering');
+        Route::post('/hotel/engineering/work-orders', [HotelEngineeringController::class, 'createWorkOrder'])->name('hotel.engineering.work_orders');
+        Route::post('/hotel/engineering/compensate', [HotelEngineeringController::class, 'resolveCompensation'])->name('hotel.engineering.compensate');
+    });
+
+    // APOA Foreign Guest Compliance
+    Route::middleware(['role:admin,hotel_admin,hotel_gm,front_office'])->group(function (): void {
+        Route::get('/hotel/compliance/apoa', [HotelComplianceController::class, 'apoaQueue'])->name('hotel.compliance.apoa');
+        Route::post('/hotel/compliance/apoa/submit', [HotelComplianceController::class, 'submitApoaBatch'])->name('hotel.compliance.apoa.submit');
+    });
+
+    // Smart Room & Energy Twin
+    Route::middleware(['role:admin,hotel_admin,hotel_gm'])->group(function (): void {
+        Route::get('/hotel/energy', [HotelEnergyController::class, 'index'])->name('hotel.energy');
+        Route::post('/hotel/energy/scan', [HotelEnergyController::class, 'triggerScan'])->name('hotel.energy.scan');
+    });
+
+    // Guest Stay Portal
+    Route::middleware(['role:admin,customer,guest'])->group(function (): void {
+        Route::get('/guest/stay', [GuestStayPortalController::class, 'stayDetails'])->name('guest.stay');
+    });
 });

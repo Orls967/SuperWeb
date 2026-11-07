@@ -11,8 +11,13 @@ use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Application\Services\HotelPackageAvailabilityService;
 use Modules\Hotel\Application\Services\RoomBlockReserverService;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
+use Modules\Hotel\Console\Commands\HotelApoaSubmitCommand;
 use Modules\Hotel\Console\Commands\HotelCloseDayCommand;
+use Modules\Hotel\Console\Commands\HotelHousekeepingPlanCommand;
+use Modules\Hotel\Console\Commands\HotelOverbookingPlanCommand;
+use Modules\Hotel\Console\Commands\HotelRatePublishCommand;
 use Modules\Hotel\Console\Commands\HotelReportOrphansCommand;
+use Modules\Hotel\Console\Commands\HotelSetbackScanCommand;
 use Modules\Hotel\Contracts\HotelPackageAvailabilityValidator;
 use Modules\Hotel\Contracts\RoomBlockReserver;
 use Modules\Shared\Application\MenuRegistry;
@@ -58,6 +63,11 @@ class HotelServiceProvider extends ServiceProvider
                 AuditHotelCommand::class,
                 HotelCloseDayCommand::class,
                 HotelReportOrphansCommand::class,
+                HotelRatePublishCommand::class,
+                HotelOverbookingPlanCommand::class,
+                HotelHousekeepingPlanCommand::class,
+                HotelApoaSubmitCommand::class,
+                HotelSetbackScanCommand::class,
             ]);
         }
     }
