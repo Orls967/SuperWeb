@@ -35,10 +35,16 @@ class MiningWorkPermit extends Model
     ];
 
     protected $casts = [
-        'status' => WorkPermitStatus::class,
         'valid_from' => 'datetime',
         'valid_until' => 'datetime',
     ];
+
+    public function statusEnum(): WorkPermitStatus
+    {
+        $val = strtolower((string) ($this->attributes['status'] ?? 'requested'));
+
+        return WorkPermitStatus::tryFrom($val) ?? WorkPermitStatus::REQUESTED;
+    }
 
     protected static function booted(): void
     {

@@ -105,7 +105,7 @@ class MiningComplianceAndRoyaltyService
     {
         $permit = MiningWorkPermit::findOrFail($permitId);
 
-        if ($permit->status !== 'active') {
+        if (strtolower((string) $permit->status) !== 'active') {
             return false;
         }
 

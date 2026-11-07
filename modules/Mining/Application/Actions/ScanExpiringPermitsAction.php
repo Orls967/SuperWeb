@@ -26,7 +26,7 @@ class ScanExpiringPermitsAction
         return DB::transaction(function () use ($asOfTime) {
             $now = $asOfTime ?? CarbonImmutable::now();
 
-            $activePermits = MiningWorkPermit::where('status', WorkPermitStatus::ACTIVE->value)
+            $activePermits = MiningWorkPermit::whereIn('status', [WorkPermitStatus::ACTIVE->value, 'ACTIVE'])
                 ->where('valid_until', '<', $now)
                 ->get();
 
@@ -37,7 +37,7 @@ class ScanExpiringPermitsAction
                     $sm = new WorkPermitStateMachine($permit);
                     $sm->transitionTo(WorkPermitStatus::EXPIRED, 'Masa berlaku izin telah berakhir dalam pemindaian otomatis K3');
                 } catch (\Throwable) {
-                    $permit->status = WorkPermitStatus::EXPIRED;
+                    $permit->status = WorkPermitStatus::EXPIRED->value;
                     $permit->save();
                 }
 

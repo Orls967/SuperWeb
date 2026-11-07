@@ -33,7 +33,7 @@ final class WorkPermitStateMachine
         ?string $actorId = null,
         ?string $notes = null
     ): void {
-        $currentStatus = $permit->status;
+        $currentStatus = $permit->statusEnum();
 
         if ($currentStatus === $targetStatus) {
             return;

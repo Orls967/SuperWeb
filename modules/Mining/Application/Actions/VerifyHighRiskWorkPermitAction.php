@@ -23,14 +23,16 @@ class VerifyHighRiskWorkPermitAction
 
         $validUntil = $permit->valid_until ?? $permit->valid_to;
 
+        $currentStatus = $permit->statusEnum();
+
         if ($validUntil && $time->greaterThan($validUntil)) {
             // Ubah status ke expired bila masih active
-            if ($permit->status === WorkPermitStatus::ACTIVE) {
+            if ($currentStatus === WorkPermitStatus::ACTIVE) {
                 try {
                     $sm = new WorkPermitStateMachine($permit);
                     $sm->transitionTo(WorkPermitStatus::EXPIRED, 'Waktu berlaku izin kerja telah terlampaui saat verifikasi pintu gerbang');
                 } catch (\Throwable) {
-                    $permit->status = WorkPermitStatus::EXPIRED;
+                    $permit->status = WorkPermitStatus::EXPIRED->value;
                     $permit->save();
                 }
             }
@@ -38,8 +40,8 @@ class VerifyHighRiskWorkPermitAction
             throw new DomainException("Izin kerja {$permit->permit_number} telah kedaluwarsa sejak ".($validUntil ? $validUntil->toDateTimeString() : 'waktu yang ditentukan').'.');
         }
 
-        if ($permit->status !== WorkPermitStatus::ACTIVE) {
-            throw new DomainException("Izin kerja {$permit->permit_number} tidak aktif (status: {$permit->status->value}).");
+        if ($currentStatus !== WorkPermitStatus::ACTIVE) {
+            throw new DomainException("Izin kerja {$permit->permit_number} tidak aktif (status: {$currentStatus->value}).");
         }
 
         return true;
