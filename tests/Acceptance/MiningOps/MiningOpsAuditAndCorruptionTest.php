@@ -6,12 +6,9 @@ namespace Tests\Acceptance\MiningOps;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Banking\Contracts\LedgerAccount;
-use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Mining\database\seeders\MiningRbacSeeder;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
-use Modules\Mining\Domain\Models\MiningHaulCycle;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Tests\TestCase;
@@ -87,4 +84,3 @@ class MiningOpsAuditAndCorruptionTest extends TestCase
         $this->assertEquals(1, $exitCorrupt, 'Audit must fail (exit 1) when fuel hold balance mismatches ledger');
     }
 }
-

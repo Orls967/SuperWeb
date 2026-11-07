@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Sagas;
 
 use App\Models\User;
+use Carbon\CarbonInterface;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
 use Modules\Core\Contracts\ClockInterface;
+use Modules\Mining\Application\Adapters\MiningEquipmentAssetRegistryAdapter;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPlanShift;
 use Modules\Mining\Domain\Models\MiningSaga;
-use Modules\Mining\Application\Adapters\MiningEquipmentAssetRegistryAdapter;
 use Modules\Mining\Domain\StateMachines\EquipmentStateMachine;
 use Modules\Procurement\Contracts\MrpRequisitionProposer;
 
@@ -70,7 +70,7 @@ class PredictiveMaintenanceWorkOrderSaga
         $woId = null;
         $prNumber = null;
         $compensationLog = [];
-        $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine();
+        $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine;
 
         try {
             $idempotencyKey = "min:wo:{$payload['equipment_id']}:{$payload['shift_date']}:{$payload['shift_code']}";
@@ -166,7 +166,7 @@ class PredictiveMaintenanceWorkOrderSaga
         }
     }
 
-    private function now(): \Carbon\CarbonInterface
+    private function now(): CarbonInterface
     {
         return ($this->clock ?? app(ClockInterface::class))->now();
     }

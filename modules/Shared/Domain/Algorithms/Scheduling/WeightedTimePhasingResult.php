@@ -24,4 +24,3 @@ final class WeightedTimePhasingResult
         public readonly array $certificateData
     ) {}
 }
-

@@ -54,4 +54,3 @@ class MiningPlanShift extends Model
         return $this->belongsTo(MiningPit::class, 'pit_id');
     }
 }
-

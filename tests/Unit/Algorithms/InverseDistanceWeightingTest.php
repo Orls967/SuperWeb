@@ -7,7 +7,7 @@ use Modules\Mining\Domain\Algorithms\InverseDistanceWeightingInterpolator;
 use Modules\Mining\Domain\Algorithms\InverseDistanceWeightingResult;
 
 test('idw interpolation prompt vector and certificate validation', function () {
-    $interpolator = new InverseDistanceWeightingInterpolator();
+    $interpolator = new InverseDistanceWeightingInterpolator;
 
     // 4 sampel borehole mengelilingi target (koordinat x,y,z dalam mm, grade dalam ppm)
     $samples = [
@@ -28,7 +28,7 @@ test('idw interpolation prompt vector and certificate validation', function () {
     expect(count($result->weightsBreakdown))->toBe(4);
 
     // Verifier menerima sertifikat
-    $verifier = new InverseDistanceWeightingCertificateVerifier();
+    $verifier = new InverseDistanceWeightingCertificateVerifier;
     expect($verifier->verify($samples, $result))->toBeTrue();
 });
 
@@ -39,7 +39,7 @@ test('tampered idw certificate throws exception', function () {
     ];
     $target = ['x' => 50000, 'y' => 0, 'z' => 0];
 
-    $interpolator = new InverseDistanceWeightingInterpolator();
+    $interpolator = new InverseDistanceWeightingInterpolator;
     $result = $interpolator->interpolate($target, $samples);
 
     $corrupted = new InverseDistanceWeightingResult(
@@ -50,7 +50,6 @@ test('tampered idw certificate throws exception', function () {
         certificateHash: $result->certificateHash,
     );
 
-    $verifier = new InverseDistanceWeightingCertificateVerifier();
+    $verifier = new InverseDistanceWeightingCertificateVerifier;
     $verifier->verify($samples, $corrupted);
 })->throws(InvalidArgumentException::class);
-

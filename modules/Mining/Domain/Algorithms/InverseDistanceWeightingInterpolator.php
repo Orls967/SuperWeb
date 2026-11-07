@@ -20,14 +20,13 @@ final class InverseDistanceWeightingInterpolator
 
     public function __construct(?InverseDistanceWeightingCertificateVerifier $verifier = null)
     {
-        $this->verifier = $verifier ?? new InverseDistanceWeightingCertificateVerifier();
+        $this->verifier = $verifier ?? new InverseDistanceWeightingCertificateVerifier;
     }
 
     /**
-     * @param array{x: int, y: int, z: int} $targetPoint Koordinat target dalam mm
-     * @param array<int, array{x: int, y: int, z: int, grade_ppm: int}> $samples Titik sampel borehole
-     * @param int $power Pangkat jarak (biasanya 2)
-     * @return InverseDistanceWeightingResult
+     * @param  array{x: int, y: int, z: int}  $targetPoint  Koordinat target dalam mm
+     * @param  array<int, array{x: int, y: int, z: int, grade_ppm: int}>  $samples  Titik sampel borehole
+     * @param  int  $power  Pangkat jarak (biasanya 2)
      */
     public function interpolate(array $targetPoint, array $samples, int $power = 2): InverseDistanceWeightingResult
     {
@@ -62,6 +61,7 @@ final class InverseDistanceWeightingInterpolator
                     certificateHash: $hash,
                 );
                 $this->verifier->verify($samples, $result);
+
                 return $result;
             }
         }
@@ -137,4 +137,3 @@ final class InverseDistanceWeightingInterpolator
         return $result;
     }
 }
-

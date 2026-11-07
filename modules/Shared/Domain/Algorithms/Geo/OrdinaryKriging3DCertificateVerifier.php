@@ -9,9 +9,7 @@ use InvalidArgumentException;
 final class OrdinaryKriging3DCertificateVerifier
 {
     /**
-     * @param array<int, array{x: int, y: int, z: int, grade_ppm: int}> $samples
-     * @param OrdinaryKriging3DResult $result
-     * @return bool
+     * @param  array<int, array{x: int, y: int, z: int, grade_ppm: int}>  $samples
      */
     public function verify(array $samples, OrdinaryKriging3DResult $result): bool
     {
@@ -46,4 +44,3 @@ final class OrdinaryKriging3DCertificateVerifier
         return true;
     }
 }
-

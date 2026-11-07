@@ -55,4 +55,3 @@ final class WeightedTimePhasingCertificateVerifier
         return true;
     }
 }
-

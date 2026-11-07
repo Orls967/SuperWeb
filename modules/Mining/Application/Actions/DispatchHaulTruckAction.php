@@ -54,7 +54,7 @@ class DispatchHaulTruckAction
             $pit = MiningPit::findOrFail($params['pit_id']);
             $truck = MiningEquipment::findOrFail($params['truck_id']);
 
-            $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine();
+            $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine;
             $truckStatus = $eqSm->resolveCurrentStatus($truck);
 
             if (in_array($truckStatus, [EquipmentStatus::BREAKDOWN, EquipmentStatus::UNDER_MAINTENANCE, EquipmentStatus::RETIRED], true)) {

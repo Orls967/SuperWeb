@@ -49,4 +49,3 @@ class MiningEquipmentTelemetry extends Model
         return $this->belongsTo(MiningEquipment::class, 'equipment_id');
     }
 }
-

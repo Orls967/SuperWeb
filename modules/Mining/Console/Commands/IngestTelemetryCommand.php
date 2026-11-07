@@ -7,6 +7,7 @@ namespace Modules\Mining\Console\Commands;
 use Illuminate\Console\Command;
 use Modules\Mining\Application\Actions\IngestEquipmentTelemetryAction;
 use Modules\Mining\Domain\Models\MiningEquipment;
+use Modules\Mining\Domain\Models\MiningEquipmentTelemetry;
 
 class IngestTelemetryCommand extends Command
 {
@@ -27,7 +28,7 @@ class IngestTelemetryCommand extends Command
 
         $ingested = 0;
         foreach ($equipments as $eq) {
-            $seq = (int) (\Modules\Mining\Domain\Models\MiningEquipmentTelemetry::where('equipment_id', $eq->id)->max('sequence_number') ?? 0) + 1;
+            $seq = (int) (MiningEquipmentTelemetry::where('equipment_id', $eq->id)->max('sequence_number') ?? 0) + 1;
 
             $action->execute([
                 'equipment_id' => (string) $eq->id,
@@ -48,4 +49,3 @@ class IngestTelemetryCommand extends Command
         return 0;
     }
 }
-

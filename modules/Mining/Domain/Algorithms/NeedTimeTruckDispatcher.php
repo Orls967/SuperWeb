@@ -166,7 +166,7 @@ final class NeedTimeTruckDispatcher
             certificateData: $certificateData
         );
 
-        $verifier = $this->verifier ?? new NeedTimeTruckDispatcherCertificateVerifier();
+        $verifier = $this->verifier ?? new NeedTimeTruckDispatcherCertificateVerifier;
         $verifier->verify($result);
 
         return $result;
@@ -234,4 +234,3 @@ final class NeedTimeTruckDispatcher
         return $a ?: 1;
     }
 }
-

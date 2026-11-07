@@ -14,8 +14,6 @@ use Modules\Mining\Domain\Models\MiningBlockModelVoxel;
 final class PitShortTermOptimizationService
 {
     /**
-     * @param  string  $pitId
-     * @param  int  $targetBlendTonnageKg
      * @param  int  $targetGradePpm  Target kadar bijih (misal 16500 ppm = 1.65% Ni)
      * @param  list<array{bench_id: string, bench_rl_m: int, available_tonnage_kg: int, grade_ppm: int, ore_type: string}>|null  $availableBenches
      * @return array{
@@ -43,19 +41,19 @@ final class PitShortTermOptimizationService
         ?array $availableBenches = null,
     ): array {
         if ($targetBlendTonnageKg <= 0) {
-            throw new InvalidArgumentException("Target tonase blending bench harus lebih besar dari 0 kg.");
+            throw new InvalidArgumentException('Target tonase blending bench harus lebih besar dari 0 kg.');
         }
 
         $benches = $availableBenches ?? $this->loadBenchesFromBlockModel($pitId, $targetBlendTonnageKg, $targetGradePpm);
         if (count($benches) === 0) {
-            throw new InvalidArgumentException("Daftar bench aktif untuk optimasi blending tidak boleh kosong.");
+            throw new InvalidArgumentException('Daftar bench aktif untuk optimasi blending tidak boleh kosong.');
         }
 
         $hgBenches = [];
         $lgBenches = [];
 
         foreach ($benches as $bench) {
-            if ($bench["grade_ppm"] >= $targetGradePpm) {
+            if ($bench['grade_ppm'] >= $targetGradePpm) {
                 $hgBenches[] = $bench;
             } else {
                 $lgBenches[] = $bench;
@@ -67,8 +65,8 @@ final class PitShortTermOptimizationService
         $weightedGradeNumerator = 0;
 
         if (count($hgBenches) > 0 && count($lgBenches) > 0) {
-            $avgHgPpm = intdiv((int) array_sum(array_column($hgBenches, "grade_ppm")), count($hgBenches));
-            $avgLgPpm = intdiv((int) array_sum(array_column($lgBenches, "grade_ppm")), count($lgBenches));
+            $avgHgPpm = intdiv((int) array_sum(array_column($hgBenches, 'grade_ppm')), count($hgBenches));
+            $avgLgPpm = intdiv((int) array_sum(array_column($lgBenches, 'grade_ppm')), count($lgBenches));
             $spreadPpm = max(1, $avgHgPpm - $avgLgPpm);
 
             $hgShareBps = max(1000, min(9000, intdiv(($targetGradePpm - $avgLgPpm) * 10000, $spreadPpm)));
@@ -77,26 +75,26 @@ final class PitShortTermOptimizationService
 
             $perHgKg = intdiv($targetHgKg, count($hgBenches));
             foreach ($hgBenches as $b) {
-                $qtyKg = min((int) $b["available_tonnage_kg"], $perHgKg);
+                $qtyKg = min((int) $b['available_tonnage_kg'], $perHgKg);
                 $allocations[] = $this->formatBenchAllocation($b, $qtyKg, $targetBlendTonnageKg);
                 $allocatedTonnageKg += $qtyKg;
-                $weightedGradeNumerator += $qtyKg * (int) $b["grade_ppm"];
+                $weightedGradeNumerator += $qtyKg * (int) $b['grade_ppm'];
             }
 
             $perLgKg = intdiv($targetLgKg, count($lgBenches));
             foreach ($lgBenches as $b) {
-                $qtyKg = min((int) $b["available_tonnage_kg"], $perLgKg);
+                $qtyKg = min((int) $b['available_tonnage_kg'], $perLgKg);
                 $allocations[] = $this->formatBenchAllocation($b, $qtyKg, $targetBlendTonnageKg);
                 $allocatedTonnageKg += $qtyKg;
-                $weightedGradeNumerator += $qtyKg * (int) $b["grade_ppm"];
+                $weightedGradeNumerator += $qtyKg * (int) $b['grade_ppm'];
             }
         } else {
-            $totalAvailKg = max(1, (int) array_sum(array_column($benches, "available_tonnage_kg")));
+            $totalAvailKg = max(1, (int) array_sum(array_column($benches, 'available_tonnage_kg')));
             foreach ($benches as $b) {
-                $qtyKg = intdiv((int) $b["available_tonnage_kg"] * $targetBlendTonnageKg, $totalAvailKg);
+                $qtyKg = intdiv((int) $b['available_tonnage_kg'] * $targetBlendTonnageKg, $totalAvailKg);
                 $allocations[] = $this->formatBenchAllocation($b, $qtyKg, $targetBlendTonnageKg);
                 $allocatedTonnageKg += $qtyKg;
-                $weightedGradeNumerator += $qtyKg * (int) $b["grade_ppm"];
+                $weightedGradeNumerator += $qtyKg * (int) $b['grade_ppm'];
             }
         }
 
@@ -107,14 +105,14 @@ final class PitShortTermOptimizationService
         $deviationPpm = abs($achievedGradePpm - $targetGradePpm);
 
         return [
-            "pit_id" => $pitId,
-            "status" => $deviationPpm <= 500 ? "OPTIMAL" : "GRADE_DEVIATION",
-            "target_grade_ppm" => $targetGradePpm,
-            "achieved_grade_ppm" => $achievedGradePpm,
-            "grade_deviation_ppm" => $deviationPpm,
-            "total_blend_tonnage_kg" => $allocatedTonnageKg,
-            "stripping_ratio_bps" => 32000,
-            "bench_allocations" => $allocations,
+            'pit_id' => $pitId,
+            'status' => $deviationPpm <= 500 ? 'OPTIMAL' : 'GRADE_DEVIATION',
+            'target_grade_ppm' => $targetGradePpm,
+            'achieved_grade_ppm' => $achievedGradePpm,
+            'grade_deviation_ppm' => $deviationPpm,
+            'total_blend_tonnage_kg' => $allocatedTonnageKg,
+            'stripping_ratio_bps' => 32000,
+            'bench_allocations' => $allocations,
         ];
     }
 
@@ -125,12 +123,12 @@ final class PitShortTermOptimizationService
     private function formatBenchAllocation(array $bench, int $qtyKg, int $targetBlendTonnageKg): array
     {
         return [
-            "bench_id" => $bench["bench_id"],
-            "bench_rl_m" => (int) $bench["bench_rl_m"],
-            "ore_type" => $bench["ore_type"],
-            "grade_ppm" => (int) $bench["grade_ppm"],
-            "allocated_tonnage_kg" => $qtyKg,
-            "portion_bps" => intdiv($qtyKg * 10000, max(1, $targetBlendTonnageKg)),
+            'bench_id' => $bench['bench_id'],
+            'bench_rl_m' => (int) $bench['bench_rl_m'],
+            'ore_type' => $bench['ore_type'],
+            'grade_ppm' => (int) $bench['grade_ppm'],
+            'allocated_tonnage_kg' => $qtyKg,
+            'portion_bps' => intdiv($qtyKg * 10000, max(1, $targetBlendTonnageKg)),
         ];
     }
 
@@ -140,27 +138,27 @@ final class PitShortTermOptimizationService
     private function loadBenchesFromBlockModel(string $pitId, int $targetBlendTonnageKg, int $targetGradePpm): array
     {
         $voxels = MiningBlockModelVoxel::query()
-            ->where("pit_id", $pitId)
-            ->orderBy("center_z_m")
-            ->orderBy("voxel_code")
+            ->where('pit_id', $pitId)
+            ->orderBy('center_z_m')
+            ->orderBy('voxel_code')
             ->limit(10)
             ->get();
 
         if ($voxels->isEmpty()) {
             return [
                 [
-                    "bench_id" => "BENCH-RL120-HG",
-                    "bench_rl_m" => 120,
-                    "available_tonnage_kg" => $targetBlendTonnageKg,
-                    "grade_ppm" => $targetGradePpm + 2000,
-                    "ore_type" => "HIGH_GRADE_SAPROLITE",
+                    'bench_id' => 'BENCH-RL120-HG',
+                    'bench_rl_m' => 120,
+                    'available_tonnage_kg' => $targetBlendTonnageKg,
+                    'grade_ppm' => $targetGradePpm + 2000,
+                    'ore_type' => 'HIGH_GRADE_SAPROLITE',
                 ],
                 [
-                    "bench_id" => "BENCH-RL110-LG",
-                    "bench_rl_m" => 110,
-                    "available_tonnage_kg" => $targetBlendTonnageKg,
-                    "grade_ppm" => max(1000, $targetGradePpm - 2000),
-                    "ore_type" => "LOW_GRADE_LIMONITE",
+                    'bench_id' => 'BENCH-RL110-LG',
+                    'bench_rl_m' => 110,
+                    'available_tonnage_kg' => $targetBlendTonnageKg,
+                    'grade_ppm' => max(1000, $targetGradePpm - 2000),
+                    'ore_type' => 'LOW_GRADE_LIMONITE',
                 ],
             ];
         }
@@ -168,11 +166,11 @@ final class PitShortTermOptimizationService
         $list = [];
         foreach ($voxels as $v) {
             $list[] = [
-                "bench_id" => (string) $v->voxel_code,
-                "bench_rl_m" => (int) $v->center_z_m,
-                "available_tonnage_kg" => max(50000, (int) $v->tonnage_kg),
-                "grade_ppm" => (int) $v->estimated_grade_ppm,
-                "ore_type" => (string) $v->rock_classification,
+                'bench_id' => (string) $v->voxel_code,
+                'bench_rl_m' => (int) $v->center_z_m,
+                'available_tonnage_kg' => max(50000, (int) $v->tonnage_kg),
+                'grade_ppm' => (int) $v->estimated_grade_ppm,
+                'ore_type' => (string) $v->rock_classification,
             ];
         }
 

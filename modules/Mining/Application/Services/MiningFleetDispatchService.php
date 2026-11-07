@@ -12,6 +12,8 @@ use Modules\Mining\Domain\Models\MiningDispatchAssignment;
 use Modules\Mining\Domain\Models\MiningDispatchPlan;
 use Modules\Mining\Domain\Models\MiningDispatchRun;
 use Modules\Mining\Domain\Models\MiningEquipment;
+use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
+use Modules\Mining\Domain\Models\MiningHaulCycle;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningRoyaltyReturn;
 use Modules\Mining\Domain\Models\MiningSite;
@@ -182,7 +184,7 @@ class MiningFleetDispatchService
         }
 
         // 7. D93-8: Σ hold = saldo min:contractor_payment_hold:IDR
-        $totalActiveHold = (int) \Modules\Mining\Domain\Models\MiningFuelAnomalyCase::where('status', 'payment_held')
+        $totalActiveHold = (int) MiningFuelAnomalyCase::where('status', 'payment_held')
             ->sum('held_amount_idr');
 
         $actualHoldCredit = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'min:contractor_payment_hold:IDR'))
@@ -194,7 +196,7 @@ class MiningFleetDispatchService
         }
 
         // 8. D93-8: Dispatch per shift <= unit tersedia
-        $activeCyclesByShift = \Modules\Mining\Domain\Models\MiningHaulCycle::whereIn('status', ['assigned', 'travelling_empty', 'loading', 'hauling', 'dumping'])
+        $activeCyclesByShift = MiningHaulCycle::whereIn('status', ['assigned', 'travelling_empty', 'loading', 'hauling', 'dumping'])
             ->selectRaw('site_id, shift_date, shift_code, count(distinct truck_id) as truck_count')
             ->groupBy('site_id', 'shift_date', 'shift_code')
             ->get();

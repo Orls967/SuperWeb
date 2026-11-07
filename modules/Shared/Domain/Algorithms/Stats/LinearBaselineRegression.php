@@ -133,7 +133,7 @@ final class LinearBaselineRegression
             certificateData: $certificateData
         );
 
-        $verifier = $this->verifier ?? new LinearBaselineRegressionCertificateVerifier();
+        $verifier = $this->verifier ?? new LinearBaselineRegressionCertificateVerifier;
         $verifier->verify($result);
 
         return $result;
@@ -153,4 +153,3 @@ final class LinearBaselineRegression
         return $a ?: 1;
     }
 }
-

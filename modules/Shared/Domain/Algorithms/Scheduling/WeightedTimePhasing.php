@@ -112,10 +112,9 @@ final class WeightedTimePhasing
             certificateData: $certificateData
         );
 
-        $verifier = $this->verifier ?? new WeightedTimePhasingCertificateVerifier();
+        $verifier = $this->verifier ?? new WeightedTimePhasingCertificateVerifier;
         $verifier->verify($result);
 
         return $result;
     }
 }
-

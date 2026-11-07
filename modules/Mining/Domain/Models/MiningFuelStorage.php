@@ -47,4 +47,3 @@ class MiningFuelStorage extends Model
         return $this->hasMany(MiningFuelDispenseRecord::class, 'storage_id');
     }
 }
-

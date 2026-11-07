@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Application\Actions;
 
-use Modules\Core\Contracts\ClockInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Application\Sagas\PredictiveMaintenanceWorkOrderSaga;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningEquipmentTelemetry;
@@ -98,7 +98,7 @@ class IngestEquipmentTelemetryAction
                             'note' => 'Penggantian bearing dan filter oli unit haul truck',
                         ],
                     ],
-                ], $actor ?? User::first() ?? new User());
+                ], $actor ?? User::first() ?? new User);
             }
 
             return [
@@ -109,4 +109,3 @@ class IngestEquipmentTelemetryAction
         });
     }
 }
-

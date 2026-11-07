@@ -36,4 +36,3 @@ class MiningExternalFactor extends Model
         'metadata_json' => 'array',
     ];
 }
-

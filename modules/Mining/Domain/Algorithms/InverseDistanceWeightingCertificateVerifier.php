@@ -9,9 +9,7 @@ use InvalidArgumentException;
 final class InverseDistanceWeightingCertificateVerifier
 {
     /**
-     * @param array<int, array{x: int, y: int, z: int, grade_ppm: int}> $samples
-     * @param InverseDistanceWeightingResult $result
-     * @return bool
+     * @param  array<int, array{x: int, y: int, z: int, grade_ppm: int}>  $samples
      */
     public function verify(array $samples, InverseDistanceWeightingResult $result): bool
     {
@@ -50,4 +48,3 @@ final class InverseDistanceWeightingCertificateVerifier
         return true;
     }
 }
-
