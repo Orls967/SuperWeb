@@ -84,7 +84,7 @@ class MiningOpsE2EAndLedgerTest extends TestCase
         ]);
 
         $this->assertNotNull($plan);
-        $this->assertEquals('approved', $plan->status);
+        $this->assertEquals('approved', $plan->status->value);
         $this->assertGreaterThan(0, $plan->shifts()->count());
 
         // 2. Dispatch truck using NeedTimeTruckDispatcher M2
@@ -100,7 +100,7 @@ class MiningOpsE2EAndLedgerTest extends TestCase
         ]);
 
         $this->assertNotNull($assignment);
-        $this->assertEquals('assigned', $assignment->status);
+        $this->assertEquals('assigned', $assignment->status->value);
         $this->assertEquals($shovel->id, $assignment->shovel_id);
 
         // 3. Complete haul cycle with payload & distance

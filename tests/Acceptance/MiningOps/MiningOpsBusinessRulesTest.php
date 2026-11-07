@@ -71,11 +71,11 @@ class MiningOpsBusinessRulesTest extends TestCase
 
         // Assert Case was created with status payment_held
         $case = MiningFuelAnomalyCase::where('equipment_id', $equipment->id)
-            ->where('shift_date', '2026-11-02')
+            ->whereDate('shift_date', '2026-11-02')
             ->first();
 
         $this->assertNotNull($case);
-        $this->assertEquals('payment_held', $case->status);
+        $this->assertEquals('payment_held', $case->status->value);
 
         // Assert Ledger posting holds payment
         $holdAccount = LedgerAccount::where('code', 'min:contractor_payment_hold:IDR')->first();

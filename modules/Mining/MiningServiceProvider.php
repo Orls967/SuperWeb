@@ -7,6 +7,12 @@ namespace Modules\Mining;
 use Illuminate\Support\ServiceProvider;
 use Modules\Mining\Application\Services\MiningFleetDispatchService;
 use Modules\Mining\Console\Commands\AuditMiningCommand;
+use Modules\Mining\Console\Commands\BlockReserveEstimateCommand;
+use Modules\Mining\Console\Commands\FuelAnomalyScanCommand;
+use Modules\Mining\Console\Commands\IngestTelemetryCommand;
+use Modules\Mining\Console\Commands\OeeBenchmarkScanCommand;
+use Modules\Mining\Console\Commands\PhasePlanCommand;
+use Modules\Mining\Console\Commands\ShiftCloseCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class MiningServiceProvider extends ServiceProvider
@@ -35,6 +41,12 @@ class MiningServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditMiningCommand::class,
+                BlockReserveEstimateCommand::class,
+                FuelAnomalyScanCommand::class,
+                IngestTelemetryCommand::class,
+                OeeBenchmarkScanCommand::class,
+                PhasePlanCommand::class,
+                ShiftCloseCommand::class,
             ]);
         }
     }

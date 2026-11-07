@@ -84,55 +84,35 @@ stateDiagram-v2
 
 ---
 
-## 2. Sequence Diagram Alur Utama & Saga Kompensasi (D2)
+## 2. Diagram Alur Utama & Saga Kompensasi (D2)
 
 ### 2.1 Alur Utama Dispatch Truk Berbasis Waktu Mulai Muat
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dispatcher as Dispatcher (dispatcher_mine)
-    participant UI as /mining/dispatch
-    participant Action as DispatchHaulTruckAction
-    participant M2 as NeedTimeTruckDispatcher
-    participant Equipment as min_equipment
-    participant Cycle as min_haul_cycles
-
-    Dispatcher->>UI: Muat papan dispatch shift
-    UI->>Action: Eksekusi penugasan otomatis
-    Action->>Equipment: Ambil truk tersedia & posisi shovel
-    Action->>M2: Hitung waktu mulai muat terawal & MF
-    M2-->>Action: Rekomendasi penugasan (Truk -> Shovel, MF)
-    Action->>Cycle: Buat baris siklus (status: assigned)
-    Action->>Equipment: Transisi status truk -> assigned
-    Action-->>UI: Kembalikan alokasi visual Gantt shift
+flowchart TD
+    D["Dispatcher (dispatcher_mine)"] --> UI["UI /mining/dispatch"]
+    UI --> A["DispatchHaulTruckAction"]
+    A --> E["min_equipment: Truk & Shovel Aktif"]
+    A --> M2["NeedTimeTruckDispatcher (Algoritma M2)"]
+    M2 --> RES["Hasil: Pasangan Truk-Shovel & Rasio MF"]
+    RES --> HC["min_haul_cycles: Insert Cycle (ASSIGNED)"]
+    HC --> EQ["min_equipment: Transisi ke ASSIGNED"]
+    EQ --> OUT["Output UI & Visualisasi Gantt"]
 ```
 
 ### 2.2 Saga Perawatan Prediktif & Suku Cadang (dengan Kompensasi)
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Telemetry as IngestTelemetryCommand
-    participant Saga as PredictiveMaintenanceSaga
-    participant Asset as Modules\Asset\MaintenanceWorkOrder
-    participant Mrp as Modules\Procurement\MrpRequisition
-    participant Planning as RePlanShiftTargetsAction
-
-    Telemetry->>Saga: Telemetri getaran / jam operasi melebihi ambang
-    Note over Saga: Langkah 1: Buat Work Order Perawatan
-    Saga->>Asset: createWorkOrder(equipment_id, reason)
-    alt Work Order Diterima
-        Asset-->>Saga: work_order_id: WO-9301
-        Note over Saga: Langkah 2: Buat Requisition Suku Cadang
-        Saga->>Mrp: proposeRequisition(parts_list)
-        alt Requisition Diterima
-            Mrp-->>Saga: requisition_id: REQ-4412
-            Note over Saga: Langkah 3: Sesuaikan Target Shift
-            Saga->>Planning: cutDowntimeHours(hours: 4)
-            Planning-->>Saga: target shift disesuaikan
-        else Requisition Ditolak (Kompensasi Langkah 1)
-            Saga->>Asset: cancelWorkOrder(WO-9301, reason: "Gagal pengadaan")
-            Saga-->>Telemetry: Saga kompensasi selesai (Status FAILED)
-        end
+flowchart TD
+    T["IngestTelemetryCommand: Getaran/Suhu > Ambang"] --> SAGA["PredictiveMaintenanceWorkOrderSaga"]
+    SAGA --> S1["Langkah 1: Request Maintenance Work Order (K9)"]
+    S1 --> CHK1{"WO Diterima?"}
+    CHK1 -- Ya --> S2["Langkah 2: Propose MRP Requisition Suku Cadang"]
+    CHK1 -- Tidak --> FAIL1["Saga Gagal (Tanpa Kompensasi)"]
+    S2 --> CHK2{"Suku Cadang Tersedia?"}
+    CHK2 -- Ya --> S3["Langkah 3: Re-Plan Target Shift (Kurangi Jam Downtime)"]
+    CHK2 -- Tidak --> COMP1["KOMPENSASI 1: Batalkan WO Perawatan Terbit"]
+    COMP1 --> FAIL2["Status Saga: COMPENSATED_FAILED"]
+    S3 --> SUCC["Status Saga: COMPLETED"]
+```
     else Work Order Ditolak
         Saga-->>Telemetry: Saga dibatalkan di awal
     end

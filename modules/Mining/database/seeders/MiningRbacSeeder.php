@@ -54,6 +54,18 @@ class MiningRbacSeeder extends Seeder
             description: 'Otoritas tertinggi operasional konsesi tambang dan audit dua sumber.'
         );
 
+        $minePlanner = $svc->ensureRole(
+            name: 'mine_planner',
+            label: 'Perencana Tambang',
+            description: 'Menyusun rencana tambang cut & fill bulanan, kurva-S, dan alokasi shift.'
+        );
+
+        $contractor = $svc->ensureRole(
+            name: 'contractor',
+            label: 'Kontraktor Tambang',
+            description: 'Akses portal rekanan angkut tambang, riwayat armada, dan tagihan.'
+        );
+
         // 2. Permissions
         $permissions = [
             ['name' => 'mining.weighbridge.operate', 'label' => 'Operasikan Jembatan Timbang', 'module' => 'Mining'],

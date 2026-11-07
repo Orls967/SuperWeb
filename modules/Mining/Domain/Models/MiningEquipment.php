@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class MiningEquipment extends Model
 {
+    use HasUuids;
+
     protected $table = 'min_equipment';
 
     protected $keyType = 'string';
@@ -41,5 +44,45 @@ class MiningEquipment extends Model
                 $model->capacity_ton = round($model->capacity_kg / 1000, 2);
             }
         });
+    }
+
+    public function telemetries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MiningEquipmentTelemetry::class, 'equipment_id');
+    }
+
+    public function site(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(MiningSite::class, 'site_id');
+    }
+
+    public function getCodeAttribute(): ?string
+    {
+        return $this->equipment_code;
+    }
+
+    public function getNameAttribute(): string
+    {
+        return $this->model ?? $this->equipment_code ?? 'Equipment';
+    }
+
+    public function getHourMeterCurrentAttribute(): float
+    {
+        return (float) ($this->engine_hours ?? 0);
+    }
+
+    public function getOeeAvailabilityAttribute(): float
+    {
+        return 0.90;
+    }
+
+    public function getOeePerformanceAttribute(): float
+    {
+        return 0.92;
+    }
+
+    public function getOeeQualityAttribute(): float
+    {
+        return 0.95;
     }
 }

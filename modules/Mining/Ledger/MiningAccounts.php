@@ -211,7 +211,100 @@ final class MiningAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'expense:min:hauling_contractor:IDR',
+                'name' => 'Mining Hauling Contractor Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:contractor_payment_hold:IDR',
+                'name' => 'Mining Contractor Payment Hold Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'min:fuel_variance_recovery:IDR',
+                'name' => 'Mining Fuel Variance Recovery Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'min:explosives_expense:IDR',
+                'name' => 'Mining Blasting Explosives Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:inventory_shrinkage_expense:IDR',
+                'name' => 'Mining Ore Inventory Shrinkage Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:ore_stockpile_inventory:IDR',
+                'name' => 'Mining Ore Stockpile Inventory Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:fx_gain_loss:IDR',
+                'name' => 'Mining Foreign Exchange Gain or Loss',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:margin_deposit:IDR',
+                'name' => 'Metals Trading Margin Deposit Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:metals_trading_loss:IDR',
+                'name' => 'Metals Trading Mark-To-Market Loss',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:metals_trading_gain:IDR',
+                'name' => 'Metals Trading Mark-To-Market Gain',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'min:joint_production_cost_clearing:IDR',
+                'name' => 'Mining Smelter Joint Production Cost Clearing',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
+    }
+
+    public static function contractorPayable(string $partyId): string
+    {
+        $code = "ap:min:contractor:{$partyId}:IDR";
+        LedgerAccount::firstOrCreate(
+            ['code' => $code],
+            [
+                'name' => "Contractor Haulage Payable {$partyId}",
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ]
+        );
+
+        return $code;
     }
 
     public static function royaltyExpense(): string

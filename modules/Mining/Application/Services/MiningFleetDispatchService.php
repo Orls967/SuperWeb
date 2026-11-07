@@ -181,6 +181,36 @@ class MiningFleetDispatchService
             $errors[] = "Ledger out of balance: {$unbalancedTxCount} unbalanced transactions detected.";
         }
 
+        // 7. D93-8: Σ hold = saldo min:contractor_payment_hold:IDR
+        $totalActiveHold = (int) \Modules\Mining\Domain\Models\MiningFuelAnomalyCase::where('status', 'payment_held')
+            ->sum('held_amount_idr');
+
+        $actualHoldCredit = (int) LedgerEntry::whereHas('account', fn ($q) => $q->where('code', 'min:contractor_payment_hold:IDR'))
+            ->sum('amount');
+
+        if ($totalActiveHold > 0 && $actualHoldCredit !== $totalActiveHold) {
+            $discrepancies++;
+            $errors[] = "Fuel hold discrepancy: Active cases hold ({$totalActiveHold} IDR) != ledger hold balance ({$actualHoldCredit} IDR).";
+        }
+
+        // 8. D93-8: Dispatch per shift <= unit tersedia
+        $activeCyclesByShift = \Modules\Mining\Domain\Models\MiningHaulCycle::whereIn('status', ['assigned', 'travelling_empty', 'loading', 'hauling', 'dumping'])
+            ->selectRaw('site_id, shift_date, shift_code, count(distinct truck_id) as truck_count')
+            ->groupBy('site_id', 'shift_date', 'shift_code')
+            ->get();
+
+        foreach ($activeCyclesByShift as $cGroup) {
+            $availTrucks = MiningEquipment::where('site_id', $cGroup->site_id)
+                ->where('type', 'HAUL_TRUCK')
+                ->whereIn('status', ['available', 'assigned', 'operating', 'standby'])
+                ->count();
+
+            if ($cGroup->truck_count > $availTrucks) {
+                $discrepancies++;
+                $errors[] = "Dispatch fleet breach on site {$cGroup->site_id}: {$cGroup->truck_count} trucks active > {$availTrucks} available.";
+            }
+        }
+
         return [
             'status' => $discrepancies === 0 ? 'HEALTHY' : 'UNHEALTHY',
             'site_count' => $siteCount,

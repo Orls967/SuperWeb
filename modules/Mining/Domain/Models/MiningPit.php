@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class MiningPit extends Model
 {
+    use HasUuids;
+
     protected $table = 'min_pits';
 
     protected $keyType = 'string';
