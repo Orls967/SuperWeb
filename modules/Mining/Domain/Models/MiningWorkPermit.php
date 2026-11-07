@@ -32,6 +32,13 @@ class MiningWorkPermit extends Model
         'status',
         'approved_by_user_id',
         'capa_ref',
+        'allowed_pit_id',
+        'allowed_latitude',
+        'allowed_longitude',
+        'allowed_radius_meters',
+        'worker_party_id',
+        'area_id',
+        'approval_status',
     ];
 
     protected $casts = [
