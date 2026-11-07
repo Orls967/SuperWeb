@@ -1,7 +1,21 @@
 {
     "about": "Rute berparameter tanpa closure params (PROGRESS R0.9, KONSEP §A14.3). Hanya boleh menyusut saat closure params dilengkapi (ditutup di R3.1).",
-    "total": 0,
-    "entries": [],
+    "total": 13,
+    "entries": [
+        "route:hotel.banquet.approve",
+        "route:hotel.banquet.explode_bom",
+        "route:hotel.city_ledger.aging",
+        "route:hotel.folio.split.settle",
+        "route:hotel.folio.split.show",
+        "route:hotel.loyalty.accrue",
+        "route:hotel.loyalty.profile",
+        "route:hotel.loyalty.score_churn",
+        "route:hotel.packages.audit_booking",
+        "route:hotel.packages.book",
+        "route:hotel.packages.release_milestone",
+        "route:hotel.timeshare.distribute",
+        "route:hotel.timeshare.schedule"
+    ],
     "approved_additions": [
         {
             "date": "2026-10-10",
@@ -13,6 +27,19 @@
             "decision": "DECISIONS.md#2026-10-22-fase-102-enterprise-api-v3-and-mobile-sync",
             "entries": [
                 "route:api.v3.partner.webhooks.replay"
+            ]
+        },
+        {
+            "date": "2026-11-07",
+            "decision": "DECISIONS.md#ADR-0092",
+            "entries": "baseline awal: 11 entri"
+        },
+        {
+            "date": "2026-11-07",
+            "decision": "DECISIONS.md#ADR-0092",
+            "entries": [
+                "route:hotel.banquet.explode_bom",
+                "route:hotel.packages.audit_booking"
             ]
         }
     ]
