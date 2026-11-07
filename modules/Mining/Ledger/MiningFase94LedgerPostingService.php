@@ -16,7 +16,7 @@ use Modules\Banking\Support\Posting;
  * 1. Royalti terutang:
  *    Debit expense:min:royalty:IDR | Kredit min:royalty_payable:IDR
  * 2. Bayar royalti:
- *    Debit min:royalty_payable:IDR | Kredit bank:idr:kas_operasional:IDR
+ *    Debit min:royalty_payable:IDR | Kredit min:bank_cash:IDR
  * 3. Invoice provisional:
  *    Debit min:trade_receivable:IDR | Kredit min:sales_revenue:IDR
  * 4. Penyesuaian final (assay/kalori):
@@ -80,7 +80,7 @@ final class MiningFase94LedgerPostingService
             idempotencyKey: "min:royalty-payment:{$returnId}",
             entries: Posting::lines()
                 ->debit(MiningAccounts::royaltyPayable(), $amountIdr, 'IDR')
-                ->credit('bank:idr:kas_operasional:IDR', $amountIdr, 'IDR')
+                ->credit(MiningAccounts::bankCash(), $amountIdr, 'IDR')
                 ->toEntries('IDR'),
             referenceType: 'MINING_ROYALTY_PAYMENT',
             referenceId: $paymentRef,

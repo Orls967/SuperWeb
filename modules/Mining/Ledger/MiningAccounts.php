@@ -295,6 +295,13 @@ final class MiningAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'min:bank_cash:IDR',
+                'name' => 'Mining Site Bank & Cash Clearing',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 
@@ -358,5 +365,10 @@ final class MiningAccounts
     public static function salesRevenue(): string
     {
         return 'min:sales_revenue:IDR';
+    }
+
+    public static function bankCash(): string
+    {
+        return 'min:bank_cash:IDR';
     }
 }
