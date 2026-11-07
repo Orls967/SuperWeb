@@ -34,7 +34,7 @@ class HoldGeneralAdmissionQuotaAction
         }
 
         $event = EntertainmentEvent::findOrFail($eventId);
-        if ($event->status === 'CLOSED') {
+        if (in_array(strtoupper((string) $event->status), ['CLOSED', 'SETTLED', 'CANCELLED'], true)) {
             throw new \RuntimeException('Event telah ditutup dan tidak lagi menerima pembelian tiket');
         }
 

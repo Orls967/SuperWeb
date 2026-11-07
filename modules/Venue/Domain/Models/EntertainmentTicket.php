@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Domain\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use RuntimeException;
 
 class EntertainmentTicket extends Model
@@ -20,15 +22,20 @@ class EntertainmentTicket extends Model
         'seat_claim_id',
         'buyer_user_id',
         'price_paid_idr',
+        'tax_paid_idr',
         'ticket_hash',
         'prev_hash',
         'idempotency_key',
         'status',
+        'reentry_count',
+        'last_direction',
         'scanned_at',
     ];
 
     protected $casts = [
         'price_paid_idr' => 'integer',
+        'tax_paid_idr' => 'integer',
+        'reentry_count' => 'integer',
         'scanned_at' => 'datetime',
     ];
 
@@ -55,8 +62,13 @@ class EntertainmentTicket extends Model
         return $this->belongsTo(TicketTier::class, 'tier_id');
     }
 
-    public function seatClaim(): BelongsTo
+    public function buyer(): BelongsTo
     {
-        return $this->belongsTo(SeatClaim::class, 'seat_claim_id');
+        return $this->belongsTo(User::class, 'buyer_user_id');
+    }
+
+    public function scans(): HasMany
+    {
+        return $this->hasMany(GateScanLog::class, 'ticket_id');
     }
 }

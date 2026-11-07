@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Banking\Application\DTOs\PostingDTO;
+use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Support\Posting;
 use Modules\Shared\Application\BaseAction;
 use Modules\Venue\Application\Services\VenuePaymentGateway;
+use Modules\Venue\Domain\Enums\TableBookingStatus;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
+use Modules\Venue\Ledger\VenueTransactionTypes;
 
 class ReserveTableWithMinimumSpendDepositAction extends BaseAction
 {
     public function __construct(
-        private readonly ?VenuePaymentGateway $paymentGateway = null
+        private readonly ?VenuePaymentGateway $paymentGateway = null,
+        private readonly ?Ledger $ledger = null,
     ) {}
 
     /**
-     * Reserve VIP table or daybed with minimum spend deposit hold.
-     *
      * @return array{booking: EntertainmentTableBooking, booking_code: string, deposit_amount_idr: int, minimum_spend_idr: int}
      */
     public function handle(
@@ -53,7 +57,13 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
             // Verify table is not already held or booked for this event
             $alreadyBooked = EntertainmentTableBooking::where('event_id', $event->id)
                 ->where('table_number', $tableNumber)
-                ->whereIn('status', ['HELD', 'SEATED', 'COMPLETED', 'NO_SHOW'])
+                ->whereIn('status', [
+                    TableBookingStatus::DEPOSIT_HELD->value,
+                    TableBookingStatus::CONFIRMED->value,
+                    TableBookingStatus::SEATED->value,
+                    TableBookingStatus::SETTLED->value,
+                    'HELD', 'SEATED', 'COMPLETED',
+                ])
                 ->exists();
 
             if ($alreadyBooked) {
@@ -86,6 +96,20 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
                 'idempotency_key' => $idempotencyKey,
                 'status' => 'HELD',
             ]);
+
+            // Posting ledger: Debit vip_escrow, Kredit vip_unearned_rev
+            $ledger = $this->ledger ?? app(Ledger::class);
+            $ledger->post(new PostingDTO(
+                type: VenueTransactionTypes::VENUE_VIP_TABLE_ESCROW->value,
+                description: "Hold deposit meja VIP {$bookingCode} event {$event->event_code}",
+                idempotencyKey: "ven:ledger:vip_escrow:{$bookingCode}",
+                entries: Posting::lines()
+                    ->debit('ven:vip_escrow:IDR', $depositAmountIdr)
+                    ->credit('ven:vip_unearned_rev:IDR', $depositAmountIdr)
+                    ->toEntries('IDR'),
+                referenceType: 'VENUE_TABLE_BOOKING',
+                referenceId: (string) $booking->id
+            ));
 
             return [
                 'booking' => $booking,

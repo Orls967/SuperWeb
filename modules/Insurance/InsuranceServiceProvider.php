@@ -7,6 +7,7 @@ namespace Modules\Insurance;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Insurance\Application\Services\EventCoverBinderService;
 use Modules\Insurance\Application\Services\FullInsuranceService;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
 use Modules\Insurance\Console\Commands\AuditEmbeddedCommand;
@@ -17,6 +18,7 @@ use Modules\Insurance\Console\Commands\AuditTakafulCommand;
 use Modules\Insurance\Console\Commands\CatRunCommand;
 use Modules\Insurance\Console\Commands\CedePeriodCommand;
 use Modules\Insurance\Console\Commands\SolvencySnapshotCommand;
+use Modules\Insurance\Contracts\EventCoverBinder;
 use Modules\Shared\Application\MenuRegistry;
 
 class InsuranceServiceProvider extends ServiceProvider
@@ -33,6 +35,10 @@ class InsuranceServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/config/insurance.php', 'insurance');
 
         $this->app->singleton(FullInsuranceService::class);
+        $this->app->bind(
+            EventCoverBinder::class,
+            EventCoverBinderService::class
+        );
     }
 
     public function boot(): void

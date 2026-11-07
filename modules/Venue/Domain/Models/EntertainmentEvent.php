@@ -17,14 +17,21 @@ class EntertainmentEvent extends Model
         'venue_id',
         'title',
         'doors_open_at',
+        'doors_closed_at',
         'ticket_floor_price_idr',
         'ticket_ceiling_price_idr',
         'current_ticket_price_idr',
         'status',
+        'settled_at',
     ];
 
     protected $casts = [
         'doors_open_at' => 'datetime',
+        'doors_closed_at' => 'datetime',
+        'settled_at' => 'datetime',
+        'ticket_floor_price_idr' => 'integer',
+        'ticket_ceiling_price_idr' => 'integer',
+        'current_ticket_price_idr' => 'integer',
     ];
 
     public function venue(): BelongsTo
@@ -35,5 +42,20 @@ class EntertainmentEvent extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(EntertainmentTicket::class, 'event_id');
+    }
+
+    public function tiers(): HasMany
+    {
+        return $this->hasMany(TicketTier::class, 'event_id');
+    }
+
+    public function tableBookings(): HasMany
+    {
+        return $this->hasMany(EntertainmentTableBooking::class, 'event_id');
+    }
+
+    public function permits(): HasMany
+    {
+        return $this->hasMany(VenuePermit::class, 'event_id');
     }
 }

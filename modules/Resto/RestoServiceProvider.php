@@ -7,6 +7,7 @@ namespace Modules\Resto;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Modules\Resto\Application\Services\IngredientReferenceCostUpdater;
+use Modules\Resto\Application\Services\OutletSaleRecorderService;
 use Modules\Resto\Application\Services\RecipeCostCalculator;
 use Modules\Resto\Application\Services\RestoIngredientStockService;
 use Modules\Resto\Application\Services\RestoSearchProvider;
@@ -16,6 +17,7 @@ use Modules\Resto\Console\Commands\CloseDayCommand;
 use Modules\Resto\Console\Commands\ExpireDisplayTraysCommand;
 use Modules\Resto\Console\Commands\MonitorStockLevelsCommand;
 use Modules\Resto\Console\Commands\PostFranchiseRoyaltyCommand;
+use Modules\Resto\Contracts\OutletSaleRecorder;
 use Modules\Resto\Contracts\RestoIngredientStockPort;
 use Modules\Resto\Contracts\RestoUsageReaderInterface;
 use Modules\Resto\Domain\Models\CateringOrder;
@@ -60,6 +62,11 @@ class RestoServiceProvider extends ServiceProvider
         $this->app->bind(
             RestoUsageReaderInterface::class,
             RestoUsageReaderService::class
+        );
+
+        $this->app->bind(
+            OutletSaleRecorder::class,
+            OutletSaleRecorderService::class
         );
     }
 
