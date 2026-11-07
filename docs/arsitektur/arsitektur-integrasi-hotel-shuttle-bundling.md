@@ -14,42 +14,17 @@ Arsitektur Superweb menghadirkan solusi menyeluruh melalui pola orkestrasi **Dyn
 Ketika pelanggan memilih dan melakukan checkout atas sebuah paket bundling (misalnya *Paket Soundwave All-in-One Luxury VIP*):
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Guest as Tamu / Pengunjung
-    participant Controller as VenueSecondaryMarketController
-    participant Saga as DynamicBundleAllocationSaga
-    participant HotelContract as HotelPackageAvailabilityValidator
-    participant ShuttleContract as EventShuttleFleetScheduler
-    participant Pricer as DynamicBundlePricer
-    participant Action as AllocateDynamicBundleAction
-    participant DB as Basis Data Transaksional
-
-    Guest->>Controller: Konfirmasi Beli Paket Bundling
-    Controller->>Saga: execute(packageId, buyerUserId, hotelPkgId, shuttleRouteId)
-    activate Saga
-
-    Saga->>DB: Kunci baris paket (SELECT FOR UPDATE)
-    
-    alt Jika menyertakan komponen Hotel
-        Saga->>HotelContract: validateAvailability(hotelPkgId, checkIn, checkOut, 1)
-        HotelContract-->>Saga: Return true (Kamar Tersedia)
-    end
-
-    alt Jika menyertakan komponen Shuttle
-        Saga->>ShuttleContract: scheduleEventShuttle(eventId, shuttleRouteId, 1, depTime)
-        ShuttleContract-->>Saga: Return true (Kursi Dikonfirmasi)
-    end
-
-    Saga->>Pricer: calculate(totalBasePrice, discountBps, floorPrice)
-    Pricer-->>Saga: PricingResult (Harga final & status guardrail)
-
-    Saga->>Action: execute(package, buyerUserId, finalPrice)
-    Action->>DB: Simpan alokasi & potong kuota
-    
-    Saga-->>Controller: Return SAGA-BND-SUCCESS
-    deactivate Saga
-    Controller-->>Guest: Redirect Sukses & Tampilkan Rincian Tiket/Voucher
+flowchart TD
+    Guest["Tamu / Pengunjung"] -->|1. Konfirmasi Beli Paket| Controller["VenueSecondaryMarketController"]
+    Controller -->|2. execute| Saga["DynamicBundleAllocationSaga"]
+    Saga -->|3. lockForUpdate| DB["Basis Data Transaksional"]
+    Saga -->|4. validateAvailability| Hotel["HotelPackageAvailabilityValidator"]
+    Saga -->|5. scheduleEventShuttle| Shuttle["EventShuttleFleetScheduler"]
+    Saga -->|6. calculate| Pricer["DynamicBundlePricer"]
+    Saga -->|7. execute| Action["AllocateDynamicBundleAction"]
+    Action -->|8. Simpan Alokasi| DB
+    Saga -->|9. SAGA-BND-SUCCESS| Controller
+    Controller -->|10. Tampilkan Voucher| Guest
 ```
 
 ---

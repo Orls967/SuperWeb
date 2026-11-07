@@ -6,10 +6,13 @@ namespace Modules\Venue\Application\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Venue\Domain\Algorithms\AntiScalping\AntiScalpingCapEngine;
 use Modules\Venue\Domain\Algorithms\AntiScalping\AntiScalpingInput;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\TicketResale;
+use Modules\Venue\Domain\Models\TicketWaitlist;
 use Modules\Venue\Domain\StateMachines\TicketResaleStateMachine;
 
 final class VenueSecondaryMarketService
@@ -115,6 +118,109 @@ final class VenueSecondaryMarketService
             'max_allowed_price_idr' => $capResult->maxAllowedPriceIdr,
             'face_value_idr' => $ticket->price_idr,
         ];
+    }
+
+    public function listTicketForResale(EntertainmentTicket $ticket, int $sellerUserId, int $priceIdr): TicketResale
+    {
+        $faceValue = $ticket->price_paid_idr ?? $ticket->price_idr ?? 1000000;
+        $maxAllowed = (int) intdiv($faceValue * 120, 100);
+
+        if ($priceIdr > $maxAllowed) {
+            throw new \RuntimeException("Proposed price {$priceIdr} exceeds anti-scalping price cap of {$maxAllowed}");
+        }
+
+        $transfers = TicketResale::query()
+            ->where('ticket_id', $ticket->id)
+            ->whereIn('status', ['SOLD', 'SETTLED'])
+            ->count();
+
+        if ($transfers > 0) {
+            throw new \RuntimeException('Ticket has already reached maximum of 1 secondary transfer');
+        }
+
+        return TicketResale::create([
+            'resale_code' => 'RSL-'.Str::upper(Str::random(8)),
+            'ticket_id' => $ticket->id,
+            'seller_user_id' => $sellerUserId,
+            'original_face_value_idr' => $faceValue,
+            'resale_price_idr' => $priceIdr,
+            'platform_fee_idr' => (int) intdiv($priceIdr * 10, 100),
+            'tax_pbjt_idr' => (int) intdiv($priceIdr * 10, 100),
+            'entertainment_tax_idr' => (int) intdiv($priceIdr * 10, 100),
+            'seller_payout_idr' => $priceIdr - (int) intdiv($priceIdr * 20, 100),
+            'transfer_count' => 0,
+            'status' => 'LISTED',
+        ]);
+    }
+
+    public function purchaseResaleTicket(TicketResale $resale, int $buyerUserId): TicketResale
+    {
+        $price = $resale->resale_price_idr;
+        $fee = (int) intdiv($price * 10, 100);
+        $tax = (int) intdiv($price * 10, 100);
+        $payout = $price - ($fee + $tax);
+
+        $resale->status = 'SOLD';
+        $resale->buyer_user_id = $buyerUserId;
+        $resale->platform_fee_idr = $fee;
+        $resale->tax_pbjt_idr = $tax;
+        $resale->entertainment_tax_idr = $tax;
+        $resale->seller_payout_idr = $payout;
+        $resale->transfer_count = 1;
+        $resale->settled_at = now();
+        $resale->save();
+
+        // Update ticket buyer
+        $ticket = $resale->ticket;
+        if ($ticket !== null) {
+            $ticket->buyer_user_id = $buyerUserId;
+            $ticket->save();
+        }
+
+        // Ledger posting using Ledger facade / Posting helper if available
+        $clearing = LedgerAccount::where('code', 'ven:secondary_ticket_clearing:IDR')->first();
+        $feeRev = LedgerAccount::where('code', 'ven:resale_platform_fee_revenue:IDR')->first();
+        $taxPayable = LedgerAccount::where('code', 'ven:entertainment_tax_payable:IDR')->first();
+        $sellerPayable = LedgerAccount::where('code', 'ven:resale_seller_payable:IDR')->first();
+
+        if ($feeRev) {
+            $feeRev->cached_balance = (string) (((int) $feeRev->cached_balance) + $fee);
+            $feeRev->save();
+        }
+        if ($taxPayable) {
+            $taxPayable->cached_balance = (string) (((int) $taxPayable->cached_balance) + $tax);
+            $taxPayable->save();
+        }
+        if ($sellerPayable) {
+            $sellerPayable->cached_balance = (string) (((int) $sellerPayable->cached_balance) + $payout);
+            $sellerPayable->save();
+        }
+        if ($clearing) {
+            $clearing->cached_balance = (string) (((int) $clearing->cached_balance) + $price);
+            $clearing->save();
+        }
+
+        return $resale;
+    }
+
+    public function joinWaitlist(int $eventId, int $zoneId, int $userId): TicketWaitlist
+    {
+        return TicketWaitlist::create([
+            'waitlist_code' => 'WLT-'.Str::upper(Str::random(8)),
+            'event_id' => $eventId,
+            'zone_id' => $zoneId,
+            'user_id' => $userId,
+            'status' => 'WAITING',
+        ]);
+    }
+
+    public function offerSeatToWaitlist(TicketWaitlist $waitlist, int $minutes = 15): TicketWaitlist
+    {
+        $waitlist->status = 'OFFERED';
+        $waitlist->offer_expires_at = now()->addMinutes($minutes);
+        $waitlist->save();
+
+        return $waitlist;
     }
 
     /**
