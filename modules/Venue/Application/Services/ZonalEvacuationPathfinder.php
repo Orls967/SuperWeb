@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Application\Services;
 
-use Modules\Venue\Domain\Models\EntertainmentZone;
 use SplPriorityQueue;
 
 final class ZonalEvacuationPathfinder
@@ -12,9 +11,9 @@ final class ZonalEvacuationPathfinder
     /**
      * Compute shortest safe evacuation path from a starting zone to the nearest perimeter assembly point.
      *
-     * @param array<string, list<array{to: string, distance_meters: int, is_blocked: bool}>> $adjacencyGraph
-     * @param list<string> $assemblyPoints
-     * @param list<string> $lockedDownZones
+     * @param  array<string, list<array{to: string, distance_meters: int, is_blocked: bool}>>  $adjacencyGraph
+     * @param  list<string>  $assemblyPoints
+     * @param  list<string>  $lockedDownZones
      * @return array{
      *     start_zone: string,
      *     destination_assembly_point: ?string,
@@ -32,7 +31,7 @@ final class ZonalEvacuationPathfinder
     ): array {
         $distances = [];
         $previous = [];
-        $queue = new SplPriorityQueue();
+        $queue = new SplPriorityQueue;
 
         foreach (array_keys($adjacencyGraph) as $node) {
             $distances[$node] = PHP_INT_MAX;
@@ -44,7 +43,7 @@ final class ZonalEvacuationPathfinder
 
         $lockedSet = array_flip($lockedDownZones);
 
-        while (!$queue->isEmpty()) {
+        while (! $queue->isEmpty()) {
             /** @var string $current */
             $current = $queue->extract();
 

@@ -18,7 +18,7 @@ final class AdjustZoneCapacityForWeatherAction
         int $windSpeedKnots,
         string $managerNotes = ''
     ): array {
-        return DB::transaction(function () use ($zone, $rainProbabilityBps, $windSpeedKnots, $managerNotes) {
+        return DB::transaction(function () use ($zone, $rainProbabilityBps, $windSpeedKnots) {
             $locked = EntertainmentZone::lockForUpdate()->findOrFail($zone->id);
 
             // Jika hujan lebat >= 8.000 bps atau angin >= 35 knot dan zona outdoor
@@ -50,4 +50,3 @@ final class AdjustZoneCapacityForWeatherAction
         });
     }
 }
-

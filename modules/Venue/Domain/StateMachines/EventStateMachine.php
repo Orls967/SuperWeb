@@ -83,4 +83,3 @@ final class EventStateMachine
         $event->save();
     }
 }
-

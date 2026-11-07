@@ -83,7 +83,7 @@ class VenueTableController extends Controller
         );
 
         return redirect()->route('venue.tables.index')
-            ->with('success', 'Penyelesaian tagihan meja selesai. Settlement: Rp ' . number_format($result['settlement']['total_bill_idr'], 0, ',', '.'));
+            ->with('success', 'Penyelesaian tagihan meja selesai. Settlement: Rp '.number_format($result['settlement']['total_bill_idr'], 0, ',', '.'));
     }
 
     public function forfeit(
@@ -97,6 +97,6 @@ class VenueTableController extends Controller
         );
 
         return redirect()->route('venue.tables.index')
-            ->with('success', 'Deposit no-show meja hangus 50% (Rp ' . number_format($result['forfeited_revenue_idr'], 0, ',', '.') . ') dan 50% dikembalikan.');
+            ->with('success', 'Deposit no-show meja hangus 50% (Rp '.number_format($result['forfeited_revenue_idr'], 0, ',', '.').') dan 50% dikembalikan.');
     }
 }

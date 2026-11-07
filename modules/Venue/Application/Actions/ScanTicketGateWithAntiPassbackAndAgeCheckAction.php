@@ -139,7 +139,7 @@ final class ScanTicketGateWithAntiPassbackAndAgeCheckAction
             if ($lockedTicket->last_direction === 'OUT' && (! empty($history) && end($history)['direction'] === 'IN')) {
                 $history[] = [
                     'direction' => 'OUT',
-                    'nonce' => 'checkout-direct-' . $lockedTicket->id,
+                    'nonce' => 'checkout-direct-'.$lockedTicket->id,
                     'timestamp' => now()->toIso8601String(),
                     'hash' => hash('sha256', "SCAN:MANUAL_OUT:{$lockedTicket->id}"),
                 ];

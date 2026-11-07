@@ -11,7 +11,9 @@ use Modules\Venue\Domain\Models\VenueNoiseCurfewReading;
 final class NoiseCurfewComplianceService
 {
     public const DAYTIME_LIMIT_DBA = 85;
+
     public const NIGHT_CURFEW_LIMIT_DBA = 70;
+
     public const POST_MIDNIGHT_LIMIT_DBA = 60;
 
     /**

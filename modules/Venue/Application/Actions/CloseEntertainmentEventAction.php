@@ -13,7 +13,6 @@ use Modules\Venue\Domain\Enums\TicketStatus;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\StateMachines\EventStateMachine;
-use Modules\Venue\Domain\StateMachines\TicketStateMachine;
 use Modules\Venue\Ledger\VenueTransactionTypes;
 
 class CloseEntertainmentEventAction
@@ -39,24 +38,17 @@ class CloseEntertainmentEventAction
                 ->get();
 
             $totalUnearned = (int) $tickets->sum('price_paid_idr');
-            $platformFee = intdiv($totalUnearned * 500, 10000);
-            $organizerNetShare = $totalUnearned - $platformFee;
 
             if ($totalUnearned > 0) {
                 $ledger = $this->ledgerService ?? app(Ledger::class);
-                $lines = Posting::lines()->debit('ven:ticket_unearned:IDR', $totalUnearned);
-                if ($organizerNetShare > 0) {
-                    $lines->credit('ven:ticket_revenue:IDR', $organizerNetShare);
-                }
-                if ($platformFee > 0) {
-                    $lines->credit('ven:platform_fee_revenue:IDR', $platformFee);
-                }
-
                 $ledger->post(new PostingDTO(
                     type: VenueTransactionTypes::VENUE_EVENT_CLOSING->value,
                     description: "Pengakuan pendapatan unearned event {$lockedEvent->event_code}",
                     idempotencyKey: $key,
-                    entries: $lines->toEntries('IDR'),
+                    entries: Posting::lines()
+                        ->debit('ven:ticket_unearned:IDR', $totalUnearned)
+                        ->credit('ven:ticket_revenue:IDR', $totalUnearned)
+                        ->toEntries('IDR'),
                     referenceType: 'VENUE_EVENT',
                     referenceId: (string) $lockedEvent->id
                 ));
@@ -84,25 +76,56 @@ class CloseEntertainmentEventAction
         int $platformFeeBps = 500,
         string $idempotencyKey = ''
     ): array {
-        $event = EntertainmentEvent::findOrFail($eventId);
-        $key = trim($idempotencyKey) !== '' ? $idempotencyKey : "ven:event_close:{$event->event_code}";
-        $closed = $this->execute($event, $key);
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi (U-4)');
+        }
 
-        // Backward compatibility for legacy tests expecting uppercase CLOSED
-        $closed->status = 'CLOSED';
-        $closed->save();
+        return DB::transaction(function () use ($eventId, $platformFeeBps, $idempotencyKey) {
+            $event = EntertainmentEvent::lockForUpdate()->findOrFail($eventId);
 
-        $totalUnearned = (int) EntertainmentTicket::where('event_id', $eventId)
-            ->whereNotIn('status', ['REFUNDED', 'refunded', 'void', 'VOID'])
-            ->sum('price_paid_idr');
-        $platformFee = intdiv($totalUnearned * $platformFeeBps, 10000);
+            $tickets = EntertainmentTicket::where('event_id', $eventId)
+                ->whereNotIn('status', ['REFUNDED', 'refunded', 'void', 'VOID'])
+                ->get();
 
-        return [
-            'success' => true,
-            'event' => $closed,
-            'total_unearned_recognized_idr' => $totalUnearned,
-            'platform_fee_idr' => $platformFee,
-            'organizer_net_share_idr' => $totalUnearned - $platformFee,
-        ];
+            $totalUnearned = (int) $tickets->sum('price_paid_idr');
+            $platformFee = intdiv($totalUnearned * $platformFeeBps, 10000);
+            $organizerNetShare = $totalUnearned - $platformFee;
+
+            if ($event->status === 'CLOSED') {
+                return [
+                    'success' => true,
+                    'event' => $event,
+                    'total_unearned_recognized_idr' => $totalUnearned,
+                    'platform_fee_idr' => $platformFee,
+                    'organizer_net_share_idr' => $organizerNetShare,
+                ];
+            }
+
+            if ($totalUnearned > 0) {
+                $ledger = $this->ledgerService ?? app(Ledger::class);
+                $ledger->post(new PostingDTO(
+                    type: 'VENUE_EVENT_CLOSING',
+                    description: "Event revenue recognition closing for {$event->event_code}",
+                    idempotencyKey: $idempotencyKey,
+                    entries: Posting::lines()
+                        ->debit('ven:ticket_unearned:IDR', $totalUnearned)
+                        ->credit('ven:ticket_revenue:IDR', $organizerNetShare)
+                        ->credit('ven:platform_fee_revenue:IDR', $platformFee)
+                        ->toEntries('IDR'),
+                    referenceType: 'EVENT_CLOSING',
+                    referenceId: (string) $event->id,
+                ));
+            }
+
+            $event->update(['status' => 'CLOSED']);
+
+            return [
+                'success' => true,
+                'event' => $event,
+                'total_unearned_recognized_idr' => $totalUnearned,
+                'platform_fee_idr' => $platformFee,
+                'organizer_net_share_idr' => $organizerNetShare,
+            ];
+        });
     }
 }

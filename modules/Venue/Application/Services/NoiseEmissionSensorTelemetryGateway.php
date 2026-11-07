@@ -48,7 +48,7 @@ final class NoiseEmissionSensorTelemetryGateway
      *
      * Leq = 10 * log10 ( (1/N) * SUM( 10^(L_i / 10) ) )
      *
-     * @param list<float> $readingsDba
+     * @param  list<float>  $readingsDba
      */
     public function calculateLogarithmicLeq(array $readingsDba): float
     {

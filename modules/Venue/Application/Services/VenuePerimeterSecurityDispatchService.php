@@ -25,7 +25,7 @@ final class VenuePerimeterSecurityDispatchService
         string $alarmType,
         string $severity = 'HIGH'
     ): array {
-        $dispatchId = 'DISP-' . strtoupper(bin2hex(random_bytes(4)));
+        $dispatchId = 'DISP-'.strtoupper(bin2hex(random_bytes(4)));
 
         $unit = match ($sectorCode) {
             'SECTOR_NORTH_VIP' => 'ALPHA-PATROL-1',

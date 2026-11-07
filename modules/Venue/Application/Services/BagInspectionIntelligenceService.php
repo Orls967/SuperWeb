@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Application\Services;
 
-use Carbon\CarbonImmutable;
 use Modules\Venue\Domain\Models\VenueBagInspection;
 
 final class BagInspectionIntelligenceService
@@ -17,6 +16,7 @@ final class BagInspectionIntelligenceService
     public function shouldInspectRandomly(int $inspectionRatioBps = self::DEFAULT_INSPECTION_RATIO_BPS): bool
     {
         $roll = random_int(1, 10000);
+
         return $roll <= $inspectionRatioBps;
     }
 

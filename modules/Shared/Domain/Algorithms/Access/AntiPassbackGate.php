@@ -16,7 +16,7 @@ use RuntimeException;
 final class AntiPassbackGate
 {
     /**
-     * @param list<array{direction: string, nonce: string, timestamp: string, hash: string}> $history
+     * @param  list<array{direction: string, nonce: string, timestamp: string, hash: string}>  $history
      * @return array{
      *     allowed: bool,
      *     reason: ?string,
@@ -150,7 +150,7 @@ final class AntiPassbackGate
     }
 
     /**
-     * @param list<array{direction: string, nonce: string, timestamp: string, hash: string}> $history
+     * @param  list<array{direction: string, nonce: string, timestamp: string, hash: string}>  $history
      */
     public static function countReentries(array $history): int
     {
@@ -165,7 +165,7 @@ final class AntiPassbackGate
     }
 
     /**
-     * @param list<array{direction: string, nonce: string, timestamp: string, hash: string}> $history
+     * @param  list<array{direction: string, nonce: string, timestamp: string, hash: string}>  $history
      */
     public static function calculateNet(array $history): int
     {
@@ -182,4 +182,3 @@ final class AntiPassbackGate
         return $in - $out;
     }
 }
-

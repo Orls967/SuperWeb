@@ -8,8 +8,13 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Support\Posting;
+use Modules\Venue\Domain\Enums\EventStatus;
 use Modules\Venue\Domain\Enums\TicketStatus;
+use Modules\Venue\Domain\Events\VenueTicketRefunded;
+use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
+use Modules\Venue\Domain\Models\InventoryCounter;
+use Modules\Venue\Domain\Models\SeatClaim;
 use Modules\Venue\Domain\StateMachines\TicketStateMachine;
 use Modules\Venue\Ledger\VenueTransactionTypes;
 
@@ -41,8 +46,8 @@ final class RefundVenueTicketAction
             ];
         }
 
-        $event = \Modules\Venue\Domain\Models\EntertainmentEvent::findOrFail($ticket->event_id);
-        if ($event->status === 'CLOSED' || $event->status === \Modules\Venue\Domain\Enums\EventStatus::CLOSED->value) {
+        $event = EntertainmentEvent::findOrFail($ticket->event_id);
+        if ($event->status === 'CLOSED' || $event->status === EventStatus::CLOSED->value) {
             throw new \RuntimeException('Tiket tidak dapat direfund karena event telah ditutup');
         }
 
@@ -84,7 +89,7 @@ final class RefundVenueTicketAction
             }
 
             if ($locked->seat_claim_id !== null) {
-                $seat = \Modules\Venue\Domain\Models\SeatClaim::find($locked->seat_claim_id);
+                $seat = SeatClaim::find($locked->seat_claim_id);
                 if ($seat) {
                     $seat->update([
                         'status' => 'AVAILABLE',
@@ -97,7 +102,7 @@ final class RefundVenueTicketAction
             }
 
             if ($locked->tier_id !== null) {
-                $counter = \Modules\Venue\Domain\Models\InventoryCounter::where('event_id', $locked->event_id)
+                $counter = InventoryCounter::where('event_id', $locked->event_id)
                     ->where('tier_id', $locked->tier_id)
                     ->lockForUpdate()
                     ->first();
@@ -110,7 +115,7 @@ final class RefundVenueTicketAction
 
             TicketStateMachine::transition($locked, TicketStatus::REFUNDED, $reason);
 
-            event(new \Modules\Venue\Domain\Events\VenueTicketRefunded($locked));
+            event(new VenueTicketRefunded($locked));
 
             return $locked;
         });

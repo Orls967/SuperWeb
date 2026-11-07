@@ -13,7 +13,6 @@ use Modules\Venue\Application\Services\VenuePaymentGateway;
 use Modules\Venue\Domain\Enums\TableBookingStatus;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
-use Modules\Venue\Domain\StateMachines\TableBookingStateMachine;
 use Modules\Venue\Ledger\VenueTransactionTypes;
 
 class ReserveTableWithMinimumSpendDepositAction extends BaseAction

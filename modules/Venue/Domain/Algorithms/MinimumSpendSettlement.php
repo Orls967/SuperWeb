@@ -94,4 +94,3 @@ final class MinimumSpendSettlement
         return $cert;
     }
 }
-

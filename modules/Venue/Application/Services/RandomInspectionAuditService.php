@@ -23,7 +23,7 @@ class RandomInspectionAuditService
         bool $policeReferred = false
     ): VenueBagInspection {
         $hasContraband = $contrabandFound !== null && trim($contrabandFound) !== '';
-        $inspectionCode = 'INSP-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
+        $inspectionCode = 'INSP-'.strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
 
         $status = match (true) {
             $policeReferred => InspectionStateMachine::STATUS_POLICE_REFERRED,

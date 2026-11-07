@@ -84,4 +84,3 @@ final class AntiPassbackGateTest extends TestCase
         AntiPassbackCertificateVerifier::verify($cert);
     }
 }
-

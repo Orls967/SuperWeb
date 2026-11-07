@@ -33,4 +33,3 @@ class VenuePermit extends Model
         return $this->belongsTo(EntertainmentEvent::class, 'event_id');
     }
 }
-

@@ -11,7 +11,7 @@ final class AntiPassbackCertificateVerifier
     private const SECRET = 'venue-anti-passback-secret-v1';
 
     /**
-     * @param list<array{direction: string, nonce: string, timestamp: string, hash: string}> $history
+     * @param  list<array{direction: string, nonce: string, timestamp: string, hash: string}>  $history
      */
     public static function sign(string $ticketId, int $maxReentry, int $reentryCount, string $direction, int $net, array $history): string
     {
@@ -46,4 +46,3 @@ final class AntiPassbackCertificateVerifier
         return true;
     }
 }
-

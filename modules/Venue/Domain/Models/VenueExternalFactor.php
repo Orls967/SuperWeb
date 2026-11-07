@@ -28,4 +28,3 @@ class VenueExternalFactor extends Model
         'metadata_json' => 'array',
     ];
 }
-

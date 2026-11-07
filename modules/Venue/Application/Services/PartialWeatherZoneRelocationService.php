@@ -62,7 +62,7 @@ class PartialWeatherZoneRelocationService
                     $lockedTargetZone->current_occupancy += 1;
 
                     ZoneRelocationLog::create([
-                        'relocation_code' => 'RELOC-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 8)),
+                        'relocation_code' => 'RELOC-'.strtoupper(substr(bin2hex(random_bytes(4)), 0, 8)),
                         'event_id' => $event->id,
                         'from_zone_id' => $lockedClosedZone->id,
                         'to_zone_id' => $lockedTargetZone->id,

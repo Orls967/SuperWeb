@@ -97,7 +97,7 @@ final class GateIngressRateMonitorService
             }
         }
 
-        if (!empty($overloaded) && !empty($underutilized)) {
+        if (! empty($overloaded) && ! empty($underutilized)) {
             foreach ($overloaded as $idx => $busyLane) {
                 $freeLane = $underutilized[$idx % count($underutilized)];
                 $redirects[$busyLane] = "Arahkan sebagian tamu dari lajur {$busyLane} ke lajur bebas {$freeLane}";

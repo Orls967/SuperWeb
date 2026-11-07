@@ -11,7 +11,7 @@ final class DynamicGateLoadBalancerService
     /**
      * Determine optimal turnstile lane for arriving guest based on load and reader health.
      *
-     * @param list<array{lane_code: string, is_online: bool, queue_length: int, error_streak: int}> $lanes
+     * @param  list<array{lane_code: string, is_online: bool, queue_length: int, error_streak: int}>  $lanes
      * @return array{
      *     recommended_lane: string,
      *     estimated_wait_seconds: int,
@@ -54,6 +54,7 @@ final class DynamicGateLoadBalancerService
     public function evaluateScannerHealth(int $consecutiveErrors): array
     {
         $shouldLockout = $consecutiveErrors >= self::MAX_CONSECUTIVE_SCAN_ERRORS;
+
         return [
             'consecutive_errors' => $consecutiveErrors,
             'should_lockout' => $shouldLockout,

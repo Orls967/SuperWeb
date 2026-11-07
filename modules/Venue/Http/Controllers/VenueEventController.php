@@ -13,8 +13,6 @@ use Modules\Venue\Domain\Algorithms\TierCountdownPricer;
 use Modules\Venue\Domain\Enums\EventStatus;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
-use Modules\Venue\Domain\Models\TicketTier;
-use Modules\Venue\Domain\StateMachines\EventStateMachine;
 
 class VenueEventController extends Controller
 {
@@ -104,4 +102,3 @@ class VenueEventController extends Controller
         ]);
     }
 }
-

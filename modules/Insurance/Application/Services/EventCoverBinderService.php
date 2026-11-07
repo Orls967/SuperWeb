@@ -83,4 +83,3 @@ final class EventCoverBinderService implements EventCoverBinder
         return $claim->id;
     }
 }
-

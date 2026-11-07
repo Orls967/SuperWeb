@@ -20,4 +20,3 @@ final readonly class TierCountdownPriceCertificate
         public string $hmacSignature,
     ) {}
 }
-

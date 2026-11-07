@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Modules\Shared\Application\BaseAction;
-use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\GateScanLog;
 use Modules\Venue\Domain\Models\TurnstileDevice;
 

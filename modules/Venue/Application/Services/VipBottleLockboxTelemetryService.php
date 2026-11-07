@@ -27,7 +27,7 @@ final class VipBottleLockboxTelemetryService
         string $bartenderUid,
         string $orderReceiptCode
     ): array {
-        if (!str_starts_with($bartenderUid, 'BARTENDER-')) {
+        if (! str_starts_with($bartenderUid, 'BARTENDER-')) {
             throw new RuntimeException("Kredensial staf bar tidak sah: '{$bartenderUid}'. Akses brankas ditolak.");
         }
 
@@ -53,11 +53,11 @@ final class VipBottleLockboxTelemetryService
      */
     public function monitorLockboxSensors(string $lockboxCode, bool $doorOpen, bool $isAuthorized): array
     {
-        $tamper = $doorOpen && !$isAuthorized;
+        $tamper = $doorOpen && ! $isAuthorized;
         $alertCode = null;
 
         if ($tamper) {
-            $alertCode = 'ALARM-CAGE-FORCED-' . strtoupper(bin2hex(random_bytes(3)));
+            $alertCode = 'ALARM-CAGE-FORCED-'.strtoupper(bin2hex(random_bytes(3)));
         }
 
         return [

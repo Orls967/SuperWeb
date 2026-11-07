@@ -34,4 +34,3 @@ class ReleaseExpiredHoldsCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -9,6 +9,7 @@ use Carbon\CarbonImmutable;
 final class LivePerformanceCurfewGovernorService
 {
     public const MUNICIPAL_CURFEW_HOUR = 24; // 00:00 midnight
+
     public const OVERRUN_PENALTY_PER_15MIN_IDR = 25000000; // Rp 25.000.000 per 15 menit
 
     /**

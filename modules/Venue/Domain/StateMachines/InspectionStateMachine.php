@@ -10,9 +10,13 @@ use Modules\Venue\Domain\Models\VenueBagInspection;
 final class InspectionStateMachine
 {
     public const STATUS_QUEUED = 'queued';
+
     public const STATUS_INSPECTING = 'inspecting';
+
     public const STATUS_CLEARED = 'cleared';
+
     public const STATUS_CONFISCATED = 'confiscated';
+
     public const STATUS_POLICE_REFERRED = 'police_referred';
 
     /**

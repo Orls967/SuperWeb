@@ -105,4 +105,3 @@ return new class extends Migration
         Schema::dropIfExists('ven_permits');
     }
 };
-

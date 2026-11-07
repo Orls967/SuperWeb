@@ -10,11 +10,17 @@ use Modules\Venue\Domain\Models\CrowdCrushIncident;
 final class IncidentStateMachine
 {
     public const STATUS_REPORTED = 'reported';
+
     public const STATUS_ASSESSING = 'assessing';
+
     public const STATUS_ACTION_PENDING = 'action_pending';
+
     public const STATUS_LOCKDOWN_ACTIVE = 'lockdown_active';
+
     public const STATUS_EVACUATING = 'evacuating';
+
     public const STATUS_RESOLVED = 'resolved';
+
     public const STATUS_CLOSED = 'closed';
 
     /**

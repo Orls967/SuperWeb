@@ -61,4 +61,3 @@ class VenuePermitController extends Controller
             ->with('success', "Izin keramaian {$permit->permit_number} berhasil diterbitkan dengan gapless hash-chain.");
     }
 }
-

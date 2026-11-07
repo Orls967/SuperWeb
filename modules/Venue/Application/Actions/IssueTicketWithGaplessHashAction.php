@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Venue\Domain\Algorithms\TierCountdownPricer;
+use Modules\Venue\Domain\Enums\TicketStatus;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\TicketTier;
-use Modules\Venue\Domain\StateMachines\TicketStateMachine;
-use Modules\Venue\Domain\Enums\TicketStatus;
 use Modules\Venue\Ledger\VenueTransactionTypes;
 
 final class IssueTicketWithGaplessHashAction
@@ -59,7 +59,7 @@ final class IssueTicketWithGaplessHashAction
             $prevHash = $lastTicket ? $lastTicket->ticket_hash : hash('sha256', "EVENT_ROOT:{$event->event_code}");
 
             // Canonical hash
-            $ticketUuid = (string) \Illuminate\Support\Str::uuid();
+            $ticketUuid = (string) Str::uuid();
             $ticketHash = hash('sha256', "{$ticketNumber}:{$event->id}:{$buyerUserId}:{$finalPriceIdr}:{$prevHash}");
 
             $ticket = EntertainmentTicket::create([
@@ -96,4 +96,3 @@ final class IssueTicketWithGaplessHashAction
         });
     }
 }
-

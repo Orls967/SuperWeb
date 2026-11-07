@@ -9,7 +9,9 @@ use Modules\Venue\Domain\Models\EntertainmentEvent;
 final class VipBottleSurgePricingService
 {
     public const BASE_MINIMUM_SPEND_IDR = 5000000; // Rp 5.000.000
+
     public const PEAK_HOUR_MULTIPLIER_BPS = 12500;  // 125% (1.25x)
+
     public const SOLD_OUT_SURGE_BPS = 15000;        // 150% (1.50x)
 
     /**

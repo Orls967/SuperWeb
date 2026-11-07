@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Services;
 
 use Carbon\CarbonImmutable;
-use RuntimeException;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\VenueWristband;
+use RuntimeException;
 
 final class PhysicalWristbandFulfillmentService
 {

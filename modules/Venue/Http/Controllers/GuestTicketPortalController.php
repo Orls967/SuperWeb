@@ -53,4 +53,3 @@ class GuestTicketPortalController extends Controller
         ]);
     }
 }
-

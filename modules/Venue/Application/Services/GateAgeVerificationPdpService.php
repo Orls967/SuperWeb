@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Venue\Application\Services;
 
 use Carbon\CarbonImmutable;
-use RuntimeException;
 
 final class GateAgeVerificationPdpService
 {
@@ -38,7 +37,7 @@ final class GateAgeVerificationPdpService
         $token = hash_hmac('sha256', (string) $payload, $this->hmacSecret);
 
         $rejectionReason = null;
-        if (!$isEligible) {
+        if (! $isEligible) {
             $rejectionReason = "Usia tidak mencukupi batas legal venue (Minimal {$minimumAgeRequirement} tahun). Akses ditolak.";
         }
 

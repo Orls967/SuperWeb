@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Resto\Application\Services;
 
+use Illuminate\Support\Str;
 use Modules\Resto\Application\Actions\AddOrderItemAction;
 use Modules\Resto\Application\Actions\PayOrderAction;
 use Modules\Resto\Contracts\OutletSaleRecorder;
@@ -20,7 +21,7 @@ final class OutletSaleRecorderService implements OutletSaleRecorder
     ) {}
 
     /**
-     * @param list<array{sku: string, qty: int}> $lines
+     * @param  list<array{sku: string, qty: int}>  $lines
      * @return array{order_id: int, total_minor: int, cogs_minor: int}
      */
     public function record(int $outletId, array $lines, int $tabRef, string $idempotencyKey): array
@@ -36,7 +37,7 @@ final class OutletSaleRecorderService implements OutletSaleRecorder
 
         $orderNumber = 'ORD-BAR-'.$tabRef.'-'.substr(hash('sha256', $idempotencyKey), 0, 8);
         $order = Order::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'outlet_id' => $outletId,
             'number' => $orderNumber,
             'channel' => OrderChannel::DINE_IN,
@@ -90,4 +91,3 @@ final class OutletSaleRecorderService implements OutletSaleRecorder
         ];
     }
 }
-

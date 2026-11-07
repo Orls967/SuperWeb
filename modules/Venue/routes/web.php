@@ -28,7 +28,6 @@ Route::middleware(['web', 'auth', 'role:admin,customer'])->prefix('guest/tickets
 // Crowd Safety Zones
 Route::middleware(['web', 'auth', 'role:admin,crowd_safety'])->prefix('venue/zones')->name('venue.zones.')->group(function () {
     Route::get('/', [VenueZoneController::class, 'index'])->name('index');
-    Route::get('/crowd-safety', [VenueZoneController::class, 'crowdSafety'])->name('crowd-safety');
     Route::post('/{zone}/lockdown', [VenueZoneController::class, 'toggleLockdown'])->name('lockdown');
     Route::post('/{zone}/weather-adjust', [VenueZoneController::class, 'adjustForWeather'])->name('weather-adjust');
 });
@@ -42,7 +41,6 @@ Route::middleware(['web', 'auth', 'role:admin,compliance_officer,venue_manager']
 // Reports & Financial Analytics
 Route::middleware(['web', 'auth', 'role:admin,venue_manager'])->prefix('venue/reports')->name('venue.reports.')->group(function () {
     Route::get('/', [VenueReportController::class, 'index'])->name('index');
-    Route::get('/pnl', [VenueReportController::class, 'pnl'])->name('pnl');
     Route::get('/export', [VenueReportController::class, 'exportCsv'])->name('export');
 });
 
@@ -59,8 +57,6 @@ Route::middleware(['web', 'auth', 'role:admin,venue_manager'])->prefix('venue/ev
 // Operational Venue Group (Existing compatibility & VIP Tables)
 Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->prefix('venue')->group(function () {
     Route::get('/', [VenueController::class, 'index'])->name('venue.index');
-    Route::get('/inspections', [VenueController::class, 'inspections'])->name('venue.inspections.index');
-    Route::get('/relocations', [VenueController::class, 'relocations'])->name('venue.relocations.index');
     Route::post('/tickets/{ticket}/scan', [VenueController::class, 'scanGate'])->name('venue.gate.scan');
 
     // Ticketing & Gate Access Routes

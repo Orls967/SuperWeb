@@ -7,7 +7,6 @@ namespace Modules\Venue\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\GateScanLog;
 use Modules\Venue\Domain\Models\TicketTier;
@@ -56,7 +55,7 @@ class VenueReportController extends Controller
     {
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="venue_ticket_sales_report_' . date('Y-m-d_His') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="venue_ticket_sales_report_'.date('Y-m-d_His').'.csv"',
             'Pragma' => 'no-cache',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
             'Expires' => '0',
@@ -103,4 +102,3 @@ class VenueReportController extends Controller
         }, 200, $headers);
     }
 }
-

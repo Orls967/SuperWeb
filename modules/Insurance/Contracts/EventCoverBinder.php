@@ -30,4 +30,3 @@ interface EventCoverBinder
         string $idempotencyKey
     ): int;
 }
-

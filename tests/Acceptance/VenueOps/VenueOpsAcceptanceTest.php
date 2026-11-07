@@ -14,19 +14,12 @@ use Modules\Core\Application\Services\RbacService;
 use Modules\Venue\Application\Actions\CloseEntertainmentEventAction;
 use Modules\Venue\Application\Actions\IssueTicketWithGaplessHashAction;
 use Modules\Venue\Application\Actions\ScanTicketGateWithAntiPassbackAndAgeCheckAction;
-use Modules\Venue\Application\Services\VenueOperationsService;
 use Modules\Venue\database\seeders\VenueRbacSeeder;
 use Modules\Venue\Domain\Algorithms\MinimumSpendSettlement;
-use Modules\Venue\Domain\Algorithms\TierCountdownPricer;
-use Modules\Venue\Domain\Algorithms\ZoneCapacityGovernor;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
-use Modules\Venue\Domain\Models\EntertainmentTableBooking;
-use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
 use Modules\Venue\Domain\Models\EntertainmentZone;
 use Modules\Venue\Domain\Models\TicketTier;
-use Modules\Venue\Domain\Models\VenuePermit;
-use Modules\Venue\Ledger\VenueAccounts;
 use Tests\TestCase;
 
 final class VenueOpsAcceptanceTest extends TestCase
@@ -34,16 +27,25 @@ final class VenueOpsAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     private User $venueManager;
+
     private User $venueStaff;
+
     private User $crowdSafety;
+
     private User $complianceOfficer;
+
     private User $customerA;
+
     private User $customerB;
+
     private User $unauthorizedUser;
 
     private EntertainmentVenue $venue;
+
     private EntertainmentZone $zone;
+
     private EntertainmentEvent $event;
+
     private TicketTier $tierGA;
 
     protected function setUp(): void
@@ -339,7 +341,7 @@ final class VenueOpsAcceptanceTest extends TestCase
         $this->assertEquals(0, $cleanExit, 'Audit data bersih harus mengembalikan exit code 0');
 
         // 2. Terapkan fixture anomali korupsi
-        $fixture = new VenAuditCorruptionFixture();
+        $fixture = new VenAuditCorruptionFixture;
         $fixture->corrupt();
 
         // 3. ven:audit wajib mendeteksi diskrepansi dan keluar dengan exit code != 0
@@ -350,4 +352,3 @@ final class VenueOpsAcceptanceTest extends TestCase
         $this->assertStringContainsString('discrepancies detected', $output);
     }
 }
-

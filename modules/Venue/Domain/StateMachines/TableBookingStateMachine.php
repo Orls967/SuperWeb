@@ -64,4 +64,3 @@ final class TableBookingStateMachine
         $booking->save();
     }
 }
-

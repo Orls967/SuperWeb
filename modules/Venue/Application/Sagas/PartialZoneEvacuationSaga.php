@@ -31,7 +31,7 @@ class PartialZoneEvacuationSaga
         EntertainmentZone $safeTargetZone,
         string $reason
     ): array {
-        $sagaId = 'SAGA-EVAC-' . strtoupper(substr(bin2hex(random_bytes(6)), 0, 10));
+        $sagaId = 'SAGA-EVAC-'.strtoupper(substr(bin2hex(random_bytes(6)), 0, 10));
 
         return DB::transaction(function () use ($event, $evacuatedZone, $safeTargetZone, $reason, $sagaId) {
             $saga = VenueSaga::create([

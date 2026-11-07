@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ven_entertainment_zones', function (Blueprint $table) {
-            if (!Schema::hasColumn('ven_entertainment_zones', 'zone_type')) {
+            if (! Schema::hasColumn('ven_entertainment_zones', 'zone_type')) {
                 $table->string('zone_type', 32)->default('INDOOR');
             }
         });

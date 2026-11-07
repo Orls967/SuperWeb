@@ -10,7 +10,9 @@ use Modules\Venue\Domain\Models\EntertainmentTicket;
 final class EventGateRevenueSettlementService
 {
     public const PBJT_TAX_BPS = 1000;         // 10% Pajak Hiburan
+
     public const PLATFORM_TICKETING_FEE_BPS = 500; // 5% Biaya Platform
+
     public const INSURANCE_PREMIUM_BPS = 200;      // 2% Asuransi Event
 
     /**

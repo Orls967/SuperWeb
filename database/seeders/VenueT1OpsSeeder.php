@@ -7,17 +7,15 @@ namespace Database\Seeders;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Support\Posting;
-use Modules\Venue\Domain\Models\CrowdCrushIncident;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
 use Modules\Venue\Domain\Models\EntertainmentZone;
-use Modules\Venue\Domain\Models\GateScanLog;
 use Modules\Venue\Domain\Models\TableBottleOrder;
 use Modules\Venue\Domain\Models\TurnstileDevice;
 use Modules\Venue\Domain\Models\VenueBagInspection;
@@ -72,7 +70,7 @@ final class VenueT1OpsSeeder extends Seeder
         $zoneModels = [];
         foreach ($venueModels as $vCode => $vModel) {
             foreach ($zoneTypes as $idx => $zType) {
-                $zCode = "ZN-{$vCode}-" . str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT);
+                $zCode = "ZN-{$vCode}-".str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT);
                 $zoneModels[$zCode] = EntertainmentZone::firstOrCreate(
                     ['zone_code' => $zCode],
                     [
@@ -88,14 +86,14 @@ final class VenueT1OpsSeeder extends Seeder
 
         // 3. Tiga Belas (13) Turnstile IoT Devices
         for ($t = 1; $t <= 8; $t++) {
-            $tCode = 'TRN-LANE-' . str_pad((string) $t, 2, '0', STR_PAD_LEFT);
+            $tCode = 'TRN-LANE-'.str_pad((string) $t, 2, '0', STR_PAD_LEFT);
             TurnstileDevice::firstOrCreate(
                 ['device_code' => $tCode],
                 [
                     'zone_id' => $zoneModels['ZN-VEN-ATLAS-01-01']->id,
                     'hardware_serial' => "HW-SN-{$tCode}-2026",
                     'firmware_version' => 'v2.4.1',
-                    'ip_address' => "192.168.10." . (100 + $t),
+                    'ip_address' => '192.168.10.'.(100 + $t),
                     'turnstile_status' => 'ONLINE',
                     'optical_beam_trips' => 0,
                     'last_heartbeat_at' => $now,
@@ -142,7 +140,7 @@ final class VenueT1OpsSeeder extends Seeder
 
         $prevHash = null;
         foreach ($ticketCases as $idx => $tc) {
-            $uuid = '00000089-0000-0000-0000-' . str_pad((string) ($idx + 1), 12, '0', STR_PAD_LEFT);
+            $uuid = '00000089-0000-0000-0000-'.str_pad((string) ($idx + 1), 12, '0', STR_PAD_LEFT);
             $hashData = $chainService->computeTicketHash(
                 eventId: (int) $eventSunset->id,
                 ticketNumber: $tc['num'],
@@ -168,7 +166,7 @@ final class VenueT1OpsSeeder extends Seeder
                     'last_direction' => $tc['status'] === 'scanned_in' ? 'IN' : null,
                 ]);
             } else {
-                \Illuminate\Support\Facades\DB::table('ven_entertainment_tickets')
+                DB::table('ven_entertainment_tickets')
                     ->where('id', $ticket->id)
                     ->update([
                         'ticket_hash' => $hashData['ticket_hash'],

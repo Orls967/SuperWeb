@@ -75,4 +75,3 @@ final class TicketStateMachine
         $ticket->save();
     }
 }
-

@@ -62,7 +62,7 @@ class CrowdCrushProtocolService
                     $lockedZone->save();
                 }
 
-                $incidentCode = 'INC-' . strtoupper($lockedZone->zone_code) . '-' . time();
+                $incidentCode = 'INC-'.strtoupper($lockedZone->zone_code).'-'.time();
                 $incident = CrowdCrushIncident::create([
                     'incident_code' => $incidentCode,
                     'zone_id' => $lockedZone->id,

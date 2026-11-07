@@ -9,7 +9,9 @@ use Modules\Venue\Domain\Models\EntertainmentZone;
 final class CrowdSurgePredictiveModel
 {
     public const SAFETY_THRESHOLD_DENSITY_SQM = 4.0; // orang per m2
+
     public const CRUSH_ALARM_DENSITY_SQM = 5.5;      // batas fatal pergerakan kerumunan
+
     public const PANIC_COMPRESSION_RATIO = 0.85;
 
     /**
@@ -71,9 +73,6 @@ final class CrowdSurgePredictiveModel
     /**
      * Calculate shockwave compression along narrow corridors or egress bottleneck chokepoints.
      *
-     * @param float $corridorWidthMeters
-     * @param int $ingressRatePerMin
-     * @param int $egressRatePerMin
      * @return array{compression_ratio: float, bottleneck_delay_seconds: int, is_choked: bool}
      */
     public function calculateCorridorChokePoint(

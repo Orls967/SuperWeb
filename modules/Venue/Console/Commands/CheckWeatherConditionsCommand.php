@@ -46,4 +46,3 @@ class CheckWeatherConditionsCommand extends Command
         return self::SUCCESS;
     }
 }
-

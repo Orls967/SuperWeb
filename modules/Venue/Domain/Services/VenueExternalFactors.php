@@ -37,4 +37,3 @@ final class VenueExternalFactors
         return self::getFactor('safety.zone_margin_bps', $default);
     }
 }
-

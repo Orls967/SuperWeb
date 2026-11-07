@@ -10,14 +10,21 @@ use RuntimeException;
 final class TurnstileIoTProtocolAdapter
 {
     public const STX = "\x02";
+
     public const ETX = "\x03";
+
     public const ACK = "\x06";
+
     public const NAK = "\x15";
 
     public const CMD_POLL = 'POLL';
+
     public const CMD_UNLOCK = 'UNLOCK';
+
     public const CMD_LOCKDOWN = 'LOCK';
+
     public const CMD_STATUS = 'STAT';
+
     public const CMD_HEARTBEAT = 'PING';
 
     public function __construct(
@@ -27,7 +34,7 @@ final class TurnstileIoTProtocolAdapter
     /**
      * Encode binary command packet for physical turnstile hardware controller.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function encodePacket(string $turnstileCode, string $command, array $payload = []): string
     {
@@ -44,7 +51,7 @@ final class TurnstileIoTProtocolAdapter
 
         $signature = hash_hmac('sha256', $body, $this->sharedSecret);
 
-        return self::STX . $body . '|' . $signature . self::ETX;
+        return self::STX.$body.'|'.$signature.self::ETX;
     }
 
     /**
@@ -54,7 +61,7 @@ final class TurnstileIoTProtocolAdapter
      */
     public function decodePacket(string $rawPacket): array
     {
-        if (!str_starts_with($rawPacket, self::STX) || !str_ends_with($rawPacket, self::ETX)) {
+        if (! str_starts_with($rawPacket, self::STX) || ! str_ends_with($rawPacket, self::ETX)) {
             throw new RuntimeException('Malformed packet frame: missing STX/ETX delimiters.');
         }
 
@@ -69,7 +76,7 @@ final class TurnstileIoTProtocolAdapter
         $providedSig = substr($content, $pipePos + 1);
 
         $expectedSig = hash_hmac('sha256', $body, $this->sharedSecret);
-        if (!hash_equals($expectedSig, $providedSig)) {
+        if (! hash_equals($expectedSig, $providedSig)) {
             throw new RuntimeException('Cryptographic integrity failure: invalid turnstile packet signature.');
         }
 
@@ -111,6 +118,6 @@ final class TurnstileIoTProtocolAdapter
         $payload = json_encode(['ack' => $sequence, 'turnstile' => $turnstileCode]);
         $sig = hash_hmac('sha256', (string) $payload, $this->sharedSecret);
 
-        return self::ACK . $payload . '|' . $sig . self::ETX;
+        return self::ACK.$payload.'|'.$sig.self::ETX;
     }
 }

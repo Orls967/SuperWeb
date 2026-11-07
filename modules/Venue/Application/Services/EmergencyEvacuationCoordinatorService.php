@@ -27,7 +27,7 @@ final class EmergencyEvacuationCoordinatorService
     public function initiateFullEvacuation(int $venueId, string $triggerReason, string $authorizedBy): array
     {
         return DB::transaction(function () use ($venueId, $triggerReason, $authorizedBy) {
-            $incidentCode = 'EVAC-' . strtoupper(bin2hex(random_bytes(4)));
+            $incidentCode = 'EVAC-'.strtoupper(bin2hex(random_bytes(4)));
 
             // 1. Catat insiden evakuasi darurat
             $incident = CrowdCrushIncident::create([
@@ -80,7 +80,7 @@ final class EmergencyEvacuationCoordinatorService
      */
     public function restoreNormalOperations(string $incidentCode, string $officerName): void
     {
-        DB::transaction(function () use ($incidentCode, $officerName) {
+        DB::transaction(function () use ($incidentCode) {
             $incident = CrowdCrushIncident::where('incident_code', $incidentCode)->first();
             if ($incident !== null) {
                 $incident->status = 'resolved';

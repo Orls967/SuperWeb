@@ -67,4 +67,3 @@ final class ZoneCapacityGovernorTest extends TestCase
         ZoneCapacityCertificateVerifier::verify($cert);
     }
 }
-

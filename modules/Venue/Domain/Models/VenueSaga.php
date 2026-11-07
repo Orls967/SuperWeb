@@ -26,4 +26,3 @@ class VenueSaga extends Model
         'completed_at' => 'datetime',
     ];
 }
-

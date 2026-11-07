@@ -38,4 +38,3 @@ class ScanPermitExpiryCommand extends Command
         return self::SUCCESS;
     }
 }
-

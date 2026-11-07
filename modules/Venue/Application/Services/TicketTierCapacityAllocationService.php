@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Application\Services;
 
-use RuntimeException;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
+use RuntimeException;
 
 final class TicketTierCapacityAllocationService
 {
@@ -14,7 +14,7 @@ final class TicketTierCapacityAllocationService
     /**
      * Allocate ticket tier quotas ensuring legal venue capacity and safety headroom reserves are respected.
      *
-     * @param array<string, int> $tierQuotas
+     * @param  array<string, int>  $tierQuotas
      * @return array{
      *     event_code: string,
      *     legal_capacity: int,

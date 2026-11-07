@@ -46,4 +46,3 @@ final class ZoneCapacityCertificateVerifier
         return true;
     }
 }
-

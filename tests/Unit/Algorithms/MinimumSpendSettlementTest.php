@@ -72,4 +72,3 @@ final class MinimumSpendSettlementTest extends TestCase
         MinimumSpendCertificateVerifier::verify($cert);
     }
 }
-

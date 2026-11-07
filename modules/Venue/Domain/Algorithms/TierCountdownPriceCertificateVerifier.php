@@ -40,4 +40,3 @@ final class TierCountdownPriceCertificateVerifier
         return true;
     }
 }
-

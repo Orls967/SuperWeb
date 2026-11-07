@@ -606,10 +606,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 4 | `treasury`, `treasury/fx-revalue`, `treasury/cash-pools/{cashPool}/sweep` ... | web, auth, role:admin,auditor,treasury |
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
-| **Venue** | 38 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
+| **Venue** | 34 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1440 Rute** | | |
+| **Total** | **1436 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

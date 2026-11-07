@@ -37,4 +37,3 @@ class CloseEventCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -24,7 +24,7 @@ final class VipGuestConciergeService
     public function prepareVipArrival(EntertainmentTableBooking $booking, string $conciergeHostName): array
     {
         $tableNum = $booking->table_number ?? 'CABANA-01';
-        $valetSpot = 'VALET-VIP-' . substr($tableNum, -2);
+        $valetSpot = 'VALET-VIP-'.substr($tableNum, -2);
 
         $amenities = [
             'Handmade Ice Carving with Event Logo',

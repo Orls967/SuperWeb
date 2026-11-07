@@ -41,7 +41,7 @@ final class VenueGatePassbackAuditReportService
         $laneStats = [];
         foreach ($allScans as $scan) {
             $lane = (string) ($scan->turnstile_code ?? 'MAIN');
-            if (!isset($laneStats[$lane])) {
+            if (! isset($laneStats[$lane])) {
                 $laneStats[$lane] = 0;
             }
             if (str_contains(strtolower((string) $scan->rejection_reason), 'passback')) {
@@ -50,7 +50,7 @@ final class VenueGatePassbackAuditReportService
         }
 
         arsort($laneStats);
-        $highestLane = !empty($laneStats) ? (string) array_key_first($laneStats) : 'NONE';
+        $highestLane = ! empty($laneStats) ? (string) array_key_first($laneStats) : 'NONE';
 
         $suspiciousTickets = $allScans->filter(static function ($s): bool {
             return str_contains(strtolower((string) $s->rejection_reason), 'passback');

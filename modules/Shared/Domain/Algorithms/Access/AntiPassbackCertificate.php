@@ -7,7 +7,7 @@ namespace Modules\Shared\Domain\Algorithms\Access;
 final readonly class AntiPassbackCertificate
 {
     /**
-     * @param list<array{direction: string, nonce: string, timestamp: string, hash: string}> $history
+     * @param  list<array{direction: string, nonce: string, timestamp: string, hash: string}>  $history
      */
     public function __construct(
         public string $ticketId,
@@ -19,4 +19,3 @@ final readonly class AntiPassbackCertificate
         public string $hmacSignature,
     ) {}
 }
-

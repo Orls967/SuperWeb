@@ -76,4 +76,3 @@ final class TierCountdownPricerTest extends TestCase
         TierCountdownPriceCertificateVerifier::verify($cert);
     }
 }
-

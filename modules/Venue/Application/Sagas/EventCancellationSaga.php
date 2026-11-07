@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Application\Sagas;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Contracts\Ledger;
@@ -131,4 +130,3 @@ final class EventCancellationSaga
         });
     }
 }
-

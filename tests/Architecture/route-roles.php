@@ -121,7 +121,6 @@ use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
 use Modules\Venue\Domain\Models\EntertainmentZone;
-use Modules\Venue\Domain\Models\VenuePermit;
 use Modules\Wealth\Domain\Models\WmProfile;
 
 /**
@@ -3332,6 +3331,7 @@ return [
         'params' => function () {
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000, 'status' => 'on_sale']);
+
             return ['event' => $event->id];
         },
     ],
@@ -3342,6 +3342,7 @@ return [
         'params' => function () {
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+
             return ['event' => $event->id];
         },
     ],
@@ -3350,6 +3351,7 @@ return [
         'params' => function () {
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+
             return ['event' => $event->id];
         },
     ],
@@ -3368,6 +3370,7 @@ return [
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
             $bk = EntertainmentTableBooking::firstOrCreate(['booking_code' => 'BK-TEST-01'], ['table_number' => 'V01', 'event_id' => $event->id, 'user_id' => 1, 'customer_name' => 'Test', 'deposit_amount_idr' => 100000, 'minimum_spend_idr' => 1000000, 'status' => 'held']);
+
             return ['booking' => $bk->id];
         },
     ],
@@ -3381,6 +3384,7 @@ return [
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
             $bk = EntertainmentTableBooking::firstOrCreate(['booking_code' => 'BK-TEST-01'], ['table_number' => 'V01', 'event_id' => $event->id, 'user_id' => 1, 'customer_name' => 'Test', 'deposit_amount_idr' => 100000, 'minimum_spend_idr' => 1000000, 'status' => 'held']);
+
             return ['booking' => $bk->id];
         },
     ],
@@ -3397,6 +3401,7 @@ return [
         'params' => function () {
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $zone = EntertainmentZone::firstOrCreate(['zone_code' => 'ZN-TEST-01'], ['venue_id' => $venue->id, 'name' => 'Test Zone', 'capacity_limit' => 500]);
+
             return ['zone' => $zone->id];
         },
     ],
@@ -3405,6 +3410,7 @@ return [
         'params' => function () {
             $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
             $zone = EntertainmentZone::firstOrCreate(['zone_code' => 'ZN-TEST-01'], ['venue_id' => $venue->id, 'name' => 'Test Zone', 'capacity_limit' => 500]);
+
             return ['zone' => $zone->id];
         },
     ],
