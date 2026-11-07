@@ -76,7 +76,7 @@ final class RecognizeLoyaltyBreakageRevenueAction
                 $this->ledgerService->post(new PostingDTO(
                     type: HotelTransactionTypes::HTL_LOYALTY_BREAKAGE->value,
                     description: "Recognition of {$cert->totalExpiredPts} expired PTS as breakage revenue",
-                    idempotencyKey: 'HTL-BREAKAGE-'.now()->format('YmdHis').'-'.$cert->signatureHash,
+                    idempotencyKey: 'HTL-BREAKAGE-'.$cert->signatureHash,
                     entries: Posting::lines()
                         ->debit('htl:loyalty_points_liability:IDR', $cert->totalBreakageRevenueIdr)
                         ->credit('htl:loyalty_breakage_revenue:IDR', $cert->totalBreakageRevenueIdr)

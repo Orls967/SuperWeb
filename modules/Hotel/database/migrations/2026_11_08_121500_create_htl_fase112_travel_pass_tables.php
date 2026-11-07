@@ -26,7 +26,6 @@ return new class extends Migration
             Schema::create('htl_travel_passes', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->string('pass_number')->unique();
-                $table->unsignedBigInteger('user_id')->nullable();
                 $table->string('user_reference')->nullable()->index();
                 $table->string('tier')->default('SILVER');
                 $table->integer('cumulative_nights')->default(0);
@@ -84,7 +83,7 @@ return new class extends Migration
                 $table->bigInteger('transfer_fee_idr');
                 $table->bigInteger('net_payable_idr');
                 $table->string('status')->default('PENDING');
-                $table->string('saga_id')->nullable();
+                $table->string('saga_reference')->nullable();
                 $table->string('idempotency_key')->unique();
                 $table->string('certificate_hash')->nullable();
                 $table->timestamps();

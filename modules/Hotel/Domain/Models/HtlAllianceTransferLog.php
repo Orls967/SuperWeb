@@ -24,7 +24,7 @@ class HtlAllianceTransferLog extends Model
         'transfer_fee_idr',
         'net_payable_idr',
         'status',
-        'saga_id',
+        'saga_reference',
         'idempotency_key',
         'certificate_hash',
     ];

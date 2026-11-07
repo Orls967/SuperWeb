@@ -78,7 +78,7 @@ final class HotelPartnerPointTransferSaga
                 'transfer_fee_idr' => $cert->transferFeeIdr,
                 'net_payable_idr' => $cert->netPayableToPartnerIdr,
                 'status' => 'PROCESSING',
-                'saga_id' => $sagaId,
+                'saga_reference' => $sagaId,
                 'idempotency_key' => 'HTL-ALN-TX-'.$sagaId,
                 'certificate_hash' => $cert->signatureHash,
             ]);
