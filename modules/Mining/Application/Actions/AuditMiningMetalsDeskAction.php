@@ -16,11 +16,11 @@ final class AuditMiningMetalsDeskAction
     public function execute(): array
     {
         // 1. Mass conservation: total tapped metal + slag <= total ore feed
-        $runs = MiningSmelterFurnaceRun::query()->whereNotNull('tapped_metal_tons')->get();
+        $runs = MiningSmelterFurnaceRun::query()->whereNotNull('metal_output_tons')->get();
         $massViolations = 0;
         foreach ($runs as $run) {
             $feed = (float) $run->ore_feed_wmt;
-            $outputs = (float) $run->tapped_metal_tons + (float) $run->tapped_slag_tons;
+            $outputs = (float) $run->metal_output_tons + (float) $run->slag_output_tons;
             if ($outputs > ($feed * 1.05)) { // 5% allowance for slag flux addition
                 $massViolations++;
             }

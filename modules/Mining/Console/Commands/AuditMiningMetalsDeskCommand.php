@@ -33,6 +33,12 @@ final class AuditMiningMetalsDeskCommand extends Command
 
         $this->info("Audit metals desk selesai pada {$report['timestamp']}. Status: {$report['audit_status']}");
 
+        if ($report['audit_status'] !== 'CLEAN') {
+            $this->error('METALS DESK AUDIT FAILED: Terdeteksi ketidaksesuaian neraca massa atau integritas data.');
+
+            return self::FAILURE;
+        }
+
         return self::SUCCESS;
     }
 }
