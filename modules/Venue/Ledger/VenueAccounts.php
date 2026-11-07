@@ -254,14 +254,14 @@ final class VenueAccounts
                 'name' => 'Artist Headline and Supporting Performance Fee Expense',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'ven:bundle_unearned:IDR',
                 'name' => 'Festival Multi Vendor Bundle Unearned Revenue Liability',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'ven:sponsor_receivable:IDR',

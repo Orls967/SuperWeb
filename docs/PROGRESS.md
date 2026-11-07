@@ -9370,7 +9370,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) · **Prasyarat:** R1–R4 ✅, R4.2 (Vending pindah ke `vnd_`) · **Acuan:** KONSEP 10F
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
+- [🔵] 90.1 **Artist & talent contracts** (`ven_artist_contracts`): skema bayar advance + backlog + share door (persentase penjualan pintu), terikat modul Contract (Fase 28); performa lintas negara → pembayaran multi-currency (Fase 48) + stablecoin (Fase 83) + withholding tax simulasi (Fase 51.7)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9379,7 +9379,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
+- [🔵] 90.2 **Supply venue**: bar/resto venue memakai modul Resto penuh (HPP, batch, waste Fase 7–8) → bahan F&B dikirim via Logistics cold-chain dari dapur sentral → stok bar (spirit, mixer) terkelola WMS mini-warehouse per venue → **impor spirits** via Trade (Fase 49) dengan cukai simulasi
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9388,7 +9388,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
+- [🔵] 90.3 **POS venue & night economics**: penjualan per jam (peak 23.00–03.00), mix per kategori, revenue per available table (RevPAT), waste bar; shift staff venue via HCM (bounty dadakan saat event mendadak, memperluas Fase 85)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9397,7 +9397,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
+- [🔵] 90.4 **Membership & loyalty**: membership beach club tahunan (tier: Sun, Moon, Infinity) → hak akses prioritas, diskon F&B, poin PTS lintas ekosistem (tukar di Resto/Store/hotel Fase 16.3 diperluas ke venue) → NFT membership opsional berbobot suara DAO event (Fase 86.4)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9406,7 +9406,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_membership_loyalty_point_earn_and_redeem
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
+- [🔵] 90.5 **Festival-as-a-platform**: multi-day festival → bundling tiket harian + camping/glamping (terhubung hotel Fase 91) + shuttle transport (Logistics) + beach club day pass → satu bundle harga, settlement multi-vendor via escrow (Fase 61.4)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9415,7 +9415,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
+- [🔵] 90.6 **Sponsorship & brand deals**: paket sponsor (naming rights zone, booth, aktivasi) → kontrak + penagihan milestone → laporan eksposur (footfall venue, impressions simulasi) per sponsor
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9424,7 +9424,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
+- [🔵] 90.7 Dashboard: event P&L (tiket + bar + sponsorship + VIP vs biaya artis & operasi dari ledger), artist statement (sisa terbayar, merch share), safety (kapasitas vs aktual, insiden), membership & festival bundle
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9433,7 +9433,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_artist_door_share_calculation_minus_advance
     - akses: route GET /venue [role: admin, venue_manager, venue_staff]
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
+- [🔵] 90.8 Tests: (a) share door = % × penjualan pintu, dikurangi advance (b) cold-chain supply venue breach → hold (c) membership point earn/redeem lintas modul seimbang (d) bundle festival settlement multi-vendor Σ = pembayaran (e) `venue:audit` = 0 selisih
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: tooling
@@ -9441,7 +9441,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - file: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php
     - test: modules/Venue/tests/Feature/BeachClubArtistAndFestivalEconomyTest.php::test_festival_bundle_multi_vendor_settlement_sum_invariant
     - (dibatalkan) gate: docs/gates/fase-90.md
-- [ ] 90.9 Quality gate Fase 90
+- [🔵] 90.9 Quality gate Fase 90
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen
@@ -10725,13 +10725,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
-- [ ] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
-- [ ] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
-- [ ] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
-- [ ] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
-- [ ] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
-- [ ] 116.7 Quality gate Fase 116
+- [🔵] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
+- [🔵] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
+- [🔵] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
+- [🔵] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
+- [🔵] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
+- [🔵] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
+- [🔵] 116.7 Quality gate Fase 116
 
 ## FASE 117 — ENTERTAINMENT: GUEST EXPERIENCE AI, BIOMETRIC ENTRY & CROWD SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCrowdAndBiometricService`; 1 migrasi; test `VenueCrowdAndBiometricTest` — commit `028dccb`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

@@ -81,6 +81,8 @@ use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\VenEconomyAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\VenSecondaryAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VmiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VndAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\WmAuditCorruptionFixture;
@@ -178,7 +180,11 @@ final class AuditCommandRegistry
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
             'ven:audit' => new VenAuditCorruptionFixture,
+            'ven:audit-economy' => new VenEconomyAuditCorruptionFixture('ven:audit-economy'),
+            'ven:audit-secondary' => new VenSecondaryAuditCorruptionFixture('ven:audit-secondary'),
             'venue:audit' => new VenAuditCorruptionFixture,
+            'venue:audit-economy' => new VenEconomyAuditCorruptionFixture('venue:audit-economy'),
+            'venue:audit-secondary' => new VenSecondaryAuditCorruptionFixture('venue:audit-secondary'),
             'vmi:audit' => new VmiAuditCorruptionFixture,
             'vnd:audit' => new VndAuditCorruptionFixture,
             'wm:audit' => new WmAuditCorruptionFixture,
