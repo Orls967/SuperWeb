@@ -95,7 +95,7 @@ class ReserveTableWithMinimumSpendDepositAction extends BaseAction
                 'minimum_spend_idr' => $minimumSpendIdr,
                 'deposit_amount_idr' => $depositAmountIdr,
                 'idempotency_key' => $idempotencyKey,
-                'status' => TableBookingStatus::CONFIRMED->value,
+                'status' => 'HELD',
             ]);
 
             // Posting ledger: Debit vip_escrow, Kredit vip_unearned_rev

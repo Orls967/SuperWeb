@@ -34,6 +34,7 @@ final class ScanTicketGateWithAntiPassbackAndAgeCheckAction
         $ticket = EntertainmentTicket::findOrFail($ticketId);
         $zone = EntertainmentZone::findOrFail($zoneId);
 
+        // 1. Age check
         if ($attendeeAge < 21) {
             return [
                 'status' => 'DENIED',
@@ -43,18 +44,35 @@ final class ScanTicketGateWithAntiPassbackAndAgeCheckAction
             ];
         }
 
-        $nonce = 'legacy-handle-scan-' . $ticket->id . '-' . microtime(true);
-        $res = $this->execute(
-            ticket: $ticket,
-            zone: $zone,
-            direction: 'IN',
-            nonce: $nonce,
-            patronAge: $attendeeAge
-        );
+        // 2. Anti-passback check: ticket must be in VALID status
+        if ($ticket->status !== 'VALID' && $ticket->status !== 'issued') {
+            return [
+                'status' => 'DENIED',
+                'reason' => "Anti-passback violation: ticket already {$ticket->status}.",
+                'ticket' => $ticket,
+                'zone_occupancy' => $zone->current_occupancy,
+            ];
+        }
+
+        // 3. Zone crowd safety capacity check
+        if ($zone->current_occupancy >= $zone->capacity_limit || $zone->crowd_lockdown_active) {
+            return [
+                'status' => 'DENIED',
+                'reason' => "Zone capacity exceeded ({$zone->current_occupancy}/{$zone->capacity_limit}) or crowd lockdown active.",
+                'ticket' => $ticket,
+                'zone_occupancy' => $zone->current_occupancy,
+            ];
+        }
+
+        $ticket->status = 'USED';
+        $ticket->scanned_at = now();
+        $ticket->save();
+
+        $zone->increment('current_occupancy');
 
         return [
-            'status' => $res['status'],
-            'reason' => $res['reason'] ?? 'Access granted. Enjoy the event!',
+            'status' => 'ALLOWED',
+            'reason' => 'Access granted. Enjoy the event!',
             'ticket' => $ticket->refresh(),
             'zone_occupancy' => $zone->refresh()->current_occupancy,
         ];

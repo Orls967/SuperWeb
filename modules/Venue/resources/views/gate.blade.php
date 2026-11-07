@@ -24,7 +24,7 @@
         <header class="bg-slate-950/80 backdrop-blur-md px-4 py-3 border-b border-slate-800 flex items-center justify-between sticky top-0 z-20">
             <div class="flex items-center space-x-2">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-xs font-bold tracking-wider text-slate-300 uppercase">GATE-MAIN-01</span>
+                <span class="text-xs font-bold tracking-wider text-slate-300 uppercase">GATE-MAIN-01 • Turnstile Scanner</span>
             </div>
             <div class="text-right">
                 <span class="text-[11px] font-mono text-slate-400 tabular-nums" id="clock-display">{{ date('H:i:s') }}</span>
@@ -105,7 +105,7 @@
                         Nomor Tiket / Barcode Token
                     </label>
                     <div class="relative">
-                        <input type="text" id="ticket-input" placeholder="TCK-..." required autofocus
+                        <input type="text" id="ticket-input" name="qr_payload" placeholder="TCK-..." required autofocus
                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm font-mono text-emerald-300 placeholder-slate-600 focus:border-emerald-500 focus:outline-none tabular-nums">
                         <button type="button" onclick="document.getElementById('ticket-input').value = 'TCK-' + Math.random().toString(36).substring(2, 8).toUpperCase()"
                                 class="absolute right-2 top-2 text-[10px] bg-slate-800 text-slate-400 hover:text-white px-2 py-1 rounded border border-slate-700">

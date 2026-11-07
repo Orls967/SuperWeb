@@ -45,7 +45,13 @@ final class EventStateMachine
 
     public static function canTransition(string $from, string $to): bool
     {
-        return in_array($to, self::TRANSITIONS[$from] ?? [], true);
+        $normalizedFrom = match (strtoupper($from)) {
+            'OPEN' => EventStatus::ON_SALE->value,
+            default => strtolower($from),
+        };
+        $normalizedTo = strtolower($to);
+
+        return in_array($normalizedTo, self::TRANSITIONS[$normalizedFrom] ?? [], true);
     }
 
     public static function transition(EntertainmentEvent $event, EventStatus $targetStatus, ?string $reason = null): void

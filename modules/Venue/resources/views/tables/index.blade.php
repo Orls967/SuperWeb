@@ -40,9 +40,9 @@
         <!-- Header -->
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-black text-slate-100 tracking-tight">Papan Denah Meja VIP & Penyelesaian Minimum Spend (V4)</h1>
+                <h1 class="text-2xl font-black text-slate-100 tracking-tight">Papan Denah Meja VIP Cabana & Daybed (V4)</h1>
                 <p class="text-sm text-slate-400 mt-1">
-                    Escrow deposit meja, rekonsiliasi botol konsumsi aktual, denda no-show 50%, dan pengakuan pendapatan layanan botol.
+                    Escrow deposit meja VIP Cabana, rekonsiliasi botol konsumsi aktual, denda no-show 50%, dan pengakuan pendapatan layanan botol.
                 </p>
             </div>
             <button onclick="document.getElementById('modal-reserve').classList.remove('hidden')" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-amber-950 transition-all flex items-center space-x-2">

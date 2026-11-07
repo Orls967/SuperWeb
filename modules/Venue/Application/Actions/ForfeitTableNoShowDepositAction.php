@@ -47,64 +47,39 @@ class ForfeitTableNoShowDepositAction
 
         return DB::transaction(function () use ($booking, $reason, $idempotencyKey) {
             $deposit = (int) $booking->deposit_amount_idr;
-            $minSpend = (int) $booking->minimum_spend_idr;
-
-            // Hitung V4 MinimumSpendSettlement
-            $settlement = MinimumSpendSettlement::calculate(
-                minimumSpendIdr: $minSpend,
-                depositHeldIdr: $deposit,
-                actualSpendIdr: 0,
-                isNoShow: true,
-                noShowForfeitureBps: 5000 // 50%
-            );
 
             if ($this->paymentGateway !== null) {
                 $this->paymentGateway->capture([
-                    'amount' => $settlement->forfeitedDepositIdr,
+                    'amount' => $deposit,
                     'idempotencyKey' => $idempotencyKey,
                 ]);
             }
 
             $booking->update([
-                'status' => TableBookingStatus::NO_SHOW_FORFEITED->value,
-                'forfeited_deposit_idr' => $settlement->forfeitedDepositIdr,
+                'status' => 'NO_SHOW',
+                'forfeited_deposit_idr' => $deposit,
             ]);
 
             $ledger = $this->ledgerService ?? app(Ledger::class);
 
-            // Jurnal Denda Hangus: Debit vip_unearned_rev, Kredit vip_noshow_rev
+            // Jurnal Denda Hangus Legacy: Debit clearing, Kredit ven:vip_noshow_rev:IDR
             $ledger->post(new PostingDTO(
                 type: VenueTransactionTypes::VENUE_TABLE_NO_SHOW_FEE->value,
-                description: "Denda no-show 50% meja VIP {$booking->booking_code}: {$reason}",
+                description: "Denda no-show meja VIP {$booking->booking_code}: {$reason}",
                 idempotencyKey: $idempotencyKey,
                 entries: Posting::lines()
-                    ->debit('ven:vip_unearned_rev:IDR', $settlement->forfeitedDepositIdr)
-                    ->credit('ven:vip_noshow_rev:IDR', $settlement->forfeitedDepositIdr)
+                    ->debit('ven:ticket_clearing:IDR', $deposit)
+                    ->credit('ven:vip_noshow_rev:IDR', $deposit)
                     ->toEntries('IDR'),
-                referenceType: 'VENUE_TABLE_BOOKING',
+                referenceType: 'TABLE_BOOKING',
                 referenceId: (string) $booking->id
             ));
-
-            // Jurnal Refund Sisa 50%: Debit vip_unearned_rev, Kredit vip_escrow
-            if ($settlement->refundedDepositIdr > 0) {
-                $ledger->post(new PostingDTO(
-                    type: VenueTransactionTypes::VENUE_TABLE_NO_SHOW_FEE->value,
-                    description: "Refund sisa deposit 50% no-show meja VIP {$booking->booking_code}",
-                    idempotencyKey: "{$idempotencyKey}:refund",
-                    entries: Posting::lines()
-                        ->debit('ven:vip_unearned_rev:IDR', $settlement->refundedDepositIdr)
-                        ->credit('ven:vip_escrow:IDR', $settlement->refundedDepositIdr)
-                        ->toEntries('IDR'),
-                    referenceType: 'VENUE_TABLE_BOOKING',
-                    referenceId: (string) $booking->id
-                ));
-            }
 
             return [
                 'success' => true,
                 'booking' => $booking,
-                'forfeited_amount' => $settlement->forfeitedDepositIdr,
-                'refunded_amount' => $settlement->refundedDepositIdr,
+                'forfeited_amount' => $deposit,
+                'refunded_amount' => 0,
             ];
         });
     }

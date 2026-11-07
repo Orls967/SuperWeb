@@ -19,6 +19,43 @@ final class RefundVenueTicketAction
         private readonly ?Ledger $ledger = null,
     ) {}
 
+    /**
+     * Backward-compatible handler for legacy tests and callers.
+     *
+     * @return array{success: bool, ticket: EntertainmentTicket}
+     */
+    public function handle(
+        int $ticketId,
+        string $reason,
+        string $idempotencyKey
+    ): array {
+        if (trim($idempotencyKey) === '') {
+            throw new \InvalidArgumentException('Idempotency key wajib diisi (U-4)');
+        }
+
+        $ticket = EntertainmentTicket::findOrFail($ticketId);
+        if ($ticket->status === 'REFUNDED' || $ticket->status === TicketStatus::REFUNDED->value) {
+            return [
+                'success' => true,
+                'ticket' => $ticket,
+            ];
+        }
+
+        $event = \Modules\Venue\Domain\Models\EntertainmentEvent::findOrFail($ticket->event_id);
+        if ($event->status === 'CLOSED' || $event->status === \Modules\Venue\Domain\Enums\EventStatus::CLOSED->value) {
+            throw new \RuntimeException('Tiket tidak dapat direfund karena event telah ditutup');
+        }
+
+        $refundedTicket = $this->execute($ticket, $reason, $idempotencyKey);
+        $refundedTicket->status = 'REFUNDED';
+        $refundedTicket->save();
+
+        return [
+            'success' => true,
+            'ticket' => $refundedTicket,
+        ];
+    }
+
     public function execute(EntertainmentTicket $ticket, string $reason, string $idempotencyKey): EntertainmentTicket
     {
         return DB::transaction(function () use ($ticket, $reason, $idempotencyKey) {
@@ -46,7 +83,34 @@ final class RefundVenueTicketAction
                 ));
             }
 
+            if ($locked->seat_claim_id !== null) {
+                $seat = \Modules\Venue\Domain\Models\SeatClaim::find($locked->seat_claim_id);
+                if ($seat) {
+                    $seat->update([
+                        'status' => 'AVAILABLE',
+                        'buyer_user_id' => null,
+                        'held_until' => null,
+                        'hold_token' => null,
+                        'idempotency_key' => null,
+                    ]);
+                }
+            }
+
+            if ($locked->tier_id !== null) {
+                $counter = \Modules\Venue\Domain\Models\InventoryCounter::where('event_id', $locked->event_id)
+                    ->where('tier_id', $locked->tier_id)
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($counter) {
+                    $counter->sold_count = max(0, $counter->sold_count - 1);
+                    $counter->save();
+                }
+            }
+
             TicketStateMachine::transition($locked, TicketStatus::REFUNDED, $reason);
+
+            event(new \Modules\Venue\Domain\Events\VenueTicketRefunded($locked));
 
             return $locked;
         });
