@@ -857,7 +857,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Manufacturing** | `RecycledMaterialAccounts` | 2 | `inv:materials:IDR`, `mfg:recycled_material_clearing:IDR` |
 | **Marine** | `MarineAccounts` | 6 | `mar:farmer_advance_receivable:IDR`, `mar:farmer_input_loan_receivable:IDR` ... |
 | **Med** | `MedAccounts` | 9 | `med:ad_platform_revenue:IDR`, `med:ad_publisher_payable:IDR` ... |
-| **Mining** | `MiningAccounts` | 39 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
+| **Mining** | `MiningAccounts` | 40 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
 | **Mobility** | `FleetAccounts` | 7 | `oto:fleet_lease_revenue:IDR`, `expense:oto:fleet_sla_credit:IDR` ... |
 | **Port** | `PortAccounts` | 4 | `rev:prt:thc:IDR`, `rev:prt:dockage:IDR` ... |
@@ -873,6 +873,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **465 Akun** | |
+| **Total: 37 Registry** | | **466 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
