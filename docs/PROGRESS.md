@@ -10763,13 +10763,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) (+ Egy/Esg untuk Fase 123) · **Prasyarat:** Fase 93–94 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
-- [ ] 119.2 **Blast management**: jadwal peledakan → izin & radius keamanan (koordinat vs posisi pekerja/asset via telematik Fase 93.5 → tolak blast bila ada di radius) → rekam hasil (yield, oversize/undersize) → koreksi drill pattern berikutnya
-- [ ] 119.3 **Geotech & slope monitoring**: sensor inklinometer/vibrasi IoT → ambang gerakan tanah → pre-warning → inspeksi hse_officer → shutdown area; log masuk pilar lingkungan Fase 94.5
-- [ ] 119.4 **Survey & volumetrik**: drone/total station simulasi hasil → pemodelan stok 3D aktual vs rencana → variance bulanan timbangan digital (Fase 94.1) terkonfirmasi silang
-- [ ] 119.5 **Barge & marine ops (quarry/pasir)**: tongkang (lgx_vessels) muatan curah → draft check → timbangan muat → pelabuhan tujuan → chain of custody penuh
-- [ ] 119.6 Tests: (a) blast saat pekerja di radius ditolak sistem (b) ventilasi simulasi tak mengubah data riil (c) oversize > toleransi → koreksi drill plan (d) volumetrik drone = timbangan ± toleransi (e) reconcile marine load = ledger
-- [ ] 119.7 Quality gate Fase 119
+- [🔵] 119.1 **Digital twin tambang bawah tanah**: model 3D terowongan & ventilasi (stope, decline, ventilation network) via Twin Bus (Fase 67.3) → simulasi aliran udara, jalur evakuasi, titik kritis runtuh → rencana pengeboran/blasting aman
+- [🔵] 119.2 **Blast management**: jadwal peledakan → izin & radius keamanan (koordinat vs posisi pekerja/asset via telematik Fase 93.5 → tolak blast bila ada di radius) → rekam hasil (yield, oversize/undersize) → koreksi drill pattern berikutnya
+- [🔵] 119.3 **Geotech & slope monitoring**: sensor inklinometer/vibrasi IoT → ambang gerakan tanah → pre-warning → inspeksi hse_officer → shutdown area; log masuk pilar lingkungan Fase 94.5
+- [🔵] 119.4 **Survey & volumetrik**: drone/total station simulasi hasil → pemodelan stok 3D aktual vs rencana → variance bulanan timbangan digital (Fase 94.1) terkonfirmasi silang
+- [🔵] 119.5 **Barge & marine ops (quarry/pasir)**: tongkang (lgx_vessels) muatan curah → draft check → timbangan muat → pelabuhan tujuan → chain of custody penuh
+- [🔵] 119.6 Tests: (a) blast saat pekerja di radius ditolak sistem (b) ventilasi simulasi tak mengubah data riil (c) oversize > toleransi → koreksi drill plan (d) volumetrik drone = timbangan ± toleransi (e) reconcile marine load = ledger
+- [🔵] 119.7 Quality gate Fase 119
 
 ## FASE 120 — SUMBER DAYA: HSE LEADING INDICATOR, MENTAL HEALTH & CONTRACTOR SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Mining): service `MiningHseAndContractorService`; 1 migrasi; test `MiningHseAndContractorTest` — commit `af81f27`, +513 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

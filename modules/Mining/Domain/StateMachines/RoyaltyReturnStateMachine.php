@@ -33,7 +33,7 @@ final class RoyaltyReturnStateMachine
         ?string $actorId = null,
         ?string $notes = null
     ): void {
-        $currentStatus = $return->status;
+        $currentStatus = $return->statusEnum();
 
         if ($currentStatus === $targetStatus) {
             return;
@@ -50,7 +50,7 @@ final class RoyaltyReturnStateMachine
 
         $this->assertTransitionGuard($return, $currentStatus, $targetStatus);
 
-        $updates = ['status' => $targetStatus];
+        $updates = ['status' => $targetStatus->value];
         if ($targetStatus === RoyaltyReturnStatus::FILED && empty($return->document_number)) {
             $updates['document_number'] = 'SPT-ROYL-'.$return->period_month.'-'.substr($return->id, 0, 8);
         }

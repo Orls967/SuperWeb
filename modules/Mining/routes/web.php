@@ -18,6 +18,7 @@ use Modules\Mining\Http\Controllers\MiningReclamationController;
 use Modules\Mining\Http\Controllers\MiningReportController;
 use Modules\Mining\Http\Controllers\MiningRoyaltyController;
 use Modules\Mining\Http\Controllers\MiningRoyaltyReclamationSafetyController;
+use Modules\Mining\Http\Controllers\MiningUndergroundAndMarineController;
 use Modules\Mining\Http\Controllers\MiningWeighbridgeSmelterController;
 
 Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
@@ -133,6 +134,45 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
             Route::get('/blast-safety', [MiningRoyaltyReclamationSafetyController::class, 'blastSafety'])->name('blast-safety');
             Route::post('/blast-safety/lock', [MiningRoyaltyReclamationSafetyController::class, 'lockBlast'])->name('blast-safety.lock');
         });
+    });
+
+    // Fase 119: Underground, Blast, Geotech, Barge (mine_manager, site_manager, admin)
+    Route::middleware(['role:mine_manager,site_manager,admin,dispatcher_mine,hse_officer'])->prefix('fase119')->name('mining.fase119.')->group(function () {
+        Route::get('/underground', [MiningUndergroundAndMarineController::class, 'index'])->name('underground');
+        Route::post('/stopes', [MiningUndergroundAndMarineController::class, 'createStope'])->name('stopes.store');
+        Route::post('/ventilation/simulate', [MiningUndergroundAndMarineController::class, 'simulateVentilation'])->name('ventilation.simulate');
+
+        Route::get('/blast', [MiningUndergroundAndMarineController::class, 'blastView'])->name('blast');
+        Route::post('/blast/runs', [MiningUndergroundAndMarineController::class, 'createBlastRun'])->name('blast.runs.store');
+        Route::post('/blast/verify-clearance', [MiningUndergroundAndMarineController::class, 'verifyClearance'])->name('blast.verify');
+        Route::post('/blast/trigger-siren', [MiningUndergroundAndMarineController::class, 'triggerSiren'])->name('blast.siren');
+        Route::post('/blast/detonate', [MiningUndergroundAndMarineController::class, 'detonate'])->name('blast.detonate');
+        Route::post('/blast/fragmentation', [MiningUndergroundAndMarineController::class, 'evaluateFragmentation'])->name('blast.fragmentation');
+
+        Route::post('/blast/radius', [MiningUndergroundAndMarineController::class, 'calculateBlastRadius'])->name('blast.radius');
+        Route::post('/blast/drill-correction', [MiningUndergroundAndMarineController::class, 'recommendDrillCorrection'])->name('blast.drill-correction');
+
+        Route::get('/geotech', [MiningUndergroundAndMarineController::class, 'geotechView'])->name('geotech');
+        Route::post('/geotech/telemetry', [MiningUndergroundAndMarineController::class, 'ingestSlopeTelemetry'])->name('geotech.telemetry');
+        Route::post('/geotech/evacuate', [MiningUndergroundAndMarineController::class, 'triggerEvacuation'])->name('geotech.evacuate');
+        Route::post('/geotech/investigate', [MiningUndergroundAndMarineController::class, 'investigateGeotech'])->name('geotech.investigate');
+        Route::post('/geotech/bishop-fos', [MiningUndergroundAndMarineController::class, 'evaluateBishopFos'])->name('geotech.bishop-fos');
+        Route::post('/geotech/remediate', [MiningUndergroundAndMarineController::class, 'remediateSlope'])->name('geotech.remediate');
+        Route::post('/geotech/resolve', [MiningUndergroundAndMarineController::class, 'resolveIncident'])->name('geotech.resolve');
+
+        Route::post('/underground/gas-inspection', [MiningUndergroundAndMarineController::class, 'inspectGasLevel'])->name('underground.gas');
+        Route::post('/underground/fan-optimize', [MiningUndergroundAndMarineController::class, 'optimizeFanPower'])->name('underground.fan-optimize');
+
+        Route::post('/drone/tin-mesh-volume', [MiningUndergroundAndMarineController::class, 'calculateTinMeshVolume'])->name('drone.tin-volume');
+        Route::post('/drone/reconcile-weighbridge', [MiningUndergroundAndMarineController::class, 'reconcileDroneWithWeighbridge'])->name('drone.reconcile');
+
+        Route::get('/barge', [MiningUndergroundAndMarineController::class, 'bargeView'])->name('barge');
+        Route::post('/barge/draft', [MiningUndergroundAndMarineController::class, 'recordDraft'])->name('barge.draft');
+        Route::post('/barge/reconcile', [MiningUndergroundAndMarineController::class, 'reconcileBarge'])->name('barge.reconcile');
+        Route::post('/barge/chain-of-custody', [MiningUndergroundAndMarineController::class, 'auditChainOfCustody'])->name('barge.chain');
+        Route::post('/barge/settle-freight', [MiningUndergroundAndMarineController::class, 'settleFreight'])->name('barge.freight');
+
+        Route::get('/export-csv', [MiningUndergroundAndMarineController::class, 'exportCsv'])->name('export-csv');
     });
 });
 

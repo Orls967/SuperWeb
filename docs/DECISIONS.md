@@ -2764,3 +2764,28 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   14. **D93-7 (Jurnal Akuntansi Double-Entry Operasional Tambang)**: Pembukuan tagihan kontraktor angkut, penahanan biaya deviasi BBM, dan rilis/pemotongan definitif ke akun ledger formal.
   15. **D93-8 (Audit Dua Sumber mining:audit)**: Verifikasi saldo akun hold pembayaran kontraktor terhadap total kasus anomali aktif, batas ketersediaan armada, payload variance, dan ketunggalan Work Order terbit.
 - [ADR-0094](decisions/ADR-0094-weighbridge-royalty-hse-and-offtake.md) — 2026-11-07 — Arsitektur Timbangan Hash-Chain, Tarif Royalti Berversi PP 19/2025, Rekonsiliasi Massa M5 & Saga Offtake (`G7-D26`, `G7-D27`, `G7-D28`, `G7-K11`, `G7-K12`) {#ADR-0094}
+
+<a id="2026-11-07-g7-p4-pertambangan-fase-119"></a>
+<a id="d119-1"></a>
+<a id="d119-2"></a>
+<a id="d119-3"></a>
+<a id="d119-4"></a>
+<a id="d119-5"></a>
+<a id="d119-6"></a>
+<a id="d119-7"></a>
+<a id="d119-8"></a>
+## 2026-11-07: [G7-P4.3] Modul Pertambangan — Underground & Quarry Digital Twin, Geotech & Blast Management (Fase 119, D119-1..D119-8)
+- **Anchor:** `2026-11-07-g7-p4-pertambangan-fase-119` / `d119-1` / `d119-2` / `d119-3` / `d119-4` / `d119-5` / `d119-6` / `d119-7` / `d119-8`
+- **Rujukan ADR:** [`docs/decisions/ADR-0119-underground-digital-twin-blast-and-marine.md`](decisions/ADR-0119-underground-digital-twin-blast-and-marine.md)
+- **Konteks:**
+  - Melaksanakan Lini 12F Pertambangan (Fase 119) dengan standar ketat W8 untuk simulasi ventilasi bawah tanah aerodinamis Hardy Cross, model fragmentasi peledakan KCO, pemantauan kestabilan lereng geoteknik real-time, survei fotogrametri volumetrik 3D, dan pengoperasian tongkang curah hidrostatik.
+- **Keputusan:**
+  1. **D119-1 (Solver Ventilasi Hardy Cross M7)**: Menghitung kesetimbangan aliran udara stope/shaft bawah tanah melalui iterasi numerik Hardy Cross berbasis hukum Kirchhoff I & II dan rugi gesekan Atkinson $h_f = R Q^2$ dengan sertifikat integritas HMAC-SHA256.
+  2. **D119-2 (Model Fragmentasi Peledakan KCO M8)**: Memprediksi distribusi ukuran butir $x_{50}$, indeks keseragaman $n$, serta fraksi *oversize* ($>1000\text{ mm}$) dan *fines* ($<25\text{ mm}$) untuk koreksi pola pemboran (*burden/spacing/powder factor*).
+  3. **D119-3 (Rekonsiliasi Hidrostatik Tongkang Curah M9)**: Melakukan survei draf 6-titik (*Quarter-Mean Draft*) dengan koreksi kerapatan air dan defleksi lambung kapal tongkang curah terhadap jembatan timbang.
+  4. **D119-4 (Interlock Peledakan & State Machine Blast)**: Mengawal alur peledakan dengan `BlastClearanceRunStateMachine` (8 status) dan saga `BlastExecutionLifecycleSaga` yang membatalkan peledakan jika telematika mendeteksi pekerja di radius bahaya.
+  5. **D119-5 (Mitigasi Bencana Geoteknik Lereng)**: Pemantauan pergerakan dinding pit dengan `GeotechIncidentStateMachine` (8 status) yang memicu alarm darurat evakuasi saat kecepatan melebihi $10\text{ mm/hari}$.
+  6. **D119-6 (Survei Volumetrik Drone 3D)**: Pemodelan topografi mesh triangulasi (TIN) untuk rekonsiliasi cadangan stockpile aktual vs rencana tambang.
+  7. **D119-7 (Buku Besar Keuangan Operasi Bawah Tanah & Laut)**: Penjurnalan akrual bahan peledak ANFO, biaya survei fotogrametri, dan biaya sewa tongkang muatan curah melalui `MiningFase119LedgerPostingService`.
+  8. **D119-8 (Pusat Komando Digital Twin & Verifikasi Lintas Modul)**: Menyediakan dashboard Web & antarmuka responsif mobile 375px untuk visualisasi real-time ventilasi, lereng, dan logistik laut.
+- [ADR-0119](decisions/ADR-0119-underground-digital-twin-blast-and-marine.md) — 2026-11-07 — Arsitektur Digital Twin Bawah Tanah, Simulasi Ventilasi Hardy Cross, Model Peledakan KCO, dan Rekonsiliasi Tongkang Curah {#ADR-0119}

@@ -42,7 +42,6 @@ class MiningReconciliationRun extends Model
     ];
 
     protected $casts = [
-        'status' => ReconciliationRunStatus::class,
         'period_start' => 'datetime',
         'period_end' => 'datetime',
         'total_ore_mined_tons' => 'integer',
@@ -53,6 +52,17 @@ class MiningReconciliationRun extends Model
         'approved_at' => 'datetime',
         'locked_at' => 'datetime',
     ];
+
+    public function statusEnum(): ReconciliationRunStatus
+    {
+        if ($this->status instanceof ReconciliationRunStatus) {
+            return $this->status;
+        }
+
+        $val = strtolower((string) ($this->attributes['status'] ?? 'draft'));
+
+        return ReconciliationRunStatus::tryFrom($val) ?? ReconciliationRunStatus::DRAFT;
+    }
 
     protected static function booted(): void
     {

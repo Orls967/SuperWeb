@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Modules\Mining;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Mining\Application\Services\BulkMarineVesselLogisticsGatewayService;
 use Modules\Mining\Application\Services\MiningFleetDispatchService;
+use Modules\Mining\Application\Services\PersonnelTelematicsGeofenceGatewayService;
 use Modules\Mining\Console\Commands\AuditGySamplingCommand;
 use Modules\Mining\Console\Commands\AuditMiningCommand;
 use Modules\Mining\Console\Commands\AuditMiningRoyaltyCommand;
@@ -14,12 +16,17 @@ use Modules\Mining\Console\Commands\AuditWeighbridgeHashChainCommand;
 use Modules\Mining\Console\Commands\BenchmarkMineEmissionsCommand;
 use Modules\Mining\Console\Commands\BlockReserveEstimateCommand;
 use Modules\Mining\Console\Commands\ExportComplianceReportCommand;
+use Modules\Mining\Console\Commands\ExportUndergroundMarineReportCommand;
 use Modules\Mining\Console\Commands\FuelAnomalyScanCommand;
 use Modules\Mining\Console\Commands\IngestTelemetryCommand;
 use Modules\Mining\Console\Commands\OeeBenchmarkScanCommand;
 use Modules\Mining\Console\Commands\PhasePlanCommand;
+use Modules\Mining\Console\Commands\ScanGeotechSlopeThresholdCommand;
 use Modules\Mining\Console\Commands\ScanPermitExpiryCommand;
 use Modules\Mining\Console\Commands\ShiftCloseCommand;
+use Modules\Mining\Console\Commands\SimulateVentilationNetworkCommand;
+use Modules\Mining\Contracts\BulkMarineVesselLogisticsGateway;
+use Modules\Mining\Contracts\PersonnelTelematicsGeofenceGateway;
 use Modules\Shared\Application\MenuRegistry;
 
 class MiningServiceProvider extends ServiceProvider
@@ -27,6 +34,14 @@ class MiningServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(MiningFleetDispatchService::class);
+        $this->app->bind(
+            PersonnelTelematicsGeofenceGateway::class,
+            PersonnelTelematicsGeofenceGatewayService::class
+        );
+        $this->app->bind(
+            BulkMarineVesselLogisticsGateway::class,
+            BulkMarineVesselLogisticsGatewayService::class
+        );
     }
 
     public function boot(): void
@@ -55,12 +70,15 @@ class MiningServiceProvider extends ServiceProvider
                 BenchmarkMineEmissionsCommand::class,
                 BlockReserveEstimateCommand::class,
                 ExportComplianceReportCommand::class,
+                ExportUndergroundMarineReportCommand::class,
                 FuelAnomalyScanCommand::class,
                 IngestTelemetryCommand::class,
                 OeeBenchmarkScanCommand::class,
                 PhasePlanCommand::class,
+                ScanGeotechSlopeThresholdCommand::class,
                 ScanPermitExpiryCommand::class,
                 ShiftCloseCommand::class,
+                SimulateVentilationNetworkCommand::class,
             ]);
         }
     }
