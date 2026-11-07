@@ -157,3 +157,78 @@ Setiap titik masuk HTTP pada Fase 93 dikawal oleh `Modules\Mining\Http\Policies\
 - Perencana tambang (`mine_planner`) hanya berwenang mengelola `/mining/plans` (`MiningPlanController`).
 - Petugas dispatch (`dispatcher_mine`) mengoperasikan `/mining/dispatch` (`MiningDispatchController`), di mana setiap tindakan *override* shovel wajib menyertakan alasan tertulis minimal 5 karakter yang direkam pada `min_haul_cycle_histories`.
 - Kontraktor (`contractor`) yang mengakses `/contractor/mining` (`MiningContractorPortalController`) diisolasi secara ketat berdasarkan `contractor_party_ref === (string) $user->id`. Upaya mengakses atau menyanggah nomor kasus `MiningFuelAnomalyCase` milik kontraktor lain langsung ditolak dengan status HTTP `403 Forbidden` oleh metode `MiningFase93AccessPolicy::assertContractorOwnsFuelCase`.
+
+
+---
+
+## 2. FASE 94 — WEIGHBRIDGE, REKONSILIASI KADAR, ROYALTI MULTI-TIER, K3/HSE, REKLAMASI & OFFTAKE
+
+### 2.1 Arsitektur Integritas Timbangan Digital (Weighbridge Hash-Chain)
+Pada operasi penambangan terbuka skala industri (*open-pit mining*), titik timbang keluar tambang (*mine gate weighbridge*) dan pelabuhan muat tongkang (*jetty conveyor weighbridge*) merupakan batas krusial pengendalian pendapatan dan pelaporan royalti negara. Untuk mengeliminasi risiko manipulasi muatan (*phantom load* atau *payload shaving*), Fase 94 menerapkan rantai blok kriptografis (*hash-chain*) SHA-256 pada setiap tiket timbang `WeighbridgeTicket`:
+
+$$\text{CurrentHash} = \operatorname{HMAC-SHA256}\Big(\text{Secret}, \text{PrevHash} \parallel \text{TicketUUID} \parallel \text{GrossKg} \parallel \text{TareKg} \parallel \text{Timestamp}\Big)$$
+
+- **Integritas Rantai Timbang**: Setiap tiket baru wajib merujuk `previous_ticket_hash` dari tiket sah terakhir di timbangan tersebut. Anomali urutan atau perbedaan hash memicu `WeighbridgeAnomalyDetector` untuk membekukan tiket bersangkutan dan mengalihkan status truk ke jalur kalibrasi ulang.
+- **Deteksi Anomali Tarra & Muatan Lebih (Payload Overload)**:
+  - Tarra truk (`tare_weight_kg`) dibandingkan dengan batas deviasi historis armada ($\le 3.5\%$).
+  - Muatan bersih (`net_weight_kg = gross_weight_kg - tare_weight_kg`) diperiksa terhadap batas daya angkut rated armada (*Gross Vehicle Weight / GVW*). Muatan melebihi $115\%$ kapasitas memicu peringatan keselamatan struktural sasis dan keausan ban.
+- **Audit Otomatis**: Perintah konsol `mining:audit-weighbridge-hash-chain` memindai seluruh tiket dalam rentang tanggal tertentu, memverifikasi keterhubungan rantai tanpa putus, dan menghasilkan sertifikat integritas rantai timbang.
+
+### 2.2 Optimasi Blending & Rekonsiliasi Neraca Massa Metalurgi (M5)
+Variabilitas kadar umpan dari beberapa stockpile tambang sering mengakibatkan gangguan kinetika reaksi pada tanur reduksi kalsinasi *Rotary Kiln Electric Furnace* (RKEF) atau sirkuit benefisiasi batubara (*Coal Washing Plant*).
+- **Algoritma Blending Deterministik (`OptimizeOreBlendingAction`)**: Memilih kombinasi stockpile batubara/bijih optimal untuk memenuhi parameter target:
+  - Nilai Kalori Bruto (GAR): target $5.800\text{ kcal/kg} \pm 50\text{ kcal/kg}$.
+  - Kandungan Abu (*Ash Content*): $\le 8.5\%$.
+  - Kandungan Sulfur (*Total Sulfur*): $\le 0.8\%$.
+- **Algoritma Rekonsiliasi Neraca Massa Bersertifikat (`MassBalanceReconciler` - M5)**:
+  Menyelaraskan deviasi neraca massa fisik antara bijih masuk (*Feed*), produk konsentrat/logam (*Concentrate*), dan ampas sisa olahan (*Tailings*). Menggunakan prinsip estimasi kuadrat terkecil berbobot varians (*Weighted Least Squares*):
+
+$$\min_{\hat{M}_i} \sum_{i} \frac{(M_i^{\text{meas}} - \hat{M}_i)^2}{\sigma_i^2} \quad \text{dengan kendala} \quad \sum \hat{M}_{\text{in}} = \sum \hat{M}_{\text{out}} \quad \text{dan} \quad \sum (\hat{M} \cdot c)_{\text{in}} = \sum (\hat{M} \cdot c)_{\text{out}}$$
+
+  Setiap kalkulasi menghasilkan sertifikat kriptografis SHA-256 yang memuat nilai residu Lagrangian, matriks kovarians, dan faktor ketidakpastian rekonsiliasi yang diverifikasi oleh `MassBalanceReconcilerCertificateVerifier`.
+
+### 2.3 Resolusi Tarif Royalti Bertingkat PP 19/2025 & Penyesuaian Harga Komersial (M4 & M6)
+Kepatuhan pembayaran Penerimaan Negara Bukan Pajak (PNBP) sektor pertambangan diatur secara ketat berdasarkan regulasi terbaru Pemerintah Republik Indonesia (PP No. 19 Tahun 2025 Lampiran I):
+- **Algoritma Resolusi Tarif Royalti Bersertifikat (`RoyaltyTierResolver` - M4)**:
+  - **Batubara**: Tarif royalti progresif ditentukan secara dinamis berdasarkan matriks dua dimensi: Nilai Kalori (GAR $< 4.200$, $4.200 - 5.200$, $> 5.200\text{ kcal/kg}$) dan Harga Batubara Acuan (HBA) per ton (Rentang: $< \text{USD } 70$, $\text{USD } 70 - 90$, $\text{USD } 90 - 110$, $\ge \text{USD } 110$). Tarif bergerak dari $400\text{ bps}$ ($4.0\%$) hingga $1.350\text{ bps}$ ($13.5\%$).
+  - **Bijih Nikel**: Mengacu pada Harga Mineral Acuan (HMA) bulanan Ditjen Minerba ESDM dan formula koreksi kadar nikel basah (*wet metric ton*) terhadap kadar standar $1.80\%\text{ Ni}$.
+- **Penyesuaian Harga Komersial Batubara (`CoalPriceAdjuster` - M6)**:
+  Mengkalkulasi harga penyerahan akhir (*Adjusted Commercial FOB Price*) berdasarkan kontrak offtake jangka panjang dengan memperhitungkan faktor penalti/bonus:
+  1. Penyesuaian Kalori Proporsional: $P_{\text{cal}} = P_{\text{index}} \times (\text{GAR}_{\text{actual}} / \text{GAR}_{\text{contract}})$.
+  2. Penalti Total Moisture (TM) di atas batas kontrak ($20\text{ IDR/kg}$ per $1.0\%$ deviasi).
+  3. Penalti Ash Content di atas ambang penolakan pabrik ($50\text{ IDR/kg}$ per $1.0\%$ ekses).
+  4. Penalti Ekses Sulfur ($100\text{ IDR/kg}$ per $0.1\%$ kelebihan).
+  Kompensasi komersial ini diverifikasi oleh `CoalPriceAdjusterCertificateVerifier`.
+
+### 2.4 Sistem Keselamatan Kerja Pertambangan (K3/HSE) & Pemantauan Seismik Geoteknik
+Operasi penambangan melibatkan risiko tinggi terhadap kestabilan lereng, bahaya ledakan gas bawah tanah, dan paparan getaran peledakan:
+- **Izin Kerja Berisiko Tinggi (*High Risk Work Permit / PTW*)**:
+  Mengelola daur hidup izin (*Draft, Under Review, Approved, Active, Completed, Suspended, Expired*) untuk 5 klasifikasi pekerjaan berbahaya: *Hot Work, Confined Space, Working at Heights, Blasting/Explosives Handling*, dan *High Voltage Electrical*. Petugas K3 wajib memvalidasi sertifikasi personil, isolasi energi (*LOTO*), dan koordinat geofence sebelum izin diaktifkan.
+- **Pemantau Getaran Seismik Peledakan (`MineBlastingSeismicMonitor`)**:
+  Menerapkan kaidah baku tingkat getaran peledakan SNI 7571:2010 dan model USBM RI 8507:
+  - Menghitung Jarak Berskala (*Scaled Distance*): $SD = \text{Distance} / \sqrt{Q_{\text{delay}}}$.
+  - Memprediksi Kecepatan Partikel Puncak (*Peak Particle Velocity*): $PPV = 1140 \cdot (SD)^{-1.6}\text{ mm/s}$.
+  - Memprediksi Tekanan Gelombang Suara Udara (*Airblast Overpressure*): $L = 165 - 24 \log_{10}(D / \sqrt[3]{Q})\text{ dBL}$.
+  - Membandingkan hasil kalkulasi terhadap batas aman pemukiman ($3.0 - 5.0\text{ mm/s}$ dan $\le 120\text{ dBL}$). Bila melampaui, sistem otomatis menerbitkan rekomendasi pemotongan muatan delay atau penataan waktu tunda elektronik.
+- **Analitika Kestabilan Lereng Pit (`MineSlopeStabilityAnalyzer`)**:
+  Mengevaluasi Faktor Keamanan (*Factor of Safety / FoS*) lereng tunggal (*single bench*) dan lereng keseluruhan (*overall slope*) menggunakan metode kesetimbangan batas (*Limit Equilibrium Bishop Simplified*). Nilai $\text{FoS} < 1.30$ memicu evakuasi segera dan isolasi perimeter jalur hauling.
+- **Pemantauan Bendungan Tailing TSF (`AuditTailingsDamSafetyAction`)**:
+  Mengadopsi Standar Industri Global tentang Manajemen Tailing (*Global Industry Standard on Tailings Management / GISTM*):
+  - Memonitor tinggi jagaan (*Freeboard* $\ge 1.5\text{ m}$).
+  - Rasio garis freatik piezometer tubuh bendungan ($\le 0.45$).
+  - Debit rembesan kaki bendungan (*Toe Seepage Flow*) terhadap garis dasar historis.
+  - Rasio potensi likuifaksi seismik siklik ($CSR / CRR < 1.0$).
+
+### 2.5 Reklamasi Pascatambang & Amortisasi Aset Pengupasan (PSAK 64 / IFRIC 20)
+- **Neraca Deplesi Cadangan KCMI/JORC (`MineExplorationReserveDepletionTracker`)**:
+  Menyajikan saldo cadangan terbukti (*Proved*) dan terduga (*Probable*) berbasis konsesi. Apabila rasio pengupasan tanah penutup aktual (*Actual Stripping Ratio*) melampaui rasio rencana tambang (*Life-of-Mine Stripping Ratio*), ekses biaya kapitalisasi diakui sebagai *Deferred Stripping Asset* dan diamortisasi seiring tonase ekstraksi mineral berikutnya.
+- **Unwinding Diskonto Provisi Reklamasi (`UnwindReclamationProvisionAction`)**:
+  Mencatat beban bunga amortisasi nilai kini (*Present Value Unwinding*) atas liabilitas penutupan tambang dan revegetasi sesuai standar akuntansi keuangan.
+
+### 2.6 Ekosistem Perdagangan Komoditas & Offtake (Trade Finance Integration)
+- **Daur Hidup Pengapalan Offtake (`OfftakeShipmentStateMachine`)**:
+  Mengawal pengapalan mineral/batubara dari nominasi kapal (*Vessel Nominated*), sandar pelabuhan (*Berthed*), pemuatan palka (*Loading*), verifikasi sarat kapal (*Draft Survey Completed*), berlayar (*Sailed*), rilis *Bill of Lading* (*BL Issued*), penagihan sementara (*Provisional Invoiced*), rekonsiliasi assay pelabuhan bongkar (*Discharge Assay Reconciled*), hingga penyelesaian akhir (*Final Settled*).
+- **Integrasi Finansial & Letter of Credit (LC)**:
+  Terhubung langsung dengan modul `TradeFinance` melalui gateway perbankan `OfftakeLetterOfCreditGatewayService` untuk validasi keabsahan *Irrevocable Documentary LC* sebelum pemuatan kapal disetujui.
+- **Portal Pembeli Mandiri Bebas IDOR (`MiningOfftakerPortalController`)**:
+  Menyediakan antarmuka terenkripsi bagi offtaker terdaftar untuk meninjau status kargo, mengunggah sertifikat analisis pelabuhan bongkar (*Discharge Certificate of Sampling and Analysis*), dan menominasikan jadwal sandar tongkang dengan perlindungan isolasi penyewa mutlak.

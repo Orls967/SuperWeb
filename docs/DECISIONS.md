@@ -2763,4 +2763,4 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   13. **D93-6 (Respons Kepekaan Curah Hujan)**: Curah hujan ekstrem di atas ambang batas secara otomatis menurunkan ketersediaan jam kerja efektif shift dan memicu penghitungan ulang target pit (`RePlanShiftTargetsAction`).
   14. **D93-7 (Jurnal Akuntansi Double-Entry Operasional Tambang)**: Pembukuan tagihan kontraktor angkut, penahanan biaya deviasi BBM, dan rilis/pemotongan definitif ke akun ledger formal.
   15. **D93-8 (Audit Dua Sumber mining:audit)**: Verifikasi saldo akun hold pembayaran kontraktor terhadap total kasus anomali aktif, batas ketersediaan armada, payload variance, dan ketunggalan Work Order terbit.
-
+- [ADR-0094](decisions/ADR-0094-weighbridge-royalty-hse-and-offtake.md) — 2026-11-07 — Arsitektur Timbangan Hash-Chain, Tarif Royalti Berversi PP 19/2025, Rekonsiliasi Massa M5 & Saga Offtake (`G7-D26`, `G7-D27`, `G7-D28`, `G7-K11`, `G7-K12`) {#ADR-0094}

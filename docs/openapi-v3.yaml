@@ -52738,18 +52738,17 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
-  /mining/hse:
+  /mining/grade:
     get:
-      operationId: getMiningHse
+      operationId: getMiningGrade
       tags:
         - Mining
-      summary: 'Blast Safety (Mining)'
-      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mining_admin, site_manager].'
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, metallurgist, mine_manager].'
       x-allowed-roles:
         - admin
-        - hse_officer
-        - mining_admin
-        - site_manager
+        - metallurgist
+        - mine_manager
       parameters:
         -
           $ref: '#/components/parameters/CorrelationIdHeader'
@@ -52798,6 +52797,719 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /mining/grade/blend:
+    post:
+      operationId: postMiningGradeBlend
+      tags:
+        - Mining
+      summary: 'Blend (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, metallurgist, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - metallurgist
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningGradeBlend'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/grade/depletion:
+    post:
+      operationId: postMiningGradeDepletion
+      tags:
+        - Mining
+      summary: 'Track Depletion (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, metallurgist, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - metallurgist
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningGradeDepletion'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/hse:
+    get:
+      operationId: getMiningHse
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/hse/audit-permits:
+    get:
+      operationId: getMiningHseAuditPermits
+      tags:
+        - Mining
+      summary: 'Audit Permits (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/hse/blasting-eval:
+    post:
+      operationId: postMiningHseBlastingEval
+      tags:
+        - Mining
+      summary: 'Evaluate Blasting (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningHseBlastingEval'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/hse/permit:
+    post:
+      operationId: postMiningHsePermit
+      tags:
+        - Mining
+      summary: 'Issue Permit (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningHsePermit'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/hse/scan-expiry:
+    post:
+      operationId: postMiningHseScanExpiry
+      tags:
+        - Mining
+      summary: 'Scan Expiry (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, hse_officer, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - hse_officer
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningHseScanExpiry'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/offtake:
+    get:
+      operationId: getMiningOfftake
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, offtake_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - offtake_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/offtake/nominate:
+    post:
+      operationId: postMiningOfftakeNominate
+      tags:
+        - Mining
+      summary: 'Nominate (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, offtake_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - offtake_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningOfftakeNominate'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/offtake/settle-final:
+    post:
+      operationId: postMiningOfftakeSettleFinal
+      tags:
+        - Mining
+      summary: 'Settle Final (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, offtake_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - offtake_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningOfftakeSettleFinal'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/offtake/settle-provisional:
+    post:
+      operationId: postMiningOfftakeSettleProvisional
+      tags:
+        - Mining
+      summary: 'Settle Provisional (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, offtake_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - offtake_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningOfftakeSettleProvisional'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   /mining/operations/blast-safety:
     get:
       operationId: getMiningOperationsBlastSafety
@@ -54076,6 +54788,196 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/reclamation:
+    get:
+      operationId: getMiningReclamation
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/reclamation/schedule:
+    post:
+      operationId: postMiningReclamationSchedule
+      tags:
+        - Mining
+      summary: 'Schedule (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningReclamationSchedule'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /mining/reclamation/unwind:
+    post:
+      operationId: postMiningReclamationUnwind
+      tags:
+        - Mining
+      summary: 'Unwind (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningReclamationUnwind'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   /mining/reports/export:
     get:
       operationId: getMiningReportsExport
@@ -54195,18 +55097,142 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /mining/royalty:
+    get:
+      operationId: getMiningRoyalty
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, royalty_officer].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - royalty_officer
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /mining/royalty/adjust-price:
+    post:
+      operationId: postMiningRoyaltyAdjustPrice
+      tags:
+        - Mining
+      summary: 'Adjust Price (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, mine_manager, royalty_officer].'
+      x-allowed-roles:
+        - admin
+        - mine_manager
+        - royalty_officer
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningRoyaltyAdjustPrice'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
   /mining/weighbridge:
     get:
       operationId: getMiningWeighbridge
       tags:
         - Core
       summary: 'GET Weighbridge in Core'
-      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, mine_manager, mining_admin, site_manager, weighbridge_operator].'
+      description: 'Operational endpoint for Core module. Protected by role matrix: [admin, mine_manager, weighbridge_operator].'
       x-allowed-roles:
         - admin
         - mine_manager
-        - mining_admin
-        - site_manager
         - weighbridge_operator
       parameters:
         -
@@ -54566,6 +55592,130 @@ paths:
           SessionCookieAuth: {}
       requestBody:
         description: 'Request payload for postNotificationsRead'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /offtaker/mining:
+    get:
+      operationId: getMiningOfftakerPortal
+      tags:
+        - Mining
+      summary: 'Index (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, offtaker].'
+      x-allowed-roles:
+        - admin
+        - offtaker
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /offtaker/mining/nominate:
+    post:
+      operationId: postMiningOfftakerNominate
+      tags:
+        - Mining
+      summary: 'Nominate (Mining)'
+      description: 'Operational endpoint for Mining module. Protected by role matrix: [admin, offtaker].'
+      x-allowed-roles:
+        - admin
+        - offtaker
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postMiningOfftakerNominate'
         required: true
         content:
           application/json:

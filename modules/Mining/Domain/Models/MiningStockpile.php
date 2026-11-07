@@ -6,10 +6,14 @@ namespace Modules\Mining\Domain\Models;
 
 use Brick\Math\BigRational;
 use Brick\Math\RoundingMode;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class MiningStockpile extends Model
 {
+    use HasUuids;
+
     protected $table = 'min_stockpiles';
 
     protected $keyType = 'string';
@@ -27,6 +31,7 @@ class MiningStockpile extends Model
         'sum_kg_sulfur_bps',
         'sum_kg_moisture_bps',
         'sum_kg_metal_bps',
+        'avg_grade_pct',
     ];
 
     protected $casts = [
@@ -36,7 +41,17 @@ class MiningStockpile extends Model
         'sum_kg_sulfur_bps' => 'integer',
         'sum_kg_moisture_bps' => 'integer',
         'sum_kg_metal_bps' => 'integer',
+        'avg_grade_pct' => 'float',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model): void {
+            if (empty($model->name)) {
+                $model->name = $model->stockpile_code ?? ('Stockpile-'.strtoupper(Str::random(6)));
+            }
+        });
+    }
 
     /**
      * Add material into stockpile, accumulating sum of kg and sum of (kg x specs) (PR4).

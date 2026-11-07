@@ -515,7 +515,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 35 | **Manufacturing** | `mfg_` | 14 |
 | 36 | **Marine** | `mar_` | 1 |
 | 37 | **Med** | `med_` | 3 |
-| 38 | **Mining** | `min_` | 13 |
+| 38 | **Mining** | `min_` | 14 |
 | 39 | **Mobility** | `oto_` | 0 |
 | 40 | **Partner** | `ptn_` | 1 |
 | 41 | **Party** | `pty_` | 3 |
@@ -541,14 +541,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 6 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **654 Migrasi** |
+| | **Total: 63 Modul** | | **655 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
 |---|---|---|---|
 | **Agency** | 17 | `agency`, `agency/{agent}`, `agency/agents` ... | web, auth, verified |
 | **Agri** | 8 | `agri`, `agri/dashboard`, `agri/contracts` ... | web, auth, role:admin,farmer,procurement |
-| **App** | 36 | `api/v1/integration/ping`, `governance`, `api/oto/telematics/clear-grounding` ... | throttle:api-client, web, auth |
+| **App** | 35 | `api/v1/integration/ping`, `governance`, `api/oto/telematics/clear-grounding` ... | throttle:api-client, web, auth |
 | **Asset** | 24 | `assets/audit`, `assets/depreciation`, `assets/depreciation/run` ... | web, auth, verified |
 | **AutoDex** | 5 | `autodex`, `autodex/car/{car}`, `autodex/garage` ... | web, auth, verified |
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
@@ -583,7 +583,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Manufacturing** | 68 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
 | **Marine** | 2 | `marine`, `marine/ponds/{id}` | web, auth, role:admin,farmer,manager,officer |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
-| **Mining** | 31 | `mining/plans`, `mining/plans/{plan}/replan`, `mining/dispatch` ... | web, auth, role:mine_planner,admin |
+| **Mining** | 50 | `mining/grade`, `mining/grade/blend`, `mining/grade/depletion` ... | web, auth, role:metallurgist,admin,mine_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
 | **Partner** | 7 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 17 | `venue`, `venue/tickets/{ticket}/scan`, `venue/ticketing` ... | web, auth, role:admin,venue_manager,venue_staff |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1338 Rute** | | |
+| **Total** | **1356 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -739,10 +739,17 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `migrate` | `manual` | Run the database migrations |
 | `min:audit` | `manual` | Perform two-source verification of mining equipment statuses, weighbridge hash-chains, and ledger invariants |
 | `mining:audit` | `manual` | Perform two-source verification of mining equipment statuses, weighbridge hash-chains, and ledger invariants |
+| `mining:benchmark-emissions` | `manual` | Benchmark intensitas emisi gas rumah kaca Scope 1 dan Scope 2 terhadap standar internasional CBAM Ditjen EBTKE |
+| `mining:check-royalty` | `manual` | Audit kepatuhan integritas royalti, verifikasi neraca jembatan timbang vs stockpile, dan deteksi tampering data tonase |
+| `mining:check-sampling` | `manual` | Audit kepatuhan statistik teori sampling Pierre Gy atas protokol pengambilan sampel bijih dan batubara |
+| `mining:check-tailings` | `manual` | Audit kepatuhan integritas struktural dan geoteknik bendungan tailing tambang (TSF) berstandar GISTM |
+| `mining:check-weighbridge-chain` | `manual` | Audit kriptografis rantai-hash seluruh tiket timbang jembatan timbang dari genesis hingga transaksi mutakhir |
 | `mining:estimate-reserve` | `manual` | Menjalankan estimasi cadangan blok tambang berbasis 3D Voxel Grid & IDW interpolator |
+| `mining:export-compliance-csv` | `manual` | Ekspor rekapitulasi data kepatuhan royalti, rekonsiliasi grade, dan audit minerba ke format CSV |
 | `mining:fuel-anomaly-scan` | `manual` | Memindai deviasi konsumsi bahan bakar alat berat kontraktor menggunakan regresi M3 |
 | `mining:ingest-telemetry` | `manual` | Melakukan simulasi ingest data telemetri IoT armada alat berat secara idempoten |
 | `mining:oee-scan` | `manual` | Peringkat OEE truk angkut (ketersediaan x kinerja x kualitas, bps) dari fakta siklus |
+| `mining:permit-expiry-scan` | `manual` | Pindai masa berlaku izin kerja K3 (PTW) dan ubah otomatis izin kedaluwarsa menjadi EXPIRED |
 | `mining:phase-plan` | `manual` | Melakukan time-phasing bulanan rencana tambang ke alokasi harian dan shift (idempoten) |
 | `mining:shift-close` | `manual` | Menutup shift tambang, merekonsiliasi tonase, dan membukukan tagihan hauling kontraktor (idempoten) |
 | `mob:audit` | `manual` | Perform consolidated two-source audit of Mobility ecosystem (Telematics, EV Charging, Fleet Leasing) |
@@ -824,7 +831,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 210 Command** | **37 Terjadwal** | |
+| **Total: 217 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -850,7 +857,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Manufacturing** | `RecycledMaterialAccounts` | 2 | `inv:materials:IDR`, `mfg:recycled_material_clearing:IDR` |
 | **Marine** | `MarineAccounts` | 6 | `mar:farmer_advance_receivable:IDR`, `mar:farmer_input_loan_receivable:IDR` ... |
 | **Med** | `MedAccounts` | 9 | `med:ad_platform_revenue:IDR`, `med:ad_publisher_payable:IDR` ... |
-| **Mining** | `MiningAccounts` | 39 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
+| **Mining** | `MiningAccounts` | 40 | `expense:min:royalty:IDR`, `min:royalty_payable:IDR` ... |
 | **Mobility** | `EvAccounts` | 3 | `oto:ev_charging_revenue:IDR`, `escrow:payment:IDR` ... |
 | **Mobility** | `FleetAccounts` | 7 | `oto:fleet_lease_revenue:IDR`, `expense:oto:fleet_sla_credit:IDR` ... |
 | **Port** | `PortAccounts` | 4 | `rev:prt:thc:IDR`, `rev:prt:dockage:IDR` ... |
@@ -866,6 +873,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 30 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 37 Registry** | | **465 Akun** | |
+| **Total: 37 Registry** | | **466 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
