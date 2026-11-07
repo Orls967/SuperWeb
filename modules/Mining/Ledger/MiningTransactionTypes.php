@@ -40,4 +40,6 @@ enum MiningTransactionTypes: string implements TransactionTypeRegistry
     case MINING_MTM_LOSS = 'MINING_MTM_LOSS';
     case MINING_MTM_GAIN = 'MINING_MTM_GAIN';
     case MINING_JOINT_COST_ALLOC = 'MINING_JOINT_COST_ALLOC';
+    case MINING_GEOTECH_SURVEY = 'MINING_GEOTECH_SURVEY';
+    case MINING_SLOPE_REMEDIATION = 'MINING_SLOPE_REMEDIATION';
 }

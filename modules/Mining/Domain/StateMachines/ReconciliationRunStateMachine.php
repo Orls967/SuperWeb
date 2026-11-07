@@ -33,7 +33,7 @@ final class ReconciliationRunStateMachine
         ?string $actorId = null,
         ?string $notes = null
     ): void {
-        $currentStatus = $run->status;
+        $currentStatus = $run->statusEnum();
 
         if ($currentStatus === $targetStatus) {
             return;
@@ -50,7 +50,7 @@ final class ReconciliationRunStateMachine
 
         $this->assertTransitionGuard($run, $currentStatus, $targetStatus);
 
-        $updates = ['status' => $targetStatus];
+        $updates = ['status' => $targetStatus->value];
         if ($targetStatus === ReconciliationRunStatus::APPROVED) {
             $updates['approved_at'] = now();
         } elseif ($targetStatus === ReconciliationRunStatus::LOCKED) {

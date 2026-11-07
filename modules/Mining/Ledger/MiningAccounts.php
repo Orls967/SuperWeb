@@ -302,6 +302,34 @@ final class MiningAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'min:barge_freight_payable:IDR',
+                'name' => 'Mining Marine Barge Freight Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'expense:min:geotech_monitoring:IDR',
+                'name' => 'Mining Geotechnical Slope & Drone Survey Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:slope_remediation_expense:IDR',
+                'name' => 'Mining Slope Remediation & Buttressing Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:slope_remediation_provision:IDR',
+                'name' => 'Mining Geotechnical Slope Remediation Provision',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 
@@ -370,5 +398,35 @@ final class MiningAccounts
     public static function bankCash(): string
     {
         return 'min:bank_cash:IDR';
+    }
+
+    public static function explosivesExpense(): string
+    {
+        return 'min:explosives_expense:IDR';
+    }
+
+    public static function marineFreightExpense(): string
+    {
+        return 'min:marine_freight_expense:IDR';
+    }
+
+    public static function bargeFreightPayable(): string
+    {
+        return 'min:barge_freight_payable:IDR';
+    }
+
+    public static function geotechMonitoringExpense(): string
+    {
+        return 'expense:min:geotech_monitoring:IDR';
+    }
+
+    public static function slopeRemediationExpense(): string
+    {
+        return 'min:slope_remediation_expense:IDR';
+    }
+
+    public static function slopeRemediationProvision(): string
+    {
+        return 'min:slope_remediation_provision:IDR';
     }
 }

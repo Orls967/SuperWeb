@@ -83,6 +83,17 @@ class MiningWorkPermit extends Model
         return $this->belongsTo(MiningPit::class, 'pit_id');
     }
 
+    public function isExpired(?CarbonImmutable $now = null): bool
+    {
+        $now = $now ?? CarbonImmutable::now();
+
+        if ($this->valid_until && $now->greaterThan($this->valid_until)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function isCurrentlyValid(?CarbonImmutable $now = null): bool
     {
         $now = $now ?? CarbonImmutable::now();

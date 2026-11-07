@@ -104,7 +104,7 @@ class RunMetallurgicalMassBalanceReconciliationAction
                 'reconciled_tailings_kg' => $result->reconciledTailingsKg,
                 'recovery_bps' => $result->recoveryBps,
                 'discrepancy_kg' => $result->discrepancyKg,
-                'status' => $run->status->value,
+                'status' => $run->status instanceof \BackedEnum ? $run->status->value : (string) $run->status,
             ];
         });
     }
