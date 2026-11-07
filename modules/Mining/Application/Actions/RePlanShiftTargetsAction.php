@@ -64,7 +64,7 @@ class RePlanShiftTargetsAction
             }
 
             if ($lostHours > 20) {
-                $sm = $this->stateMachine ?? new MinePlanStateMachine();
+                $sm = $this->stateMachine ?? new MinePlanStateMachine;
                 $current = $sm->resolveCurrentStatus($plan);
                 if ($current === MinePlanStatus::APPROVED) {
                     $sm->transition($plan, MinePlanStatus::ACTIVE, 'system', 'Aktivasi sebelum revisi hujan ekstrem');

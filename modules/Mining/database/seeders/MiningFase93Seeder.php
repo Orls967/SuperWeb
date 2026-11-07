@@ -17,7 +17,6 @@ use Modules\Mining\Domain\Enums\HaulCycleStatus;
 use Modules\Mining\Domain\Enums\MinePlanStatus;
 use Modules\Mining\Domain\Models\MiningExternalFactor;
 use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
-use Modules\Mining\Domain\Models\MiningPlan;
 use Modules\Mining\Domain\Models\MiningSite;
 
 /**

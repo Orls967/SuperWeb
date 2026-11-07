@@ -7,12 +7,8 @@ namespace Modules\Shared\Domain\Algorithms\Geo;
 final readonly class OrdinaryKriging3DResult
 {
     /**
-     * @param array{x: int, y: int, z: int} $targetPoint
-     * @param int $estimatedGradePpm
-     * @param int $krigingVarianceBps
-     * @param array<int, array{sample_index: int, weight_bps: int}> $weightsBreakdown
-     * @param int $lagrangeMultiplierBps
-     * @param string $certificateHash
+     * @param  array{x: int, y: int, z: int}  $targetPoint
+     * @param  array<int, array{sample_index: int, weight_bps: int}>  $weightsBreakdown
      */
     public function __construct(
         public array $targetPoint,
@@ -21,7 +17,5 @@ final readonly class OrdinaryKriging3DResult
         public array $weightsBreakdown,
         public int $lagrangeMultiplierBps,
         public string $certificateHash,
-    ) {
-    }
+    ) {}
 }
-

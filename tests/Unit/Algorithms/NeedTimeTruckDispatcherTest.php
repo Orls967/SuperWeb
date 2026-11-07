@@ -14,7 +14,7 @@ class NeedTimeTruckDispatcherTest extends TestCase
 {
     public function test_need_time_truck_dispatcher_prompt_vector(): void
     {
-        $dispatcher = new NeedTimeTruckDispatcher();
+        $dispatcher = new NeedTimeTruckDispatcher;
 
         $shovels = [
             [
@@ -86,7 +86,7 @@ class NeedTimeTruckDispatcherTest extends TestCase
 
     public function test_corrupted_certificate_throws_domain_exception(): void
     {
-        $verifier = new NeedTimeTruckDispatcherCertificateVerifier();
+        $verifier = new NeedTimeTruckDispatcherCertificateVerifier;
 
         $corruptResult = new NeedTimeTruckDispatcherResult(
             assignments: [
@@ -117,4 +117,3 @@ class NeedTimeTruckDispatcherTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
-

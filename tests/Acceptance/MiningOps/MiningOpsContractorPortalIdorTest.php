@@ -9,7 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Mining\database\seeders\MiningRbacSeeder;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
-use Modules\Mining\Domain\Models\MiningHaulCycle;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
 use Tests\TestCase;
@@ -86,7 +85,7 @@ class MiningOpsContractorPortalIdorTest extends TestCase
         $this->assertEquals(200, $responseA->getStatusCode());
 
         // Contractor A attempting to access/dispute Contractor B's fuel anomaly case
-        $responseIdor = $this->actingAs($contractorUserA)->postJson("/contractor/mining/dispute", [
+        $responseIdor = $this->actingAs($contractorUserA)->postJson('/contractor/mining/dispute', [
             'case_id' => $caseB->id,
             'reason' => 'Unauthorized dispute attempt by different contractor',
         ]);
@@ -94,4 +93,3 @@ class MiningOpsContractorPortalIdorTest extends TestCase
         $this->assertEquals(403, $responseIdor->getStatusCode());
     }
 }
-

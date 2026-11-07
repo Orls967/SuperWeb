@@ -48,4 +48,3 @@ class ShiftCloseCommand extends Command
         return 0;
     }
 }
-

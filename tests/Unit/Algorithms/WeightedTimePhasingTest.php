@@ -14,7 +14,7 @@ class WeightedTimePhasingTest extends TestCase
 {
     public function test_weighted_time_phasing_prompt_vector(): void
     {
-        $algorithm = new WeightedTimePhasing();
+        $algorithm = new WeightedTimePhasing;
 
         $totalTarget = 100003;
         $weights = [5, 5, 5, 5, 4, 4, 2];
@@ -31,7 +31,7 @@ class WeightedTimePhasingTest extends TestCase
 
     public function test_corrupted_certificate_throws_domain_exception(): void
     {
-        $verifier = new WeightedTimePhasingCertificateVerifier();
+        $verifier = new WeightedTimePhasingCertificateVerifier;
 
         $corruptResult = new WeightedTimePhasingResult(
             totalTarget: 100003,
@@ -46,4 +46,3 @@ class WeightedTimePhasingTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
-

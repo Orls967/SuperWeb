@@ -34,4 +34,3 @@ class MiningSaga extends Model
         'completed_at' => 'datetime',
     ];
 }
-

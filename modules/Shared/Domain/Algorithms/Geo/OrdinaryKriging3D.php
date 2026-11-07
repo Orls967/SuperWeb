@@ -22,16 +22,15 @@ final class OrdinaryKriging3D
 
     public function __construct(?OrdinaryKriging3DCertificateVerifier $verifier = null)
     {
-        $this->verifier = $verifier ?? new OrdinaryKriging3DCertificateVerifier();
+        $this->verifier = $verifier ?? new OrdinaryKriging3DCertificateVerifier;
     }
 
     /**
-     * @param array{x: int, y: int, z: int} $targetPoint Target estimasi (mm)
-     * @param array<int, array{x: int, y: int, z: int, grade_ppm: int}> $samples Titik sampel borehole
-     * @param float $nuggetC0 Efek nugget (nugget effect)
-     * @param float $sillC Varians struktur (sill - nugget)
-     * @param float $rangeA Jarak pengaruh (range) dalam meter
-     * @return OrdinaryKriging3DResult
+     * @param  array{x: int, y: int, z: int}  $targetPoint  Target estimasi (mm)
+     * @param  array<int, array{x: int, y: int, z: int, grade_ppm: int}>  $samples  Titik sampel borehole
+     * @param  float  $nuggetC0  Efek nugget (nugget effect)
+     * @param  float  $sillC  Varians struktur (sill - nugget)
+     * @param  float  $rangeA  Jarak pengaruh (range) dalam meter
      */
     public function estimate(
         array $targetPoint,
@@ -64,6 +63,7 @@ final class OrdinaryKriging3D
                 certificateHash: $hash,
             );
             $this->verifier->verify($samples, $res);
+
             return $res;
         }
 
@@ -157,6 +157,7 @@ final class OrdinaryKriging3D
         $dx = ($p1['x'] - $p2['x']) / 1000.0;
         $dy = ($p1['y'] - $p2['y']) / 1000.0;
         $dz = ($p1['z'] - $p2['z']) / 1000.0;
+
         return sqrt(($dx * $dx) + ($dy * $dy) + ($dz * $dz));
     }
 
@@ -169,12 +170,13 @@ final class OrdinaryKriging3D
             return $c0 + $c;
         }
         $ratio = $h / $a;
+
         return $c0 + $c * (1.5 * $ratio - 0.5 * pow($ratio, 3));
     }
 
     /**
-     * @param array<int, array<int, float>> $a
-     * @param array<int, float> $b
+     * @param  array<int, array<int, float>>  $a
+     * @param  array<int, float>  $b
      * @return array<int, float>
      */
     private function solveLinearSystem(array $a, array $b): array
@@ -226,4 +228,3 @@ final class OrdinaryKriging3D
         return $x;
     }
 }
-

@@ -18,4 +18,3 @@ final class InvalidMiningStateTransitionException extends DomainException
         return new self($msg);
     }
 }
-

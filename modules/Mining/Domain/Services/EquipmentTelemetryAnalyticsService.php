@@ -15,7 +15,6 @@ use Modules\Mining\Domain\Models\MiningSaga;
 final class EquipmentTelemetryAnalyticsService
 {
     /**
-     * @param  string  $equipmentId
      * @return array{
      *     equipment_code: string,
      *     engine_hours_total: int,

@@ -22,7 +22,6 @@ final class HaulRoadFleetMaintenanceService
     private const WATERING_COST_PER_KM_IDR = 800000;
 
     /**
-     * @param  string  $pitId
      * @param  int  $roadLengthMeters  Panjang segmen jalan angkut (meter)
      * @param  int  $roughnessIriMmPerKm  Indeks ketidakrataan permukaan jalan (mm/km, misal 3200 = 3.2 m/km)
      * @param  int  $dustConcentrationPpm  Konsentrasi partikulat debu PM10 (ppm/ug-m3)

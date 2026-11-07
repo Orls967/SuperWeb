@@ -7,11 +7,8 @@ namespace Modules\Mining\Domain\Algorithms;
 final readonly class InverseDistanceWeightingResult
 {
     /**
-     * @param array{x: int, y: int, z: int} $targetPoint
-     * @param int $interpolatedGradePpm
-     * @param int $sampleCount
-     * @param array<int, array{sample_index: int, distance_mm: int, weight_bps: int}> $weightsBreakdown
-     * @param string $certificateHash
+     * @param  array{x: int, y: int, z: int}  $targetPoint
+     * @param  array<int, array{sample_index: int, distance_mm: int, weight_bps: int}>  $weightsBreakdown
      */
     public function __construct(
         public array $targetPoint,
@@ -19,7 +16,5 @@ final readonly class InverseDistanceWeightingResult
         public int $sampleCount,
         public array $weightsBreakdown,
         public string $certificateHash,
-    ) {
-    }
+    ) {}
 }
-

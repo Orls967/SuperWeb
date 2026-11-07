@@ -53,4 +53,3 @@ class MiningOpsAccessTest extends TestCase
         }
     }
 }
-

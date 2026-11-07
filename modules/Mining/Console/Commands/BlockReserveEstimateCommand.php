@@ -25,6 +25,7 @@ class BlockReserveEstimateCommand extends Command
 
         if (! $pit) {
             $this->error("Pit dengan ID/Kode '{$pitIdentifier}' tidak ditemukan.");
+
             return 1;
         }
 
@@ -69,4 +70,3 @@ class BlockReserveEstimateCommand extends Command
         return 0;
     }
 }
-

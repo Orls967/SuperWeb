@@ -43,4 +43,3 @@ enum EquipmentStatus: string
         };
     }
 }
-

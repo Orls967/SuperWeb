@@ -14,7 +14,7 @@ class LinearBaselineRegressionTest extends TestCase
 {
     public function test_linear_baseline_regression_prompt_vector(): void
     {
-        $regression = new LinearBaselineRegression();
+        $regression = new LinearBaselineRegression;
 
         $xPoints = [10, 20, 30, 40, 50];
         $yPoints = [230, 410, 620, 800, 1010];
@@ -44,7 +44,7 @@ class LinearBaselineRegressionTest extends TestCase
 
     public function test_corrupted_certificate_throws_domain_exception(): void
     {
-        $verifier = new LinearBaselineRegressionCertificateVerifier();
+        $verifier = new LinearBaselineRegressionCertificateVerifier;
 
         $corruptResult = new LinearBaselineRegressionResult(
             slope: ['numerator' => 39, 'denominator' => 2, 'float_val' => 19.5],
@@ -65,4 +65,3 @@ class LinearBaselineRegressionTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
-

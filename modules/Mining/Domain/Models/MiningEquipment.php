@@ -6,6 +6,8 @@ namespace Modules\Mining\Domain\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MiningEquipment extends Model
 {
@@ -46,12 +48,12 @@ class MiningEquipment extends Model
         });
     }
 
-    public function telemetries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function telemetries(): HasMany
     {
         return $this->hasMany(MiningEquipmentTelemetry::class, 'equipment_id');
     }
 
-    public function site(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function site(): BelongsTo
     {
         return $this->belongsTo(MiningSite::class, 'site_id');
     }

@@ -68,7 +68,7 @@ class PlanMineBlockAction
                 'approved_by_user_id' => $params['user_id'] ?? null,
             ]);
 
-            $sm = $this->stateMachine ?? new MinePlanStateMachine();
+            $sm = $this->stateMachine ?? new MinePlanStateMachine;
             $actorRef = isset($params['user_id']) ? (string) $params['user_id'] : 'system';
             $sm->advanceAlongPath(
                 $plan,
