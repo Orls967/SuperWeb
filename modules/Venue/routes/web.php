@@ -7,6 +7,7 @@ use Modules\Venue\Http\Controllers\GateScanController;
 use Modules\Venue\Http\Controllers\GuestTicketPortalController;
 use Modules\Venue\Http\Controllers\VenueArtistRoyaltyEscrowController;
 use Modules\Venue\Http\Controllers\VenueController;
+use Modules\Venue\Http\Controllers\VenueEconomyController;
 use Modules\Venue\Http\Controllers\VenueEventController;
 use Modules\Venue\Http\Controllers\VenuePermitController;
 use Modules\Venue\Http\Controllers\VenueReportController;
@@ -87,4 +88,22 @@ Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->pref
         Route::post('/royalties/accrue', [VenueArtistRoyaltyEscrowController::class, 'accrueRoyalty'])->name('royalties.accrue');
         Route::post('/royalties/release', [VenueArtistRoyaltyEscrowController::class, 'releaseRoyalties'])->name('royalties.release');
     });
+
+    // 90.1 - 90.8 Venue Night Economics, Membership, Festival & Sponsor
+    Route::prefix('economy')->name('venue.economy.')->group(function () {
+        Route::get('/pnl', [VenueEconomyController::class, 'pnlReport'])->name('pnl');
+        Route::get('/artists', [VenueEconomyController::class, 'artistStatement'])->name('artists');
+        Route::post('/artists/settle', [VenueEconomyController::class, 'settleArtist'])->name('artists.settle');
+        Route::get('/members', [VenueEconomyController::class, 'memberProfile'])->name('members');
+        Route::post('/members/evaluate', [VenueEconomyController::class, 'evaluateMembership'])->name('members.evaluate');
+        Route::get('/bundles', [VenueEconomyController::class, 'festivalBundles'])->name('bundles');
+        Route::post('/bundles/allocate', [VenueEconomyController::class, 'allocateBundle'])->name('bundles.allocate');
+        Route::get('/sponsors', [VenueEconomyController::class, 'sponsorReport'])->name('sponsors');
+        Route::post('/sponsors/milestones/valuate', [VenueEconomyController::class, 'valuateSponsorMilestone'])->name('sponsors.milestones.valuate');
+        Route::get('/bar', [VenueEconomyController::class, 'barShift'])->name('bar');
+        Route::post('/bar/audit', [VenueEconomyController::class, 'auditBarShift'])->name('bar.audit');
+    });
+
+    // Direct Action Endpoints for API/Post JSON compatibility
+    Route::post('/bar-shifts/audit', [VenueEconomyController::class, 'auditBarShift'])->name('venue.bar-shifts.audit');
 });

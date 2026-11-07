@@ -7,9 +7,11 @@ namespace Modules\Trade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Trade\Application\Services\Bidding\AiBiddingAgentService;
+use Modules\Trade\Application\Services\ImportLandedCostQuoterService;
 use Modules\Trade\Application\Services\TradeService;
 use Modules\Trade\Console\Commands\AuditBiddingCommand;
 use Modules\Trade\Console\Commands\AuditTradeCommand;
+use Modules\Trade\Contracts\ImportLandedCostQuoter;
 
 class TradeServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class TradeServiceProvider extends ServiceProvider
     {
         $this->app->singleton(TradeService::class);
         $this->app->singleton(AiBiddingAgentService::class);
+        $this->app->bind(ImportLandedCostQuoter::class, ImportLandedCostQuoterService::class);
     }
 
     public function boot(): void
