@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Domain\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TicketWaitlist extends Model
 {
@@ -20,6 +22,10 @@ class TicketWaitlist extends Model
         'status',
     ];
 
+    protected $casts = [
+        'offer_expires_at' => 'datetime',
+    ];
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(EntertainmentEvent::class, 'event_id');
@@ -28,5 +34,15 @@ class TicketWaitlist extends Model
     public function zone(): BelongsTo
     {
         return $this->belongsTo(EntertainmentZone::class, 'zone_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(WaitlistReservation::class, 'waitlist_id');
     }
 }

@@ -23,6 +23,7 @@ use Modules\Core\Application\Services\DigitalTwinService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
 use Modules\Core\Application\Services\EventSpineService;
+use Modules\Core\Application\Services\IdentityVelocityRiskService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Core\Application\Services\RbacService;
@@ -57,6 +58,7 @@ use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
 use Modules\Core\Contracts\DynamicPricingEngineInterface;
 use Modules\Core\Contracts\EventSpineInterface;
+use Modules\Core\Contracts\IdentityVelocityRiskScorer;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Contracts\ScaleProvisionerInterface;
 use Modules\Core\Contracts\SimClockInterface;
@@ -144,6 +146,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind(
             StockPrescriptionEngineInterface::class,
             StockPrescriptionEngineService::class
+        );
+
+        $this->app->bind(
+            IdentityVelocityRiskScorer::class,
+            IdentityVelocityRiskService::class
         );
 
         // 66.1 - 66.2 Multi-Region Resilience, DR & Data Sovereignty

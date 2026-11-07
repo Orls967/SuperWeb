@@ -9,6 +9,7 @@ use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Services\VenueOperationsService;
 use Modules\Venue\Console\Commands\AuditVenueCommand;
 use Modules\Venue\Console\Commands\AuditVenueEconomyCommand;
+use Modules\Venue\Console\Commands\AuditVenueSecondaryCommand;
 use Modules\Venue\Console\Commands\CheckWeatherConditionsCommand;
 use Modules\Venue\Console\Commands\CloseEventCommand;
 use Modules\Venue\Console\Commands\CloseEventsCommand;
@@ -44,6 +45,7 @@ class VenueServiceProvider extends ServiceProvider
             $this->commands([
                 AuditVenueCommand::class,
                 AuditVenueEconomyCommand::class,
+                AuditVenueSecondaryCommand::class,
                 CloseEventsCommand::class,
                 CloseEventCommand::class,
                 ScanPermitExpiryCommand::class,

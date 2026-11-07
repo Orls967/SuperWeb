@@ -4,135 +4,140 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Application\Services;
 
-use Illuminate\Support\Facades\DB;
-use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Support\Posting;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Modules\Venue\Domain\Algorithms\AntiScalping\AntiScalpingCapEngine;
+use Modules\Venue\Domain\Algorithms\AntiScalping\AntiScalpingInput;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\TicketResale;
-use Modules\Venue\Domain\Models\TicketWaitlist;
-use RuntimeException;
+use Modules\Venue\Domain\StateMachines\TicketResaleStateMachine;
 
-class VenueSecondaryMarketService
+final class VenueSecondaryMarketService
 {
-    public const MAX_RESALE_MARKUP_PERCENT = 20; // 120% cap
-
-    public const PLATFORM_FEE_PERCENT = 10; // 10% platform fee
-
-    public const TAX_PERCENT = 10; // 10% entertainment tax
-
     public function __construct(
-        protected ?LedgerService $ledgerService = null
-    ) {
-        $this->ledgerService = $ledgerService ?? app(LedgerService::class);
+        private readonly AntiScalpingCapEngine $capEngine
+    ) {}
+
+    /**
+     * @return LengthAwarePaginator<TicketResale>
+     */
+    public function getActiveListings(int $perPage = 20, ?int $eventId = null): LengthAwarePaginator
+    {
+        $query = TicketResale::query()
+            ->with(['ticket', 'seller', 'ticket.event'])
+            ->where('status', TicketResaleStateMachine::STATUS_LISTED)
+            ->orderBy('resale_price_idr', 'asc');
+
+        if ($eventId !== null) {
+            $query->whereHas('ticket', function ($q) use ($eventId): void {
+                $q->where('event_id', $eventId);
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
-     * 116.1 List Ticket on Official Anti-Scalping Resale Marketplace
+     * @return Collection<int, TicketResale>
      */
-    public function listTicketForResale(
-        EntertainmentTicket $ticket,
-        int $sellerUserId,
-        int $askingPriceIdr
-    ): TicketResale {
-        // Validation 116.6 (a): 1 transfer maks
-        $alreadyTransferred = TicketResale::where('ticket_id', $ticket->id)
-            ->where('status', 'SOLD')
+    public function getSellerListings(int $sellerUserId): Collection
+    {
+        return TicketResale::query()
+            ->with(['ticket', 'ticket.event'])
+            ->where('seller_user_id', $sellerUserId)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    /**
+     * @return Collection<int, TicketResale>
+     */
+    public function getBuyerPurchases(int $buyerUserId): Collection
+    {
+        return TicketResale::query()
+            ->with(['ticket', 'ticket.event', 'seller'])
+            ->where('buyer_user_id', $buyerUserId)
+            ->where('status', TicketResaleStateMachine::STATUS_SETTLED)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    /**
+     * Validasi kelayakan tiket sebelum didaftarkan ke pasar sekunder.
+     *
+     * @return array{is_eligible: bool, reason: string, max_allowed_price_idr: int, face_value_idr: int}
+     */
+    public function checkTicketListingEligibility(EntertainmentTicket $ticket, int $proposedPriceIdr): array
+    {
+        if ($ticket->status !== 'VALID' && $ticket->status !== 'ISSUED') {
+            return [
+                'is_eligible' => false,
+                'reason' => "Status tiket tidak valid untuk dijual: {$ticket->status}",
+                'max_allowed_price_idr' => 0,
+                'face_value_idr' => $ticket->price_idr,
+            ];
+        }
+
+        $settledCount = TicketResale::query()
+            ->where('ticket_id', $ticket->id)
+            ->where('status', TicketResaleStateMachine::STATUS_SETTLED)
             ->count();
 
-        if ($alreadyTransferred >= 1) {
-            throw new RuntimeException("Resale rejected: Ticket {$ticket->ticket_number} has already reached maximum of 1 secondary transfer");
+        if ($settledCount > 0) {
+            return [
+                'is_eligible' => false,
+                'reason' => 'Tiket sudah pernah dipindahtangankan di pasar sekunder (aturan single transfer).',
+                'max_allowed_price_idr' => 0,
+                'face_value_idr' => $ticket->price_idr,
+            ];
         }
 
-        // Validation 116.6 (b): Price cap 120% of original face value
-        $maxAllowedPrice = (int) round(($ticket->price_paid_idr * (100 + self::MAX_RESALE_MARKUP_PERCENT)) / 100);
-        if ($askingPriceIdr > $maxAllowedPrice) {
-            throw new RuntimeException("Resale rejected: Asking price {$askingPriceIdr} IDR exceeds anti-scalping price cap of {$maxAllowedPrice} IDR (120% of face value)");
+        $activeListing = TicketResale::query()
+            ->where('ticket_id', $ticket->id)
+            ->whereIn('status', [TicketResaleStateMachine::STATUS_LISTED, TicketResaleStateMachine::STATUS_ESCROW_HOLD])
+            ->exists();
+
+        if ($activeListing) {
+            return [
+                'is_eligible' => false,
+                'reason' => 'Tiket saat ini sudah terdaftar di pasar sekunder dan masih aktif.',
+                'max_allowed_price_idr' => 0,
+                'face_value_idr' => $ticket->price_idr,
+            ];
         }
 
-        return TicketResale::create([
-            'resale_code' => 'RSL-'.strtoupper(bin2hex(random_bytes(4))),
-            'ticket_id' => $ticket->id,
-            'seller_user_id' => $sellerUserId,
-            'original_face_value_idr' => $ticket->price_paid_idr,
-            'resale_price_idr' => $askingPriceIdr,
-            'transfer_count' => $alreadyTransferred,
-            'status' => 'LISTED',
-        ]);
+        $evalInput = new AntiScalpingInput($ticket->price_idr, $proposedPriceIdr, 1);
+        $capResult = $this->capEngine->evaluate($evalInput);
+
+        return [
+            'is_eligible' => $capResult->isAllowed,
+            'reason' => $capResult->reason,
+            'max_allowed_price_idr' => $capResult->maxAllowedPriceIdr,
+            'face_value_idr' => $ticket->price_idr,
+        ];
     }
 
     /**
-     * 116.1 & 116.5 Buy Resale Ticket, Transfer Ownership & Post Ledger Entries
+     * Ringkasan metrik pasar sekunder untuk dashboard analitik.
+     *
+     * @return array{total_listed: int, total_settled: int, total_turnover_idr: int, total_tax_pbjt_idr: int, total_platform_fee_idr: int}
      */
-    public function purchaseResaleTicket(TicketResale $resale, int $buyerUserId): TicketResale
+    public function getMarketMetricsSummary(): array
     {
-        if ($resale->status !== 'LISTED') {
-            throw new RuntimeException("Cannot purchase: Resale listing {$resale->resale_code} is {$resale->status}");
-        }
+        $listedCount = TicketResale::query()->where('status', TicketResaleStateMachine::STATUS_LISTED)->count();
+        $settled = TicketResale::query()->where('status', TicketResaleStateMachine::STATUS_SETTLED)->get();
 
-        return DB::transaction(function () use ($resale, $buyerUserId) {
-            $totalPrice = $resale->resale_price_idr;
-            $platformFee = (int) round(($totalPrice * self::PLATFORM_FEE_PERCENT) / 100);
-            $entertainmentTax = (int) round(($totalPrice * self::TAX_PERCENT) / 100);
-            $sellerPayout = $totalPrice - $platformFee - $entertainmentTax;
+        $totalSettled = $settled->count();
+        $totalTurnover = (int) $settled->sum('resale_price_idr');
+        $totalTaxPbjt = (int) $settled->sum('pbjt_tax_idr');
+        $totalPlatformFee = (int) $settled->sum('platform_fee_idr');
 
-            // Generate new ticket tamper-proof hash for buyer
-            $newTicketHash = hash('sha256', "RESALE-{$resale->ticket_id}-{$buyerUserId}-".time());
-
-            $resale->update([
-                'buyer_user_id' => $buyerUserId,
-                'platform_fee_idr' => $platformFee,
-                'entertainment_tax_idr' => $entertainmentTax,
-                'transfer_count' => $resale->transfer_count + 1,
-                'new_ticket_hash' => $newTicketHash,
-                'status' => 'SOLD',
-            ]);
-
-            // Update original ticket ownership
-            $resale->ticket->update([
-                'buyer_user_id' => $buyerUserId,
-            ]);
-
-            // Ledger posting: Buyer pays totalPrice -> Seller payout + Platform Fee + Entertainment Tax
-            $this->ledgerService->post(new PostingDTO(
-                type: 'TICKET_SECONDARY_RESALE_SETTLE',
-                description: "Secondary ticket resale settlement for listing {$resale->resale_code}",
-                idempotencyKey: "VEN-RSL-{$resale->resale_code}",
-                entries: Posting::lines()
-                    ->debit('ven:secondary_ticket_clearing:IDR', $totalPrice)
-                    ->credit('ven:resale_seller_payable:IDR', $sellerPayout)
-                    ->credit('ven:resale_platform_fee_revenue:IDR', $platformFee)
-                    ->credit('ven:entertainment_tax_payable:IDR', $entertainmentTax)
-                    ->toEntries('IDR'),
-                referenceType: 'TICKET_RESALE',
-                referenceId: (string) $resale->id,
-            ));
-
-            return $resale;
-        });
-    }
-
-    /**
-     * 116.4 Waitlist & Timed Seat Release
-     */
-    public function joinWaitlist(int $eventId, int $zoneId, int $userId): TicketWaitlist
-    {
-        return TicketWaitlist::create([
-            'waitlist_code' => 'WTL-'.strtoupper(bin2hex(random_bytes(4))),
-            'event_id' => $eventId,
-            'zone_id' => $zoneId,
-            'user_id' => $userId,
-            'status' => 'WAITING',
-        ]);
-    }
-
-    public function offerSeatToWaitlist(TicketWaitlist $waitlist, int $validMinutes = 15): TicketWaitlist
-    {
-        $waitlist->update([
-            'offer_expires_at' => now()->addMinutes($validMinutes),
-            'status' => 'OFFERED',
-        ]);
-
-        return $waitlist;
+        return [
+            'total_listed' => $listedCount,
+            'total_settled' => $totalSettled,
+            'total_turnover_idr' => $totalTurnover,
+            'total_tax_pbjt_idr' => $totalTaxPbjt,
+            'total_platform_fee_idr' => $totalPlatformFee,
+        ];
     }
 }
