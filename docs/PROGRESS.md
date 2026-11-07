@@ -10738,13 +10738,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
-- [ ] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
-- [ ] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
-- [ ] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
-- [ ] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
-- [ ] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
-- [ ] 117.7 Quality gate Fase 117
+- [🔵] 117.1 **Face-ID door entry** (token biometrik simulasi Fase 75.5): member → gate tanpa tiket fisik; liveness check → anti-share; biometrik disimpan sebagai template hash (bukan mentah) → compliance privasi
+- [🔵] 117.2 **Peta orang dalam venue real-time**: agregasi scan masuk/keluar + sensor density → hitung okupansi per zona akurat → heatmap live → kapasitas ditolak otomatis (memperluas Fase 89.4)
+- [🔵] 117.3 **Crowd safety AI**: prediksi kepadatan 15 menit ke depan (trend rule deterministik) → rekomendasi buka gate sekunder / slow entry / arahkan ke zona kosong → eksekusi oleh crowd_safety dengan konfirmasi
+- [🔵] 117.4 **Guest experience scoring**: antrean bar (sensor), WPS (wait per service) per zona, NPS post-event via Notification → skor per venue/malam → masuk brand scorecard (Fase 111.1 versi venue)
+- [🔵] 117.5 Personalized offers on-site: member di zona VIP → promo F&B tersembul via app (poin/price hook) → konversi terukur → learning loop ke personalization (Fase 112.5)
+- [🔵] 117.6 Tests: (a) biometrik template tak bisa direkonstruksi (b) okupansi zona = Σ scan aktif (c) prediksi density + aksi tercatat (d) promo ganda tidak dikirim dobel (e) query budget live map ≤ ambang
+- [🔵] 117.7 Quality gate Fase 117
 
 ## FASE 118 — HOSPITALITY & ENTERTAINMENT: REVENUE COMMAND & PORTOFOLIO GLOBAL
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Hotel): service `HospitalityRevenueCommandService`; 1 migrasi; test `HospitalityRevenueCommandTest` — commit `c6c8914`, +298 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

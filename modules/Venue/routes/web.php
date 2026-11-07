@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Route;
 use Modules\Venue\Http\Controllers\GateScanController;
 use Modules\Venue\Http\Controllers\GuestTicketPortalController;
 use Modules\Venue\Http\Controllers\VenueArtistRoyaltyEscrowController;
+use Modules\Venue\Http\Controllers\VenueBiometricKioskController;
 use Modules\Venue\Http\Controllers\VenueController;
+use Modules\Venue\Http\Controllers\VenueCrowdSafetyController;
 use Modules\Venue\Http\Controllers\VenueEconomyController;
 use Modules\Venue\Http\Controllers\VenueEventController;
+use Modules\Venue\Http\Controllers\VenueGuestExperienceController;
 use Modules\Venue\Http\Controllers\VenuePermitController;
 use Modules\Venue\Http\Controllers\VenueReportController;
 use Modules\Venue\Http\Controllers\VenueSecondaryAdminController;
@@ -31,6 +34,7 @@ Route::middleware(['web', 'auth', 'role:admin,customer'])->prefix('guest/tickets
 // Crowd Safety Zones
 Route::middleware(['web', 'auth', 'role:admin,crowd_safety'])->prefix('venue/zones')->name('venue.zones.')->group(function () {
     Route::get('/', [VenueZoneController::class, 'index'])->name('index');
+    Route::get('/crowd-safety', [VenueZoneController::class, 'crowdSafety'])->name('crowd-safety');
     Route::post('/{zone}/lockdown', [VenueZoneController::class, 'toggleLockdown'])->name('lockdown');
     Route::post('/{zone}/weather-adjust', [VenueZoneController::class, 'adjustForWeather'])->name('weather-adjust');
 });
@@ -126,4 +130,27 @@ Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->pref
     Route::get('/reports', [VenueSecondaryMarketController::class, 'reports'])->name('reports');
     Route::post('/admin/blacklist', [VenueSecondaryAdminController::class, 'blacklist'])->name('admin.blacklist');
     Route::post('/admin/reconcile', [VenueSecondaryAdminController::class, 'reconcile'])->name('admin.reconcile');
+});
+
+// 117.1 - 117.7 Crowd Safety, Biometric Access & Guest Experience
+Route::middleware(['web', 'auth', 'role:admin,venue_manager,crowd_safety'])->prefix('venue/crowd')->name('venue.crowd.')->group(function () {
+    Route::get('/dashboard', [VenueCrowdSafetyController::class, 'dashboard'])->name('dashboard');
+    Route::get('/heatmap-data', [VenueCrowdSafetyController::class, 'heatmapJson'])->name('heatmap-data');
+    Route::post('/emergency', [VenueCrowdSafetyController::class, 'triggerEmergency'])->name('emergency');
+    Route::post('/incidents/{incident}/resolve', [VenueCrowdSafetyController::class, 'resolveEmergency'])->name('incidents.resolve');
+});
+
+Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff,customer'])->prefix('venue/biometrics')->name('venue.biometrics.')->group(function () {
+    Route::get('/kiosk', [VenueBiometricKioskController::class, 'kiosk'])->name('kiosk');
+    Route::get('/enrolment', [VenueBiometricKioskController::class, 'enrolment'])->name('enrolment');
+    Route::post('/enrol', [VenueBiometricKioskController::class, 'processEnrol'])->name('enrol');
+    Route::post('/scan', [VenueBiometricKioskController::class, 'scanGate'])->name('scan');
+    Route::post('/revoke', [VenueBiometricKioskController::class, 'revokeConsent'])->name('revoke');
+});
+
+Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff,customer'])->prefix('venue/experience')->name('venue.experience.')->group(function () {
+    Route::get('/wps', [VenueGuestExperienceController::class, 'wpsDashboard'])->name('wps');
+    Route::get('/promos', [VenueGuestExperienceController::class, 'promosDashboard'])->name('promos');
+    Route::post('/promos/dispatch', [VenueGuestExperienceController::class, 'dispatchOffer'])->name('promos.dispatch');
+    Route::post('/reinforce', [VenueGuestExperienceController::class, 'requestBartenderReinforcement'])->name('reinforce');
 });

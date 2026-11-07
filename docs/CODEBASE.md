@@ -538,10 +538,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 58 | **TradeFinance** | `tf_` | 4 |
 | 59 | **Treasury** | `trs_` | 1 |
 | 60 | **Vending** | `vnd_` | 3 |
-| 61 | **Venue** | `ven_` | 11 |
+| 61 | **Venue** | `ven_` | 12 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **662 Migrasi** |
+| | **Total: 63 Modul** | | **663 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -606,10 +606,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **Treasury** | 4 | `treasury`, `treasury/fx-revalue`, `treasury/cash-pools/{cashPool}/sweep` ... | web, auth, role:admin,auditor,treasury |
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
-| **Venue** | 57 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
+| **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1459 Rute** | | |
+| **Total** | **1473 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -834,10 +834,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
+| `ven:audit-crowd` | `manual` | Audit mandiri keselamatan kerumunan, prediksi lonjakan massa 15 menit, verifikasi biometrik satu arah, dan skor pengalaman tamu WPS |
 | `ven:audit-economy` | `manual` | Audit mandiri ekonomi venue: kontrak artis versus deal, alokasi bundle SSP multi-vendor, membership tiering, sponsor exposure KPI, dan konsistensi buku besar |
 | `ven:audit-secondary` | `manual` | Audit mandiri pasar sekunder, anti-scalping price cap 120%, single transfer rule, dynamic bundling floor guardrail, dan integritas waterfall pajak PBJT |
 | `ven:close-events` | `manual` | Menutup semua event venue yang jadwalnya telah lewat secara otomatis dan mengakui pendapatan (V-7) |
 | `venue:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
+| `venue:audit-crowd` | `manual` | Audit mandiri keselamatan kerumunan, prediksi lonjakan massa 15 menit, verifikasi biometrik satu arah, dan skor pengalaman tamu WPS |
 | `venue:audit-economy` | `manual` | Audit mandiri ekonomi venue: kontrak artis versus deal, alokasi bundle SSP multi-vendor, membership tiering, sponsor exposure KPI, dan konsistensi buku besar |
 | `venue:audit-secondary` | `manual` | Audit mandiri pasar sekunder, anti-scalping price cap 120%, single transfer rule, dynamic bundling floor guardrail, dan integritas waterfall pajak PBJT |
 | `venue:close-event` | `manual` | Menutup event venue secara idempoten dan mengakui pendapatan dari akun unearned ke revenue (Fase 89) |
@@ -849,7 +851,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 235 Command** | **37 Terjadwal** | |
+| **Total: 237 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
