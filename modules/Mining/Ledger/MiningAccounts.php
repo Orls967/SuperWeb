@@ -49,6 +49,13 @@ final class MiningAccounts
                 'allow_negative' => true, // Normal debit balance
             ],
             [
+                'code' => 'min:fuel_inventory:IDR',
+                'name' => 'Mining Site Fuel Inventory',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true, // saldo pembuka berasal dari penerimaan BBM via Inventory (di luar lingkup Fase 93)
+            ],
+            [
                 'code' => 'min:sales_revenue:IDR',
                 'name' => 'Mining Commodity Sales Revenue',
                 'kind' => AccountKind::REVENUE,
@@ -341,6 +348,11 @@ final class MiningAccounts
     public static function fuelExpense(): string
     {
         return 'expense:min:fuel:IDR';
+    }
+
+    public static function fuelInventory(): string
+    {
+        return 'min:fuel_inventory:IDR';
     }
 
     public static function salesRevenue(): string

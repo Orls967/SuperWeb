@@ -74,3 +74,4 @@ $$\sigma_{OK}^2 = \sum_{i=1}^n \lambda_i \gamma(h_{i0}) + \mu$$
   - Algoritma: `Modules\Shared\Domain\Algorithms\Geo\OrdinaryKriging3D`
   - Verifier: `Modules\Shared\Domain\Algorithms\Geo\OrdinaryKriging3DCertificateVerifier`
   - Unit Test: `tests/Unit/Algorithms/OrdinaryKriging3DTest.php`
+

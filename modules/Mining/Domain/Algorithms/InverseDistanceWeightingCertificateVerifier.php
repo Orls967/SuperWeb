@@ -50,3 +50,4 @@ final class InverseDistanceWeightingCertificateVerifier
         return true;
     }
 }
+

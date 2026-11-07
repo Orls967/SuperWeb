@@ -60,3 +60,4 @@ Basis: master (abf89eba)
    - `FuelAnomalyCaseStateMachine` (8 status)
 5. **Ledger Accounts**:
    - Menambahkan dan merapikan akun-akun Mining di `MiningAccounts` tanpa pemanggilan `firstOrCreate` runtime.
+

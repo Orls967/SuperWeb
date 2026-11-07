@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Application\Actions;
 
+use Modules\Core\Contracts\ClockInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Modules\Mining\Application\Sagas\PredictiveMaintenanceWorkOrderSaga;
@@ -16,7 +17,8 @@ use Modules\Mining\Domain\Models\MiningEquipmentTelemetry;
 class IngestEquipmentTelemetryAction
 {
     public function __construct(
-        private readonly PredictiveMaintenanceWorkOrderSaga $maintenanceSaga
+        private readonly PredictiveMaintenanceWorkOrderSaga $maintenanceSaga,
+        private readonly ClockInterface $clock
     ) {}
 
     /**
@@ -54,7 +56,7 @@ class IngestEquipmentTelemetryAction
             $telemetry = MiningEquipmentTelemetry::create([
                 'equipment_id' => $equipment->id,
                 'sequence_number' => $params['sequence_number'],
-                'recorded_at' => now(),
+                'recorded_at' => $this->clock->now(),
                 'engine_hours_total' => $params['engine_hours_total'],
                 'fuel_level_percent' => $params['fuel_level_percent'] ?? 100,
                 'instant_fuel_rate_ml_s' => $params['instant_fuel_rate_ml_s'] ?? 0,
@@ -74,7 +76,7 @@ class IngestEquipmentTelemetryAction
             if ($params['engine_hours_total'] > 5000 || $params['vibration_rms_scaled'] > 1800) {
                 $maintenanceTriggered = true;
 
-                $shiftDate = now()->toDateString();
+                $shiftDate = $this->clock->now()->toDateString();
                 $shiftCode = 'SHIFT_A';
 
                 $this->maintenanceSaga->execute([
@@ -107,3 +109,4 @@ class IngestEquipmentTelemetryAction
         });
     }
 }
+

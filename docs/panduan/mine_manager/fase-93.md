@@ -18,3 +18,15 @@ Mine Manager mengawasi efektivitas operasional seluruh site tambang, memastikan 
 
 3. **Meninjau Ekspor Laporan Produksi**:
    - Buka `/mining/reports/export?type=production_summary` untuk mengunduh rekapitulasi data shift harian dalam format CSV.
+
+
+---
+
+## 4. Evaluasi Biaya per BCM, Keandalan MTBF/MTTR, dan Kesehatan Ban TKPH
+Melalui komponen komposit `Modules\Mining\Http\ViewModels\MiningFase93OperationsViewModel` yang terhubung ke halaman `/mining/equipment` dan `/mining/plans`, **Mine Manager** memantau tiga indikator keekonomian dan keselamatan tambahan:
+1. **Struktur Biaya Kupasan Tanah Penutup (`MiningCostPerBcmCalculator`)**:
+   - Menampilkan *Stripping Ratio* dalam basis points (`stripping_ratio_bps`, di mana $32.000\text{ bps} = 3,20\times$) serta porsi biaya pengupasan overburden ($70\%$) dibanding biaya penambangan bijih ($30\%$).
+2. **Keandalan Mekanikal Armada (`EquipmentTelemetryAnalyticsService`)**:
+   - Menampilkan nilai *Mean Time Between Failures* (`mtbf_hours`), *Mean Time To Repair* (`mttr_hours`), serta skor kesehatan unit (`health_score_bps`) yang diturunkan dari frekuensi eksekusi `PredictiveMaintenanceWorkOrderSaga` dan getaran puncak `vibration_rms_scaled`.
+3. **Batas Termal Ban Haul Truck (`RecordTireTemperaturePressureAction`)**:
+   - Mengawasi indeks *Ton-Kilometer Per Hour* (`tkph_scaled`) dan mendeteksi peringatan `ALERT_HOT_TIRE` apabila suhu ban $\ge 95^\circ\text{C}$ atau tekanan angin berada di luar rentang $[90, 130]\text{ psi}$.

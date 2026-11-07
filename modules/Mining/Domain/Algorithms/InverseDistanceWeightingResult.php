@@ -22,3 +22,4 @@ final readonly class InverseDistanceWeightingResult
     ) {
     }
 }
+

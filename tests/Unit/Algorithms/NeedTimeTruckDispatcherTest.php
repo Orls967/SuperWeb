@@ -117,3 +117,4 @@ class NeedTimeTruckDispatcherTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
+

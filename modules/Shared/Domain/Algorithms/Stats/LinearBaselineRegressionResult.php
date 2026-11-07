@@ -26,3 +26,4 @@ final class LinearBaselineRegressionResult
         public readonly array $certificateData
     ) {}
 }
+

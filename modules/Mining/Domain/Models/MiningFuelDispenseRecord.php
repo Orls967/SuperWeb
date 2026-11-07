@@ -47,3 +47,4 @@ class MiningFuelDispenseRecord extends Model
         return $this->belongsTo(MiningEquipment::class, 'equipment_id');
     }
 }
+

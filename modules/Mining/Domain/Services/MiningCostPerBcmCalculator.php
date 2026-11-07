@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Services;
 
+/**
+ * Kalkulator Biaya Kupasan Tanah Penutup (Overburden Cost per BCM) & Stripping Ratio
+ * dalam satuan integer rupiah dan basis points (D93-1, D93-7).
+ */
 final class MiningCostPerBcmCalculator
 {
     /**
-     * Menghitung Stripping Ratio (SR), biaya overburden per BCM (Bank Cubic Meter),
-     * dan biaya penambangan bijih per ton.
-     *
-     * @param int $overburdenBcm Volume kupasan tanah penutup (BCM)
-     * @param int $oreTonnageKg Tonase bijih tertambang (kg)
-     * @param int $totalHaulingCostIdr Total biaya kontraktor hauling
-     * @param int $totalFuelCostIdr Total biaya BBM solar
-     * @param int $totalDrillBlastCostIdr Total biaya pemboran & peledakan
+     * @param  int  $overburdenBcm  Volume kupasan tanah penutup (Bank Cubic Meter)
+     * @param  int  $oreTonnageKg  Tonase bijih tertambang (kg)
+     * @param  int  $totalHaulingCostIdr  Total biaya kontraktor angkut (IDR)
+     * @param  int  $totalFuelCostIdr  Total biaya bahan bakar solar (IDR)
+     * @param  int  $totalDrillBlastCostIdr  Total biaya pemboran & peledakan (IDR)
      * @return array{
-     *     stripping_ratio: float,
+     *     stripping_ratio_bps: int,
+     *     overburden_allocation_idr: int,
+     *     ore_allocation_idr: int,
      *     cost_per_bcm_idr: int,
      *     cost_per_ton_ore_idr: int,
      *     total_cost_idr: int
@@ -29,23 +32,26 @@ final class MiningCostPerBcmCalculator
         int $totalFuelCostIdr,
         int $totalDrillBlastCostIdr = 0,
     ): array {
-        $totalCost = $totalHaulingCostIdr + $totalFuelCostIdr + $totalDrillBlastCostIdr;
+        $totalCostIdr = max(0, $totalHaulingCostIdr) + max(0, $totalFuelCostIdr) + max(0, $totalDrillBlastCostIdr);
+        $oreTons = max(1, intdiv(max(0, $oreTonnageKg), 1000));
 
-        $oreTon = $oreTonnageKg / 1000.0;
-        $sr = $oreTon > 0 ? round($overburdenBcm / $oreTon, 2) : 0.0;
+        // Stripping ratio dalam bps (1.00x = 10.000 bps)
+        $strippingRatioBps = intdiv(max(0, $overburdenBcm) * 10000, $oreTons);
 
-        // Alokasi proporsional: 70% biaya ke OB removal, 30% ke Ore mining
-        $obPortion = (int) round($totalCost * 0.70);
-        $orePortion = $totalCost - $obPortion;
+        // Alokasi biaya 7000 bps (70%) ke pengupasan OB, 3000 bps (30%) ke ekstraksi bijih
+        $obPortionIdr = intdiv($totalCostIdr * 7000, 10000);
+        $orePortionIdr = $totalCostIdr - $obPortionIdr;
 
-        $costPerBcm = $overburdenBcm > 0 ? (int) round($obPortion / $overburdenBcm) : 0;
-        $costPerTonOre = $oreTon > 0 ? (int) round($orePortion / $oreTon) : 0;
+        $costPerBcmIdr = $overburdenBcm > 0 ? intdiv($obPortionIdr, $overburdenBcm) : 0;
+        $costPerTonOreIdr = intdiv($orePortionIdr, $oreTons);
 
         return [
-            'stripping_ratio' => $sr,
-            'cost_per_bcm_idr' => $costPerBcm,
-            'cost_per_ton_ore_idr' => $costPerTonOre,
-            'total_cost_idr' => $totalCost,
+            'stripping_ratio_bps' => $strippingRatioBps,
+            'overburden_allocation_idr' => $obPortionIdr,
+            'ore_allocation_idr' => $orePortionIdr,
+            'cost_per_bcm_idr' => $costPerBcmIdr,
+            'cost_per_ton_ore_idr' => $costPerTonOreIdr,
+            'total_cost_idr' => $totalCostIdr,
         ];
     }
 }

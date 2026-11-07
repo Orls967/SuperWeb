@@ -24,3 +24,4 @@ final readonly class OrdinaryKriging3DResult
     ) {
     }
 }
+

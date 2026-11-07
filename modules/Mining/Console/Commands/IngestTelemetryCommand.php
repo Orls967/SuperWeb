@@ -48,3 +48,4 @@ class IngestTelemetryCommand extends Command
         return 0;
     }
 }
+

@@ -8,25 +8,36 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Application\Actions\PlanMineBlockAction;
 use Modules\Mining\Application\Actions\RePlanShiftTargetsAction;
-use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningPlan;
-use Modules\Mining\Domain\Models\MiningSite;
+use Modules\Mining\Http\Policies\MiningFase93AccessPolicy;
+use Modules\Mining\Http\ViewModels\MiningFase93OperationsViewModel;
 
 class MiningPlanController extends Controller
 {
-    public function index(Request $request): View
-    {
-        $sites = MiningSite::all();
-        $pits = MiningPit::all();
-        $plans = MiningPlan::with(['site', 'shifts'])->latest()->paginate(10);
+    public function index(
+        Request $request,
+        MiningFase93OperationsViewModel $viewModel,
+        MiningFase93AccessPolicy $policy,
+        ClockInterface $clock
+    ): View {
+        $policy->authorizeMinePlanAccess($request->user());
 
-        return view('mining::plans.index', compact('sites', 'pits', 'plans'));
+        $pitId = $request->query('pit_id') ? (string) $request->query('pit_id') : null;
+        $month = (string) $request->query('month', substr($clock->now()->toDateString(), 0, 7));
+
+        return view('mining::plans.index', $viewModel->buildPlansViewData($pitId, $month));
     }
 
-    public function store(Request $request, PlanMineBlockAction $action): RedirectResponse
-    {
+    public function store(
+        Request $request,
+        PlanMineBlockAction $action,
+        MiningFase93AccessPolicy $policy
+    ): RedirectResponse {
+        $policy->authorizeMinePlanAccess($request->user());
+
         $validated = $request->validate([
             'site_id' => 'required|string',
             'pit_id' => 'required|string',
@@ -44,8 +55,14 @@ class MiningPlanController extends Controller
             ->with('success', "Rencana tambang {$plan->plan_code} berhasil dibuat dan di-time-phased ke shift.");
     }
 
-    public function replan(Request $request, MiningPlan $plan, RePlanShiftTargetsAction $action): RedirectResponse
-    {
+    public function replan(
+        Request $request,
+        MiningPlan $plan,
+        RePlanShiftTargetsAction $action,
+        MiningFase93AccessPolicy $policy
+    ): RedirectResponse {
+        $policy->authorizeMinePlanAccess($request->user(), $plan);
+
         $validated = $request->validate([
             'additional_rain_hours' => 'nullable|integer|min:0|max:12',
         ]);

@@ -65,3 +65,4 @@ class LinearBaselineRegressionTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
+

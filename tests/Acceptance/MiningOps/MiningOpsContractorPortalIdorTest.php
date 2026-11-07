@@ -94,3 +94,4 @@ class MiningOpsContractorPortalIdorTest extends TestCase
         $this->assertEquals(403, $responseIdor->getStatusCode());
     }
 }
+

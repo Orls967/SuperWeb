@@ -1,109 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-        <div class="p-6 bg-gray-800 shadow sm:rounded-lg">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-xl font-bold text-white">Contractor Mining Hauling & Fuel Dispute Portal</h2>
-                    <p class="text-sm text-gray-400">Portal mandiri kontraktor untuk monitoring siklus hauling, hold tagihan BBM, dan pengajuan sanggahan (dispute).</p>
-                </div>
-            </div>
+<div class="py-12"><div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 text-gray-300">
+<div class="p-4 sm:p-6 bg-gray-800 shadow sm:rounded-lg">
+    <h2 class="text-xl font-bold text-white">Portal Kontraktor Angkut</h2>
+    @include('mining::partials.flash')
+    <p class="my-3 text-sm">{{ $summary['cases'] }} kasus · BBM aktual {{ number_format($summary['actual_ml'] / 1000) }} L vs baseline {{ number_format($summary['baseline_ml'] / 1000) }} L · hold berjalan Rp {{ number_format($summary['held_idr']) }} · dipotong Rp {{ number_format($summary['deducted_idr']) }} · dirilis Rp {{ number_format($summary['released_idr']) }}</p>
 
-            @if(session('success'))
-                <div class="mb-4 p-4 bg-emerald-900/50 border border-emerald-500 rounded text-emerald-200 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <h3 class="text-lg font-semibold text-white mb-2">Hold tagihan</h3>
+    <div class="overflow-x-auto mb-6"><table class="w-full text-left text-sm">
+        <thead class="text-xs uppercase text-gray-400"><tr><th class="p-2">Referensi</th><th class="p-2">Hold (Rp)</th><th class="p-2">Dirilis</th><th class="p-2">Dipotong</th><th class="p-2">Status</th></tr></thead>
+        <tbody class="divide-y divide-gray-700">
+        @forelse($myHolds as $h)
+            <tr><td class="p-2 font-mono">{{ $h->hold_reference }}</td><td class="p-2">{{ number_format($h->hold_amount_idr) }}</td><td class="p-2">{{ number_format($h->released_amount_idr) }}</td><td class="p-2">{{ number_format($h->deducted_amount_idr) }}</td><td class="p-2">{{ $h->status }}</td></tr>
+        @empty
+            <tr><td colspan="5" class="p-4 text-center text-gray-400">Tidak ada hold.</td></tr>
+        @endforelse
+        </tbody>
+    </table></div>
 
-            <!-- Ringkasan Hold Tagihan Kontraktor -->
-            <div class="bg-gray-700/40 rounded-lg p-6 border border-gray-600 mb-6">
-                <h3 class="text-lg font-semibold text-white mb-4">Daftar Hold Tagihan (Escrow / Deductions)</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-300">
-                        <thead class="bg-gray-800 text-gray-400 uppercase text-xs">
-                            <tr>
-                                <th class="p-3">Hold Code</th>
-                                <th class="p-3">Ref Anomali</th>
-                                <th class="p-3">Jumlah Ditahan (IDR)</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3">Tanggal Dibuat</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            @forelse($myHolds as $hold)
-                                <tr class="hover:bg-gray-750">
-                                    <td class="p-3 font-mono font-medium text-amber-400">{{ $hold->hold_code }}</td>
-                                    <td class="p-3">{{ $hold->fuel_anomaly_case_id }}</td>
-                                    <td class="p-3 font-mono">Rp {{ number_format($hold->held_amount_idr, 0, ',', '.') }}</td>
-                                    <td class="p-3">
-                                        <span class="px-2 py-1 text-xs rounded font-semibold bg-amber-900/60 text-amber-300 border border-amber-600">
-                                            {{ $hold->status }}
-                                        </span>
-                                    </td>
-                                    <td class="p-3">{{ $hold->created_at->format('Y-m-d H:i') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="p-4 text-center text-gray-400">Tidak ada penahanan tagihan aktif.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Kasus Anomali BBM & Form Sanggahan -->
-            <div class="bg-gray-700/40 rounded-lg p-6 border border-gray-600">
-                <h3 class="text-lg font-semibold text-white mb-4">Kasus Anomali BBM Kontraktor</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-300">
-                        <thead class="bg-gray-800 text-gray-400 uppercase text-xs">
-                            <tr>
-                                <th class="p-3">Case Code</th>
-                                <th class="p-3">Tanggal</th>
-                                <th class="p-3">Alat</th>
-                                <th class="p-3">Aktual vs Baseline</th>
-                                <th class="p-3">Deviasi %</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3 text-right">Ajukan Sanggahan</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            @forelse($myCases as $c)
-                                <tr class="hover:bg-gray-750">
-                                    <td class="p-3 font-mono font-medium text-rose-400">{{ $c->case_code }}</td>
-                                    <td class="p-3">{{ $c->shift_date?->format('Y-m-d') }}</td>
-                                    <td class="p-3">{{ $c->equipment?->code ?? '-' }}</td>
-                                    <td class="p-3">{{ number_format($c->actual_liters, 1) }} L / {{ number_format($c->expected_baseline_liters, 1) }} L</td>
-                                    <td class="p-3 font-bold text-rose-300">+{{ number_format((float)$c->deviation_percentage, 1) }}%</td>
-                                    <td class="p-3">
-                                        <span class="px-2 py-1 text-xs rounded font-semibold bg-rose-900/60 text-rose-300 border border-rose-600">
-                                            {{ $c->status->value }}
-                                        </span>
-                                    </td>
-                                    <td class="p-3 text-right">
-                                        <form action="{{ route('mining.contractor.dispute') }}" method="POST" class="inline-flex items-center space-x-2">
-                                            @csrf
-                                            <input type="hidden" name="case_id" value="{{ $c->id }}">
-                                            <input type="text" name="reason" placeholder="Alasan sanggahan..." required class="text-xs rounded bg-gray-900 border-gray-600 text-white p-1 w-40">
-                                            <button type="submit" class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white text-xs rounded font-medium">
-                                                Sanggah
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="p-4 text-center text-gray-400">Tidak ada kasus anomali untuk armada Anda.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <h3 class="text-lg font-semibold text-white mb-2">Kasus anomali BBM</h3>
+    <div class="overflow-x-auto"><table class="w-full text-left text-sm">
+        <thead class="text-xs uppercase text-gray-400"><tr><th class="p-2">Kasus</th><th class="p-2">Tanggal</th><th class="p-2">Alat</th><th class="p-2">Lebih</th><th class="p-2">Status</th><th class="p-2">Sanggah</th></tr></thead>
+        <tbody class="divide-y divide-gray-700">
+        @forelse($myCases as $c)
+            <tr><td class="p-2 font-mono">{{ $c->case_number }}</td><td class="p-2">{{ $c->shift_date->format('Y-m-d') }}</td><td class="p-2">{{ $c->equipment?->equipment_code }}</td>
+                <td class="p-2">{{ number_format($c->excess_bps / 100, 2) }}%</td><td class="p-2">{{ $c->status->value }}</td>
+                <td class="p-2">
+                    @if($c->status->value === 'payment_held')
+                        <form action="{{ route('mining.contractor.dispute') }}" method="POST" class="flex gap-1">@csrf
+                            <input type="hidden" name="case_id" value="{{ $c->id }}">
+                            <input name="reason" required minlength="5" class="rounded bg-gray-900 border-gray-600 text-xs w-40" placeholder="alasan">
+                            <button class="px-2 bg-amber-600 text-white rounded text-xs">Sanggah</button>
+                        </form>
+                    @endif
+                </td></tr>
+        @empty
+            <tr><td colspan="6" class="p-4 text-center text-gray-400">Tidak ada kasus.</td></tr>
+        @endforelse
+        </tbody>
+    </table></div>
+    {{ $myCases->links() }}
+</div></div></div>
 @endsection

@@ -81,3 +81,4 @@ $$MF = \frac{N_{truck} \times t_{load}}{N_{shovel} \times t_{cycle}}$$
   - Algoritma: `Modules\Mining\Domain\Algorithms\NeedTimeTruckDispatcher`
   - Verifier: `Modules\Mining\Domain\Algorithms\NeedTimeTruckDispatcherCertificateVerifier`
   - Unit Test: `tests/Unit/Algorithms/NeedTimeTruckDispatcherTest.php`
+

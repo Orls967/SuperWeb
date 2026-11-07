@@ -55,34 +55,4 @@ class MiningEquipment extends Model
     {
         return $this->belongsTo(MiningSite::class, 'site_id');
     }
-
-    public function getCodeAttribute(): ?string
-    {
-        return $this->equipment_code;
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->model ?? $this->equipment_code ?? 'Equipment';
-    }
-
-    public function getHourMeterCurrentAttribute(): float
-    {
-        return (float) ($this->engine_hours ?? 0);
-    }
-
-    public function getOeeAvailabilityAttribute(): float
-    {
-        return 0.90;
-    }
-
-    public function getOeePerformanceAttribute(): float
-    {
-        return 0.92;
-    }
-
-    public function getOeeQualityAttribute(): float
-    {
-        return 0.95;
-    }
 }

@@ -7,13 +7,11 @@ namespace Modules\Mining\Application\Actions;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Support\Posting;
 use Modules\Mining\Domain\Models\MiningHaulCycle;
 use Modules\Mining\Domain\Models\MiningPlanShift;
 use Modules\Mining\Domain\Models\MiningSite;
-use Modules\Mining\Ledger\MiningAccounts;
+use Modules\Mining\Ledger\MiningFase93LedgerPostingService;
 
 /**
  * Aksi Penutupan Shift & Pembukuan Tagihan Kontraktor Angkut Tambang (D93-7).
@@ -21,7 +19,8 @@ use Modules\Mining\Ledger\MiningAccounts;
 class SettleShiftHaulingBillingAction
 {
     public function __construct(
-        private readonly LedgerService $ledgerService
+        private readonly LedgerService $ledgerService,
+        private readonly ?MiningFase93LedgerPostingService $postingService = null
     ) {}
 
     /**
@@ -45,7 +44,6 @@ class SettleShiftHaulingBillingAction
         return DB::transaction(function () use ($params) {
             $site = MiningSite::findOrFail($params['site_id']);
 
-            // Ambil seluruh siklus angkut yang selesai pada shift ini
             $completedCycles = MiningHaulCycle::where('site_id', $site->id)
                 ->where('shift_date', $params['shift_date'])
                 ->where('shift_code', $params['shift_code'])
@@ -56,41 +54,32 @@ class SettleShiftHaulingBillingAction
             $totalActualPayloadKg = 0;
 
             foreach ($completedCycles as $c) {
-                $payloadTon = (int) round($c->actual_payload_kg / 1000);
-                $distKm = (int) round($c->distance_meters / 1000);
+                $payloadTon = intdiv((int) $c->actual_payload_kg + 500, 1000);
+                $distKm = intdiv((int) $c->distance_meters + 500, 1000);
                 $tonKm = $payloadTon * $distKm;
 
                 $totalTonKm += $tonKm;
-                $totalActualPayloadKg += $c->actual_payload_kg;
+                $totalActualPayloadKg += (int) $c->actual_payload_kg;
             }
 
-            // Jika belum ada siklus aktual, gunakan estimasi minimal agar perhitungan tagihan valid
             if ($totalTonKm === 0) {
-                $totalTonKm = 470; // 94 ton * 5 km
+                $totalTonKm = 470;
                 $totalActualPayloadKg = 94000;
             }
 
             $amountMinor = $totalTonKm * $params['rate_per_ton_km_minor'];
-
             $partyId = $params['contractor_party_id'];
-            $contractorAccount = MiningAccounts::contractorPayable($partyId);
-            $expenseAccount = 'expense:min:hauling_contractor:IDR';
 
-            $dto = new PostingDTO(
-                type: 'MINING_HAUL_BILLING',
-                description: "Tagihan kontraktor angkut {$partyId} shift {$params['shift_date']} {$params['shift_code']}",
-                idempotencyKey: $params['idempotency_key'],
-                entries: Posting::lines()
-                    ->debit($expenseAccount, $amountMinor, 'IDR')
-                    ->credit($contractorAccount, $amountMinor, 'IDR')
-                    ->toEntries('IDR'),
-                referenceType: 'MINING_HAUL_SHIFT',
-                referenceId: "BILL-{$site->site_code}-{$params['shift_date']}-{$params['shift_code']}",
+            $poster = $this->postingService ?? new MiningFase93LedgerPostingService($this->ledgerService);
+            $journalId = $poster->postContractorHaulingBilling(
+                contractorPartyId: $partyId,
+                siteCode: (string) $site->site_code,
+                shiftDate: $params['shift_date'],
+                shiftCode: $params['shift_code'],
+                amountIdr: $amountMinor,
+                idempotencyKey: $params['idempotency_key']
             );
 
-            $journal = $this->ledgerService->post($dto);
-
-            // Update aktual produksi pada rencana shift
             $shift = MiningPlanShift::where('shift_date', $params['shift_date'])
                 ->where('shift_code', $params['shift_code'])
                 ->first();
@@ -98,14 +87,14 @@ class SettleShiftHaulingBillingAction
             if ($shift) {
                 $shift->update([
                     'actual_tonnage_kg' => $totalActualPayloadKg,
-                    'variance_kg' => $totalActualPayloadKg - $shift->target_tonnage_kg,
+                    'variance_kg' => $totalActualPayloadKg - (int) $shift->target_tonnage_kg,
                 ]);
             }
 
             return [
                 'amount_minor' => $amountMinor,
                 'ton_km_total' => $totalTonKm,
-                'journal_id' => $journal ? (string) $journal->id : 'JRN-SIMULATED-93',
+                'journal_id' => $journalId,
             ];
         });
     }

@@ -33,3 +33,4 @@ final class NeedTimeTruckDispatcherResult
         public readonly array $certificateData
     ) {}
 }
+

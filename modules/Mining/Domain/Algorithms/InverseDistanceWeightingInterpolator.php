@@ -137,3 +137,4 @@ final class InverseDistanceWeightingInterpolator
         return $result;
     }
 }
+

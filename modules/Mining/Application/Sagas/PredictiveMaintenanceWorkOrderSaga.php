@@ -8,25 +8,25 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPlanShift;
 use Modules\Mining\Domain\Models\MiningSaga;
+use Modules\Mining\Application\Adapters\MiningEquipmentAssetRegistryAdapter;
+use Modules\Mining\Domain\StateMachines\EquipmentStateMachine;
 use Modules\Procurement\Contracts\MrpRequisitionProposer;
 
 /**
  * Saga Koordinasi Pemeliharaan Prediktif Alat Berat & Suku Cadang (D93-4, T-4).
- * Alur:
- * 1. Request Work Order ke modul Asset (MaintenanceWorkOrderRequester)
- * 2. Propose Requisition suku cadang ke modul Procurement (MrpRequisitionProposer)
- * 3. Catat penambahan downtime perawatan di rencana shift pit
- * Kompensasi:
- * Jika requisition gagal/dibatalkan, kompensasikan target shift dan tandai kegagalan saga.
  */
 class PredictiveMaintenanceWorkOrderSaga
 {
     public function __construct(
         private readonly ?MaintenanceWorkOrderRequester $woRequester = null,
-        private readonly ?MrpRequisitionProposer $prProposer = null
+        private readonly ?MrpRequisitionProposer $prProposer = null,
+        private readonly ?ClockInterface $clock = null,
+        private readonly ?EquipmentStateMachine $equipmentStateMachine = null,
+        private readonly ?MiningEquipmentAssetRegistryAdapter $assetAdapter = null
     ) {}
 
     /**
@@ -46,7 +46,6 @@ class PredictiveMaintenanceWorkOrderSaga
     {
         $sagaRef = "SAGA-PM-{$payload['equipment_id']}-{$payload['shift_date']}-{$payload['shift_code']}";
 
-        // Idempoten: Cek apakah saga sudah pernah berjalan sukses
         $existing = MiningSaga::where('saga_reference', $sagaRef)->first();
         if ($existing && $existing->status === 'COMPLETED') {
             $existingPayload = $existing->payload_json ?? [];
@@ -71,13 +70,14 @@ class PredictiveMaintenanceWorkOrderSaga
         $woId = null;
         $prNumber = null;
         $compensationLog = [];
+        $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine();
 
         try {
-            // STEP 1: Terbitkan Work Order ke Modul Asset
             $idempotencyKey = "min:wo:{$payload['equipment_id']}:{$payload['shift_date']}:{$payload['shift_code']}";
 
             if ($this->woRequester !== null) {
-                $assetId = 1; // ID aset referensi di modul Asset
+                $adapter = $this->assetAdapter ?? app(MiningEquipmentAssetRegistryAdapter::class);
+                $assetId = $adapter->resolveCorporateAssetIdForWorkOrder((string) $payload['equipment_id']);
                 $woId = $this->woRequester->request(
                     assetId: $assetId,
                     reasonCode: $payload['reason_code'],
@@ -93,7 +93,6 @@ class PredictiveMaintenanceWorkOrderSaga
                 'payload_json' => array_merge($payload, ['wo_id' => $woId]),
             ]);
 
-            // STEP 2: Usulkan PR suku cadang ke Modul Procurement
             if ($this->prProposer !== null && ! empty($payload['parts_list'])) {
                 $prNumber = $this->prProposer->proposeRequisition(
                     lines: $payload['parts_list'],
@@ -109,10 +108,9 @@ class PredictiveMaintenanceWorkOrderSaga
                 'payload_json' => array_merge($payload, ['wo_id' => $woId, 'pr_number' => $prNumber]),
             ]);
 
-            // STEP 3: Catat downtime pemeliharaan di rencana shift pit terkait
             $equipment = MiningEquipment::find($payload['equipment_id']);
             if ($equipment) {
-                $equipment->update(['status' => 'under_maintenance']);
+                $eqSm->transitionToMaintenance($equipment, (string) $actor->id, "WO #{$woId} diterbitkan ({$payload['reason_code']})");
             }
 
             $shift = MiningPlanShift::where('shift_date', $payload['shift_date'])
@@ -131,7 +129,7 @@ class PredictiveMaintenanceWorkOrderSaga
             $saga->update([
                 'status' => 'COMPLETED',
                 'current_step' => 'DONE',
-                'completed_at' => now(),
+                'completed_at' => $this->now(),
             ]);
 
             return [
@@ -142,18 +140,16 @@ class PredictiveMaintenanceWorkOrderSaga
             ];
 
         } catch (Exception $e) {
-            // COMPENSATION FLOW
             $compensationLog[] = [
                 'step' => $saga->current_step,
                 'error' => $e->getMessage(),
                 'action' => 'Restore downtime and cancel work order reservation',
-                'compensated_at' => now()->toIso8601String(),
+                'compensated_at' => $this->now()->toIso8601String(),
             ];
 
-            // Pulihkan status peralatan jika step 3 sempat dijalankan
             $equipment = MiningEquipment::find($payload['equipment_id']);
-            if ($equipment && $equipment->status === 'under_maintenance') {
-                $equipment->update(['status' => 'available']);
+            if ($equipment) {
+                $eqSm->restoreFromMaintenance($equipment, (string) $actor->id, 'Kompensasi kegagalan saga perawatan prediktif');
             }
 
             $saga->update([
@@ -168,5 +164,10 @@ class PredictiveMaintenanceWorkOrderSaga
                 'pr_number' => null,
             ];
         }
+    }
+
+    private function now(): \Carbon\CarbonInterface
+    {
+        return ($this->clock ?? app(ClockInterface::class))->now();
     }
 }

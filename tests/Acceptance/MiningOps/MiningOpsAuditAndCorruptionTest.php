@@ -87,3 +87,4 @@ class MiningOpsAuditAndCorruptionTest extends TestCase
         $this->assertEquals(1, $exitCorrupt, 'Audit must fail (exit 1) when fuel hold balance mismatches ledger');
     }
 }
+

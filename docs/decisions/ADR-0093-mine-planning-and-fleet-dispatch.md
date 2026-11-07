@@ -67,3 +67,4 @@ Operasi pertambangan (Pilar 12F) memerlukan kepastian deterministik dalam pemeca
 - Menjamin konsistensi transaksi keuangan antara tagihan kontraktor, operasional lapangan, dan buku besar akuntansi.
 - Mencegah kehilangan bahan bakar (fuel theft) dan ketidakseimbangan alokasi truk-shovel.
 - Memenuhi seluruh kriteria batas bawah kode produksi (B1 $\ge 6.000$ baris) dan dokumentasi (B3 $\ge 1.500$ baris) sesuai spesifikasi W8.
+

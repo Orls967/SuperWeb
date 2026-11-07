@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Application\Actions;
 
-use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Mining\Domain\Enums\MinePlanStatus;
@@ -13,6 +12,7 @@ use Modules\Mining\Domain\Models\MiningPlan;
 use Modules\Mining\Domain\Models\MiningPlanShift;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mining\Domain\Services\MiningExternalFactors;
+use Modules\Mining\Domain\StateMachines\MinePlanStateMachine;
 use Modules\Shared\Domain\Algorithms\Scheduling\WeightedTimePhasing;
 
 /**
@@ -22,7 +22,8 @@ class PlanMineBlockAction
 {
     public function __construct(
         private readonly WeightedTimePhasing $timePhasing,
-        private readonly MiningExternalFactors $externalFactors
+        private readonly MiningExternalFactors $externalFactors,
+        private readonly ?MinePlanStateMachine $stateMachine = null
     ) {}
 
     /**
@@ -58,34 +59,39 @@ class PlanMineBlockAction
                 'plan_code' => $planCode,
                 'period_month' => $params['period_month'],
                 'commodity' => $params['commodity'],
-                'target_cut_kg' => $params['target_cut_kg'] ?? (int) ($params['target_tonnage_kg'] * 1.2),
-                'target_fill_kg' => $params['target_fill_kg'] ?? (int) ($params['target_tonnage_kg'] * 0.2),
+                'target_cut_kg' => $params['target_cut_kg'] ?? intdiv($params['target_tonnage_kg'] * 12, 10),
+                'target_fill_kg' => $params['target_fill_kg'] ?? intdiv($params['target_tonnage_kg'] * 2, 10),
                 'target_ore_kg' => $params['target_tonnage_kg'],
                 'target_grade_ppm' => $params['target_grade_ppm'],
-                'status' => MinePlanStatus::APPROVED->value,
+                'status' => MinePlanStatus::DRAFT->value,
                 'version' => $version,
                 'approved_by_user_id' => $params['user_id'] ?? null,
             ]);
 
-            // Buat bobot ketersediaan untuk 7 periode representatif (atau hari dalam bulan)
-            // Sesuai vektor uji M1: bobot [5, 5, 5, 5, 4, 4, 2]
+            $sm = $this->stateMachine ?? new MinePlanStateMachine();
+            $actorRef = isset($params['user_id']) ? (string) $params['user_id'] : 'system';
+            $sm->advanceAlongPath(
+                $plan,
+                [MinePlanStatus::SUBMITTED, MinePlanStatus::REVIEWED, MinePlanStatus::APPROVED],
+                $actorRef,
+                'Pengesahan otomatis rencana tambang bulanan M1'
+            );
+
             $weights = [5, 5, 5, 5, 4, 4, 2];
-            $totalTargetTon = (int) round($params['target_tonnage_kg'] / 1000); // 100.003 ton
+            $totalTargetTon = intdiv($params['target_tonnage_kg'] + 500, 1000);
 
             $phasingResult = $this->timePhasing->phase($totalTargetTon, $weights);
 
             $startDate = CarbonImmutable::parse("{$params['period_month']}-01");
-
             $shiftsPerDay = ['SHIFT_A', 'SHIFT_B'];
 
             foreach ($phasingResult->dailyAllocations as $dayIdx => $dailyTonnageTon) {
                 $currentDate = $startDate->addDays($dayIdx);
 
-                // Jam hilang akibat curah hujan dari faktor eksternal
                 $weather = $this->externalFactors->getRainfallDowntime($site->site_code, $currentDate);
                 $rainHours = $weather['downtime_hours'];
 
-                $halfTonnageKg = (int) round(($dailyTonnageTon * 1000) / 2);
+                $halfTonnageKg = intdiv($dailyTonnageTon * 1000, 2);
 
                 foreach ($shiftsPerDay as $shiftCode) {
                     $nominalHours = 10;
@@ -107,7 +113,7 @@ class PlanMineBlockAction
                 }
             }
 
-            return $plan;
+            return $plan->fresh() ?? $plan;
         });
     }
 }

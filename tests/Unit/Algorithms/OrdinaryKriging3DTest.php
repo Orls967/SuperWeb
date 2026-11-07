@@ -51,3 +51,4 @@ test('tampered ordinary kriging certificate throws exception', function () {
     $verifier = new OrdinaryKriging3DCertificateVerifier();
     $verifier->verify($samples, $corrupted);
 })->throws(InvalidArgumentException::class);
+

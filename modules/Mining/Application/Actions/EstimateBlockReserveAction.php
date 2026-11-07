@@ -4,100 +4,84 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Application\Actions;
 
-use Illuminate\Support\Str;
+use DomainException;
+use Illuminate\Support\Facades\DB;
 use Modules\Mining\Domain\Algorithms\InverseDistanceWeightingInterpolator;
 use Modules\Mining\Domain\Models\MiningBlockModelVoxel;
 use Modules\Mining\Domain\Models\MiningBoreholeAssay;
 use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Shared\Domain\Algorithms\Geo\OrdinaryKriging3D;
 
+/**
+ * Estimasi blok model pit (D93-1): kadar voxel dari borehole lewat IDW; varians Kriging menentukan klasifikasi
+ * (varians ≤ ambang → MEASURED, ≤ 2× ambang → INDICATED, selain itu INFERRED; kadar < cut-off → WASTE).
+ */
 final class EstimateBlockReserveAction
 {
+    private const DENSITY_KG_M3 = 1600;
+
     public function __construct(
-        private readonly InverseDistanceWeightingInterpolator $interpolator,
-    ) {
-    }
+        private readonly InverseDistanceWeightingInterpolator $idw,
+        private readonly OrdinaryKriging3D $kriging,
+    ) {}
 
     /**
-     * Mengestimasi cadangan voxel 3D pada pit tambang berdasarkan sampel borehole.
-     *
-     * @param string $pitId
-     * @param array<int, array{x_mm: int, y_mm: int, z_mm: int, size_mm: int}> $gridPoints
-     * @return array{total_voxels: int, total_tonnage_kg: int, average_grade_ppm: int}
+     * @param  list<array{x_mm: int, y_mm: int, z_mm: int, size_mm: int}>  $grid
+     * @return array{voxels: int, tonnage_kg: int, grade_ppm: int}
      */
-    public function execute(string $pitId, array $gridPoints): array
+    public function execute(string $pitId, array $grid, int $cutoffPpm, int $varianceThresholdBps): array
     {
         $pit = MiningPit::findOrFail($pitId);
+        $samples = MiningBoreholeAssay::where('pit_id', $pit->id)->orderBy('hole_code')->orderBy('depth_from_mm')->get()
+            ->map(fn ($b) => ['x' => $b->coord_x_mm, 'y' => $b->coord_y_mm, 'z' => $b->elevation_z_mm, 'grade_ppm' => $b->grade_ni_ppm])->all();
 
-        $boreholes = MiningBoreholeAssay::where('pit_id', $pit->id)->get();
-
-        if ($boreholes->isEmpty()) {
-            // Jika belum ada borehole di DB, sediakan titik fallback representatif pit
-            $samplePoints = [
-                ['x' => 0, 'y' => 0, 'z' => 0, 'grade_ppm' => 16000],
-                ['x' => 100000, 'y' => 0, 'z' => 0, 'grade_ppm' => 18000],
-                ['x' => 0, 'y' => 100000, 'z' => 0, 'grade_ppm' => 17000],
-                ['x' => 100000, 'y' => 100000, 'z' => 0, 'grade_ppm' => 19000],
-            ];
-        } else {
-            $samplePoints = $boreholes->map(fn ($b) => [
-                'x' => $b->coord_x_mm,
-                'y' => $b->coord_y_mm,
-                'z' => $b->elevation_z_mm,
-                'grade_ppm' => $b->grade_ni_ppm,
-            ])->all();
+        if ($samples === []) {
+            throw new DomainException("Pit {$pit->pit_code} belum memiliki borehole assay; estimasi cadangan ditolak.");
         }
 
-        $totalTonnageKg = 0;
-        $weightedGradeSum = 0;
-        $createdVoxels = 0;
+        return DB::transaction(function () use ($pit, $grid, $samples, $cutoffPpm, $varianceThresholdBps) {
+            $tonnage = 0;
+            $metal = 0;
 
-        foreach ($gridPoints as $pt) {
-            $target = [
-                'x' => $pt['x_mm'],
-                'y' => $pt['y_mm'],
-                'z' => $pt['z_mm'],
+            foreach ($grid as $cell) {
+                $target = ['x' => $cell['x_mm'], 'y' => $cell['y_mm'], 'z' => $cell['z_mm']];
+                $grade = $this->idw->interpolate($target, $samples)->interpolatedGradePpm;
+                $variance = $this->kriging->estimate($target, $samples)->krigingVarianceBps;
+
+                $volumeCm3 = intdiv($cell['size_mm'] ** 3, 1000);
+                $kg = intdiv($volumeCm3 * self::DENSITY_KG_M3, 1000000);
+
+                $class = match (true) {
+                    $grade < $cutoffPpm => 'WASTE',
+                    $variance <= $varianceThresholdBps => 'MEASURED',
+                    $variance <= 2 * $varianceThresholdBps => 'INDICATED',
+                    default => 'INFERRED',
+                };
+
+                MiningBlockModelVoxel::updateOrCreate(
+                    ['voxel_code' => sprintf('VX-%s-%d-%d-%d', $pit->pit_code, $cell['x_mm'], $cell['y_mm'], $cell['z_mm'])],
+                    [
+                        'pit_id' => $pit->id,
+                        'center_x_mm' => $cell['x_mm'],
+                        'center_y_mm' => $cell['y_mm'],
+                        'center_z_mm' => $cell['z_mm'],
+                        'volume_cm3' => $volumeCm3,
+                        'density_kg_m3' => self::DENSITY_KG_M3,
+                        'estimated_tonnage_kg' => $kg,
+                        'estimated_grade_ppm' => $grade,
+                        'classification' => $class,
+                    ]
+                );
+
+                $tonnage += $kg;
+                $metal += $kg * $grade;
+            }
+
+            return [
+                'voxels' => count($grid),
+                'tonnage_kg' => $tonnage,
+                'grade_ppm' => $tonnage > 0 ? intdiv($metal, $tonnage) : 0,
             ];
-
-            $result = $this->interpolator->interpolate($target, $samplePoints);
-            $gradePpm = $result->interpolatedGradePpm;
-
-            // Hitung volume cm3 dan tonase berdasarkan densitas nikel laterit (1.6 t/m3 = 1600 kg/m3)
-            $sideM = $pt['size_mm'] / 1000.0;
-            $volM3 = $sideM * $sideM * $sideM;
-            $volCm3 = (int) round($volM3 * 1000000);
-            $density = 1600; // kg/m3
-            $tonnageKg = (int) round($volM3 * $density);
-
-            $classification = $gradePpm >= 15000 ? 'MEASURED' : ($gradePpm >= 12000 ? 'INDICATED' : 'WASTE');
-
-            $voxelCode = 'VOX-'.substr(md5("{$pit->id}-{$pt['x_mm']}-{$pt['y_mm']}-{$pt['z_mm']}"), 0, 8);
-
-            MiningBlockModelVoxel::updateOrCreate(
-                ['pit_id' => $pit->id, 'voxel_code' => $voxelCode],
-                [
-                    'center_x_mm' => $pt['x_mm'],
-                    'center_y_mm' => $pt['y_mm'],
-                    'center_z_mm' => $pt['z_mm'],
-                    'volume_cm3' => $volCm3,
-                    'density_kg_m3' => $density,
-                    'estimated_tonnage_kg' => $tonnageKg,
-                    'estimated_grade_ppm' => $gradePpm,
-                    'classification' => $classification,
-                    'status' => 'UNMINED',
-                ]
-            );
-
-            $totalTonnageKg += $tonnageKg;
-            $weightedGradeSum += ($gradePpm * $tonnageKg);
-            $createdVoxels++;
-        }
-
-        $avgGradePpm = $totalTonnageKg > 0 ? (int) round($weightedGradeSum / $totalTonnageKg) : 0;
-
-        return [
-            'total_voxels' => $createdVoxels,
-            'total_tonnage_kg' => $totalTonnageKg,
-            'average_grade_ppm' => $avgGradePpm,
-        ];
+        });
     }
 }

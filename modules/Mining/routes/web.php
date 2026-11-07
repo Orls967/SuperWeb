@@ -44,6 +44,7 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
     Route::middleware(['role:finance_officer,hse_officer,admin'])->group(function () {
         Route::get('/fuel', [MiningFuelController::class, 'index'])->name('mining.fuel');
         Route::post('/fuel/{case}/resolve', [MiningFuelController::class, 'resolve'])->name('mining.fuel.resolve');
+        Route::post('/fuel/dispense', [MiningFuelController::class, 'dispense'])->name('mining.fuel.dispense');
     });
 
     // Reports export CSV

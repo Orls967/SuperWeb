@@ -153,3 +153,4 @@ final class LinearBaselineRegression
         return $a ?: 1;
     }
 }
+

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Console\Commands;
 
+use DomainException;
 use Illuminate\Console\Command;
 use Modules\Mining\Application\Actions\EstimateBlockReserveAction;
 use Modules\Mining\Domain\Models\MiningPit;
 
 class BlockReserveEstimateCommand extends Command
 {
-    protected $signature = 'mining:estimate-reserve {pit_id : UUID atau Pit Code}';
+    protected $signature = 'mining:estimate-reserve {pit_id : UUID atau Pit Code} {--cutoff-ppm=12000 : Kadar cut-off (ppm)} {--variance-bps=500 : Ambang varians Kriging untuk MEASURED}';
 
     protected $description = 'Menjalankan estimasi cadangan blok tambang berbasis 3D Voxel Grid & IDW interpolator';
 
@@ -44,16 +45,22 @@ class BlockReserveEstimateCommand extends Command
             }
         }
 
-        $res = $action->execute($pit->id, $grid);
+        try {
+            $res = $action->execute($pit->id, $grid, (int) $this->option('cutoff-ppm'), (int) $this->option('variance-bps'));
+        } catch (DomainException $e) {
+            $this->error($e->getMessage());
+
+            return 1;
+        }
 
         $this->table(
             ['Metrik Estimasi', 'Hasil'],
             [
                 ['Pit Code', $pit->pit_code],
-                ['Jumlah Voxel Ter-generate', $res['total_voxels']],
-                ['Total Cadangan (Ton)', number_format($res['total_tonnage_kg'] / 1000.0, 2)],
-                ['Rata-rata Kadar Ni (ppm)', $res['average_grade_ppm']],
-                ['Estimasi Kadar Ni (%)', number_format($res['average_grade_ppm'] / 10000.0, 3).'%'],
+                ['Jumlah Voxel Ter-generate', $res['voxels']],
+                ['Total Cadangan (Ton)', number_format($res['tonnage_kg'] / 1000.0, 2)],
+                ['Rata-rata Kadar Ni (ppm)', $res['grade_ppm']],
+                ['Estimasi Kadar Ni (%)', number_format($res['grade_ppm'] / 10000.0, 3).'%'],
             ]
         );
 
@@ -62,3 +69,4 @@ class BlockReserveEstimateCommand extends Command
         return 0;
     }
 }
+

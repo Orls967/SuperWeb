@@ -103,3 +103,57 @@ Penerapan sistem pada modul Pertambangan mengacu pada peraturan perundang-undang
 - **Kepmen ESDM No. 1827 K/30/MEM/2018** tentang Pedoman Pelaksanaan Kaidah Teknik Pertambangan yang Baik (*Good Mining Practice*), mencakup keselamatan operasi, pemantauan kestabilan lereng, dan pengelolaan bahan bakar.
 - **PP No. 19 Tahun 2025** tentang Tarif PNBP Royalti Mineral dan Batubara (berlaku sejak April 2025).
 - **Kepmen ESDM No. 72.K/MB.01/MEM.B/2025** tentang Penetapan Harga Batubara Acuan (HBA) dan Harga Mineral Acuan (HMA) sebagai acuan transaksi dan royalti.
+
+---
+
+### 1.10 Arsitektur Pembukuan Buku Besar Fase 93 (`MiningFase93LedgerPostingService`)
+Seluruh mutasi finansial pada operasi pertambangan Fase 93 dikonsolidasikan di dalam layanan `Modules\Mining\Ledger\MiningFase93LedgerPostingService` yang membungkus `Modules\Banking\Application\Services\LedgerService` dan `Modules\Banking\Support\Posting`:
+
+1. **Pengeluaran Bahan Bakar Solar (`postFuelDispense`)**
+   - Dipanggil oleh `Modules\Mining\Application\Actions\DispenseFuelToEquipmentAction` saat operator stasiun bahan bakar (`fuelman`) mencatat pengeluaran solar dari tabel `min_fuel_storages` ke tabel `min_fuel_dispense_records`.
+   - Kunci idempotensi: `min:fuel-dispense:{dispense_record_id}`.
+   - Pasangan ayat jurnal:
+     - **Debit**: `expense:min:fuel:IDR` (`MiningAccounts::fuelExpense()`) sebesar $\lfloor \text{volume\_ml} \times \text{harga\_per\_liter} / 1000 \rfloor$.
+     - **Kredit**: `min:fuel_inventory:IDR` (`MiningAccounts::fuelInventory()`).
+
+2. **Penagihan Hauling Kontraktor per Shift (`postContractorHaulingBilling`)**
+   - Dipanggil oleh `Modules\Mining\Application\Actions\SettleShiftHaulingBillingAction` dan command `mining:shift-close {date} {shift}`.
+   - Kunci idempotensi: `min:shift-close:{site_code}:{shift_date}:{shift_code}` (atau kunci dari header permintaan).
+   - Pasangan ayat jurnal:
+     - **Debit**: `expense:min:hauling_contractor:IDR`.
+     - **Kredit**: `ap:min:contractor:{party_id}:IDR` (`MiningAccounts::contractorPayable($partyId)`).
+
+3. **Penahanan Pembayaran Kontraktor Akibat Anomali BBM (`postContractorFuelHold`)**
+   - Dipanggil pada Langkah 2 di dalam `Modules\Mining\Application\Sagas\FuelAnomalyHoldSaga` setelah algoritma `Modules\Shared\Domain\Algorithms\Stats\LinearBaselineRegression` mengonfirmasi deviasi $> 1.500\text{ bps}$.
+   - Kunci idempotensi: `min:fuel-hold:{case_id}`.
+   - Pasangan ayat jurnal:
+     - **Debit**: `ap:min:contractor:{party_id}:IDR` (mengurangi utang lancar yang siap dibayar ke kontraktor).
+     - **Kredit**: `min:contractor_payment_hold:IDR` (menampung liabilitas bersyarat selama investigasi berlangsung).
+
+4. **Rilis Penahanan Pembayaran Kontraktor (`postContractorFuelHoldRelease`)**
+   - Dipanggil oleh `FuelAnomalyHoldSaga::resolveReleased` ketika sanggahan kontraktor pada `MiningContractorPortalController::dispute` terbukti sah (misalnya akibat pengalihan jalur tanjakan darurat atau kondisi jalan berlumpur dengan IRI $> 4.500\text{ mm/km}$).
+   - Kunci idempotensi: `min:fuel-release:{case_id}`.
+   - Pasangan ayat jurnal:
+     - **Debit**: `min:contractor_payment_hold:IDR`.
+     - **Kredit**: `ap:min:contractor:{party_id}:IDR`.
+
+5. **Pemotongan Definitif Varians BBM (`postContractorFuelHoldDeduction`)**
+   - Dipanggil oleh `FuelAnomalyHoldSaga::resolveDeducted` apabila investigasi telematika membuktikan kehilangannya tidak terkait faktor geologi/cuaca.
+   - Kunci idempotensi: `min:fuel-deduct:{case_id}`.
+   - Pasangan ayat jurnal:
+     - **Debit**: `min:contractor_payment_hold:IDR`.
+     - **Kredit**: `min:fuel_variance_recovery:IDR`.
+
+### 1.11 Layanan Analitika Geologi, Jalan Angkut, dan Keandalan Ban
+Untuk mencegah keausan dini armada dan menjaga kontinuitas umpan bijih ke pabrik pengolahan, Fase 93 menyediakan lima layanan analitika terintegrasi:
+- **Estimasi Cadangan Blok 3D (`EstimateBlockReserveAction`)**: Menggabungkan data lubang bor (`min_borehole_assays`) menggunakan `InverseDistanceWeightingInterpolator` dan `OrdinaryKriging3D` untuk mengklasifikasikan blok voxel (`min_block_model_voxels`) ke dalam kategori sumber daya `MEASURED`, `INDICATED`, atau `INFERRED` berdasarkan batas varians Kriging ($\le 500\text{ bps}$ untuk `MEASURED`).
+- **Optimasi Blending Bench Jangka Pendek (`PitShortTermOptimizationService`)**: Menghitung porsi penggalian antara bench bijih kadar tinggi (*High-Grade Saprolite*) dan kadar rendah (*Low-Grade Limonite*) dalam satuan basis points (`portion_bps`) agar deviasi kadar campuran terhadap target umpan smelter tetap $\le 500\text{ ppm}$.
+- **Kalkulator Biaya Kupasan per BCM (`MiningCostPerBcmCalculator`)**: Memisahkan struktur biaya pengupasan tanah penutup (*Overburden*, alokasi $7.000\text{ bps}$) dan ekstraksi bijih (*Ore*, alokasi $3.000\text{ bps}$) serta menghitung *Stripping Ratio* dalam skala basis points (`stripping_ratio_bps`).
+- **Evaluasi Resistansi Gelinding Jalan Angkut (`HaulRoadFleetMaintenanceService`)**: Mengukur dampak kenaikan *International Roughness Index* (`roughnessIriMmPerKm`) terhadap kenaikan *Rolling Resistance* (`rolling_resistance_bps`), penalti pembakaran solar (`fuel_burn_penalty_bps`), batas kecepatan aman truk (`max_safe_speed_kmh`), serta penjadwalan unit *Motor Grader* dan *Water Truck* saat debu partikulat $\ge 150\text{ ppm}$.
+- **Pemantauan Beban Termal Ban TKPH (`RecordTireTemperaturePressureAction`) dan Keandalan MTBF/MTTR (`EquipmentTelemetryAnalyticsService`)**: Menghitung indeks *Ton-Kilometer Per Hour* (`tkph_scaled`) untuk keenam roda truk angkut serta metrik *Mean Time Between Failures* (`mtbf_hours`) dan *Mean Time To Repair* (`mttr_hours`) dari riwayat eksekusi saga perawatan prediktif (`min_mining_sagas`).
+
+### 1.12 Perlindungan Otorisasi & Anti-IDOR (`MiningFase93AccessPolicy`)
+Setiap titik masuk HTTP pada Fase 93 dikawal oleh `Modules\Mining\Http\Policies\MiningFase93AccessPolicy`:
+- Perencana tambang (`mine_planner`) hanya berwenang mengelola `/mining/plans` (`MiningPlanController`).
+- Petugas dispatch (`dispatcher_mine`) mengoperasikan `/mining/dispatch` (`MiningDispatchController`), di mana setiap tindakan *override* shovel wajib menyertakan alasan tertulis minimal 5 karakter yang direkam pada `min_haul_cycle_histories`.
+- Kontraktor (`contractor`) yang mengakses `/contractor/mining` (`MiningContractorPortalController`) diisolasi secara ketat berdasarkan `contractor_party_ref === (string) $user->id`. Upaya mengakses atau menyanggah nomor kasus `MiningFuelAnomalyCase` milik kontraktor lain langsung ditolak dengan status HTTP `403 Forbidden` oleh metode `MiningFase93AccessPolicy::assertContractorOwnsFuelCase`.

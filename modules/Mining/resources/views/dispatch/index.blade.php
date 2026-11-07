@@ -1,117 +1,76 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-        <div class="p-6 bg-gray-800 shadow sm:rounded-lg">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-xl font-bold text-white">Fleet Dispatch & Haul Cycle (M2 Need-Time Dispatcher)</h2>
-                    <p class="text-sm text-gray-400">Optimalisasi alokasi armada truk ke loader/shovel secara real-time berdasarkan need-time dan match factor.</p>
-                </div>
-            </div>
+<div class="py-12"><div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 text-gray-300">
+<div class="p-4 sm:p-6 bg-gray-800 shadow sm:rounded-lg">
+    <h2 class="text-xl font-bold text-white">Papan Dispatch Shift (M2 Need-Time)</h2>
+    @include('mining::partials.flash')
 
-            @if(session('success'))
-                <div class="mb-4 p-4 bg-emerald-900/50 border border-emerald-500 rounded text-emerald-200 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <form method="GET" class="flex flex-wrap gap-2 my-4">
+        <input type="date" name="shift_date" value="{{ $shiftDate }}" class="rounded bg-gray-900 border-gray-600">
+        <input name="shift_code" value="{{ $shiftCode }}" class="rounded bg-gray-900 border-gray-600">
+        <button class="px-3 py-1 bg-indigo-600 text-white rounded">Muat</button>
+        <a href="{{ route('mining.reports.export', ['type' => 'haul']) }}" class="px-3 py-1 bg-gray-600 text-white rounded">CSV</a>
+    </form>
 
-            <!-- Form Otomatis Dispatch Truk -->
-            <div class="bg-gray-700/50 p-6 rounded-lg mb-8 border border-gray-600">
-                <h3 class="text-lg font-semibold text-white mb-4">Penugasan Otomatis Truk Angkut</h3>
-                <form action="{{ route('mining.dispatch.assign') }}" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300">Truk Angkut</label>
-                        <select name="truck_id" required class="mt-1 block w-full rounded bg-gray-800 border-gray-600 text-white">
-                            @foreach($trucks as $truck)
-                                <option value="{{ $truck->id }}">{{ $truck->code }} ({{ $truck->name }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300">Target Pit</label>
-                        <select name="pit_id" required class="mt-1 block w-full rounded bg-gray-800 border-gray-600 text-white">
-                            @foreach($pits as $pit)
-                                <option value="{{ $pit->id }}">{{ $pit->pit_code }} - {{ $pit->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300">Shift</label>
-                        <select name="shift" required class="mt-1 block w-full rounded bg-gray-800 border-gray-600 text-white">
-                            <option value="SHIFT_1">Shift 1 (Pagi)</option>
-                            <option value="SHIFT_2">Shift 2 (Siang)</option>
-                            <option value="SHIFT_3">Shift 3 (Malam)</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded shadow">
-                            Jalankan M2 Dispatcher
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <form action="{{ route('mining.dispatch.assign') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        @csrf
+        <select name="site_id" required class="rounded bg-gray-900 border-gray-600">@foreach($sites as $s)<option value="{{ $s->id }}">{{ $s->site_code }}</option>@endforeach</select>
+        <select name="pit_id" required class="rounded bg-gray-900 border-gray-600">@foreach($pits as $p)<option value="{{ $p->id }}">{{ $p->pit_code }}</option>@endforeach</select>
+        <select name="truck_id" required class="rounded bg-gray-900 border-gray-600">@foreach($trucks as $t)<option value="{{ $t->id }}">{{ $t->equipment_code }}</option>@endforeach</select>
+        <input type="hidden" name="shift_date" value="{{ $shiftDate }}"><input type="hidden" name="shift_code" value="{{ $shiftCode }}">
+        <input type="number" name="target_payload_kg" min="1000" required class="rounded bg-gray-900 border-gray-600" placeholder="Target payload (kg)">
+        <button class="md:col-span-2 px-4 py-2 bg-indigo-600 text-white rounded">Tugaskan otomatis (M2)</button>
+    </form>
 
-            <!-- Monitoring Siklus Angkut Aktif -->
-            <div class="bg-gray-700/40 rounded-lg p-6 border border-gray-600">
-                <h3 class="text-lg font-semibold text-white mb-4">Siklus Angkut Real-time (Haul Cycles)</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-300">
-                        <thead class="bg-gray-800 text-gray-400 uppercase text-xs">
-                            <tr>
-                                <th class="p-3">Cycle Code</th>
-                                <th class="p-3">Truk</th>
-                                <th class="p-3">Shovel</th>
-                                <th class="p-3">Shift</th>
-                                <th class="p-3">Muatan (Ton)</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3 text-right">Manual Override</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-700">
-                            @forelse($cycles as $cycle)
-                                <tr class="hover:bg-gray-750">
-                                    <td class="p-3 font-mono font-medium text-indigo-400">{{ $cycle->cycle_code }}</td>
-                                    <td class="p-3">{{ $cycle->truck?->code ?? '-' }}</td>
-                                    <td class="p-3">{{ $cycle->shovel?->code ?? '-' }}</td>
-                                    <td class="p-3">{{ $cycle->shift }}</td>
-                                    <td class="p-3">{{ number_format($cycle->payload_ton, 1) }} T</td>
-                                    <td class="p-3">
-                                        <span class="px-2 py-1 text-xs rounded font-semibold bg-blue-900/60 text-blue-300 border border-blue-600">
-                                            {{ $cycle->status->value }}
-                                        </span>
-                                    </td>
-                                    <td class="p-3 text-right">
-                                        <form action="{{ route('mining.dispatch.override', $cycle) }}" method="POST" class="inline-flex items-center space-x-2">
-                                            @csrf
-                                            <select name="status" class="text-xs rounded bg-gray-900 border-gray-600 text-white p-1">
-                                                <option value="HAULING">HAULING</option>
-                                                <option value="DUMPING">DUMPING</option>
-                                                <option value="COMPLETED">COMPLETED</option>
-                                                <option value="DELAYED">DELAYED</option>
-                                            </select>
-                                            <input type="text" name="reason" placeholder="Alasan override" required class="text-xs rounded bg-gray-900 border-gray-600 text-white p-1 w-32">
-                                            <button type="submit" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white text-xs rounded">
-                                                Override
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="p-6 text-center text-gray-400">Tidak ada siklus angkut yang tercatat.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    {{ $cycles->links() }}
-                </div>
-            </div>
-        </div>
-    </div>
+    <details class="mb-4"><summary class="cursor-pointer text-amber-400">Override dispatcher (wajib alasan)</summary>
+        <form action="{{ route('mining.dispatch.override') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+            @csrf
+            <select name="site_id" required class="rounded bg-gray-900 border-gray-600">@foreach($sites as $s)<option value="{{ $s->id }}">{{ $s->site_code }}</option>@endforeach</select>
+            <select name="pit_id" required class="rounded bg-gray-900 border-gray-600">@foreach($pits as $p)<option value="{{ $p->id }}">{{ $p->pit_code }}</option>@endforeach</select>
+            <select name="truck_id" required class="rounded bg-gray-900 border-gray-600">@foreach($trucks as $t)<option value="{{ $t->id }}">{{ $t->equipment_code }}</option>@endforeach</select>
+            <select name="chosen_shovel_id" required class="rounded bg-gray-900 border-gray-600">@foreach($shovels as $s)<option value="{{ $s->id }}">{{ $s->equipment_code }}</option>@endforeach</select>
+            <input type="hidden" name="shift_date" value="{{ $shiftDate }}"><input type="hidden" name="shift_code" value="{{ $shiftCode }}">
+            <input type="number" name="target_payload_kg" min="1000" required class="rounded bg-gray-900 border-gray-600" placeholder="Target payload (kg)">
+            <input name="override_reason" minlength="5" required class="md:col-span-2 rounded bg-gray-900 border-gray-600" placeholder="Alasan override">
+            <button class="px-4 py-2 bg-amber-600 text-white rounded">Override</button>
+        </form>
+    </details>
+
+    <div class="overflow-x-auto"><table class="w-full text-left text-sm">
+        <thead class="text-xs uppercase text-gray-400"><tr><th class="p-2">Truk</th><th class="p-2">Shovel</th><th class="p-2">Seq</th><th class="p-2">Status</th><th class="p-2">Target (kg)</th><th class="p-2">Aktual (kg)</th></tr></thead>
+        <tbody class="divide-y divide-gray-700">
+        @forelse($cycles as $c)
+            <tr><td class="p-2 font-mono">{{ $c->truck?->equipment_code }}</td><td class="p-2">{{ $c->shovel?->equipment_code }}</td><td class="p-2">{{ $c->cycle_seq }}</td><td class="p-2">{{ $c->status->value }}</td><td class="p-2">{{ number_format($c->target_payload_kg) }}</td><td class="p-2">{{ number_format($c->actual_payload_kg) }}</td></tr>
+        @empty
+            <tr><td colspan="6" class="p-4 text-center text-gray-400">Tidak ada siklus pada shift ini.</td></tr>
+        @endforelse
+        </tbody>
+    </table></div>
+    {{ $cycles->links() }}
 </div>
+
+<div class="p-4 sm:p-6 bg-gray-800 shadow sm:rounded-lg">
+    <h3 class="text-lg font-semibold text-white mb-1">Gantt siklus (dari riwayat transisi)</h3>
+    <p class="text-sm mb-3">Truk menunggu {{ $gantt['truck_wait_minutes'] }} mnt · Shovel idle {{ $gantt['shovel_idle_minutes'] }} mnt</p>
+    @foreach($gantt['rows'] as $row)
+        <div class="mb-2 text-xs"><span class="font-mono">{{ $row['truck'] }}→{{ $row['shovel'] }} #{{ $row['cycle_seq'] }}</span>
+            @foreach($row['intervals'] as $iv)<span class="inline-block px-2 py-0.5 mr-1 rounded bg-gray-700">{{ $iv['stage'] }} {{ $iv['minutes'] }}m</span>@endforeach
+        </div>
+    @endforeach
+</div>
+
+<div class="p-4 sm:p-6 bg-gray-800 shadow sm:rounded-lg">
+    <h3 class="text-lg font-semibold text-white mb-3">Simulator Match Factor</h3>
+    <form method="GET" class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
+        <input type="hidden" name="shift_date" value="{{ $shiftDate }}"><input type="hidden" name="shift_code" value="{{ $shiftCode }}">
+        <input type="number" name="sim_trucks" value="{{ request('sim_trucks', 12) }}" class="rounded bg-gray-900 border-gray-600" title="Truk">
+        <input type="number" name="sim_shovels" value="{{ request('sim_shovels', 3) }}" class="rounded bg-gray-900 border-gray-600" title="Shovel">
+        <input type="number" name="sim_loading" value="{{ request('sim_loading', 4) }}" class="rounded bg-gray-900 border-gray-600" title="Menit muat">
+        <input type="number" name="sim_cycle" value="{{ request('sim_cycle', 36) }}" class="rounded bg-gray-900 border-gray-600" title="Menit siklus">
+        <button class="px-3 py-1 bg-indigo-600 text-white rounded">Simulasikan</button>
+    </form>
+    <p>MF = {{ $sim['numerator'] }}/{{ $sim['denominator'] }} ({{ number_format($sim['mf_bps'] / 100, 1) }}%) — {{ $sim['state'] }}. {{ $sim['recommendation'] }}</p>
+</div>
+</div></div>
 @endsection

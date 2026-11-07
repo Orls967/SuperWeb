@@ -56,3 +56,50 @@ Runbook ini memuat panduan eksekusi perintah terjadwal (cron/schedule), command 
   php artisan min:audit
   ```
 - **Tindakan Bila Exit Code $\ne 0$**: Tinjau pesan error pada tabel audit. Jika saldo hold tidak seimbang, periksa apakah ada manipulasi langsung pada tabel `min_contractor_payment_holds` tanpa melalui `FuelAnomalyHoldSaga`.
+
+
+---
+
+### 1.6 `mining:estimate-reserve {pit_id} {--cutoff-ppm=12000} {--variance-bps=500}`
+- ** Kelas Pelaksana**: `Modules\Mining\Console\Commands\BlockReserveEstimateCommand` $\to$ `Modules\Mining\Application\Actions\EstimateBlockReserveAction`.
+- **Tujuan**: Melakukan estimasi cadangan bijih 3D pada grid blok voxel (`min_block_model_voxels`) berdasarkan data kadar lubang bor (`min_borehole_assays`) di pit terkait menggunakan algoritma `InverseDistanceWeightingInterpolator` dan `OrdinaryKriging3D`.
+- **Jadwal Eksekusi**: Mingguan setiap Senin pukul 02:00 UTC atau setiap kali kampanye pemboran eksplorasi baru selesai diunggah.
+- **Idempotensi**: Idempoten per koordinat `(pit_id, voxel_code)` melalui operasi `updateOrCreate` pada tabel `min_block_model_voxels`.
+- **Perintah Eksekusi**:
+  ```bash
+  php artisan mining:estimate-reserve PIT-KLP-01 --cutoff-ppm=12000 --variance-bps=500
+  ```
+- **Pemulihan Bila Gagal**:
+  - Jika muncul pesan `Tidak ada data borehole assay untuk pit ini`, pastikan minimal terdapat $\ge 4$ titik sampel tak-kolinear pada tabel `min_borehole_assays` untuk `pit_id` tersebut.
+  - Jika matriks Kriging singular akibat dua titik bor memiliki koordinat $(x, y, z)$ identik, bersihkan duplikasi koordinat sampel bor sebelum menjalankan ulang command.
+
+### 1.7 `mining:oee-scan {site_code?}`
+- **Kelas Pelaksana**: `Modules\Mining\Console\Commands\OeeBenchmarkScanCommand` $\to$ `Modules\Mining\Application\Services\FleetOeeRankingService`.
+- **Tujuan**: Menghitung peringkat *Overall Equipment Effectiveness* (OEE = Availability $\times$ Performance $\times$ Quality dalam basis points `0..10000`) untuk seluruh truk angkut (`HAUL_TRUCK`) berdasarkan fakta siklus angkut (`min_haul_cycles`) dan rencana shift (`min_mine_plan_shifts`).
+- **Jadwal Eksekusi**: Harian setiap pukul 06:00 UTC.
+- **Idempotensi**: Bersifat *read-only* murni dari tabel fakta; aman dijalankan berulang kali kapan saja tanpa mengubah state database.
+- **Perintah Eksekusi**:
+  ```bash
+  php artisan mining:oee-scan SITE-KALTIM-01
+  ```
+
+---
+
+## 2. Prosedur Penanganan Insiden & Pemulihan Saga (Fase 93)
+
+### 2.1 Pemulihan Saga Perawatan Prediktif (`PREDICTIVE_MAINTENANCE`)
+Ketika `IngestEquipmentTelemetryAction` mendeteksi `engine_hours_total > 5000` atau `vibration_rms_scaled > 1800`, `PredictiveMaintenanceWorkOrderSaga` mengeksekusi tiga langkah berurutan yang dicatat pada tabel `min_mining_sagas`:
+1. `STEP_1_WORK_ORDER`: Memanggil kontrak `Modules\Asset\Contracts\MaintenanceWorkOrderRequester::request` dengan kunci idempotensi `min:wo:{equipment_id}:{shift_date}:{shift_code}`.
+2. `STEP_2_PARTS_REQUISITION`: Memanggil kontrak `Modules\Procurement\Contracts\MrpRequisitionProposer::proposeRequisition` untuk suku cadang kritis (`SP-BEARING-777D`).
+3. `STEP_3_DOWNTIME_ADJUSTMENT`: Mengalihkan status unit di `min_equipment` melalui `EquipmentStateMachine::transitionToMaintenance` (`breakdown` $\to$ `under_maintenance`) dan memotong jam efektif shift di `min_mine_plan_shifts`.
+
+**Langkah Pemulihan Jika Saga Berstatus `COMPENSATED_FAILED`**:
+- Periksa kolom `compensation_log_json` pada tabel `min_mining_sagas` untuk membaca pesan kegagalan dari modul Asset atau Procurement.
+- Pastikan unit alat berat telah dikembalikan secara otomatis ke status `available` oleh metode kompensasi `EquipmentStateMachine::restoreFromMaintenance`.
+- Setelah gangguan pada layanan tujuan teratasi, jalankan ulang `php artisan mining:ingest-telemetry` atau kirim ulang payload telemetri dengan nomor urut baru untuk memicu pembuatan Work Order pengganti.
+
+### 2.2 Rekonsiliasi Ketidakcocokan Buku Besar Penahanan BBM (`min:contractor_payment_hold:IDR`)
+Apabila `php artisan min:audit` melaporkan ketidakcocokan antara total kolom `hold_amount_idr` berstatus `HELD` di tabel `min_contractor_payment_holds` dan saldo buku besar `min:contractor_payment_hold:IDR`:
+1. Identifikasi nomor referensi hold (`hold_reference`) yang belum memiliki pasangan ayat jurnal di tabel `bank_ledger_entries` dengan memeriksa `idempotency_key` (`min:fuel-hold:{case_id}`).
+2. Gunakan `MiningFase93LedgerPostingService::postContractorFuelHold` untuk membukukan ulang entri yang terlewat secara idempoten, atau jalankan penyelesaian sengketa melalui `/mining/fuel` (`MiningFuelController::resolve`).
+3. Jalankan kembali `php artisan min:audit` dan pastikan nilai `Discrepancies` kembali ke `0` (exit code `0`).

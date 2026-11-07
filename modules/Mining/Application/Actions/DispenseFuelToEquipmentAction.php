@@ -4,93 +4,77 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Application\Actions;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningFuelDispenseRecord;
 use Modules\Mining\Domain\Models\MiningFuelStorage;
-use Modules\Mining\Ledger\MiningAccounts;
-use Modules\Mining\Ledger\MiningTransactionTypes;
+use Modules\Mining\Ledger\MiningFase93LedgerPostingService;
 
+/**
+ * Pengisian solar dari tangki site ke alat (D93-7): kurangi stok tangki (fakta) dan posting
+ * debit min:fuel_expense / kredit min:fuel_inventory. Idempoten: kunci = tangki + alat + pembacaan flowmeter akhir.
+ */
 final class DispenseFuelToEquipmentAction
 {
     public function __construct(
-        private readonly ?LedgerService $ledgerService = null,
-    ) {
-    }
+        private readonly LedgerService $ledger,
+        private readonly ClockInterface $clock,
+        private readonly ?MiningFase93LedgerPostingService $postingService = null,
+    ) {}
 
     /**
-     * Pengisian bahan bakar solar ke alat berat dari tangki timbun / fuel truck.
-     *
-     * @param array{
-     *     storage_id: string,
-     *     equipment_id: string,
-     *     volume_liters: int,
-     *     engine_hours: int,
-     *     flowmeter_start: string,
-     *     flowmeter_end: string,
-     *     operator_ref?: string,
-     *     fuel_price_per_liter_idr?: int,
-     *     idempotency_key: string,
-     * } $payload
-     * @return MiningFuelDispenseRecord
+     * @param  array{storage_id: string, equipment_id: string, volume_ml: int, flowmeter_start: string, flowmeter_end: string, unit_price_idr_per_liter: int, operator_ref?: string}  $p
      */
-    public function execute(array $payload): MiningFuelDispenseRecord
+    public function execute(array $p): MiningFuelDispenseRecord
     {
-        return DB::transaction(function () use ($payload) {
-            $storage = MiningFuelStorage::lockForUpdate()->findOrFail($payload['storage_id']);
-            $equipment = MiningEquipment::findOrFail($payload['equipment_id']);
+        if ($p['volume_ml'] < 1 || $p['unit_price_idr_per_liter'] < 1) {
+            throw new InvalidArgumentException('Volume dan harga solar harus positif.');
+        }
 
-            $volumeMl = $payload['volume_liters'] * 1000;
+        return DB::transaction(function () use ($p) {
+            $storage = MiningFuelStorage::lockForUpdate()->findOrFail($p['storage_id']);
+            $equipment = MiningEquipment::findOrFail($p['equipment_id']);
+            $code = 'DSP-'.hash('sha256', "{$storage->id}|{$equipment->id}|{$p['flowmeter_end']}");
 
-            if ($storage->current_stock_ml < $volumeMl) {
-                throw new InvalidArgumentException(
-                    "Stok solar tangki {$storage->storage_code} (".($storage->current_stock_ml / 1000)." L) tidak mencukupi untuk pengisian {$payload['volume_liters']} L"
-                );
+            $existing = MiningFuelDispenseRecord::where('dispense_code', substr($code, 0, 32))->first();
+            if ($existing !== null) {
+                if ($existing->volume_ml !== $p['volume_ml']) {
+                    throw new InvalidArgumentException('Kunci idempotensi sama dengan volume berbeda.');
+                }
+
+                return $existing;
             }
 
-            // Kurangi stok tangki timbun
-            $storage->current_stock_ml -= $volumeMl;
-            $storage->save();
+            if ($storage->current_stock_ml < $p['volume_ml']) {
+                throw new InvalidArgumentException("Stok tangki {$storage->storage_code} ({$storage->current_stock_ml} ml) kurang dari {$p['volume_ml']} ml.");
+            }
 
-            $dispenseCode = 'DSP-'.substr(md5($payload['idempotency_key']), 0, 10);
+            $storage->decrement('current_stock_ml', $p['volume_ml']);
 
-            $record = MiningFuelDispenseRecord::firstOrCreate(
-                ['dispense_code' => $dispenseCode],
-                [
-                    'storage_id' => $storage->id,
-                    'equipment_id' => $equipment->id,
-                    'volume_ml' => $volumeMl,
-                    'equipment_engine_hours' => $payload['engine_hours'],
-                    'operator_ref' => $payload['operator_ref'] ?? 'dispatcher',
-                    'flowmeter_start_reading' => $payload['flowmeter_start'],
-                    'flowmeter_end_reading' => $payload['flowmeter_end'],
-                    'dispensed_at' => CarbonImmutable::now(),
-                ]
+            $record = MiningFuelDispenseRecord::create([
+                'dispense_code' => substr($code, 0, 32),
+                'storage_id' => $storage->id,
+                'equipment_id' => $equipment->id,
+                'volume_ml' => $p['volume_ml'],
+                'equipment_engine_hours' => (int) $equipment->engine_hours,
+                'operator_ref' => $p['operator_ref'] ?? 'dispatcher',
+                'flowmeter_start_reading' => $p['flowmeter_start'],
+                'flowmeter_end_reading' => $p['flowmeter_end'],
+                'dispensed_at' => $this->clock->now(),
+            ]);
+
+            $amountIdr = intdiv($p['volume_ml'] * $p['unit_price_idr_per_liter'], 1000);
+            $poster = $this->postingService ?? new MiningFase93LedgerPostingService($this->ledger);
+            $poster->postFuelDispense(
+                dispenseRecordId: (string) $record->id,
+                dispenseCode: $record->dispense_code,
+                equipmentCode: (string) $equipment->equipment_code,
+                storageCode: (string) $storage->storage_code,
+                amountIdr: $amountIdr
             );
-
-            // Posting ledger pemakaian bahan bakar site bila ledgerService tersedia
-            $fuelPriceIdr = $payload['fuel_price_per_liter_idr'] ?? 15000;
-            $totalExpenseIdr = $payload['volume_liters'] * $fuelPriceIdr;
-
-            if ($this->ledgerService !== null && $totalExpenseIdr > 0) {
-                $posting = Posting::lines()
-                    ->debit(MiningAccounts::fuelExpense(), $totalExpenseIdr)
-                    ->credit(MiningAccounts::fuelInventory(), $totalExpenseIdr)
-                    ->toEntries('IDR');
-
-                $this->ledgerService->post(new PostingDTO(
-                    idempotencyKey: "min:fuel:dsp:{$record->id}",
-                    transactionType: MiningTransactionTypes::FUEL_EXPENSE,
-                    description: "Pemakaian BBM Solar {$payload['volume_liters']} L alat {$equipment->equipment_code}",
-                    referenceId: $record->id,
-                    entries: $posting,
-                ));
-            }
 
             return $record;
         });

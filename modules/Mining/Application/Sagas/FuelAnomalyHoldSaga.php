@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Sagas;
 
 use App\Models\User;
-use Exception;
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Domain\Enums\FuelAnomalyCaseStatus;
 use Modules\Mining\Domain\Models\MiningContractorPaymentHold;
-use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
 use Modules\Mining\Domain\Models\MiningSaga;
 use Modules\Mining\Domain\StateMachines\FuelAnomalyCaseStateMachine;
-use Modules\Mining\Ledger\MiningAccounts;
+use Modules\Mining\Ledger\MiningFase93LedgerPostingService;
 use Modules\Shared\Domain\Algorithms\Stats\LinearBaselineRegression;
 
 /**
@@ -29,7 +25,9 @@ class FuelAnomalyHoldSaga
     public function __construct(
         private readonly LinearBaselineRegression $regression,
         private readonly LedgerService $ledgerService,
-        private readonly FuelAnomalyCaseStateMachine $stateMachine
+        private readonly FuelAnomalyCaseStateMachine $stateMachine,
+        private readonly ClockInterface $clock,
+        private readonly ?MiningFase93LedgerPostingService $postingService = null
     ) {}
 
     /**
@@ -55,7 +53,6 @@ class FuelAnomalyHoldSaga
      */
     public function execute(array $payload, ?User $actor = null): array
     {
-        // 1. Eksekusi Algoritma M3 Linear Baseline Regression
         $regResult = $this->regression->fitAndPredict(
             xPoints: $payload['historical_ton_km_thousands'],
             yPoints: $payload['historical_fuel_liters'],
@@ -76,7 +73,6 @@ class FuelAnomalyHoldSaga
 
         $sagaRef = "SAGA-FUEL-{$payload['equipment_id']}-{$payload['shift_date']}-{$payload['shift_code']}";
 
-        // Idempoten: Cek apakah kasus sudah pernah dibuat untuk shift ini
         $existingCase = MiningFuelAnomalyCase::where('equipment_id', $payload['equipment_id'])
             ->whereDate('shift_date', $payload['shift_date'])
             ->where('shift_code', $payload['shift_code'])
@@ -107,8 +103,7 @@ class FuelAnomalyHoldSaga
         ]);
 
         return DB::transaction(function () use ($payload, $regResult, $heldAmountIdr, $saga, $actor, $sagaRef) {
-            // STEP 1: Buat kasus anomali
-            $caseNumber = 'FAC-'.date('Ymd').'-'.strtoupper(substr(md5($sagaRef), 0, 6));
+            $caseNumber = 'FAC-'.$this->clock->now()->format('Ymd').'-'.strtoupper(substr(md5($sagaRef), 0, 6));
 
             $case = MiningFuelAnomalyCase::create([
                 'case_number' => $caseNumber,
@@ -131,28 +126,16 @@ class FuelAnomalyHoldSaga
                 'current_step' => 'STEP_2_POST_LEDGER_HOLD',
             ]);
 
-            // STEP 2: Pembukuan Ledger Penahanan (Hold)
             $partyId = $payload['contractor_party_id'];
-            $contractorAccount = MiningAccounts::contractorPayable($partyId);
-            $holdAccount = 'min:contractor_payment_hold:IDR';
-
-            $idempotencyKey = "min:fuel-hold:{$case->id}";
-
-            $dto = new PostingDTO(
-                type: 'MINING_FUEL_HOLD',
-                description: "Penahanan tagihan kontraktor {$partyId} anomali BBM shift {$payload['shift_date']}",
-                idempotencyKey: $idempotencyKey,
-                entries: Posting::lines()
-                    ->debit($contractorAccount, $heldAmountIdr, 'IDR')
-                    ->credit($holdAccount, $heldAmountIdr, 'IDR')
-                    ->toEntries('IDR'),
-                referenceType: 'MINING_FUEL_ANOMALY',
-                referenceId: $caseNumber,
+            $poster = $this->postingService ?? new MiningFase93LedgerPostingService($this->ledgerService);
+            $postResult = $poster->postContractorFuelHold(
+                caseId: (string) $case->id,
+                caseNumber: $caseNumber,
+                contractorPartyId: $partyId,
+                shiftDate: $payload['shift_date'],
+                heldAmountIdr: $heldAmountIdr
             );
 
-            $this->ledgerService->post($dto);
-
-            // STEP 3: Rekam dokumen penahanan
             MiningContractorPaymentHold::create([
                 'hold_reference' => "HLD-{$caseNumber}",
                 'contractor_party_id' => $partyId,
@@ -161,7 +144,7 @@ class FuelAnomalyHoldSaga
                 'released_amount_idr' => 0,
                 'deducted_amount_idr' => 0,
                 'status' => 'HELD',
-                'idempotency_key' => $idempotencyKey,
+                'idempotency_key' => $postResult['idempotency_key'],
             ]);
 
             $this->stateMachine->transition($case, FuelAnomalyCaseStatus::PAYMENT_HELD, $actor ? (string) $actor->id : 'system', 'Jurnal penahanan tagihan berhasil dibukukan');
@@ -169,7 +152,7 @@ class FuelAnomalyHoldSaga
             $saga->update([
                 'status' => 'COMPLETED',
                 'current_step' => 'DONE',
-                'completed_at' => now(),
+                'completed_at' => $this->clock->now(),
             ]);
 
             return [
@@ -192,25 +175,13 @@ class FuelAnomalyHoldSaga
 
             $hold = MiningContractorPaymentHold::where('case_id', $case->id)->first();
             if ($hold && $hold->status === 'HELD') {
-                $holdAmount = $hold->hold_amount_idr;
-
-                $idempotencyKey = "min:fuel-deduct:{$case->id}";
-
-                // Debit: min:contractor_payment_hold:IDR
-                // Kredit: min:fuel_variance_recovery:IDR
-                $dto = new PostingDTO(
-                    type: 'MINING_FUEL_RECOVERY',
-                    description: "Pemulihan varians BBM definitif kasus {$case->case_number}",
-                    idempotencyKey: $idempotencyKey,
-                    entries: Posting::lines()
-                        ->debit('min:contractor_payment_hold:IDR', $holdAmount, 'IDR')
-                        ->credit('min:fuel_variance_recovery:IDR', $holdAmount, 'IDR')
-                        ->toEntries('IDR'),
-                    referenceType: 'MINING_FUEL_ANOMALY',
-                    referenceId: $case->case_number,
+                $holdAmount = (int) $hold->hold_amount_idr;
+                $poster = $this->postingService ?? new MiningFase93LedgerPostingService($this->ledgerService);
+                $poster->postContractorFuelHoldDeduction(
+                    caseId: (string) $case->id,
+                    caseNumber: (string) $case->case_number,
+                    holdAmountIdr: $holdAmount
                 );
-
-                $this->ledgerService->post($dto);
 
                 $hold->update([
                     'status' => 'DEDUCTED',
@@ -230,26 +201,14 @@ class FuelAnomalyHoldSaga
 
             $hold = MiningContractorPaymentHold::where('case_id', $case->id)->first();
             if ($hold && $hold->status === 'HELD') {
-                $holdAmount = $hold->hold_amount_idr;
-                $contractorAccount = MiningAccounts::contractorPayable($case->contractor_party_id);
-
-                $idempotencyKey = "min:fuel-release:{$case->id}";
-
-                // Debit: min:contractor_payment_hold:IDR
-                // Kredit: ap:min:contractor:{party}:IDR
-                $dto = new PostingDTO(
-                    type: 'MINING_FUEL_RELEASE',
-                    description: "Rilis penahanan tagihan kasus {$case->case_number}",
-                    idempotencyKey: $idempotencyKey,
-                    entries: Posting::lines()
-                        ->debit('min:contractor_payment_hold:IDR', $holdAmount, 'IDR')
-                        ->credit($contractorAccount, $holdAmount, 'IDR')
-                        ->toEntries('IDR'),
-                    referenceType: 'MINING_FUEL_ANOMALY',
-                    referenceId: $case->case_number,
+                $holdAmount = (int) $hold->hold_amount_idr;
+                $poster = $this->postingService ?? new MiningFase93LedgerPostingService($this->ledgerService);
+                $poster->postContractorFuelHoldRelease(
+                    caseId: (string) $case->id,
+                    caseNumber: (string) $case->case_number,
+                    contractorPartyId: (string) $case->contractor_party_id,
+                    holdAmountIdr: $holdAmount
                 );
-
-                $this->ledgerService->post($dto);
 
                 $hold->update([
                     'status' => 'RELEASED',

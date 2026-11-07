@@ -83,3 +83,4 @@ class MiningHaulCycle extends Model
         return $this->hasMany(MiningHaulCycleHistory::class, 'haul_cycle_id');
     }
 }
+

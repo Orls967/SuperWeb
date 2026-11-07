@@ -46,3 +46,4 @@ class WeightedTimePhasingTest extends TestCase
         $verifier->verify($corruptResult);
     }
 }
+

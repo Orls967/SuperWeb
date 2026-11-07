@@ -77,3 +77,4 @@ Untuk titik evaluasi baru $(x_{eval}, y_{eval})$:
   - Algoritma: `Modules\Shared\Domain\Algorithms\Stats\LinearBaselineRegression`
   - Verifier: `Modules\Shared\Domain\Algorithms\Stats\LinearBaselineRegressionCertificateVerifier`
   - Unit Test: `tests/Unit/Algorithms/LinearBaselineRegressionTest.php`
+

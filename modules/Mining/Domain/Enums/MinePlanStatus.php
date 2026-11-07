@@ -42,3 +42,4 @@ enum MinePlanStatus: string
         };
     }
 }
+

@@ -23,3 +23,4 @@ Mine Dispatcher bertanggung jawab atas pengaturan alokasi armada truk ke loader/
 ## 3. Verifikasi Hasil pada Sistem
 - Siklus yang berstatus `COMPLETED` akan dihitung tonasenya saat penutupan shift (`php artisan min:shift-close`).
 - Setiap override tercatat lengkap dengan identitas dispatcher dan stempel waktu.
+

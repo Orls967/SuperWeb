@@ -56,3 +56,4 @@ class FuelAnomalyScanCommand extends Command
         return 0;
     }
 }
+

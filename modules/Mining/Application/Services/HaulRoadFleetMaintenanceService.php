@@ -5,28 +5,32 @@ declare(strict_types=1);
 namespace Modules\Mining\Application\Services;
 
 use InvalidArgumentException;
-use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningPit;
 
 /**
- * Layanan Pemeliharaan Jalan Tambang (Haul Road Condition & Rolling Resistance).
- *
- * Mengoptimalkan jadwal unit pendukung (Motor Grader, Water Truck, Compactor)
- * untuk meminimalkan Rolling Resistance (RR) dan debu tambang, sehingga konsumsi solar efisien.
+ * Layanan Evaluasi Kondisi Jalan Angkut Tambang (Haul Road Rolling Resistance & Dust Suppression)
+ * dalam satuan integer (meter, bps, ppm, ml, rupiah) (D93-2, D93-5).
  */
 final class HaulRoadFleetMaintenanceService
 {
+    private const BASE_ROLLING_RESISTANCE_BPS = 200; // 2.00%
+
+    private const BASE_IRI_MM_PER_M = 2500; // 2.50 m/km
+
+    private const GRADING_COST_PER_KM_IDR = 1500000;
+
+    private const WATERING_COST_PER_KM_IDR = 800000;
+
     /**
-     * @param string $pitId
-     * @param float $roadLengthKm Panjang segmen jalan tambang
-     * @param float $currentRoughnessIri Indeks ketidakrataan jalan (International Roughness Index)
-     * @param int $dustLevelPpm Tingkat konsentrasi debu particulate matter (PM10)
-     * @param int $graderCount Jumlah motor grader aktif
-     * @param int $waterTruckCount Jumlah water truck aktif
+     * @param  string  $pitId
+     * @param  int  $roadLengthMeters  Panjang segmen jalan angkut (meter)
+     * @param  int  $roughnessIriMmPerKm  Indeks ketidakrataan permukaan jalan (mm/km, misal 3200 = 3.2 m/km)
+     * @param  int  $dustConcentrationPpm  Konsentrasi partikulat debu PM10 (ppm/ug-m3)
      * @return array{
+     *     pit_code: string,
      *     road_condition_score: string,
-     *     rolling_resistance_pct: float,
-     *     fuel_burn_penalty_pct: float,
+     *     rolling_resistance_bps: int,
+     *     fuel_burn_penalty_bps: int,
      *     max_safe_speed_kmh: int,
      *     scheduled_actions: list<string>,
      *     estimated_maintenance_cost_idr: int
@@ -34,104 +38,101 @@ final class HaulRoadFleetMaintenanceService
      */
     public function evaluateHaulRoad(
         string $pitId,
-        float $roadLengthKm,
-        float $currentRoughnessIri,
-        int $dustLevelPpm,
-        int $graderCount = 1,
-        int $waterTruckCount = 2,
+        int $roadLengthMeters,
+        int $roughnessIriMmPerKm,
+        int $dustConcentrationPpm,
     ): array {
-        if ($roadLengthKm <= 0.0) {
-            throw new InvalidArgumentException('Panjang segmen jalan tambang harus lebih dari 0 km.');
+        if ($roadLengthMeters <= 0) {
+            throw new InvalidArgumentException('Panjang segmen jalan tambang harus lebih besar dari 0 meter.');
         }
 
-        // Rolling resistance dasar jalan tambang terawat baik = 2.0%
-        // Setiap kenaikan IRI menambah resistansi gelinding
-        $baseRollingResistance = 2.0;
-        $roughnessPenalty = max(0.0, ($currentRoughnessIri - 2.5) * 0.8);
-        $rollingResistance = round($baseRollingResistance + $roughnessPenalty, 2);
+        $pit = MiningPit::find($pitId);
+        $pitCode = $pit ? (string) $pit->pit_code : $pitId;
 
-        // Penalti konsumsi BBM: setiap kenaikan 1% RR menaikkan konsumsi BBM sekitar 10%
-        $fuelBurnPenaltyPct = round(max(0.0, ($rollingResistance - 2.0) * 10.0), 1);
+        // Setiap kenaikan 1000 mm/km di atas 2500 menambah 80 bps (0.80%) rolling resistance
+        $excessIri = max(0, $roughnessIriMmPerKm - self::BASE_IRI_MM_PER_M);
+        $roughnessPenaltyBps = intdiv($excessIri * 80, 1000);
+        $rollingResistanceBps = self::BASE_ROLLING_RESISTANCE_BPS + $roughnessPenaltyBps;
 
-        // Batas kecepatan aman truk berdasarkan kondisi jalan
-        $maxSpeed = 40;
-        if ($rollingResistance > 4.5 || $currentRoughnessIri > 5.0) {
-            $maxSpeed = 25;
-        } elseif ($rollingResistance > 3.0) {
-            $maxSpeed = 32;
+        // Setiap 100 bps (1%) kenaikan RR menaikkan konsumsi solar sebesar 1000 bps (10%)
+        $fuelBurnPenaltyBps = ($rollingResistanceBps - self::BASE_ROLLING_RESISTANCE_BPS) * 10;
+
+        $maxSpeedKmh = 40;
+        if ($rollingResistanceBps > 450 || $roughnessIriMmPerKm > 5000) {
+            $maxSpeedKmh = 25;
+        } elseif ($rollingResistanceBps > 300) {
+            $maxSpeedKmh = 32;
         }
 
         $scheduledActions = [];
-        $costEstimate = 0;
+        $costEstimateIdr = 0;
 
-        // Evaluasi kebutuhan grading
-        if ($currentRoughnessIri >= 3.5) {
-            $scheduledActions[] = "Penjadwalan Motor Grader untuk segmen {$roadLengthKm} km (IRI: {$currentRoughnessIri})";
-            $costEstimate += (int) round($roadLengthKm * 1500000); // Rp 1.5jt per km grading
+        if ($roughnessIriMmPerKm >= 3500) {
+            $scheduledActions[] = "Kerahkan Motor Grader pada koridor {$pitCode} sepanjang {$roadLengthMeters} m (IRI {$roughnessIriMmPerKm} mm/km)";
+            $costEstimateIdr += intdiv($roadLengthMeters * self::GRADING_COST_PER_KM_IDR, 1000);
         }
 
-        // Evaluasi kebutuhan penyiraman jalan tambang (Water Truck)
-        if ($dustLevelPpm >= 150) {
-            $scheduledActions[] = "Penyiraman Water Truck intensif untuk menekan konsentrasi debu ({$dustLevelPpm} ppm > ambang 150 ppm)";
-            $costEstimate += (int) round($roadLengthKm * 800000); // Rp 800rb per km penyiraman
+        if ($dustConcentrationPpm >= 150) {
+            $scheduledActions[] = "Jadwalkan penyiraman Water Truck pada koridor {$pitCode} (Debu {$dustConcentrationPpm} ppm >= 150 ppm)";
+            $costEstimateIdr += intdiv($roadLengthMeters * self::WATERING_COST_PER_KM_IDR, 1000);
         }
 
         if (count($scheduledActions) === 0) {
-            $scheduledActions[] = 'Jalan tambang dalam kondisi prima, pemantauan berkala tetap berjalan';
+            $scheduledActions[] = "Koridor angkut {$pitCode} memenuhi standar resistansi gelinding optimal";
             $conditionScore = 'EXCELLENT';
         } elseif (count($scheduledActions) === 1) {
-            $conditionScore = 'ACCEPTABLE_MAINTENANCE_REQUIRED';
+            $conditionScore = 'MAINTENANCE_REQUIRED';
         } else {
-            $conditionScore = 'POOR_IMMEDIATE_ACTION_REQUIRED';
+            $conditionScore = 'IMMEDIATE_GRADING_AND_WATERING';
         }
 
         return [
+            'pit_code' => $pitCode,
             'road_condition_score' => $conditionScore,
-            'rolling_resistance_pct' => $rollingResistance,
-            'fuel_burn_penalty_pct' => $fuelBurnPenaltyPct,
-            'max_safe_speed_kmh' => $maxSpeed,
+            'rolling_resistance_bps' => $rollingResistanceBps,
+            'fuel_burn_penalty_bps' => $fuelBurnPenaltyBps,
+            'max_safe_speed_kmh' => $maxSpeedKmh,
             'scheduled_actions' => $scheduledActions,
-            'estimated_maintenance_cost_idr' => $costEstimate,
+            'estimated_maintenance_cost_idr' => $costEstimateIdr,
         ];
     }
 
     /**
-     * Menghitung total konsumsi bahan bakar tambahan akibat kondisi jalan tambang buruk di seluruh siklus angkut shift.
+     * Menghitung penalti pemakaian solar tambahan pada shift akibat resistansi gelinding di atas standar.
      *
-     * @param float $rollingResistancePct
-     * @param int $totalHaulCycles
-     * @param float $averagePayloadTon
-     * @param float $haulDistanceKm
      * @return array{
-     *     additional_fuel_liters: float,
+     *     standard_fuel_ml: int,
+     *     additional_fuel_ml: int,
      *     additional_fuel_cost_idr: int,
-     *     co2e_penalty_kg: float
+     *     co2e_penalty_grams: int
      * }
      */
     public function computeShiftFleetPenalty(
-        float $rollingResistancePct,
+        int $rollingResistanceBps,
         int $totalHaulCycles,
-        float $averagePayloadTon,
-        float $haulDistanceKm,
+        int $averagePayloadKg,
+        int $haulDistanceMeters,
+        int $dieselPriceIdrPerLiter = 15000,
     ): array {
-        // Konsumsi standar: 0.15 Liter solar per ton-km pada RR standar 2.0%
-        $totalTonKm = $totalHaulCycles * $averagePayloadTon * $haulDistanceKm;
-        $standardFuelLiters = $totalTonKm * 0.15;
+        $payloadTon = intdiv(max(0, $averagePayloadKg), 1000);
+        $totalTonKm = intdiv(max(0, $totalHaulCycles) * $payloadTon * max(0, $haulDistanceMeters), 1000);
 
-        $rrExcess = max(0.0, $rollingResistancePct - 2.0);
-        $penaltyFactor = $rrExcess * 0.10; // Tiap 1% RR berlebih menaikkan 10% solar
+        // Standar: 150 ml solar per ton-km pada RR 200 bps (2.0%)
+        $standardFuelMl = $totalTonKm * 150;
+        $excessRrBps = max(0, $rollingResistanceBps - self::BASE_ROLLING_RESISTANCE_BPS);
+        $penaltyBps = $excessRrBps * 10;
 
-        $additionalLiters = round($standardFuelLiters * $penaltyFactor, 2);
-        $dieselPricePerLiter = 15000;
-        $additionalCostIdr = (int) round($additionalLiters * $dieselPricePerLiter);
+        $additionalFuelMl = intdiv($standardFuelMl * $penaltyBps, 10000);
+        $additionalCostIdr = intdiv($additionalFuelMl * $dieselPriceIdrPerLiter, 1000);
 
-        // Faktor emisi solar: 2.68 kg CO2e per liter solar
-        $co2ePenaltyKg = round($additionalLiters * 2.68, 2);
+        // Faktor emisi solar: 2680 gram CO2e per liter (2.68 gram per ml)
+        $co2ePenaltyGrams = intdiv($additionalFuelMl * 2680, 1000);
 
         return [
-            'additional_fuel_liters' => $additionalLiters,
+            'standard_fuel_ml' => $standardFuelMl,
+            'additional_fuel_ml' => $additionalFuelMl,
             'additional_fuel_cost_idr' => $additionalCostIdr,
-            'co2e_penalty_kg' => $co2ePenaltyKg,
+            'co2e_penalty_grams' => $co2ePenaltyGrams,
         ];
     }
 }

@@ -16,3 +16,4 @@ Kontraktor hauling memiliki portal mandiri terisolasi di `/contractor/mining`. M
 3. **Memantau Keputusan Akhir**:
    - Jika sanggahan diterima, status kasus akan berubah menjadi `RESOLVED_RELEASED` dan dana hold dikembalikan penuh ke saldo piutang kontraktor.
    - Jika sanggahan ditolak, status berubah menjadi `RESOLVED_DEDUCTED` dengan catatan penjelasan dari Finance Officer.
+

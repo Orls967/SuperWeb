@@ -11,7 +11,10 @@ use Modules\Mining\Domain\Models\MiningExternalFactor;
 /**
  * Gerbang Terpusat Pembacaan Faktor Eksternal Pertambangan (T-5, G7-D30).
  * Menghubungkan seluruh kalkulasi cuaca, kurs valuta, harga patokan HBA/HMA/HPB,
- * kebijakan ekspor, kuota DMO, dan tarif royalti berversi.
+ * kebijakan ekspor, kuota DMO, ambang anomali BBM, dan tarif royalti berversi.
+ *
+ * Catatan ADR-0093 (G7-D30): Kelas gerbang ini dirancang sebagai antarmuka tunggal
+ * yang akan digantikan oleh adaptor ExternalFactorReader (W8-P10) tanpa mengubah pemanggil.
  */
 class MiningExternalFactors
 {
@@ -23,7 +26,7 @@ class MiningExternalFactors
      * Mengambil curah hujan harian (mm) dan mengonversinya ke jam kerja hilang (downtime).
      * Aturan: Hujan > 50 mm memotong 3 jam/shift; Hujan > 100 mm memotong 6 jam/shift.
      *
-     * @return array{rainfall_mm: int, downtime_hours: int, source: string, label: string}
+     * @return array{rainfall_mm: int, downtime_hours: int, source: string, label: string, version: int}
      */
     public function getRainfallDowntime(string $siteCode, ?CarbonImmutable $date = null): array
     {
@@ -37,6 +40,8 @@ class MiningExternalFactors
             $downtimeHours = 6;
         } elseif ($rainfallMm > 50) {
             $downtimeHours = 3;
+        } elseif ($rainfallMm > 25) {
+            $downtimeHours = 1;
         }
 
         return [
@@ -44,7 +49,28 @@ class MiningExternalFactors
             'downtime_hours' => $downtimeHours,
             'source' => $factor?->source ?? 'BMKG Stasiun Meteorologi Tambang',
             'label' => $factor?->label ?? 'asumsi_simulasi',
+            'version' => $factor ? (int) $factor->version : 1,
         ];
+    }
+
+    /**
+     * Mengambil ambang kelebihan pemakaian BBM kontraktor dalam basis points (default fixture 1.500 bps = 15%).
+     */
+    public function getFuelAnomalyThresholdBps(?CarbonImmutable $date = null): int
+    {
+        $factor = $this->resolveFactor('fuel_anomaly_threshold_bps', $date);
+
+        return $factor ? (int) $factor->numeric_value_scaled : 1500;
+    }
+
+    /**
+     * Mengambil harga acuan solar industri per liter dalam rupiah (default Rp 15.000/L).
+     */
+    public function getIndustrialDieselPriceIdrPerLiter(?CarbonImmutable $date = null): int
+    {
+        $factor = $this->resolveFactor('diesel_price_idr_per_liter', $date);
+
+        return $factor ? (int) $factor->numeric_value_scaled : 15000;
     }
 
     /**
@@ -54,7 +80,17 @@ class MiningExternalFactors
     {
         $factor = $this->resolveFactor('hba_coal_usd_per_ton', $date);
 
-        return $factor ? (int) $factor->numeric_value_scaled : 8500; // USD 85.00
+        return $factor ? (int) $factor->numeric_value_scaled : 8500;
+    }
+
+    /**
+     * Mengambil harga mineral acuan nikel (HMA Ni) dalam sen USD per ton logam.
+     */
+    public function getHmaNickelPriceUsdCents(?CarbonImmutable $date = null): int
+    {
+        $factor = $this->resolveFactor('hma_nickel_usd_per_ton', $date);
+
+        return $factor ? (int) $factor->numeric_value_scaled : 1850000;
     }
 
     /**
@@ -92,7 +128,8 @@ class MiningExternalFactors
      */
     public function resolveFactor(string $key, ?CarbonImmutable $date = null): ?MiningExternalFactor
     {
-        $nowDate = $date ?? ($this->clock ? CarbonImmutable::instance($this->clock->now()) : CarbonImmutable::now());
+        $clock = $this->clock ?? app(ClockInterface::class);
+        $nowDate = $date ?? CarbonImmutable::instance($clock->now());
         $dateStr = $nowDate->toDateString();
 
         return MiningExternalFactor::where('factor_key', $key)

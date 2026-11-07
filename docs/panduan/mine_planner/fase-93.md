@@ -26,3 +26,4 @@ Mine Planner bertanggung jawab atas perancangan rencana penambangan bulanan, pem
 ## 3. Verifikasi Hasil pada Sistem
 - **Buku Besar / Ledger**: Perencanaan awal tidak menghasilkan mutasi kas, namun memvalidasi akun biaya penambangan yang akan diakui saat shift close (`min:hauling_contractor_expense:IDR`).
 - **Dashboard Kurva-S**: Rencana yang dibuat menjadi garis dasar (Planned Cumulative Line) pada grafik kurva-S produksi pit.
+

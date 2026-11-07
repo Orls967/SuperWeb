@@ -8,58 +8,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Application\Actions\DispatchHaulTruckAction;
-use Modules\Mining\Domain\Models\MiningEquipment;
-use Modules\Mining\Domain\Models\MiningHaulCycle;
-use Modules\Mining\Domain\Models\MiningPit;
-use Modules\Mining\Domain\Models\MiningSite;
+use Modules\Mining\Http\Policies\MiningFase93AccessPolicy;
+use Modules\Mining\Http\ViewModels\MiningFase93OperationsViewModel;
 
 class MiningDispatchController extends Controller
 {
-    public function index(Request $request): View
-    {
-        $sites = MiningSite::all();
-        $pits = MiningPit::all();
-        $trucks = MiningEquipment::where('type', 'HAUL_TRUCK')->get();
-        $shovels = MiningEquipment::where('type', 'EXCAVATOR')->get();
+    public function index(
+        Request $request,
+        MiningFase93OperationsViewModel $viewModel,
+        MiningFase93AccessPolicy $policy,
+        ClockInterface $clock
+    ): View {
+        $policy->authorizeDispatchAccess($request->user());
 
-        $activeCycles = MiningHaulCycle::with(['truck', 'shovel', 'pit'])
-            ->latest()
-            ->paginate(15);
+        $shiftDate = (string) $request->query('shift_date', $clock->now()->toDateString());
+        $shiftCode = (string) $request->query('shift_code', 'SHIFT_A');
 
-        // Simulator Match Factor
-        $simTrucks = (int) ($request->query('sim_trucks', 12));
-        $simShovels = (int) ($request->query('sim_shovels', 3));
-        $simLoading = (int) ($request->query('sim_loading', 4));
-        $simCycle = (int) ($request->query('sim_cycle', 36));
+        $simParams = [
+            'sim_trucks' => max(0, (int) $request->query('sim_trucks', 12)),
+            'sim_shovels' => max(1, (int) $request->query('sim_shovels', 3)),
+            'sim_loading' => max(1, (int) $request->query('sim_loading', 4)),
+            'sim_cycle' => max(1, (int) $request->query('sim_cycle', 36)),
+        ];
 
-        $num = $simTrucks * $simLoading;
-        $den = $simShovels * $simCycle;
-        $mfRatio = $den > 0 ? round($num / $den, 2) : 1.0;
-        $mfRec = $num < $den
-            ? 'Undertrucked: Shovel banyak menganggur, disarankan tambah unit truk.'
-            : ($num > $den ? 'Overtrucked: Truk mengantre di shovel, disarankan alihkan truk.' : 'Match Factor Optimal.');
-
-        $cycles = $activeCycles;
-
-        return view('mining::dispatch.index', compact(
-            'sites',
-            'pits',
-            'trucks',
-            'shovels',
-            'cycles',
-            'activeCycles',
-            'simTrucks',
-            'simShovels',
-            'simLoading',
-            'simCycle',
-            'mfRatio',
-            'mfRec'
-        ));
+        return view('mining::dispatch.index', $viewModel->buildDispatchViewData($shiftDate, $shiftCode, $simParams));
     }
 
-    public function assign(Request $request, DispatchHaulTruckAction $action): RedirectResponse
-    {
+    public function assign(
+        Request $request,
+        DispatchHaulTruckAction $action,
+        MiningFase93AccessPolicy $policy
+    ): RedirectResponse {
+        $policy->authorizeDispatchAccess($request->user());
+
         $validated = $request->validate([
             'site_id' => 'required|string',
             'pit_id' => 'required|string',
@@ -78,8 +61,13 @@ class MiningDispatchController extends Controller
             ->with('success', "Truk berhasil ditugaskan ke siklus {$cycle->cycle_seq} pada Shovel.");
     }
 
-    public function override(Request $request, DispatchHaulTruckAction $action): RedirectResponse
-    {
+    public function override(
+        Request $request,
+        DispatchHaulTruckAction $action,
+        MiningFase93AccessPolicy $policy
+    ): RedirectResponse {
+        $policy->authorizeDispatchAccess($request->user());
+
         $validated = $request->validate([
             'site_id' => 'required|string',
             'pit_id' => 'required|string',

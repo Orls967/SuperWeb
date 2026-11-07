@@ -3473,6 +3473,7 @@ return [
     ],
     'mining.equipment' => ['roles' => ['admin', 'mine_manager']],
     'mining.fuel' => ['roles' => ['admin', 'finance_officer', 'hse_officer']],
+    'mining.fuel.dispense' => ['roles' => ['admin', 'finance_officer', 'hse_officer']],
     'mining.fuel.resolve' => [
         'roles' => ['admin', 'finance_officer', 'hse_officer'],
         'params' => function () {

@@ -148,3 +148,4 @@ Katalog 15 kasus bernama deterministik:
 13. `CASE-93-13`: Operasi lintas pergantian shift (Shift A ke Shift B) pada tengah malam WITA.
 14. `CASE-93-14`: Penolakan akses portal kontraktor luar terhadap data operasional kontraktor lain (anti-IDOR).
 15. `CASE-93-15`: Penutupan shift harian membukukan seluruh tagihan kontraktor berdasarkan tonase terangkut.
+

@@ -26,3 +26,13 @@ Finance Officer bertanggung jawab atas tata kelola keuangan penambangan, verifik
      php artisan min:audit
      ```
    - Pastikan saldo `min:contractor_payment_hold:IDR` sama dengan akumulasi record status `HELD`.
+
+
+---
+
+## 4. Audit Rekonsiliasi Lima Ayat Jurnal Buku Besar (`MiningFase93LedgerPostingService`)
+Sebagai bagian dari pengendalian internal penutupan buku harian dan bulanan, **Finance Officer** memverifikasi kelima jenis jurnal yang dibukukan oleh `Modules\Mining\Ledger\MiningFase93LedgerPostingService`:
+1. **Pengeluaran Solar Tangki Site (`MINING_FUEL_EXPENSE`)**: Memastikan setiap pengurangan stok `current_stock_ml` di `min_fuel_storages` tercatat sebagai debit `expense:min:fuel:IDR` dan kredit `min:fuel_inventory:IDR` dengan kunci `min:fuel-dispense:{record_id}`.
+2. **Tagihan Kontraktor Hauling (`MINING_HAUL_BILLING`)**: Memastikan penutupan shift (`SettleShiftHaulingBillingAction`) membukukan debit `expense:min:hauling_contractor:IDR` dan kredit `ap:min:contractor:{party}:IDR`.
+3. **Penahanan Tagihan Anomali BBM (`MINING_FUEL_HOLD`)**: Memastikan setiap kasus berstatus `payment_held` memindahkan saldo dari `ap:min:contractor:{party}:IDR` ke `min:contractor_payment_hold:IDR`.
+4. **Rilis Penahanan (`MINING_FUEL_RELEASE`)** dan **Pemotongan Definitif (`MINING_FUEL_RECOVERY`)**: Memastikan setiap penyelesaian sengketa di `/mining/fuel` mengosongkan porsi hold dan memindahkannya kembali ke utang kontraktor atau ke pendapatan pemulihan `min:fuel_variance_recovery:IDR`.

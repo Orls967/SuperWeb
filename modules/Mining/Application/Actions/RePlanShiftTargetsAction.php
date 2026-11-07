@@ -6,9 +6,12 @@ namespace Modules\Mining\Application\Actions;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Mining\Domain\Enums\MinePlanStatus;
 use Modules\Mining\Domain\Models\MiningPlan;
 use Modules\Mining\Domain\Models\MiningPlanShift;
 use Modules\Mining\Domain\Services\MiningExternalFactors;
+use Modules\Mining\Domain\StateMachines\MinePlanStateMachine;
 
 /**
  * Aksi Penyesuaian Ulang Target Shift akibat Cuaca Ekstrem / Hujan (D93-6, T-5).
@@ -16,7 +19,9 @@ use Modules\Mining\Domain\Services\MiningExternalFactors;
 class RePlanShiftTargetsAction
 {
     public function __construct(
-        private readonly MiningExternalFactors $externalFactors
+        private readonly MiningExternalFactors $externalFactors,
+        private readonly ClockInterface $clock,
+        private readonly ?MinePlanStateMachine $stateMachine = null
     ) {}
 
     /**
@@ -31,7 +36,7 @@ class RePlanShiftTargetsAction
     {
         return DB::transaction(function () use ($params) {
             $plan = MiningPlan::with('site')->findOrFail($params['mine_plan_id']);
-            $fromDate = $params['from_date'] ?? CarbonImmutable::now()->toDateString();
+            $fromDate = $params['from_date'] ?? $this->clock->now()->toDateString();
 
             $shifts = MiningPlanShift::where('mine_plan_id', $plan->id)
                 ->where('shift_date', '>=', $fromDate)
@@ -43,7 +48,7 @@ class RePlanShiftTargetsAction
             foreach ($shifts as $shift) {
                 $weather = $this->externalFactors->getRainfallDowntime(
                     $plan->site->site_code,
-                    CarbonImmutable::parse($shift->shift_date)
+                    CarbonImmutable::parse((string) $shift->shift_date)
                 );
 
                 $rainDowntime = $params['additional_rain_hours'] ?? $weather['downtime_hours'];
@@ -59,13 +64,22 @@ class RePlanShiftTargetsAction
             }
 
             if ($lostHours > 20) {
-                $plan->update(['status' => 'revised']);
+                $sm = $this->stateMachine ?? new MinePlanStateMachine();
+                $current = $sm->resolveCurrentStatus($plan);
+                if ($current === MinePlanStatus::APPROVED) {
+                    $sm->transition($plan, MinePlanStatus::ACTIVE, 'system', 'Aktivasi sebelum revisi hujan ekstrem');
+                }
+                if ($sm->resolveCurrentStatus($plan)->canTransitionTo(MinePlanStatus::REVISED)) {
+                    $sm->transition($plan, MinePlanStatus::REVISED, 'system', "Revisi target shift akibat {$lostHours} jam hujan hilang");
+                }
             }
+
+            $finalStatus = $plan->status instanceof MinePlanStatus ? $plan->status->value : (string) $plan->status;
 
             return [
                 'shifts_updated' => $updatedCount,
                 'total_lost_hours' => $lostHours,
-                'plan_status' => (string) $plan->status->value,
+                'plan_status' => $finalStatus,
             ];
         });
     }

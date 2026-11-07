@@ -53,3 +53,4 @@ test('tampered idw certificate throws exception', function () {
     $verifier = new InverseDistanceWeightingCertificateVerifier();
     $verifier->verify($samples, $corrupted);
 })->throws(InvalidArgumentException::class);
+

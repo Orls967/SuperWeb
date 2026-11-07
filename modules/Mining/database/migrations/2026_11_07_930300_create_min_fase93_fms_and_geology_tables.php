@@ -36,7 +36,7 @@ return new class extends Migration
             Schema::create('min_block_model_voxels', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->foreignUuid('pit_id')->constrained('min_pits')->cascadeOnDelete();
-                $table->string('voxel_code', 32)->unique();
+                $table->string('voxel_code', 64)->unique();
                 $table->integer('center_x_mm');
                 $table->integer('center_y_mm');
                 $table->integer('center_z_mm');
@@ -94,3 +94,4 @@ return new class extends Migration
         Schema::dropIfExists('min_borehole_assays');
     }
 };
+

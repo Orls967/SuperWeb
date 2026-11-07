@@ -118,3 +118,4 @@ final class WeightedTimePhasing
         return $result;
     }
 }
+

@@ -6,22 +6,31 @@ namespace Modules\Mining\Application\Actions;
 
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Mining\Domain\Algorithms\NeedTimeTruckDispatcher;
 use Modules\Mining\Domain\Enums\EquipmentStatus;
 use Modules\Mining\Domain\Enums\HaulCycleStatus;
 use Modules\Mining\Domain\Models\MiningEquipment;
 use Modules\Mining\Domain\Models\MiningHaulCycle;
-use Modules\Mining\Domain\Models\MiningHaulCycleHistory;
 use Modules\Mining\Domain\Models\MiningPit;
 use Modules\Mining\Domain\Models\MiningSite;
+use Modules\Mining\Domain\StateMachines\EquipmentStateMachine;
+use Modules\Mining\Domain\StateMachines\HaulCycleStateMachine;
 
 /**
  * Aksi Penugasan Armada Truk ke Shovel Berdasarkan Waktu Mulai Muat (D93-2, Algoritma M2).
  */
 class DispatchHaulTruckAction
 {
+    private const LOADING_MINUTES = 4;
+
+    private const TRAVEL_MINUTES = 10;
+
     public function __construct(
-        private readonly NeedTimeTruckDispatcher $dispatcher
+        private readonly NeedTimeTruckDispatcher $dispatcher,
+        private readonly ClockInterface $clock,
+        private readonly ?HaulCycleStateMachine $cycleStateMachine = null,
+        private readonly ?EquipmentStateMachine $equipmentStateMachine = null
     ) {}
 
     /**
@@ -45,16 +54,13 @@ class DispatchHaulTruckAction
             $pit = MiningPit::findOrFail($params['pit_id']);
             $truck = MiningEquipment::findOrFail($params['truck_id']);
 
-            // Validasi Ketersediaan Truk: Dilarang menugaskan unit yang rusak / dalam bengkel
-            $truckStatus = $truck->status instanceof EquipmentStatus
-                ? $truck->status
-                : EquipmentStatus::tryFrom((string) $truck->status) ?? EquipmentStatus::AVAILABLE;
+            $eqSm = $this->equipmentStateMachine ?? new EquipmentStateMachine();
+            $truckStatus = $eqSm->resolveCurrentStatus($truck);
 
             if (in_array($truckStatus, [EquipmentStatus::BREAKDOWN, EquipmentStatus::UNDER_MAINTENANCE, EquipmentStatus::RETIRED], true)) {
                 throw new DomainException("Unit truk {$truck->equipment_code} tidak dapat ditugaskan karena berstatus {$truckStatus->value}");
             }
 
-            // Temukan shovel aktif di site
             $shovels = MiningEquipment::where('site_id', $site->id)
                 ->where('type', 'EXCAVATOR')
                 ->whereIn('status', ['available', 'operating', 'standby'])
@@ -76,14 +82,18 @@ class DispatchHaulTruckAction
                     ? MiningEquipment::findOrFail($params['chosen_shovel_id'])
                     : $shovels->first();
             } else {
-                // Format parameter untuk algoritma M2
                 $shovelInput = [];
                 foreach ($shovels as $s) {
+                    $queueDepth = MiningHaulCycle::where('shovel_id', $s->id)
+                        ->whereDate('shift_date', $params['shift_date'])
+                        ->where('shift_code', $params['shift_code'])
+                        ->whereNotIn('status', [HaulCycleStatus::COMPLETED->value, HaulCycleStatus::ABORTED->value])
+                        ->count();
                     $shovelInput[] = [
                         'id' => (string) $s->id,
-                        'loading_duration' => 4,
-                        'travel_time_from_dump' => 10,
-                        'available_at' => 3,
+                        'loading_duration' => self::LOADING_MINUTES,
+                        'travel_time_from_dump' => self::TRAVEL_MINUTES,
+                        'available_at' => $queueDepth * self::LOADING_MINUTES,
                     ];
                 }
 
@@ -107,7 +117,6 @@ class DispatchHaulTruckAction
                 $selectedShovel = MiningEquipment::findOrFail($assignedShovelId);
             }
 
-            // Hitung urutan sequence siklus truk hari ini
             $lastSeq = MiningHaulCycle::where('truck_id', $truck->id)
                 ->where('shift_date', $params['shift_date'])
                 ->where('shift_code', $params['shift_code'])
@@ -132,16 +141,16 @@ class DispatchHaulTruckAction
                 'override_by_user_id' => $params['dispatcher_id'] ?? null,
             ]);
 
-            MiningHaulCycleHistory::create([
-                'haul_cycle_id' => $cycle->id,
-                'from_status' => null,
-                'to_status' => HaulCycleStatus::ASSIGNED->value,
-                'actor_id' => $params['dispatcher_id'] ? (string) $params['dispatcher_id'] : 'system',
-                'notes' => $isOverride ? "Dispatcher override: {$overrideReason}" : 'Penugasan otomatis NeedTimeTruckDispatcher M2',
-                'recorded_at' => now(),
-            ]);
+            $cycleSm = $this->cycleStateMachine ?? new HaulCycleStateMachine($this->clock);
+            $actorId = $params['dispatcher_id'] ? (string) $params['dispatcher_id'] : 'system';
+            $notes = $isOverride ? "Dispatcher override: {$overrideReason}" : 'Penugasan otomatis NeedTimeTruckDispatcher M2';
+            $cycleSm->recordInitialAssignment($cycle, $actorId, $notes);
 
-            $truck->update(['status' => EquipmentStatus::ASSIGNED->value]);
+            if ($truckStatus->canTransitionTo(EquipmentStatus::ASSIGNED)) {
+                $eqSm->transition($truck, EquipmentStatus::ASSIGNED, $actorId, 'Ditugaskan ke siklus angkut '.$cycle->id);
+            } else {
+                $truck->update(['status' => EquipmentStatus::ASSIGNED->value]);
+            }
 
             return $cycle;
         });
