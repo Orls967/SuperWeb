@@ -186,5 +186,8 @@ class HotelDemoSeeder extends Seeder
                 'status' => 'open',
             ]
         );
+
+        // 8. Fase 112 Global Loyalty
+        $this->call(HotelFase112GlobalLoyaltySeeder::class);
     }
 }
