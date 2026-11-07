@@ -10725,13 +10725,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Venue (`ven_`) (+ Med untuk hak konten) · **Prasyarat:** Fase 89–90 ✅ · **Acuan:** KONSEP 10F, Lini 15
 > **Jalan pintas terlarang di fase ini:** tiket tanpa nomor gapless/hash; pindai ulang diterima; key acak (`Str::random`) di creator economy; pendapatan tiket diakui saat jual (bukan saat event selesai) — ditambah seluruh X1–X25.
-- [ ] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
-- [ ] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
-- [ ] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
-- [ ] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
-- [ ] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
-- [ ] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
-- [ ] 116.7 Quality gate Fase 116
+- [🔵] 116.1 **Resale marketplace resmi**: tiket dijual kembali dengan hash transfer terkontrol (1 transfer maks, price cap 120% harga perdana anti-scalping) → platform fee → penjual wajib wallet terverifikasi
+- [🔵] 116.2 **Anti-scalping enforcement**: deteksi bot (rate limit, velocity check Fase 100.5), pembelian massal dibatasi per identitas, blacklisting akun + denda → kepatuhan regulasi simulasi
+- [🔵] 116.3 **Dynamic bundling event**: tiket + hotel (Fase 92.6) + transport + dining → harga bundle dinamis okupansi & sisa kamar → marginal cost terkalkulasi → guardrail floor
+- [🔵] 116.4 **Waitlist & seat release**: zona penuh → waitlist → pembatalan → auto-offer ke waitlist (timer 15 menit) → okupansi maksimal
+- [🔵] 116.5 Secondary market revenue: fee + pembayaran pajak hiburan simulasi → ledger venue + platform
+- [🔵] 116.6 Tests: (a) transfer tiket ke-2 ditolak (b) harga resale > cap ditolak (c) bundle price ≥ Σ floor komponen (d) waitlist offer timer bekerja (e) reconcile secondary = ledger
+- [🔵] 116.7 Quality gate Fase 116
 
 ## FASE 117 — ENTERTAINMENT: GUEST EXPERIENCE AI, BIOMETRIC ENTRY & CROWD SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCrowdAndBiometricService`; 1 migrasi; test `VenueCrowdAndBiometricTest` — commit `028dccb`, +367 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

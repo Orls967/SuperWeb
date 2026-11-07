@@ -11,6 +11,8 @@ use Modules\Venue\Http\Controllers\VenueEconomyController;
 use Modules\Venue\Http\Controllers\VenueEventController;
 use Modules\Venue\Http\Controllers\VenuePermitController;
 use Modules\Venue\Http\Controllers\VenueReportController;
+use Modules\Venue\Http\Controllers\VenueSecondaryAdminController;
+use Modules\Venue\Http\Controllers\VenueSecondaryMarketController;
 use Modules\Venue\Http\Controllers\VenueTableBottleServiceController;
 use Modules\Venue\Http\Controllers\VenueTableController;
 use Modules\Venue\Http\Controllers\VenueTicketingAccessController;
@@ -106,4 +108,22 @@ Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->pref
 
     // Direct Action Endpoints for API/Post JSON compatibility
     Route::post('/bar-shifts/audit', [VenueEconomyController::class, 'auditBarShift'])->name('venue.bar-shifts.audit');
+});
+
+// 116.1 - 116.7 Venue Secondary Ticket Market, Dynamic Bundling & Waitlist
+Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff,customer'])->prefix('venue/secondary')->name('venue.secondary.')->group(function () {
+    Route::get('/marketplace', [VenueSecondaryMarketController::class, 'marketplace'])->name('marketplace');
+    Route::get('/sell', [VenueSecondaryMarketController::class, 'sell'])->name('sell');
+    Route::post('/sell', [VenueSecondaryMarketController::class, 'storeListing'])->name('sell.store');
+    Route::get('/orders', [VenueSecondaryMarketController::class, 'orders'])->name('orders');
+    Route::get('/bundles', [VenueSecondaryMarketController::class, 'bundles'])->name('bundles');
+    Route::post('/bundles', [VenueSecondaryMarketController::class, 'storeBundle'])->name('bundles.store');
+    Route::get('/waitlist', [VenueSecondaryMarketController::class, 'waitlist'])->name('waitlist');
+    Route::post('/waitlist/claim', [VenueSecondaryMarketController::class, 'claimWaitlist'])->name('waitlist.claim');
+});
+
+Route::middleware(['web', 'auth', 'role:admin,venue_manager,venue_staff'])->prefix('venue/secondary')->name('venue.secondary.')->group(function () {
+    Route::get('/reports', [VenueSecondaryMarketController::class, 'reports'])->name('reports');
+    Route::post('/admin/blacklist', [VenueSecondaryAdminController::class, 'blacklist'])->name('admin.blacklist');
+    Route::post('/admin/reconcile', [VenueSecondaryAdminController::class, 'reconcile'])->name('admin.reconcile');
 });

@@ -71,4 +71,24 @@ class EntertainmentTicket extends Model
     {
         return $this->hasMany(GateScanLog::class, 'ticket_id');
     }
+
+    public function getPriceIdrAttribute(): int
+    {
+        return (int) ($this->price_paid_idr ?? 0);
+    }
+
+    public function resales(): HasMany
+    {
+        return $this->hasMany(TicketResale::class, 'ticket_id');
+    }
+
+    public function activeResale()
+    {
+        return $this->hasOne(TicketResale::class, 'ticket_id')->whereIn('status', ['LISTED', 'ESCROW_HOLD']);
+    }
+
+    public function activeWaitlistReservation()
+    {
+        return $this->hasOne(WaitlistReservation::class, 'ticket_id')->where('is_claimed', false);
+    }
 }
