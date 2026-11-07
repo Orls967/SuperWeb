@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Mining\Domain\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MiningEquipment extends Model
 {
+    use HasUuids;
+
     protected $table = 'min_equipment';
 
     protected $keyType = 'string';
@@ -41,5 +46,15 @@ class MiningEquipment extends Model
                 $model->capacity_ton = round($model->capacity_kg / 1000, 2);
             }
         });
+    }
+
+    public function telemetries(): HasMany
+    {
+        return $this->hasMany(MiningEquipmentTelemetry::class, 'equipment_id');
+    }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(MiningSite::class, 'site_id');
     }
 }

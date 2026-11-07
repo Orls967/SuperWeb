@@ -9645,7 +9645,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Mining (`min_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 12F
 > **Jalan pintas terlarang di fase ini:** key acak di penalti/lingkungan; tiket timbang tanpa hash-chain; royalti dari angka masukan, bukan produksi terverifikasi; pendapatan bertanda terbalik — ditambah seluruh X1–X25.
-- [ ] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
+- [🔵] 93.1 Modul `Mining` (`min_`): provider, MenuRegistry "Pertambangan", roles (`mine_planner`, `fleet_dispatcher`, `mine_surveyor`, `hse_officer`, `royalty_officer`), policies, arch test; tabel `min_sites`, `min_pits`, `min_equipment`, `min_dispatch_runs`, `min_weighbridge_tickets`
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9654,7 +9654,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
+- [🔵] 93.2 **Skala**: 500 pit & 1.000 kawasan pengolahan (smelter, crushing, quarry) di 30 wilayah, 50.000 unit alat berat (haul truck 400 ton, excavator, drill, conveyor, dredger), 1 juta perjalanan angkut/hari, 100 juta ton material/bulan; seluruh alat berat terdaftar sebagai aset (Fase 30) & armada (terhubung Vehicle Passport diperluas ke alat berat)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9663,7 +9663,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_equipment_dispatch_availability_and_assignment
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
+- [🔵] 93.3 **Mine planning**: rencana bulanan cut & fill, grade target, produksi harian per pit → time-phased ke shift → target dipecah ke shovel/truck allocation; deviasi aktual vs rencana tercatat (kurva-S produksi)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9672,7 +9672,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
+- [🔵] 93.4 **Fleet dispatch engine**: algoritma assignment deterministik (haul distance, payload target, waiting time, fuel) → menugaskan haul truck ke shovels & stockpile → telematik memantau payload aktual vs target → **payload variance & efisiensi** dihitung per shift; dispatcher override dengan alasan tercatat
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9681,7 +9681,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_complete_run_normal_fuel_and_payload_variance
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
+- [🔵] 93.5 **Telematik IoT alat berat**: 500 juta titik telemetri/hari (GPS, fuel rate, payload, vibration, engine hours) — ingest memperluas Fase 68.1 dengan skema equipment-specific; agregat per shift untuk OEE alat berat (memperluas Fase 40.1)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9690,7 +9690,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
+- [🔵] 93.6 **Fleet maintenance prediktif**: engine hours + oil analysis + vibration → work order otomatis (Fase 31.5) → suku cadang dipesan via MRP equipment (Fase 36.6) → downtime mengurangi forecast produksi → terhubung S&OP (Fase 53) & AutoServe sebagai adapter bengkel alat berat
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9699,7 +9699,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_c_engine_hours_above_threshold_triggers_work_order_once
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
+- [🔵] 93.7 **Fuel management & anti-theft**: konsumsi BBM per 100 ton-km vs baseline → anomali > ambang → alarm + verifikasi telematik + **hold bayaran kontraktor** (memperluas Fase 80.1) → selisih masuk cost variance; meteran tangki IoT per site
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9708,7 +9708,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_fuel_theft_anomaly_triggers_contractor_payment_hold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
+- [🔵] 93.8 Tests: (a) dispatch tak melebihi jumlah unit tersedia (b) payload variance = aktual − target, konsisten shift (c) engine hours > ambang → WO 1x (d) fuel anomaly → hold persis 1x (e) query budget dispatch board ≤ ambang
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9717,7 +9717,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Mining/tests/Feature/MiningFleetDispatchTest.php::test_e_query_budget_dispatch_board_within_threshold
     - akses: route GET /mining [role: admin, mining_admin, site_manager]
     - (dibatalkan) gate: docs/gates/fase-93.md
-- [ ] 93.9 Quality gate Fase 93
+- [🔵] 93.9 Quality gate Fase 93
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur

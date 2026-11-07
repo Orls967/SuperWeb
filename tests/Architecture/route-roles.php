@@ -71,7 +71,14 @@ use Modules\Manufacturing\Domain\Models\C2m\C2mCustomOrder;
 use Modules\Manufacturing\Domain\Models\C2m\VmiReplenishment;
 use Modules\Med\Domain\Models\MedIpLicense;
 use Modules\Med\Domain\Models\MedRoyaltyStatement;
+use Modules\Mining\Domain\Enums\FuelAnomalyCaseStatus;
+use Modules\Mining\Domain\Enums\HaulCycleStatus;
+use Modules\Mining\Domain\Enums\MinePlanStatus;
+use Modules\Mining\Domain\Models\MiningEquipment;
+use Modules\Mining\Domain\Models\MiningFuelAnomalyCase;
+use Modules\Mining\Domain\Models\MiningHaulCycle;
 use Modules\Mining\Domain\Models\MiningPit;
+use Modules\Mining\Domain\Models\MiningPlan;
 use Modules\Mining\Domain\Models\MiningSite;
 use Modules\Mobility\Ev\Domain\Models\EvCharger;
 use Modules\Mobility\Ev\Domain\Models\EvSession;
@@ -3428,6 +3435,88 @@ return [
     ],
     'mining.admin' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager']],
     'mining.dispatch.ui' => ['roles' => ['admin', 'dispatcher_mine', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.dispatch.assign' => ['roles' => ['admin', 'dispatcher_mine', 'mine_manager', 'mining_admin', 'site_manager']],
+    'mining.dispatch.override' => [
+        'roles' => ['admin', 'dispatcher_mine', 'mine_manager', 'mining_admin', 'site_manager'],
+        'params' => function () {
+            $cycle = MiningHaulCycle::firstOrCreate(
+                ['cycle_code' => 'HC-ARCH-01'],
+                [
+                    'shift' => 'SHIFT_1',
+                    'status' => HaulCycleStatus::ASSIGNED,
+                    'cycle_date' => now()->toDateString(),
+                ]
+            );
+
+            return ['cycle' => $cycle->id];
+        },
+    ],
+    'mining.plans' => ['roles' => ['admin', 'mine_planner']],
+    'mining.plans.store' => ['roles' => ['admin', 'mine_planner']],
+    'mining.plans.replan' => [
+        'roles' => ['admin', 'mine_planner'],
+        'params' => function () {
+            $site = MiningSite::firstOrCreate(
+                ['site_code' => 'SITE-ARCH-01'],
+                ['name' => 'Arch Site', 'commodity' => 'NICKEL', 'location' => 'Morowali', 'timezone' => 'Asia/Makassar', 'status' => 'ACTIVE']
+            );
+            $pit = MiningPit::firstOrCreate(
+                ['pit_code' => 'PIT-ARCH-01'],
+                ['site_id' => $site->id, 'name' => 'Arch Pit']
+            );
+            $plan = MiningPlan::firstOrCreate(
+                ['plan_code' => 'MP-ARCH-01'],
+                [
+                    'site_id' => $site->id,
+                    'pit_id' => $pit->id,
+                    'period_month' => '2026-11',
+                    'commodity' => 'NICKEL',
+                    'target_tonnage_kg' => 1000000,
+                    'target_grade_ppm' => 15000,
+                    'status' => MinePlanStatus::ACTIVE,
+                ]
+            );
+
+            return ['plan' => $plan->id];
+        },
+    ],
+    'mining.equipment' => ['roles' => ['admin', 'mine_manager']],
+    'mining.fuel' => ['roles' => ['admin', 'finance_officer', 'hse_officer']],
+    'mining.fuel.dispense' => ['roles' => ['admin', 'finance_officer', 'hse_officer']],
+    'mining.fuel.resolve' => [
+        'roles' => ['admin', 'finance_officer', 'hse_officer'],
+        'params' => function () {
+            $site = MiningSite::firstOrCreate(
+                ['site_code' => 'SITE-ARCH-01'],
+                ['name' => 'Arch Site', 'commodity' => 'NICKEL', 'location' => 'Morowali', 'timezone' => 'Asia/Makassar', 'status' => 'ACTIVE']
+            );
+            $equipment = MiningEquipment::firstOrCreate(
+                ['equipment_code' => 'EQ-ARCH-01'],
+                ['site_id' => $site->id, 'type' => 'HAUL_TRUCK', 'model' => 'CAT 777D', 'capacity_ton' => 90.0, 'capacity_kg' => 90000, 'status' => 'available']
+            );
+            $case = MiningFuelAnomalyCase::firstOrCreate(
+                ['case_number' => 'FAC-ARCH-01'],
+                [
+                    'site_id' => $site->id,
+                    'contractor_party_ref' => 'ARCH-CONTRACTOR',
+                    'equipment_id' => $equipment->id,
+                    'shift_date' => now()->toDateString(),
+                    'shift_code' => 'SHIFT_1',
+                    'actual_fuel_ml' => 500000,
+                    'baseline_fuel_ml' => 350000,
+                    'excess_ml' => 150000,
+                    'excess_bps' => 4280,
+                    'held_amount_idr' => 2000000,
+                    'status' => FuelAnomalyCaseStatus::DETECTED,
+                ]
+            );
+
+            return ['case' => $case->id];
+        },
+    ],
+    'mining.reports.export' => ['roles' => ['admin', 'finance_officer', 'mine_manager']],
+    'mining.contractor.portal' => ['roles' => ['admin', 'contractor']],
+    'mining.contractor.dispute' => ['roles' => ['admin', 'contractor']],
     'mining.hse' => ['roles' => ['admin', 'hse_officer', 'mining_admin', 'site_manager']],
     'mining.royalties' => ['roles' => ['admin', 'finance_officer', 'mining_admin', 'site_manager']],
     'mining.weighbridge' => ['roles' => ['admin', 'mine_manager', 'mining_admin', 'site_manager', 'weighbridge_operator']],
