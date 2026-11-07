@@ -350,3 +350,4 @@ final class VenueOpsAcceptanceTest extends TestCase
         $this->assertStringContainsString('discrepancies detected', $output);
     }
 }
+

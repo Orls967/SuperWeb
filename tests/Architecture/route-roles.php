@@ -117,8 +117,11 @@ use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
 use Modules\TradeFinance\Domain\Models\LetterOfCredit;
 use Modules\Vending\Domain\Models\VendingUnit;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
+use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
 use Modules\Venue\Domain\Models\EntertainmentVenue;
+use Modules\Venue\Domain\Models\EntertainmentZone;
+use Modules\Venue\Domain\Models\VenuePermit;
 use Modules\Wealth\Domain\Models\WmProfile;
 
 /**
@@ -955,6 +958,20 @@ return [
     'food.brands.index' => ['roles' => ['admin', 'brand_manager']],
     'food.brands.store' => ['roles' => ['admin', 'brand_manager']],
     'governance.index' => ['roles' => ['admin', 'governance_admin', 'voter']],
+    'guest.tickets.index' => ['roles' => ['admin', 'customer']],
+    'guest.tickets.show' => [
+        'roles' => ['admin', 'customer'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $tck = EntertainmentTicket::firstOrCreate(['ticket_number' => 'TCK-GUEST-001'], ['event_id' => $event->id, 'buyer_user_id' => 1, 'ticket_uuid' => 'tck-uuid-demo-001', 'price_paid_idr' => 750000, 'ticket_hash' => 'hash', 'status' => 'VALID']);
+
+            return ['ticket_uuid' => $tck->ticket_uuid];
+        },
+        'setup' => function ($user) {
+            EntertainmentTicket::where('ticket_uuid', 'tck-uuid-demo-001')->update(['buyer_user_id' => $user->id]);
+        },
+    ],
     'marine.index' => ['roles' => ['admin', 'farmer', 'officer', 'manager']],
     'marine.ponds.show' => ['roles' => ['admin', 'farmer', 'officer', 'manager'], 'params' => fn () => ['id' => 1]],
     'hcm.index' => ['roles' => ['admin', 'hcm_manager']],
@@ -3310,16 +3327,87 @@ return [
     'venue.artist.royalties.accrue' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.artist.royalties.release' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.artist.settle' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.events.close' => [
+        'roles' => ['admin', 'venue_manager'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000, 'status' => 'on_sale']);
+            return ['event' => $event->id];
+        },
+    ],
+    'venue.events.create' => ['roles' => ['admin', 'venue_manager']],
+    'venue.events.index' => ['roles' => ['admin', 'venue_manager']],
+    'venue.events.show' => [
+        'roles' => ['admin', 'venue_manager'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            return ['event' => $event->id];
+        },
+    ],
+    'venue.events.simulator' => [
+        'roles' => ['admin', 'venue_manager'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            return ['event' => $event->id];
+        },
+    ],
+    'venue.events.store' => ['roles' => ['admin', 'venue_manager']],
+    'venue.gate.scan-action' => ['roles' => ['venue_staff']],
+    'venue.inspections.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.permits.index' => ['roles' => ['admin', 'compliance_officer', 'venue_manager']],
+    'venue.permits.store' => ['roles' => ['admin', 'compliance_officer', 'venue_manager']],
+    'venue.relocations.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.reports.export' => ['roles' => ['admin', 'venue_manager']],
+    'venue.reports.index' => ['roles' => ['admin', 'venue_manager']],
+    'venue.reports.pnl' => ['roles' => ['admin', 'venue_manager']],
+    'venue.tables.forfeit' => [
+        'roles' => ['admin', 'venue_manager', 'venue_staff'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $bk = EntertainmentTableBooking::firstOrCreate(['booking_code' => 'BK-TEST-01'], ['table_number' => 'V01', 'event_id' => $event->id, 'user_id' => 1, 'customer_name' => 'Test', 'deposit_amount_idr' => 100000, 'minimum_spend_idr' => 1000000, 'status' => 'held']);
+            return ['booking' => $bk->id];
+        },
+    ],
     'venue.tables.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.tables.liquor-audit' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.tables.liquor-audit.reconcile' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.tables.reserve' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.tables.settle' => [
+        'roles' => ['admin', 'venue_manager', 'venue_staff'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $bk = EntertainmentTableBooking::firstOrCreate(['booking_code' => 'BK-TEST-01'], ['table_number' => 'V01', 'event_id' => $event->id, 'user_id' => 1, 'customer_name' => 'Test', 'deposit_amount_idr' => 100000, 'minimum_spend_idr' => 1000000, 'status' => 'held']);
+            return ['booking' => $bk->id];
+        },
+    ],
     'venue.tables.surge' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.tables.surge.calculate' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.ticketing.gate' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.ticketing.gate.scan' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.ticketing.index' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.ticketing.issue' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.zones.crowd-safety' => ['roles' => ['admin', 'crowd_safety']],
+    'venue.zones.index' => ['roles' => ['admin', 'crowd_safety']],
+    'venue.zones.lockdown' => [
+        'roles' => ['admin', 'crowd_safety'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $zone = EntertainmentZone::firstOrCreate(['zone_code' => 'ZN-TEST-01'], ['venue_id' => $venue->id, 'name' => 'Test Zone', 'capacity_limit' => 500]);
+            return ['zone' => $zone->id];
+        },
+    ],
+    'venue.zones.weather-adjust' => [
+        'roles' => ['admin', 'crowd_safety'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $zone = EntertainmentZone::firstOrCreate(['zone_code' => 'ZN-TEST-01'], ['venue_id' => $venue->id, 'name' => 'Test Zone', 'capacity_limit' => 500]);
+            return ['zone' => $zone->id];
+        },
+    ],
     'wealth.treasury.allocate-mpt' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.cash-sweep' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.compute-profile' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],

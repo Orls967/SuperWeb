@@ -33,6 +33,10 @@ class InsuranceServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/config/insurance.php', 'insurance');
 
         $this->app->singleton(FullInsuranceService::class);
+        $this->app->bind(
+            \Modules\Insurance\Contracts\EventCoverBinder::class,
+            \Modules\Insurance\Application\Services\EventCoverBinderService::class
+        );
     }
 
     public function boot(): void

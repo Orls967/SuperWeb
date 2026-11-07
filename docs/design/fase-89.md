@@ -90,100 +90,57 @@ Guard Table Booking SM:
 
 ### a. Alur Pembelian Tiket & Pindaian Gerbang
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Tamu as Tamu / Customer
-    participant Portal as Guest Portal / Web
-    participant Action as IssueTicketAction
-    participant Pricer as V1 TierCountdownPricer
-    participant Numbering as DocumentNumbering
-    participant Chain as CanonicalHashChain
-    participant Ledger as LedgerService
-    actor Staff as Petugas Gerbang (375px)
-    participant Gate as ScanGateAction
-    participant APB as V2 AntiPassbackGate
-    participant KYC as PartyAgeVerification
+flowchart TD
+    Tamu["Tamu / Customer"] -->|Beli Tiket Tier GA| Portal["Guest Portal / Web"]
+    Portal -->|execute| Action["IssueTicketAction"]
+    Action -->|calculate| Pricer["V1 TierCountdownPricer"]
+    Pricer -->|dynamicPriceIdr| Action
+    Action -->|generateNext| Numbering["DocumentNumbering TCK-VEN"]
+    Numbering -->|ticketNumber| Action
+    Action -->|computeHash| Chain["CanonicalHashChain"]
+    Chain -->|ticketHash| Action
+    Action -->|post unearned| Ledger["LedgerService"]
+    Action -->|EntertainmentTicket issued| Portal
 
-    Tamu->>Portal: Beli Tiket Tier GA
-    Portal->>Action: execute(eventId, tierId, userId)
-    Action->>Pricer: calculate(basePrice, demandBps, rainProbBps)
-    Pricer-->>Action: dynamicPriceIdr
-    Action->>Numbering: generateNext("TCK-VEN", eventId)
-    Numbering-->>Action: ticketNumber
-    Action->>Chain: computeHash(ticketData, prevHash)
-    Chain-->>Action: ticketHash
-    Action->>Ledger: post(debit: ticket_clearing, credit: unearned + tax_payable)
-    Action-->>Portal: EntertainmentTicket (Status: issued)
-
-    Staff->>Gate: Scan QR Code di Gate (Direction: IN, Nonce)
-    Gate->>KYC: verifyAge(buyerUserId, minAge=21)
-    KYC-->>Gate: Verified (Pass)
-    Gate->>APB: evaluateScan(ticketId, direction=IN, nonce)
-    APB-->>Gate: ALLOWED (reentryCount=0)
-    Gate-->>Staff: Indikator HIJAU BESAR (Akses Diberikan)
+    Staff["Petugas Gerbang 375px"] -->|Scan QR Direction IN| Gate["ScanGateAction"]
+    Gate -->|verifyAge 21+| KYC["PartyAgeVerification"]
+    KYC -->|Pass| Gate
+    Gate -->|evaluateScan| APB["V2 AntiPassbackGate"]
+    APB -->|ALLOWED| Gate
+    Gate -->|Indikator Hijau Besar| Staff
 ```
 
 ### b. Alur Reservasi Meja VIP & Penagihan Minimum Spend (Saga)
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Tamu as Tamu VIP
-    participant App as Web / Portal Meja
-    participant Saga as TableBookingSaga
-    participant Pay as PaymentIntentGateway
-    participant Resto as G7-K17 OutletSaleRecorder
-    participant Alg as V4 MinimumSpendSettlement
-    participant Ledger as LedgerService
+flowchart TD
+    VIP["Tamu VIP"] -->|Booking Meja VIP| App["Portal Meja"]
+    App -->|startBooking| Saga["TableBookingSaga"]
+    Saga -->|holdDeposit Rp 2jt| Pay["PaymentIntentGateway"]
+    Pay -->|Hold Confirmed| Saga
+    Saga -->|Debit Escrow, Kredit Unearned| Ledger["LedgerService"]
+    Saga -->|Status confirmed| App
 
-    Tamu->>App: Booking Meja VIP (Minimum Spend: Rp 5.000.000, Deposit: Rp 2.000.000)
-    App->>Saga: startBooking(eventId, tableCode, userId)
-    Saga->>Pay: holdDeposit(Rp 2.000.000, idempotencyKey)
-    alt Payment Berhasil
-        Pay-->>Saga: Hold Confirmed
-        Saga->>Ledger: Debit: ven:vip_escrow:IDR, Kredit: ven:vip_unearned_rev:IDR
-        Saga-->>App: Status Meja: confirmed
-    else Payment Gagal
-        Pay-->>Saga: Hold Rejected
-        Saga-->>App: Kompensasi: Meja Dilepas (requested -> cancelled)
-    end
-
-    Note over Tamu,Resto: Tamu Hadir & Menikmati Sajian di Meja VIP (seated)
-    Tamu->>Resto: Pesan Botol Spirits & Makanan POS
-    Resto-->>Saga: Total Konsumsi: Rp 3.200.000 (Shortfall: Rp 1.800.000)
-
-    Note over Saga,Ledger: Penutupan Meja & Penyelesaian Tagihan
-    Saga->>Alg: settle(minimumSpend=5jt, depositHeld=2jt, actualSpend=3.2jt)
-    Alg-->>Saga: SettlementResult(bill=5jt, capture=2jt, additional=3jt, shortfall=1.8jt)
-    Saga->>Pay: chargeAdditional(Rp 3.000.000)
-    Saga->>Ledger: Debit: ven:vip_unearned_rev:IDR, Kredit: ven:table_revenue:IDR
-    Saga-->>App: Meja Settled (Lunas)
+    VIP -->|Pesan Botol Spirits & Makanan| Resto["G7-K17 OutletSaleRecorder"]
+    Resto -->|Total Konsumsi Rp 3.2jt| Saga
+    Saga -->|settle minimum spend 5jt| Alg["V4 MinimumSpendSettlement"]
+    Alg -->|SettlementResult| Saga
+    Saga -->|charge additional Rp 3jt| Pay
+    Saga -->|Debit Unearned, Kredit Revenue| Ledger
+    Saga -->|Status settled| App
 ```
 
 ### c. Saga Pembatalan Event & Kompensasi Terdistribusi
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Mgr as Venue Manager
-    participant Saga as EventCancellationSaga
-    participant Evt as EntertainmentEvent
-    participant Tck as TicketRefundAction
-    participant Tbl as TableRefundAction
-    participant Ins as G7-K15 EventCoverBinder
-    participant Ledger as LedgerService
-
-    Mgr->>Saga: triggerCancellation(eventId, reason="Cuaca Ekstrem")
-    Saga->>Evt: update status -> CANCELLED
-    loop Setiap Tiket Terbit
-        Saga->>Tck: refundTicket(ticketId)
-        Tck->>Ledger: Balik Unearned Revenue & Tax Payable
-    end
-    loop Setiap Booking Meja
-        Saga->>Tbl: refundDeposit(bookingId)
-        Tbl->>Ledger: Rilis VIP Escrow kembali ke Tamu
-    end
-    Saga->>Ins: claimCancellation(policyId, reason, totalLoss)
-    Ins-->>Saga: ClaimId
-    Saga-->>Mgr: Saga Selesai (Keadaan Konsisten Penuh)
+flowchart TD
+    Mgr["Venue Manager"] -->|triggerCancellation Cuaca Ekstrem| Saga["EventCancellationSaga"]
+    Saga -->|update status CANCELLED| Evt["EntertainmentEvent"]
+    Saga -->|refundTicket per tiket| Tck["TicketRefundAction"]
+    Tck -->|Balik Unearned Revenue & Tax Payable| Ledger["LedgerService"]
+    Saga -->|refundDeposit per meja| Tbl["TableRefundAction"]
+    Tbl -->|Rilis VIP Escrow kembali ke Tamu| Ledger
+    Saga -->|claimCancellation| Ins["G7-K15 EventCoverBinder"]
+    Ins -->|ClaimId| Saga
+    Saga -->|Saga Selesai| Mgr
 ```
 
 ---

@@ -42,4 +42,14 @@ class VenueController extends Controller
 
         return redirect()->route('venue.index')->with('success', "Ticket {$ticket->ticket_number} validated and checked in to {$zone->name}.");
     }
+
+    public function inspections(Request $request): View
+    {
+        return view('venue::inspections.index');
+    }
+
+    public function relocations(Request $request): View
+    {
+        return view('venue::relocations.index');
+    }
 }

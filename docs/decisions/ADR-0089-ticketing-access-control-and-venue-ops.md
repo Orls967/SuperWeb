@@ -47,3 +47,4 @@ Operasional venue hiburan berskala besar (beach club, kelab malam, festival pesi
 ## Konsekuensi
 - **Positif:** Mengeliminasi celah pemalsuan tiket dan *passback*, melindungi keselamatan pengunjung melalui *safety margin* otomatis, serta menjamin kepatuhan akuntansi *double-entry* IFRS 15.
 - **Mitigasi:** Kompleksitas alur *state machine* dan *saga* dikawal dengan pengujian akseptansi *end-to-end*, audit dua sumber `ven:audit`, dan verifikasi sertifikat matematis pada setiap eksekusi algoritma.
+

@@ -8,7 +8,11 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Services\VenueOperationsService;
 use Modules\Venue\Console\Commands\AuditVenueCommand;
+use Modules\Venue\Console\Commands\CheckWeatherConditionsCommand;
+use Modules\Venue\Console\Commands\CloseEventCommand;
 use Modules\Venue\Console\Commands\CloseEventsCommand;
+use Modules\Venue\Console\Commands\ReleaseExpiredHoldsCommand;
+use Modules\Venue\Console\Commands\ScanPermitExpiryCommand;
 
 class VenueServiceProvider extends ServiceProvider
 {
@@ -39,6 +43,10 @@ class VenueServiceProvider extends ServiceProvider
             $this->commands([
                 AuditVenueCommand::class,
                 CloseEventsCommand::class,
+                CloseEventCommand::class,
+                ScanPermitExpiryCommand::class,
+                CheckWeatherConditionsCommand::class,
+                ReleaseExpiredHoldsCommand::class,
             ]);
         }
     }

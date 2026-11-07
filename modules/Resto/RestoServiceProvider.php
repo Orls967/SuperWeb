@@ -61,6 +61,11 @@ class RestoServiceProvider extends ServiceProvider
             RestoUsageReaderInterface::class,
             RestoUsageReaderService::class
         );
+
+        $this->app->bind(
+            \Modules\Resto\Contracts\OutletSaleRecorder::class,
+            \Modules\Resto\Application\Services\OutletSaleRecorderService::class
+        );
     }
 
     public function boot(): void

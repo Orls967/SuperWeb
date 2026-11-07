@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Venue\Domain\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RuntimeException;
@@ -18,6 +19,7 @@ class GateScanLog extends Model
         'direction',
         'scan_result',
         'denial_reason',
+        'nonce',
         'scanned_by_user_id',
         'scanned_at',
     ];
@@ -42,5 +44,10 @@ class GateScanLog extends Model
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(EntertainmentTicket::class, 'ticket_id');
+    }
+
+    public function scannedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'scanned_by_user_id');
     }
 }
