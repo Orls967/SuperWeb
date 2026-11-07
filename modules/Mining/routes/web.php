@@ -18,6 +18,7 @@ use Modules\Mining\Http\Controllers\MiningReclamationController;
 use Modules\Mining\Http\Controllers\MiningReportController;
 use Modules\Mining\Http\Controllers\MiningRoyaltyController;
 use Modules\Mining\Http\Controllers\MiningRoyaltyReclamationSafetyController;
+use Modules\Mining\Http\Controllers\MiningSmelterAndTradingController;
 use Modules\Mining\Http\Controllers\MiningUndergroundAndMarineController;
 use Modules\Mining\Http\Controllers\MiningWeighbridgeSmelterController;
 
@@ -173,6 +174,49 @@ Route::middleware(['web', 'auth'])->prefix('mining')->group(function () {
         Route::post('/barge/settle-freight', [MiningUndergroundAndMarineController::class, 'settleFreight'])->name('barge.freight');
 
         Route::get('/export-csv', [MiningUndergroundAndMarineController::class, 'exportCsv'])->name('export-csv');
+    });
+
+    // Fase 121: Minerals Processing, Smelter & Metals Trading Desk
+    Route::middleware(['role:admin,dispatcher_mine,hse_officer,mine_manager,site_manager'])->prefix('fase121')->name('mining.fase121.')->group(function () {
+        Route::get('/smelter', [MiningSmelterAndTradingController::class, 'smelterView'])->name('smelter');
+        Route::post('/smelter/runs', [MiningSmelterAndTradingController::class, 'createFurnaceRun'])->name('smelter.runs.store');
+        Route::post('/smelter/balance', [MiningSmelterAndTradingController::class, 'executeEnergyBalance'])->name('smelter.balance');
+        Route::post('/smelter/tapping', [MiningSmelterAndTradingController::class, 'recordTapping'])->name('smelter.tapping');
+        Route::post('/smelter/assay', [MiningSmelterAndTradingController::class, 'conductQualityAssay'])->name('smelter.assay');
+        Route::post('/smelter/emissions', [MiningSmelterAndTradingController::class, 'evaluateEmissionIntensity'])->name('smelter.emissions');
+        Route::post('/smelter/carbon-tax', [MiningSmelterAndTradingController::class, 'calculateCarbonTax'])->name('smelter.carbon-tax');
+        Route::post('/smelter/slag-basicity', [MiningSmelterAndTradingController::class, 'calculateSlagBasicity'])->name('smelter.slag-basicity');
+        Route::post('/smelter/reconcile', [MiningSmelterAndTradingController::class, 'reconcileMassBalance'])->name('smelter.reconcile');
+        Route::post('/smelter/audit-chain', [MiningSmelterAndTradingController::class, 'auditChainOfCustody'])->name('smelter.audit-chain');
+        Route::post('/smelter/abort', [MiningSmelterAndTradingController::class, 'abortFurnaceRun'])->name('smelter.abort');
+        Route::post('/smelter/hilirisasi-pipeline', [MiningSmelterAndTradingController::class, 'runHilirisasiPipeline'])->name('smelter.hilirisasi-pipeline');
+
+        Route::get('/trading', [MiningSmelterAndTradingController::class, 'tradingView'])->name('trading');
+        Route::post('/trading/contracts', [MiningSmelterAndTradingController::class, 'createTradingContract'])->name('trading.contracts.store');
+        Route::post('/trading/lock-price', [MiningSmelterAndTradingController::class, 'lockContractPrice'])->name('trading.lock-price');
+        Route::post('/trading/mtm', [MiningSmelterAndTradingController::class, 'executeMtmValuation'])->name('trading.mtm');
+        Route::post('/trading/margin-call', [MiningSmelterAndTradingController::class, 'triggerMarginCall'])->name('trading.margin-call');
+        Route::post('/trading/settle', [MiningSmelterAndTradingController::class, 'settleContract'])->name('trading.settle');
+        Route::post('/trading/lme-contango', [MiningSmelterAndTradingController::class, 'evaluateLmeContango'])->name('trading.lme-contango');
+
+        Route::get('/warehouse-receipt', [MiningSmelterAndTradingController::class, 'warehouseReceiptView'])->name('warehouse-receipt');
+        Route::post('/warehouse-receipt/issue', [MiningSmelterAndTradingController::class, 'issueWarehouseReceipt'])->name('warehouse-receipt.issue');
+        Route::post('/warehouse-receipt/register-bappebti', [MiningSmelterAndTradingController::class, 'registerBappebti'])->name('warehouse-receipt.register-bappebti');
+        Route::post('/warehouse-receipt/pledge-scf', [MiningSmelterAndTradingController::class, 'pledgeBankScf'])->name('warehouse-receipt.pledge-scf');
+        Route::post('/warehouse-receipt/release', [MiningSmelterAndTradingController::class, 'releaseWarehouseReceipt'])->name('warehouse-receipt.release');
+        Route::post('/warehouse-receipt/validate-integrity', [MiningSmelterAndTradingController::class, 'validateReceiptIntegrity'])->name('warehouse-receipt.validate-integrity');
+
+        Route::get('/byproduct', [MiningSmelterAndTradingController::class, 'byproductView'])->name('byproduct');
+        Route::post('/byproduct/dispatch', [MiningSmelterAndTradingController::class, 'dispatchByproductSlag'])->name('byproduct.dispatch');
+        Route::post('/byproduct/recycle', [MiningSmelterAndTradingController::class, 'recycleByproductSlag'])->name('byproduct.recycle');
+
+        Route::post('/trading/plan-layered-hedge', [MiningSmelterAndTradingController::class, 'planLayeredHedge'])->name('trading.plan-layered-hedge');
+        Route::post('/smelter/allocate-joint-cost', [MiningSmelterAndTradingController::class, 'allocateJointCost'])->name('smelter.allocate-joint-cost');
+        Route::post('/smelter/settle-final-assay', [MiningSmelterAndTradingController::class, 'settleFinalAssay'])->name('smelter.settle-final-assay');
+        Route::post('/warehouse-receipt/scan-expiry', [MiningSmelterAndTradingController::class, 'scanReceiptExpiry'])->name('warehouse-receipt.scan-expiry');
+        Route::get('/audit-metals-desk', [MiningSmelterAndTradingController::class, 'auditMetalsDesk'])->name('audit-metals-desk');
+
+        Route::get('/export-csv', [MiningSmelterAndTradingController::class, 'exportReportCsv'])->name('export-csv');
     });
 });
 
