@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Party\Contracts\PartyAgeVerificationInterface;
 use Modules\Venue\Application\Services\VenueOperationsService;
 use Modules\Venue\Console\Commands\AuditVenueCommand;
+use Modules\Venue\Console\Commands\AuditVenueCrowdCommand;
 use Modules\Venue\Console\Commands\AuditVenueEconomyCommand;
 use Modules\Venue\Console\Commands\AuditVenueSecondaryCommand;
 use Modules\Venue\Console\Commands\CheckWeatherConditionsCommand;
@@ -46,6 +47,7 @@ class VenueServiceProvider extends ServiceProvider
                 AuditVenueCommand::class,
                 AuditVenueEconomyCommand::class,
                 AuditVenueSecondaryCommand::class,
+                AuditVenueCrowdCommand::class,
                 CloseEventsCommand::class,
                 CloseEventCommand::class,
                 ScanPermitExpiryCommand::class,

@@ -6,6 +6,7 @@ namespace Modules\Party;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Party\Application\Services\CreditScoringService;
+use Modules\Party\Application\Services\MemberPersonalizationProfileService;
 use Modules\Party\Application\Services\PartyKycLookupService;
 use Modules\Party\Application\Services\PartySanctionsService;
 use Modules\Party\Application\Services\PartyService;
@@ -13,6 +14,7 @@ use Modules\Party\Application\Services\SanctionScreeningService;
 use Modules\Party\Console\Commands\BackfillPartyLinksCommand;
 use Modules\Party\Console\Commands\RemindExpiringDocumentsCommand;
 use Modules\Party\Contracts\InvestorKycLookupInterface;
+use Modules\Party\Contracts\MemberPersonalizationProfileProvider;
 use Modules\Party\Contracts\PartySanctionsInterface;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -30,6 +32,10 @@ class PartyServiceProvider extends ServiceProvider
         $this->app->bind(
             InvestorKycLookupInterface::class,
             PartyKycLookupService::class
+        );
+        $this->app->bind(
+            MemberPersonalizationProfileProvider::class,
+            MemberPersonalizationProfileService::class
         );
     }
 
