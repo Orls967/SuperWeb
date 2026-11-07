@@ -111,7 +111,7 @@ return new class extends Migration
                 $table->foreignUuid('travel_pass_id')->constrained('htl_travel_passes')->cascadeOnDelete();
                 $table->string('campaign_code');
                 $table->string('offer_title');
-                $table->string('destination_property_reference')->index();
+                $table->string('destination_property_reference')->index('htl_camp_dest_prop_idx');
                 $table->string('featured_package_title');
                 $table->integer('points_required_discounted');
                 $table->timestamp('valid_until');
