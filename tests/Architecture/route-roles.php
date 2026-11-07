@@ -116,6 +116,7 @@ use Modules\TradeFinance\Domain\Models\Clearing\ClearingEscrow;
 use Modules\TradeFinance\Domain\Models\CrossBorder\CrossBorderEscrow;
 use Modules\TradeFinance\Domain\Models\LetterOfCredit;
 use Modules\Vending\Domain\Models\VendingUnit;
+use Modules\Venue\Domain\Models\CrowdCrushIncident;
 use Modules\Venue\Domain\Models\EntertainmentEvent;
 use Modules\Venue\Domain\Models\EntertainmentTableBooking;
 use Modules\Venue\Domain\Models\EntertainmentTicket;
@@ -3437,6 +3438,41 @@ return [
     'venue.secondary.reports' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.secondary.admin.blacklist' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
     'venue.secondary.admin.reconcile' => ['roles' => ['admin', 'venue_manager', 'venue_staff']],
+    'venue.biometrics.enrol' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.biometrics.enrolment' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.biometrics.kiosk' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.biometrics.revoke' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.biometrics.scan' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.crowd.dashboard' => ['roles' => ['admin', 'crowd_safety', 'venue_manager']],
+    'venue.crowd.emergency' => ['roles' => ['admin', 'crowd_safety', 'venue_manager']],
+    'venue.crowd.heatmap-data' => ['roles' => ['admin', 'crowd_safety', 'venue_manager']],
+    'venue.crowd.incidents.resolve' => [
+        'roles' => ['admin', 'crowd_safety', 'venue_manager'],
+        'params' => function () {
+            $venue = EntertainmentVenue::firstOrCreate(['venue_code' => 'VEN-ATLAS-01'], ['name' => 'Atlas', 'venue_type' => 'BEACH_CLUB', 'city' => 'Badung, Bali', 'min_age_requirement' => 18, 'max_legal_capacity' => 1000]);
+            $event = EntertainmentEvent::firstOrCreate(['event_code' => 'EVT-TEST-01'], ['venue_id' => $venue->id, 'title' => 'Test Event', 'doors_open_at' => now()->addDays(7), 'ticket_floor_price_idr' => 100000, 'ticket_ceiling_price_idr' => 1000000, 'current_ticket_price_idr' => 500000]);
+            $zone = EntertainmentZone::firstOrCreate(['zone_code' => 'ZN-TEST-01'], ['venue_id' => $venue->id, 'name' => 'Test Zone', 'capacity_limit' => 500]);
+            $incident = CrowdCrushIncident::firstOrCreate(
+                ['incident_code' => 'INC-DUMMY-01'],
+                [
+                    'venue_id' => $venue->id,
+                    'event_id' => $event->id,
+                    'zone_id' => $zone->id,
+                    'density_sqm' => 4.5,
+                    'risk_level' => 'HIGH',
+                    'action_taken' => 'HOLD',
+                    'reported_by_user_id' => 1,
+                    'status' => 'OPEN',
+                ]
+            );
+
+            return ['incident' => $incident->id];
+        },
+    ],
+    'venue.experience.promos' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.experience.promos.dispatch' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.experience.reinforce' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
+    'venue.experience.wps' => ['roles' => ['admin', 'customer', 'venue_manager', 'venue_staff']],
     'wealth.treasury.allocate-mpt' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.cash-sweep' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],
     'wealth.treasury.compute-profile' => ['roles' => ['admin', 'customer', 'investor', 'treasury', 'wealth_manager']],

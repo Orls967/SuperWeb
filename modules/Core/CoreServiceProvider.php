@@ -33,6 +33,7 @@ use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineServ
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Application\Services\VenueZoneSurveillanceFeedService;
 use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
 use Modules\Core\Console\Commands\AuditAiCommand;
@@ -66,6 +67,7 @@ use Modules\Core\Contracts\SimTickHandlerInterface;
 use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
+use Modules\Core\Contracts\VenueZoneSurveillanceFeedGateway;
 use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
 use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
 use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
@@ -200,6 +202,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->bind(
             SimTickHandlerInterface::class,
             BillingTickHandler::class
+        );
+
+        $this->app->bind(
+            VenueZoneSurveillanceFeedGateway::class,
+            VenueZoneSurveillanceFeedService::class
         );
     }
 

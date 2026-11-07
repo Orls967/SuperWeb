@@ -22,6 +22,7 @@ class CrowdCrushIncident extends Model
         'lockdown_initiated_at',
         'ambulance_dispatched',
         'status',
+        'resolved_at',
         'reported_by_user_id',
     ];
 
@@ -29,6 +30,7 @@ class CrowdCrushIncident extends Model
         'headcount_at_incident' => 'integer',
         'ambulance_dispatched' => 'boolean',
         'lockdown_initiated_at' => 'datetime',
+        'resolved_at' => 'datetime',
     ];
 
     public function zone(): BelongsTo
@@ -44,5 +46,10 @@ class CrowdCrushIncident extends Model
     public function reporter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reported_by_user_id');
+    }
+
+    public function getSeverityLevelAttribute(): ?string
+    {
+        return $this->risk_level;
     }
 }
