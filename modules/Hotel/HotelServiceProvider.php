@@ -58,6 +58,11 @@ class HotelServiceProvider extends ServiceProvider
                 AuditHotelCommand::class,
                 HotelCloseDayCommand::class,
                 HotelReportOrphansCommand::class,
+                \Modules\Hotel\Console\Commands\HotelRatePublishCommand::class,
+                \Modules\Hotel\Console\Commands\HotelOverbookingPlanCommand::class,
+                \Modules\Hotel\Console\Commands\HotelHousekeepingPlanCommand::class,
+                \Modules\Hotel\Console\Commands\HotelApoaSubmitCommand::class,
+                \Modules\Hotel\Console\Commands\HotelSetbackScanCommand::class,
             ]);
         }
     }

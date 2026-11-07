@@ -5,15 +5,24 @@ declare(strict_types=1);
 namespace Tests\Acceptance\HotelPms;
 
 use App\Models\User;
-use App\Quality\Audit\Fixtures\HotelAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\HtlAuditCorruptionFixture;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 use Modules\Core\Application\Services\RbacService;
+use Modules\Hotel\Application\Actions\CheckInWithDigitalKeyAndApoaAction;
+use Modules\Hotel\Application\Actions\ReserveRoomCentralizedCrsAction;
+use Modules\Hotel\Application\Actions\ResolveServiceRecoveryAction;
+use Modules\Hotel\Application\Actions\RunNightAuditFase91Action;
+use Modules\Hotel\Domain\Algorithms\BestAvailableRateCalculator;
+use Modules\Hotel\Domain\Algorithms\HvacSetbackController;
+use Modules\Hotel\Domain\Algorithms\OverbookingLimitOptimizer;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
 use Modules\Hotel\Domain\Models\HotelRoomType;
+use Modules\Hotel\Domain\StateMachines\ReservationStateMachine;
 use Tests\TestCase;
 
 final class HotelPmsAcceptanceTest extends TestCase
@@ -33,6 +42,8 @@ final class HotelPmsAcceptanceTest extends TestCase
     private User $hotelGm;
 
     private User $guestUser;
+
+    private User $otherGuestUser;
 
     private User $unauthorizedUser;
 
@@ -76,11 +87,43 @@ final class HotelPmsAcceptanceTest extends TestCase
         $this->hotelGm = User::factory()->create(['name' => 'General Manager']);
         $rbac->assignRole($this->hotelGm, 'hotel_gm');
 
-        $this->guestUser = User::factory()->create(['name' => 'Valued Guest']);
+        $this->guestUser = User::factory()->create(['name' => 'Valued Guest', 'email' => 'valued_guest@example.com']);
         $rbac->assignRole($this->guestUser, 'guest');
+
+        $this->otherGuestUser = User::factory()->create(['name' => 'Other Guest', 'email' => 'other_guest@example.com']);
+        $rbac->assignRole($this->otherGuestUser, 'guest');
 
         $this->unauthorizedUser = User::factory()->create(['name' => 'Plain User']);
         $rbac->assignRole($this->unauthorizedUser, 'unauthorized');
+
+        // Setup Properti & Kamar dengan UUID
+        $this->property = HotelProperty::create([
+            'id' => (string) Str::uuid(),
+            'property_code' => 'HTL-BALI-01',
+            'name' => 'The Grand Luxury Resort Bali',
+            'property_type' => 'RESORT',
+            'city' => 'Badung',
+            'total_rooms' => 100,
+        ]);
+
+        $this->roomType = HotelRoomType::create([
+            'id' => (string) Str::uuid(),
+            'property_id' => $this->property->id,
+            'name' => 'Deluxe Ocean View',
+            'code' => 'DLX-OCN',
+            'base_capacity' => 2,
+            'overbooking_max_percent' => 3,
+        ]);
+
+        $this->room = HotelRoom::create([
+            'id' => (string) Str::uuid(),
+            'property_id' => $this->property->id,
+            'room_type_id' => $this->roomType->id,
+            'room_number' => '101',
+            'room_type' => 'deluxe',
+            'base_rate_idr' => 1_200_000,
+            'status' => 'available',
+        ]);
     }
 
     /**
@@ -125,7 +168,72 @@ final class HotelPmsAcceptanceTest extends TestCase
      */
     public function test_02_crs_reservation_night_lock_digital_key_and_night_audit_posting(): void
     {
-        $this->markTestIncomplete('Akan hijau setelah implementasi L.3.');
+        $crsAction = app(ReserveRoomCentralizedCrsAction::class);
+        $checkInAction = app(CheckInWithDigitalKeyAndApoaAction::class);
+        $nightAuditAction = app(RunNightAuditFase91Action::class);
+
+        $idempotencyKey = 'IDEMP-RES-TEST-001';
+        $today = date('Y-m-d');
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+
+        // 1. Reservasi via CRS
+        $resResult = $crsAction->execute(
+            propertyId: (string) $this->property->id,
+            roomTypeId: (string) $this->roomType->id,
+            guestUserId: (string) $this->guestUser->id,
+            checkInDate: $today,
+            checkOutDate: $tomorrow,
+            channel: 'web',
+            idempotencyKey: $idempotencyKey
+        );
+
+        $reservation = $resResult['reservation'];
+        $this->assertSame(ReservationStateMachine::STATUS_CONFIRMED, $reservation->status);
+        $this->assertFalse($resResult['is_overbooked']);
+
+        // Idempotensi: Panggilan ulang dengan key yang sama tidak membuat reservasi baru
+        $duplicate = $crsAction->execute(
+            propertyId: (string) $this->property->id,
+            roomTypeId: (string) $this->roomType->id,
+            guestUserId: (string) $this->guestUser->id,
+            checkInDate: $today,
+            checkOutDate: $tomorrow,
+            channel: 'web',
+            idempotencyKey: $idempotencyKey
+        );
+        $this->assertSame($reservation->id, $duplicate['reservation']->id);
+
+        // 2. Check-In & Penerbitan Kunci Digital
+        $checkInRes = $checkInAction->execute(
+            reservationId: (string) $reservation->id,
+            roomId: (string) $this->room->id,
+            guestNationality: 'US',
+            passportNumber: 'PASS-US-98765432',
+            isBaliPwaPaid: true
+        );
+
+        $this->assertNotNull($checkInRes['digital_key']);
+        $this->assertSame('active', $checkInRes['digital_key']->status);
+        $this->assertNotNull($checkInRes['apoa_report']);
+        $this->assertSame('pending', $checkInRes['apoa_report']->status);
+
+        // 3. Night Audit Posting
+        $auditRes = $nightAuditAction->execute(
+            propertyId: (string) $this->property->id,
+            overrideBusinessDate: $today,
+            idempotencyKey: "NA-KEY-{$today}"
+        );
+
+        $this->assertSame(1, $auditRes['processed_rooms']);
+        $this->assertGreaterThan(0, $auditRes['total_revenue_idr']);
+
+        // Idempotensi Night Audit: dijalankan dua kali pada hari yang sama tidak menduplikasi posting
+        $auditRes2 = $nightAuditAction->execute(
+            propertyId: (string) $this->property->id,
+            overrideBusinessDate: $today,
+            idempotencyKey: "NA-KEY-{$today}"
+        );
+        $this->assertSame(1, $auditRes2['processed_rooms']);
     }
 
     /**
@@ -133,7 +241,63 @@ final class HotelPmsAcceptanceTest extends TestCase
      */
     public function test_03_business_rules_oversell_bar_rate_setback_and_service_recovery(): void
     {
-        $this->markTestIncomplete('Akan hijau setelah implementasi L.3.');
+        // 1. Contract Rate Immunity H2
+        $barRes = BestAvailableRateCalculator::calculate(
+            baseRateIdr: 1_200_000,
+            occupancyRate: 0.95,
+            leadDays: 1,
+            isEventActive: true,
+            contractRateIdr: 950_000
+        );
+        $this->assertSame(950_000, $barRes['rate_idr']);
+        $this->assertTrue($barRes['is_contract_override']);
+
+        // 2. Overbooking Limit Optimizer H1
+        $opt = OverbookingLimitOptimizer::optimize(
+            capacity: 100,
+            noShowDistributionBps: [500, 1000, 2000, 2500, 2000, 1500, 500],
+            revenuePerRoomIdr: 1_000_000,
+            walkCostIdr: 2_500_000,
+            policyMaxPercentBps: 300
+        );
+        $this->assertSame(2, $opt['optimal_k']);
+        $this->assertSame(98_200_000, $opt['expected_net_value_idr']);
+
+        // 3. HVAC Setback H4
+        $hvac = HvacSetbackController::evaluate(
+            isOccupiedRoom: true,
+            minutesSinceLastMotion: 180,
+            durationMinutes: 180,
+            acPowerWatt: 1200,
+            savingFactorBps: 3000
+        );
+        $this->assertTrue($hvac['setback_active']);
+        $this->assertSame(990, $hvac['energy_saved_wh']);
+
+        // 4. Service Recovery H5 Kompensasi ke Folio
+        $reservation = HotelReservation::create([
+            'id' => (string) Str::uuid(),
+            'reservation_number' => 'RSV-COMP-01',
+            'property_id' => $this->property->id,
+            'room_type_id' => $this->roomType->id,
+            'guest_user_id' => (string) $this->guestUser->id,
+            'check_in_date' => date('Y-m-d'),
+            'check_out_date' => date('Y-m-d', strtotime('+1 day')),
+            'daily_rate_idr' => 1_500_000,
+            'total_room_charge_idr' => 1_500_000,
+            'status' => 'checked_in',
+        ]);
+
+        $recoveryAction = app(ResolveServiceRecoveryAction::class);
+        $recRes = $recoveryAction->execute(
+            reservationId: (string) $reservation->id,
+            excessHours: 10.0, // lebih dari 6 jam -> 50% + Free Night
+            issueDescription: 'AC rusak semalaman',
+            idempotencyKey: 'REC-IDEMP-01'
+        );
+
+        $this->assertSame(750_000, $recRes['compensation_amount_idr']);
+        $this->assertTrue($recRes['grants_free_night']);
     }
 
     /**
@@ -141,7 +305,31 @@ final class HotelPmsAcceptanceTest extends TestCase
      */
     public function test_04_anti_idor_guest_stay_portal_and_digital_key(): void
     {
-        $this->markTestIncomplete('Akan hijau setelah implementasi L.3.');
+        $today = date('Y-m-d');
+        $reservation = HotelReservation::create([
+            'id' => (string) Str::uuid(),
+            'reservation_number' => 'RSV-GUEST-A',
+            'property_id' => $this->property->id,
+            'room_type_id' => $this->roomType->id,
+            'guest_user_id' => (string) $this->guestUser->id,
+            'check_in_date' => $today,
+            'check_out_date' => date('Y-m-d', strtotime('+2 days')),
+            'daily_rate_idr' => 1_200_000,
+            'total_room_charge_idr' => 2_400_000,
+            'status' => 'confirmed',
+        ]);
+
+        // Tamu sah dapat melihat reservasi miliknya di portal
+        $this->actingAs($this->guestUser)
+            ->get('/guest/stay')
+            ->assertOk()
+            ->assertSee('RSV-GUEST-A');
+
+        // Tamu lain tidak dapat melihat nomor reservasi milik tamu pertama (Anti-IDOR)
+        $this->actingAs($this->otherGuestUser)
+            ->get('/guest/stay')
+            ->assertOk()
+            ->assertDontSee('RSV-GUEST-A');
     }
 
     /**
@@ -149,6 +337,16 @@ final class HotelPmsAcceptanceTest extends TestCase
      */
     public function test_05_two_source_audit_clean_data_and_corruption_fixture(): void
     {
-        $this->markTestIncomplete('Akan hijau setelah implementasi L.3.');
+        // 1. Kondisi bersih -> exit 0
+        $exitClean = Artisan::call('hotel:audit');
+        $this->assertSame(0, $exitClean);
+
+        // 2. Terapkan sabotase data korupsi lewat HtlAuditCorruptionFixture
+        $fixture = new HtlAuditCorruptionFixture();
+        $fixture->corrupt();
+
+        // Audit harus mendeteksi korupsi data kamar tanpa reservasi sah -> exit non-zero
+        $exitCorrupt = Artisan::call('hotel:audit');
+        $this->assertNotSame(0, $exitCorrupt);
     }
 }
