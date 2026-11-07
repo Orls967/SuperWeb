@@ -330,6 +330,34 @@ final class MiningAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'expense:min:smelter_electricity:IDR',
+                'name' => 'Mining Smelter Electrical Power Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:smelter_electricity_payable:IDR',
+                'name' => 'Mining Smelter Grid & Captive Power Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'min:metals_inventory:IDR',
+                'name' => 'Mining Smelter Refined Metals Inventory Asset',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'min:scf_financing_liability:IDR',
+                'name' => 'Mining Warehouse Receipt Bank SCF Financing Loan',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 
@@ -428,5 +456,65 @@ final class MiningAccounts
     public static function slopeRemediationProvision(): string
     {
         return 'min:slope_remediation_provision:IDR';
+    }
+
+    public static function smelterElectricityExpense(): string
+    {
+        return 'expense:min:smelter_electricity:IDR';
+    }
+
+    public static function smelterElectricityPayable(): string
+    {
+        return 'min:smelter_electricity_payable:IDR';
+    }
+
+    public static function metalsInventory(): string
+    {
+        return 'min:metals_inventory:IDR';
+    }
+
+    public static function metalsTradingLoss(): string
+    {
+        return 'min:metals_trading_loss:IDR';
+    }
+
+    public static function metalsTradingGain(): string
+    {
+        return 'min:metals_trading_gain:IDR';
+    }
+
+    public static function scfFinancingLiability(): string
+    {
+        return 'min:scf_financing_liability:IDR';
+    }
+
+    public static function byproductReceivable(): string
+    {
+        return 'min:byproduct_receivable:IDR';
+    }
+
+    public static function byproductSalesRevenue(): string
+    {
+        return 'min:byproduct_sales_revenue:IDR';
+    }
+
+    public static function metalSalesRevenue(): string
+    {
+        return 'min:metal_sales_revenue:IDR';
+    }
+
+    public static function jointProductionCostClearing(): string
+    {
+        return 'min:joint_production_cost_clearing:IDR';
+    }
+
+    public static function marginDeposit(): string
+    {
+        return 'min:margin_deposit:IDR';
+    }
+
+    public static function tradeReceivable(): string
+    {
+        return 'min:trade_receivable:IDR';
     }
 }
