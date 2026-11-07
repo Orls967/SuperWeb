@@ -3826,6 +3826,22 @@
             "path": "modules/Wms/database/migrations/2026_10_05_410100_create_wms_tables.php",
             "signature": "wms_transfers.appointment_id",
             "added": 1
+        },
+        {
+            "date": "2026-11-07",
+            "decision": "DECISIONS.md#ADR-0092",
+            "rule": "A12",
+            "path": "modules/Hotel/database/migrations/2026_11_08_091300_create_htl_fase92_folio_timeshare_and_package_tables.php",
+            "signature": "htl_destination_package_bookings.guest_id",
+            "added": 1
+        },
+        {
+            "date": "2026-11-07",
+            "decision": "DECISIONS.md#ADR-0092",
+            "rule": "A12",
+            "path": "modules/Hotel/database/migrations/2026_11_08_091300_create_htl_fase92_folio_timeshare_and_package_tables.php",
+            "signature": "htl_timeshare_schedules.owner_id",
+            "added": 1
         }
     ]
 }

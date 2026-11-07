@@ -21,7 +21,7 @@ Siklus tamu dalam PMS Superweb mencakup 5 tahapan utama:
 - Resepsionis wajib memverifikasi dokumen identitas resmi tamu (KTP untuk WNI, Paspor & Visa untuk WNA).
 - Sistem memvalidasi tanggal kedatangan dengan `HotelBusinessDateService`. Tamu yang tiba sebelum waktu check-in resmi (14:00) diproses sebagai *Early Check-In* dengan aturan surcharge otomatis atau waiver yang diotorisasi Duty Manager.
 - Deposit jaminan (Security Deposit) wajib dibukukan ke dalam folio tamu dengan polaritas liability:
-  - Debit: Kas / Bank / Gateway Perantara (`htl:cash_frontdesk` / `bnk:clearing:IDR`)
+  - Debit: Kas / Bank / Gateway Perantara (`clearing:external:IDR` / `bnk:clearing:IDR`)
   - Kredit: Deposit Tamu (`htl:guest_deposit:IDR`)
 
 ### 2.2 Penerbitan Kunci Kamar Digital & Fisik
