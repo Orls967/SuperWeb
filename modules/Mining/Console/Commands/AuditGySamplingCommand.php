@@ -9,7 +9,7 @@ use Modules\Mining\Domain\Services\GySamplingTheoryEvaluator;
 
 class AuditGySamplingCommand extends Command
 {
-    protected $signature = 'mining:audit-sampling {--lot=10000 : Massa lot (kg)} {--sample=50 : Massa sampel (kg)} {--d95=50 : Ukuran butir d95 (mm)}';
+    protected $signature = 'mining:check-sampling {--lot=10000 : Massa lot (kg)} {--sample=50 : Massa sampel (kg)} {--d95=50 : Ukuran butir d95 (mm)}';
 
     protected $description = 'Audit kepatuhan statistik teori sampling Pierre Gy atas protokol pengambilan sampel bijih dan batubara';
 

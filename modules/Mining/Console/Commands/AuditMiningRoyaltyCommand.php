@@ -10,7 +10,7 @@ use Modules\Mining\Domain\Models\WeighbridgeTicket;
 
 class AuditMiningRoyaltyCommand extends Command
 {
-    protected $signature = 'mining:audit-royalty {--site= : Filter site id tertentu}';
+    protected $signature = 'mining:check-royalty {--site= : Filter site id tertentu}';
 
     protected $description = 'Audit kepatuhan integritas royalti, verifikasi neraca jembatan timbang vs stockpile, dan deteksi tampering data tonase';
 

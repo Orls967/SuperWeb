@@ -124,3 +124,4 @@ Diuji dalam `tests/Unit/Algorithms/MassBalanceReconcilerTest.php`:
 | `VEC-M5-02` | Nikel HPAL | $5.000$ | $450$ | $4.550$ | $1.35\%$ | $14.20\%$ | $0.08\%$ | $1.15$ | ACCEPTED |
 | `VEC-M5-03` | Batubara CWP | $10.000$ | $7.200$ | $2.800$ | $18.5\%\text{ Ash}$ | $7.2\%\text{ Ash}$ | $47.5\%\text{ Ash}$ | $0.88$ | ACCEPTED |
 | `VEC-M5-04` | Anomali Sensor | $1.000$ | $100$ | $700$ | $1.80\%$ | $9.00\%$ | $0.20\%$ | $48.50$ | REJECTED (Gross Error) |
+

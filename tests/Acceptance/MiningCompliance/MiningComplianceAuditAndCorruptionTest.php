@@ -77,11 +77,11 @@ final class MiningComplianceAuditAndCorruptionTest extends TestCase
             'idempotency_key' => 'min:royalty-calc:SITE-AUD-94:2026-11',
         ]);
 
-        $this->artisan('mining:audit-royalty')->assertExitCode(0);
+        $this->artisan('mining:check-royalty')->assertExitCode(0);
 
         // Tamper stockpile total_kg directly in DB
         DB::table('min_stockpiles')->where('id', $stockpile->id)->update(['total_kg' => 999999]);
 
-        $this->artisan('mining:audit-royalty')->assertExitCode(1);
+        $this->artisan('mining:check-royalty')->assertExitCode(1);
     }
 }

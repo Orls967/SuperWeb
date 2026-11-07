@@ -7,8 +7,11 @@ namespace Modules\Shared\Domain\Algorithms\Metallurgy;
 final class MassBalanceReconcilerResult
 {
     public readonly int $reconciledTailingsKg;
+
     public readonly int $feedMetalKg;
+
     public readonly int $toleranceKg;
+
     public readonly bool $isBalanced;
 
     /**

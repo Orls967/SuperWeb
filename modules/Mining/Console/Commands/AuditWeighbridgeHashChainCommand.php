@@ -10,7 +10,7 @@ use Modules\Mining\Domain\Models\WeighbridgeTicket;
 
 class AuditWeighbridgeHashChainCommand extends Command
 {
-    protected $signature = 'mining:audit-weighbridge-chain {--site= : ID Site Konsesi}';
+    protected $signature = 'mining:check-weighbridge-chain {--site= : ID Site Konsesi}';
 
     protected $description = 'Audit kriptografis rantai-hash seluruh tiket timbang jembatan timbang dari genesis hingga transaksi mutakhir';
 

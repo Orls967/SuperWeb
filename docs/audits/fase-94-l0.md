@@ -20,7 +20,7 @@ Pemeriksaan terhadap kondisi awal repositori sebelum implementasi Fase 94 menemu
 | Kontrak Lintas Modul G7-K11 & G7-K12 | 0 | `Modules\TradeFinance\Contracts\OfftakeLetterOfCreditGateway` (G7-K11) dan `Modules\Manufacturing\Contracts\ProcessOutputRecorder` (G7-K12) belum dibuat. |
 | State Machine Fase 94 | 0 | `ReconciliationRunStateMachine` (8 status), `RoyaltyReturnStateMachine` (8 status), `WorkPermitStateMachine` (8 status), dan `OfftakeShipmentStateMachine` (10 status) belum ada. |
 | Saga Offtake Lintas Modul | 0 | `OfftakeShipmentLifecycleSaga` (kontrak $\to$ nominasi $\to$ LC G7-K11 $\to$ muat $\to$ invoice provisional $\to$ assay final $\to$ invoice final $\to$ settlement, dengan 3 cabang kompensasi: LC diskrepan, larangan ekspor mendadak, dan blokir kuota DMO) belum ada. |
-| Rute, UI & Command Fase 94 | Parsial | Rute `/mining/grade`, `/mining/royalty`, `/mining/reclamation`, `/mining/offtake`, `/offtaker/mining` serta command `mining:reconcile {month}`, `mining:royalty-calc {month}`, `mining:permit-expiry-scan`, `mining:reclamation-unwind {month}`, `mining:env-threshold-scan`, dan `mining:audit-royalty` belum tersedia. |
+| Rute, UI & Command Fase 94 | Parsial | Rute `/mining/grade`, `/mining/royalty`, `/mining/reclamation`, `/mining/offtake`, `/offtaker/mining` serta command `mining:reconcile {month}`, `mining:royalty-calc {month}`, `mining:permit-expiry-scan`, `mining:reclamation-unwind {month}`, `mining:env-threshold-scan`, dan `mining:check-royalty` belum tersedia. |
 
 ---
 

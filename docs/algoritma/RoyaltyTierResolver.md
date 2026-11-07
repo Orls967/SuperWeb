@@ -142,3 +142,4 @@ Setelah resolusi tarif disahkan oleh `CalculateVerifiedRoyaltyAction`, sistem me
 Saat penyetoran kas negara dilakukan melalui modul Kasir / Kas Bank:
 - **Debit**: `min:royalty_payable:IDR`.
 - **Kredit**: `cash:bank_idr:IDR`.
+

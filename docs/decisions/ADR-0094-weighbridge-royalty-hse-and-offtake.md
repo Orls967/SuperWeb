@@ -27,7 +27,7 @@ Fase 94 memperluas modul `Mining` untuk mencakup hilirisasi operasional dari jem
 
 ## 3. Konsekuensi
 
-- Perintah audit `php artisan min:audit` dan `php artisan mining:audit-royalty` memverifikasi kesetimbangan tiga titik (tiket timbang $\leftrightarrow$ pergerakan stockpile $\leftrightarrow$ pengapalan offtake), keutuhan rantai hash, kesesuaian royalti terhadap versi tarif pada tanggal produksi, serta kesamaan saldo piutang terhadap buku besar.
+- Perintah verifikasi `php artisan min:audit` dan `php artisan mining:check-royalty` memverifikasi kesetimbangan tiga titik (tiket timbang $\leftrightarrow$ pergerakan stockpile $\leftrightarrow$ pengapalan offtake), keutuhan rantai hash, kesesuaian royalti terhadap versi tarif pada tanggal produksi, serta kesamaan saldo piutang terhadap buku besar.
 
 
 ---

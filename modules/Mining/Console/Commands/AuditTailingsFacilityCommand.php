@@ -10,7 +10,7 @@ use Modules\Mining\Domain\Models\MiningSite;
 
 class AuditTailingsFacilityCommand extends Command
 {
-    protected $signature = 'mining:audit-tailings {--dam=TSF-MAIN-01 : Kode Bendungan Tailing}';
+    protected $signature = 'mining:check-tailings {--dam=TSF-MAIN-01 : Kode Bendungan Tailing}';
 
     protected $description = 'Audit kepatuhan integritas struktural dan geoteknik bendungan tailing tambang (TSF) berstandar GISTM';
 

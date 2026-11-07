@@ -15,7 +15,7 @@ use InvalidArgumentException;
 final class MassBalanceReconciler
 {
     public function __construct(
-        private readonly MassBalanceReconcilerCertificateVerifier $verifier = new MassBalanceReconcilerCertificateVerifier()
+        private readonly MassBalanceReconcilerCertificateVerifier $verifier = new MassBalanceReconcilerCertificateVerifier
     ) {}
 
     /**

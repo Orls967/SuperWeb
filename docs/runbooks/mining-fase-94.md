@@ -98,3 +98,4 @@ Runbook ini memuat prosedur mitigasi teknis dan tanggap darurat operasional untu
    - Surveyor independen yang ditunjuk pembeli dan penjual (misalnya Sucofindo atau Carsurin) melakukan pembacaan sarat enam titik secara bersama (*joint re-reading*: Fwd Port/Stbd, Mid Port/Stbd, Aft Port/Stbd).
 4. **Penyelesaian Administratif**:
    - Bila perbedaan tetap terjadi akibat faktor kelembapan curah hujan saat pemuatan, jalankan aksi `ReconcileMoistureLossAction` untuk menghitung ekuivalen berat kering (*Dry Metric Ton*).
+
