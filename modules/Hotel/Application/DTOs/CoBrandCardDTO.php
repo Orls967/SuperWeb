@@ -21,4 +21,3 @@ final class CoBrandCardDTO
         public string $processedAt
     ) {}
 }
-

@@ -18,4 +18,3 @@ final class PointsAuctionBidDTO
         public string $settledAt
     ) {}
 }
-

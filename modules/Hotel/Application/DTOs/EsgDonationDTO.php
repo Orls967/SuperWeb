@@ -18,4 +18,3 @@ final class EsgDonationDTO
         public string $issuedAt
     ) {}
 }
-

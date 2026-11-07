@@ -20,4 +20,3 @@ final class VoucherRedemptionDTO
         public string $status
     ) {}
 }
-
