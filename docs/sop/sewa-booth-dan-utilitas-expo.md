@@ -26,3 +26,4 @@ Menstandarisasi proses pemesanan, verifikasi beban daya listrik, alokasi jaringa
    - Jam-jam puncak kepadatan (*peak traffic hours*).
    - Estimasi rata-rata waktu tinggal (*dwell time*) pengunjung di sekitar stan.
    - Laporan ini diunggah ke portal exhibitor sebagai bahan evaluasi komersial partisipasi acara.
+

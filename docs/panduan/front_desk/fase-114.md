@@ -22,3 +22,4 @@ Tim Front Desk dan Reservasi bertanggung jawab atas operasional penyerahan kunci
 ### 2.3 Hak Istimewa Pernikahan (Bridal Suite Upgrade & Family Block)
 1. Untuk pemesanan pernikahan kategori Platinum/Diamond, sistem menandai reservasi pengantin dengan tag `BRIDAL_SUITE_COMPLIMENTARY`.
 2. Pastikan tim Housekeeping telah menyiapkan dekorasi ranjang bunga mawar, kue selamat datang, dan fasilitas champagne/wine pada kamar pengantin minimal 4 jam sebelum pasangan tiba di hotel.
+

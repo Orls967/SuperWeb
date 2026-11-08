@@ -10,7 +10,7 @@ use Modules\Hotel\Domain\Models\MiceContract;
 
 final class HotelAuditMiceContractsCommand extends Command
 {
-    protected $signature = 'hotel:audit-mice-contracts {--verify-invariants : Verifikasi invarian matematika}';
+    protected $signature = 'hotel:inspect-mice-contracts {--verify-invariants : Verifikasi invarian matematika}';
 
     protected $description = 'Audit rekonsiliasi finansial dan invarian kontrak MICE/Wedding dengan ledger pembukuan';
 

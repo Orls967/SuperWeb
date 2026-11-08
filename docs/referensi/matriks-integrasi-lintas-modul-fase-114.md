@@ -62,3 +62,4 @@ interface RoomBlockReserver
 }
 ```
 Pada implementasi Fase 114, pemanggilan `reserveBlock` tidak hanya mengunci reservasi kamar individual, tetapi juga memperbarui statistik `confirmed_pickup_rooms` pada entitas `HtlRoomBlockAllotment` yang relevan, sehingga perhitungan sisa pelepasan bertingkat H-30/H-14/H-7 selalu mencerminkan data aktual secara akurat.
+

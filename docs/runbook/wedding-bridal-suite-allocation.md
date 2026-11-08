@@ -28,3 +28,4 @@ Runbook ini memandu Duty Manager, Executive Housekeeper, dan Wedding Specialist 
 ## 4. Penanganan Blok Kamar Keluarga Inti
 1. Seluruh kamar keluarga inti (maksimal 10 kamar) ditempatkan pada lantai yang sama dengan Bridal Suite untuk kemudahan mobilisasi.
 2. Jadwal sarapan pagi diantar langsung ke kamar (*in-room family breakfast*) jika diminta oleh keluarga pengantin tanpa biaya tambahan (*complimentary tray charge*).
+

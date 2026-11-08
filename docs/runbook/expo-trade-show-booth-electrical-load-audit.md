@@ -46,3 +46,4 @@ Runbook ini memandu Chief Engineer, Convention Hall Coordinator, dan IT Infrastr
 | Memasang sambungan colokan tanpa izin (*unauthorized multi-tap jumper*) | Kabel panas berlebih, risiko percikan api (*fire hazard*) | Pemutusan seketika daya stan dan denda IDR 1.500.000 per titik colokan ilegal. |
 | Membawa mesin pendingin/pemanas di atas 2.000W pada paket 450 VA | Trip pemutus arus lokal, memadamkan stan tetangga | Pemutusan arus hingga peserta membeli paket daya 3 kVA resmi. |
 | Memancarkan router Wi-Fi ilegal yang mengganggu frekuensi sistem POS hotel | Gangguan mesin kasir banquet & tiket seminar | Penyitaan sementara perangkat router hingga pameran selesai. |
+

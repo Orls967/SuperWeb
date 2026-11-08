@@ -25,3 +25,4 @@ General Manager (GM) dan Director of Sales & Marketing (DOSM) bertindak sebagai 
 2. Pastikan seluruh konsumsi tambahan (ekstra porsi coffee break, jamuan koktail larut malam, perpanjangan jam listrik booth pameran) telah tercatat pada master folio.
 3. Cocokkan pembayaran termin milestone yang telah diterima di bank dengan saldo akhir tagihan.
 4. Setujui penutupan master folio dan pemindahan sisa piutang ke akun piutang korporat (*Corporate City Ledger AR*).
+

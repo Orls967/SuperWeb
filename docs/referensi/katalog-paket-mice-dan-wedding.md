@@ -105,3 +105,4 @@
 - **Corkage Makanan Luar (Outside Food Stall):** IDR 2.500.000 per pondokan (maksimal 200 porsi per pondokan, wajib uji sampel laboratorium makanan hotel).
 - **Perpanjangan Sewa Ballroom (Overtime Hall Rental):** IDR 15.000.000 per jam setelah jam ke-5.
 - **Listrik Tambahan Acara Musik / Pameran:** IDR 1.200.000 per kVA per hari.
+

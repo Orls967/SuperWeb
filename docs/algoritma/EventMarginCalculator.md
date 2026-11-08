@@ -60,3 +60,4 @@ Algoritma `EventMarginCalculator` mengevaluasi kelayakan finansial proposal even
   "certificate_signature": "d9c3..."
 }
 ```
+

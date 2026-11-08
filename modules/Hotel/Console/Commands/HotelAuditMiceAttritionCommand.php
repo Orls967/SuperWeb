@@ -10,7 +10,7 @@ use Modules\Hotel\Domain\Services\HotelMiceAttritionCalculatorService;
 
 final class HotelAuditMiceAttritionCommand extends Command
 {
-    protected $signature = 'hotel:audit-mice-attrition {--contract= : Optional specific contract number}';
+    protected $signature = 'hotel:evaluate-mice-attrition {--contract= : Optional specific contract number}';
 
     protected $description = 'Audit and calculate room night slippage attrition penalties for completed MICE contracts';
 

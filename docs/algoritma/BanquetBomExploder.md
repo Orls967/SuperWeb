@@ -54,3 +54,4 @@ Algoritma `BanquetBomExploder` mentransformasikan daftar menu perjamuan (buffet,
   "certificate_signature": "e5f2..."
 }
 ```
+

@@ -53,3 +53,4 @@ Entitas utama yang ditambahkan pada Fase 114:
    - Saat status produksi BEO dimulai (`PRODUCTION_COMMENCED`), sistem mencatat pemakaian bahan baku banquet dan memotong saldo inventaris dapur pada modul Resto.
 3. **General Ledger (Financial Accounting):**
    - Setiap pembayaran milestone wedding, sewa booth expo, dan penagihan invoice banquet dicatat menggunakan pembukuan berpasangan (*double-entry journal entry*) ke akun kas/bank, pendapatan diterima dimuka (*unearned revenue*), dan piutang korporat (*City Ledger AR*).
+

@@ -23,3 +23,4 @@
         <span class="px-1.5 py-0.5 text-[10px] bg-slate-700 text-slate-300 rounded font-semibold">{{ $status }}</span>
     </div>
 </div>
+

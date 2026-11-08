@@ -28,3 +28,4 @@ Memastikan utilisasi maksimal inventaris kamar hotel dan meminimalkan kerugian k
    - Pembayaran uang muka tambahan sebesar 10% dari total nilai kamar yang ingin diperpanjang masa penahanannya.
    - Persetujuan tertulis dari Director of Revenue Management.
 2. Petugas reservasi mencatat perpanjangan cutoff di sistem dengan memilih opsi **Extend Cutoff Date with Guarantee Deposit**.
+

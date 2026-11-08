@@ -60,3 +60,4 @@ Untuk bar minuman terbuka (*open bar*):
 3. Rumus toleransi tumpah/busa bir:
    $$Rasio_{\text{tumpah}} = \frac{Volume_{\text{aktual}} - Volume_{\text{teoritis}}}{Volume_{\text{teoritis}}} \times 100\%$$
 4. Bila rasio tumpah $> 7\%$, Cost Controller melakukan wawancara verifikasi dengan Bartender in-charge.
+

@@ -54,3 +54,4 @@ Jika disetujui diskon/kredit atas sengketa AC ballroom yang kurang dingin:
 - **Debit:** Akun Penyesuaian Pendapatan MICE / Diskon Komersial (Akun `4-4190`)
 - **Kredit:** Piutang Master Folio MICE (Akun `1-1200`)
 - Keterangan: *Pemberian goodwill adjustment 5% sewa ballroom sesuai kesepakatan GM & Panitia Konferensi.*
+

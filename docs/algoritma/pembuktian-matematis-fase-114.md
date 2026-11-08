@@ -109,3 +109,4 @@ Jadwal termin dibentuk atas 4 tonggak (milestone) pembayaran berurutan:
 **Teorema 3 (Konservasi Nilai Total Tanpa Selisih Pembulatan):**
 $$\sum_{k=1}^4 M_k = M_1 + M_2 + M_3 + (V_{\text{contract}} - (M_1 + M_2 + M_3)) = V_{\text{contract}}$$
 Sisa pembulatan rupiah (*rounding residual cents*) diserap sempurna oleh termin terakhir ($M_4$), sehingga tidak pernah ada selisih nilai sepeser pun antara jumlah jadwal termin dan nilai kontrak.
+

@@ -57,3 +57,4 @@ Sistem melarang penyimpanan pemesanan stan jika terjadi pelanggaran tumpang tind
    - Total estimasi pengunjung unik per stan dihitung berdasarkan kedekatan koordinat $(X_{\text{booth}}, Y_{\text{booth}})$ terhadap kepadatan arus pejalan kaki:
      $$\text{Estimated Visitors} = \sum_{\text{interval}} (\text{Aisle Footfall}) \times \gamma_{\text{attraction\_index}}$$
    - Indeks daya tarik stan ($\gamma$) berkisar antara $0.15$ untuk stan standar hingga $0.45$ untuk stan pulau terbuka dengan promosi interaktif.
+

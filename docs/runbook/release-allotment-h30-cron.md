@@ -59,7 +59,7 @@ php artisan hotel:release-room-blocks --force
 | Perintah berhenti dengan galat `PessimisticLockException` | Transaksi paralel oleh staf reservasi saat menginput rooming list | Jalankan ulang dengan opsi retry `--retry-attempts=3` atau jalankan di luar jam operasional reservasi. |
 | Jumlah kamar yang dilepas 0 padahal $\Delta = 14$ hari | Organizer telah melakukan pickup 100% dari kuota kontrak | Verifikasi kolom `confirmed_pickup_rooms` pada tabel `htl_room_blocks`. Jika sama dengan alokasi, status normal. |
 | Organizer komplain kamar berkurang tanpa pemberitahuan | Email peringatan pra-cutoff H-35 gagal terkirim (bounce) | Periksa antrean `mail_logs` dan berikan tautan audit trail sertifikat pelepasan digital. |
-| Invariant breach: $K_{\text{new}} < P_{\text{pickup}}$ | Kesalahan perhitungan manual di luar algoritma | Segera jalankan perintah verifikasi integritas: `php artisan hotel:audit-mice-contracts --verify-invariants`. |
+| Invariant breach: $K_{\text{new}} < P_{\text{pickup}}$ | Kesalahan perhitungan manual di luar algoritma | Segera jalankan perintah verifikasi integritas: `php artisan hotel:inspect-mice-contracts --verify-invariants`. |
 
 ## 5. Prosedur Eskalasi & Rollback
 Jika terjadi pelepasan kamar yang salah akibat kesalahan tanggal acara yang diinput oleh sales:
@@ -67,3 +67,4 @@ Jika terjadi pelepasan kamar yang salah akibat kesalahan tanggal acara yang diin
 2. Buka form **Room Block Emergency Allocation** di PMS.
 3. Masukkan jumlah kamar pengganti yang harus ditarik kembali dari inventori publik ke kuota blok grup.
 4. Catat nomor tiket insiden dan sertifikat kompensasi di log audit.
+

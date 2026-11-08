@@ -18,3 +18,4 @@
     <td class="p-3 text-right font-bold text-white font-mono">{{ number_format($grossQty, 2) }} {{ $unit }}</td>
     <td class="p-3 text-right text-emerald-400 font-mono font-bold">IDR {{ number_format($lineCost, 0, ',', '.') }}</td>
 </tr>
+

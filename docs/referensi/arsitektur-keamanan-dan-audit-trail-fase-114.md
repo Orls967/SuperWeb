@@ -60,3 +60,4 @@ Pemisahan tugas (*Separation of Duties / SoD*) ditegakkan secara ketat pada modu
    - `previous_payload_snapshot` dan `new_payload_snapshot`.
    - `certificate_signature_hash`.
 2. Jika ada pihak yang mencoba mengubah kuota kamar atau margin harga langsung di database secara manual (*database manipulation tampering*), verifier algoritma akan mendeteksi ketidaksesuaian hash (*checksum mismatch*) dan membunyikan alarm peringatan keamanan pada siklus audit sistem harian.
+

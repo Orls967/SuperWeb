@@ -20,3 +20,4 @@
         <span>GM {{ number_format($marginPercent, 1) }}% &lt; {{ number_format($minThreshold, 1) }}% (PELANGGARAN)</span>
     @endif
 </div>
+

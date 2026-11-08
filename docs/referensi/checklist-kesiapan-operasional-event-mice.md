@@ -51,3 +51,4 @@
 - [ ] **Front Office Cashier:** Pemeriksaan master folio event dan pencocokan dengan seluruh sub-folio delegasi.
 - [ ] **Finance & AR:** Penerbitan invoice final dan penutupan folio MICE melalui `AuditMiceEventReconciliationAction`.
 - [ ] **Sales Manager:** Pengiriman survei kepuasan pelanggan (*guest satisfaction questionnaire*) kepada ketua panitia.
+

@@ -32,3 +32,4 @@
         <span>Kamar Awal Kontrak: <strong class="text-white font-mono">{{ $initialRooms }}</strong></span>
     </div>
 </div>
+

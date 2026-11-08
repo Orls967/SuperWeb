@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 use Modules\Hotel\Domain\Algorithms\BanquetBomExploder;
 use Modules\Hotel\Domain\Algorithms\BanquetBomExplosionCertificateVerifier;
-use Modules\Hotel\Domain\Algorithms\BlockAllotmentReleaser;
 use Modules\Hotel\Domain\Algorithms\BlockAllotmentReleaseCertificateVerifier;
+use Modules\Hotel\Domain\Algorithms\BlockAllotmentReleaser;
 use Modules\Hotel\Domain\Algorithms\EventMarginCalculator;
 use Modules\Hotel\Domain\Algorithms\EventMarginCertificateVerifier;
 use Modules\Hotel\Domain\Algorithms\MilestoneScheduleBuilder;
 use Modules\Hotel\Domain\Algorithms\MilestoneScheduleCertificateVerifier;
 
 test('H14 BlockAllotmentReleaser: protects quota when days > 30', function () {
-    $releaser = new BlockAllotmentReleaser();
+    $releaser = new BlockAllotmentReleaser;
     $cert = $releaser->release(
         propertyId: 'HTL-BALI-01',
         blockId: 'BLK-MICE-001',
@@ -30,7 +30,7 @@ test('H14 BlockAllotmentReleaser: protects quota when days > 30', function () {
 });
 
 test('H14 BlockAllotmentReleaser: releases 25% of unpicked at H-30 cutoff', function () {
-    $releaser = new BlockAllotmentReleaser();
+    $releaser = new BlockAllotmentReleaser;
     $cert = $releaser->release(
         propertyId: 'HTL-BALI-01',
         blockId: 'BLK-MICE-001',
@@ -50,7 +50,7 @@ test('H14 BlockAllotmentReleaser: releases 25% of unpicked at H-30 cutoff', func
 });
 
 test('H14 BlockAllotmentReleaser: releases 50% at H-14 and 100% unpicked at H-7', function () {
-    $releaser = new BlockAllotmentReleaser();
+    $releaser = new BlockAllotmentReleaser;
 
     // H-14 cutoff
     $certH14 = $releaser->release(
@@ -85,7 +85,7 @@ test('H14 BlockAllotmentReleaser: releases 50% at H-14 and 100% unpicked at H-7'
 });
 
 test('H15 BanquetBomExploder: calculates raw food, beverage shrinkage, and labor hours', function () {
-    $exploder = new BanquetBomExploder();
+    $exploder = new BanquetBomExploder;
     $recipe = [
         [
             'item_id' => 'ING-BEEF',
@@ -128,7 +128,7 @@ test('H15 BanquetBomExploder: calculates raw food, beverage shrinkage, and labor
 });
 
 test('H16 EventMarginCalculator: approves profitable proposals and enforces 40% margin guardrail', function () {
-    $calculator = new EventMarginCalculator();
+    $calculator = new EventMarginCalculator;
 
     // Skenario 1: Margin 54.67% >= 40% -> Approved
     $revApproved = [
@@ -164,7 +164,7 @@ test('H16 EventMarginCalculator: approves profitable proposals and enforces 40% 
 });
 
 test('H17 MilestoneScheduleBuilder: creates staged payment milestones with perfect amount conservation', function () {
-    $builder = new MilestoneScheduleBuilder();
+    $builder = new MilestoneScheduleBuilder;
     $cert = $builder->build(
         contractId: 'WED-2026-071',
         totalContractAmountIdr: 250000000,

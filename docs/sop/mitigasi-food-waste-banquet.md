@@ -29,3 +29,4 @@ Berlaku untuk seluruh operasional F&B Banquet, Banquet Kitchen, Cold Kitchen, Pa
 ## 5. Audit & Pencatatan Sistem
 1. Banquet Captain bersama Executive Sous Chef wajib menginput data kilogram sampah makanan dan varians porsi ke dalam modul sistem BEO dalam waktu 12 jam setelah acara berakhir.
 2. Bila rasio sampah makanan terhadap total makanan diproduksi melebihi 8%, sistem secara otomatis menandai BEO tersebut untuk evaluasi recipe engineering pada rapat mingguan F&B.
+

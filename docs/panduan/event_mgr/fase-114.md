@@ -25,3 +25,4 @@ Event Sales Manager bertugas mengelola proses akuisisi klien korporat, asosiasi 
 2. Klik **Generate SPK / Kontrak MICE**.
 3. Sistem secara otomatis membuat jadwal termin pembayaran (*Milestone Schedule*) melalui mesin `MilestoneScheduleBuilder`.
 4. Berikan tautan pembayaran termin DP 20% kepada bendahara/keuangan klien.
+

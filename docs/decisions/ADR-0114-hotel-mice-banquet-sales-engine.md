@@ -50,3 +50,4 @@ Menerapkan algoritma bersertifikat `MilestoneScheduleBuilder`:
 ### Mitigasi Risiko:
 - **Kekecewaan Klien atas Pelepasan Kamar:** Sistem mengirimkan notifikasi peringatan otomatis pada H-35, H-16, dan H-9 kepada Event Organizer sebelum eksekusi pemotongan kuota dilakukan.
 - **Kenaikan Biaya Tak Terduga Saat Hari H:** Folio BEO mendukung penambahan lini biaya tak terduga (*incidentals & excess pax charge*) yang dapat diselesaikan pada saat penutupan master folio pasca-acara.
+

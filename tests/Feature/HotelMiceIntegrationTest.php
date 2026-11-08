@@ -152,8 +152,8 @@ final class HotelMiceIntegrationTest extends TestCase
 
         // Run Artisan commands
         $this->artisan('hotel:release-room-blocks', ['--dry-run' => true])->assertSuccessful();
-        $this->artisan('hotel:audit-mice-contracts')->assertSuccessful();
-        $this->artisan('hotel:audit-mice-attrition')->assertSuccessful();
+        $this->artisan('hotel:inspect-mice-contracts')->assertSuccessful();
+        $this->artisan('hotel:evaluate-mice-attrition')->assertSuccessful();
         $this->artisan('hotel:sync-banquet-bom')->assertSuccessful();
         $this->artisan('hotel:mice-milestone-reminder')->assertSuccessful();
     }

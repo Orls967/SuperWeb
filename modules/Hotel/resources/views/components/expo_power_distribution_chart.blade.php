@@ -29,3 +29,4 @@
         <div class="text-right">Frekuensi Grid: <strong class="text-slate-200 font-mono">50.0 Hz Stabil</strong></div>
     </div>
 </div>
+

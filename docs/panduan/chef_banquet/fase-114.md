@@ -21,3 +21,4 @@ Executive Chef dan tim Banquet Kitchen bertanggung jawab atas perencanaan bahan 
 1. Untuk acara dengan open bar atau jamuan koktail, supervisor bar memantau lembar varians penuangan (*pour variance tracker*).
 2. Botol minuman anggur, sampanye, dan spiritus dicatat volume awal dan sisa botol setelah acara.
 3. Tingkat varians yang melebihi toleransi standar (> 5% tumpah/spill) wajib dilaporkan dan ditandatangani oleh Bar Captain.
+

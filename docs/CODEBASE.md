@@ -686,10 +686,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, integritas subjek, dan rekonsiliasi dua-sumber rawat jalan |
 | `hotel:apoa-submit` | `manual` | Mengirimkan antrean pelaporan tamu orang asing (APOA) ke gateway imigrasi |
 | `hotel:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
-| `hotel:audit-mice-attrition` | `manual` | Audit and calculate room night slippage attrition penalties for completed MICE contracts |
-| `hotel:audit-mice-contracts` | `manual` | Audit rekonsiliasi finansial dan invarian kontrak MICE/Wedding dengan ledger pembukuan |
 | `hotel:close-day` | `manual` | Menjalankan proses tutup hari (close-day) untuk properti hotel |
+| `hotel:evaluate-mice-attrition` | `manual` | Audit and calculate room night slippage attrition penalties for completed MICE contracts |
 | `hotel:housekeeping-plan` | `manual` | Menyusun rute kerja harian petugas housekeeping H3 |
+| `hotel:inspect-mice-contracts` | `manual` | Audit rekonsiliasi finansial dan invarian kontrak MICE/Wedding dengan ledger pembukuan |
 | `hotel:mice-milestone-reminder` | `manual` | Scan upcoming wedding and MICE milestone installments and dispatch payment reminders |
 | `hotel:overbooking-plan` | `manual` | Menjalankan optimasi overbooking H1 harian per properti |
 | `hotel:rate-publish` | `manual` | Menerbitkan tarif BAR harian hasil perhitungan H2 secara idempoten |

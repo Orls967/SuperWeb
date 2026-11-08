@@ -124,3 +124,4 @@
   - Termin 3 (30%): $\lfloor 0.30 \times 250.000.000 \rfloor = \text{IDR } 75.000.000$. Jatuh tempo: 2027-05-16 (H-30).
   - Termin 4 (Pelunasan Sisa): $250.000.000 - (50.000.000 + 75.000.000 + 75.000.000) = \text{IDR } 50.000.000$. Jatuh tempo: 2027-06-08 (H-7).
   - Total Akumulasi: Tepat IDR 250.000.000 (Selisih 0 rupiah).
+

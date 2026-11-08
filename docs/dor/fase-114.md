@@ -57,3 +57,4 @@ Fase 114 melengkapi ekosistem Perhotelan (G7-P6) dengan mesin komprehensif untuk
 - **Foreign Key Standards (A12):** Seluruh kolom relasi ke luar modul menggunakan format `*_reference` (misal: `organizer_user_reference`, `vendor_reference`).
 - **Identifier MySQL (64 Chars):** Semua nama indeks database kustom tidak boleh melebihi 64 karakter.
 - **Linting & Code Quality:** 100% kepatuhan terhadap PHP Pint Laravel dan PHPStan.
+

@@ -37,3 +37,4 @@
 - **Shell Scheme Booth:** Stan pameran standar berukuran modular (misal 3m x 3m) yang terdiri dari dinding partisi aluminium partisi putih, papan nama fasia, karpet, lampu sorot, dan colokan listrik dasar.
 - **Island Booth:** Stan pameran tipe terbuka di empat sisinya (*four open sides*) yang disewa hanya berupa lantai kosong (*space only*) dan dirancang secara kustom oleh kontraktor pameran independen.
 - **Footfall Sensor:** Sensor optik inframerah atau kamera pintar yang dipasang di pintu masuk hall untuk mengukur volume arus lalu lintas pengunjung secara akurat dan real-time.
+

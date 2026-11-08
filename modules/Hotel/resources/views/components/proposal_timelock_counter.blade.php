@@ -30,3 +30,4 @@
         {{ $isExpired ? 'Harga penawaran telah kadaluarsa. Memerlukan perhitungan ulang margin kotor.' : 'Harga bahan baku dan sewa venue dijamin terkunci hingga '.$expiresAt.'.' }}
     </p>
 </div>
+

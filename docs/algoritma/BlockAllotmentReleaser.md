@@ -45,3 +45,4 @@ Algoritma `BlockAllotmentReleaser` bertugas mengelola siklus hidup alokasi kamar
 
 ## 5. Pertimbangan Keamanan & Konkurensi
 - Eksekusi pelepasan kamar blok dijalankan di dalam transaksi database dengan isolasi serializable atau pessimistic row locking pada baris `htl_room_blocks` untuk menghindari kondisi balapan (*race condition*) saat tamu sedang melakukan self-registration.
+

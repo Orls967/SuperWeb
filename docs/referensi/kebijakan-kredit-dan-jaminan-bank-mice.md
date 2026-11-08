@@ -49,3 +49,4 @@ Setiap invoice MICE yang diterbitkan dipantau melalui jadwal umur piutang (*Acco
 - **Hari 31 s/d 60 (Overdue Tier 1):** Surat Peringatan Pertama dikirimkan; pengenaan bunga denda keterlambatan sebesar 1,5% per bulan atas sisa saldo yang belum terbayar.
 - **Hari 61 s/d 90 (Overdue Tier 2):** Surat Peringatan Kedua ditandatangani Financial Controller; pemblokiran seluruh reservasi baru atas nama perusahaan tersebut di seluruh jaringan hotel.
 - **Hari > 90 (Default):** Pengajuan klaim pencairan Garansi Bank ke bank penerbit atau penyerahan berkas kepada konsultan hukum penagih piutang hotel.
+
