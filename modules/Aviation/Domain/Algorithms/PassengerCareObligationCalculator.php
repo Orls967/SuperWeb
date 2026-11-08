@@ -20,7 +20,7 @@ class PassengerCareObligationCalculator
 
     public function __construct(?SharedCalculator $engine = null)
     {
-        $this->engine = $engine ?? new SharedCalculator();
+        $this->engine = $engine ?? new SharedCalculator;
     }
 
     /**

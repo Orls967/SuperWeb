@@ -49,66 +49,125 @@ class AviationRouteProfitabilityService
         $crewCostIdr = (int) round(12000000 + ($distanceKm * 8000));
         $maintenanceCostIdr = (int) round(18000000 + ($distanceKm * 12000));
 
-        $totalCostIdr = $fuelCostIdr + $airportCostIdr + $crewCostIdr + $maintenanceCostIdr;
-        $netProfitIdr = $totalRevenueIdr - $totalCostIdr;
+        $totalOperatingCostIdr = $fuelCostIdr + $airportCostIdr + $crewCostIdr + $maintenanceCostIdr;
+        $netProfitIdr = $totalRevenueIdr - $totalOperatingCostIdr;
 
         $rask = $ask > 0 ? ($totalRevenueIdr / $ask) : 0.0;
-        $cask = $ask > 0 ? ($totalCostIdr / $ask) : 0.0;
-        $yieldPerRpk = $rpk > 0 ? ($totalRevenueIdr / $rpk) : 0.0;
+        $cask = $ask > 0 ? ($totalOperatingCostIdr / $ask) : 0.0;
 
-        $breakEvenLoadFactor = $yieldPerRpk > 0 ? min(100.0, ($cask / $yieldPerRpk) * 100.0) : 100.0;
-        $profitMargin = $totalRevenueIdr > 0 ? (($netProfitIdr / (float) $totalRevenueIdr) * 100.0) : 0.0;
+        $yieldPerRpk = $rpk > 0 ? ($totalRevenueIdr / $rpk) : 0.0;
+        $breakEvenLf = ($yieldPerRpk > 0 && $ask > 0) ? min(100.0, ($totalOperatingCostIdr / ($yieldPerRpk * $ask)) * 100.0) : 100.0;
+
+        $profitMargin = $totalRevenueIdr > 0 ? ($netProfitIdr / (float) $totalRevenueIdr) * 100.0 : 0.0;
 
         return [
             'flight_id' => $flight->id,
-            'ask_seat_km' => $ask,
-            'rpk_passenger_km' => $rpk,
+            'ask_seat_km' => round($ask, 2),
+            'rpk_passenger_km' => round($rpk, 2),
             'load_factor_percentage' => round($loadFactor, 2),
             'total_revenue_idr' => $totalRevenueIdr,
-            'total_operating_cost_idr' => $totalCostIdr,
+            'total_operating_cost_idr' => $totalOperatingCostIdr,
             'net_profit_idr' => $netProfitIdr,
             'rask_idr_per_seat_km' => round($rask, 4),
             'cask_idr_per_seat_km' => round($cask, 4),
-            'break_even_load_factor_percentage' => round($breakEvenLoadFactor, 2),
+            'break_even_load_factor_percentage' => round($breakEvenLf, 2),
             'profit_margin_percentage' => round($profitMargin, 2),
         ];
     }
 
     /**
-     * Analisis agregat seluruh penerbangan pada pasangan rute tertentu.
+     * Analisis efisiensi hub jaringan penerbangan (Hub Connectivity Index).
+     *
+     * @param  array<int, array{origin: string, destination: string, connecting_pax: int, transfer_time_minutes: int}>  $connections
+     * @return array{
+     *     total_connecting_passengers: int,
+     *     average_transfer_time_minutes: float,
+     *     missed_connection_risk_percentage: float,
+     *     hub_connectivity_rating: string
+     * }
      */
-    public function analyzeRouteAggregate(int $airlineId, int $departureAirportId, int $arrivalAirportId): array
+    public function analyzeHubConnectivity(array $connections): array
     {
-        $flights = AviationFlight::where('airline_id', $airlineId)
-            ->where('departure_airport_id', $departureAirportId)
-            ->where('arrival_airport_id', $arrivalAirportId)
-            ->whereIn('status', ['arrived', 'departed', 'scheduled'])
-            ->get();
+        $totalPax = 0;
+        $totalTime = 0;
+        $tightConnections = 0;
 
-        if ($flights->isEmpty()) {
+        foreach ($connections as $c) {
+            $pax = (int) $c['connecting_pax'];
+            $time = (int) $c['transfer_time_minutes'];
+            $totalPax += $pax;
+            $totalTime += ($time * $pax);
+
+            // Minimum Connecting Time (MCT) domestik ke internasional di bawah 60 menit dianggap kritis
+            if ($time < 60) {
+                $tightConnections += $pax;
+            }
+        }
+
+        $avgTime = $totalPax > 0 ? ($totalTime / (float) $totalPax) : 0.0;
+        $missedRisk = $totalPax > 0 ? ($tightConnections / (float) $totalPax) * 100.0 : 0.0;
+
+        $rating = 'EXCELLENT';
+        if ($missedRisk > 25.0) {
+            $rating = 'HIGH_MCT_RISK';
+        } elseif ($missedRisk > 10.0) {
+            $rating = 'MODERATE';
+        }
+
+        return [
+            'total_connecting_passengers' => $totalPax,
+            'average_transfer_time_minutes' => round($avgTime, 1),
+            'missed_connection_risk_percentage' => round($missedRisk, 2),
+            'hub_connectivity_rating' => $rating,
+        ];
+    }
+
+    /**
+     * Evaluasi pemilihan tipe pesawat untuk rute spesifik (Fleet Gauge Optimization).
+     *
+     * @return array{
+     *     recommended_aircraft_type: string,
+     *     estimated_spill_passengers: int,
+     *     estimated_spoilage_seats: int,
+     *     expected_trip_profit_idr: int
+     * }
+     */
+    public function evaluateFleetGaugeAssignment(
+        int $expectedDemand,
+        int $distanceKm,
+        int $narrowbodyCapacity = 180,
+        int $widebodyCapacity = 300
+    ): array {
+        $fareIdr = max(500000, $distanceKm * 1200);
+
+        // Opsi 1: Narrowbody
+        $nbPassengers = min($expectedDemand, $narrowbodyCapacity);
+        $nbSpill = max(0, $expectedDemand - $narrowbodyCapacity);
+        $nbSpoilage = max(0, $narrowbodyCapacity - $expectedDemand);
+        $nbCost = 75000000 + ($distanceKm * 40000);
+        $nbProfit = ($nbPassengers * $fareIdr) - $nbCost;
+
+        // Opsi 2: Widebody
+        $wbPassengers = min($expectedDemand, $widebodyCapacity);
+        $wbSpill = max(0, $expectedDemand - $widebodyCapacity);
+        $wbSpoilage = max(0, $widebodyCapacity - $expectedDemand);
+        $wbCost = 140000000 + ($distanceKm * 75000);
+        $wbProfit = ($wbPassengers * $fareIdr) - $wbCost;
+
+        if ($wbProfit > $nbProfit) {
             return [
-                'flight_count' => 0,
-                'avg_load_factor' => 0.0,
-                'total_net_profit_idr' => 0,
-                'is_profitable' => false,
+                'recommended_aircraft_type' => 'WIDEBODY_A330',
+                'estimated_spill_passengers' => $wbSpill,
+                'estimated_spoilage_seats' => $wbSpoilage,
+                'expected_trip_profit_idr' => $wbProfit,
             ];
         }
 
-        $totalProfit = 0;
-        $totalLf = 0.0;
-        foreach ($flights as $f) {
-            $calc = $this->calculateFlightProfitability($f->id);
-            $totalProfit += $calc['net_profit_idr'];
-            $totalLf += $calc['load_factor_percentage'];
-        }
-
-        $avgLf = $totalLf / $flights->count();
-
         return [
-            'flight_count' => $flights->count(),
-            'avg_load_factor' => round($avgLf, 2),
-            'total_net_profit_idr' => $totalProfit,
-            'is_profitable' => $totalProfit > 0,
+            'recommended_aircraft_type' => 'NARROWBODY_A320',
+            'estimated_spill_passengers' => $nbSpill,
+            'estimated_spoilage_seats' => $nbSpoilage,
+            'expected_trip_profit_idr' => $nbProfit,
         ];
     }
 }

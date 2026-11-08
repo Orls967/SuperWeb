@@ -19,7 +19,7 @@ class FareBucketYieldOptimizer
 
     public function __construct(?SharedOptimizer $engine = null)
     {
-        $this->engine = $engine ?? new SharedOptimizer();
+        $this->engine = $engine ?? new SharedOptimizer;
     }
 
     /**

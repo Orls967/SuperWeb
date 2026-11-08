@@ -44,7 +44,6 @@ class AviationLuggageWeightAndBalanceService
         $zfwValid = $zfw <= $maxZeroFuelWeightKg;
         $towValid = $tow <= $maxTakeoffWeightKg;
 
-        // Simulasi kalkulasi indeks Center of Gravity % Mean Aerodynamic Chord (MAC)
         // Hubungan linier estimasi momen muatan depan (Forward Hold) vs belakang (Aft Hold)
         $cargoForwardRatio = 0.55;
         $cargoAftRatio = 0.45;
@@ -68,6 +67,117 @@ class AviationLuggageWeightAndBalanceService
             'is_within_envelope' => $isWithinEnvelope,
             'stabilizer_trim_units' => $trimUnits,
             'status' => $status,
+        ];
+    }
+
+    /**
+     * Hitung amplop berat pendaratan (Landing Weight Envelope) dan batas struktur MLW.
+     *
+     * @return array{
+     *     estimated_landing_weight_kg: float,
+     *     max_landing_weight_kg: float,
+     *     fuel_burn_trip_kg: int,
+     *     under_mlw_margin_kg: float,
+     *     overweight_landing_risk: bool
+     * }
+     */
+    public function calculateLandingWeightEnvelope(
+        float $takeoffWeightKg,
+        int $tripFuelKg,
+        float $maxLandingWeightKg
+    ): array {
+        $landingWeight = max(0.0, $takeoffWeightKg - (float) $tripFuelKg);
+        $margin = $maxLandingWeightKg - $landingWeight;
+        $overweight = $landingWeight > $maxLandingWeightKg;
+
+        return [
+            'estimated_landing_weight_kg' => round($landingWeight, 2),
+            'max_landing_weight_kg' => round($maxLandingWeightKg, 2),
+            'fuel_burn_trip_kg' => $tripFuelKg,
+            'under_mlw_margin_kg' => round($margin, 2),
+            'overweight_landing_risk' => $overweight,
+        ];
+    }
+
+    /**
+     * Bagikan muatan bagasi dan kargo ke kompartemen kargo pesawat (Forward Hold vs Aft Hold).
+     *
+     * @return array{
+     *     forward_hold_kg: int,
+     *     aft_hold_kg: int,
+     *     bulk_hold_kg: int,
+     *     total_loaded_kg: int,
+     *     forward_capacity_utilization: float,
+     *     aft_capacity_utilization: float
+     * }
+     */
+    public function calculateHoldCompartmentDistribution(
+        int $totalBaggageKg,
+        int $totalCargoKg,
+        int $forwardHoldCapacityKg = 3500,
+        int $aftHoldCapacityKg = 4200,
+        int $bulkHoldCapacityKg = 800
+    ): array {
+        $totalWeight = $totalBaggageKg + $totalCargoKg;
+
+        // Alokasikan bagasi penumpang prioritas ke Aft Hold untuk kecepatan pembongkaran
+        $aftWeight = min($aftHoldCapacityKg, (int) round($totalBaggageKg * 0.7) + (int) round($totalCargoKg * 0.3));
+        $remainder = max(0, $totalWeight - $aftWeight);
+
+        $bulkWeight = min($bulkHoldCapacityKg, (int) round($remainder * 0.15));
+        $forwardWeight = min($forwardHoldCapacityKg, $remainder - $bulkWeight);
+
+        $fwdUtil = $forwardHoldCapacityKg > 0 ? ($forwardWeight / (float) $forwardHoldCapacityKg) * 100.0 : 0.0;
+        $aftUtil = $aftHoldCapacityKg > 0 ? ($aftWeight / (float) $aftHoldCapacityKg) * 100.0 : 0.0;
+
+        return [
+            'forward_hold_kg' => $forwardWeight,
+            'aft_hold_kg' => $aftWeight,
+            'bulk_hold_kg' => $bulkWeight,
+            'total_loaded_kg' => $forwardWeight + $aftWeight + $bulkWeight,
+            'forward_capacity_utilization' => round($fwdUtil, 1),
+            'aft_capacity_utilization' => round($aftUtil, 1),
+        ];
+    }
+
+    /**
+     * Verifikasi kompatibilitas muatan barang berbahaya (Dangerous Goods Segregation & NOTOC).
+     *
+     * @param  array<int, array{un_number: string, class: string, weight_kg: float, compartment: string}>  $dgItems
+     * @return array{is_safe: bool, segregation_violations: array<int, string>, notoc_prepared: bool}
+     */
+    public function verifyDangerousGoodsSegregation(array $dgItems): array
+    {
+        $violations = [];
+        $compartmentClasses = [];
+
+        foreach ($dgItems as $item) {
+            $class = trim($item['class']);
+            $comp = strtoupper(trim($item['compartment']));
+            $compartmentClasses[$comp][] = $class;
+        }
+
+        // Cek pemisahan: Kelas 1 (Eksplosif) tidak boleh sekamar dengan Kelas 2/3 (Mudah Terbakar)
+        foreach ($compartmentClasses as $comp => $classes) {
+            $hasExplosives = in_array('1', $classes, true) || in_array('1.4', $classes, true);
+            $hasFlammables = in_array('2.1', $classes, true) || in_array('3', $classes, true);
+
+            if ($hasExplosives && $hasFlammables) {
+                $violations[] = "Inkompatibilitas ICAO: Kelas 1 dan Kelas Flammable berada di kompartemen {$comp}";
+            }
+
+            // Radioaktif (Kelas 7) tidak boleh bersebelahan dengan hewan hidup atau film
+            $hasRadioactive = in_array('7', $classes, true);
+            $hasPerishables = in_array('9_LHO', $classes, true);
+            if ($hasRadioactive && $hasPerishables) {
+                $violations[] = "Inkompatibilitas IATA DGR: Radioaktif Kelas 7 dan Hewan Hidup di kompartemen {$comp}";
+            }
+        }
+
+        return [
+            'is_safe' => count($violations) === 0,
+            'segregation_violations' => $violations,
+            'notoc_prepared' => count($dgItems) > 0,
         ];
     }
 }

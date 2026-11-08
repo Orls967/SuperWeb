@@ -37,7 +37,7 @@ class DisruptedPassengerReaccommodator
      */
     public function prioritizePassengers(array $passengers): array
     {
-        $engine = new \Modules\Shared\Domain\Algorithms\Aviation\DisruptedPassengerReaccommodator();
+        $engine = new \Modules\Shared\Domain\Algorithms\Aviation\DisruptedPassengerReaccommodator;
         $result = $engine->prioritize($passengers);
 
         return $result->orderedPassengers;

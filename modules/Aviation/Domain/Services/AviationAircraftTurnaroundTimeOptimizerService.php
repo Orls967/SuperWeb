@@ -49,4 +49,66 @@ class AviationAircraftTurnaroundTimeOptimizerService
             'bottleneck_process' => 'Cabin Cleaning & Boarding Sequence',
         ];
     }
+
+    /**
+     * Hitung analisis kelonggaran waktu (Slack Time Buffer) per tahapan ground handling.
+     *
+     * @param  array<int, array{milestone: string, start_min: int, end_min: int, critical: bool}>  $milestones
+     * @return array<int, array{milestone: string, duration_minutes: int, slack_buffer_minutes: int, risk_level: string}>
+     */
+    public function calculateBufferSlackAnalysis(array $milestones, int $targetTurnaroundTotalMinutes): array
+    {
+        $analysis = [];
+
+        foreach ($milestones as $m) {
+            $duration = max(1, $m['end_min'] - $m['start_min']);
+            $slack = max(0, $targetTurnaroundTotalMinutes - $m['end_min']);
+
+            $risk = 'LOW';
+            if ($m['critical']) {
+                $risk = $slack < 10 ? 'CRITICAL_HIGH' : 'MODERATE';
+            } elseif ($slack < 5) {
+                $risk = 'MODERATE';
+            }
+
+            $analysis[] = [
+                'milestone' => $m['milestone'],
+                'duration_minutes' => $duration,
+                'slack_buffer_minutes' => $slack,
+                'risk_level' => $risk,
+            ];
+        }
+
+        return $analysis;
+    }
+
+    /**
+     * Evaluasi kontensi peralatan darat (Ground Support Equipment Contention).
+     *
+     * @param  array<string, int>  $availableGse
+     * @param  array<string, int>  $requiredGse
+     * @return array{has_contention: bool, deficit_items: array<string, int>, delay_estimate_minutes: int}
+     */
+    public function evaluateGseResourceContention(array $availableGse, array $requiredGse): array
+    {
+        $deficits = [];
+        $maxDelay = 0;
+
+        foreach ($requiredGse as $type => $qty) {
+            $avail = $availableGse[$type] ?? 0;
+            if ($avail < $qty) {
+                $diff = $qty - $avail;
+                $deficits[$type] = $diff;
+                // Setiap kekurangan GPU atau Tug berpotensi menimbulkan delay 15-25 menit
+                $unitDelay = in_array($type, ['tug', 'gpu', 'air_starter'], true) ? 20 : 10;
+                $maxDelay = max($maxDelay, $diff * $unitDelay);
+            }
+        }
+
+        return [
+            'has_contention' => count($deficits) > 0,
+            'deficit_items' => $deficits,
+            'delay_estimate_minutes' => $maxDelay,
+        ];
+    }
 }

@@ -19,7 +19,7 @@ class CodeshareMileageAccrualEngine
 
     public function __construct(?SharedEngine $engine = null)
     {
-        $this->engine = $engine ?? new SharedEngine();
+        $this->engine = $engine ?? new SharedEngine;
     }
 
     /**
