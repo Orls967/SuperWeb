@@ -2844,3 +2844,47 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
 
 - <a id="ADR-0092"></a>**2026-11-08 — ADR-0092: Arsitektur Folio Multi-Payer, Timeshare Fractional Pool, dan Alokasi Paket Destinasi Multi-Vendor (Fase 92)**: Menerapkan pemisahan tagihan multi-payer deterministik via FolioSplitRouter (kamar/tax ke corporate city ledger, insidental ke personal), pembatalan/penolakan BEO banquet bila gross margin < 40%, tokenisasi kepemilikan fraksional timeshare dengan pool sewa umum dan dividen pro-rata, serta settlement paket destinasi multi-vendor berbasis escrow bertahap dengan BundleSspAllocator (PSAK 72 / IFRS 15). Anchor: `docs/decisions/ADR-0092-hotel-folio-split-timeshare-and-destination-package.md`.
 
+<a id="2026-11-08-g7-p7-aviasi-maritim-fase-177"></a>
+<a id="g7-d46"></a>
+<a id="g7-d47"></a>
+<a id="g7-d48"></a>
+<a id="g7-d49"></a>
+<a id="g7-d50"></a>
+<a id="g7-d51"></a>
+<a id="g7-d52"></a>
+<a id="g7-d53"></a>
+<a id="d177-1"></a>
+<a id="d177-2"></a>
+<a id="d177-3"></a>
+<a id="d177-4"></a>
+<a id="d177-5"></a>
+<a id="d177-6"></a>
+<a id="d177-7"></a>
+<a id="d177-8"></a>
+<a id="d177-9"></a>
+## 2026-11-08: [G7-P7.1] Modul Aviation — Armada, Slot, Pemesanan, Kargo Udara & Perawatan (Fase 177, G7-D46..G7-D53, D177-1..D177-9)
+- **Anchor:** `2026-11-08-g7-p7-aviasi-maritim-fase-177` / `g7-d46` / `g7-d47` / `g7-d48` / `g7-d49` / `g7-d50` / `g7-d51` / `g7-d52` / `g7-d53` / `d177-1` / `d177-2` / `d177-3` / `d177-4` / `d177-5` / `d177-6` / `d177-7` / `d177-8` / `d177-9`
+- **Rujukan ADR:**
+  - [`docs/decisions/ADR-0046-aviation-maritime-units.md`](decisions/ADR-0046-aviation-maritime-units.md) (G7-D46: Satuan Pengukuran Standar)
+  - [`docs/decisions/ADR-0047-seat-inventory-invariants.md`](decisions/ADR-0047-seat-inventory-invariants.md) (G7-D47: Invarian Inventori Kursi)
+  - [`docs/decisions/ADR-0048-airworthiness-dispatch-gate.md`](decisions/ADR-0048-airworthiness-dispatch-gate.md) (G7-D48: Gerbang Kelaikan Terbang)
+  - [`docs/decisions/ADR-0049-canonical-hash-chain-passports.md`](decisions/ADR-0049-canonical-hash-chain-passports.md) (G7-D49: Paspor Aset Append-Only)
+  - [`docs/decisions/ADR-0050-passenger-data-privacy-and-redaction.md`](decisions/ADR-0050-passenger-data-privacy-and-redaction.md) (G7-D50: Perlindungan Data Pribadi)
+  - [`docs/decisions/ADR-0051-external-factors-sensitivity-gateway.md`](decisions/ADR-0051-external-factors-sensitivity-gateway.md) (G7-D51: Gerbang Kepekaan Faktor Eksternal)
+  - [`docs/decisions/ADR-0052-aviation-marine-fuel-emissions.md`](decisions/ADR-0052-aviation-marine-fuel-emissions.md) (G7-D52: Bahan Bakar & Emisi Scope 1)
+  - [`docs/decisions/ADR-0053-phase-boundaries-and-retained-modules.md`](decisions/ADR-0053-phase-boundaries-and-retained-modules.md) (G7-D53: Batas Zona & Isolasi)
+  - [`docs/decisions/ADR-0177-aviation-slot-dispatch-booking-cargo.md`](decisions/ADR-0177-aviation-slot-dispatch-booking-cargo.md) (Fase 177: Aviation Core)
+- **Konteks:**
+  - Melaksanakan Lini 26 Aviasi & Air Cargo (Fase 177) dengan mendirikan modul baru `Aviation` (`avi_`), menggantikan kode kerangka lama `Modules\Integration\Application\Services\AviationService` secara vertical slice lengkap tanpa mengubah kode modul lain.
+- **Keputusan:**
+  1. **D177-1 (Master Aviation & Kunci Alami IATA/ICAO)**: Registrasi operator, bandara, armada pesawat (terhubung ke Asset lewat `AssetRegistryLookupInterface`), dan rute dengan identitas alami unik.
+  2. **D177-2 (Koordinasi Slot Musiman IATA WASG & SM SlotRequest)**: Alokasi kapasitas slot bandara via algoritma A1 `SlotCoordinationAllocator` (aturan 80/20 dan 50% cadangan pendatang baru) dengan `SlotRequestStateMachine` (8 status: `submitted`..`expired`).
+  3. **D177-3 (Penerbangan, Dispatch Kelaikan A2 & W&B A3)**: Validasi ganda kelaikan kalender/jam/siklus/MEL via A2 `AirworthinessDispatchGate` dan amplop muat via A3 `LoadAndBalanceChecker` sebelum dispatch, dikawal `FlightStateMachine` (8 status). Kegagalan memicu Work Order ke Asset K9.
+  4. **D177-4 (Pemesanan Penumpang, Hold Kursi K26, A4 Refund & Saga)**: Orkestrasi `PassengerBookingSaga` (hold K26 `SeatInventoryReserver` -> KYC -> pembayaran -> terbit tiket). Kompensasi pelepasan kursi otomatis saat gagal bayar. Pembatalan tiket via algoritma A4 `FareRefundCalculator` idempoten, dikawal `TicketStateMachine` (8 status).
+  5. **D177-5 (Penerimaan Kargo Udara, A5 DG & Kustodi Multimoda)**: Pemeriksaan kepatuhan muatan barang berbahaya dan durasi holdover suhu dingin via A5 `DangerousGoodsEligibilityChecker`, rantai kustodi logistik via `CustodyVerifier`, dikawal `CargoConsignmentStateMachine` (7 status).
+  6. **D177-6 (Siklus Perawatan Armada & Integrasi Asset K9)**: Pelacakan jam terbang dan siklus append-only, Work Order pemeliharaan terjadwal ke Asset K9, dikawal `MaintenanceVisitStateMachine` (7 status).
+  7. **D177-7 (Respons Kepekaan Faktor Eksternal)**: Layanan `AviationExternalFactors` membaca tabel parameter berversi `avi_external_factors` (harga avtur, penutupan bandara erupsi abu vulkanik).
+  8. **D177-8 (Penjurnalan Akrual Double-Entry avi:*)**: Penjualan tiket dikreditkan ke kewajiban pendapatan diterima di muka `avi:passenger_unearned:IDR`. Pengakuan pendapatan `avi:ticket_revenue:IDR` dan hutang pajak `avi:tax_payable:IDR` baru dijurnal saat penerbangan berstatus `flown`.
+  9. **D177-9 (Audit Dua Sumber avi:audit)**: Verifikasi integritas komparatif 6 dimensi antara data tabel modul dengan buku besar finansial dan sertifikat operasional.
+
+
