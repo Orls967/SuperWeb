@@ -7,7 +7,7 @@ namespace Modules\Aviation\Exports;
 use Modules\Aviation\Domain\Models\AviationCargoConsignment;
 use Modules\Aviation\Domain\Models\AviationFlight;
 
-class CargoManifestCsvExporter
+class CargoManifestCsvExporter extends BaseCsvExporter
 {
     /**
      * Ekspor manifes kargo udara resmi (Air Cargo Manifest) termasuk klasifikasi DG dan rantai kustodi.
@@ -61,21 +61,6 @@ class CargoManifestCsvExporter
             ];
         }
 
-        $output = fopen('php://temp', 'r+');
-        if ($output === false) {
-            return '';
-        }
-
-        fputs($output, "\xEF\xBB\xBF");
-
-        foreach ($rows as $row) {
-            fputcsv($output, $row);
-        }
-
-        rewind($output);
-        $content = stream_get_contents($output);
-        fclose($output);
-
-        return $content !== false ? $content : '';
+        return $this->generateCsvString($rows);
     }
 }

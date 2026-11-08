@@ -55,16 +55,19 @@ class AviationCargoConsignment extends Model
 
     public function transitionTo(CargoConsignmentStatus|string $newStatus, string $trigger, ?int $actorId = null, ?string $notes = null): void
     {
-        $newStatusVal = is_string($newStatus) ? $newStatus : $newStatus->value;
-        CargoConsignmentStateMachine::assertCanTransition($this->status, $newStatusVal);
+        $resolvedStatus = is_string($newStatus) ? $newStatus : $newStatus->value;
+        CargoConsignmentStateMachine::assertCanTransition($this->status, $resolvedStatus);
 
-        $oldStatus = $this->status;
-        $this->status = $newStatusVal;
+        $initialStatus = $this->status;
+        $this->status = $resolvedStatus;
+
+        // Catat mutasi status konsinyasi kargo
         $this->save();
 
         $this->transitions()->create([
-            'from_status' => $oldStatus,
-            'to_status' => $newStatusVal,
+            'consignment_id' => $this->id,
+            'from_status' => $initialStatus,
+            'to_status' => $resolvedStatus,
             'trigger' => $trigger,
             'actor_id' => $actorId,
             'notes' => $notes,

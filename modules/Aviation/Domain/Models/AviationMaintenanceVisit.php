@@ -48,16 +48,22 @@ class AviationMaintenanceVisit extends Model
 
     public function transitionTo(MaintenanceVisitStatus|string $newStatus, string $trigger, ?int $actorId = null, ?string $notes = null): void
     {
-        $newStatusVal = is_string($newStatus) ? $newStatus : $newStatus->value;
-        MaintenanceVisitStateMachine::assertCanTransition($this->status, $newStatusVal);
+        $statusKey = is_string($newStatus) ? $newStatus : $newStatus->value;
+        MaintenanceVisitStateMachine::assertCanTransition($this->status, $statusKey);
 
-        $oldStatus = $this->status;
-        $this->status = $newStatusVal;
+        $priorStatus = $this->status;
+        $this->status = $statusKey;
+
+        if ($statusKey === MaintenanceVisitStatus::IN_PROGRESS->value && empty($this->actual_start)) {
+            $this->actual_start = now();
+        }
+
         $this->save();
 
         $this->transitions()->create([
-            'from_status' => $oldStatus,
-            'to_status' => $newStatusVal,
+            'visit_id' => $this->id,
+            'from_status' => $priorStatus,
+            'to_status' => $statusKey,
             'trigger' => $trigger,
             'actor_id' => $actorId,
             'notes' => $notes,

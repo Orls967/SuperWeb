@@ -124,10 +124,18 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot class="border-t border-slate-700/60 bg-slate-900/40 text-[11px] text-slate-400">
+                            <tr>
+                                <td colspan="7" class="py-2.5 px-4 text-right font-medium">Total Penerbangan Hari Ini: {{ count($flights) }} jadwal</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             @endif
         </div>
+        {{-- Ops End --}}
+    </div>
+</div>
     </div>
 </div>
 

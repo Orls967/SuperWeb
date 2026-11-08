@@ -95,16 +95,23 @@ class AviationFlight extends Model
 
     public function transitionTo(FlightStatus|string $newStatus, string $trigger, ?int $actorId = null, ?string $notes = null): void
     {
-        $newStatusVal = is_string($newStatus) ? $newStatus : $newStatus->value;
-        FlightStateMachine::assertCanTransition($this->status, $newStatusVal);
+        $targetStatus = is_string($newStatus) ? $newStatus : $newStatus->value;
+        FlightStateMachine::assertCanTransition($this->status, $targetStatus);
 
-        $oldStatus = $this->status;
-        $this->status = $newStatusVal;
+        $previousStatus = $this->status;
+        $this->status = $targetStatus;
+
+        // Catat timestamp penerbangan bila berangkat
+        if ($targetStatus === FlightStatus::DEPARTED->value && empty($this->actual_departure)) {
+            $this->actual_departure = now();
+        }
+
         $this->save();
 
         $this->transitions()->create([
-            'from_status' => $oldStatus,
-            'to_status' => $newStatusVal,
+            'flight_id' => $this->id,
+            'from_status' => $previousStatus,
+            'to_status' => $targetStatus,
             'trigger' => $trigger,
             'actor_id' => $actorId,
             'notes' => $notes,

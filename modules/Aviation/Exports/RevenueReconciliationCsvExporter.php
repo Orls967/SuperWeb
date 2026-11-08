@@ -8,7 +8,7 @@ use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationRefund;
 use Modules\Aviation\Domain\Models\AviationTicket;
 
-class RevenueReconciliationCsvExporter
+class RevenueReconciliationCsvExporter extends BaseCsvExporter
 {
     /**
      * Ekspor laporan rekonsiliasi pendapatan aviasi: tiket terbang, unearned, refund, dan pajak.
@@ -67,21 +67,6 @@ class RevenueReconciliationCsvExporter
             ];
         }
 
-        $output = fopen('php://temp', 'r+');
-        if ($output === false) {
-            return '';
-        }
-
-        fputs($output, "\xEF\xBB\xBF");
-
-        foreach ($rows as $row) {
-            fputcsv($output, $row);
-        }
-
-        rewind($output);
-        $content = stream_get_contents($output);
-        fclose($output);
-
-        return $content !== false ? $content : '';
+        return $this->generateCsvString($rows);
     }
 }

@@ -7,7 +7,7 @@ namespace Modules\Aviation\Exports;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationTicket;
 
-class FlightManifestCsvExporter
+class FlightManifestCsvExporter extends BaseCsvExporter
 {
     /**
      * Ekspor manifes penumpang resmi sebelum keberangkatan penerbangan.
@@ -62,21 +62,6 @@ class FlightManifestCsvExporter
             ];
         }
 
-        $output = fopen('php://temp', 'r+');
-        if ($output === false) {
-            return '';
-        }
-
-        fputs($output, "\xEF\xBB\xBF");
-
-        foreach ($rows as $row) {
-            fputcsv($output, $row);
-        }
-
-        rewind($output);
-        $content = stream_get_contents($output);
-        fclose($output);
-
-        return $content !== false ? $content : '';
+        return $this->generateCsvString($rows);
     }
 }

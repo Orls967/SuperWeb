@@ -18,7 +18,8 @@ class AviationCargoService
 {
     public function __construct(
         private readonly DangerousGoodsEligibilityChecker $dgChecker,
-        private readonly AviationLedgerPostingService $ledgerPostingService
+        private readonly AviationLedgerPostingService $ledgerPostingService,
+        private readonly \Modules\Aviation\Application\Actions\AcceptAirCargoConsignmentAction $acceptCargoAction
     ) {}
 
     /**
@@ -33,7 +34,6 @@ class AviationCargoService
         $flight = AviationFlight::findOrFail($payload['flight_id']);
         $isDg = (bool) ($payload['is_dg'] ?? false);
 
-        $dgCleared = false;
         if ($isDg) {
             $dgResult = $this->dgChecker->check([
                 'un_number' => $payload['un_number'] ?? 'UN1845',
@@ -49,50 +49,15 @@ class AviationCargoService
             if (! $dgResult['accepted']) {
                 throw new DangerousGoodsRejectedException('Muatan barang berbahaya (DG) ditolak: '.implode('; ', $dgResult['violations']));
             }
-            $dgCleared = true;
         }
 
-        return DB::transaction(function () use ($payload, $flight, $isDg, $dgCleared) {
-            // Genesis custody checkpoint
-            $custodyHash = hash('sha256', $payload['consignment_number'].'GENESIS_INTAKE'.now()->toIso8601String());
+        // Panggil action domain inti
+        $consignment = $this->acceptCargoAction->execute($payload);
 
-            $consignment = AviationCargoConsignment::create([
-                'flight_id' => $flight->id,
-                'consignment_number' => $payload['consignment_number'],
-                'shipper_party_id' => $payload['shipper_party_id'] ?? null,
-                'consignee_party_id' => $payload['consignee_party_id'] ?? null,
-                'weight_g' => (int) $payload['weight_g'],
-                'volume_mm3' => (int) ($payload['volume_mm3'] ?? 0),
-                'nature_of_goods' => (string) $payload['nature_of_goods'],
-                'un_number' => $payload['un_number'] ?? null,
-                'dg_class' => $payload['dg_class'] ?? null,
-                'is_dg' => $isDg,
-                'dg_cleared' => $dgCleared,
-                'required_temperature_min_c10' => $payload['required_temperature_min_c10'] ?? null,
-                'required_temperature_max_c10' => $payload['required_temperature_max_c10'] ?? null,
-                'uld_container_code' => $payload['uld_container_code'] ?? null,
-                'status' => CargoConsignmentStatus::ACCEPTED->value,
-                'custody_hash_chain' => $custodyHash,
-            ]);
+        // Tambahkan checkpoint integritas awal pada servis
+        $this->appendCustodyEvent($consignment, 'SERVICE_GATE_ACCEPTED', 'CARGO_RAMP_CGK');
 
-            $consignment->transitionTo(CargoConsignmentStatus::ACCEPTED, 'CARGO_PHYSICALLY_RECEIVED');
-
-            // Hitung tarif kargo: Rp 25.000 / kg
-            $kg = (int) ceil($payload['weight_g'] / 1000);
-            $revenueMinor = $kg * 2500000;
-
-            $postingRef = 'POST-CRG-'.$consignment->consignment_number;
-            $this->ledgerPostingService->post(
-                journalReference: $postingRef,
-                transactionType: AviationTransactionTypes::CARGO_FREIGHT_INVOICED->value,
-                amountMinor: $revenueMinor,
-                debitAccount: AviationAccounts::CARGO_RECEIVABLE,
-                creditAccount: AviationAccounts::CARGO_REVENUE,
-                description: "Pendapatan kargo udara AWB {$consignment->consignment_number} berat {$kg} kg"
-            );
-
-            return $consignment;
-        });
+        return $consignment;
     }
 
     /**

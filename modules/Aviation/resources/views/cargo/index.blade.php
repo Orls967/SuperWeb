@@ -30,10 +30,10 @@
             <form action="{{ route('aviation.cargo.receive') }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Penerbangan</label>
-                    <select name="flight_id" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Penerbangan Muatan Kargo</label>
+                    <select id="select_cargo_flight_id" name="flight_id" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:ring-1 focus:ring-cyan-500">
                         @foreach($flights as $flight)
-                            <option value="{{ $flight->id }}">{{ $flight->flight_number }} ({{ $flight->origin->iata_code ?? '-' }} &rarr; {{ $flight->destination->iata_code ?? '-' }})</option>
+                            <option value="{{ $flight->id }}">[FLT] {{ $flight->flight_number }} &bull; {{ $flight->origin->iata_code ?? '-' }} / {{ $flight->destination->iata_code ?? '-' }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -114,10 +114,16 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot class="border-t border-slate-700/60 bg-slate-900/40 text-[11px] text-slate-400">
+                            <tr>
+                                <td colspan="7" class="py-2.5 px-4 text-right italic font-medium">Total Konsinyasi Terdaftar: {{ count($consignments) }} unit</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             @endif
         </div>
+        {{-- Section Footer Kargo --}}
     </div>
 </div>
 

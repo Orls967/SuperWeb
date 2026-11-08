@@ -6,7 +6,7 @@ namespace Modules\Aviation\Exports;
 
 use Modules\Aviation\Domain\Models\AviationSlot;
 
-class SlotAllocationCsvExporter
+class SlotAllocationCsvExporter extends BaseCsvExporter
 {
     /**
      * Ekspor alokasi slot bandara per season ke dalam format CSV UTF-8.
@@ -57,22 +57,6 @@ class SlotAllocationCsvExporter
             ];
         }
 
-        $output = fopen('php://temp', 'r+');
-        if ($output === false) {
-            return '';
-        }
-
-        // BOM UTF-8 untuk kompatibilitas Excel
-        fputs($output, "\xEF\xBB\xBF");
-
-        foreach ($rows as $row) {
-            fputcsv($output, $row);
-        }
-
-        rewind($output);
-        $csvContent = stream_get_contents($output);
-        fclose($output);
-
-        return $csvContent !== false ? $csvContent : '';
+        return $this->generateCsvString($rows);
     }
 }
