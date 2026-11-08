@@ -20,4 +20,3 @@ final class PassengerCareCertificateVerifier
         return hash_equals($expectedHash, $certificate->sha256Hash);
     }
 }
-

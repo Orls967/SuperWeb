@@ -26,4 +26,3 @@ final class CodeshareMileageCertificate
         return new self($gross, $opShare, $mktShare, $miles, hash('sha256', $payload));
     }
 }
-

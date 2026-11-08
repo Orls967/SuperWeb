@@ -26,4 +26,3 @@ final class PassengerCareCertificate
         return new self($cat, $delay, $care, $cash, hash('sha256', $payload));
     }
 }
-

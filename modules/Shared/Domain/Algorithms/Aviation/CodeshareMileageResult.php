@@ -14,4 +14,3 @@ final class CodeshareMileageResult
         public readonly CodeshareMileageCertificate $certificate
     ) {}
 }
-

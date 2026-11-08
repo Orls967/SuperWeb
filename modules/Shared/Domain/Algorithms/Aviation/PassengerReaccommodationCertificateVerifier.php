@@ -18,4 +18,3 @@ final class PassengerReaccommodationCertificateVerifier
         return hash_equals($expectedHash, $certificate->sha256Hash);
     }
 }
-

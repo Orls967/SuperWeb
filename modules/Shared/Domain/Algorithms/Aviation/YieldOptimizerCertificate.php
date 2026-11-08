@@ -24,4 +24,3 @@ final class YieldOptimizerCertificate
         return new self($capacity, $buckets, $version, hash('sha256', $payload));
     }
 }
-

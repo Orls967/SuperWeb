@@ -40,4 +40,3 @@ class ParametricTriggerRecorderService implements ParametricTriggerRecorder
         return $triggerId;
     }
 }
-

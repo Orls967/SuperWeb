@@ -12,4 +12,3 @@ final class PassengerReaccommodationResult
         public readonly PassengerReaccommodationCertificate $certificate
     ) {}
 }
-
