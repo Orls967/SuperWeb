@@ -23,4 +23,3 @@ class IssueExportHealthCertificateAction
         return $this->docService->issueHealthCertificate($exportLotId, $inspectorName);
     }
 }
-

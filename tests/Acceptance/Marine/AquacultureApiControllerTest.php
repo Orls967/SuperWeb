@@ -87,4 +87,3 @@ class AquacultureApiControllerTest extends TestCase
             ->assertJson(['success' => true]);
     }
 }
-

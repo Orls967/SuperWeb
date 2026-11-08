@@ -49,4 +49,3 @@ class ReeferColdChainTelemetryDTO
         return round($this->cargoProbeTemperatureCelsius - $setpointCelsius, 2);
     }
 }
-

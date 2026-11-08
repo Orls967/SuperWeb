@@ -23,4 +23,3 @@ class RetireBlueCarbonInsettingAction
         return $this->offsetService->retireCreditsForLotInsetting($exportLotId, $creditIssuanceId, $lotEmissionsTonnesCo2e);
     }
 }
-

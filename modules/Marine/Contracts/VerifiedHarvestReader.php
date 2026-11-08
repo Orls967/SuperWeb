@@ -35,4 +35,3 @@ interface VerifiedHarvestReader
      */
     public function isEligibleForEscrowRelease(string $lotNumber): bool;
 }
-

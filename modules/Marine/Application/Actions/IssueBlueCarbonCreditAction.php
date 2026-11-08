@@ -21,4 +21,3 @@ class IssueBlueCarbonCreditAction
         return $this->carbonService->issueCarbonCredits($assessmentId, $registryName);
     }
 }
-
