@@ -15,17 +15,7 @@ class RoomBlockAllotment extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [
-        'id',
-        'block_code',
-        'mice_contract_id',
-        'check_in_date',
-        'release_deadline_date',
-        'allotted_rooms_count',
-        'confirmed_rooms_count',
-        'released_rooms_count',
-        'status',
-    ];
+    protected $guarded = ['signature_hash'];
 
     public function contract(): BelongsTo
     {

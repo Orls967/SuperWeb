@@ -6,6 +6,7 @@ namespace Modules\Hotel\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class MiceContract extends Model
@@ -16,17 +17,10 @@ class MiceContract extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [
-        'id',
-        'event_code',
-        'property_id',
-        'event_type',
-        'client_name',
-        'event_date',
-        'contract_total_value_idr',
-        'actual_banquet_cost_idr',
-        'current_milestone_index',
-        'status',
+    protected $guarded = ['signature_hash'];
+
+    protected $casts = [
+        'is_bridal_suite_complimentary' => 'boolean',
     ];
 
     public function property(): BelongsTo
@@ -42,5 +36,25 @@ class MiceContract extends Model
     public function banquetProductionSheet(): HasOne
     {
         return $this->hasOne(BanquetProductionSheet::class, 'mice_contract_id');
+    }
+
+    public function proposal(): BelongsTo
+    {
+        return $this->belongsTo(HtlEventProposal::class, 'proposal_id');
+    }
+
+    public function weddingMilestones(): HasMany
+    {
+        return $this->hasMany(HtlWeddingMilestoneSchedule::class, 'mice_contract_id')->orderBy('milestone_index');
+    }
+
+    public function exhibitionBooths(): HasMany
+    {
+        return $this->hasMany(HtlExhibitionBoothReservation::class, 'mice_contract_id');
+    }
+
+    public function banquetOrders(): HasMany
+    {
+        return $this->hasMany(HtlBanquetOrder::class, 'mice_contract_id');
     }
 }
