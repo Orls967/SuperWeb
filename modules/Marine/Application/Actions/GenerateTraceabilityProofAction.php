@@ -28,4 +28,3 @@ class GenerateTraceabilityProofAction
         return $this->traceabilityService->generateLotMerkleTree($exportLotId);
     }
 }
-

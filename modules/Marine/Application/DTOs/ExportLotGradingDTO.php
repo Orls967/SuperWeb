@@ -51,4 +51,3 @@ class ExportLotGradingDTO
         return $this->commercialGrade === 'GRADE_A1' && $this->defectsOrganolepticPct <= 0.50;
     }
 }
-

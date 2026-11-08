@@ -13,22 +13,15 @@ Sistem ekspor akuakultur dirancang memenuhi standar industri pertukaran data ran
 - **Integritas Transaksi**: Header HTTP `X-Idempotency-Key` wajib disertakan pada mutasi transaksi finansial dan penerbitan izin ekspor.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Buyer as Portal Pembeli Global
-    participant Gateway as API Gateway Akuakultur
-    participant Saga as ExportExecutionSaga
-    participant Merkle as MerkleProofEngine
-    participant Ledger as MarineDoubleEntryLedger
-
-    Buyer->>Gateway: POST /marine/export/dispatch {shipment_id, booking_ref}
-    Gateway->>Saga: Inisiasi Alur Ekspor Cold-Chain
-    Saga->>Merkle: Buat Merkle Proof Silsilah Lot Panen
-    Merkle-->>Saga: Return Root Hash & Inclusion Proof
-    Saga->>Ledger: Catat Jurnal Akrual Freight & Escrow Lock
-    Ledger-->>Saga: Jurnal Berhasil Diposting
-    Saga-->>Gateway: Dispatched Status & Traceability Envelope
-    Gateway-->>Buyer: 200 OK {tracking_number, merkle_root, qr_code_url}
+flowchart TD
+    Buyer["Portal Pembeli Global"] -->|"POST /marine/export/dispatch"| Gateway["API Gateway Akuakultur"]
+    Gateway -->|"Inisiasi Alur Ekspor Cold-Chain"| Saga["ExportExecutionSaga"]
+    Saga -->|"Buat Merkle Proof Silsilah"| Merkle["MerkleProofEngine"]
+    Merkle -->|"Return Root Hash & Proof"| Saga
+    Saga -->|"Catat Jurnal Akrual & Escrow"| Ledger["MarineDoubleEntryLedger"]
+    Ledger -->|"Jurnal Diposting"| Saga
+    Saga -->|"Dispatched Status & Envelope"| Gateway
+    Gateway -->|"200 OK (tracking, root, QR)"| Buyer
 ```
 
 ---

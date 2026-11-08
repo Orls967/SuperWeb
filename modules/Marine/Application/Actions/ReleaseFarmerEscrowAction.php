@@ -21,4 +21,3 @@ class ReleaseFarmerEscrowAction
         return $this->escrowService->releaseEscrowPayout($settlementId, $approverRole);
     }
 }
-

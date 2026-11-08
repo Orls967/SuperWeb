@@ -33,4 +33,3 @@ class DispatchExportReeferAction
         return $shipment;
     }
 }
-

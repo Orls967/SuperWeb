@@ -70,6 +70,7 @@ class BiosecurityAndCarbonOffsettingTest extends TestCase
         $policy = $insService->bindParametricPondPolicy($batch->id, 5000000, 150000);
 
         $this->assertNotEmpty($policy['policy_reference']);
+        $this->assertEquals('PARAMETRIC_WATER_QUALITY_MORTALITY', $policy['coverage_type']);
         $this->assertEquals(5000000, $policy['sum_insured_minor_cents']);
         $this->assertEquals('ACTIVE_PARAMETRIC_COVER', $policy['status']);
     }
