@@ -22,9 +22,9 @@ final class OptimizeVoyageSpeedAndBunkerAction
         int $voyageId,
         float $cargoFreightRateUsdMt,
         float $cargoQuantityMt,
-        float $currentVlsfoPriceUsdMt = 650.0,
-        float $portDisbursementTotalUsd = 45000.0,
-        float $dailyOpexUsd = 6500.0
+        float $currentVlsfoPriceRate = 650.0,
+        float $portDisbursementEstimateRate = 45000.0,
+        float $dailyOpexRate = 6500.0
     ): array {
         $voyage = FleetVoyage::with('vessel')->findOrFail($voyageId);
         $vessel = $voyage->vessel;
@@ -61,8 +61,8 @@ final class OptimizeVoyageSpeedAndBunkerAction
             );
 
             $seaDays = $voyageBunker['steaming_days'];
-            $seaBunkerCost = $voyageBunker['sea_bunker_mt'] * $currentVlsfoPriceUsdMt;
-            $portBunkerCost = $voyageBunker['port_bunker_mt'] * $currentVlsfoPriceUsdMt;
+            $seaBunkerCost = $voyageBunker['sea_bunker_mt'] * $currentVlsfoPriceRate;
+            $portBunkerCost = $voyageBunker['port_bunker_mt'] * $currentVlsfoPriceRate;
 
             $tce = $this->tceCalculator->calculateTce(
                 $cargoQuantityMt,
@@ -72,13 +72,13 @@ final class OptimizeVoyageSpeedAndBunkerAction
                 2.0,
                 $seaBunkerCost,
                 $portBunkerCost,
-                $portDisbursementTotalUsd,
+                $portDisbursementEstimateRate,
                 0.0,
                 0.0,
                 0.0,
                 0.0,
                 0.0,
-                $dailyOpexUsd
+                $dailyOpexRate
             );
 
             $analysis[$label] = [

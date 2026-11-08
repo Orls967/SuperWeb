@@ -49,3 +49,4 @@ Layanan `CrewRotationAndPayrollService` menjalankan validasi otomatis:
 1. Setiap entri jam istirahat harian dianalisis secara algoritmis terhadap jendela geser 24 jam dan 7 hari.
 2. Jika terdeteksi pelanggaran (*rest hour deficiency*), sistem menerbitkan peringatan merah dan mencatat insiden ketidaksesuaian (*Non-Conformity Notice*) pada audit ISM Code.
 3. Rekapitulasi lembur dan tunjangan sandar pelabuhan dihitung transparan dengan slip gaji digital (*digital payslip*) berstandar MLC Regulation 2.2.
+

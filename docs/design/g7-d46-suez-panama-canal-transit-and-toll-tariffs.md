@@ -48,3 +48,4 @@ Otoritas Terusan Panama (*Autoridad del Canal de Panamá - ACP*) menerapkan sist
 Layanan `CanalTransitAndPassageTollService` menyediakan analisis komparasi ekonomi real-time:
 $$\Delta \text{Biaya Rute} = (\text{Biaya Bunker}_{\text{Cape}} + \text{Sewa Harian}_{\text{Cape}} \times \Delta t) - (\text{Tarif Tol Terusan} + \text{Biaya Bunker}_{\text{Canal}} + \text{Sewa Harian}_{\text{Canal}} \times t)$$
 Jika harga bahan bakar bunker sedang anjlok dan tarif tol kanal sangat tinggi, berlayar memutar melalui Tanjung Harapan di Afrika Selatan dapat menghasilkan efisiensi biaya bersih (*cost saving*) meskipun menambah durasi pelayaran $10-14$ hari.
+

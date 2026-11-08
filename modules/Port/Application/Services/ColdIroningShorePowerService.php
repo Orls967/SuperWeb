@@ -33,14 +33,14 @@ final class ColdIroningShorePowerService
         float $stayHours,
         float $averagePowerDemandKw,
         float $shoreTariffUsdPerKwh = 0.165,
-        float $mgoPricePerMt = 750.0
+        float $mgoPriceRatePerTon = 750.0
     ): array {
         $totalKwh = $stayHours * $averagePowerDemandKw;
         $electricityCost = $totalKwh * $shoreTariffUsdPerKwh;
 
         // Jika menggunakan mesin bantu kapal (SFOC ~ 215 g/kWh MGO):
         $avoidedMgoMt = ($totalKwh * 215.0) / 1_000_000.0;
-        $avoidedFuelCost = $avoidedMgoMt * $mgoPricePerMt;
+        $avoidedFuelCost = $avoidedMgoMt * $mgoPriceRatePerTon;
         $netBenefit = $avoidedFuelCost - $electricityCost;
 
         // Faktor emisi MARPOL Annex VI untuk genset MGO:

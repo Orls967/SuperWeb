@@ -19,3 +19,4 @@ Kepatuhan terhadap regulasi dekarbonisasi maritim global IMO MEPC.354(78) dan MA
 ## Konsekuensi
 - Memastikan seluruh armada mematuhi target reduksi emisi maritim internasional.
 - Memberikan transparansi kinerja keberlanjutan (ESG) kepada penyewa dan investor pengangkutan laut.
+

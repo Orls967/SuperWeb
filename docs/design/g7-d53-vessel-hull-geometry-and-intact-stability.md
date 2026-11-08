@@ -46,3 +46,4 @@ Sesuai Bagian A Kriteria 2.2 Kode IS 2008:
 Setiap rencana muatan kapal dievaluasi oleh sistem sebelum persetujuan keberangkatan (*port clearance approval*):
 1. Jika nilai kalkulasi $GM < 0.15\,\text{m}$, kapal berada dalam kondisi stabilitas kritis (*tender ship*) dengan resiko terbalik tinggi.
 2. Sistem secara otomatis menolak penerbitan izin layar dan menginstruksikan pengisian air balas pada tangki dasar ganda (*double bottom ballast tanks*) untuk menurunkan titik berat $KG$ hingga batas aman tercapai.
+

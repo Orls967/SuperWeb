@@ -74,3 +74,4 @@ Armada yang memanfaatkan sistem Cold Ironing di dermaga pelabuhan:
 1. **Pembebasan Pajak Emisi Pelabuhan**: Pengurangan emisi gas buang dihitung langsung ke modul ESG sebagai reduksi emisi Scope 1.
 2. **Penghematan Biaya Pemeliharaan Mesin**: Mengurangi jam kerja generator diesel kapal (*auxiliary engine running hours*), memperpanjang siklus servis berkala (PMS).
 3. **Penerbitan Kredit Hijau Terverifikasi**: Setiap megawatt-jam (MWh) daya listrik darat bersumber energi terbarukan menghasilkan catatan kredit karbon maritim yang diakui secara statutori.
+

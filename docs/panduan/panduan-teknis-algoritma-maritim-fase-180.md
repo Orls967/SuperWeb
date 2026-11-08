@@ -94,3 +94,4 @@ Hal serupa berlaku untuk muatan kargo:
 $$\text{Contributory Value}_{\text{kargo}} = \text{Nilai Faktur Komersial C&F} + \text{Nilai Kargo yang Dikorbankan/Dibuang (Made Good)}$$
 
 Pengeluaran darurat jasa penyelamatan (*salvage awards*) tidak menambah nilai fisik kargo/kapal sehingga tidak dimasukkan ke dalam komponen *Made Good*.
+

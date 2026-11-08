@@ -43,12 +43,12 @@ final class FleetLedgerEntry extends Model
         string $code,
         string $account,
         string $type,
-        float $amount,
+        float $amountUnits,
         string $currency,
         string $refType,
         int $refId
     ): string {
-        return hash('sha256', "{$code}|{$account}|{$type}|".number_format($amount, 2, '.', '')."|{$currency}|{$refType}|{$refId}");
+        return hash('sha256', "{$code}|{$account}|{$type}|".number_format($amountUnits, 2, '.', '')."|{$currency}|{$refType}|{$refId}");
     }
 
     public function verifyChecksum(): bool

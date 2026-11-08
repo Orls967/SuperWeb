@@ -73,7 +73,7 @@ final class VesselBallastWaterManagementService
     public function verifyBwtsOperationD2(
         int $vesselId,
         string $treatmentTechnology, // ELECTRO_CHLORINATION, UV_IRRADIATION
-        float $totalResidualOxidantPpm,
+        float $troConcentrationPpm,
         float $uvTransmittancePct,
         float $flowRateM3H
     ): array {
@@ -82,7 +82,7 @@ final class VesselBallastWaterManagementService
 
         if ($treatmentTechnology === 'ELECTRO_CHLORINATION') {
             // TRO harus berada di rentang 1.5 - 2.5 ppm saat treatment, dan < 0.1 ppm saat netralisasi de-ballasting
-            if ($totalResidualOxidantPpm < 1.0) {
+            if ($troConcentrationPpm < 1.0) {
                 $violations[] = 'Konsentrasi Total Residual Oxidant (TRO) terlalu rendah untuk disinfeksi efektif.';
             }
         } elseif ($treatmentTechnology === 'UV_IRRADIATION') {

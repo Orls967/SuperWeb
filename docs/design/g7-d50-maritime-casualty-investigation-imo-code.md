@@ -81,3 +81,4 @@ Model investigasi mengadopsi taksonomi 4 tingkat *Human Factors Analysis and Cla
 ## 5. Keputusan Teknis & Struktur Tabel Modul
 
 Setiap investigasi kecelakaan maritim disimpan dalam tabel relasional `prt_fleet_casualty_investigations` yang terhubung langsung dengan ID kapal, nomor voyage, nomor asuransi, serta riwayat paspor aset append-only untuk memastikan jejak audit tidak dapat disangkal (*non-repudiation*).
+

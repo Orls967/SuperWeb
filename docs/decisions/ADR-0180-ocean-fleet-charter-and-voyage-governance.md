@@ -27,3 +27,4 @@ Operasional armada kapal laut (*Ocean Fleet & Ship Management*) pada Lini 27 mem
 - Arsitektur maritim menjadi terstandardisasi dan terlindungi dari manipulasi data.
 - Setiap kapal yang mengalami sertifikat statutori kedaluwarsa secara otomatis diblokir dari izin berlayar.
 - Biaya operasional dan klaim demurrage dapat diaudit secara transparan sesuai standar pengapalan internasional.
+

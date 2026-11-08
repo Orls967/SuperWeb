@@ -52,3 +52,4 @@ Untuk melindungi margin kontrak sewa kapal berjangka panjang (*long-term COA / T
    - Jika harga indeks turun ke \$550 / MT, pemilik kapal membayar selisih \$70 / MT kepada lembaga kliring.
 2. **Akuntansi Mark-to-Market (MTM)**:
    Seluruh posisi kontrak derivatif yang masih terbuka dievaluasi nilainya pada setiap penutupan buku akhir bulan, dengan keuntungan/kerugian yang belum terealisasi (*unrealized P&L*) dicatat pada akun cadangan ekuitas lindung nilai arus kas (*Cash Flow Hedge Reserve*).
+

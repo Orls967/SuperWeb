@@ -28,7 +28,7 @@ final class SettlePortFinalDisbursementAction
         float $actualBerthHire,
         float $actualLinesmen = 450.0,
         float $actualWasteReception = 600.0,
-        float $actualAgencyFee = 2500.0,
+        float $actualAgencyFeeRate = 2500.0,
         float $actualCustoms = 800.0
     ): FleetPortDisbursement {
         $portCall = FleetPortCall::with('voyage')->findOrFail($portCallId);
@@ -42,7 +42,7 @@ final class SettlePortFinalDisbursementAction
             $actualBerthHire,
             $actualLinesmen,
             $actualWasteReception,
-            $actualAgencyFee,
+            $actualAgencyFeeRate,
             $actualCustoms
         );
 

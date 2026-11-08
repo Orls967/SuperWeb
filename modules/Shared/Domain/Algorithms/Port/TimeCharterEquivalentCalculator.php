@@ -49,8 +49,8 @@ final class TimeCharterEquivalentCalculator
         float $seaSteamingDays,
         float $portDaysLoad,
         float $portDaysDisch,
-        float $bunkerSeaCostUsd,
-        float $bunkerPortCostUsd,
+        float $bunkerSeaCostRate,
+        float $bunkerPortCostRate,
         float $portDisbursementsUsd,
         float $canalDuesUsd = 0.0,
         float $ballastBonusUsd = 0.0,
@@ -64,7 +64,7 @@ final class TimeCharterEquivalentCalculator
         $grossRevenue = $freightRevenue + $ballastBonusUsd + $demurrageEarnedUsd - $despatchPaidUsd;
 
         // 2. Biaya Perjalanan (Voyage Costs):
-        $totalBunkers = $bunkerSeaCostUsd + $bunkerPortCostUsd;
+        $totalBunkers = $bunkerSeaCostRate + $bunkerPortCostRate;
         $totalVoyageCosts = $totalBunkers + $portDisbursementsUsd + $canalDuesUsd + $otherVoyageExpensesUsd;
 
         // 3. Pendapatan Bersih Pelayaran (Net Voyage Revenue):

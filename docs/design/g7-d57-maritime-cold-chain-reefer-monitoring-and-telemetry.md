@@ -57,3 +57,4 @@ Jika terjadi anomali di mana suhu ruang pendingin (*return air temperature*) mel
 1. **Alarm Kritis Anjungan & Kamar Mesin**: Sistem memicu sinyal visual dan audio kepada perwira jaga dan teknisi listrik kapal (*Electro-Technical Officer - ETO*).
 2. **Pemeriksaan Fisik Lapangan**: Teknisi wajib memeriksa suplai daya listrik reefer plug-in, sirkuit pendingin freon, motor kipas evaporator, dan siklus defrost otomatis.
 3. **Pencatatan Berita Acara Insiden**: Catatan deviasi suhu disimpan secara otomatis ke dalam riwayat perjalanan konosemen (*B/L Chain of Custody*) sebagai bukti objektif klaim asuransi bila terjadi sengketa mutu saat kargo tiba di pelabuhan tujuan.
+

@@ -54,3 +54,4 @@ $$\text{Net Cargo Weight} = (\text{Displacement}_{\text{Final}} - \text{Deductib
 Di mana *Deductibles* mencakup total berat bahan bakar bunker (VLSFO/LSMGO), minyak pelumas, air tawar (*fresh water*), air balas (*ballast water*), dan konstanta kapal (*ship's constant*).
 
 Layanan `PerformDraftSurveyInspectionAction` memvalidasi angka penimbangan kargo terhadap toleransi Konosemen (*Bill of Lading tolerance* $\le 0.5\%$).
+

@@ -85,21 +85,21 @@ final class BunkerProcurementAndHedgingService
      */
     public function calculateBunkerSwapSettlement(
         float $volumeMt,
-        float $strikePriceUsd,
-        float $actualMarketPriceUsd
+        float $strikePriceRate,
+        float $actualMarketPriceRate
     ): array {
         // Jika harga pasar > strike price: trader hedging membayar kompensasi selisih kenaikan
         // Jika harga pasar < strike price: kapal membayar selisih ke trader
-        $diffPerMt = $actualMarketPriceUsd - $strikePriceUsd;
+        $diffPerMt = $actualMarketPriceRate - $strikePriceRate;
         $hedgePayout = $volumeMt * $diffPerMt;
 
         // Harga efektif setelah hedging selalu sama dengan strike price
-        $netEffectivePrice = $actualMarketPriceUsd - ($hedgePayout / max(1.0, $volumeMt));
+        $netEffectivePrice = $actualMarketPriceRate - ($hedgePayout / max(1.0, $volumeMt));
 
         return [
             'volume_mt' => round($volumeMt, 2),
-            'strike_price' => round($strikePriceUsd, 2),
-            'market_price' => round($actualMarketPriceUsd, 2),
+            'strike_price' => round($strikePriceRate, 2),
+            'market_price' => round($actualMarketPriceRate, 2),
             'hedge_payout_usd' => round($hedgePayout, 2),
             'net_effective_price_per_mt' => round($netEffectivePrice, 2),
         ];

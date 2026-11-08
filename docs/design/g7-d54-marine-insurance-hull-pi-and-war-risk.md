@@ -66,3 +66,4 @@ Klub P&I menanggung kewajiban hukum yang tidak ditutup oleh polis standar H&M:
 ```
 
 Layanan `MaritimeInsuranceClaimService` memastikan tidak ada kapal yang memasuki area berisiko tinggi (*Listed High Risk Area*) tanpa pengikatan perlindungan tambahan (*Additional Premium - AP*) yang telah disetujui perusahaan penjamin asuransi (*underwriter approval*).
+

@@ -64,20 +64,20 @@ final class MaritimeInsuranceClaimService
     public function fileProtectionAndIndemnityClaim(
         int $vesselId,
         string $claimType, // CARGO_DAMAGE, POLLUTION_CLEANUP, CREW_INJURY, STEVEDORE_DAMAGE
-        float $claimedAmountUsd,
-        float $deductibleUsd = 15000.0,
+        float $claimedDamageAmountRate,
+        float $deductibleRate = 15000.0,
         ?string $incidentSummary = null
     ): array {
         $vessel = FleetVessel::findOrFail($vesselId);
 
-        $payableByClub = max(0.0, $claimedAmountUsd - $deductibleUsd);
+        $payableByClub = max(0.0, $claimedDamageAmountRate - $deductibleRate);
 
         return [
             'vessel_id' => $vessel->id,
             'claim_number' => 'PI-'.strtoupper(bin2hex(random_bytes(4))),
             'claim_type' => $claimType,
-            'claimed_amount_usd' => round($claimedAmountUsd, 2),
-            'deductible_usd' => round($deductibleUsd, 2),
+            'claimed_amount_usd' => round($claimedDamageAmountRate, 2),
+            'deductible_usd' => round($deductibleRate, 2),
             'club_liability_estimate_usd' => round($payableByClub, 2),
             'status' => 'UNDER_ADJUSTMENT',
             'summary' => $incidentSummary ?? 'Klaim diajukan ke P&I Club untuk penanganan penjaminan maritim.',

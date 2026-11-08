@@ -239,21 +239,21 @@ final class CommercialCharterService
         string $eventType, // DELIVERY, REDELIVERY
         float $vlsfoMt,
         float $lsmgoMt,
-        float $vlsfoPrice,
-        float $lsmgoPrice,
+        float $vlsfoPriceRate,
+        float $lsmgoPriceRate,
         ?string $surveyor = 'Saybolt Marine Surveyors',
         ?string $certRef = null
     ): FleetBunkerAdjustment {
         $charter = FleetCharterParty::findOrFail($charterPartyId);
-        $totalValue = ($vlsfoMt * $vlsfoPrice) + ($lsmgoMt * $lsmgoPrice);
+        $totalValue = ($vlsfoMt * $vlsfoPriceRate) + ($lsmgoMt * $lsmgoPriceRate);
 
         return FleetBunkerAdjustment::create([
             'charter_party_id' => $charter->id,
             'event_type' => $eventType,
             'vlsfo_quantity_mt' => $vlsfoMt,
             'lsmgo_quantity_mt' => $lsmgoMt,
-            'vlsfo_price_per_mt' => $vlsfoPrice,
-            'lsmgo_price_per_mt' => $lsmgoPrice,
+            'vlsfo_price_per_mt' => $vlsfoPriceRate,
+            'lsmgo_price_per_mt' => $lsmgoPriceRate,
             'total_value_usd' => round($totalValue, 2),
             'surveyor_company' => $surveyor,
             'certificate_ref' => $certRef ?? ('BODR-'.strtoupper(bin2hex(random_bytes(3)))),

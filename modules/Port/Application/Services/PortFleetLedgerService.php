@@ -42,13 +42,13 @@ final class PortFleetLedgerService
         ?int $vesselId,
         string $debitAccount,
         string $creditAccount,
-        float $amount,
+        float $amountUnits,
         string $referenceType,
         int $referenceId,
         string $description,
         string $currency = 'USD'
     ): array {
-        if ($amount <= 0.0) {
+        if ($amountUnits <= 0.0) {
             throw new DomainException('Nilai transaksi pembukuan harus bernilai positif.');
         }
 
@@ -60,7 +60,7 @@ final class PortFleetLedgerService
             $debitCode,
             $debitAccount,
             'DEBIT',
-            $amount,
+            $amountUnits,
             $currency,
             $referenceType,
             $referenceId
@@ -72,7 +72,7 @@ final class PortFleetLedgerService
             'vessel_id' => $vesselId,
             'account_code' => $debitAccount,
             'entry_type' => 'DEBIT',
-            'amount' => $amount,
+            'amount' => $amountUnits,
             'currency' => $currency,
             'reference_type' => $referenceType,
             'reference_id' => $referenceId,
@@ -84,7 +84,7 @@ final class PortFleetLedgerService
             $creditCode,
             $creditAccount,
             'CREDIT',
-            $amount,
+            $amountUnits,
             $currency,
             $referenceType,
             $referenceId
@@ -96,7 +96,7 @@ final class PortFleetLedgerService
             'vessel_id' => $vesselId,
             'account_code' => $creditAccount,
             'entry_type' => 'CREDIT',
-            'amount' => $amount,
+            'amount' => $amountUnits,
             'currency' => $currency,
             'reference_type' => $referenceType,
             'reference_id' => $referenceId,

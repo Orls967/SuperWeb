@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Database\Seeders\PortFleetT1Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Port\Database\Seeders\PortFleetSeeder;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 describe('Port Fleet HTTP Endpoints & Audit Acceptance', function (): void {
     beforeEach(function (): void {
-        $this->seed(PortFleetSeeder::class);
+        $this->seed(PortFleetT1Seeder::class);
     });
 
     it('allows shipping line agent to view fleet overview dashboard', function (): void {

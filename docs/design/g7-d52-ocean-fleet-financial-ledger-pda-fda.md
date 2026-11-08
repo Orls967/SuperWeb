@@ -67,3 +67,4 @@ Tabel `prt_fleet_ledger_entries` mencatat setiap mutasi transaksi keuangan denga
 Setiap baris entri di `prt_fleet_ledger_entries` menghasilkan hash verifikasi:
 $$\text{Entry Hash} = \text{SHA256}(\text{ID} \parallel \text{VoyageID} \parallel \text{VesselID} \parallel \text{Account} \parallel \text{Amount} \parallel \text{Type} \parallel \text{PrevHash})$$
 Jika ada baris data yang dimanipulasi secara manual pada basis data, rantai hash akan putus dan artisan command `prt:fleet-audit` secara instan mengeluarkan kode kesalahan (exit code 1) serta membekukan modul keuangan armada.
+

@@ -35,7 +35,7 @@ final class OceanFleetWeatherRoutingOptimumRouteService
         float $vesselLengthM,
         float $stormWaveHeightM,
         float $stormWaveDirectionDegrees = 0.0, // 0 = head seas (ombak dari depan)
-        float $fuelPriceUsdPerMt = 650.0,
+        float $fuelPriceRatePerTon = 650.0,
         float $dailyCharterRateUsd = 18000.0
     ): array {
         // Formula Penurunan Kecepatan Aertssen (Head Seas Speed Loss):
@@ -49,7 +49,7 @@ final class OceanFleetWeatherRoutingOptimumRouteService
         $directSteamingHours = $directDistanceNm / $directActualSpeed;
         $directDailyBunkerMt = 32.0 * (1.0 + ($stormWaveHeightM * 0.08)); // Mesin bekerja lebih berat melawan ombak
         $directFuelMt = ($directSteamingHours / 24.0) * $directDailyBunkerMt;
-        $directCost = (($directSteamingHours / 24.0) * $dailyCharterRateUsd) + ($directFuelMt * $fuelPriceUsdPerMt);
+        $directCost = (($directSteamingHours / 24.0) * $dailyCharterRateUsd) + ($directFuelMt * $fuelPriceRatePerTon);
 
         // 2. Rute Deviasi Menghindari Cuaca (Weather Avoidance Route):
         // Menambah jarak 8%-12% tetapi menghindari gelombang tinggi (gelombang turun ke 2.0m)
@@ -59,7 +59,7 @@ final class OceanFleetWeatherRoutingOptimumRouteService
         $avoidanceSteamingHours = $diversionDistanceNm / $avoidanceSpeed;
         $avoidanceDailyBunkerMt = 28.0;
         $avoidanceFuelMt = ($avoidanceSteamingHours / 24.0) * $avoidanceDailyBunkerMt;
-        $avoidanceCost = (($avoidanceSteamingHours / 24.0) * $dailyCharterRateUsd) + ($avoidanceFuelMt * $fuelPriceUsdPerMt);
+        $avoidanceCost = (($avoidanceSteamingHours / 24.0) * $dailyCharterRateUsd) + ($avoidanceFuelMt * $fuelPriceRatePerTon);
 
         // 3. Rute Terlindung Pesisir (Coastal Protected Route):
         // Jarak bertambah 25% tetapi ombak tenang (1.2m), kecepatan maksimal
@@ -68,7 +68,7 @@ final class OceanFleetWeatherRoutingOptimumRouteService
         $coastalSteamingHours = $coastalDistanceNm / $coastalSpeed;
         $coastalDailyBunkerMt = 27.0;
         $coastalFuelMt = ($coastalSteamingHours / 24.0) * $coastalDailyBunkerMt;
-        $coastalCost = (($coastalSteamingHours / 24.0) * $dailyCharterRateUsd) + ($coastalFuelMt * $fuelPriceUsdPerMt);
+        $coastalCost = (($coastalSteamingHours / 24.0) * $dailyCharterRateUsd) + ($coastalFuelMt * $fuelPriceRatePerTon);
 
         // Tentukan rute rekomendasi: Jika ombak langsung >= 4.0m, rute langsung dilarang demi keselamatan lambung (cargo shift & parametric rolling risk)
         $recommended = 'WEATHER_AVOIDANCE';

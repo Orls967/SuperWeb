@@ -137,14 +137,14 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
     public function requestPilotage(
         int $portCallId,
         string $serviceType,
-        float $feeUsd = 1200.0,
+        float $feeRate = 1200.0,
         ?string $pilotName = 'Capt. Suryo'
     ): FleetPilotageRequest {
         return FleetPilotageRequest::create([
             'port_call_id' => $portCallId,
             'service_type' => $serviceType,
             'pilot_name' => $pilotName,
-            'pilotage_fee_usd' => $feeUsd,
+            'pilotage_fee_usd' => $feeRate,
             'status' => 'REQUESTED',
         ]);
     }
@@ -227,10 +227,10 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
         float $berthHire,
         float $linesmen = 450.0,
         float $wasteReception = 600.0,
-        float $agencyFee = 2500.0,
+        float $agencyFeeRate = 2500.0,
         float $customs = 800.0
     ): FleetPortDisbursement {
-        $total = $portDues + $pilotage + $towage + $berthHire + $linesmen + $wasteReception + $agencyFee + $customs;
+        $total = $portDues + $pilotage + $towage + $berthHire + $linesmen + $wasteReception + $agencyFeeRate + $customs;
 
         return FleetPortDisbursement::create([
             'port_call_id' => $portCallId,
@@ -242,7 +242,7 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
             'berth_hire_usd' => round($berthHire, 2),
             'linesmen_usd' => round($linesmen, 2),
             'waste_reception_usd' => round($wasteReception, 2),
-            'agency_fee_usd' => round($agencyFee, 2),
+            'agency_fee_usd' => round($agencyFeeRate, 2),
             'customs_immigration_usd' => round($customs, 2),
             'total_disbursement_usd' => round($total, 2),
             'variance_with_pda_usd' => 0.0,
@@ -259,10 +259,10 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
         float $actualBerthHire,
         float $actualLinesmen = 450.0,
         float $actualWasteReception = 600.0,
-        float $actualAgencyFee = 2500.0,
+        float $actualAgencyFeeRate = 2500.0,
         float $actualCustoms = 800.0
     ): FleetPortDisbursement {
-        $actualTotal = $actualPortDues + $actualPilotage + $actualTowage + $actualBerthHire + $actualLinesmen + $actualWasteReception + $actualAgencyFee + $actualCustoms;
+        $actualTotal = $actualPortDues + $actualPilotage + $actualTowage + $actualBerthHire + $actualLinesmen + $actualWasteReception + $actualAgencyFeeRate + $actualCustoms;
 
         $pda = FleetPortDisbursement::where('port_call_id', $portCallId)
             ->where('disbursement_type', 'PDA')
@@ -281,7 +281,7 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
             'berth_hire_usd' => round($actualBerthHire, 2),
             'linesmen_usd' => round($actualLinesmen, 2),
             'waste_reception_usd' => round($actualWasteReception, 2),
-            'agency_fee_usd' => round($actualAgencyFee, 2),
+            'agency_fee_usd' => round($actualAgencyFeeRate, 2),
             'customs_immigration_usd' => round($actualCustoms, 2),
             'total_disbursement_usd' => round($actualTotal, 2),
             'variance_with_pda_usd' => round($variance, 2),

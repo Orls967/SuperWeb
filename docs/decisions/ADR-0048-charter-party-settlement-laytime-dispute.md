@@ -19,3 +19,4 @@ Sengketa waktu muat/bongkar kapal (*Laytime Disputes*) dan denda keterlambatan (
 ## Konsekuensi
 - Menghilangkan perselisihan subjektif dalam interpretasi lembar fakta SOF pelabuhan.
 - Menjamin kepastian hukum dan percepatan rekonsiliasi kas penyewaan kapal niaga.
+
