@@ -13,3 +13,4 @@ Kelaikan terbang (*airworthiness*) merupakan regulasi keselamatan penerbangan wa
 
 ## Konsekuensi
 Menjamin tidak ada penerbangan tanpa sertifikasi kelaikan aktif yang lolos ke proses boarding atau keberangkatan.
+

@@ -17,3 +17,4 @@ Operasional aviasi dan maritim sangat rentan terhadap fluktuasi variabel ekstern
 
 ## Konsekuensi
 Menjaga konsistensi simulasi skenario deterministik (dunia normal vs dunia kejutan) dan memudahkan transisi menuju engine telemetri waktu nyata.
+

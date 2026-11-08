@@ -13,3 +13,4 @@ Kepatuhan terhadap UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP
 
 ## Konsekuensi
 Menghilangkan risiko kebocoran data pribadi penumpang dan melindungi aset lokasi tambak marikultur.
+

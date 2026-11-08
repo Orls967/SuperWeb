@@ -19,3 +19,4 @@ Sektor transportasi udara dan pelayaran laut merupakan kontributor signifikan em
 
 ## Konsekuensi
 Menyediakan visibilitas audit jejak karbon yang akurat dan mendukung pemeringkatan Carbon Intensity Indicator (CII) kapal.
+

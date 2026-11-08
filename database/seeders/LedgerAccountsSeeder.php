@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Agri\Ledger\AgriAccounts;
+use Modules\Aviation\Ledger\AviationAccounts;
 use Modules\B2b\Ledger\B2bAccounts;
 use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Domain\Models\LedgerAccount;
@@ -57,6 +58,7 @@ class LedgerAccountsSeeder extends Seeder
      */
     public const ACCOUNT_REGISTRIES = [
         AgriAccounts::class,
+        AviationAccounts::class,
         B2bAccounts::class,
         CircularAccounts::class,
         CloudKitchenAccounts::class,

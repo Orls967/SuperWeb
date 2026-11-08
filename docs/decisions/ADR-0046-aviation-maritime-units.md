@@ -16,3 +16,4 @@ Menetapkan standardisasi tipe data dan satuan ukur integer deterministik untuk s
 
 ## Konsekuensi
 Kalkulasi pembagian proporsional menggunakan algoritma Hamilton / Largest Remainder dengan tie-break deterministik. Seluruh antarmuka API dan DTO menerima dan mengembalikan representasi integer.
+

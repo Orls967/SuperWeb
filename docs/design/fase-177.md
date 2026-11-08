@@ -123,73 +123,40 @@ stateDiagram-v2
 
 ---
 
-## 3. Sequence Diagram Alur Utama & Saga Kompensasi (D2)
+## 3. Diagram Alur Utama & Saga Kompensasi (D2)
 
 ### 3.1 Alur Reservasi Penumpang (`PassengerBookingSaga`)
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Passenger as Calon Penumpang
-    participant Web as Passenger Portal / Booking UI
-    participant Saga as PassengerBookingSaga
-    participant Inv as SeatInventoryReserver (G7-K26)
-    participant KYC as Party KYC Adapter
-    participant Pay as Payment Gateway Adapter
-    participant Ledger as AviationLedgerPostingService
-
-    Passenger->>Web: Pilih Rute & Jadwal
-    Web->>Saga: Mulai Saga Pemesanan
-    Saga->>Inv: hold(flightId, cabin, seats, idempotencyKey)
-    alt Kuota Kursi Habis
-        Inv-->>Saga: Kapasitas Penuh (Exception)
-        Saga-->>Web: Gagal Hold Kursi
-    else Kuota Tersedia
-        Inv-->>Saga: Hold Berhasil (holdId, fareMinor, expiresAt)
-        Saga->>KYC: Validasi Identitas & Sanksi
-        alt Penumpang Terkena Sanksi / Data Invalid
-            KYC-->>Saga: Ditolak (Sanctioned)
-            Saga->>Inv: release(holdId) [Kompensasi]
-            Saga-->>Web: Ditolak Otoritas Keamanan
-        else Identitas Lolos
-            KYC-->>Saga: Validasi Sukses
-            Saga->>Pay: Proses Pembayaran (PaymentIntent)
-            alt Pembayaran Gagal / Timeout
-                Pay-->>Saga: Payment Failed
-                Saga->>Inv: release(holdId) [Kompensasi]
-                Saga-->>Web: Transaksi Pembayaran Gagal
-            else Pembayaran Sukses
-                Pay-->>Saga: Pembayaran Dikonfirmasi
-                Saga->>Inv: confirm(holdId, passengerPartyIds)
-                Inv-->>Saga: Tiket Terbit (list ticketId)
-                Saga->>Ledger: Jurnal Unearned (Debit Clearing, Kredit avi:passenger_unearned:IDR)
-                Saga-->>Web: Tiket Berhasil Diterbitkan (PNR Aktif)
-            end
-        end
-    end
+flowchart TD
+    P[Calon Penumpang] -->|Pilih Rute & Jadwal| Web[Booking UI / API]
+    Web -->|Mulai Saga| Saga[PassengerBookingSaga]
+    Saga -->|1. Hold Kursi TTL 15 Menit| Inv[SeatInventoryReserver G7-K26]
+    
+    Inv -->|Kapasitas Habis| Fail1[Gagal: Kapasitas Penuh]
+    Inv -->|Hold Sukses| KYC[2. Party KYC Adapter]
+    
+    KYC -->|Terkena Sanksi / Invalid| Comp1[Kompensasi: Release Hold]
+    Comp1 --> Fail2[Ditolak Otoritas Keamanan]
+    KYC -->|Identitas Lolos| Pay[3. Payment Adapter]
+    
+    Pay -->|Pembayaran Gagal| Comp2[Kompensasi: Release Hold]
+    Comp2 --> Fail3[Transaksi Batal]
+    Pay -->|Pembayaran Sukses| Confirm[4. Konfirmasi Tiket]
+    Confirm --> Ledger[5. Jurnal Unearned Revenue Ledger]
+    Ledger --> Success[Tiket Terbit & PNR Aktif]
 ```
 
 ### 3.2 Alur Penerimaan Kargo Udara & Pemeriksaan DG (`AirCargoAcceptanceSaga`)
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Shipper as Cargo Shipper / Agent
-    participant CargoSvc as AirCargoAcceptanceAction
-    participant DGApi as DangerousGoodsEligibilityChecker (A5)
-    participant LgxCustody as Logistics CustodyVerifier
-    participant Ledger as AviationLedgerPostingService
-
-    Shipper->>CargoSvc: Ajukan Paket Kargo (UN Number, Berat, Suhu)
-    CargoSvc->>DGApi: check(unNumber, mode, weightGram, holdoverMin, sectorMin)
-    alt Melebihi Batas / Mode Terlarang / Holdover Kurang
-        DGApi-->>CargoSvc: Tolak [Alasan Pelanggaran DG]
-        CargoSvc-->>Shipper: Muatan Ditolak (Dangerous Goods Non-Compliant)
-    else Memenuhi Syarat
-        DGApi-->>CargoSvc: Sertifikat Kelayakan DG Lolos
-        CargoSvc->>LgxCustody: Catat Titik Kustodi Rantai Logistik
-        LgxCustody-->>CargoSvc: Kustodi Hash Terverifikasi
-        CargoSvc->>Ledger: Jurnal Piutang Kargo (Debit avi:cargo_receivable:IDR, Kredit avi:cargo_revenue:IDR)
-        CargoSvc-->>Shipper: Kargo Diterima & Masuk Manifest Muat
-    end
+flowchart TD
+    Shipper[Cargo Agent / Shipper] -->|Ajukan Paket Kargo| CargoAction[AirCargoAcceptanceAction]
+    CargoAction -->|1. Validasi DGR| DGCheck[DangerousGoodsEligibilityChecker A5]
+    
+    DGCheck -->|Melebihi Batas / Mode Terlarang| RejectDG[Ditolak: Pelanggaran DG]
+    DGCheck -->|Sertifikat Lolos| Custody[2. Logistics CustodyVerifier]
+    
+    Custody -->|Hash Rantai Terverifikasi| LedgerCargo[3. Jurnal Piutang Kargo Ledger]
+    LedgerCargo --> Manifest[Kargo Diterima & Masuk Manifest ULD]
 ```
 
 ---
@@ -314,3 +281,4 @@ flowchart LR
     YieldMod -->|"G7-K26: SeatInventoryReserver"| Aviation
     TravelMod -->|"G7-K26: SeatInventoryReserver"| Aviation
 ```
+

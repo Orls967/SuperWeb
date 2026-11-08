@@ -24,12 +24,18 @@ class AviationOpsAcceptanceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(\Database\Seeders\LedgerAccountsSeeder::class);
+        $this->seed(\Modules\Aviation\database\seeders\AviationRbacSeeder::class);
+    }
+
     /**
      * Test 1: Matriks akses seluruh rute aviasi untuk role berhak (200) dan tak berhak (403).
      */
     public function test_akses_rute_aviasi_role_berhak_dan_terlarang(): void
     {
-        $this->seed();
 
         $routes = [
             ['url' => '/aviation/ops', 'authorized' => 'ops_controller', 'forbidden' => 'cargo_agent'],
@@ -63,8 +69,6 @@ class AviationOpsAcceptanceTest extends TestCase
      */
     public function test_alur_utama_pesan_hold_bayar_tiket_terbang_pengakuan_dan_idempotensi(): void
     {
-        $this->seed();
-
         $dispatcher = User::factory()->create();
         $dispatcher->assignRole('dispatcher');
         $customerCare = User::factory()->create();
@@ -198,7 +202,6 @@ class AviationOpsAcceptanceTest extends TestCase
      */
     public function test_aturan_bisnis_a2_tolak_pesawat_bermasalah_a3_cg_envelope_dan_a4_refund(): void
     {
-        $this->seed();
         $dispatcher = User::factory()->create();
         $dispatcher->assignRole('dispatcher');
 
@@ -260,8 +263,6 @@ class AviationOpsAcceptanceTest extends TestCase
      */
     public function test_kargo_dg_ditolak_lepas_kapasitas_dan_idor_portal_penumpang(): void
     {
-        $this->seed();
-
         $cargoAgent = User::factory()->create();
         $cargoAgent->assignRole('cargo_agent');
 
@@ -357,8 +358,6 @@ class AviationOpsAcceptanceTest extends TestCase
      */
     public function test_audit_dua_sumber_avi_audit_bersih_dan_deteksi_fixture(): void
     {
-        $this->seed();
-
         // 1. State bersih -> exit 0
         $exitClean = Artisan::call('avi:audit');
         $this->assertEquals(0, $exitClean, 'avi:audit pada state bersih harus exit 0');

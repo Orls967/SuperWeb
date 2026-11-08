@@ -15,3 +15,4 @@ Penjualan tiket penerbangan komersial membutuhkan konsistensi konkurensi tingkat
 
 ## Konsekuensi
 Menjamin ketersediaan kursi selalu deterministik dan menghilangkan risiko kerugian akibat kegagalan sinkronisasi inventori.
+

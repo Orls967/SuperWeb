@@ -24,3 +24,4 @@ Pekerjaan gelombang G7 melibatkan banyak pilar yang bekerja secara simultan (mis
 
 ## Konsekuensi
 Menjaga keutuhan arsitektur modular dan mencegah regresi pada pipeline pengujian lintas modul.
+

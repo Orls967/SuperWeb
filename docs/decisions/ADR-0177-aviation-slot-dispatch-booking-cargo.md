@@ -39,3 +39,4 @@ Kebutuhan mendirikan lini bisnis aviasi komersial (Lini 26, Fase 177) yang menca
 
 ## Konsekuensi
 Menyediakan fondasi aviasi komersial yang patuh regulasi keselamatan internasional dan standar audit finansial ketat.
+

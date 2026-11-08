@@ -86,3 +86,4 @@ Memverifikasi 6 dimensi integritas:
 6. Alokasi slot terkonfirmasi tidak melebihi kapasitas jam bandara yang ditetapkan.
 
 Fixture sabotase: `app/Quality/Audit/Fixtures/AviationAuditCorruptionFixture.php` (exit != 0 saat dideteksi ketidaksesuaian).
+

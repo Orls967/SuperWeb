@@ -3,6 +3,7 @@
 use App\Providers\AppServiceProvider;
 use Modules\Agency\AgencyServiceProvider;
 use Modules\Agri\AgriServiceProvider;
+use Modules\Aviation\AviationServiceProvider;
 use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
@@ -71,6 +72,7 @@ return [
     ProServicesServiceProvider::class,
     ForestServiceProvider::class,
     AppServiceProvider::class,
+    AviationServiceProvider::class,
     SharedServiceProvider::class,
     CoreServiceProvider::class,
     AutoServeServiceProvider::class,

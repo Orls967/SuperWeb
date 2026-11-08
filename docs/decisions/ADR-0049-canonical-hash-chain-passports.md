@@ -13,3 +13,4 @@ Integritas riwayat perawatan pesawat, paspor digital kapal laut, dan garis ketur
 
 ## Konsekuensi
 Menjamin bukti kepatuhan audit regulasi maritim dan aviasi dapat diverifikasi secara kriptografis tanpa mengekspos rahasia dagang.
+
