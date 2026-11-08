@@ -68967,6 +68967,376 @@ paths:
           BearerAuth: {}
         -
           SessionCookieAuth: {}
+  /port/charter:
+    get:
+      operationId: getPortCharterIndex
+      tags:
+        - Port
+      summary: 'Charter (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /port/fleet:
+    get:
+      operationId: getPortFleetIndex
+      tags:
+        - Port
+      summary: 'Index (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /port/services:
+    get:
+      operationId: getPortServicesIndex
+      tags:
+        - Port
+      summary: 'Services (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /port/simulate/malacca-incident:
+    post:
+      operationId: postPortSimulateMalacca
+      tags:
+        - Port
+      summary: 'Simulate Malacca Incident (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postPortSimulateMalacca'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /port/simulate/tce:
+    post:
+      operationId: postPortSimulateTce
+      tags:
+        - Port
+      summary: 'Simulate Tce (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postPortSimulateTce'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /port/voyages:
+    get:
+      operationId: getPortVoyagesIndex
+      tags:
+        - Port
+      summary: 'Voyages (Port)'
+      description: 'Operational endpoint for Port module. Protected by role matrix: [admin, port_operator, shipping_line_agent].'
+      x-allowed-roles:
+        - admin
+        - port_operator
+        - shipping_line_agent
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /port/yard:
     get:
       operationId: getPortYard

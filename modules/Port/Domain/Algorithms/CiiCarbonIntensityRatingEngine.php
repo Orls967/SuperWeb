@@ -9,29 +9,6 @@ use Modules\Shared\Domain\Algorithms\Port\CiiCarbonIntensityRatingEngine as Kern
 /**
  * Port Module Wrapper for CiiCarbonIntensityRatingEngine.
  */
-final class CiiCarbonIntensityRatingEngine
+class CiiCarbonIntensityRatingEngine extends KernelCiiCarbonIntensityRatingEngine
 {
-    private KernelCiiCarbonIntensityRatingEngine $kernel;
-
-    public function __construct(?KernelCiiCarbonIntensityRatingEngine $kernel = null)
-    {
-        $this->kernel = $kernel ?? new KernelCiiCarbonIntensityRatingEngine();
-    }
-
-    public function evaluateCii(
-        string $shipType,
-        float $capacityDwt,
-        float $distanceTraveledNm,
-        array $fuelConsumedMt,
-        int $year = 2026
-    ): array {
-        return $this->kernel->evaluateCii(
-            $shipType,
-            $capacityDwt,
-            $distanceTraveledNm,
-            $fuelConsumedMt,
-            $year
-        );
-    }
 }
-
