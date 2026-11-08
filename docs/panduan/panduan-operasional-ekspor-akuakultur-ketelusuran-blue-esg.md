@@ -26,22 +26,14 @@ Sebelum siklus tebar baru dimulai, petak tambak wajib menjalani masa istirahat/b
 4. **Disinfeksi Air Pasok:** Lakukan klorinasi air pasok tandon dengan dosis minimal $25\text{ ppm}$ kaporit aktif, lalu endapkan selama minimal 3 hari hingga residu klorin aktif turun di bawah $0.01\text{ ppm}$ sebelum benur ditebar.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Petambak as Teknisi Tambak
-    participant IoT as Sensor Air IoT
-    participant App as Modul Marine (API)
-    participant Feed as Gudang Pakan ASC
-
-    Petambak->>App: Input Pendaftaran Tebar Benur (Hatchery SPF + Luas Tambak)
-    App-->>Petambak: Batch ID Diterbitkan (Status: HATCHERY_STOCKED)
-    loop Setiap 6 Jam
-        IoT->>App: Kirim Telemetri Kualitas Air (DO, Suhu, pH, Salinitas, ORP)
-        App->>App: Evaluasi Ambang Kritis & Anomali Anoksia
-    end
-    Petambak->>App: Catat Waktu Pakan & Persentase Sisa Anco
-    App->>Feed: Verifikasi Stok Pakan Bersertifikat & Potong Stok
-    App-->>Petambak: Rekomendasi Penyesuaian Dosis Pakan Harian (Algoritma A16)
+flowchart TD
+    Petambak["Teknisi Tambak"] -->|"Pendaftaran Tebar Benur"| App["Modul Marine API"]
+    App -->|"Batch ID (HATCHERY_STOCKED)"| Petambak
+    IoT["Sensor Air IoT"] -->|"Telemetri Air Tiap 6 Jam"| App
+    App -->|"Evaluasi Anomali & Kualitas Air"| App
+    Petambak -->|"Catat Waktu & Sisa Anco"| App
+    App -->|"Verifikasi & Potong Stok"| Feed["Gudang Pakan ASC"]
+    App -->|"Rekomendasi Dosis FCR (A16)"| Petambak
 ```
 
 ---
