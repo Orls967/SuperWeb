@@ -2887,4 +2887,36 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   8. **D177-8 (Penjurnalan Akrual Double-Entry avi:*)**: Penjualan tiket dikreditkan ke kewajiban pendapatan diterima di muka `avi:passenger_unearned:IDR`. Pengakuan pendapatan `avi:ticket_revenue:IDR` dan hutang pajak `avi:tax_payable:IDR` baru dijurnal saat penerbangan berstatus `flown`.
   9. **D177-9 (Audit Dua Sumber avi:audit)**: Verifikasi integritas komparatif 6 dimensi antara data tabel modul dengan buku besar finansial dan sertifikat operasional.
 
+## 2026-11-08: [G7-P7.2] Modul Aviation — Jaringan Rute, Yield, Codeshare & IRROPS (Fase 178, D178-1..D178-6)
+- **Anchor:** `2026-11-08-g7-p7-aviasi-maritim-fase-178` / `d178-1` / `d178-2` / `d178-3` / `d178-4` / `d178-5` / `d178-6`
+- **Konteks:**
+  - Melanjutkan Lini 26 Aviasi dengan kapabilitas jaringan rute, manajemen yield dinamis bersertifikat EMSRb, kemitraan codeshare prorata SPA, dan penanganan gangguan operasional (IRROPS).
+- **Keputusan:**
+  1. **D178-1 (Alokasi Inventori EMSRb A6)**: Proteksi level kursi kelas tarif tinggi berbasis algoritma Littlewood & Belobaba EMSRb.
+  2. **D178-2 (Yield & Dynamic Pricing A7)**: Penetapan harga dinamis berbasis eksponensial kurva permintaan, pembatasan fluktuasi maksimal per revisi.
+  3. **D178-3 (Codeshare Prorate Agreement A8)**: Perhitungan pembagian pendapatan antar-maskapai berbasis straight rate prorate (SRP) dan jarak Great Circle.
+  4. **D178-4 (Saga Disrupsi IRROPS A9 & Kemitraan Hotel)**: Rekomendasi solusi disrupsi via A9 `IrropsDisruptionReaccommodationEngine`, koordinasi voucher kompensasi dan reservasi hotel via `RoomBlockReserver`.
+  5. **D178-5 (Loyalty Miles Liability Ledger)**: Pengelolaan liabilitas poin miles dengan pembukuan ganda dan pencegahan double-earning lintas codeshare.
+  6. **D178-6 (Audit Keandalan Jaringan avi:audit)**: Perluasan dimensi audit untuk mencakup rekonsiliasi poin miles, penyelesaian codeshare, dan voucher IRROPS.
+
+<a id="g7-d48"></a>
+<a id="g7-d49"></a>
+## 2026-11-08: [G7-P7.3] Modul Port — Armada Kapal, Voyage, Charter & Marine Services (Fase 180, G7-D48..G7-D49, D180-1..D180-6)
+- **Anchor:** `2026-11-08-g7-p7-aviasi-maritim-fase-180` / `g7-d48` / `g7-d49` / `d180-1` / `d180-2` / `d180-3` / `d180-4` / `d180-5` / `d180-6`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/g7-d48-charter-party-settlement-laytime-dispute.md`](design/g7-d48-charter-party-settlement-laytime-dispute.md) (G7-D48: Charter Party & Laytime Settlement)
+  - [`docs/design/g7-d49-dual-fuel-carbon-intensity-rating-standard.md`](design/g7-d49-dual-fuel-carbon-intensity-rating-standard.md) (G7-D49: IMO CII Rating & Fuel Standard)
+  - [`docs/konsep/fase-180-armada-kapal-voyage-charter-marine-services.md`](konsep/fase-180-armada-kapal-voyage-charter-marine-services.md) (Konsep Fase 180)
+  - [`docs/panduan/panduan-operasional-armada-voyage-charter-maritim.md`](panduan/panduan-operasional-armada-voyage-charter-maritim.md) (Panduan Operasional Maritim)
+- **Konteks:**
+  - Melaksanakan Lini 27 Maritim & Pelabuhan (Fase 180) dengan memperluas modul `Port` (`prt_`), menggantikan kode kerangka lama `Modules\Integration\Application\Services\OceanFleetService` secara vertical slice lengkap.
+- **Keputusan:**
+  1. **D180-1 (Master Armada Kapal, Kunci Alami IMO/MMSI & Paspor Aset)**: Pendaftaran armada kapal ocean-going di bawah `prt_fleet_vessels` dengan validasi IMO check-digit dan MMSI unik, terhubung ke paspor append-only `prt_fleet_asset_passports` berantai hash kriptografi SHA-256.
+  2. **D180-2 (Konsumsi Bunker A10 & Efisiensi Emisi CII IMO A12 - G7-D49)**: Optimasi rute dan bunker multi-port via A10 `BunkerFuelConsumptionOptimizer` (hukum kubik propulsi dan koreksi Beaufort) dan penilaian intensitas karbon tahunan IMO MEPC.354(78) A–E via A12 `CiiCarbonIntensityRatingEngine`.
+  3. **D180-3 (Perhitungan Laytime BIMCO & Sengketa Demurrage A11 - G7-D48)**: Penegakan aturan klausula Gencon/SHINC/SHEX, pengecualian cuaca hujan, dan turn-time NOR via A11 `LaytimeDemurrageCalculator` serta penyelesaian sengketa demurrage terikat kontrak sewa kapal.
+  4. **D180-4 (Pendapatan Sewa TCE Baltic Exchange A13 & York-Antwerp General Average A14)**: Kalkulasi Baltic Exchange Time Charter Equivalent via A13 `TimeCharterEquivalentCalculator` vs biaya operasi harian OPEX, serta pembagian kontribusi kerugian laut darurat York-Antwerp Rules 2016 via A14 `GeneralAverageContributionDistributor`.
+  5. **D180-5 (Saga Sewa & Pelayaran Maritim VoyageCharterExecutionSaga)**: Orkestrasi penjaminan kelaiklautan SOLAS/STCW -> pembentukan kontrak carter -> penetapan voyage -> pemesanan slot dermaga via `VesselCallWindowProvider` (G7-K27) -> alokasi PDA di double-entry ledger -> konfirmasi carter dengan kompensasi rollback otomatis.
+  6. **D180-6 (Buku Besar Keuangan Armada Double-Entry & Audit Mandiri prt:fleet-audit)**: Pencatatan akrual freight, bunker PDA/FDA, demurrage, dan biaya pelabuhan berantai hash verifikasi di `prt_fleet_ledger_entries`, dikawal command audit `prt:fleet-audit` tahan uji korupsi data.
+
+
 

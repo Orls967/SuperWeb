@@ -3969,6 +3969,24 @@ return [
     'port.billing' => [
         'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
     ],
+    'port.fleet.index' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.voyages.index' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.charter.index' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.services.index' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.simulate.tce' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
+    'port.simulate.malacca' => [
+        'roles' => ['admin', 'port_operator', 'shipping_line_agent'],
+    ],
     'fashion.collections.index' => [
         'roles' => ['admin', 'fashion_buyer', 'merchandiser'],
     ],

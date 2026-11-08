@@ -6,14 +6,61 @@ namespace Modules\Port;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Registry\TransactionTypeRegistry;
+use Modules\Logistics\Contracts\VesselRegistry;
+use Modules\Port\Application\Services\BunkerProcurementAndHedgingService;
+use Modules\Port\Application\Services\CanalTransitAndPassageTollService;
+use Modules\Port\Application\Services\ColdIroningShorePowerService;
+use Modules\Port\Application\Services\CommercialCharterService;
+use Modules\Port\Application\Services\CrewRotationAndPayrollService;
+use Modules\Port\Application\Services\GeneralAverageAdjustmentService;
+use Modules\Port\Application\Services\MarineServicesDisbursementService;
+use Modules\Port\Application\Services\MaritimeCargoCustodyService;
+use Modules\Port\Application\Services\MaritimeCasualtyInvestigationService;
+use Modules\Port\Application\Services\MaritimeEsgCiiService;
+use Modules\Port\Application\Services\MaritimeInsuranceClaimService;
+use Modules\Port\Application\Services\OceanFleetRouteOptimizationService;
+use Modules\Port\Application\Services\OceanFleetWeatherRoutingOptimumRouteService;
+use Modules\Port\Application\Services\PortFacilitySecurityAuditService;
+use Modules\Port\Application\Services\PortFleetLedgerService;
+use Modules\Port\Application\Services\PortFleetService;
+use Modules\Port\Application\Services\VesselBallastWaterManagementService;
+use Modules\Port\Application\Services\VesselDrydockingAndSurveyPlanningService;
+use Modules\Port\Application\Services\VesselMaintenanceWorkOrderService;
+use Modules\Port\Application\Services\VoyageExecutionService;
 use Modules\Port\Console\Commands\AuditPortCommand;
+use Modules\Port\Console\Commands\AuditPortFleetCommand;
+use Modules\Port\Contracts\VesselCallWindowProvider;
 use Modules\Port\Ledger\PortTransactionTypes;
 
 class PortServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Bindings if needed
+        // Bindings kontrak lintas modul
+        $this->app->singleton(PortFleetService::class);
+        $this->app->bind(VesselRegistry::class, PortFleetService::class);
+
+        $this->app->singleton(MarineServicesDisbursementService::class);
+        $this->app->bind(VesselCallWindowProvider::class, MarineServicesDisbursementService::class);
+
+        $this->app->singleton(VoyageExecutionService::class);
+        $this->app->singleton(CommercialCharterService::class);
+        $this->app->singleton(MaritimeEsgCiiService::class);
+        $this->app->singleton(GeneralAverageAdjustmentService::class);
+        $this->app->singleton(PortFleetLedgerService::class);
+        $this->app->singleton(VesselMaintenanceWorkOrderService::class);
+        $this->app->singleton(MaritimeCargoCustodyService::class);
+        $this->app->singleton(BunkerProcurementAndHedgingService::class);
+        $this->app->singleton(CanalTransitAndPassageTollService::class);
+        $this->app->singleton(MaritimeInsuranceClaimService::class);
+        $this->app->singleton(CrewRotationAndPayrollService::class);
+        $this->app->singleton(VesselBallastWaterManagementService::class);
+        $this->app->singleton(PortFacilitySecurityAuditService::class);
+        $this->app->singleton(ColdIroningShorePowerService::class);
+        $this->app->singleton(OceanFleetRouteOptimizationService::class);
+        $this->app->singleton(MaritimeCasualtyInvestigationService::class);
+        $this->app->singleton(VesselDrydockingAndSurveyPlanningService::class);
+        $this->app->singleton(OceanFleetWeatherRoutingOptimumRouteService::class);
     }
 
     public function boot(): void
@@ -27,6 +74,7 @@ class PortServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditPortCommand::class,
+                AuditPortFleetCommand::class,
             ]);
         }
     }
