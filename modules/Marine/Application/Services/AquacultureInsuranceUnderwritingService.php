@@ -28,6 +28,7 @@ class AquacultureInsuranceUnderwritingService
      * @return array{
      *     policy_reference: string,
      *     batch_code: string,
+     *     coverage_type: string,
      *     sum_insured_minor_cents: int,
      *     estimated_premium_minor_cents: int,
      *     coverage_start_date: string,
@@ -38,7 +39,8 @@ class AquacultureInsuranceUnderwritingService
     public function bindParametricPondPolicy(
         int $batchId,
         int $sumInsuredMinorCents,
-        int $estimatedPopulationCap
+        int $estimatedPopulationCap,
+        string $coverageType = 'PARAMETRIC_WATER_QUALITY_MORTALITY'
     ): array {
         $batch = AquacultureBatch::findOrFail($batchId);
 
@@ -51,7 +53,7 @@ class AquacultureInsuranceUnderwritingService
 
         $idempotencyKey = 'INS-AQUA-'.hash('sha256', $batch->batch_code.':'.$coverageType.':'.$batch->id);
         $policyRef = 'POL-AQUA-'.strtoupper(substr($idempotencyKey, 9, 12));
-        $premiumMinor = (int) round($sumInsuredMinorCents * 0.035); // Premi 3.5%
+        $premiumMinor = intdiv($sumInsuredMinorCents * 350 + 5000, 10000); // Premi 3.5%
 
         if ($this->coverBinder) {
             try {
@@ -72,6 +74,7 @@ class AquacultureInsuranceUnderwritingService
         return [
             'policy_reference' => $policyRef,
             'batch_code' => $batch->batch_code,
+            'coverage_type' => $coverageType,
             'sum_insured_minor_cents' => $sumInsuredMinorCents,
             'estimated_premium_minor_cents' => $premiumMinor,
             'coverage_start_date' => $startDate->toDateString(),

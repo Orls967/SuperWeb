@@ -18,12 +18,17 @@ class BindParametricCoverAction
     /**
      * @return array<string, mixed>
      */
-    public function execute(int $batchId, int $sumInsuredMinorCents, int $estimatedPopulationCap): array
-    {
+    public function execute(
+        int $batchId,
+        int $sumInsuredMinorCents,
+        int $estimatedPopulationCap,
+        string $coverageType = 'PARAMETRIC_WATER_QUALITY_MORTALITY'
+    ): array {
         return $this->insuranceService->bindParametricPondPolicy(
             $batchId,
             $sumInsuredMinorCents,
-            $estimatedPopulationCap
+            $estimatedPopulationCap,
+            $coverageType
         );
     }
 }
