@@ -32,3 +32,4 @@ class AviationCargoPolicy
         return $user->hasRole(['admin', 'cargo_agent', 'superadmin']);
     }
 }
+

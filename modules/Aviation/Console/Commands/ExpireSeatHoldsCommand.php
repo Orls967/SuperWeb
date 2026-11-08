@@ -63,3 +63,4 @@ class ExpireSeatHoldsCommand extends Command
         return self::SUCCESS;
     }
 }
+

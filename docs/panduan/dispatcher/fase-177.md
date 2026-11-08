@@ -44,3 +44,4 @@ Akses melalui rute `/aviation/dispatch`:
    - Menghasilkan rekam jejak resmi `AviationWeightBalanceRecord`.
    - Mengubah status penerbangan menjadi `airworthy_cleared`.
    - Menerbitkan manifes resmi penerbangan (`FlightManifestCsvExporter`) untuk ditandatangani oleh Pilot in Command (PIC).
+

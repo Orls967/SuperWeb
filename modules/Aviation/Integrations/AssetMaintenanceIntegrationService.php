@@ -72,3 +72,4 @@ class AssetMaintenanceIntegrationService
         return $fallbackId;
     }
 }
+

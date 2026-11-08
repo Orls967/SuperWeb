@@ -35,3 +35,4 @@ Auditor dapat mengunduh rekonsiliasi lengkap melalui menu laporan `/aviation/rep
 php artisan avi:manifest GA-404 --type=both
 ```
 Seluruh file CSV yang diekspor menggunakan format standar dengan tanda tangan UTF-8 BOM untuk memudahkan audit menggunakan aplikasi spreadsheet.
+

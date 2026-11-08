@@ -44,3 +44,4 @@ Setelah tim teknisi MRO menyelesaikan seluruh inspeksi dan menutup buku catatan 
    - Mereset pencacah jam terbang atau siklus pendaratan ke angka nol sesuai jenis inspeksi yang diselesaikan.
    - Memperpanjang masa berlaku sertifikat kelaikan udara secara otomatis di basis data.
    - Mengubah status armada dari *maintenance* kembali ke *active* sehingga pesawat siap dialokasikan untuk jadwal penerbangan komersial berikutnya.
+

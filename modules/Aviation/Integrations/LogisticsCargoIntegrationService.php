@@ -47,3 +47,4 @@ class LogisticsCargoIntegrationService
             && ctype_xdigit($consignment->custody_hash_chain);
     }
 }
+

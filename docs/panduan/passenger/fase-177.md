@@ -36,3 +36,4 @@ Penumpang berhak mengajukan pengembalian dana tiket melalui portal atau meja lay
    - **Pembatalan < 24 Jam:** Pengembalian 25% tarif dasar (atau hangus untuk kelas PROMO non-refundable).
    - **Pembatalan Karena Force Majeure / Maskapai (PM 89/2015):** Pengembalian 100% penuh tarif dasar ditambah seluruh pajak bandara.
 4. Dana refund akan dibukukan ke dalam akun kewajiban pengembalian dana dan diproses ke rekening pemesan.
+

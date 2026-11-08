@@ -27,3 +27,4 @@ Bila paket dinyatakan memuat zat atau bahan berbahaya:
 6. Sistem memverifikasi batasan kargo terhadap regulasi kabin pesawat penumpang:
    - Jika ditolak: Sistem mengeluarkan pesan `DangerousGoodsRejectedException` dan melarang pemuatan.
    - Jika lolos: Paket berstatus `dg_cleared`, hash rantai kustodi dibuat, dan sistem membukukan piutang kargo pada akun buku besar `avi:cargo_receivable:IDR`.
+

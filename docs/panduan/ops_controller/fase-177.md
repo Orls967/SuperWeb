@@ -30,3 +30,4 @@ Ketika terjadi cuaca buruk, penutupan landas pacu bandara, atau anomali armada:
    - Menghitung hak pengembalian dana penuh 100% tanpa potongan denda (karena pembatalan sepihak maskapai sesuai PM 89/2015).
    - Membukukan kewajiban pengembalian dana pada akun buku besar `avi:refund_payable:IDR`.
    - Menghubungi modul Hotel untuk menerbitkan voucer akomodasi darurat bagi penumpang transit yang terdampak penundaan bermalam.
+
