@@ -80,8 +80,19 @@ class CodeshareMileageAccrualEngine
             'base_miles' => $baseMiles,
             'bonus_miles' => $bonusMiles,
             'miles_accrued' => $result->milesAccrued,
-            'certificate_hash' => $result->certificate->hash,
+            'certificate_hash' => $result->certificate->sha256Hash,
         ];
+    }
+
+    /**
+     * Hasilkan hash komposit nonce klaim untuk deteksi klaim ganda anti-double dip.
+     */
+    public function generateClaimNonceHash(
+        string $eTicketNumber,
+        int|string $flightId,
+        string $departureDateIso
+    ): string {
+        return hash('sha256', strtoupper(trim($eTicketNumber)).'|'.$flightId.'|'.trim($departureDateIso));
     }
 
     /**

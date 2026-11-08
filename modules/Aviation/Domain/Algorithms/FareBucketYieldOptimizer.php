@@ -39,9 +39,9 @@ class FareBucketYieldOptimizer
         $result = $this->engine->optimize($totalCapacity, $classes);
 
         return [
-            'total_capacity' => $result->totalCapacity,
+            'total_capacity' => $result->capacity,
             'buckets' => $result->buckets,
-            'certificate_hash' => $result->certificate->hash,
+            'certificate_hash' => $result->certificate->sha256Hash,
             'algorithm_version' => $result->certificate->algorithmVersion,
         ];
     }

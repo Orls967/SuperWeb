@@ -40,7 +40,7 @@ class DisruptedPassengerReaccommodator
         $engine = new \Modules\Shared\Domain\Algorithms\Aviation\DisruptedPassengerReaccommodator;
         $result = $engine->prioritize($passengers);
 
-        return $result->orderedPassengers;
+        return $result->prioritizedQueue;
     }
 
     /**

@@ -57,7 +57,8 @@ class PassengerCareObligationCalculator
         };
 
         $isCancellation = ($res->category === 'CAT6_CANCELLED');
-        $isLongDelay = ($delayMinutes > 240);
+        $isRerouteRequired = $isCancellation || ($delayMinutes >= 180);
+        $isRefundRequired = $isCancellation || ($delayMinutes >= 180);
 
         return [
             'category' => $res->category,
@@ -68,8 +69,8 @@ class PassengerCareObligationCalculator
             'cash_compensation_required' => $res->cashCompensationRequired,
             'cash_compensation_amount_minor_unit' => $res->cashCompensationAmountMinorUnit,
             'hotel_required' => $res->hotelRequired,
-            'reroute_option_required' => $isCancellation || $isLongDelay,
-            'refund_option_required' => $isCancellation || $isLongDelay,
+            'reroute_option_required' => $isRerouteRequired,
+            'refund_option_required' => $isRefundRequired,
             'legal_basis' => $legalBasis,
         ];
     }
