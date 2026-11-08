@@ -1,21 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-bold leading-tight text-gray-800 dark:text-gray-200">
-                Perjanjian Kerjasama Codeshare & Prorasi Antar-Maskapai
-            </h2>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">
-                Prorate Manual Passenger IATA
-            </span>
-        </div>
+        <header class="page-codeshare-header">
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight dark:text-gray-100">
+                Codeshare & Interline Clearing
+            </h1>
+            <p class="text-xs text-cyan-600 font-semibold dark:text-cyan-400">
+                Prorate Manual Passenger IATA Multilateral Matrix
+            </p>
+        </header>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <main class="py-5">
+        <section class="max-w-7xl mx-auto px-4 space-y-5">
             @if (session('status'))
-                <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300">
+                <aside class="p-3 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-md text-xs dark:bg-emerald-900 dark:border-emerald-700 dark:text-emerald-100">
                     {{ session('status') }}
-                </div>
+                </aside>
             @endif
 
             <!-- Metrik Aliansi -->
@@ -105,6 +105,6 @@
                     </div>
                 @endif
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 </x-app-layout>

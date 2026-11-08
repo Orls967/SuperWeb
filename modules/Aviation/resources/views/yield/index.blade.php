@@ -1,19 +1,19 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-bold leading-tight text-gray-800 dark:text-gray-200">
-                Manajemen Hasil & Ember Tarif (Yield & Revenue Management)
-            </h2>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
-                Algoritma EMSR-b Littlewood Aktif
-            </span>
+        <div class="yield-top-bar flex items-baseline justify-between border-b pb-2">
+            <h1 class="text-xl font-extrabold text-gray-900 dark:text-gray-50">
+                Optimasi Pendapatan & Ember Tarif Aviasi
+            </h1>
+            <em class="text-xs text-emerald-700 bg-emerald-50 px-2 py-1 rounded not-italic font-mono">
+                EMSR-b Littlewood Mode
+            </em>
         </div>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="py-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-5">
             @if (session('status'))
-                <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300">
+                <div class="rounded-lg bg-green-50 p-3 border border-green-200 text-green-800 text-sm">
                     {{ session('status') }}
                 </div>
             @endif

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Domain\Algorithms;
 
+use Modules\Shared\Domain\Algorithms\Aviation\CodeshareMileageAccrualEngine as SharedEngine;
+
 /**
  * Algoritma A8: Codeshare Mileage Accrual Engine.
  *
@@ -13,6 +15,13 @@ namespace Modules\Aviation\Domain\Algorithms;
  */
 class CodeshareMileageAccrualEngine
 {
+    private readonly SharedEngine $engine;
+
+    public function __construct(?SharedEngine $engine = null)
+    {
+        $this->engine = $engine ?? new SharedEngine();
+    }
+
     /**
      * Hitung bagi hasil pendapatan tiket dan akrual poin miles loyalitas.
      *
@@ -43,71 +52,50 @@ class CodeshareMileageAccrualEngine
         int $operatingAirlineBps = 8500,
         int $marketingAirlineBps = 1500
     ): array {
-        // Validasi proporsi basis poin total 10.000 (100%)
-        $totalBps = $operatingAirlineBps + $marketingAirlineBps;
-        if ($totalBps <= 0) {
-            $operatingAirlineBps = 8500;
-            $marketingAirlineBps = 1500;
-            $totalBps = 10000;
-        }
-
-        $operatingShare = (int) round(($grossFareMinorUnit * $operatingAirlineBps) / (float) $totalBps);
-        $marketingShare = $grossFareMinorUnit - $operatingShare;
-
-        // Faktor pengali kelas kabin
-        $cabinMultiplier = match (strtolower($cabinClass)) {
-            'first' => 2.0,
-            'business' => 1.5,
-            'premium_economy' => 1.25,
-            'economy_promo' => 0.5,
-            default => 1.0, // economy_standard
-        };
-
-        // Faktor pengali bonus tier loyalitas
-        $tierBonusMultiplier = match (strtolower($passengerTier)) {
-            'platinum' => 1.0,  // +100% bonus
-            'gold' => 0.5,      // +50% bonus
-            'silver' => 0.25,   // +25% bonus
-            default => 0.0,     // classic / blue tanpa bonus
-        };
-
-        $baseMiles = (int) round($tpmDistance * $cabinMultiplier);
-        $bonusMiles = (int) round($baseMiles * $tierBonusMultiplier);
-        $totalMilesAccrued = $baseMiles + $bonusMiles;
-
-        $certHash = hash('sha256', sprintf(
-            '%d:%d:%s:%s:%d:%d:%d',
+        $result = $this->engine->calculate(
             $grossFareMinorUnit,
             $tpmDistance,
             $cabinClass,
             $passengerTier,
-            $operatingShare,
-            $marketingShare,
-            $totalMilesAccrued
-        ));
+            $operatingAirlineBps,
+            $marketingAirlineBps
+        );
+
+        $cabinFactors = ['first' => 2.0, 'business' => 1.5, 'premium_economy' => 1.25, 'economy_promo' => 0.5];
+        $cabinMultiplier = $cabinFactors[strtolower($cabinClass)] ?? 1.0;
+
+        $tierFactors = ['platinum' => 1.0, 'gold' => 0.5, 'silver' => 0.25];
+        $tierBonusMultiplier = $tierFactors[strtolower($passengerTier)] ?? 0.0;
+
+        $baseMiles = (int) round($tpmDistance * $cabinMultiplier);
+        $bonusMiles = (int) round($baseMiles * $tierBonusMultiplier);
 
         return [
-            'gross_fare_minor_unit' => $grossFareMinorUnit,
-            'operating_share_minor_unit' => $operatingShare,
-            'marketing_share_minor_unit' => $marketingShare,
+            'gross_fare_minor_unit' => $result->grossFareMinorUnit,
+            'operating_share_minor_unit' => $result->operatingShareMinorUnit,
+            'marketing_share_minor_unit' => $result->marketingShareMinorUnit,
             'tpm_distance' => $tpmDistance,
             'cabin_multiplier' => $cabinMultiplier,
             'tier_bonus_multiplier' => $tierBonusMultiplier,
             'base_miles' => $baseMiles,
             'bonus_miles' => $bonusMiles,
-            'miles_accrued' => $totalMilesAccrued,
-            'certificate_hash' => $certHash,
+            'miles_accrued' => $result->milesAccrued,
+            'certificate_hash' => $result->certificate->hash,
         ];
     }
 
     /**
-     * Bangkitkan token hash deterministik anti-double dip untuk klaim poin miles.
+     * Hasilkan jejak sidik jari unik untuk mendeteksi upaya klaim kredit ganda lintas aliansi.
      */
-    public function generateClaimNonceHash(string $ticketNumber, int $couponNumber, string $flightDate): string
-    {
-        $normalizedTicket = trim($ticketNumber);
-        $payload = sprintf('%s|CPN:%d|DATE:%s|SALT:AVI-LOYALTY-G7-P7', $normalizedTicket, $couponNumber, $flightDate);
+    public function generateAntiDoubleDipFingerprint(
+        string $eTicketNumber,
+        string $flightNumber,
+        string $departureDateIso
+    ): string {
+        $normalizedPayload = strtoupper(trim($eTicketNumber)).'|'.
+            strtoupper(trim($flightNumber)).'|'.
+            trim($departureDateIso);
 
-        return hash('sha256', $payload);
+        return hash('sha256', $normalizedPayload);
     }
 }

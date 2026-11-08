@@ -1,19 +1,19 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-bold leading-tight text-gray-800 dark:text-gray-200">
-                Program Loyalitas Aviasi (Frequent Flyer Program)
+        <nav class="ffp-banner flex justify-between items-center py-1">
+            <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">
+                Loyalty & Frequent Flyer Program
             </h2>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
-                Buku Besar Poin Miles & Anti-Double Dipping
-            </span>
-        </div>
+            <div class="px-3 py-1 bg-amber-500 text-white rounded-md text-xs font-semibold">
+                Ledger Liabilitas Poin
+            </div>
+        </nav>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="py-4">
+        <div class="container mx-auto px-4 max-w-6xl space-y-4">
             @if (session('status'))
-                <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-sm dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300">
+                <div class="p-3 bg-emerald-50 text-emerald-800 rounded border border-emerald-300 text-xs">
                     {{ session('status') }}
                 </div>
             @endif
