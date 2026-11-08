@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Hotel\Http\Controllers\GuestStayPortalController;
+use Modules\Hotel\Http\Controllers\HotelAllianceExchangeController;
+use Modules\Hotel\Http\Controllers\HotelAwardNightBookingController;
 use Modules\Hotel\Http\Controllers\HotelBanquetMiceController;
 use Modules\Hotel\Http\Controllers\HotelBanquetProductionController;
 use Modules\Hotel\Http\Controllers\HotelBanquetTimesharePackageController;
 use Modules\Hotel\Http\Controllers\HotelCityLedgerBillingController;
+use Modules\Hotel\Http\Controllers\HotelCoBrandCardController;
 use Modules\Hotel\Http\Controllers\HotelComplianceController;
 use Modules\Hotel\Http\Controllers\HotelController;
+use Modules\Hotel\Http\Controllers\HotelCorporateLoyaltyController;
 use Modules\Hotel\Http\Controllers\HotelCorporatePortalController;
 use Modules\Hotel\Http\Controllers\HotelDestinationBundleController;
 use Modules\Hotel\Http\Controllers\HotelEnergyController;
 use Modules\Hotel\Http\Controllers\HotelEngineeringController;
+use Modules\Hotel\Http\Controllers\HotelEsgCarbonOffsetController;
 use Modules\Hotel\Http\Controllers\HotelFolioSplitController;
 use Modules\Hotel\Http\Controllers\HotelFrontDeskController;
 use Modules\Hotel\Http\Controllers\HotelGuestPortalController;
 use Modules\Hotel\Http\Controllers\HotelHousekeepingController;
 use Modules\Hotel\Http\Controllers\HotelHousekeepingMobileController;
 use Modules\Hotel\Http\Controllers\HotelInventoryRateController;
+use Modules\Hotel\Http\Controllers\HotelLoyaltyBreakageAuditController;
 use Modules\Hotel\Http\Controllers\HotelLoyaltyPassportController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditFolioController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditUiController;
@@ -28,6 +34,9 @@ use Modules\Hotel\Http\Controllers\HotelReservationUiController;
 use Modules\Hotel\Http\Controllers\HotelSpaAppointmentController;
 use Modules\Hotel\Http\Controllers\HotelTimeshareSecondaryMarketController;
 use Modules\Hotel\Http\Controllers\HotelTimeshareSyndicationController;
+use Modules\Hotel\Http\Controllers\HotelTravelPassDashboardController;
+use Modules\Hotel\Http\Controllers\HotelTravelPersonalizationController;
+use Modules\Hotel\Http\Controllers\HotelVoucherCatalogController;
 use Modules\Hotel\Http\Controllers\HotelYieldAndOverbookingController;
 
 Route::middleware(['web', 'auth', 'role:admin,hotel_admin,front_desk'])->prefix('hotel')->group(function () {
@@ -168,5 +177,26 @@ Route::middleware(['web', 'auth'])->group(function (): void {
         Route::get('/hotel/loyalty/passport/{guestId}', [HotelLoyaltyPassportController::class, 'profile'])->name('hotel.loyalty.profile');
         Route::post('/hotel/loyalty/accrue/{guestId}', [HotelLoyaltyPassportController::class, 'accrue'])->name('hotel.loyalty.accrue');
         Route::post('/hotel/loyalty/score-churn/{guestId}', [HotelLoyaltyPassportController::class, 'scoreChurn'])->name('hotel.loyalty.score_churn');
+    });
+
+    // Fase 112: Global Loyalty & Travel Pass
+    Route::middleware(['role:admin,hotel_admin,front_desk,guest'])->group(function (): void {
+        Route::get('/hotel/travel-pass/dashboard', [HotelTravelPassDashboardController::class, 'index'])->name('hotel.travel_pass.dashboard');
+        Route::get('/hotel/travel-pass/award-booking', [HotelAwardNightBookingController::class, 'index'])->name('hotel.travel_pass.award_booking');
+        Route::get('/hotel/travel-pass/alliance-exchange', [HotelAllianceExchangeController::class, 'index'])->name('hotel.travel_pass.alliance_exchange');
+        Route::post('/hotel/travel-pass/voucher-redeem', [HotelVoucherCatalogController::class, 'redeem'])->name('hotel.travel_pass.voucher_redeem');
+    });
+
+    Route::middleware(['role:admin,hotel_admin,finance'])->group(function (): void {
+        Route::get('/hotel/travel-pass/breakage-audit', [HotelLoyaltyBreakageAuditController::class, 'index'])->name('hotel.travel_pass.breakage_audit');
+        Route::get('/hotel/co-brand-cards', [HotelCoBrandCardController::class, 'index'])->name('hotel.co_brand.index');
+        Route::post('/hotel/co-brand-cards/cashback', [HotelCoBrandCardController::class, 'processCashback'])->name('hotel.co_brand.cashback');
+        Route::get('/hotel/esg-carbon', [HotelEsgCarbonOffsetController::class, 'index'])->name('hotel.esg.index');
+        Route::post('/hotel/esg-carbon/donate', [HotelEsgCarbonOffsetController::class, 'donate'])->name('hotel.esg.donate');
+    });
+
+    Route::middleware(['role:admin,hotel_admin,sales_mgr'])->group(function (): void {
+        Route::get('/hotel/travel-pass/personalization', [HotelTravelPersonalizationController::class, 'index'])->name('hotel.travel_pass.personalization');
+        Route::post('/hotel/travel-pass/corporate-allocate', [HotelCorporateLoyaltyController::class, 'allocate'])->name('hotel.travel_pass.corporate_allocate');
     });
 });
