@@ -11879,12 +11879,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Aviation (`avi_`); air cargo tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 26
 > **Jalan pintas terlarang di fase ini:** shipment udara kedua di luar Logistics; memperluas `AviationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests
-- [ ] 177.2 Passenger/charter booking simulation with capacity/time-lock, identity verification, baggage and refund rules; integrate Hotel/Travel/Payment
-- [ ] 177.3 Air cargo integrates Logistics multimodal; dangerous-goods eligibility, temperature control and customs documentation
-- [ ] 177.4 Aircraft maintenance records link Asset and AutoServe-style service workflow; airworthiness expiry blocks dispatch in simulation
-- [ ] 177.5 Tests: slot and aircraft capacity enforced, expired maintenance blocks flight, cargo custody complete, refund idempotent, `avi:audit` clean
-- [ ] 177.6 Quality gate Fase 177
+- [🔵] 177.1 Modul `Aviation` (`avi_`): aircraft, operators, airports, slots, routes, maintenance cycles, ground handling and cargo manifests
+- [🔵] 177.2 Passenger/charter booking simulation with capacity/time-lock, identity verification, baggage and refund rules; integrate Hotel/Travel/Payment
+- [🔵] 177.3 Air cargo integrates Logistics multimodal; dangerous-goods eligibility, temperature control and customs documentation
+- [🔵] 177.4 Aircraft maintenance records link Asset and AutoServe-style service workflow; airworthiness expiry blocks dispatch in simulation
+- [🔵] 177.5 Tests: slot and aircraft capacity enforced, expired maintenance blocks flight, cargo custody complete, refund idempotent, `avi:audit` clean
+- [🔵] 177.6 Quality gate Fase 177
 
 ## FASE 178 — LINI 26: AIRLINE NETWORK, LOYALTY & REVENUE MANAGEMENT
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AirlineNetworkService`; 1 migrasi; test `AirlineNetworkTest` — commit `02bbba1`, +257 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
