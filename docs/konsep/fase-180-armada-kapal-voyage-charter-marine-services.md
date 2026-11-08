@@ -164,3 +164,133 @@ Skenario acceptance test utama (`MalaccaStraitStormAndGeneralAverageAcceptanceTe
 5. **Sengketa Laytime di Pelabuhan Bongkar**:
    - Penyewa mengajukan penolakan pembayaran demurrage 48 jam dengan alasan keterlambatan kapal akibat cuaca buruk.
    - Algoritma A11 membuktikan bahwa di bawah klausula SHINC dan status kapal yang telah berada di bawah *demurrage* sebelum hujan lebat turun, prinsip "once on demurrage always on demurrage" tetap berlaku secara hukum perkapalan internasional, sehingga tagihan demurrage sebesar \$36.000 dinyatakan sah secara legal dan dieksekusi pembayarannya.
+
+---
+
+## 7. Kamus Data & Relasi 25 Tabel Armada Maritim (prt_fleet_*)
+
+Struktur basis data Fase 180 dirancang secara normalisasi tingkat ketiga (3NF) dan mendukung audit forensik append-only:
+
+| No | Nama Tabel Basis Data | Deskripsi Fungsi Entitas | Kunci Primer & Indeks Kunci Asing | Invarian Data Utama |
+|---|---|---|---|---|
+| 1 | `prt_fleet_classes` | Lembaga klasifikasi maritim (BKI, DNV, LR, ABS, NK, RINA) | `code` (PK, string), `society_name` | Tanggal survei berikutnya harus > survei terakhir. |
+| 2 | `prt_fleet_vessels` | Master armada kapal niaga samudera | `id` (PK), `imo_number` (UK), `mmsi` (UK) | Check-digit IMO 7 digit valid, MMSI 9 digit maritim. |
+| 3 | `prt_fleet_certificates`| Sertifikat statutori keselamatan pelayaran | `id` (PK), `vessel_id` (FK), `certificate_code` | Status otomatis EXPIRED bila tanggal masa berlaku terlampaui. |
+| 4 | `prt_fleet_voyages` | Rekam jejak perjalanan pelayaran kapal | `id` (PK), `voyage_number` (UK), `vessel_id` (FK) | Dikawal oleh `VoyageStateMachine` 12 status transisi. |
+| 5 | `prt_fleet_voyage_legs` | Etape atau segmen pelayaran (Ballast / Laden) | `id` (PK), `voyage_id` (FK), `leg_sequence` | Urutan leg sekuensial menaik tanpa jeda nomor. |
+| 6 | `prt_fleet_charter_parties` | Kontrak perjanjian sewa kapal komersial | `id` (PK), `charter_party_number` (UK) | Dikawal oleh `CharterPartyStateMachine` 8 status. |
+| 7 | `prt_fleet_port_calls` | Rencana dan realisasi kunjungan kapal di pelabuhan | `id` (PK), `voyage_id` (FK), `port_unlocode` | Waktu keberangkatan aktual wajib >= waktu tiba aktual. |
+| 8 | `prt_fleet_sea_passages` | Rekaman lintas samudera & kecepatan rata-rata | `id` (PK), `voyage_id` (FK), `vessel_id` (FK) | Jarak tempuh nautical miles > 0, konsumsi fuel tercatat. |
+| 9 | `prt_fleet_noon_reports` | Laporan telemetri posisi, cuaca, dan BBM 24 jam | `id` (PK), `voyage_id` (FK), `report_time` | Koordinat latitude (-90 s.d. 90), longitude (-180 s.d. 180). |
+| 10 | `prt_fleet_bunkering_operations` | Operasi pengisian bahan bakar bunker di pelabuhan | `id` (PK), `vessel_id` (FK), `bdn_number` (UK) | Nomor segel BDN MARPOL dan kadar sulfur tercatat. |
+| 11 | `prt_fleet_bunker_tanks` | Data tangki BBM di atas kapal (VLSFO, LSMGO, HFO) | `id` (PK), `vessel_id` (FK), `tank_code` | Volume terisi tidak boleh melebihi kapasitas desain tangki. |
+| 12 | `prt_fleet_bunker_adjustments` | Penyesuaian stok BBM karena suhu atau penguapan | `id` (PK), `tank_id` (FK), `vessel_id` (FK) | Wajib menyertakan alasan teknis dan faktor densitas minyak. |
+| 13 | `prt_fleet_freight_contracts` | Perjanjian kuantum angkutan kargo (COA) | `id` (PK), `contract_number` (UK), `charterer_id` | Toleransi muatan kargo lazimnya MOLOO +/- 5%. |
+| 14 | `prt_fleet_laytime_calculations` | Lembar kerja kalkulasi laytime SHINC/SHEX | `id` (PK), `charter_party_id` (FK), `port_call_id` | Turn-time dan interupsi cuaca tervalidasi SOF. |
+| 15 | `prt_fleet_demurrage_invoices` | Faktur denda demurrage atau nota kredit despatch | `id` (PK), `invoice_number` (UK), `charter_party_id` | Nilai tagihan dihitung dari selisih jam laytime * tarif. |
+| 16 | `prt_fleet_off_hire_events` | Insiden penangguhan sewa kapal time charter | `id` (PK), `charter_party_id` (FK), `vessel_id` (FK) | Durasi off-hire mengurangi total pembayaran sewa harian. |
+| 17 | `prt_fleet_pilotage_requests` | Pemesanan jasa pandu alur masuk/keluar pelabuhan | `id` (PK), `port_call_id` (FK), `pilot_name` | Mengaitkan sertifikasi pandu kelas I/II pelabuhan. |
+| 18 | `prt_fleet_tug_services` | Penugasan kapal tunda sandar/lepas dermaga | `id` (PK), `port_call_id` (FK), `tug_name` | Mencatat daya bollard pull (tonase) dan durasi jam kerja. |
+| 19 | `prt_fleet_berth_bookings` | Reservasi jendela tambatan dermaga via G7-K27 | `id` (PK), `port_call_id` (FK), `berth_code` | Panjang dermaga >= LOA kapal, kedalaman kolam >= draft kapal. |
+| 20 | `prt_fleet_waste_disposals` | Pembuangan limbah kapal MARPOL Annex I/IV/V | `id` (PK), `port_call_id` (FK), `receipt_number` | Tanda terima reception facility berizin Kementerian LHK. |
+| 21 | `prt_fleet_port_disbursements` | Rekening pencairan biaya pelabuhan (PDA/FDA) | `id` (PK), `port_call_id` (FK), `pda_reference` | Menghitung varians pengeluaran riil vs estimasi anggaran. |
+| 22 | `prt_fleet_general_average_cases` | Deklarasi darurat kerugian laut York-Antwerp Rules | `id` (PK), `case_number` (UK), `voyage_id` (FK) | Menghitung kontribusi kapal, kargo, dan uang tambang. |
+| 23 | `prt_fleet_weather_routings` | Rekomendasi rute pelayaran optimum anti-badai | `id` (PK), `voyage_id` (FK), `route_variant` | Mengevaluasi rute lingkaran besar vs deviasi cuaca aman. |
+| 24 | `prt_fleet_crew_complements` | Daftar manifes awak kapal & sertifikasi STCW | `id` (PK), `vessel_id` (FK), `seafarer_name` | Sertifikat CoC/CoP aktif, kepatuhan jam istirahat MLC. |
+| 25 | `prt_fleet_ledger_entries` | Buku besar akuntansi keuangan armada double-entry | `id` (PK), `voyage_id` (FK), `entry_hash` | Rantai hash SHA-256 saling mengunci, debit = kredit. |
+
+---
+
+## 8. Matriks Transisi Mesin Status Maritim
+
+### 8.1 VoyageStateMachine (12 Status Operasional)
+Siklus perjalanan kapal diatur oleh invarian berikut:
+
+```
+  +--------------+
+  |   PLANNED    |
+  +-------+------+
+          | [Event: FIXTURE_ASSIGNED] -> Guard: Kapal laik laut (SOLAS/STCW)
+          v
+  +--------------+
+  |  CHARTERED   |
+  +-------+------+
+          | [Event: STEM_BUNKER] -> Guard: Kapasitas tangki cukup
+          v
+  +--------------+
+  |  BUNKERING   |
+  +-------+------+
+          | [Event: COMMENCE_LOADING] -> Guard: Palka bersih (grain clean)
+          v
+  +--------------+
+  |   LOADING    |
+  +-------+------+
+          | [Event: DEPART_BERTH] -> Guard: Konosemen (B/L) & Port Clearance terbit
+          v
+  +--------------+
+  |   DEPARTED   |
+  +-------+------+
+          | [Event: DROP_OUTWARD_PILOT]
+          v
+  +--------------+       [Event: STORM_ENCOUNTERED]       +-------------------+
+  | SEA_PASSAGE  | -------------------------------------> | WEATHER_DEVIATION |
+  +-------+------+                                        +---------+---------+
+          |                                                         |
+          | [Event: STEERING_FAILURE / FIRE]                        | [Event: STORM_PASSED]
+          v                                                         v
+  +--------------+                                        +-------------------+
+  |   DISTRESS   | <------------------------------------+ |    SEA_PASSAGE    |
+  +-------+------+                                        +-------------------+
+          |
+          | [Event: SALVAGE_COMPLETED / PORT_OF_REFUGE]
+          v
+  +--------------+
+  |   ARRIVED    |
+  +-------+------+
+          | [Event: COMMENCE_DISCHARGE] -> Guard: Tender NOR & Palka dibuka
+          v
+  +--------------+
+  | DISCHARGING  |
+  +-------+------+
+          | [Event: COMPLETE_DISCHARGE] -> Guard: Palka kosong & sapuan bersih
+          v
+  +--------------+
+  |  COMPLETED   |
+  +--------------+
+```
+
+### 8.2 CharterPartyStateMachine (8 Status Perikatan Komersial)
+Perjalanan kontrak sewa kapal komersial:
+1. `NEGOTIATING`: Penawaran terms, tarif freight, dan laytime terms (*Recap Negotiation*).
+2. `FIXTURE_CONFIRMED`: Kesepakatan final ditandatangani kedua belah pihak (*Clean Fixture*).
+3. `ON_HIRE`: Kapal diserahkan secara resmi kepada penyewa (*Delivery Notice*).
+4. `SUSPENDED_OFF_HIRE`: Penangguhan sewa akibat kerusakan mekanis, mogok awak, atau deviasi sepihak kapal.
+5. `REDELIVERED`: Kapal diserahkan kembali kepada pemilik di pelabuhan redelivery yang disepakati.
+6. `SETTLED`: Pembayaran sewa akhir, perhitungan laytime demurrage/despatch, dan bunker ROB selesai direkonsiliasi tanpa sengketa.
+7. `DISPUTED`: Terjadi perselisihan hukum yang diajukan ke arbitrase maritim.
+8. `DEFAULTED`: Pihak penyewa gagal bayar (*insolvent/breach of contract*).
+
+---
+
+## 9. Algoritma Navigasi Lingkaran Besar & Deviasi Cuaca Optimum
+
+Pelayaran samudera jarak jauh tidak mengikuti garis lurus peta Mercator (garis loksodrom / *rhumb line*), melainkan mengikuti busur lingkaran besar (*Great Circle Navigation*):
+$$\cos(\sigma) = \sin(\phi_1)\sin(\phi_2) + \cos(\phi_1)\cos(\phi_2)\cos(\Delta\lambda)$$
+$$\text{Jarak Tempuh (Nautical Miles)} = \sigma_{\text{radian}} \times \frac{180 \times 60}{\pi} = \sigma_{\text{radian}} \times 3437.74677$$
+Namun, rute terpendek lingkaran besar sering kali memotong lintang tinggi yang rawan badai frontal dan gelombang tinggi. Mesin rute optimum `OceanFleetWeatherRoutingOptimumRouteService` mengevaluasi rute alternatif (*isochrone weather routing method*) untuk meminimalkan fungsi biaya multi-tujuan:
+$$\min_{\text{rute } R} J(R) = \int_{R} \left( \text{Biaya Bunker}(v, \text{Beaufort}) + \text{Biaya Sewa Kapal Harian} + \text{Premi Resiko Kargo} \right) dt$$
+Sehingga kapal dapat menghindari pusat siklon tropis sekaligus mempertahankan jadwal tiba tepat waktu (*Just-In-Time Port Arrival*).
+
+---
+
+## 10. Manajemen Perawatan Kapal (PMS), Drydocking & Special Survey
+
+Sesuai regulasi biro klasifikasi (IACS - *International Association of Classification Societies*):
+1. **Survei Antara (Intermediate Survey)**: Dilaksanakan setiap 2.5 tahun (antara tahun ke-2 dan ke-3).
+2. **Survei Khusus (Special Survey & Drydocking)**: Wajib dilaksanakan setiap 5 tahun sekali di galangan kapal dok kolam (*graving dock*) atau dok apung (*floating dock*).
+   - Pengukuran ketebalan pelat lambung kapal (*Ultrasonic Thickness Gauging - UTG*).
+   - Pemeriksaan poros baling-baling (*Tailshaft Survey*) dan kemudi (*Rudder Clearance*).
+   - Perbaikan katup laut bawah air (*Sea Chest Valves Overhaul*).
+   - Pembersihan teritip lambung dan pengecatan anti-fouling (*Hull Hydroblasting & Anti-Fouling Coating*).
+3. **Pencegahan Kegagalan Disposisi Aset**:
+   Sistem menandai kapal yang mendekati jendela survei khusus (90 hari sebelum tanggal jatuh tempo). Jika survei terlampaui tanpa perpanjangan resmi, sertifikat kelas dibekukan (*class suspended*) dan modul memblokir seluruh operasi komersial kapal.
