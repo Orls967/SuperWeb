@@ -41,6 +41,9 @@ class PortServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Port\Application\Services\CanalTransitAndPassageTollService::class);
         $this->app->singleton(\Modules\Port\Application\Services\MaritimeInsuranceClaimService::class);
         $this->app->singleton(\Modules\Port\Application\Services\CrewRotationAndPayrollService::class);
+        $this->app->singleton(\Modules\Port\Application\Services\VesselBallastWaterManagementService::class);
+        $this->app->singleton(\Modules\Port\Application\Services\PortFacilitySecurityAuditService::class);
+        $this->app->singleton(\Modules\Port\Application\Services\ColdIroningShorePowerService::class);
     }
 
     public function boot(): void
