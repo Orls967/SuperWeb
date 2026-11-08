@@ -81,3 +81,4 @@ $$BL_1 \ge BL_2 \ge \dots \ge BL_K$$
 - Kompleksitas Ruang: $\mathcal{O}(K)$ untuk menyimpan array batas pemesanan dan tingkat proteksi.
 - Penanganan Nilai Ekstrem (*Numerical Stability*):
   Implementasi menggunakan aproksimasi numerik rasional Beasley-Springer-Moro untuk inversi fungsi kumulatif distribusi normal $\Phi^{-1}(p)$ dengan presisi kesalahan relatif $\le 10^{-7}$.
+

@@ -19,3 +19,4 @@ final class YieldOptimizerCertificateVerifier
         return hash_equals($expectedHash, $certificate->sha256Hash);
     }
 }
+

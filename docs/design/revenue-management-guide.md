@@ -113,3 +113,4 @@ Buku besar yield mencatat setiap perubahan status penjualan tiket secara riil. C
 2. Inkonsistensi nested availability ($BL_{j+1} > BL_j$).
 3. Penjualan melebihi batas overbooking yang telah disertifikasi.
 Bila anomali terdeteksi, event peringatan diterbitkan dan bucket terkait dibekukan sementara (*hard lock*) hingga verifikasi manual atau rebalancing selesai.
+

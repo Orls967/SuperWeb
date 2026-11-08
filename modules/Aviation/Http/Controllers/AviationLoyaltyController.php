@@ -43,7 +43,7 @@ class AviationLoyaltyController extends Controller
     public function enroll(Request $request): RedirectResponse
     {
         $request->validate([
-            'airline_id' => ['required', 'integer', 'exists:avi_airlines,id'],
+            'airline_id' => ['required', 'integer', 'exists:avi_operators,id'],
             'passenger_party_ref' => ['required', 'string'],
             'initial_tier' => ['nullable', 'string', 'in:classic,silver,gold,platinum'],
         ]);

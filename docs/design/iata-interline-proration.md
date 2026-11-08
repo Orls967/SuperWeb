@@ -106,3 +106,4 @@ Struktur berkas kliring meliputi:
 - Nilai Pembagian Bersih (*Net Prorated Settlement Amount*).
 - Pajak dan Biaya Penanganan (*ISC - Interline Service Charge*, umumnya 9%).
 - Status Persetujuan Faktur (*Accepted, Disputed, Adjusted*).
+

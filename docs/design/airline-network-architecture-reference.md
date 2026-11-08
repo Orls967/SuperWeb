@@ -6,7 +6,7 @@ Berikut adalah definisi rinci skema basis data yang ditambahkan pada Fase 178 un
 
 ### 1.1. `avi_schedule_versions` (Tata Kelola Versi Jadwal Penerbangan)
 - `id`: `BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`
-- `airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_airlines(id)`
+- `airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_operators(id)`
 - `season_code`: `VARCHAR(10) NOT NULL` (e.g. 'S26', 'W26')
 - `version_number`: `INT NOT NULL` (nomor revisi berurutan)
 - `status`: `VARCHAR(30) NOT NULL` (draft, review, published, active, superseded, suspended, withdrawn)
@@ -20,8 +20,8 @@ Berikut adalah definisi rinci skema basis data yang ditambahkan pada Fase 178 un
 
 ### 1.2. `avi_codeshare_agreements` (Perjanjian Kerjasama Antar-Maskapai)
 - `id`: `BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`
-- `operating_airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_airlines(id)`
-- `marketing_airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_airlines(id)`
+- `operating_airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_operators(id)`
+- `marketing_airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_operators(id)`
 - `agreement_code`: `VARCHAR(50) NOT NULL UNIQUE` (e.g. 'CS-GA-SQ-2026')
 - `agreement_type`: `VARCHAR(30) NOT NULL` (free_sale, block_space_hard, block_space_soft)
 - `revenue_split_bps`: `INT NOT NULL` (basis poin pembagian pendapatan, e.g. 8500 = 85%)
@@ -86,7 +86,7 @@ Berikut adalah definisi rinci skema basis data yang ditambahkan pada Fase 178 un
 
 ### 1.7. `avi_loyalty_accounts` (Buku Besar Rekening Sering Terbang)
 - `id`: `BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`
-- `airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_airlines(id)`
+- `airline_id`: `BIGINT UNSIGNED NOT NULL`, Foreign Key ke `avi_operators(id)`
 - `passenger_id`: `BIGINT UNSIGNED NOT NULL`
 - `membership_number`: `VARCHAR(30) NOT NULL UNIQUE`
 - `current_tier`: `VARCHAR(20) NOT NULL DEFAULT 'classic'`
@@ -133,3 +133,4 @@ Berikut adalah definisi rinci skema basis data yang ditambahkan pada Fase 178 un
 - `claim_status`: `VARCHAR(30) NOT NULL` (pending, approved, disbursed, rejected)
 - `external_reference`: `VARCHAR(100) NULL`
 - `created_at`, `updated_at`: `TIMESTAMP`
+

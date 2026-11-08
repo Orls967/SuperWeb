@@ -18,3 +18,4 @@ final class PassengerCareCertificateResult
         public readonly PassengerCareCertificate $certificate
     ) {}
 }
+

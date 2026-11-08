@@ -20,3 +20,4 @@ final class CodeshareMileageCertificateVerifier
         return hash_equals($expectedHash, $certificate->sha256Hash);
     }
 }
+

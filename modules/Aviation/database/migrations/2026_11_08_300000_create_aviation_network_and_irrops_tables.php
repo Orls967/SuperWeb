@@ -13,7 +13,7 @@ return new class extends Migration
         // 1. Versi Jadwal Penerbangan Musiman (IATA Season)
         Schema::create('avi_schedule_versions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('airline_id')->constrained('avi_airlines')->cascadeOnDelete();
+            $table->foreignId('airline_id')->constrained('avi_operators')->cascadeOnDelete();
             $table->string('season_code', 10); // S26, W26
             $table->integer('version_number');
             $table->string('status', 30)->default('draft');
@@ -31,8 +31,8 @@ return new class extends Migration
         // 2. Perjanjian Kerjasama Codeshare Antar-Maskapai
         Schema::create('avi_codeshare_agreements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('operating_airline_id')->constrained('avi_airlines')->cascadeOnDelete();
-            $table->foreignId('marketing_airline_id')->constrained('avi_airlines')->cascadeOnDelete();
+            $table->foreignId('operating_airline_id')->constrained('avi_operators')->cascadeOnDelete();
+            $table->foreignId('marketing_airline_id')->constrained('avi_operators')->cascadeOnDelete();
             $table->string('agreement_code', 50)->unique();
             $table->string('agreement_type', 30); // free_sale, block_space_hard, block_space_soft
             $table->integer('revenue_split_bps')->default(8500); // 85% operating, 15% marketing
@@ -120,7 +120,7 @@ return new class extends Migration
         // 7. Akun Frequent Flyer Penumpang (Loyalti Aviasi)
         Schema::create('avi_loyalty_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('airline_id')->constrained('avi_airlines')->cascadeOnDelete();
+            $table->foreignId('airline_id')->constrained('avi_operators')->cascadeOnDelete();
             $table->string('passenger_party_ref', 64)->index();
             $table->string('membership_number', 30)->unique();
             $table->string('current_tier', 20)->default('classic');

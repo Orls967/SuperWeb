@@ -12,3 +12,4 @@ final class YieldOptimizerResult
         public readonly YieldOptimizerCertificate $certificate
     ) {}
 }
+

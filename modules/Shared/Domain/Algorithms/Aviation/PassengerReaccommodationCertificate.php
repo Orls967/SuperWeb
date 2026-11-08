@@ -22,3 +22,4 @@ final class PassengerReaccommodationCertificate
         return new self($count, $queue, hash('sha256', $payload));
     }
 }
+

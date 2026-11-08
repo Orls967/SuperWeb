@@ -16,8 +16,8 @@ class CreateCodeshareAgreementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'operating_airline_id' => ['required', 'integer', 'exists:avi_airlines,id'],
-            'marketing_airline_id' => ['required', 'integer', 'exists:avi_airlines,id', 'different:operating_airline_id'],
+            'operating_airline_id' => ['required', 'integer', 'exists:avi_operators,id'],
+            'marketing_airline_id' => ['required', 'integer', 'exists:avi_operators,id', 'different:operating_airline_id'],
             'agreement_code' => ['required', 'string', 'max:50', 'unique:avi_codeshare_agreements,agreement_code'],
             'agreement_type' => ['required', 'string', 'in:free_sale,block_space_hard,block_space_soft'],
             'revenue_split_bps' => ['required', 'integer', 'min:1000', 'max:9000'],
