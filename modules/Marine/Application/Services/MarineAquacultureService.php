@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
+use Modules\Marine\Domain\Models\MarineAquacultureLedgerEntry;
 use Modules\Marine\Domain\Models\MarineCycle;
 use Modules\Marine\Domain\Models\MarineFeedLog;
 use Modules\Marine\Domain\Models\MarineHarvest;
@@ -331,6 +332,14 @@ class MarineAquacultureService
 
             $expectedNet = $cycle->harvest->gross_amount - $payout->advance_deduction - $payout->feed_loan_deduction;
             if ($payout->net_payout !== $expectedNet) {
+                $discrepancyCount++;
+            }
+        }
+
+        // Fase 171: Verifikasi integritas kriptografis ledger rantai pasok akuakultur
+        if (class_exists(MarineAquacultureLedgerEntry::class)) {
+            $ledgerIntegrity = app(MarineAquacultureLedgerService::class)->verifyLedgerChainIntegrity();
+            if (! $ledgerIntegrity['is_intact']) {
                 $discrepancyCount++;
             }
         }

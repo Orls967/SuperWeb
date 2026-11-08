@@ -514,7 +514,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 34 | **Logistics** | `lgx_` | 31 |
 | 35 | **Mall** | `mall_` | 7 |
 | 36 | **Manufacturing** | `mfg_` | 14 |
-| 37 | **Marine** | `mar_` | 1 |
+| 37 | **Marine** | `mar_` | 2 |
 | 38 | **Med** | `med_` | 3 |
 | 39 | **Mining** | `min_` | 16 |
 | 40 | **Mobility** | `oto_` | 0 |
@@ -542,7 +542,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Venue** | `ven_` | 12 |
 | 63 | **Wealth** | `wm_` | 2 |
 | 64 | **Wms** | `wms_` | 2 |
-| | **Total: 64 Modul** | | **670 Migrasi** |
+| | **Total: 64 Modul** | | **671 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -583,7 +583,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
 | **Mall** | 48 | `mall/directory`, `mall/site-plan`, `mall/leases/{lease}/activate` ... | web, auth, role:admin,auditor,mall_admin |
 | **Manufacturing** | 68 | `manufacturing`, `manufacturing/plants`, `manufacturing/materials` ... | web, auth, verified |
-| **Marine** | 2 | `marine`, `marine/ponds/{id}` | web, auth, role:admin,farmer,manager,officer |
+| **Marine** | 15 | `marine`, `marine/ponds/{id}`, `marine/aquaculture` ... | web, auth, role:admin,farmer,manager,officer |
 | **Med** | 16 | `media`, `media/studios`, `media/licensing` ... | web, auth, role:admin,auditor,media_admin,rights_manager,studio_manager |
 | **Mining** | 112 | `mining/grade`, `mining/grade/blend`, `mining/grade/depletion` ... | web, auth, role:metallurgist,admin,mine_manager |
 | **Mobility** | 33 | `telematics`, `telematics/devices/{device}/ingest`, `telematics/operations/baselines` ... | web, auth, role:admin,telematics_admin,fleet_manager |
@@ -611,7 +611,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1574 Rute** | | |
+| **Total** | **1587 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |

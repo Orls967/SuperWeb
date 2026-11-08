@@ -2918,5 +2918,27 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   5. **D180-5 (Saga Sewa & Pelayaran Maritim VoyageCharterExecutionSaga)**: Orkestrasi penjaminan kelaiklautan SOLAS/STCW -> pembentukan kontrak carter -> penetapan voyage -> pemesanan slot dermaga via `VesselCallWindowProvider` (G7-K27) -> alokasi PDA di double-entry ledger -> konfirmasi carter dengan kompensasi rollback otomatis.
   6. **D180-6 (Buku Besar Keuangan Armada Double-Entry & Audit Mandiri prt:fleet-audit)**: Pencatatan akrual freight, bunker PDA/FDA, demurrage, dan biaya pelabuhan berantai hash verifikasi di `prt_fleet_ledger_entries`, dikawal command audit `prt:fleet-audit` tahan uji korupsi data.
 
+<a id="g7-d46"></a>
+<a id="g7-d47"></a>
+<a id="g7-k28"></a>
+## 2026-11-09: [G7-P7.4] Modul Marine — Ekspor Akuakultur, Ketelusuran Seafood & Blue ESG (Fase 171, G7-D46..G7-D47, G7-K28, D171-1..D171-6)
+- **Anchor:** `2026-11-09-g7-p7-aviasi-maritim-fase-171` / `g7-d46` / `g7-d47` / `g7-k28` / `d171-1` / `d171-2` / `d171-3` / `d171-4` / `d171-5` / `d171-6`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/g7-d46-aquaculture-merkle-traceability-standard.md`](design/g7-d46-aquaculture-merkle-traceability-standard.md) (G7-D46: Standar Ketelusuran Merkle Tree Seafood ASC/MSC CoC)
+  - [`docs/design/g7-d47-blue-carbon-verra-vm0033-standard.md`](design/g7-d47-blue-carbon-verra-vm0033-standard.md) (G7-D47: Standar Karbon Biru Mangrove Verra VM0033 & Anti-Deforestasi EUDR)
+  - [`docs/konsep/fase-171-ekspor-akuakultur-ketelusuran-blue-esg.md`](konsep/fase-171-ekspor-akuakultur-ketelusuran-blue-esg.md) (Konsep Fase 171)
+  - [`docs/panduan/panduan-operasional-ekspor-akuakultur-ketelusuran-blue-esg.md`](panduan/panduan-operasional-ekspor-akuakultur-ketelusuran-blue-esg.md) (Panduan Operasional Akuakultur)
+  - [`docs/decisions/ADR-0171-aquaculture-export-traceability-and-blue-carbon.md`](decisions/ADR-0171-aquaculture-export-traceability-and-blue-carbon.md) (ADR-0171)
+- **Konteks:**
+  - Melaksanakan Lini 22 Perikanan & Akuakultur (Fase 171) dengan memperluas modul `Marine` (`mar_`), menggantikan kode kerangka lama `Modules\Integration\Application\Services\AquacultureExportService` secara vertical slice lengkap.
+- **Keputusan:**
+  1. **D171-1 (Paspor Lot End-to-End & Ketelusuran Merkle Proof A17 - G7-D46)**: Pencatatan pohon silsilah lot panen budidaya dari benur hatchery, pakan, tambak, panen, hingga unit pemrosesan cold-storage; verifikasi audit kriptografis kanonikal via A17 `SeafoodLotMerkleProofGenerator` dengan redaksi lokasi tambak sensitif publik.
+  2. **D171-2 (Kontrak Panen Terverifikasi G7-K28 & Neraca Massa ASC/MSC A15)**: Penegakan kuota volume ekspor $\le$ hasil panen riil terverifikasi via kontrak `Modules\Marine\Contracts\VerifiedHarvestReader` (G7-K28) dan algoritma A15 `AquacultureMassBalanceVerifier` untuk mencegah greenwashing dan pencampuran batch ilegal.
+  3. **D171-3 (Optimasi Pakan FCR A16, Telemetri Air & Siklus Bera Tambak)**: Pemantauan parameter kualitas air (DO, pH, salinitas, amonia, nitrit, suhu) terintegrasi dengan formulasi pakan ramah lingkungan dan algoritma optimasi konversi pakan A16 `FeedConversionRatioOptimizer`.
+  4. **D171-4 (Estimasi Karbon Biru Mangrove A18, EUDR & Insetting Blue ESG - G7-D47)**: Estimasi biomassa karbon atas tanah, bawah tanah, dan tanah sedimen mangrove berbasis metodologi Verra VM0033 via A18 `BlueCarbonCreditEstimator`, sertifikasi kepatuhan EUDR anti-deforestasi, dan penerbitan kredit ESG ke modul ESG (`CarbonCreditIssuer`).
+  5. **D171-5 (Saga Ekspor & Arbitrase Sengketa Lab MRL A19)**: Orkestrasi rantai dingin ekspor via `AquacultureExportExecutionSaga` terhubung ke TradeFinance K11 (escrow lock & fair-trade settlement), asuransi parametrik (`EventCoverBinder`), logistik cold-chain (`CustodyVerifier`, `ShipmentBooking`), serta penanganan sengketa toleransi batas residu kimia US FDA / EU / Jepang via A19 `ExportAssayToleranceChecker` dan `AssayDisputeArbitrationSaga`.
+  6. **D171-6 (Buku Besar Ganda Akuakultur Double-Entry & Audit Dua Sumber mar:audit)**: Penjurnalan akrual nilai lot panen, escrow petani, biaya sertifikasi, dan kredit karbon pada `mar_aquaculture_ledger_entries` dengan verifikasi SHA-256 rantai hash diuji melalui perintah `mar:audit` tahan uji korupsi data.
+
+
 
 

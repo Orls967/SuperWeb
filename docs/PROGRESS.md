@@ -11684,12 +11684,19 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Marine (`mar_`) — pola kontrak mengikuti Agri · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 22
 > **Jalan pintas terlarang di fase ini:** menyalin modul Agri alih-alih memakai ulang pola; payout tanpa ledger; memperluas `AquacultureExportService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
-- [ ] 171.2 Export documents (health certificate, origin, customs simulation), Trade Finance and multimodal Logistics integration
-- [ ] 171.3 Blue ESG: water quality, mangrove restoration, feed conversion, bycatch/waste, scope emissions; verified credit issuance guardrails
-- [ ] 171.4 Buyer procurement portal: contracted volume, grade tolerances, shipment slots, assay disputes, escrow settlement
-- [ ] 171.5 Tests: lineage completeness, no duplicate origin certificate, export quantity ≤ verified harvest, ESG claims tied to evidence, `marine:audit` clean
-- [ ] 171.6 Quality gate Fase 171
+- [🔵] 171.1 End-to-end lot passport from hatchery/feed/farm/harvest/processing/container/buyer; immutable lineage and public verification with sensitive location redacted
+- [🔵] 171.2 Export documents (health certificate, origin, customs simulation), Trade Finance and multimodal Logistics integration
+- [🔵] 171.3 Blue ESG: water quality, mangrove restoration, feed conversion, bycatch/waste, scope emissions; verified credit issuance guardrails
+- [🔵] 171.4 Buyer procurement portal: contracted volume, grade tolerances, shipment slots, assay disputes, escrow settlement
+- [🔵] 171.5 Tests: lineage completeness, no duplicate origin certificate, export quantity ≤ verified harvest, ESG claims tied to evidence, `marine:audit` clean
+- [🔵] 171.6 Quality gate Fase 171
+
+### Register Minus Fase 171
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| RM-171-01 | 171.1 | Sensor IoT kualitas air tambak (DO, pH, salinitas, ORP) diintegrasikan via ingestion telemetri HTTP/DB tanpa broker MQTT fisik | Telemetri tambak tersimulasi secara perangkat lunak | P3 | Implementasi IoT edge gateway MQTT broker di fase ekspansi perangkat tambak |
+| RM-171-02 | 171.2 | Validasi dokumen karantina SPS/HC dan kepabeanan ekspor disimulasikan melalui aturan deterministik lokal tanpa sambungan langsung API INSW/Kepabeanan | Verifikasi dokumen ekspor berbasis simulasi kepatuhan internal | P3 | Hubungkan adapter integrasi INSW / Single Submission Pabean saat sandbox instansi tersedia |
+| RM-171-03 | 171.3 | Citra satelit estimasi kanopi mangrove dihitung via matriks NDVI/EVI berbasis polygon terestimasi tanpa feed satelit Sentinel/Planet real-time | Baseline biomassa mangrove dihitung dari sampling lapangan dan formula Verra VM0033 | P3 | Pasang pipeline GIS satelit multi-spektral real-time di fase pemantauan karbon lanjutan |
 
 ## FASE 172 — LINI 23: KEHUTANAN, TIMBER & RESTORATION VALUE CHAIN
 > **Status audit 2026-10-10:** 🔵 SIAP VERIFIKASI (2026-11-05) · Pelaksana [G6-P5.2] tuntas D23-1..D23-4.

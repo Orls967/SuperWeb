@@ -6,13 +6,18 @@ namespace Modules\Marine;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Modules\Marine\Application\Services\VerifiedHarvestReaderService;
+use Modules\Marine\Contracts\VerifiedHarvestReader;
 use Modules\Marine\UI\Console\Commands\AuditMarineCommand;
 
 class MarineServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Bindings if any
+        $this->app->bind(
+            VerifiedHarvestReader::class,
+            VerifiedHarvestReaderService::class
+        );
     }
 
     public function boot(): void
