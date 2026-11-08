@@ -10690,13 +10690,13 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hotel (`htl_`) (+ Venue/Logistics lewat event untuk paket) · **Prasyarat:** Fase 91–92 ✅ · **Acuan:** KONSEP 11F
 > **Jalan pintas terlarang di fase ini:** oversell kamar (tanpa kunci inventori per malam); night audit tanpa idempotensi; key acak di settlement paket; folio ditutup bersaldo ≠ 0 — ditambah seluruh X1–X25.
-- [ ] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
-- [ ] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
-- [ ] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
-- [ ] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
-- [ ] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
-- [ ] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
-- [ ] 114.7 Quality gate Fase 114
+- [🔵] 114.1 Pipeline B2B MICE (konferensi, expo, korporat) & wedding → lead → site visit → proposal multi-komponen (kamar blok + ballroom + F&B + AV + dekorasi + transport) → quotation timelock → kontrak
+- [🔵] 114.2 **Kamar blok (block allotment)**: reservasi 100–1.000 kamar untuk tanggal tertentu → release otomatis H-30 bagi yang belum terkonfirmasi → kembali ke inventori umum (anti-oversell Fase 91.3 tetap berlaku)
+- [🔵] 114.3 **Banquet production sheet**: BOM event (menu per pax, dekorasi, sewa alat) → konsumsi bahan via Resto batch (Fase 8.2) → vendor pihak ketiga (PA, florist) → PO vendor terhubung → cost actual vs contract value → margin event
+- [🔵] 114.4 Wedding-specific: booking 6–12 bulan, payment milestone (20/30/40/10), escalation suite (kamar pengantin), keluarga besar kamar blok, gift registry (Store)
+- [🔵] 114.5 **Exhibition & trade show connector**: stand booth dijadikan unit sewa mini (memperluas Fase 78) → peserta bayar stand + listrik + Wi-Fi → footfall per booth (sensor) → laporan ROI eksposur ke peserta
+- [🔵] 114.6 Tests: (a) block release tepat H-30, kamar kembali tersedia (b) BOM event = konsumsi batch terpotong (c) margin event = contract − actual terverifikasi (d) milestone wedding berurutan (e) reconcile MICE event = ledger
+- [🔵] 114.7 Quality gate Fase 114
 
 ## FASE 115 — ENTERTAINMENT: CONTENT, CREATOR ECONOMY & MEDIA RIGHTS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — modul domain tanpa rute/UI/command/listener; akun ledger hanya dibuat di test; sebagian posting bertanda terbalik; klaim skala/dashboard/audit tidak terpenuhi. Kode yang ada (modul Venue): service `VenueCreatorEconomyService`; 1 migrasi; test `VenueCreatorEconomyTest` — commit `32a0a71`, +455 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

@@ -504,7 +504,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 24 | **Governance** | `gov_` | 1 |
 | 25 | **Hcm** | `hcm_` | 7 |
 | 26 | **Hospital** | `hsp_` | 14 |
-| 27 | **Hotel** | `htl_` | 19 |
+| 27 | **Hotel** | `htl_` | 20 |
 | 28 | **Insurance** | `ins_` | 8 |
 | 29 | **Integration** | `intg_` | 340 |
 | 30 | **Intercompany** | `ic_` | 1 |
@@ -541,7 +541,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 61 | **Venue** | `ven_` | 12 |
 | 62 | **Wealth** | `wm_` | 2 |
 | 63 | **Wms** | `wms_` | 2 |
-| | **Total: 63 Modul** | | **666 Migrasi** |
+| | **Total: 63 Modul** | | **667 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -572,7 +572,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Forest** | 6 | `forest/plots`, `forest/plots/{id}`, `forest/permits` ... | web, auth, role:admin,forester,superadmin |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
 | **Hospital** | 28 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
-| **Hotel** | 76 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
+| **Hotel** | 93 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 97 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
 | **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
@@ -609,7 +609,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1523 Rute** | | |
+| **Total** | **1540 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -686,12 +686,17 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hosp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, integritas subjek, dan rekonsiliasi dua-sumber rawat jalan |
 | `hotel:apoa-submit` | `manual` | Mengirimkan antrean pelaporan tamu orang asing (APOA) ke gateway imigrasi |
 | `hotel:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
+| `hotel:audit-mice-attrition` | `manual` | Audit and calculate room night slippage attrition penalties for completed MICE contracts |
+| `hotel:audit-mice-contracts` | `manual` | Audit rekonsiliasi finansial dan invarian kontrak MICE/Wedding dengan ledger pembukuan |
 | `hotel:close-day` | `manual` | Menjalankan proses tutup hari (close-day) untuk properti hotel |
 | `hotel:housekeeping-plan` | `manual` | Menyusun rute kerja harian petugas housekeeping H3 |
+| `hotel:mice-milestone-reminder` | `manual` | Scan upcoming wedding and MICE milestone installments and dispatch payment reminders |
 | `hotel:overbooking-plan` | `manual` | Menjalankan optimasi overbooking H1 harian per properti |
 | `hotel:rate-publish` | `manual` | Menerbitkan tarif BAR harian hasil perhitungan H2 secara idempoten |
+| `hotel:release-room-blocks` | `manual` | Melepaskan kuota kamar blok MICE/Wedding bertingkat (H-30, H-14, H-7) kembali ke inventori publik |
 | `hotel:report-orphans` | `manual` | Report orphan records violating hotel foreign key relationships |
 | `hotel:setback-scan` | `manual` | Memindai sensor okupansi kamar dan mengaktifkan HVAC setback H4 |
+| `hotel:sync-banquet-bom` | `manual` | Synchronize banquet recipe Bill of Materials (BOM) with procurement inventory requisitions |
 | `hsp:audit` | `manual` | Audit layanan operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, uji klinis, integritas subjek, dan rekonsiliasi dua-sumber rawat jalan |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
@@ -856,7 +861,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 242 Command** | **37 Terjadwal** | |
+| **Total: 247 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
