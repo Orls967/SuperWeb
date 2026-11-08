@@ -67,6 +67,16 @@ class AviationFlight extends Model
         return $this->belongsTo(AviationAirport::class, 'destination_airport_id');
     }
 
+    public function departureAirport(): BelongsTo
+    {
+        return $this->origin();
+    }
+
+    public function arrivalAirport(): BelongsTo
+    {
+        return $this->destination();
+    }
+
     public function inventories(): HasMany
     {
         return $this->hasMany(AviationSeatInventory::class, 'flight_id');

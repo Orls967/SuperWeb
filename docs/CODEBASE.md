@@ -483,7 +483,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 3 | **Asset** | `ast_` | 3 |
 | 4 | **AutoDex** | `dex_` | 0 |
 | 5 | **AutoServe** | `serve_` | 1 |
-| 6 | **Aviation** | `avi_` | 1 |
+| 6 | **Aviation** | `avi_` | 2 |
 | 7 | **B2b** | `b2b_` | 1 |
 | 8 | **Banking** | `bank_` | 11 |
 | 9 | **Circular** | `cir_` | 1 |
@@ -542,7 +542,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Venue** | `ven_` | 12 |
 | 63 | **Wealth** | `wm_` | 2 |
 | 64 | **Wms** | `wms_` | 2 |
-| | **Total: 64 Modul** | | **668 Migrasi** |
+| | **Total: 64 Modul** | | **669 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -553,7 +553,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Asset** | 24 | `assets/audit`, `assets/depreciation`, `assets/depreciation/run` ... | web, auth, verified |
 | **AutoDex** | 5 | `autodex`, `autodex/car/{car}`, `autodex/garage` ... | web, auth, verified |
 | **AutoServe** | 24 | `bookings/create`, `bookings/{booking}`, `bookings/{booking}/invoice` ... | web, auth, verified |
-| **Aviation** | 17 | `aviation/ops`, `aviation/slots`, `aviation/slots/request` ... | web, auth, role:admin,ops_controller,superadmin |
+| **Aviation** | 28 | `aviation/ops`, `aviation/slots`, `aviation/slots/request` ... | web, auth, role:admin,ops_controller,superadmin |
 | **B2b** | 9 | `b2b`, `b2b/dashboard`, `b2b/wholesale` ... | web, auth, role:admin,b2b_buyer,procurement |
 | **Banking** | 13 | `wallet`, `wallet/transfer`, `wallet/mutasi` ... | web, auth, role:admin,customer,auditor |
 | **Circular** | 12 | `circular/listings`, `circular/market`, `circular/orders` ... | web, auth, verified |
@@ -611,7 +611,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1557 Rute** | | |
+| **Total** | **1568 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -628,11 +628,15 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ast:depreciate` | **`monthlyOn(1, '01:30')`** | Jalankan penyusutan aset (idempoten per aset/periode/buku) |
 | `ast:verify-chain` | `manual` | Verifikasi rantai hash SHA-256 seluruh riwayat aset (append-only) |
 | `avi:audit` | `manual` | Audit rekonsiliasi dua sumber operasi aviasi: kapasitas kursi, kelaikan dispatch, kargo, ledger refund, dan slot |
+| `avi:codeshare-prorate` | `manual` | Selesaikan pembagian pendapatan tiket codeshare dan ekspor berkas kliring ICH |
+| `avi:disruption-inspect` | `manual` | Inspeksi kasus disrupsi IRROPS dan verifikasi kepatuhan regulasi PM 89 |
 | `avi:expire-holds` | `manual` | Batalkan reservasi kursi sementara (hold) yang melewati batas waktu TTL (15 menit) dan kembalikan kapasitas inventori |
+| `avi:irrops-process` | `manual` | Proses otomasi penanganan disrupsi IRROPS dan penerbitan hak penumpang PM 89 |
 | `avi:manifest` | `manual` | Hasilkan manifes resmi penumpang dan kargo udara dalam format CSV berstandar otoritas bandara |
 | `avi:purge-pii` | `manual` | Anonimisasi data pribadi (PII) penumpang untuk kepatuhan UU Pelindungan Data Pribadi (UU No. 27/2022) |
 | `avi:slot-usage-evaluate` | `manual` | Evaluasi rasio pemanfaatan slot bandara IATA (Aturan Use-it-or-lose-it 80/20) untuk penentuan hak historis musim berikutnya |
 | `avi:sync-factors` | `manual` | Sinkronisasi faktor eksternal aviasi (harga avtur MOPS, peringatan debu vulkanik VONA, inflasi bandara) |
+| `avi:yield-rebalance` | `manual` | Hitung ulang dan optimalkan batas pemesanan fare bucket EMSR-b |
 | `aviation:cargo-manifest` | `manual` | Menghasilkan manifes muatan kargo udara berstandar IATA untuk penerbangan terkait |
 | `aviation:dispatch-scan` | `manual` | Memindai seluruh penerbangan terjadwal pada tanggal terkait dan mengevaluasi gerbang kelaikan A2 |
 | `aviation:maintenance-forecast` | `manual` | Prakiraan jatuh tempo perawatan armada A-Check dan kedaluwarsa sertifikat kalender |
@@ -874,7 +878,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 258 Command** | **37 Terjadwal** | |
+| **Total: 262 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

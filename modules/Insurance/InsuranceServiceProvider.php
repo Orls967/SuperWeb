@@ -10,6 +10,7 @@ use Modules\Core\Contracts\SimClockInterface;
 use Modules\Insurance\Application\Services\EventCoverBinderService;
 use Modules\Insurance\Application\Services\FullInsuranceService;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
+use Modules\Insurance\Application\Services\ParametricTriggerRecorderService;
 use Modules\Insurance\Console\Commands\AuditEmbeddedCommand;
 use Modules\Insurance\Console\Commands\AuditInsuranceCommand;
 use Modules\Insurance\Console\Commands\AuditLifeHealthCommand;
@@ -19,6 +20,7 @@ use Modules\Insurance\Console\Commands\CatRunCommand;
 use Modules\Insurance\Console\Commands\CedePeriodCommand;
 use Modules\Insurance\Console\Commands\SolvencySnapshotCommand;
 use Modules\Insurance\Contracts\EventCoverBinder;
+use Modules\Insurance\Contracts\ParametricTriggerRecorder;
 use Modules\Shared\Application\MenuRegistry;
 
 class InsuranceServiceProvider extends ServiceProvider
@@ -38,6 +40,10 @@ class InsuranceServiceProvider extends ServiceProvider
         $this->app->bind(
             EventCoverBinder::class,
             EventCoverBinderService::class
+        );
+        $this->app->bind(
+            ParametricTriggerRecorder::class,
+            ParametricTriggerRecorderService::class
         );
     }
 

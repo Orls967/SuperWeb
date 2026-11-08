@@ -12,6 +12,7 @@ use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
 use Modules\Aviation\Domain\Models\AviationAirport;
+use Modules\Aviation\Domain\Models\AviationCodeshareAgreement;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationOperator;
 use Modules\Aviation\Domain\Models\AviationRoute;
@@ -4551,4 +4552,37 @@ return [
     ],
     'aviation.reports.index' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
     'aviation.reports.export' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+
+    // Fase 178: Yield, IRROPS, Codeshare & Loyalty
+    'aviation.yield.index' => ['roles' => ['admin', 'ops_controller', 'superadmin']],
+    'aviation.yield.optimize' => ['roles' => ['admin', 'ops_controller', 'superadmin']],
+    'aviation.irrops.index' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+    'aviation.irrops.store' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+    'aviation.irrops.dispatch-care' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+    'aviation.irrops.reaccommodate' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+    'aviation.codeshare.index' => ['roles' => ['admin', 'ops_controller', 'superadmin']],
+    'aviation.codeshare.store' => ['roles' => ['admin', 'ops_controller', 'superadmin']],
+    'aviation.codeshare.activate' => [
+        'roles' => ['admin', 'ops_controller', 'superadmin'],
+        'params' => function () {
+            $operator = AviationOperator::firstOrCreate(['code' => 'GA'], ['name' => 'Garuda', 'country' => 'ID', 'status' => 'active']);
+            $agreement = AviationCodeshareAgreement::firstOrCreate(
+                ['agreement_code' => 'CS-TEST-ROUTE-ACTIVATE'],
+                [
+                    'operating_airline_id' => $operator->id,
+                    'marketing_airline_id' => $operator->id,
+                    'agreement_type' => 'free_sale',
+                    'revenue_split_bps' => 8500,
+                    'proration_rule' => 'straight_rate',
+                    'status' => 'proposed',
+                    'valid_from' => '2026-01-01',
+                    'valid_until' => '2026-12-31',
+                ]
+            );
+
+            return ['id' => $agreement->id];
+        },
+    ],
+    'aviation.loyalty.index' => ['roles' => ['admin', 'customer_care', 'superadmin']],
+    'aviation.loyalty.enroll' => ['roles' => ['admin', 'customer_care', 'superadmin']],
 ];

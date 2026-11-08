@@ -44,6 +44,11 @@ class AviationTicket extends Model
         'pii_name_encrypted' => 'encrypted',
     ];
 
+    public function getPassengerNameAttribute(): string
+    {
+        return (string) ($this->pii_name_encrypted ?? 'Passenger '.$this->id);
+    }
+
     public function flight(): BelongsTo
     {
         return $this->belongsTo(AviationFlight::class, 'flight_id');
