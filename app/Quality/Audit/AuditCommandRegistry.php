@@ -67,6 +67,7 @@ use App\Quality\Audit\Fixtures\ProptechSmartBuildingCorruptionFixture;
 use App\Quality\Audit\Fixtures\ProServicesAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrpAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PrtAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\PrtFleetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ReinsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
@@ -170,6 +171,7 @@ final class AuditCommandRegistry
             'for:audit' => new ForestAuditCorruptionFixture,
             'prp:audit-smartbuilding' => new ProptechSmartBuildingCorruptionFixture,
             'prt:audit' => new PrtAuditCorruptionFixture,
+            'prt:fleet-audit' => new PrtFleetAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'ret:audit' => new RetAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
