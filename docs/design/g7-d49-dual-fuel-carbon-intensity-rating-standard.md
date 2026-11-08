@@ -1,49 +1,101 @@
-# KEPUTUSAN ARSITEKTUR G7-D49: STANDAR PENILAIAN INTENSITAS KARBON OPERASIONAL (IMO CII) & DUAL-FUEL MARITIM
+# G7-D49: Dual-Fuel Carbon Intensity Rating Standard (IMO MEPC.354(78) & MARPOL Annex VI)
 
-**Status:** `🔵 DISETUJUI & DIIMPLEMENTASIKAN`  
-**Fase:** Fase 180 (Armada Kapal, Voyage, Charter & Marine Services)  
-**Terkait:** Lini 27 (Maritim & Pelabuhan), Kontrak K3 (Modul ESG), Algoritma A12 (`CiiCarbonIntensityRatingEngine`)  
+## 1. Konteks Regulasi Emisi Maritim Internasional
 
----
+Mulai 1 Januari 2023, Organisasi Maritim Internasional (*International Maritime Organization - IMO*) mewajibkan seluruh kapal niaga dengan tonase kotor 5.000 GT ke atas untuk menghitung dan melaporkan Indikator Intensitas Karbon Operasional (*Carbon Intensity Indicator - CII*). Regulasi ini diadopsi melalui Resolusi MEPC.354(78) dan Amandemen MARPOL Annex VI Regulasi 28.
 
-## 1. Konteks Bisnis & Regulasi Lingkungan Global
-
-Organisasi Maritim Internasional (IMO) telah memberlakukan amandemen ketat terhadap **MARPOL Annex VI (Regulation 28)** yang mewajibkan seluruh kapal niaga dengan bobot 5.000 Gross Tonnage (GT) ke atas untuk:
-1. Menghitung indikator intensitas karbon operasional tahunan (*Operational Carbon Intensity Indicator / Attained CII*).
-2. Membandingkan Attained CII dengan nilai referensi yang disyaratkan (*Required CII*) yang diperketat setiap tahun dengan faktor reduksi $Z$ (5% di tahun 2023 hingga 11% di tahun 2026).
-3. Menerima peringkat kinerja karbon tahunan dari huruf **A (Major Superior)** hingga **E (Inferior)**.
-4. Kapal yang memperoleh peringkat D selama 3 tahun berturut-turut atau peringkat E dalam 1 tahun dilarang berlayar di perairan teritorial negara anggota IMO kecuali telah menyampaikan *Ship Energy Efficiency Management Plan (SEEMP Part III) Corrective Action Plan* yang telah diverifikasi oleh otoritas maritim / Biro Klasifikasi.
-
-Di sisi lain, armada modern mulai mengadopsi bahan bakar transisi rendah karbon (*Dual-Fuel*: VLSFO, LSMGO, Biofuel blend B30 bersertifikasi ISCC, dan LNG). SuperWeb perlu mengaudit performa emisi ini dan menghubungkannya dengan modul ESG (`EmissionBenefitRecorder`) agar kapal dengan rating superior (A atau B) dapat mengklaim sertifikat kredit karbon laut (*Blue Carbon / Avoided Maritime Emissions*).
+Keputusan arsitektur **G7-D49** menetapkan implementasi perhitungan deterministik CII harian dan tahunan, penentuan batas toleransi peringkat A sampai E, integrasi bahan bakar ganda (*dual-fuel / multi-fuel*), serta penguncian izin dispatch armada berbasis kepatuhan dekarbonisasi maritim global.
 
 ---
 
-## 2. Keputusan Desain & Arsitektur
+## 2. Parameter Bahan Bakar & Faktor Emisi Karbon ($C_F$)
 
-Diputuskan untuk menerapkan arsitektur audit emisi maritim terpadu berbasis regulasi **IMO Resolutions MEPC.336(76), MEPC.338(76), dan MEPC.354(78)**:
+Sesuai IMO Guidelines 2022 on the Carbon Intensity Indicator, setiap jenis bahan bakar kapal memiliki faktor konversi emisi massal ($C_F$ dalam metrik ton $\text{CO}_2$ per metrik ton bahan bakar):
 
-1. **Mesin Audit Intensitas Karbon (Algoritma Bersertifikat A12):**
-   - Diimplementasikan pada kelas terverifikasi `Modules\Shared\Domain\Algorithms\Port\CiiCarbonIntensityRatingEngine`.
-   - Menghitung emisi karbon absolut dengan faktor konversi bahan bakar $C_F$ menurut MEPC.308(73):
-     - VLSFO: $3.1510 \text{ t-CO}_2 / \text{t-Fuel}$
-     - LSMGO: $3.2060 \text{ t-CO}_2 / \text{t-Fuel}$
-     - LNG: $2.7500 \text{ t-CO}_2 / \text{t-Fuel}$
-     - Biofuel B30: $2.4500 \text{ t-CO}_2 / \text{t-Fuel}$
-   - Menghitung transport work kapal: $\text{Kapasitas (DWT)} \times \text{Jarak Tempuh (NM)}$.
-   - Menentukan garis batas (*boundaries*) A, B, C, D menggunakan koefisien eksponensial $d_1, d_2, d_3, d_4$ spesifik untuk setiap jenis kapal (*Bulk Carrier, Container Ship, Product Tanker, General Cargo, LPG Carrier*).
-
-2. **Integrasi Lintas Modul ke ESG (EmissionBenefitRecorder K3):**
-   - Dikelola oleh `Modules\Port\Application\Services\MaritimeEsgCiiService`.
-   - Ketika kapal mencapai peringkat A atau B (kinerja efisiensi superior di atas ambang regulasi IMO), selisih emisi CO2 yang berhasil dihemat dihitung secara otomatis.
-   - Panggilan otomatis dieksekusi ke kontrak `EmissionBenefitRecorder::recordAvoidedEmission` dengan kode sumber `FLEET_VESSEL_CII` dan kunci idempoten berformat `CII-{IMO}-{YEAR}`.
-
-3. **Tindakan Korektif Terpadu (SEEMP Part III Integration):**
-   - Bila kapal terancam jatuh ke peringkat D atau E, sistem menghitung rekomendasi penurunan kecepatan (*recommended speed reduction percentage*) berdasarkan korelasi propulsi kuadratik.
-   - Sistem merekomendasikan opsi penyambungan listrik darat hijau (*Cold Ironing*) saat sandar di pelabuhan melalui `ColdIroningShorePowerService` untuk mengeliminasi emisi mesin bantu.
+| Tipe Bahan Bakar Maritim | Standar Spesifikasi | Kadar Sulfur Maksimum | Nilai $C_F$ IMO ($\text{t-CO}_2 / \text{t-fuel}$) | Karakteristik Operasional |
+|---|---|---|---|---|
+| **VLSFO** (*Very Low Sulphur Fuel Oil*) | ISO 8217:2017 RMG 380 | $\le 0.50\% \text{ m/m}$ | **3.151** | Bahan bakar utama pelayaran samudera modern paska IMO 2020. |
+| **LSMGO** (*Low Sulphur Marine Gas Oil*)| ISO 8217:2017 DMA/DMZ | $\le 0.10\% \text{ m/m}$ | **3.206** | Digunakan di zona emisi khusus (*ECA - Emission Control Areas*) dan saat manuver sandar. |
+| **HFO** (*Heavy Fuel Oil*) | ISO 8217:2017 RMK 700 | $> 0.50\% \text{ m/m}$ | **3.114** | Hanya diizinkan bagi kapal yang dilengkapi *Exhaust Gas Cleaning System* (Scrubber terbuka/tertutup). |
+| **LNG** (*Liquefied Natural Gas*) | IGF Code (Methane) | $\approx 0\%$ | **2.750** | Emisi karbon lebih rendah $20-25\%$, resiko pelepasan gas metana (*methane slip*). |
+| **Bio-Fuel B30 / B35 (FAME)** | EN 14214 / SNI 7182 | $\le 10 \text{ ppm}$ | **2.850** (*net-well-to-wake*) | Campuran kelapa sawit domestik Indonesia untuk armada kabotase. |
 
 ---
 
-## 3. Konsekuensi Arsitektural
+## 3. Rumusan Matematis Penilaian Attained vs Required CII
 
-- **Positif:** Armada kapal yang dikelola SuperWeb memiliki kepatuhan hukum penuh terhadap IMO MARPOL Annex VI, menghindari risiko penahanan kapal oleh *Port State Control (PSC)*, dan menciptakan aliran pendapatan nilai tambah melalui tokenisasi kredit emisi karbon terhindar di modul ESG.
-- **Batasan:** Data jarak dan konsumsi bahan bakar dari *Noon Reports* harus diinput secara disiplin setiap hari oleh perwira kapal untuk menjaga keakuratan akumulasi tahunan.
+### 3.1 Perhitungan Attained CII Operasional
+$$\text{Attained CII} = \frac{\sum_{j} (FC_j \times C_{F,j})}{\text{Kapasitas (DWT)} \times \text{Jarak Tempuh (Nautical Miles)}} \times 10^6 \quad [\text{gram } \text{CO}_2 / \text{dwt}\cdot\text{nm}]$$
+Di mana:
+- $FC_j$: Total konsumsi bahan bakar tipe $j$ dalam metrik ton selama periode evaluasi pelayaran.
+- $C_{F,j}$: Faktor emisi karbon IMO untuk tipe bahan bakar $j$.
+- $\text{Kapasitas}$: Bobot mati kapal (*Deadweight Tonnage - DWT*) untuk bulk carrier, tanker, container ship, dan general cargo.
+- $\text{Jarak Tempuh}$: Jarak perpindahan kapal di atas permukaan air (*distance travelled over ground*) yang diverifikasi lewat noon report GPS.
+
+### 3.2 Perhitungan Reference Line & Required CII Tahunan
+$$\text{CII}_{\text{ref}} = a \times \text{Capacity}^{-c}$$
+Untuk kapal Bulk Carrier: $a = 4745$, $c = 0.401$.
+$$\text{Required CII}_{2026} = \text{CII}_{\text{ref}} \times \left(1 - \frac{Z}{100}\right)$$
+Di mana faktor reduksi tahunan $Z$ untuk tahun 2026 adalah $11\%$ ($Z = 11$).
+
+### 3.3 Penentuan Batas Peringkat (Rating Boundaries d1..d4)
+Rasio efisiensi dihitung dengan formula perbandingan:
+$$\text{Rasio CII} = \frac{\text{Attained CII}}{\text{Required CII}}$$
+Batas peringkat emisi dievaluasi terhadap eksponensial faktor deviasi vektor $d_1, d_2, d_3, d_4$:
+
+```
+Rasio CII <= exp(-d1)  -->  [ GRADE A : Major Superior ]
+Rasio CII <= exp(-d2)  -->  [ GRADE B : Minor Superior ]
+Rasio CII <= exp(d3)   -->  [ GRADE C : Moderate / Standard ]
+Rasio CII <= exp(d4)   -->  [ GRADE D : Minor Inferior ]
+Rasio CII >  exp(d4)   -->  [ GRADE E : Inferior ]
+```
+
+---
+
+## 4. Konsekuensi Hukum & Operasional Peringkat Emisi
+
+```
++---------------------------------------------------------------+
+|                       HASIL AUDIT CII                         |
++-------------------------------+-------------------------------+
+                                |
+        +-----------------------+-----------------------+
+        |                                               |
+        v                                               v
++-------------------------------+       +-------------------------------+
+|   Peringkat A, B, atau C      |       |     Peringkat D atau E        |
++---------------+---------------+       +---------------+---------------+
+                |                                       |
+                v                                       v
++-------------------------------+       +-------------------------------+
+| Operasi Normal Berkelanjutan  |       | Kepatuhan Regulasi Terancam   |
+| - Diterbitkan Sertifikat SOCP |       | - D 3 Tahun Beruntun atau E   |
+| - Potongan Port Dues Hijau 5% |       | - Wajib Rencana Perbaikan     |
++-------------------------------+       +---------------+---------------+
+                                                        |
+                                                        v
+                                        +-------------------------------+
+                                        |  SEEMP Part III Action Plan   |
+                                        |  1. Just-in-Time Port Arrival |
+                                        |  2. Eco-Speed Slow Steaming   |
+                                        |  3. Retrofit Hull Air Enclose |
+                                        +-------------------------------+
+```
+
+1. **Grade A & B (Superior)**:
+   - Berhak menerima insentif diskon tarif jasa labuh/tambat (*Green Port Dues Rebate*) sebesar $5\%$ di pelabuhan modern terdaftar.
+   - Peringkat kapal otomatis tercatat di bursa sewa kapal Baltic Exchange dengan premi tarif sewa harian (*green freight premium*).
+2. **Grade C (Standard)**:
+   - Kepatuhan minimum tercapai, kapal beroperasi secara normal tanpa penalti.
+3. **Grade D & E (Inferior)**:
+   - Sistem menandai kapal dengan peringatan operasional kuning/merah.
+   - Jika kapal meraih Grade D selama 3 tahun berturut-turut atau Grade E dalam 1 tahun pelaporan, sistem secara otomatis memblokir pembuatan fixture sewa baru hingga dokumen rencana aksi koreksi (*Corrective Action Plan*) diverifikasi oleh biro klasifikasi resmi dan disetujui administrasi bendera negara (*Flag State*).
+
+---
+
+## 5. Integrasi Sistem & Pencegahan Pelanggaran Emisi
+
+1. **Telemetri Noon Report Real-Time**: Setiap entri `FleetNoonReport` secara otomatis memperbarui nilai estimasi akumulatif CII tahun berjalan (*year-to-date attained CII*).
+2. **Optimasi Rute Eco-Speed**: Layanan `OceanFleetRouteOptimizationService` menghitung kurva kecepatan jelajah paling optimal (*economic transit speed*) untuk menjaga peringkat emisi kapal tetap berada di zona Grade C atau lebih baik.
+3. **Audit Kepatuhan Pelabuhan**: Endpoint `/port/fleet` menampilkan kartu skor karbon visual setiap kapal untuk transparansi kepada penyewa dan auditor maritim.

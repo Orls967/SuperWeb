@@ -1,49 +1,100 @@
-# KEPUTUSAN ARSITEKTUR G7-D48: MEKANISME PENYELESAIAN SENGKETA SEWA KAPAL & KALKULASI LAYTIME (BIMCO GENCON / LMAA)
+# G7-D48: Charter Party Settlement & Laytime Dispute Standard
 
-**Status:** `🔵 DISETUJUI & DIIMPLEMENTASIKAN`  
-**Fase:** Fase 180 (Armada Kapal, Voyage, Charter & Marine Services)  
-**Terkait:** Lini 27 (Maritim & Pelabuhan), Kontrak G7-K27, Algoritma A11 (`LaytimeDemurrageCalculator`)  
+## 1. Konteks Bisnis & Fondasi Hukum Maritim Internasional
 
----
+Kontrak sewa kapal niaga (*Charter Party*) merupakan instrumen perikatan komersial tertua dan paling krusial dalam perdagangan maritim global. Perselisihan terkait perhitungan waktu muat/bongkar (*Laytime*) dan klaim denda keterlambatan (*Demurrage*) atau premi efisiensi (*Despatch*) menyumbang lebih dari $65\%$ sengketa hukum di forum arbitrase maritim seperti London Maritime Arbitrators Association (LMAA) dan Singapore Chamber of Maritime Arbitration (SCMA).
 
-## 1. Konteks Bisnis & Masalah
-
-Dalam operasional pelayaran kapal niaga global (baik *Voyage Charter* maupun *Time Charter*), biaya keterlambatan kapal di pelabuhan (*Demurrage*) dan bonus efisiensi pemuatan (*Despatch*) merupakan salah satu sumber sengketa komersial terbesar antara pemilik kapal (*Shipowner*) dan penyewa kargo (*Charterer*). 
-
-Masalah utama yang dihadapi adalah:
-1. **Perbedaan Interpretasi Statement of Facts (SOF):** Perselisihan mengenai jam-jam interupsi operasional (misalnya hujan deras pada kargo higroskopis seperti batubara atau biji-bijian, mogok buruh bongkar muat / *stevedore strike*, atau kerusakan peralatan derek kapal).
-2. **Aturan Hari Libur (SHEX vs SHINC):** *Sundays and Holidays Excluded* (SHEX) mensyaratkan pengecualian akhir pekan dari perhitungan laytime, sedangkan *SHINC* menghitung waktu berjalan terus.
-3. **Masa Tenggang Notice of Readiness (NOR):** Ketidaksepakatan apakah waktu tenggang (*turn-time* 6 jam) mulai dihitung saat tender NOR atau saat kapal tiba di jangkar labuh (*anchorage*).
-4. **Prinsip Hukum Maritim Internasional:** Perlunya penegakan prinsip *"Once on demurrage, always on demurrage"* tanpa kompromi, di mana setelah laytime yang diizinkan habis, hari libur dan cuaca buruk tetap dihitung sebagai demurrage yang wajib dibayar.
+Keputusan arsitektur **G7-D48** menetapkan standarisasi kalkulasi deterministik, pencatatan berbasis *Statement of Facts* (SOF) append-only, dan otomatisasi arbitrase sistem terhadap klausula perkapalan internasional yang mengikat antara pemilik kapal (*Shipowner*) dan penyewa (*Charterer*).
 
 ---
 
-## 2. Keputusan Desain & Arsitektur
+## 2. Definisi Istilah Standar BIMCO Laytime Definitions 2013
 
-Diputuskan untuk menerapkan standarisasi perhitungan komersial dan alur penyelesaian sengketa sewa kapal berbasis aturan **BIMCO Gencon 1994** dan yurisprudensi arbitrase maritim internasional:
+Dalam sistem SuperWeb Port Fleet Management, istilah-istilah berikut memiliki perlakuan invarian kode:
 
-1. **Mesin Kalkulasi Mandiri (Algoritma Bersertifikat A11):**
-   - Laytime dievaluasi oleh kelas terverifikasi `Modules\Shared\Domain\Algorithms\Port\LaytimeDemurrageCalculator`.
-   - Mengakumulasi durasi kotor dari waktu mulainya laytime (setelah masa tenggang NOR atau saat kerja dimulai lebih awal) hingga selesainya operasi kargo.
-   - Memfilter interupsi SOF berdasarkan klausul kontrak:
-     - Jika klausul *SHEX*, waktu hujan dan hari libur dipotong dari jam laytime.
-     - Jika klausul *SHINC*, waktu akhir pekan tetap dihitung sebagai laytime terpakai.
-     - Kerusakan peralatan kapal sendiri (*ship's fault*) SELALU dipotong dari waktu laytime terpakai terlepas dari klausul kontrak.
-   - Setelah waktu laytime habis (*balance hours < 0*), sistem otomatis mengaktifkan status `DEMURRAGE` dan menerapkan prinsip *Once on Demurrage, Always on Demurrage*.
-   - Menerapkan kalkulasi *Reversible Laytime* bila diperjanjikan (menggabungkan laytime muat dan bongkar).
-
-2. **Penerbitan Otomatis Tagihan & Penanganan Status Sengketa:**
-   - Bila hasil kalkulasi adalah `DEMURRAGE`, sistem otomatis menerbitkan faktur resmi `FleetDemurrageInvoice` dengan jatuh tempo pembayaran 14 hari kalender.
-   - Bila penyewa mengajukan keberatan resmi, status kalkulasi ditandai sebagai `DISPUTED` dan status charter party beralih ke `DISPUTED`.
-   - Sistem menyediakan klausul rujukan arbitrase standar maritim: *Singapore Chamber of Maritime Arbitration (SCMA)* atau *London Maritime Arbitrators Association (LMAA)*.
-
-3. **Integritas Pembukuan Finansial (Double-Entry Ledger):**
-   - Piutang demurrage dicatat pada akun debit `1200 (Accounts Receivable Demurrage)` dan kredit `4100 (Demurrage Revenue)`.
-   - Penyelesaian damai atau putusan arbitrase disesuaikan melalui jurnal koreksi berpasangan dengan pencatatan nomor perkara sengketa.
+| Istilah | Kepanjangan / Kodifikasi | Definisi Operasional Sistem | Perlakuan Penghitungan Waktu |
+|---|---|---|---|
+| **NOR** | *Notice of Readiness* | Surat pemberitahuan nahkoda bahwa kapal telah tiba di pelabuhan dan secara fisik siap menerima/membongkar kargo. | Memicu jam hitung mundur masa tenggang (*Turn-Time*). |
+| **Turn-Time** | *Free Waiting Period* | Waktu tenggang antara diterimanya NOR oleh agen/charterer hingga dimulainya laytime berjalan (lazimnya 6 jam atau 12 jam). | Waktu ditangguhkan (*excluded from running laytime*). |
+| **SHINC** | *Sundays and Holidays Included* | Seluruh hari Minggu dan hari libur resmi di pelabuhan bersangkutan dihitung sebagai waktu kerja normal. | Laytime berjalan tanpa henti $24/7$. |
+| **SHEX** | *Sundays and Holidays Excluded* | Hari Minggu dan hari libur resmi dikecualikan dari jam kerja yang diizinkan untuk pemuatan/pembongkaran. | Waktu jam dihentikan dari pukul 17:00 hari sebelumnya hingga 08:00 hari kerja berikutnya. |
+| **WWD** | *Weather Working Day* | Hari kerja di mana kondisi cuaca mengizinkan pemuatan/pembongkaran kargo tanpa membahayakan muatan atau kru. | Periode hujan lebat atau angin kencang dicatat sebagai *weather interruption* dan mengurangi laytime terpakai. |
+| **Demurrage** | *Liquidated Damages for Detention* | Kompensasi ganti rugi yang dibayar charterer kepada pemilik kapal atas keterlambatan pelepasan kapal melampaui laytime yang disepakati. | Dihitung per jam berdasarkan tarif harian yang tercantum pada *Fixture Recap*. |
+| **Despatch** | *Despatch Money* | Insentif yang dibayarkan pemilik kapal kepada charterer bila operasi muat/bongkar selesai sebelum batas laytime habis. | Ditetapkan sebesar $50\%$ dari tarif harian demurrage kecuali jika diperjanjikan lain (*half demurrage*). |
 
 ---
 
-## 3. Konsekuensi Arsitektural
+## 3. Diagram Alur Penyelesaian Sengketa Laytime
 
-- **Positif:** Mengeliminasi friksi interpretasi manual antara divisi operasional kapal, agensi pelabuhan, dan divisi komersial pemilik kapal. Setiap perhitungan memiliki audit trail matematis yang dapat dipertanggungjawabkan di hadapan arbiter maritim.
-- **Batasan:** Format laporan *Statement of Facts* (SOF) harus memiliki stempel waktu ISO-8601 yang presisi dan dikonfirmasi bersama oleh nakhoda dan agen pelabuhan.
+```
+                 +-----------------------------------+
+                 |    Kapal Tiba & Labuh Jangkar     |
+                 +-----------------+-----------------+
+                                   |
+                                   v
+                 +-----------------------------------+
+                 |        Tender NOR Diterima        |
+                 +-----------------+-----------------+
+                                   |
+                                   v
+                 +-----------------------------------+
+                 |     Hitung Mundur Turn-Time       |
+                 |     (Contoh: 6 Jam Gratis)        |
+                 +-----------------+-----------------+
+                                   |
+                                   v
+                 +-----------------------------------+
+                 |       Laytime Mulai Berjalan      |
+                 +-----------------+-----------------+
+                                   |
+         +-------------------------+-------------------------+
+         |                                                   |
+         v                                                   v
++-------------------------------+                 +-------------------------------+
+|  Kondisi Normal / SHINC       |                 |  Interupsi Cuaca Hujan (WWD)  |
+|  - Jam berjalan penuh         |                 |  - Validasi SOF Agen Resmi    |
++---------------+---------------+                 |  - Jam dihentikan sementara   |
+                |                                 +---------------+---------------+
+                +-------------------------+-----------------------+
+                                          |
+                                          v
+                        +-----------------------------------+
+                        |   Apakah Laytime Terpakai         |
+                        |   Melampaui Batas yang Diizinkan? |
+                        +-----------------+-----------------+
+                                          |
+                        +-----------------+-----------------+
+                        |                                   |
+                     YA |                                NO |
+                        v                                   v
++-----------------------------------------------+ +-----------------------------------------------+
+| Status: DEMURRAGE                             | | Status: DESPATCH                              |
+| - Prinsip: Once on demurrage, always demurrage| | - Jam sisa dihitung                           |
+| - Pengecualian hujan/libur TIDAK BERLAKU LAGI | | - Terbitkan Nota Despatch = 50% Demurrage     |
+| - Tagihkan Demurrage Invoice ke Charterer     | | - Kreditkan saldo ke akun charterer           |
++-----------------------------------------------+ +-----------------------------------------------+
+```
+
+---
+
+## 4. Spesifikasi Matematis Formula Algoritma A11
+
+1. **Waktu Laytime yang Diizinkan ($L_{\text{allowed}}$)**:
+$$L_{\text{allowed}} = \frac{\text{Volume Kargo (Metric Ton)}}{\text{Kecepatan Muat/Bongkar yang Disepakati (MT/Hari)}} \times 24 \quad [\text{jam}]$$
+2. **Waktu Laytime Bersih yang Terpakai ($L_{\text{used}}$)**:
+$$L_{\text{used}} = (T_{\text{selesai}} - T_{\text{mulai laytime}}) - \sum \Delta t_{\text{interupsi cuaca yang sah}} - \sum \Delta t_{\text{libur SHEX}}$$
+3. **Penyelesaian Finansial**:
+   - Jika $L_{\text{used}} > L_{\text{allowed}}$:
+     $$\Delta t_{\text{demurrage}} = L_{\text{used}} - L_{\text{allowed}}$$
+     $$\text{Nilai Tagihan Demurrage} = \frac{\Delta t_{\text{demurrage}}}{24} \times \text{Tarif Harian Demurrage}$$
+   - Jika $L_{\text{used}} < L_{\text{allowed}}$:
+     $$\Delta t_{\text{despatch}} = L_{\text{allowed}} - L_{\text{used}}$$
+     $$\text{Nilai Pembayaran Despatch} = \frac{\Delta t_{\text{despatch}}}{24} \times (0.5 \times \text{Tarif Harian Demurrage})$$
+
+---
+
+## 5. Keputusan Teknis Terikat (Architectural Invariants)
+
+1. **Immutability Statement of Facts**: Catatan waktu SOF ditandatangani secara kriptografis oleh Nahkoda (*Master*) dan Agen Pelabuhan (*Port Agent*). Data log interupsi tidak dapat dimodifikasi setelah status voyage masuk ke tahap verifikasi penagihan.
+2. **Koneksi Double-Entry Otomatis**: Setiap penerbitan `FleetDemurrageInvoice` secara otomatis memicu pencatatan jurnal akrual debit pada `prt:receivable:demurrage` dan kredit pada `prt:revenue:freight` (atau pendapatan demurrage khusus).
+3. **Pencegahan Sengketa Ganda**: Invoice demurrage memiliki referensi silang terhadap nomor voyage dan charter party ID. Sistem memblokir penerbitan invoice kedua untuk port call yang sama sebelum rekonsiliasi sengketa pertama selesai (*idempotent billing gate*).

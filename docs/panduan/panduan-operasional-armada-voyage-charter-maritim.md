@@ -1,119 +1,151 @@
-# PANDUAN OPERASIONAL DAN RUNBOOK ARMADA KAPAL NIAGA, VOYAGE & LAYANAN MARITIM
+# PANDUAN OPERASIONAL: ARMADA KAPAL, VOYAGE, CHARTER & MARINE SERVICES (FASE 180)
 
-**Kode Dokumen:** `SOP-PRT-FLT-001`  
-**Klasifikasi:** Manual Operasional Standar (Lini 27 & Lini 22)  
-**Status:** `🔵 AKTIF`  
+## 1. Ikhtisar Panduan
 
----
-
-## 1. Ikhtisar & Peran Pengguna
-
-Panduan ini mengatur prosedur standar operasional (SOP) untuk:
-- **Marine Fleet Superintendent:** Memantau kelaiklautan kapal, audit sertifikat SOLAS/MARPOL, dan pengawasan Safe Manning STCW.
-- **Master & Chief Engineer (Nakhoda & KKM):** Pelaporan tengah hari (*Noon Reports*), navigasi rute aman, dan pematuhan aturan air ballas IMO D-1/D-2.
-- **Chartering & Commercial Manager:** Kesepakatan fixture perjanjian sewa kapal (Gencon/NYPE), negosiasi tarif, dan audit laytime/demurrage.
-- **Port Operations Agent:** Pengajuan pandu tunda, reservasi jendela dermaga (K27), pengisian bunker (BDN), dan penyelesaian akun pengeluaran pelabuhan (PDA/FDA).
+Dokumen ini merupakan petunjuk pelaksanaan teknis dan operasional untuk operator pelabuhan (*Port Operators*), agen perkapalan (*Shipping Line Agents*), inspektur kelaiklautan (*Marine Surveyors*), serta akuntan maritim (*Maritime Financial Controllers*) dalam mengoperasikan modul armada kapal `Port` (`prt_fleet_*`).
 
 ---
 
-## 2. Prosedur Standar Kelaiklautan Kapal (Seaworthiness Protocol)
+## 2. Prosedur Pendaftaran Armada Kapal & Paspor Digital
 
-Sebelum sebuah kapal niaga diizinkan menerima pesanan muatan atau memulai pelayaran baru, langkah-langkah verifikasi berikut wajib dipenuhi:
+Setiap kapal ocean-going yang beroperasi di bawah naungan SuperWeb wajib didaftarkan melalui antarmuka atau service `PortFleetService`:
 
-1. **Pemeriksaan Masa Berlaku Sertifikat Statutoria:**
-   - *Cargo Ship Safety Construction Certificate* (masa berlaku 5 tahun, endorsement tahunan).
-   - *Cargo Ship Safety Equipment Certificate* (masa berlaku 2 tahun).
-   - *International Oil Pollution Prevention (IOPP) Certificate* (MARPOL Annex I).
-   - *Safety Management Certificate (SMC)* di bawah kerangka ISM Code.
-   - *International Ship Security Certificate (ISSC)* di bawah ISPS Code.
-   - *Maritime Labour Certificate (MLC)* di bawah konvensi ILO MLC 2006.
-   - Sistem akan menolak penerbitan jadwal pelayaran secara otomatis jika terdapat satu sertifikat yang kedaluwarsa.
+### 2.1 Pendaftaran Kapal Baru
+```bash
+# Contoh pemanggilan via Tinker atau API Controller
+$fleetService = app(\Modules\Port\Application\Services\PortFleetService::class);
+$vessel = $fleetService->registerVessel([
+    'imo_number' => '9876543',                  # Wajib 7 digit angka dengan validasi check-digit IMO
+    'vessel_name' => 'MV Nusantara Perdana',
+    'call_sign' => 'YDKP',
+    'mmsi' => '525012345',                       # MMSI 9 digit maritim
+    'flag_state' => 'ID',
+    'home_port' => 'Tanjung Priok',
+    'vessel_type' => 'BULK_CARRIER',
+    'fleet_class_code' => 'BKI',
+    'built_year' => 2021,
+    'deadweight_tonnage' => 58000,
+    'gross_tonnage' => 34500,
+    'net_tonnage' => 19800,
+    'length_overall_cm' => 19990,                # Satuan dalam sentimeter (LOA 199.9 m)
+    'beam_cm' => 3226,                           # Lebar kapal (32.26 m)
+    'design_draft_cm' => 1300,                   # Sarat kapal desain (13.0 m)
+    'main_engine_power_kw' => 8800,
+    'design_speed_knots' => 14.20,
+    'sfoc_design_grams_kwh' => 172.0,            # Spesific Fuel Oil Consumption (ISO 8217)
+    'fuel_types_supported' => 'VLSFO,LSMGO',
+]);
+```
 
-2. **Kepatuhan Safe Manning Document (STCW 1978/2010):**
-   - Komposisi awak di atas kapal wajib memenuhi kuota minimum:
-     - 4 Perwira Dek (Master, Chief Mate, 2nd Mate, 3rd Mate).
-     - 4 Perwira Mesin (Chief Engineer, 2nd Engineer, 3rd Engineer, 4th Engineer).
-     - 6 Rating Dek (Bosun, Able Seaman, Ordinary Seaman).
-     - 4 Rating Mesin (Fitter, Oiler, Wiper).
-     - 2 Awak Katering (Chief Cook, Messman).
-   - Setiap pelaut wajib memiliki Buku Pelaut (*Seaman's Book*) dan Sertifikat Kesehatan Maritim yang masih berlaku.
+### 2.2 Penambahan Sertifikat Statutori
+Setiap kapal wajib memiliki sertifikat statutori yang aktif:
+1. `SOLAS_SAFETY_CONSTRUCTION` (Sertifikat Konstruksi Keselamatan Jiwa di Laut)
+2. `SOLAS_SAFETY_EQUIPMENT` (Sertifikat Perlengkapan Keselamatan)
+3. `MARPOL_IOPP` (Pencegahan Pencemaran Minyak Internasional)
+4. `STCW_CREW_COMPLEMENT` (Sertifikat Minimum Awak Kapal Aman)
+5. `ISM_SMC` (Safety Management Certificate)
 
-3. **Verifikasi Cadangan Bahan Bakar (ROB):**
-   - Tangki bahan bakar kapal wajib memiliki cadangan aman (*safety reserve*) minimal 10% di atas estimasi kebutuhan bahan bakar pelayaran penuh menuju pelabuhan tujuan.
-
----
-
-## 3. Alur Pelaksanaan Pelayaran & Pelaporan Harian (Noon Reports)
-
-1. **Tender Notice of Readiness (NOR):**
-   - Nakhoda wajib menerbitkan NOR segera setelah kapal tiba di batas perairan pelabuhan muat/bongkar (*at or off the port / anchorage*) dan kapal telah siap dalam segala hal (*ready in all respects*).
-   - NOR ditenderkan melalui sistem modul Port atau email resmi agensi dengan stempel waktu UTC.
-
-2. **Pengisian Laporan Tengah Hari (Noon Report Routine):**
-   - Setiap hari tepat pukul 12:00 waktu setempat, perwira navigasi dan masinis jaga menginput data Noon Report:
-     - Posisi koordinat GPS kapal (Latitude dan Longitude).
-     - Jarak tempuh 24 jam terakhir dalam mil laut (NM).
-     - Kecepatan rata-rata GPS dan log air (*speed through water*).
-     - Keadaan cuaca: skala angin Beaufort (0–12), arah angin, dan tinggi gelombang Douglas (skala 0–9).
-     - Putaran mesin utama rata-rata (RPM) dan persentase slip baling-baling (*propeller slip percentage*).
-     - Konsumsi bahan bakar VLSFO dan LSMGO 24 jam terakhir (dalam metrik ton).
-     - Sisa bahan bakar di atas kapal (*Remaining On Board* / ROB).
-   - Bila persentase slip baling-baling melebihi 8.0%, sistem akan memunculkan bendera peringatan (*Warning Alert*) potensi hambatan hidrodinamis atau cuaca buruk.
-
-3. **Mitigasi Rute Cuaca Buruk (Weather Routing Protocol):**
-   - Bila modul *Weather Routing* mendeteksi prakiraan gelombang signifikan ($H_s \ge 4.0$ meter) di sepanjang rute langsung kapal, nakhoda wajib mengevaluasi saran rute deviasi (*Weather Avoidance Profile*).
-   - Penerimaan deviasi rute secara otomatis memperbarui jarak rencana pelayaran dan menyesuaikan alokasi bahan bakar bunker kapal.
+Jika ada salah satu sertifikat yang telah melewati masa berlaku (*expired*), gerbang otomatis `AuditVesselStatutoryComplianceAction` akan memblokir penjadwalan pelayaran kapal yang bersangkutan.
 
 ---
 
-## 4. SOP Perhitungan Laytime & Sengketa Demurrage
+## 3. Alur Kerja Komersial: Charter Party & Eksekusi Voyage
 
-1. **Pengumpulan Dokumen Statement of Facts (SOF):**
-   - Agen pelabuhan menyusun rekaman kejadian SOF yang mencatat jam-jam penting:
-     - Waktu tender NOR dan waktu penerimaan NOR.
-     - Waktu kapal merapat dan sandar di dermaga (*All Fast*).
-     - Waktu dimulainya pekerjaan pemuatan/pembongkaran kargo.
-     - Catatan interupsi cuaca: jam mulai dan jam berhenti hujan lebat.
-     - Catatan kerusakan alat: derek kapal (*crane breakdown*) vs derek dermaga (*shore gantry crane failure*).
-     - Waktu penyelesaian pemuatan dan penyerahan konosemen B/L.
+### 3.1 Pembentukan Kontrak Sewa Kapal (Charter Party)
+1. Buka antarmuka `/port/charter` atau panggil `CommercialCharterService::createCharterParty`.
+2. Tentukan jenis sewa:
+   - `VOYAGE`: Sewa per perjalanan dengan tarif freight per metrik ton.
+   - `TIME`: Sewa berbasis durasi harian dengan tarif sewa tetap per hari (*daily hire rate*).
+   - `BAREBOAT`: Sewa kapal kosong tanpa awak dan perlengkapan.
+3. Tetapkan parameter laytime:
+   - Jam yang diizinkan (*Allowed Laytime Hours*), misal 72 jam.
+   - Tarif denda keterlambatan (*Demurrage Rate*), misal \$18.000 / hari.
+   - Klausula hari libur (`SHINC` atau `SHEX`).
 
-2. **Eksekusi LaytimeDemurrageCalculator:**
-   - Jalankan fungsi perhitungan otomatis melalui menu komersial modul Port atau panggil action `IssueDemurrageDespatchInvoiceAction`.
-   - Sistem akan mengevaluasi apakah waktu yang diizinkan (*allowed laytime*) mencukupi:
-     - Jika pekerjaan selesai lebih cepat, terbitkan kredit despas (*Despatch Note*).
-     - Jika pekerjaan melampaui waktu yang diizinkan, terbitkan faktur denda *Demurrage Invoice* dengan jatuh tempo 14 hari.
-
-3. **Eskalasi Sengketa Komersial:**
-   - Jika penyewa mengajukan nota keberatan (*Letter of Protest*), tandai status fixture sebagai `DISPUTED`.
-   - Siapkan berkas audit SOF, rekam telemetri GPS kapal, dan log cuaca BMKG/NOAA untuk diserahkan ke majelis arbitrase maritim (SCMA atau LMAA).
-
----
-
-## 5. Prosedur Penanganan Darurat Bencana Laut & General Average
-
-Bila kapal menghadapi ancaman bahaya bersama nyata di laut lepas (badai ekstrem monsun, kebakaran palka muatan, atau kandas di selat sempit):
-
-1. **Tindakan Penyelamatan Nakhoda (Perils of the Sea):**
-   - Nakhoda memiliki wewenang hukum penuh untuk mengambil keputusan luar biasa demi keselamatan bersama seluruh jiwa dan properti (misal melakukan *jettison* kargo dek untuk stabilitas, memaksa mesin bermanuver darurat, atau menandatangani kontrak bantuan kapal tunda penyelamat *Lloyd's Open Form* / LOF).
-
-2. **Pernyataan Deklarasi General Average:**
-   - Segera setelah kapal tiba di pelabuhan perlindungan (*port of refuge*), pemilik kapal mendeklarasikan General Average di bawah *York-Antwerp Rules 2016*.
-   - Tunjuk kantor penilai kerugian maritim terakreditasi (*Average Adjuster*, misal Richards Hogg Lindley).
-
-3. **Perhitungan & Penjaminan Kargo (Average Bond & Guarantee):**
-   - Seluruh pemilik kargo wajib menyerahkan *Average Bond* dan jaminan asuransi kargo (*Underwriter's Guarantee*) sebelum kargo diizinkan dibongkar di pelabuhan tujuan.
-   - Layanan `GeneralAverageAdjustmentService` menghitung pembagian kontribusi proporsional antara nilai kapal, kargo, dan uang tambang, serta membukukannya di buku besar armada maritim.
+### 3.2 Eksekusi Saga Pelayaran Maritim
+Eksekusi sewa dan alokasi dermaga diorkestrasi oleh `VoyageCharterExecutionSaga`:
+```php
+$saga = app(\Modules\Port\Application\Sagas\VoyageCharterExecutionSaga::class);
+$result = $saga->execute([
+    'vessel_id' => $vessel->id,
+    'charterer_name' => 'PT Semen Indonesia Logistik',
+    'charter_type' => 'VOYAGE',
+    'freight_rate_usd' => 14.50,
+    'cargo_description' => 'Bulk Clinker Cement',
+    'cargo_quantity_mt' => 50000.0,
+    'demurrage_rate_daily_usd' => 18000.0,
+    'allowed_laytime_hours' => 72.0,
+    'origin_port' => 'IDTKG',      # Pelabuhan Panjang Tarahan
+    'destination_port' => 'IDSUB', # Pelabuhan Tanjung Perak Surabaya
+    'departure_time' => now()->addDays(2),
+    'estimated_arrival' => now()->addDays(6),
+    'berth_code' => 'BERTH-SUB-01',
+    'pda_budget_usd' => 16400.0,
+]);
+```
+Jika terjadi kegagalan pada saat pemesanan dermaga atau penguncian ledger, saga otomatis membatalkan pemesanan dermaga (*berth booking cancel*) dan membalikkan jurnal pencatatan transaksi.
 
 ---
 
-## 6. Prosedur Audit Integritas Buku Besar (`prt:fleet-audit`)
+## 4. Pelaporan Telemetri Harian (Noon Report) & Pemantauan Emisi
 
-1. Setiap akhir bulan kalender atau sebelum penutupan buku pelayaran, staf keuangan maritim wajib menjalankan command audit integritas:
-   ```bash
-   php artisan prt:fleet-audit
-   ```
-2. Pastikan keluaran terminal menunjukkan:
-   - Status Keseimbangan: `SEIMBANG` ($\text{Total Debit} = \text{Total Credit}$).
-   - Entri Rusak / Corrupt: `0`.
-   - Exit code: `0`.
-3. Bila ditemukan selisih atau korupsi data, periksa log transaksi yang dicatat pada tabel `prt_fleet_ledger_entries` dan lakukan rekonsiliasi bersama divisi agensi pelabuhan.
+Nahkoda atau Kepala Kamar Mesin (KKM) wajib mengirimkan laporan telemetri tengah hari (*Noon Report*) setiap 24 jam sekali:
+- Posisi koordinat lintang & bujur (*latitude/longitude*).
+- Jarak tempuh dalam 24 jam terakhir (*steaming distance*).
+- Kecepatan rata-rata kapal (*average speed through water*).
+- Arah dan kekuatan angin skala Beaufort ($0-12$).
+- Tinggi gelombang laut dan arah arus (*sea state / swell*).
+- Konsumsi bahan bakar harian mesin induk dan mesin bantu (*fuel consumption metric tons*).
+- Sisa cadangan bahan bakar di tangki bunker (*ROB - Remaining on Board*).
+
+Sistem secara otomatis menghitung *weather margin penalty* dan memperbarui estimasi peringkat CII tahun berjalan.
+
+---
+
+## 5. Prosedur Penyelesaian Laytime & Sengketa Demurrage
+
+1. **Pengunggahan Dokumen SOF (*Statement of Facts*)**:
+   Setelah kapal selesai bongkar, agen pelabuhan mengunggah riwayat jam SOF termasuk jam tender NOR, jam sandar dermaga (*all fast*), jam mulai bongkar kargo, jeda hujan, dan jam pelepasan selang/kargo selesai.
+2. **Kalkulasi Otomatis via Algoritma A11**:
+   Sistem mengevaluasi total durasi waktu kerja bersih yang digunakan.
+3. **Penerbitan Invoice / Nota**:
+   - Jika waktu terpakai melampaui alokasi laytime: Sistem menerbitkan `FleetDemurrageInvoice` dan mencatat piutang di buku besar.
+   - Jika waktu terpakai lebih hemat dari alokasi laytime: Sistem menerbitkan nota kredit *Despatch Money* sebesar $50\%$ tarif harian demurrage.
+
+---
+
+## 6. Prosedur Penanganan Kedaruratan Maritim & General Average
+
+Dalam situasi darurat di laut (kebakaran, kandas, badai ekstrem, kerusakan kemudi):
+1. **Deklarasi General Average**:
+   Nahkoda mendeklarasikan status GA dan mencatat waktu resmi di buku harian kapal (*deck log book*).
+2. **Pencatatan Tindakan Pengorbanan**:
+   - Pencatatan pembuangan muatan (*jettison*) dengan nomor kontainer atau palka kargo.
+   - Pencatatan kerusakan mesin/badan kapal yang timbul akibat upaya penyelamatan bersama.
+3. **Pencatatan Pengeluaran Bersama**:
+   - Kontrak sewa kapal tunda penyelamat (*Emergency Tug / Salvage Agreement LOF*).
+   - Biaya masuk dan berlabuh di pelabuhan perlindungan darurat (*Port of Refuge*).
+4. **Distribusi Kontribusi York-Antwerp Rules**:
+   Panggil `GeneralAverageAdjustmentService::settleGeneralAverageCase` untuk mendistribusikan total pengeluaran kepada Pemilik Kapal, Pemilik Kargo, dan Penikmat Freight sesuai proporsi nilai kontributifnya.
+5. **Pelepasan Kargo**:
+   Kargo tidak boleh diserahkan kepada penerima (*consignee*) sebelum diterimanya *Average Bond* yang sah dan jaminan asuransi (*Underwriter Guarantee*).
+
+---
+
+## 7. Runbook Audit Mandiri & Verifikasi Integritas Data
+
+Jalankan perintah audit berkala melalui CLI artisan:
+
+```bash
+# Menjalankan audit rutin 6-dimensi
+php artisan prt:fleet-audit
+
+# Menjalankan uji sabotase korupsi data (Fraud Resistance Verification)
+php artisan prt:fleet-audit --corrupt
+```
+
+### Indikator Keberhasilan Audit:
+- `Total balanced ledger groups verified`: Harus menampilkan angka transaksi berimbang tanpa selisih (0 difference).
+- `SHA-256 hash chains verified`: $100\%$ valid, tidak ada manipulasi baris.
+- `Statutory certificates checked`: $0$ sertifikat aktif yang kedaluwarsa.
+- `Exit code`: `0` saat kondisi normal bersih, dan `1` saat korupsi data terdeteksi.

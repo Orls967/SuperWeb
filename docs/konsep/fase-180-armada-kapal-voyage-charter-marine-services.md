@@ -1,200 +1,166 @@
-# KONSEP DAN SPESIFIKASI TEKNIS FASE 180: ARMADA KAPAL, VOYAGE, CHARTER & MARINE SERVICES
+# KONSEP FASE 180 — LINI 27: ARMADA KAPAL, SHIP MANAGEMENT, CHARTER & MARINE SERVICES
 
-**Modul Target:** `modules/Port` (Vertical Slice Armada & Pelayaran Kapal)  
-**Lini Bisnis:** Lini 27 (Maritim, Pelabuhan & Terminal Kontainer) dan Lini 22 (Logistik & Rantai Pasok Samudera)  
-**Status Implementasi:** `🔵 DIIMPLEMENTASIKAN`  
-**Ambang Batas Kualitas:** B1 Logika $\ge 7.000$ baris, B3 Dokumentasi $\ge 1.500$ baris, M-2 $\ge 55\%$, M-4 Duplikasi = 0  
+## 1. Eksekutif & Latar Belakang Domain Maritim
 
----
+Fase 180 mengimplementasikan pilar operasional maritim komprehensif pada Modul **Port** (`prt_`) untuk Lini 27. Di sektor logistik samudra modern, manajemen armada kapal (*Ship Management & Ocean Fleet Operations*) bukan sekadar pencatatan posisi kapal, melainkan agregasi kompleks yang menghubungkan kelaiklautan teknis (*statutory classification & SOLAS/STCW compliance*), efisiensi hidrodinamika & bahan bakar (*propulsion cubic law & IMO CII compliance*), hukum perdagangan maritim komersial (*BIMCO Charter Party & Laytime Settlement*), penanganan kedaruratan laut (*York-Antwerp Rules 2016 General Average*), serta akuntansi keuangan ganda (*double-entry fleet ledger PDA/FDA*).
 
-## 1. Latar Belakang & Ruang Lingkup Arsitektural
-
-Fase 180 memperluas kapabilitas maritim SuperWeb dari pengelolaan dermaga dan lapangan penumpukan peti kemas (*yard terminal*) menjadi platform terintegrasi manajemen armada kapal niaga (*ocean-going merchant fleet management*). Modul ini mengelola seluruh siklus hidup operasional kapal niaga, meliputi:
-
-1. **Master Data Armada & Kelaiklautan:**
-   - Spesifikasi teknis kapal (*deadweight tonnage*, *gross tonnage*, *net tonnage*, *length overall*, *beam*, *design draft*, *scantling draft*).
-   - Klasifikasi kapal statutoria (*classification society*: Biro Klasifikasi Indonesia / BKI, DNV, Lloyd's Register, ABS).
-   - Sertifikasi kelaiklautan SOLAS, MARPOL, ISM/ISPS Code, dan International Labour Organization MLC 2006.
-   - Kepatuhan Safe Manning Requirement menurut konvensi IMO STCW 1978/2010.
-   - Manajemen tangki bunker dan aturan pengisian aman 98% (*safe capacity ullage*).
-
-2. **Perencanaan & Pelaksanaan Pelayaran (Voyage Planning & Execution):**
-   - Penjadwalan pelayaran (*tramp* vs *liner*) dan pembagian etape perjalanan (*voyage legs*: ballast leg, laden leg, canal transit, river passage).
-   - Rencana lintasan navigasi laut (*sea passage planning*) dengan validasi batas *Under Keel Clearance* (UKC) dan koridor keselamatan ECDIS.
-   - Pelaporan harian tengah hari (*noon reports*) dari nakhoda dan kepala kamar mesin (lintang/bujur, haluan, kecepatan, cuaca Beaufort, gelombang Douglas, konsumsi bahan bakar 24 jam, dan sisa cadangan *Remaining On Board* / ROB).
-   - Optimasi rute lingkaran besar (*Great Circle navigation*) vs *Rhumb Line* serta kompensasi vektor arus samudera (*Indonesian Throughflow / Arlindo*).
-   - Mitigasi rute cuaca buruk (*Weather Routing*) menggunakan metode Isochrone dan analisis penurunan kecepatan kapal (*speed loss curves* Aertssen).
-
-3. **Komersial Sewa Kapal & Perhitungan Laytime (Chartering & Laytime):**
-   - Perjanjian sewa kapal (*Charter Party Fixtures*): *Time Charter* (NYPE 93) dan *Voyage Charter* (BIMCO Gencon 1994).
-   - Kontrak pengangkutan kargo (*Contract of Affreightment* / COA) dan toleransi muatan *More Or Less Owner's Option* (MOLOO).
-   - Audit *Statement of Facts* (SOF) dan perhitungan waktu muat/bongkar (*Laytime Statement*) dengan penanganan periode tenggang *Notice of Readiness* (NOR), pengecualian cuaca hujan (*Weather Working Days* / WWD), dan perbedaan aturan hari libur (*SHINC* vs *SHEX*).
-   - Penerbitan tagihan keterlambatan (*Demurrage Invoices*) dan bonus percepatan (*Despatch*).
-   - Penanganan insiden *Off-Hire* pada sewa waktu dan rekonsiliasi nilai bahan bakar serah-terima sewa (*Bunker on Delivery vs Redelivery*).
-
-4. **Layanan Maritim & Akun Pengeluaran Pelabuhan (Marine Services & PDA/FDA):**
-   - Permohonan dan penugasan pandu kapal (*Pilotage*) dan kapal tunda assist dermaga (*Tugboat Services*).
-   - Alokasi jendela waktu tambat dermaga (*Berth Allocation Window*) via kontrak `VesselCallWindowProvider` (G7-K27).
-   - Operasi pengisian bahan bakar (*Bunkering Operations*) dengan verifikasi *Bunker Delivery Note* (BDN), segel sampel MARPOL Annex VI, dan pengujian kandungan belerang (*sulphur cap* 0.50% / 0.10%).
-   - Manajemen akun pengeluaran pelabuhan: *Proforma Disbursement Account* (PDA) awal vs *Final Disbursement Account* (FDA) audit variansi.
-   - Pencatatan pembuangan limbah kapal fasilitas darat menurut MARPOL Annex I (sludge/bilge), Annex IV (sewage), dan Annex V (garbage).
-
-5. **Mitigasi Bencana & Kerugian Bersama (General Average Adjustment):**
-   - Deklarasi insiden maritim darurat di bawah kerangka *York-Antwerp Rules 2016*.
-   - Perhitungan pengorbanan bersama (*General Average Sacrifices*) dan pengeluaran luar biasa (*Extraordinary Expenditures*).
-   - Alokasi pembagian kerugian proporsional terhadap seluruh nilai kontributif pihak yang berkepentingan (kapal, muatan kargo, dan uang tambang).
-
-6. **Buku Besar Finansial Armada (Double-Entry Fleet Ledger):**
-   - Pembukuan ganda berpasangan (*debit/credit*) untuk seluruh arus kas, piutang freight, tagihan demurrage, biaya bunker, akun pengeluaran PDA/FDA, dan kontribusi General Average.
-   - Verifikasi integritas tanda tangan kriptografis SHA-256 pada setiap entri buku besar.
+Implementasi Fase 180 menggantikan kode kerangka lama `Modules\Integration\Application\Services\OceanFleetService` menjadi *vertical slice* enterprise lengkap tanpa meninggalkan hutang teknis ataupun jalan pintas.
 
 ---
 
-## 2. Struktur Skema Database (25 Tabel `prt_fleet_*`)
+## 2. Arsitektur Domain & Hubungan Antarmodul
 
-| No | Nama Tabel | Deskripsi & Fungsi Bisnis |
-|:---|:---|:---|
-| 1 | `prt_fleet_classes` | Lembaga klasifikasi kapal (BKI, DNV, LR, ABS), notasi kelas, dan tanggal jatuh tempo survei berkala / docking. |
-| 2 | `prt_fleet_vessels` | Data induk kapal niaga: IMO, nama, call sign, tipe kapal, DWT, GRT, LOA, sarat air, daya mesin, SFOC, dan parameter CII. |
-| 3 | `prt_fleet_bunker_tanks` | Tangki bahan bakar kapal (VLSFO, LSMGO, LNG), kapasitas volume, batas aman 98%, dan sisa muatan ROB harian. |
-| 4 | `prt_fleet_certificates` | Sertifikat statutoria SOLAS/MARPOL/ISM/MLC, nomor sertifikat, otoritas penerbit, dan masa berlaku. |
-| 5 | `prt_fleet_crew_complements` | Dokumen Safe Manning STCW: kebutuhan minimum perwira dek, perwira mesin, rating, dan audit kepatuhan awak. |
-| 6 | `prt_fleet_charter_parties` | Fixture perjanjian sewa kapal (Gencon/NYPE), tarif harian atau per ton, laytime hours, laycan, dan status siklus. |
-| 7 | `prt_fleet_freight_contracts` | Kontrak pengangkutan kargo (COA), kuantitas MT, tarif uang tambang, deadfreight, dan status pembayaran konosemen B/L. |
-| 8 | `prt_fleet_voyages` | Pelayaran kapal niaga yang diatur oleh 12 status VoyageStateMachine, pelabuhan muat/bongkar, dan jarak navigasi. |
-| 9 | `prt_fleet_voyage_legs` | Etape pelayaran bertahap (ballast leg, laden leg, transit kanal) dengan target kecepatan dan jarak mil laut. |
-| 10 | `prt_fleet_noon_reports` | Laporan harian tengah hari dari nakhoda/KKM: posisi GPS, cuaca Beaufort, gelombang Douglas, RPM, konsumsi BBM, dan ROB. |
-| 11 | `prt_fleet_sea_passages` | Rencana lintasan navigasi ECDIS, daftar waypoint lingkaran besar, dan batas keselamatan Under Keel Clearance (UKC). |
-| 12 | `prt_fleet_port_calls` | Kunjungan kapal ke pelabuhan: estimasi/aktual tiba (ETA/ATA), tender NOR, sandar tambat, sarat air awal/akhir, dan status. |
-| 13 | `prt_fleet_weather_routings` | Rekomendasi mitigasi rute cuaca buruk Isochrone: peringatan badai gelombang tinggi, deviasi rute, dan penghematan BBM. |
-| 14 | `prt_fleet_laytime_calculations` | Pernyataan kalkulasi laytime SOF: waktu tenggang NOR, interupsi hujan WWD, mogok, jam demurrage atau despas bersih. |
-| 15 | `prt_fleet_demurrage_invoices` | Faktur tagihan denda keterlambatan (Demurrage) atau klaim despas kepada penyewa kargo (charterer). |
-| 16 | `prt_fleet_off_hire_events` | Insiden off-hire kapal sewa waktu: kerusakan mesin, perawatan darurat, pemotongan uang sewa, dan kompensasi bunker. |
-| 17 | `prt_fleet_bunker_adjustments` | Penyesuaian nilai bahan bakar serah terima sewa kapal (Bunker on Delivery vs Redelivery) oleh surveyor independen. |
-| 18 | `prt_fleet_pilotage_requests` | Permohonan jasa pandu kapal (pandu masuk, pandu keluar, shifting) dan penetapan tarif pandu resmi. |
-| 19 | `prt_fleet_tug_services` | Penugasan kapal tunda sandar/lepas sandar dermaga berdasarkan bollard pull tonnage dan jam kerja. |
-| 20 | `prt_fleet_berth_bookings` | Pemesanan dan alokasi jendela tambat dermaga via kontrak `VesselCallWindowProvider` (K27). |
-| 21 | `prt_fleet_bunkering_operations` | Operasi pengisian bahan bakar kapal: nomor stem, tongkang pengisi, BDN, densitas, viskositas, dan sampling MARPOL. |
-| 22 | `prt_fleet_port_disbursements` | Akun pengeluaran pelabuhan: Proforma Disbursement Account (PDA) estimasi vs Final Disbursement Account (FDA) audit. |
-| 23 | `prt_fleet_waste_disposals` | Pembuangan limbah kapal ke fasilitas penerima darat (MARPOL Annex I minyak, Annex IV sanitasi, Annex V sampah). |
-| 24 | `prt_fleet_general_average_cases` | Rekam deklarasi kerugian bersama York-Antwerp Rules 2016: pengorbanan fisik, pengeluaran darurat, dan alokasi kontribusi. |
-| 25 | `prt_fleet_ledger_entries` | Buku besar berpasangan armada maritim (double-entry): debit/credit, akun keuangan, voyage ref, dan checksum SHA-256. |
-
----
-
-## 3. Algoritma Bersertifikat Maritim (A10 s.d. A14)
-
-### A10: BunkerFuelConsumptionOptimizer (ISO 8217 & SFOC Admiralty Engine)
-- **Dasar Teori:** Hukum propulsi kubik kecepatan menyatakan bahwa kebutuhan daya propulsi sebanding dengan pangkat tiga kecepatan kapal ($P \propto V^3$) dan bobot benaman pangkat dua per tiga ($\Delta^{2/3}$).
-- **Formula Konsumsi:**
-  $$P_{\text{req}} = P_{\text{design}} \times \left(\frac{V}{V_{\text{design}}}\right)^3 \times f_{\text{weather}}$$
-  $$\text{Konsumsi ME (MT/hari)} = \frac{P_{\text{req}} \times \text{SFOC}_{\text{corrected}} \times 24}{1.000.000}$$
-- **Koreksi Kurva SFOC:** Mesin diesel laut memiliki titik efisiensi termal optimum pada beban 75%–85% MCR. Pada beban rendah (< 50% slow steaming ekstrem) atau beban tinggi (> 90%), konsumsi spesifik per kWh membengkak.
-- **Optimasi Pemilihan Port Bunkering:** Membandingkan harga VLSFO/LSMGO per ton di berbagai pelabuhan (Singapore vs Tanjung Priok vs Batam), memperhitungkan biaya deviasi mil laut, waktu sewa kapal yang terbuang, dan tarif port dues bunker call.
-
-### A11: LaytimeDemurrageCalculator (BIMCO Gencon Laytime Engine)
-- **Dasar Standar:** Klausul 6 & 7 BIMCO Gencon 1994 Charter Party dan yurisprudensi London Maritime Arbitrators Association (LMAA).
-- **Aturan Notice of Readiness (NOR):** Waktu laytime mulai dihitung setelah masa tenggang (*turn-time*, umumnya 6 jam setelah NOR ditenderkan dan diterima) atau saat pekerjaan muat dimulai lebih awal.
-- **Pengecualian Cuaca & Hari Libur:**
-  - *WWD SHEX:* Weather Working Days, Sundays and Holidays Excluded. Jam hujan deras atau hari libur resmi tidak dihitung sebagai laytime terpakai.
-  - *WWD SHINC:* Sundays and Holidays Included. Hari libur tetap dihitung sebagai laytime kecuali disepakati lain.
-- **Prinsip Mengikat:** *"Once on demurrage, always on demurrage."* Setelah waktu yang diizinkan habis, denda demurrage berjalan terus menerus tanpa potongan akhir pekan atau hari libur, kecuali ada kerusakan kapal sendiri (*ship's fault / crane breakdown*).
-- **Kalkulasi Reversible Laytime:** Mengizinkan penggabungan waktu hemat di pelabuhan muat untuk menutupi kelebihan waktu di pelabuhan bongkar.
-
-### A12: CiiCarbonIntensityRatingEngine (IMO MARPOL Annex VI Regulation 28)
-- **Dasar Regulasi:** Resolusi IMO MEPC.336(76), MEPC.338(76), dan MEPC.354(78).
-- **Attained CII:**
-  $$\text{CII}_{\text{attained}} = \frac{\sum (\text{Fuel}_j \times C_{F,j})}{\text{Capacity (DWT)} \times \text{Distance (NM)}} \times 10^6 \quad [\text{g CO}_2/\text{DWT}\cdot\text{NM}]$$
-- **Garis Referensi IMO:** $\text{CII}_{\text{ref}} = a \times \text{Capacity}^{-c}$
-- **Batas Rating A–E:** Ditentukan menggunakan faktor deviasi eksponensial $d_1, d_2, d_3, d_4$. Kapal dengan peringkat D selama 3 tahun berturut-turut atau peringkat E wajib menyusun Rencana Tindakan Korektif (*Corrective Action Plan*) dalam SEEMP Bagian III (misal instruksi slow steaming, pembersihan biofouling lambung, atau penggunaan bahan bakar alternatif bio-bunker).
-
-### A13: TimeCharterEquivalentCalculator (Baltic Exchange TCE Standard)
-- **Dasar Metrik:** Standar komparasi kinerja pendapatan kapal sewa komersial.
-- **Formula TCE:**
-  $$\text{TCE (USD/hari)} = \frac{\text{Pendapatan Kotor Uang Tambang} - \text{Biaya Pelayaran (Bunker + PDA + Kanal)}}{\text{Total Hari Pelayaran di Laut} + \text{Hari di Pelabuhan}}$$
-- **Analisis Marjin Bersih:** Membandingkan TCE aktual dengan biaya operasional harian kapal (*Daily Operating Expenditure / OPEX* seperti gaji awak, asuransi P&I/H&M, suku cadang, dan perbekalan) untuk menentukan profitabilitas bersih per hari.
-
-### A14: GeneralAverageContributionDistributor (York-Antwerp Rules 2016)
-- **Dasar Hukum:** Comité Maritime International (CMI) York-Antwerp Rules 2016.
-- **Kualifikasi Bahaya Bersama:** Pengorbanan atau pengeluaran luar biasa yang sengaja dilakukan demi keselamatan bersama seluruh petualangan maritim dari bahaya nyata di laut lepas (misal badai monsun Sumatra Squall, kebakaran ruang muat, atau kandas di karang).
-- **Nilai Kontributif (Contributory Values):**
-  - *Kapal:* Nilai pasar kapal tiba di pelabuhan tujuan dalam kondisi selamat (*arrived sound value*) dikurangi kerusakan khusus non-GA, ditambah pengorbanan fisik kapal (*loss made good*).
-  - *Muatan Kargo:* Nilai faktur komersial muatan yang tiba di pelabuhan tujuan ditambah kompensasi kargo yang dibuang (*jettison made good*).
-  - *Uang Tambang:* Freight at risk yang belum dibayar di muka dikurangi pengeluaran pelayaran yang berhasil dihemat.
-- **Distribusi Proporsional:**
-  $$\text{Rasio Kontribusi} = \frac{\text{Total Pengorbanan Fisik} + \text{Total Pengeluaran Luar Biasa}}{\text{Total Nilai Kontributif (Kapal + Kargo + Freight)}}$$
-  Setiap pihak membayar kontribusi sesuai persentase nilai kepentingannya.
-
----
-
-## 4. State Machines Bersertifikat
-
-### 4.1 VoyageStateMachine (12 Status Operasional)
-```mermaid
-stateDiagram-v2
-    [*] --> PLANNED
-    PLANNED --> BALLAST_PASSAGE: Keberangkatan Pelayaran Kosong
-    PLANNED --> ARRIVED_LOADPORT: Posisi Kapal Sudah di Port Muat
-    BALLAST_PASSAGE --> ARRIVED_LOADPORT: Tiba di Port Muat
-    ARRIVED_LOADPORT --> TENDERED_NOR: Tender Notice of Readiness (Guard: nor_timestamp)
-    TENDERED_NOR --> COMMENCED_LOADING: Mulai Operasi Muat
-    COMMENCED_LOADING --> COMPLETED_LOADING: Selesai Muat Kargo
-    COMPLETED_LOADING --> LADEN_PASSAGE: Keberangkatan Muatan Penuh (Guard: B/L Issued)
-    LADEN_PASSAGE --> ARRIVED_DISCHPORT: Tiba di Port Bongkar
-    ARRIVED_DISCHPORT --> DISCHARGING: Mulai Pembongkaran
-    DISCHARGING --> COMPLETED_DISCHARGING: Selesai Pembongkaran
-    COMPLETED_DISCHARGING --> COMPLETED: Pelayaran Selesai
-    PLANNED --> CANCELLED: Pembatalan Darurat
-    BALLAST_PASSAGE --> CANCELLED: Pembatalan Darurat
-    ARRIVED_LOADPORT --> CANCELLED: Pembatalan Darurat
-    TENDERED_NOR --> CANCELLED: Pembatalan Darurat
+```
+                                +-----------------------------------+
+                                |    Logistics (Master Kapal)       |
+                                +-----------------+-----------------+
+                                                  | Kueri Kapal
+                                                  v
++-----------------------+       +-----------------------------------+       +-----------------------+
+|  Insurance Modul      |<----->|     Modules\Port (Armada Kapal)   |<----->|  Asset Maintenance    |
+| (Klaim H&M, P&I, War) |       |  - prt_fleet_vessels              |       | (Work Order Drydock)  |
++-----------------------+       |  - prt_fleet_voyages              |       +-----------------------+
+                                |  - prt_fleet_charter_parties      |
++-----------------------+       |  - prt_fleet_port_calls           |       +-----------------------+
+|  ESG Modul            |<----->|  - prt_fleet_ledger_entries       |<----->|  PortOps Terminal     |
+| (IMO CII MEPC.354(78))|       +-----------------+-----------------+       | (Window Dermaga K27)  |
++-----------------------+                         |                         +-----------------------+
+                                                  |
+                                                  v
+                                +-----------------------------------+
+                                |   Audit Command (prt:fleet-audit) |
+                                |   & Verifikasi SHA-256 Ledger     |
+                                +-----------------------------------+
 ```
 
-### 4.2 CharterPartyStateMachine (8 Status Komersial)
-```mermaid
-stateDiagram-v2
-    [*] --> NEGOTIATING
-    NEGOTIATING --> FIXTURE_AGREED: Kesepakatan Syarat Sewa
-    FIXTURE_AGREED --> ON_HIRE: Serah Terima Kapal (Guard: Delivery Cert Signed)
-    ON_HIRE --> OFF_HIRE: Kerusakan Mesin / Off-Hire Incident
-    OFF_HIRE --> OFF_HIRE_SURVEY: Pemeriksaan Teknis Surveyor
-    OFF_HIRE_SURVEY --> ON_HIRE: Perbaikan Selesai & Kembali Beroperasi
-    ON_HIRE --> RE_DELIVERED: Pengembalian Kapal (Guard: Bunker Survey Completed)
-    OFF_HIRE_SURVEY --> RE_DELIVERED: Re-delivery Langsung Pasca Perbaikan
-    RE_DELIVERED --> SETTLED: Pelunasan Final Rekonsiliasi Sewa & Bunker
-    ON_HIRE --> DISPUTED: Sengketa Wanprestasi / Laytime
-    OFF_HIRE --> DISPUTED: Sengketa Pemotongan Sewa
-    RE_DELIVERED --> DISPUTED: Sengketa Nilai Bunker Re-delivery
-    DISPUTED --> SETTLED: Putusan Arbitrase Maritim (SCMA/LMAA)
-```
+### 2.1 Partisi Tanggung Jawab (Separation of Concerns)
+1. **Modules\Port\Domain\Models\Fleet***: Entitas data dengan awalan tabel `prt_fleet_*` yang terisolasi secara relasional namun merujuk master IMO kapal logistik.
+2. **Modules\Port\Domain\Algorithms\***: Mesin matematis deterministik bersertifikat tanpa ketergantungan framework:
+   - `BunkerFuelConsumptionOptimizer` (A10): Model propulsi eksponensial kubik, penalti cuaca skala Beaufort, dan optimasi bunkering multi-pelabuhan.
+   - `LaytimeDemurrageCalculator` (A11): Kalkulasi laytime BIMCO Gencon, SHINC/SHEX, pengecualian cuaca hujan, dan turn-time Notice of Readiness (NOR).
+   - `CiiCarbonIntensityRatingEngine` (A12): Penghitungan intensitas emisi karbon operasional tahunan IMO MEPC.354(78) dan peringkat CII grade A hingga E.
+   - `TimeCharterEquivalentCalculator` (A13): Metrik pendapatan harian bersih Baltic Exchange TCE terhadap ambang impas OPEX kapal.
+   - `GeneralAverageContributionDistributor` (A14): Pembagian kontribusi kerugian laut darurat York-Antwerp Rules 2016 antara nilai kontributif kapal, kargo, dan uang tambang.
+3. **Modules\Port\Domain\StateMachines\***:
+   - `VoyageStateMachine`: Mengontrol siklus hidup pelayaran maritim 12 status (`PLANNED` -> `CHARTERED` -> `BUNKERING` -> `LOADING` -> `DEPARTED` -> `SEA_PASSAGE` -> `WEATHER_DEVIATION` -> `DISTRESS` -> `ARRIVED` -> `DISCHARGING` -> `COMPLETED` / `CANCELLED`).
+   - `CharterPartyStateMachine`: Mengatur perikatan komersial sewa kapal 8 status (`NEGOTIATING` -> `FIXTURE_CONFIRMED` -> `ON_HIRE` -> `SUSPENDED_OFF_HIRE` -> `REDELIVERED` -> `SETTLED` / `DISPUTED` / `DEFAULTED`).
+4. **Modules\Port\Application\Sagas\VoyageCharterExecutionSaga**: Orkestrasi kompensasi otomatis:
+   - Langkah 1: Validasi sertifikat statutori kelaiklautan kapal (SOLAS, STCW, DOC, SMC).
+   - Langkah 2: Pembuatan kontrak sewa kapal (*Charter Party*).
+   - Langkah 3: Penjadwalan pelayaran voyage.
+   - Langkah 4: Reservasi jendela tambatan dermaga via kontrak `G7-K27` (`VesselCallWindowProvider`).
+   - Langkah 5: Alokasi anggaran PDA (*Proforma Disbursement Account*) pada buku besar maritim.
+   - Langkah 6: Komitmen konfirmasi *fixture*. Jika terjadi kegagalan pada langkah mana pun, kompensasi otomatis membatalkan alokasi dermaga dan membalikkan jurnal ledger.
 
 ---
 
-## 5. Saga Eksekusi Fixture & Pelayaran dengan Kompensasi Penuh
+## 3. Spesifikasi Matematika & Algoritma Bersertifikat
 
-Saga `VoyageCharterExecutionSaga` menjamin integritas multi-langkah koordinasi maritim lintas modul:
+### 3.1 A10: Optimasi Bahan Bakar & Konsumsi Propulsi (BunkerFuelConsumptionOptimizer)
+Berdasarkan hidrodinamika perkapalan (*Admiralty Coefficient Law*), konsumsi bahan bakar propulsi harian ($F_d$ dalam metrik ton/hari) berbanding lurus dengan pangkat tiga kecepatan jelajah kapal ($V$ dalam knot) serta rasio perpindahan massa kapal terhadap kondisi sarat desain:
+$$F_d = F_{\text{base}} \times \left( \frac{\Delta_{\text{actual}}}{\Delta_{\text{design}}} \right)^{2/3} \times \left( \frac{V_{\text{actual}}}{V_{\text{design}}} \right)^3 + F_{\text{aux}}$$
+Di mana:
+- $F_{\text{base}}$: Konsumsi harian mesin induk pada kecepatan desain pada sarat penuh (*design displacement* $\Delta_{\text{design}}$).
+- $F_{\text{aux}}$: Konsumsi generator pembangkit listrik kapal dan boiler bantu harian.
+- Penalti Cuaca (*Weather Margin Penalty*): Untuk kondisi laut di atas Skala Beaufort 4 ($BN > 4$), resistensi gelombang dan angin dihitung dengan faktor koreksi:
+$$F_{\text{penalized}} = F_d \times \left(1 + \frac{(BN - 4) \times 0.045}{\text{faktor efisiensi lambung}}\right)$$
+Multi-Port Bunkering Optimizer mengevaluasi trade-off ekonomi antara membeli bunker di pelabuhan muat, bunker di pelabuhan bongkar, atau melakukan deviasi bunker khusus berdasarkan perbandingan harga per metrik ton, biaya deviasi sewa kapal harian (OPEX/hire), biaya pelabuhan, dan resiko kehilangan slot dermaga.
 
-1. **Langkah 1 (Audit Kelaiklautan):** Verifikasi sertifikat statutoria SOLAS/MARPOL dan safe manning STCW kapal via `PortFleetService`. Jika unseaworthy, lempar `DomainException`.
-2. **Langkah 2 (Pembuatan Fixture):** Daftarkan perjanjian sewa kapal di `FleetCharterParty`.
-3. **Langkah 3 (Rencana Pelayaran):** Buat rencana pelayaran baru di `FleetVoyage`.
-4. **Langkah 4 (Jendela Dermaga & Kunjungan):** Cadangkan jendela dermaga melalui kontrak `VesselCallWindowProvider` (G7-K27). Jika dermaga penuh atau draft kapal melebihi kolam dermaga, lempar `DomainException`.
-5. **Langkah 5 (Penguncian Finansial PDA):** Catat entri Proforma Disbursement Account di buku besar ganda `PortFleetLedgerService`.
-6. **Langkah 6 (Komitmen Fixture):** Transisikan status fixture ke `FIXTURE_AGREED`.
+### 3.2 A11: Kalkulasi Laytime & Demurrage Maritim (LaytimeDemurrageCalculator)
+Mengikuti standar perkapalan *BIMCO Standard Laytime Definitions*:
+1. **Notice of Readiness (NOR)**: Diserahkan saat kapal tiba di area labuh jangkar atau dermaga. Masa tunggu turn-time (umumnya 6 jam atau 12 jam) diabaikan dari perhitungan waktu laytime yang berjalan (*laytime commencement*).
+2. **Klausula Operasional**:
+   - `SHINC` (*Sundays and Holidays Included*): Hari Minggu dan libur resmi tetap dihitung sebagai waktu muat/bongkar yang berjalan.
+   - `SHEX` (*Sundays and Holidays Excluded*): Periode libur dan akhir pekan dikecualikan kecuali jika kapal bekerja (*unless used*).
+   - `WWD` (*Weather Working Day*): Waktu terganggu akibat cuaca buruk atau hujan lebat yang dibuktikan pada *Statement of Facts* (SOF) tidak dimasukkan ke dalam pemakaian laytime (*laytime exception*).
+3. **Prinsip "Once on Demurrage, Always on Demurrage"**:
+   Begitu waktu laytime yang diizinkan telah habis terlampaui, kapal masuk dalam kondisi demurrage. Sejak saat itu, seluruh waktu kalender (termasuk hari Minggu, hari libur, dan jeda hujan) dihitung sebagai demurrage penuh tanpa pengecualian hingga selesainya pelepasan selang kargo atau palka ditutup.
+4. **Despatch Money**:
+   Jika penyewa menyelesaikan pemuatan/pembongkaran lebih cepat daripada laytime yang diizinkan, pemilik kapal membayar ganti rugi waktu luang (*despatch*) yang biasanya disepakati sebesar $50\%$ dari tarif harian demurrage ($Tarif_{\text{despatch}} = 0.5 \times Tarif_{\text{demurrage}}$).
 
-**Mekanisme Kompensasi (Rollback Otomatis):**
-Bila terjadi kegagalan di langkah manapun:
-- Lepaskan reservasi dermaga (`releaseCallWindow`).
-- Batalkan status pelayaran (`CANCELLED`).
-- Ubah status perjanjian sewa menjadi `DISPUTED`.
-- Terbitkan transaksi pembalik otomatis di buku besar (*Saga Compensation Reversal Entry*) untuk membatalkan komitmen PDA.
+### 3.3 A12: Penilaian Peringkat Karbon IMO CII (CiiCarbonIntensityRatingEngine)
+Sesuai resolusi IMO MEPC.354(78) dan MARPOL Annex VI Regulasi 28:
+1. **Attained CII Operasional**:
+$$\text{Attained CII} = \frac{\sum (FC_j \times C_{F,j})}{\text{DWT} \times D} \times 10^6 \quad [\text{gram } \text{CO}_2 / \text{DWT-nautical mile}]$$
+Di mana $FC_j$ adalah konsumsi bahan bakar tipe $j$ (VLSFO, LSMGO, HFO, Biofuel, LNG), $C_{F,j}$ adalah faktor konversi emisi karbon bahan bakar sesuai pedoman IMO (VLSFO: 3.151, LSMGO: 3.206, MDO: 3.206, LNG: 2.750), $\text{DWT}$ adalah kapasitas bobot mati kapal, dan $D$ adalah total jarak pelayaran yang ditempuh dalam mil laut.
+2. **Required CII Tahunan**:
+$$\text{Required CII} = \text{Reference CII} \times \left(1 - \frac{Z}{100}\right)$$
+Di mana faktor pengurangan tahunan $Z$ untuk tahun evaluasi 2026 ditetapkan sebesar $11\%$ dari garis referensi dasar tahun 2019.
+3. **Peringkat Emisi Kapal (Grades A s.d. E)**:
+   - Grade A (*Major Superior*): $\text{Ratio} \le \exp(-d_1)$
+   - Grade B (*Minor Superior*): $\exp(-d_1) < \text{Ratio} \le \exp(-d_2)$
+   - Grade C (*Moderate / Standard*): $\exp(-d_2) < \text{Ratio} \le \exp(d_3)$
+   - Grade D (*Minor Inferior*): $\exp(d_3) < \text{Ratio} \le \exp(d_4)$
+   - Grade E (*Inferior*): $\text{Ratio} > \exp(d_4)$
+   Kapal yang memperoleh peringkat D selama tiga tahun berturut-turut atau peringkat E selama satu tahun kalender wajib menyusun dan mengimplementasikan *Plan of Corrective Actions* dalam SEEMP (*Ship Energy Efficiency Management Plan*) Part III sebelum diizinkan berlayar kembali.
+
+### 3.4 A13: Baltic Exchange Time Charter Equivalent (TimeCharterEquivalentCalculator)
+Dalam pasar pengangkutan laut (*freight market*), pendapatan kotor pelayaran (*gross voyage revenue*) harus dinormalisasi menjadi pendapatan bersih per hari agar dapat dibandingkan secara objektif dengan tarif kontrak sewa waktu (*time charter*):
+$$\text{TCE} = \frac{\text{Pendapatan Kotor Uang Tambang} - (\text{Biaya Bunker} + \text{Biaya Pelabuhan PDA} + \text{Biaya Terusan/Canal} + \text{Komisi Broker})}{\text{Durasi Total Pelayaran (Hari Sea Passage} + \text{Hari Port Loading} + \text{Hari Port Discharging} + \text{Hari Turn-Time)}}$$
+Margin operasi dihitung dengan mengurangkan TCE harian terhadap biaya operasional harian kapal (*Daily OPEX* seperti gaji pelaut, asuransi P&I/H&M, pelumas, dan amortisasi pemeliharaan berkala).
+
+### 3.5 A14: York-Antwerp Rules 2016 General Average (GeneralAverageContributionDistributor)
+Berdasarkan Rule A dan Rule XVII *York-Antwerp Rules 2016*:
+1. **Tindakan General Average**: Tindakan luar biasa yang dilakukan secara sengaja dan wajar demi keselamatan bersama dari bahaya umum yang mengancam seluruh harta benda dalam petualangan maritim bersama (*common maritime adventure*).
+2. **Kategori Pengorbanan & Pengeluaran**:
+   - Pengorbanan Kargo (*Cargo Jettison Sacrifice*): Membuang muatan ke laut untuk meringankan sarat kapal yang kandas.
+   - Pengorbanan Kapal (*Ship Damage Sacrifice*): Kerusakan mesin utama akibat dipaksa beroperasi di luar batas teknis untuk membebaskan kapal dari karang.
+   - Pengeluaran Darurat (*General Average Expenditures*): Biaya sewa kapal tunda darurat (*salvage under LOF - Lloyd's Open Form*), biaya pelabuhan perlindungan (*port of refuge*), biaya pembongkaran muatan sementara, dan perbaikan darurat agar kapal dapat berlayar kembali secara selamat.
+3. **Nilai Kontributif (*Contributory Values*)**:
+   - Kapal: Nilai pasar kapal saat tiba di pelabuhan tujuan dalam kondisi rusak ditambah nilai pengorbanan kapal yang dipulihkan (*made good*).
+   - Kargo: Nilai faktur komersial kargo saat tiba ditambah biaya asuransi dan pengorbanan kargo yang dipulihkan dikurangi ongkos angkut yang belum dibayar.
+   - Uang Tambang (*Freight*): Uang tambang beresiko (*freight at risk*) dikurangi biaya operasional voyage yang dihemat akibat insiden.
+4. **Proporsi Kontribusi**:
+$$\text{Rasio Kontribusi General Average} = \frac{\text{Total Kerugian General Average (Pengorbanan + Pengeluaran)}}{\text{Total Nilai Kontributif Semua Kepentingan}}$$
+Setiap pihak berkontribusi sebanding dengan nilai kontributif kepentingannya masing-masing.
 
 ---
 
-## 6. Audit Finansial & Sabotase Integritas (`prt:fleet-audit`)
+## 4. Skema Akuntansi Keuangan Double-Entry Armada Maritim
 
-Command `prt:fleet-audit` memastikan bahwa:
-1. Total Debit sama persis dengan Total Credit ($\Delta < 0.01\$$).
-2. Setiap baris entri buku besar memiliki tanda tangan kriptografis SHA-256 yang sah:
-   $$\text{Checksum} = \text{SHA256}(\text{Code} \mid \text{Account} \mid \text{Type} \mid \text{Amount} \mid \text{Currency} \mid \text{RefType} \mid \text{RefId})$$
-3. Command mendukung pengujian sabotase integritas melalui opsi `--corrupt`, yang memicu pemalsuan checksum dan memastikan command keluar dengan status kode kegagalan (`exit 1`).
-4. Terdaftar dan terverifikasi secara penuh pada test arsitektur `AuditCommandContractTest`.
+Sistem pembukuan ganda maritim diatur melalui tabel `prt_fleet_ledger_entries` dengan integritas hash kriptografis SHA-256 yang saling mengunci (*hash chain*). Struktur akun buku besar mencakup:
+
+| Kode Akun | Nama Akun Maritim | Klasifikasi Akuntansi | Deskripsi Transaksi |
+|---|---|---|---|
+| `prt:receivable:freight` | Piutang Uang Tambang Kargo | Aset Lancar | Ditagihkan kepada penyewa (*charterer*) saat pemuatan selesai dan Konosemen (Bill of Lading) diterbitkan. |
+| `prt:revenue:freight` | Pendapatan Operasi Pengangkutan Laut | Pendapatan Operasional | Diakui saat konosemen diterbitkan atau secara proporsional sesuai metode persentase penyelesaian pelayaran. |
+| `prt:expense:bunker` | Beban Konsumsi Bahan Bakar Bunker | Biaya Pokok Pendapatan (COGS) | Dibukukan saat penerimaan faktur bunker (*Bunker Delivery Note*) atau saat konsumsi riil pelayaran. |
+| `prt:payable:disbursements`| Hutang Agen & Pengeluaran Pelabuhan | Kewajiban Lancar | Menampung tagihan *Proforma Disbursement Account* (PDA) dan *Final Disbursement Account* (FDA) dari agen perkapalan lokal. |
+| `prt:expense:port_dues` | Beban Biaya Labuh & Tambat Pelabuhan | Biaya Pokok Pendapatan (COGS) | Mencakup tarif jasa labuh, jasa tambat dermaga, jasa tunda (*towage*), dan pandu (*pilotage*). |
+| `prt:receivable:demurrage`| Piutang Denda Demurrage | Aset Lancar | Ditagihkan kepada pihak penyewa akibat keterlambatan operasional muat/bongkar melampaui batas laytime. |
+| `prt:payable:despatch` | Hutang Premi Percepatan Despatch | Kewajiban Lancar | Premi insentif percepatan waktu pemuatan/pembongkaran kargo yang harus dibayarkan kembali kepada penyewa. |
+| `prt:escrow:general_average`| Dana Titipan Jaminan Kerugian Laut GA| Kewajiban Bersyarat | Menampung setoran *Average Bond* dan jaminan asuransi kargo sebelum penyerahan barang kargo di pelabuhan tujuan. |
+
+Setiap entri jurnal wajib mencatat nomor voyage, ID kapal, referensi dokumen transaksi alami (misal nomor B/L, faktur PDA, faktur bunker BDN), serta nomor referensi ledger berpasangan (*paired ledger reference*) untuk menjamin prinsip pembukuan berimbang debit = kredit.
+
+---
+
+## 5. Command Audit Mandiri & Deteksi Anomali (`prt:fleet-audit`)
+
+Artisan command `prt:fleet-audit` menjalankan 6 lapis pemeriksaan integritas data:
+1. **Keseimbangan Finansial Ledger**: Memastikan jumlah nilai debit sama dengan nilai kredit ($\sum \text{Debit} = \sum \text{Kredit}$) pada setiap kelompok transaksi pelayaran.
+2. **Integritas Rantai Hash**: Memverifikasi kalkulasi SHA-256 pada setiap baris `prt_fleet_ledger_entries` terhadap hash rekaman sebelumnya.
+3. **Konsistensi Sertifikat Statutori**: Memvalidasi bahwa seluruh sertifikat keselamatan statutori kapal (SOLAS, STCW, Marpol) tidak ada yang kedaluwarsa saat kapal berstatus operasional aktif (`IN_SERVICE`).
+4. **Validasi Kapasitas Muatan**: Memastikan volume kargo yang diangkut pada dokumen konosemen tidak melampaui batas *deadweight tonnage* (DWT) kapal.
+5. **Kepatuhan Alokasi Laytime**: Menverifikasi bahwa faktur demurrage atau nota despatch dihitung secara presisi sesuai *Statement of Facts* (SOF) dan klausula kontrak sewa kapal.
+6. **Uji Sabotase Data (Corruption Resistance)**: Melalui opsi `--corrupt`, sistem menyimulasikan manipulasi saldo rekening atau pemalsuan rekaman transaksi untuk menguji keandalan gerbang deteksi fraud otomatis.
+
+---
+
+## 6. Skenario Uji Penerimaan & Simulasi Badai Selat Malaka
+
+Skenario acceptance test utama (`MalaccaStraitStormAndGeneralAverageAcceptanceTest`) memverifikasi ketahanan modul maritim dalam menghadapi disrupsi ekstrem di dunia nyata:
+1. **Kondisi Awal**: Kapal *MV Nusantara Perdana* (Supramax Bulk Carrier 58.000 DWT) berlayar membawa 50.000 MT kargo semen clinker dari Tanjung Priok ke Belawan di bawah *Charter Party* Gencon SHINC.
+2. **Disrupsi Badai Selat Malaka**:
+   - Angin kencang Skala Beaufort 8 dan gelombang laut tinggi memaksa kapal melakukan deviasi rute sejauh 85 mil laut dan menambah konsumsi bunker harian sebesar $18\%$.
+   - Kapal mengalami kerusakan kemudi darurat (*rudder steering gear failure*) dan terancam kandas di perairan dangkal One Fathom Bank.
+3. **Deklarasi General Average York-Antwerp Rules**:
+   - Nahkoda mendeklarasikan situasi darurat maritim General Average.
+   - Nahkoda mengontrak kapal tunda penyelamat (*Emergency Tug Salvage under LOF*) dengan komitmen biaya darurat \$65.000, serta membuang muatan kargo semen clinker sebanyak 1.500 MT senilai \$21.750 ke laut untuk memulihkan stabilitas kapal.
+   - Biaya perbaikan kemudi sementara di pelabuhan perlindungan Port Klang senilai \$35.000 dimasukkan ke dalam pengeluaran bersama.
+4. **Penyelesaian Kontributif GA**:
+   - Mesin hitung A14 membagi total kerugian GA (\$121.750) secara proporsional kepada Pemilik Kapal (\$76.850), Pemilik Kargo (\$41.250), dan Penikmat Uang Tambang (\$3.650).
+   - Seluruh kargo yang tersisa dijamin pelepasannya dengan penandatanganan *Lloyd's Average Bond* dan jaminan penjaminan asuransi laut (*Underwriter Guarantee*).
+5. **Sengketa Laytime di Pelabuhan Bongkar**:
+   - Penyewa mengajukan penolakan pembayaran demurrage 48 jam dengan alasan keterlambatan kapal akibat cuaca buruk.
+   - Algoritma A11 membuktikan bahwa di bawah klausula SHINC dan status kapal yang telah berada di bawah *demurrage* sebelum hujan lebat turun, prinsip "once on demurrage always on demurrage" tetap berlaku secara hukum perkapalan internasional, sehingga tagihan demurrage sebesar \$36.000 dinyatakan sah secara legal dan dieksekusi pembayarannya.
