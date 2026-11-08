@@ -1,0 +1,7 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Hotel\Domain\Models;
+
+final class HtlMiceContract extends MiceContract {}
