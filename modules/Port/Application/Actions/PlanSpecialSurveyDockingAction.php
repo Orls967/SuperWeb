@@ -7,7 +7,6 @@ namespace Modules\Port\Application\Actions;
 use Carbon\CarbonImmutable;
 use DomainException;
 use Modules\Port\Application\Services\VesselDrydockingAndSurveyPlanningService;
-use Modules\Port\Domain\Models\FleetClass;
 use Modules\Port\Domain\Models\FleetVessel;
 
 /**

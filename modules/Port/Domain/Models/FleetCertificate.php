@@ -41,4 +41,3 @@ final class FleetCertificate extends Model
         return CarbonImmutable::parse($this->expiry_date)->isBefore($at);
     }
 }
-

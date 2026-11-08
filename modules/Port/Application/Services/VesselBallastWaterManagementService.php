@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
-use DomainException;
 use Modules\Port\Domain\Models\FleetVessel;
-use Modules\Port\Domain\Models\FleetVoyage;
 
 /**
  * Service Pengelolaan Air Ballas Kapal Niaga & Kepatuhan IMO BWMC.
@@ -22,11 +19,11 @@ final class VesselBallastWaterManagementService
      * - Jika tidak memungkinkan, minimal 50 mil laut dan kedalaman minimal 200 meter.
      * - Efisiensi pertukaran volume minimal 95% (metode sequential atau flow-through 3 kali volume tangki).
      *
-     * @param float $distanceFromCoastNm Jarak dari garis pantai terdekat (mil laut)
-     * @param float $waterDepthM Kedalaman perairan laut (meter)
-     * @param float $tankCapacityM3 Kapasitas tangki ballas
-     * @param float $volumePumpedM3 Volume air yang dipompa untuk pertukaran
-     * @param string $method SEQUENTIAL atau FLOW_THROUGH
+     * @param  float  $distanceFromCoastNm  Jarak dari garis pantai terdekat (mil laut)
+     * @param  float  $waterDepthM  Kedalaman perairan laut (meter)
+     * @param  float  $tankCapacityM3  Kapasitas tangki ballas
+     * @param  float  $volumePumpedM3  Volume air yang dipompa untuk pertukaran
+     * @param  string  $method  SEQUENTIAL atau FLOW_THROUGH
      * @return array{
      *     is_d1_compliant: bool,
      *     distance_from_coast_nm: float,

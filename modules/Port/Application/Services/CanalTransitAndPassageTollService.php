@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
-use DomainException;
-use Modules\Port\Domain\Models\FleetVessel;
-
 /**
  * Service Transit Kanal Internasional & Tol Jalur Pelayaran Strategis.
  * Menghitung tol Terusan Suez (SCNT/SDR), Terusan Panama (PCUMS), dan Selat Malaka (TSS VTIS).
@@ -20,10 +16,10 @@ final class CanalTransitAndPassageTollService
     /**
      * Hitung estimasi biaya transit Terusan Suez (Suez Canal Authority Rules of Navigation).
      *
-     * @param float $suezNetTonnage Bobot bersih kapal menurut sertifikat SCNT
-     * @param string $vesselType BULK_CARRIER, CONTAINER, TANKER
-     * @param bool $isLaden Status bermuatan (laden) atau kosong (in ballast)
-     * @param bool $requiresSearchlightRental Memerlukan sewa lampu sorot kanal
+     * @param  float  $suezNetTonnage  Bobot bersih kapal menurut sertifikat SCNT
+     * @param  string  $vesselType  BULK_CARRIER, CONTAINER, TANKER
+     * @param  bool  $isLaden  Status bermuatan (laden) atau kosong (in ballast)
+     * @param  bool  $requiresSearchlightRental  Memerlukan sewa lampu sorot kanal
      * @return array{
      *     canal: string,
      *     scnt_tonnage: float,

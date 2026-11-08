@@ -64,4 +64,3 @@ final class FleetLaytimeCalculation extends Model
         return $this->hasOne(FleetDemurrageInvoice::class, 'laytime_calculation_id');
     }
 }
-

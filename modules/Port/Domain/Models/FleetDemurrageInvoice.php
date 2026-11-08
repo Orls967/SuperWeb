@@ -33,4 +33,3 @@ final class FleetDemurrageInvoice extends Model
         return $this->belongsTo(FleetLaytimeCalculation::class, 'laytime_calculation_id');
     }
 }
-

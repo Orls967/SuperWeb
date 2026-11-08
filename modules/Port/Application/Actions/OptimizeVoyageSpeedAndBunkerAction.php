@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Actions;
 
-use DomainException;
-use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
 use Modules\Shared\Domain\Algorithms\Port\BunkerFuelConsumptionOptimizer;
 use Modules\Shared\Domain\Algorithms\Port\TimeCharterEquivalentCalculator;
@@ -16,8 +14,8 @@ use Modules\Shared\Domain\Algorithms\Port\TimeCharterEquivalentCalculator;
 final class OptimizeVoyageSpeedAndBunkerAction
 {
     public function __construct(
-        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer(),
-        private readonly TimeCharterEquivalentCalculator $tceCalculator = new TimeCharterEquivalentCalculator()
+        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer,
+        private readonly TimeCharterEquivalentCalculator $tceCalculator = new TimeCharterEquivalentCalculator
     ) {}
 
     public function execute(

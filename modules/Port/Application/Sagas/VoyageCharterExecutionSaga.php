@@ -14,7 +14,6 @@ use Modules\Port\Application\Services\PortFleetLedgerService;
 use Modules\Port\Application\Services\PortFleetService;
 use Modules\Port\Application\Services\VoyageExecutionService;
 use Modules\Port\Domain\Models\FleetCharterParty;
-use Modules\Port\Domain\Models\FleetPortCall;
 use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
 use Modules\Port\Domain\StateMachines\CharterPartyStateMachine;
@@ -22,7 +21,7 @@ use Modules\Port\Domain\StateMachines\VoyageStateMachine;
 
 /**
  * Saga Eksekusi Fixture & Pelayaran Kapal Niaga dengan Kompensasi Penuh.
- * 
+ *
  * Mengkoordinasikan validasi kelaiklautan SOLAS/STCW, reservasi jendela dermaga (K27),
  * penguncian PDA di double-entry ledger, dan komitmen fixture sewa kapal.
  */
@@ -88,7 +87,7 @@ final class VoyageCharterExecutionSaga
                 // Langkah 1: Validasi Kelaiklautan (SOLAS, MARPOL, STCW safe manning)
                 $audit = $this->fleetService->auditSeaworthiness($vesselId, $payload['planned_start_at']);
                 if (! $audit['is_seaworthy']) {
-                    throw new DomainException('Kapal tidak memenuhi kriteria kelaiklautan: ' . implode('; ', $audit['reasons']));
+                    throw new DomainException('Kapal tidak memenuhi kriteria kelaiklautan: '.implode('; ', $audit['reasons']));
                 }
 
                 // Langkah 2: Buat Fixture Charter Party
@@ -238,4 +237,3 @@ final class VoyageCharterExecutionSaga
         }
     }
 }
-

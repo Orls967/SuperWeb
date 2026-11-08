@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use DomainException;
-use Modules\Port\Domain\Models\FleetVoyage;
-
 /**
  * Service Optimasi Navigasi Jarak Lingkaran Besar (Great Circle Navigation & Ocean Currents).
  * Standar: Bowditch American Practical Navigator & IMO Navigational Guidance.
@@ -19,10 +16,10 @@ final class OceanFleetRouteOptimizationService
     /**
      * Hitung jarak lingkaran besar (Great Circle Distance) dan haluan awal (Initial True Course).
      *
-     * @param float $lat1 Latitude titik awal (-90 s.d. 90)
-     * @param float $lon1 Longitude titik awal (-180 s.d. 180)
-     * @param float $lat2 Latitude titik tujuan (-90 s.d. 90)
-     * @param float $lon2 Longitude titik tujuan (-180 s.d. 180)
+     * @param  float  $lat1  Latitude titik awal (-90 s.d. 90)
+     * @param  float  $lon1  Longitude titik awal (-180 s.d. 180)
+     * @param  float  $lat2  Latitude titik tujuan (-90 s.d. 90)
+     * @param  float  $lon2  Longitude titik tujuan (-180 s.d. 180)
      * @return array{
      *     great_circle_distance_nm: float,
      *     rhumb_line_distance_nm: float,
@@ -113,6 +110,7 @@ final class OceanFleetRouteOptimizationService
                     'latitude' => round($lat1, 4),
                     'longitude' => round($lon1, 4),
                 ];
+
                 continue;
             }
 

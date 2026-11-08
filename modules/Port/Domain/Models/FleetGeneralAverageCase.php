@@ -51,4 +51,3 @@ final class FleetGeneralAverageCase extends Model
         return $this->belongsTo(FleetVoyage::class, 'voyage_id');
     }
 }
-

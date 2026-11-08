@@ -43,4 +43,3 @@ final class FleetVoyageLeg extends Model
         return $this->target_speed_knots > 0 ? ($this->distance_nm / $this->target_speed_knots) : 0.0;
     }
 }
-

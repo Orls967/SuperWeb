@@ -21,7 +21,7 @@ final class CrewRotationAndPayrollService
      * - Istirahat minimum 77 jam dalam setiap periode 7 hari.
      * - Periode istirahat tidak boleh dibagi lebih dari dua periode, salah satunya minimal 6 jam.
      *
-     * @param array<int, array{date: string, rest_hours_24h: float, longest_period_hours: float}> $restLog7Days
+     * @param  array<int, array{date: string, rest_hours_24h: float, longest_period_hours: float}>  $restLog7Days
      * @return array{
      *     is_compliant: bool,
      *     total_rest_7days_hours: float,

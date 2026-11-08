@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
-use DomainException;
-use Modules\Port\Domain\Models\FleetVessel;
-use Modules\Port\Domain\Models\FleetVoyage;
-use Modules\Port\Domain\Models\FleetWeatherRouting;
-
 /**
  * Service Pemilihan Rute Cuaca Optimum Kapal Samudera (Isochrone Method & Speed Loss Analysis).
  * Standar: IMO Circular MSC.1/Circ.1501 & Aertssen's Maritime Speed Loss Formula.
@@ -20,13 +14,13 @@ final class OceanFleetWeatherRoutingOptimumRouteService
      * Evaluasi 3 rute alternatif (Great Circle murni vs Deviasi Cuaca vs Jalur Terlindung Pesisir)
      * berdasarkan prakiraan tinggi gelombang signifikan (Significant Wave Height / Hs) dan arah angin.
      *
-     * @param float $directDistanceNm Jarak rute langsung (mil laut)
-     * @param float $vesselDesignSpeedKnots Kecepatan desain kapal
-     * @param float $vesselLengthM Panjang kapal (LOA)
-     * @param float $stormWaveHeightM Tinggi gelombang pada rute langsung (meter)
-     * @param float $stormWaveDirectionDegrees Arah datang gelombang relatif terhadap haluan kapal
-     * @param float $fuelPriceUsdPerMt Harga bahan bakar bunker
-     * @param float $dailyCharterRateUsd Tarif sewa kapal harian
+     * @param  float  $directDistanceNm  Jarak rute langsung (mil laut)
+     * @param  float  $vesselDesignSpeedKnots  Kecepatan desain kapal
+     * @param  float  $vesselLengthM  Panjang kapal (LOA)
+     * @param  float  $stormWaveHeightM  Tinggi gelombang pada rute langsung (meter)
+     * @param  float  $stormWaveDirectionDegrees  Arah datang gelombang relatif terhadap haluan kapal
+     * @param  float  $fuelPriceUsdPerMt  Harga bahan bakar bunker
+     * @param  float  $dailyCharterRateUsd  Tarif sewa kapal harian
      * @return array{
      *     recommended_route: string,
      *     direct_route: array,

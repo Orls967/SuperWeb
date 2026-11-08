@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Port\Database\Seeders;
+namespace Database\Seeders;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
@@ -16,7 +16,7 @@ use Modules\Port\Domain\Models\FleetClass;
 use Modules\Port\Domain\StateMachines\CharterPartyStateMachine;
 use Modules\Port\Domain\StateMachines\VoyageStateMachine;
 
-final class PortFleetSeeder extends Seeder
+final class PortFleetT1Seeder extends Seeder
 {
     public function run(): void
     {

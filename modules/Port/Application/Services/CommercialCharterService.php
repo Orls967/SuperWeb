@@ -24,8 +24,8 @@ use Modules\Shared\Domain\Algorithms\Port\LaytimeDemurrageCalculator;
 final class CommercialCharterService
 {
     public function __construct(
-        private readonly CharterPartyStateMachine $stateMachine = new CharterPartyStateMachine(),
-        private readonly LaytimeDemurrageCalculator $laytimeCalculator = new LaytimeDemurrageCalculator()
+        private readonly CharterPartyStateMachine $stateMachine = new CharterPartyStateMachine,
+        private readonly LaytimeDemurrageCalculator $laytimeCalculator = new LaytimeDemurrageCalculator
     ) {}
 
     /**
@@ -118,13 +118,7 @@ final class CommercialCharterService
     /**
      * Hitung laytime dari Statement of Facts (SOF) dan terbitkan kalkulasi resmi demurrage/despatch.
      *
-     * @param int $charterPartyId
-     * @param int|null $portCallId
-     * @param string $calcRef
-     * @param CarbonImmutable $norTenderedAt
-     * @param CarbonImmutable $workCommencedAt
-     * @param CarbonImmutable $workCompletedAt
-     * @param array<int, array{start: CarbonImmutable, end: CarbonImmutable, reason: string, is_excepted: bool}> $interruptions
+     * @param  array<int, array{start: CarbonImmutable, end: CarbonImmutable, reason: string, is_excepted: bool}>  $interruptions
      * @return array{calculation: FleetLaytimeCalculation, invoice: FleetDemurrageInvoice|null}
      */
     public function calculateLaytimeAndIssueInvoice(
@@ -178,7 +172,7 @@ final class CommercialCharterService
         if ($result['result_type'] === 'DEMURRAGE' && $result['settlement_amount_usd'] > 0) {
             $invoice = FleetDemurrageInvoice::create([
                 'laytime_calculation_id' => $calculation->id,
-                'invoice_number' => 'DEM-' . strtoupper(bin2hex(random_bytes(4))),
+                'invoice_number' => 'DEM-'.strtoupper(bin2hex(random_bytes(4))),
                 'bill_to_party' => $charter->charterer_name,
                 'amount_usd' => $result['settlement_amount_usd'],
                 'invoice_date' => CarbonImmutable::now()->toDateString(),
@@ -262,8 +256,7 @@ final class CommercialCharterService
             'lsmgo_price_per_mt' => $lsmgoPrice,
             'total_value_usd' => round($totalValue, 2),
             'surveyor_company' => $surveyor,
-            'certificate_ref' => $certRef ?? ('BODR-' . strtoupper(bin2hex(random_bytes(3)))),
+            'certificate_ref' => $certRef ?? ('BODR-'.strtoupper(bin2hex(random_bytes(3)))),
         ]);
     }
 }
-

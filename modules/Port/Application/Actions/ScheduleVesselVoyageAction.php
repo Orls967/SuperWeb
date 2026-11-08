@@ -10,7 +10,6 @@ use Modules\Port\Application\Services\PortFleetService;
 use Modules\Port\Application\Services\VoyageExecutionService;
 use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
-use Modules\Port\Domain\StateMachines\VoyageStateMachine;
 
 /**
  * Action Penjadwalan & Inisialisasi Pelayaran Kapal Niaga.
@@ -49,7 +48,7 @@ final class ScheduleVesselVoyageAction
         // Audit kelaiklautan sebelum jadwal diterbitkan
         $audit = $this->fleetService->auditSeaworthiness($vesselId, $plannedStart);
         if (! $audit['is_seaworthy']) {
-            throw new DomainException('Kapal tidak layak melaut: ' . implode('; ', $audit['reasons']));
+            throw new DomainException('Kapal tidak layak melaut: '.implode('; ', $audit['reasons']));
         }
 
         // Hitung estimasi waktu pelayaran (ETA)

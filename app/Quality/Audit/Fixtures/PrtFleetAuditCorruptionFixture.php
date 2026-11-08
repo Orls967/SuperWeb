@@ -36,4 +36,3 @@ final class PrtFleetAuditCorruptionFixture implements CorruptionFixture
         return 'AUDIT GAGAL';
     }
 }
-

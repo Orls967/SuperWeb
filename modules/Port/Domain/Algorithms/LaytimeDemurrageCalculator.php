@@ -9,6 +9,4 @@ use Modules\Shared\Domain\Algorithms\Port\LaytimeDemurrageCalculator as KernelLa
 /**
  * Port Module Wrapper for LaytimeDemurrageCalculator.
  */
-class LaytimeDemurrageCalculator extends KernelLaytimeDemurrageCalculator
-{
-}
+class LaytimeDemurrageCalculator extends KernelLaytimeDemurrageCalculator {}

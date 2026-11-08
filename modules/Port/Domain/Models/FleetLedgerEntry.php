@@ -48,7 +48,7 @@ final class FleetLedgerEntry extends Model
         string $refType,
         int $refId
     ): string {
-        return hash('sha256', "{$code}|{$account}|{$type}|" . number_format($amount, 2, '.', '') . "|{$currency}|{$refType}|{$refId}");
+        return hash('sha256', "{$code}|{$account}|{$type}|".number_format($amount, 2, '.', '')."|{$currency}|{$refType}|{$refId}");
     }
 
     public function verifyChecksum(): bool
@@ -66,4 +66,3 @@ final class FleetLedgerEntry extends Model
         return hash_equals($expected, $this->checksum);
     }
 }
-

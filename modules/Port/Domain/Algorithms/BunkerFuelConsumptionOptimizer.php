@@ -9,6 +9,4 @@ use Modules\Shared\Domain\Algorithms\Port\BunkerFuelConsumptionOptimizer as Kern
 /**
  * Port Module Wrapper for BunkerFuelConsumptionOptimizer.
  */
-class BunkerFuelConsumptionOptimizer extends KernelBunkerFuelConsumptionOptimizer
-{
-}
+class BunkerFuelConsumptionOptimizer extends KernelBunkerFuelConsumptionOptimizer {}

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class FleetClass extends Model
@@ -36,4 +35,3 @@ final class FleetClass extends Model
         return $this->hasMany(FleetVessel::class, 'fleet_class_id');
     }
 }
-

@@ -6,7 +6,7 @@ namespace Modules\Shared\Domain\Algorithms\Port;
 
 /**
  * A12: IMO Carbon Intensity Indicator (CII) & Operational Carbon Rating Engine.
- * 
+ *
  * Standar: IMO MARPOL Annex VI Regulation 28, Resolutions MEPC.336(76), MEPC.338(76), MEPC.354(78).
  * Menghitung emisi operasional CO2e kapal, batas referensi CII, batas peringkat A-E,
  * serta rekomendasi rencana tindakan korektif SEEMP Bagian III.
@@ -15,8 +15,11 @@ final class CiiCarbonIntensityRatingEngine
 {
     // Faktor konversi bahan bakar ke CO2 (CF) menurut MEPC.308(73) (t-CO2 / t-Fuel)
     public const CF_VLSFO = 3.1510;
+
     public const CF_LSMGO = 3.2060;
+
     public const CF_LNG = 2.7500;
+
     public const CF_BIO_B30 = 2.4500; // Blend dengan sertifikasi ISCC
 
     // Parameter garis referensi IMO: CII_ref = a * Capacity^(-c)
@@ -32,11 +35,10 @@ final class CiiCarbonIntensityRatingEngine
     /**
      * Hitung Attained CII dan peringkat operasional tahunan.
      *
-     * @param string $shipType
-     * @param float $capacityDwt Kapasitas deadweight tonnage (DWT) kapal
-     * @param float $distanceTraveledNm Jarak pelayaran yang ditempuh (nautical miles)
-     * @param array{vlsfo_mt?: float, lsmgo_mt?: float, lng_mt?: float, bio_mt?: float} $fuelConsumedMt
-     * @param int $year Tahun evaluasi (misal 2026)
+     * @param  float  $capacityDwt  Kapasitas deadweight tonnage (DWT) kapal
+     * @param  float  $distanceTraveledNm  Jarak pelayaran yang ditempuh (nautical miles)
+     * @param  array{vlsfo_mt?: float, lsmgo_mt?: float, lng_mt?: float, bio_mt?: float}  $fuelConsumedMt
+     * @param  int  $year  Tahun evaluasi (misal 2026)
      * @return array{
      *     ship_type: string,
      *     capacity_dwt: float,
@@ -154,4 +156,3 @@ final class CiiCarbonIntensityRatingEngine
         ];
     }
 }
-

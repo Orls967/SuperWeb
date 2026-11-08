@@ -8,19 +8,26 @@ use DomainException;
 
 /**
  * State Machine Perjanjian Sewa Kapal (Charter Party State Machine).
- * 
+ *
  * Mengatur 8 status komersial dari negosiasi fixture, konfirmasi on-hire,
  * insiden off-hire teknis, re-delivery bunker survey, hingga penyelesaian final atau sengketa arbitrase.
  */
 final class CharterPartyStateMachine
 {
     public const STATUS_NEGOTIATING = 'NEGOTIATING';
+
     public const STATUS_FIXTURE_AGREED = 'FIXTURE_AGREED';
+
     public const STATUS_ON_HIRE = 'ON_HIRE';
+
     public const STATUS_OFF_HIRE = 'OFF_HIRE';
+
     public const STATUS_OFF_HIRE_SURVEY = 'OFF_HIRE_SURVEY';
+
     public const STATUS_RE_DELIVERED = 'RE_DELIVERED';
+
     public const STATUS_SETTLED = 'SETTLED';
+
     public const STATUS_DISPUTED = 'DISPUTED';
 
     /**
@@ -63,6 +70,7 @@ final class CharterPartyStateMachine
     public function canTransition(string $currentStatus, string $newStatus): bool
     {
         $allowed = self::VALID_TRANSITIONS[$currentStatus] ?? [];
+
         return in_array($newStatus, $allowed, true);
     }
 
@@ -95,4 +103,3 @@ final class CharterPartyStateMachine
         return self::VALID_TRANSITIONS[$currentStatus] ?? [];
     }
 }
-

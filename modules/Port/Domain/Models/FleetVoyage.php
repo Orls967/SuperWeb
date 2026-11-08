@@ -104,4 +104,3 @@ final class FleetVoyage extends Model
         return (float) $this->noonReports()->sum('distance_last_24h_nm');
     }
 }
-

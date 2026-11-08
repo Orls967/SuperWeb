@@ -6,7 +6,7 @@ namespace Modules\Shared\Domain\Algorithms\Port;
 
 /**
  * A10: Bunker Fuel Consumption Optimizer & SFOC Engine.
- * 
+ *
  * Standar: ISO 8217:2017 (Marine Fuel Specifications) & Admiralty Coefficient Method.
  * Menghitung konsumsi bahan bakar maritim berdasarkan hukum kubik kecepatan,
  * karakteristik mesin diesel 2-tak / 4-tak, kurva Specific Fuel Oil Consumption (SFOC),
@@ -16,22 +16,25 @@ final class BunkerFuelConsumptionOptimizer
 {
     // Nilai kalor standar ISO 8217 (MJ/kg)
     public const LHV_VLSFO_BASE_MJ_KG = 41.20;
+
     public const LHV_LSMGO_BASE_MJ_KG = 42.70;
+
     public const DENSITY_VLSFO_15C_KG_M3 = 991.0;
+
     public const DENSITY_LSMGO_15C_KG_M3 = 860.0;
 
     /**
      * Hitung estimasi konsumsi bahan bakar harian (MT/hari) pada kecepatan dan sarat kapal tertentu.
      *
-     * @param float $displacementTons Bobot benaman (displacement) kapal dalam metrik ton
-     * @param float $speedKnots Kecepatan kapal yang diminta (knots)
-     * @param float $designSpeedKnots Kecepatan desain kapal pada MCR (knots)
-     * @param float $designPowerKw Daya mesin utama desain (kW)
-     * @param float $sfocBaseGramsKwh SFOC desain pada beban optimal (g/kWh)
-     * @param float $auxiliaryLoadKw Beban rata-rata mesin bantu/genset (kW)
-     * @param float $auxiliarySfoc SFOC mesin bantu (g/kWh)
-     * @param int $beaufortScale Skala angin Beaufort (0-12)
-     * @param string $fuelType VLSFO atau LSMGO
+     * @param  float  $displacementTons  Bobot benaman (displacement) kapal dalam metrik ton
+     * @param  float  $speedKnots  Kecepatan kapal yang diminta (knots)
+     * @param  float  $designSpeedKnots  Kecepatan desain kapal pada MCR (knots)
+     * @param  float  $designPowerKw  Daya mesin utama desain (kW)
+     * @param  float  $sfocBaseGramsKwh  SFOC desain pada beban optimal (g/kWh)
+     * @param  float  $auxiliaryLoadKw  Beban rata-rata mesin bantu/genset (kW)
+     * @param  float  $auxiliarySfoc  SFOC mesin bantu (g/kWh)
+     * @param  int  $beaufortScale  Skala angin Beaufort (0-12)
+     * @param  string  $fuelType  VLSFO atau LSMGO
      * @return array{
      *     speed_knots: float,
      *     engine_power_kw: float,
@@ -161,10 +164,6 @@ final class BunkerFuelConsumptionOptimizer
      *     deviation_distance_nm: float,
      *     calling_cost_usd: float
      * }> $portCandidates
-     * @param float $bunkerRequirementMt
-     * @param float $dailyCharterRateUsd
-     * @param float $transitSpeedKnots
-     * @param float $dailyConsumptionMt
      * @return array{
      *     optimal_port_code: string,
      *     optimal_port_name: string,
@@ -225,4 +224,3 @@ final class BunkerFuelConsumptionOptimizer
         ];
     }
 }
-

@@ -6,7 +6,6 @@ namespace Modules\Port\Application\Actions;
 
 use Carbon\CarbonImmutable;
 use Modules\Port\Application\Services\PortFleetService;
-use Modules\Port\Domain\Models\FleetCertificate;
 use Modules\Port\Domain\Models\FleetVessel;
 
 /**

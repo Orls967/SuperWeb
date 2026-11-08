@@ -7,7 +7,6 @@ namespace Modules\Port\Application\Services;
 use Carbon\CarbonImmutable;
 use DomainException;
 use Modules\Port\Domain\Models\FleetNoonReport;
-use Modules\Port\Domain\Models\FleetPortCall;
 use Modules\Port\Domain\Models\FleetSeaPassage;
 use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
@@ -24,8 +23,8 @@ use Modules\Shared\Domain\Algorithms\Port\BunkerFuelConsumptionOptimizer;
 final class VoyageExecutionService
 {
     public function __construct(
-        private readonly VoyageStateMachine $stateMachine = new VoyageStateMachine(),
-        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer()
+        private readonly VoyageStateMachine $stateMachine = new VoyageStateMachine,
+        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer
     ) {}
 
     /**
@@ -265,4 +264,3 @@ final class VoyageExecutionService
         return $advisory;
     }
 }
-

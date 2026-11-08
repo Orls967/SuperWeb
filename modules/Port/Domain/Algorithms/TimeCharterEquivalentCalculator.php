@@ -9,6 +9,4 @@ use Modules\Shared\Domain\Algorithms\Port\TimeCharterEquivalentCalculator as Ker
 /**
  * Port Module Wrapper for TimeCharterEquivalentCalculator.
  */
-class TimeCharterEquivalentCalculator extends KernelTimeCharterEquivalentCalculator
-{
-}
+class TimeCharterEquivalentCalculator extends KernelTimeCharterEquivalentCalculator {}

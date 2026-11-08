@@ -46,4 +46,3 @@ final class FleetOffHireEvent extends Model
         return $this->belongsTo(FleetVessel::class, 'vessel_id');
     }
 }
-

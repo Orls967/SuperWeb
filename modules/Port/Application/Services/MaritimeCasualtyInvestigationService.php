@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
 use Modules\Port\Domain\Models\FleetVessel;
-use Modules\Port\Domain\Models\FleetVoyage;
 
 /**
  * Service Investigasi Kecelakaan Maritim & Analisis VDR (Voyage Data Recorder).
@@ -18,14 +16,8 @@ final class MaritimeCasualtyInvestigationService
     /**
      * Catat dan klasifikasikan insiden maritim menurut IMO MSC-MEPC.3/Circ.3.
      *
-     * @param int $vesselId
-     * @param string $incidentType COLLISION, GROUNDING, CONTACT, FIRE_EXPLOSION, STRUCTURAL_FAILURE
-     * @param string $severity VERY_SERIOUS, SERIOUS, LESS_SERIOUS, MARINE_INCIDENT
-     * @param string $locationDescription
-     * @param CarbonImmutable $occurredAt
-     * @param float $propertyDamageEstimateUsd
-     * @param bool $lossOfLife
-     * @param bool $severePollution
+     * @param  string  $incidentType  COLLISION, GROUNDING, CONTACT, FIRE_EXPLOSION, STRUCTURAL_FAILURE
+     * @param  string  $severity  VERY_SERIOUS, SERIOUS, LESS_SERIOUS, MARINE_INCIDENT
      * @return array{
      *     vessel_id: int,
      *     incident_reference: string,
@@ -52,7 +44,7 @@ final class MaritimeCasualtyInvestigationService
         $isVerySerious = ($severity === 'VERY_SERIOUS') || $lossOfLife || $severePollution || ($propertyDamageEstimateUsd > 2000000.0);
         $finalSeverity = $isVerySerious ? 'VERY_SERIOUS' : $severity;
 
-        $ref = 'CAS-' . strtoupper(substr($incidentType, 0, 4)) . '-' . bin2hex(random_bytes(3));
+        $ref = 'CAS-'.strtoupper(substr($incidentType, 0, 4)).'-'.bin2hex(random_bytes(3));
 
         return [
             'vessel_id' => $vessel->id,

@@ -99,4 +99,3 @@ final class FleetVessel extends Model
         return (float) $this->bunkerTanks()->sum('current_rob_metric_tons');
     }
 }
-

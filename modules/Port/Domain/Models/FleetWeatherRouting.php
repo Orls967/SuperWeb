@@ -35,4 +35,3 @@ final class FleetWeatherRouting extends Model
         return $this->belongsTo(FleetVoyage::class, 'voyage_id');
     }
 }
-

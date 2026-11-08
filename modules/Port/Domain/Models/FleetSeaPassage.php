@@ -34,4 +34,3 @@ final class FleetSeaPassage extends Model
         return $this->belongsTo(FleetVoyage::class, 'voyage_id');
     }
 }
-

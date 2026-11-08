@@ -80,4 +80,3 @@ final class FleetCharterParty extends Model
         return $this->charter_type === 'VOYAGE_CHARTER';
     }
 }
-

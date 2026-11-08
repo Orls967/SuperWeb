@@ -14,7 +14,7 @@ uses(TestCase::class, RefreshDatabase::class);
 
 describe('Maritime Optimum Weather Routing Suite', function (): void {
     it('evaluates alternative routes and recommends avoidance when waves exceed 4 meters', function (): void {
-        $service = new OceanFleetWeatherRoutingOptimumRouteService();
+        $service = new OceanFleetWeatherRoutingOptimumRouteService;
 
         // Jarak 1000 mil laut, kecepatan 14 knots, panjang 190m, gelombang badai 4.8m
         $res = $service->evaluateAlternativeWeatherRoutes(
@@ -31,7 +31,7 @@ describe('Maritime Optimum Weather Routing Suite', function (): void {
     });
 
     it('selects direct great circle route when waves are mild below 3 meters', function (): void {
-        $service = new OceanFleetWeatherRoutingOptimumRouteService();
+        $service = new OceanFleetWeatherRoutingOptimumRouteService;
 
         $res = $service->evaluateAlternativeWeatherRoutes(
             1000.0,

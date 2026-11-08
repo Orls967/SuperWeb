@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
 use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
 use Modules\Port\Domain\Models\FleetVessel;
 
@@ -22,11 +21,6 @@ final class VesselMaintenanceWorkOrderService
     /**
      * Jadwalkan inspeksi atau pemeliharaan terencana (Planned Maintenance System / PMS) kapal.
      *
-     * @param int $vesselId
-     * @param string $componentName
-     * @param int $currentRunningHours
-     * @param int $maintenanceIntervalHours
-     * @param string $severity
      * @return array{
      *     vessel_id: int,
      *     component: string,

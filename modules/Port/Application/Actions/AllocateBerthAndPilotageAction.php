@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use DomainException;
 use Modules\Port\Application\Services\MarineServicesDisbursementService;
 use Modules\Port\Domain\Models\FleetPortCall;
-use Modules\Port\Domain\Models\FleetVessel;
 
 /**
  * Action Alokasi Dermaga, Pandu & Kapal Tunda.

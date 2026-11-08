@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
-use Modules\Port\Domain\Models\FleetClass;
 use Modules\Port\Domain\Models\FleetVessel;
 
 /**
@@ -18,13 +16,11 @@ final class VesselDrydockingAndSurveyPlanningService
     /**
      * Rencanakan docking berkala kapal (Drydocking & Special Survey Specification).
      *
-     * @param int $vesselId
-     * @param string $shipyardName Nama galangan kapal (misal PT Dok & Perkapalan Surabaya)
-     * @param CarbonImmutable $scheduledDockingDate
-     * @param int $dockingDurationDays Estimasi hari docking (misal 18 hari)
-     * @param float $steelRenewalTons Penggantian pelat baja lambung aus (MT)
-     * @param float $hullBlastingAreaM2 Luas permukaan lambung yang diblast (SA 2.5)
-     * @param bool $tailshaftWithdrawalDue Survey poros baling-baling (Tailshaft) jatuh tempo
+     * @param  string  $shipyardName  Nama galangan kapal (misal PT Dok & Perkapalan Surabaya)
+     * @param  int  $dockingDurationDays  Estimasi hari docking (misal 18 hari)
+     * @param  float  $steelRenewalTons  Penggantian pelat baja lambung aus (MT)
+     * @param  float  $hullBlastingAreaM2  Luas permukaan lambung yang diblast (SA 2.5)
+     * @param  bool  $tailshaftWithdrawalDue  Survey poros baling-baling (Tailshaft) jatuh tempo
      * @return array{
      *     vessel_id: int,
      *     vessel_name: string,
@@ -69,7 +65,7 @@ final class VesselDrydockingAndSurveyPlanningService
 
         $specs = [
             "Pembersihan lambung bawah air dan grit blasting SA 2.5 seluas {$hullBlastingAreaM2} m2.",
-            "Aplikasi cat antifouling silyl premium 3 lapis untuk interval 60 bulan.",
+            'Aplikasi cat antifouling silyl premium 3 lapis untuk interval 60 bulan.',
             "Penggantian pelat baja lambung (steel renewal) sebesar {$steelRenewalTons} MT dengan pengujian ultrasonik NDT.",
             'Overhaul 100% sea chest valves dan pengujian tekanan hidrolik.',
             'Pemeriksaan celah bantalan kemudi (rudder pintle clearance) dan pengelasan anoda korban (zinc anodes).',

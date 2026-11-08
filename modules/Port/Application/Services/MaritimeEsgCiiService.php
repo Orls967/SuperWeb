@@ -7,7 +7,6 @@ namespace Modules\Port\Application\Services;
 use Carbon\CarbonImmutable;
 use Modules\Esg\Contracts\EmissionBenefitRecorder;
 use Modules\Port\Domain\Models\FleetVessel;
-use Modules\Port\Domain\Models\FleetVoyage;
 use Modules\Shared\Domain\Algorithms\Port\CiiCarbonIntensityRatingEngine;
 
 /**
@@ -17,7 +16,7 @@ use Modules\Shared\Domain\Algorithms\Port\CiiCarbonIntensityRatingEngine;
 final class MaritimeEsgCiiService
 {
     public function __construct(
-        private readonly CiiCarbonIntensityRatingEngine $ciiEngine = new CiiCarbonIntensityRatingEngine(),
+        private readonly CiiCarbonIntensityRatingEngine $ciiEngine = new CiiCarbonIntensityRatingEngine,
         private readonly ?EmissionBenefitRecorder $emissionBenefitRecorder = null
     ) {}
 
@@ -92,4 +91,3 @@ final class MaritimeEsgCiiService
         ];
     }
 }
-

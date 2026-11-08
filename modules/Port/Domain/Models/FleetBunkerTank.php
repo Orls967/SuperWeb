@@ -41,4 +41,3 @@ final class FleetBunkerTank extends Model
         return max(0.0, $this->safe_capacity_m3 - $this->current_rob_m3);
     }
 }
-

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use DomainException;
-use Illuminate\Support\Collection;
 use Modules\Port\Domain\Models\FleetLedgerEntry;
 
 /**
@@ -16,13 +15,21 @@ use Modules\Port\Domain\Models\FleetLedgerEntry;
 final class PortFleetLedgerService
 {
     public const ACC_CASH = '1000';
+
     public const ACC_RECEIVABLE_FREIGHT = '1200';
+
     public const ACC_PAYABLE_DISBURSEMENTS = '2100';
+
     public const ACC_REVENUE_FREIGHT = '4000';
+
     public const ACC_REVENUE_DEMURRAGE = '4100';
+
     public const ACC_EXPENSE_BUNKER = '5000';
+
     public const ACC_EXPENSE_PORT_DUES = '5100';
+
     public const ACC_EXPENSE_PILOT_TUG = '5200';
+
     public const ACC_EXPENSE_GENERAL_AVERAGE = '5300';
 
     /**
@@ -45,7 +52,7 @@ final class PortFleetLedgerService
             throw new DomainException('Nilai transaksi pembukuan harus bernilai positif.');
         }
 
-        $codeBase = 'FLT-' . strtoupper(bin2hex(random_bytes(4)));
+        $codeBase = 'FLT-'.strtoupper(bin2hex(random_bytes(4)));
         $debitCode = "{$codeBase}-DR";
         $creditCode = "{$codeBase}-CR";
 
@@ -152,4 +159,3 @@ final class PortFleetLedgerService
         ];
     }
 }
-

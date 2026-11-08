@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
-use DomainException;
-use Modules\Port\Domain\Models\FleetPortCall;
-use Modules\Port\Domain\Models\FleetVessel;
-
 /**
  * Service Pasokan Listrik Darat Ramah Lingkungan (Onshore Power Supply / Cold Ironing).
  * Standar: IEC/IEEE 80005 High Voltage Shore Connection (HVSC).
@@ -19,10 +14,10 @@ final class ColdIroningShorePowerService
     /**
      * Hitung pasokan listrik darat dan estimasi emisi yang dihindari di pelabuhan.
      *
-     * @param float $stayHours Durasi penyambungan listrik darat (jam)
-     * @param float $averagePowerDemandKw Kebutuhan daya listrik kapal (kW)
-     * @param float $shoreTariffUsdPerKwh Tarif listrik darat (USD/kWh)
-     * @param float $mgoPricePerMt Harga bahan bakar diesel kapal (USD/MT)
+     * @param  float  $stayHours  Durasi penyambungan listrik darat (jam)
+     * @param  float  $averagePowerDemandKw  Kebutuhan daya listrik kapal (kW)
+     * @param  float  $shoreTariffUsdPerKwh  Tarif listrik darat (USD/kWh)
+     * @param  float  $mgoPricePerMt  Harga bahan bakar diesel kapal (USD/MT)
      * @return array{
      *     total_energy_consumed_kwh: float,
      *     electricity_cost_usd: float,

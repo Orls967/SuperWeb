@@ -33,4 +33,3 @@ final class FleetBerthBooking extends Model
         return $this->belongsTo(FleetPortCall::class, 'port_call_id');
     }
 }
-

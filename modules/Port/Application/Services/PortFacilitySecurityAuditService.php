@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
 use DomainException;
 use Modules\Port\Domain\Models\FleetPortCall;
-use Modules\Port\Domain\Models\FleetVessel;
 
 /**
  * Service Keamanan Fasilitas Pelabuhan & Kapal Niaga (ISPS Code & Maritime Security).
@@ -20,11 +18,10 @@ final class PortFacilitySecurityAuditService
      * Wajib jika level keamanan kapal berbeda dengan level fasilitas pelabuhan,
      * atau saat memuat kargo berbahaya Kelas IMO 1 / 7, atau jika kapal beroperasi di ISPS Level 2/3.
      *
-     * @param int $portCallId
-     * @param int $shipSecurityLevel Level keamanan kapal (1, 2, atau 3)
-     * @param int $portSecurityLevel Level keamanan pelabuhan (1, 2, atau 3)
-     * @param string $shipSecurityOfficerName Nama SSO kapal
-     * @param string $portFacilityOfficerName Nama PFSO pelabuhan
+     * @param  int  $shipSecurityLevel  Level keamanan kapal (1, 2, atau 3)
+     * @param  int  $portSecurityLevel  Level keamanan pelabuhan (1, 2, atau 3)
+     * @param  string  $shipSecurityOfficerName  Nama SSO kapal
+     * @param  string  $portFacilityOfficerName  Nama PFSO pelabuhan
      * @return array{
      *     port_call_id: int,
      *     dos_reference: string,
@@ -67,7 +64,7 @@ final class PortFacilitySecurityAuditService
             $measures[] = 'Pemberlakuan pengosongan dermaga dan penempatan regu keamanan bersenjata.';
         }
 
-        $dosRef = 'DOS-' . strtoupper(substr($portCall->port_code, -3)) . '-' . bin2hex(random_bytes(3));
+        $dosRef = 'DOS-'.strtoupper(substr($portCall->port_code, -3)).'-'.bin2hex(random_bytes(3));
 
         return [
             'port_call_id' => $portCall->id,

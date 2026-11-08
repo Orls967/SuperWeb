@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 
 /**
  * A11: Laytime & Demurrage Calculator Engine.
- * 
+ *
  * Standar: BIMCO Gencon 1994 Charter Party (Clauses 6 & 7) & London Maritime Arbitrators Association (LMAA).
  * Menghitung waktu laytime, periode tenggang NOR (turn time), pengecualian cuaca hujan (WWD),
  * pengecualian akhir pekan (SHEX vs SHINC), prinsip "once on demurrage, always on demurrage",
@@ -19,14 +19,14 @@ final class LaytimeDemurrageCalculator
     /**
      * Hitung kalkulasi laytime dari Statement of Facts (SOF).
      *
-     * @param CarbonImmutable $norTenderedAt Waktu Notice of Readiness ditenderkan
-     * @param CarbonImmutable $workCommencedAt Waktu kerja muat/bongkar dimulai
-     * @param CarbonImmutable $workCompletedAt Waktu selesai muat/bongkar
-     * @param float $allowedLaytimeHours Total jam laytime yang diizinkan kontrak
-     * @param float $dailyDemurrageRateUsd Tarif demurrage per hari (USD/hari)
-     * @param float $dailyDespatchRateUsd Tarif despatch per hari (USD/hari, default 50% demurrage)
-     * @param string $terms SHINC atau SHEX
-     * @param int $turnTimeHours Jam tenggang setelah NOR sebelum laytime mulai berjalan (misal 6 jam)
+     * @param  CarbonImmutable  $norTenderedAt  Waktu Notice of Readiness ditenderkan
+     * @param  CarbonImmutable  $workCommencedAt  Waktu kerja muat/bongkar dimulai
+     * @param  CarbonImmutable  $workCompletedAt  Waktu selesai muat/bongkar
+     * @param  float  $allowedLaytimeHours  Total jam laytime yang diizinkan kontrak
+     * @param  float  $dailyDemurrageRateUsd  Tarif demurrage per hari (USD/hari)
+     * @param  float  $dailyDespatchRateUsd  Tarif despatch per hari (USD/hari, default 50% demurrage)
+     * @param  string  $terms  SHINC atau SHEX
+     * @param  int  $turnTimeHours  Jam tenggang setelah NOR sebelum laytime mulai berjalan (misal 6 jam)
      * @param array<int, array{
      *     start: CarbonImmutable,
      *     end: CarbonImmutable,
@@ -178,4 +178,3 @@ final class LaytimeDemurrageCalculator
         ];
     }
 }
-

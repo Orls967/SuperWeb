@@ -16,23 +16,13 @@ use Modules\Shared\Domain\Algorithms\Port\GeneralAverageContributionDistributor;
 final class GeneralAverageAdjustmentService
 {
     public function __construct(
-        private readonly GeneralAverageContributionDistributor $distributor = new GeneralAverageContributionDistributor()
+        private readonly GeneralAverageContributionDistributor $distributor = new GeneralAverageContributionDistributor
     ) {}
 
     /**
      * Deklarasikan General Average dan hitung penyesuaian kontribusi awal (Adjustment Statement).
      *
-     * @param int $voyageId
-     * @param string $caseNumber
-     * @param string $incidentDesc
-     * @param string $adjusterFirm
-     * @param float $shipSoundValueUsd
-     * @param float $shipParticularDamageUsd
-     * @param float $cargoCommercialValueUsd
-     * @param float $cargoParticularDamageUsd
-     * @param float $freightAtRiskUsd
-     * @param float $freightExpensesSavedUsd
-     * @param array<int, array{interest: string, description: string, amount_usd: float, category: string}> $losses
+     * @param  array<int, array{interest: string, description: string, amount_usd: float, category: string}>  $losses
      */
     public function declareAndAdjustGeneralAverage(
         int $voyageId,
@@ -82,4 +72,3 @@ final class GeneralAverageAdjustmentService
         ]);
     }
 }
-

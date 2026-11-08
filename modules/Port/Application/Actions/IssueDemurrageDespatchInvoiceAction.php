@@ -8,8 +8,6 @@ use Carbon\CarbonImmutable;
 use DomainException;
 use Modules\Port\Application\Services\CommercialCharterService;
 use Modules\Port\Domain\Models\FleetCharterParty;
-use Modules\Port\Domain\Models\FleetDemurrageInvoice;
-use Modules\Port\Domain\Models\FleetLaytimeCalculation;
 
 /**
  * Action Audit Statement of Facts & Penerbitan Tagihan Demurrage/Despatch.

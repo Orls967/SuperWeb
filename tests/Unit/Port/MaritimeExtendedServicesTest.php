@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Port\Application\Services\BunkerProcurementAndHedgingService;
 use Modules\Port\Application\Services\CanalTransitAndPassageTollService;
@@ -31,7 +30,7 @@ describe('Maritime Extended Application Services', function (): void {
             'main_engine_power_kw' => 8500,
         ]);
 
-        $maintService = new VesselMaintenanceWorkOrderService();
+        $maintService = new VesselMaintenanceWorkOrderService;
 
         // 5500 jam (belum due untuk interval 6000 jam)
         $notDue = $maintService->evaluateComponentMaintenance((int) $vessel->id, 'Turbocharger Rotor', 5500, 6000);
@@ -44,7 +43,7 @@ describe('Maritime Extended Application Services', function (): void {
     });
 
     it('calculates draft survey net cargo weight applying keel sag-hog and water density corrections', function (): void {
-        $custodyService = new MaritimeCargoCustodyService();
+        $custodyService = new MaritimeCargoCustodyService;
 
         // Kapal Supramax memuat batubara:
         // Awal (Ballast): Fwd 3.2m, Aft 5.8m, Mid 4.5m -> Quarter mean ≈ 4.5m
@@ -68,7 +67,7 @@ describe('Maritime Extended Application Services', function (): void {
     });
 
     it('evaluates bunker quality certificate against ISO 8217 limits and detects flash point breach', function (): void {
-        $bunkerService = new BunkerProcurementAndHedgingService();
+        $bunkerService = new BunkerProcurementAndHedgingService;
 
         $validLab = [
             'sample_seal_number' => 'SEAL-VALID-01',
@@ -104,7 +103,7 @@ describe('Maritime Extended Application Services', function (): void {
     });
 
     it('computes Suez Canal transit toll with SCNT tiers and Malacca Strait passage dues', function (): void {
-        $canalService = new CanalTransitAndPassageTollService();
+        $canalService = new CanalTransitAndPassageTollService;
 
         // 35,000 SCNT Bulk Carrier
         $suez = $canalService->estimateSuezCanalToll(35000.0, 'BULK_CARRIER', true, true);
@@ -133,7 +132,7 @@ describe('Maritime Extended Application Services', function (): void {
             'main_engine_power_kw' => 8500,
         ]);
 
-        $insService = new MaritimeInsuranceClaimService();
+        $insService = new MaritimeInsuranceClaimService;
 
         $claim = $insService->fileProtectionAndIndemnityClaim(
             (int) $vessel->id,
@@ -146,7 +145,7 @@ describe('Maritime Extended Application Services', function (): void {
     });
 
     it('audits MLC 2006 seafarer rest hours compliance and flags critical fatigue deficiency', function (): void {
-        $crewingService = new CrewRotationAndPayrollService();
+        $crewingService = new CrewRotationAndPayrollService;
 
         // Log 7 hari patuh: 11 jam istirahat per hari (77 jam total), periode terpanjang 7 jam
         $compliantLog = [];

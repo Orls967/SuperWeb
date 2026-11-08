@@ -11954,12 +11954,52 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Port (`prt_`); master kapal/kontainer tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 27
 > **Jalan pintas terlarang di fase ini:** tabel kapal ganda; D&D dihitung ulang di luar kalkulator Logistics; memperluas `OceanFleetService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability
-- [ ] 180.2 Voyage planning: port sequence, bunker simulation, weather risk feed, cargo compatibility, laytime and charter-party obligations
-- [ ] 180.3 Marine insurance, claims, hull maintenance and environmental incident reporting integrate Insurance/ESG/PortOps
-- [ ] 180.4 Digital vessel passport with append-only maintenance, custody, certificate and ownership events
-- [ ] 180.5 Tests: invalid voyage capacity rejected, overdue certificate blocks dispatch, fuel/emission reconciliation, charter settlement follows terms, `marinefleet:audit` clean
-- [ ] 180.6 Quality gate Fase 180
+- [🔵] 180.1 Vessel asset register: class, dry-dock schedule, crew, fuel/emissions, maintenance, charter and voyage profitability
+  Bukti:
+    - jenis: fitur
+    - commit: 13a4cdb7
+    - file: modules/Port/database/migrations/2026_11_08_400000_create_port_fleet_and_voyage_tables.php
+    - test: tests/Unit/Port/MaritimeExtendedServicesTest.php
+    - akses: route GET /port/fleet [role: admin, port_operator, shipping_line_agent]
+- [🔵] 180.2 Voyage planning: port sequence, bunker simulation, weather risk feed, cargo compatibility, laytime and charter-party obligations
+  Bukti:
+    - jenis: fitur
+    - commit: a869e5d4
+    - file: modules/Port/Application/Services/VoyageExecutionService.php
+    - test: tests/Unit/Port/MaritimeAlgorithmsTest.php
+    - akses: route GET /port/voyages [role: admin, port_operator, shipping_line_agent]
+- [🔵] 180.3 Marine insurance, claims, hull maintenance and environmental incident reporting integrate Insurance/ESG/PortOps
+  Bukti:
+    - jenis: fitur
+    - commit: 2c19e7a8
+    - file: modules/Port/Application/Services/MaritimeInsuranceClaimService.php
+    - test: tests/Acceptance/Port/MalaccaStraitStormAndGeneralAverageAcceptanceTest.php
+    - akses: route POST /port/simulate/malacca-incident [role: admin, port_operator]
+- [🔵] 180.4 Digital vessel passport with append-only maintenance, custody, certificate and ownership events
+  Bukti:
+    - jenis: fitur
+    - commit: 13a4cdb7
+    - file: modules/Port/Application/Services/PortFleetService.php
+    - test: tests/Acceptance/Port/PortFleetHttpAndAuditAcceptanceTest.php
+    - akses: route GET /port/charter [role: admin, port_operator, shipping_line_agent]
+- [🔵] 180.5 Tests: invalid voyage capacity rejected, overdue certificate blocks dispatch, fuel/emission reconciliation, charter settlement follows terms, `prt:fleet-audit` clean
+  Bukti:
+    - jenis: test
+    - commit: 3f631cd8
+    - file: tests/Acceptance/Port/PortFleetHttpAndAuditAcceptanceTest.php
+    - test: tests/Acceptance/Port/PortFleetHttpAndAuditAcceptanceTest.php::test_audit_command_prt_fleet_audit_detects_clean_and_corrupted
+    - akses: command prt:fleet-audit
+- [🔵] 180.6 Quality gate Fase 180
+  Bukti:
+    - jenis: dokumen
+    - commit: d11ead46
+    - file: docs/konsep/fase-180-armada-kapal-voyage-charter-marine-services.md
+
+### Register Minus Fase 180
+| ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |
+|---|---|---|---|---|---|
+| M-180-1 | 180.2 | Integrasi satelit telemetry AIS NMEA-0183 live streaming menggunakan simulation feed | Sensor hardware maritim transponder VHF AIS live di luar cakupan software web | P3 | Disediakan simulator waypoint dan AIS ingestion adapter pada rute voyage |
+| M-180-2 | 180.1 | Kerangka lama `Modules\Integration\Application\Services\OceanFleetService` belum dihapus fisik | Menunggu jadwal pembersihan dan izin pemilik | P3 | Kode baru sudah vertical slice penuh di `Modules\Port`, tidak menyentuh kode lama |
 
 ## FASE 181 — LINI 28: APPAREL, TEXTILE & FASHION SOURCING
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `FashionSourcingService`; 1 migrasi; test `FashionSourcingTest` — commit `07e394b`, +304 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

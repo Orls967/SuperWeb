@@ -9,6 +9,4 @@ use Modules\Shared\Domain\Algorithms\Port\CiiCarbonIntensityRatingEngine as Kern
 /**
  * Port Module Wrapper for CiiCarbonIntensityRatingEngine.
  */
-class CiiCarbonIntensityRatingEngine extends KernelCiiCarbonIntensityRatingEngine
-{
-}
+class CiiCarbonIntensityRatingEngine extends KernelCiiCarbonIntensityRatingEngine {}

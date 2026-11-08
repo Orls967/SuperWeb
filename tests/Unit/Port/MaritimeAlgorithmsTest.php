@@ -11,7 +11,7 @@ use Modules\Shared\Domain\Algorithms\Port\TimeCharterEquivalentCalculator;
 
 describe('A10: BunkerFuelConsumptionOptimizer', function (): void {
     it('calculates daily fuel consumption according to cubic propulsion law and weather margin', function (): void {
-        $optimizer = new BunkerFuelConsumptionOptimizer();
+        $optimizer = new BunkerFuelConsumptionOptimizer;
 
         // Panamax Bulk Carrier: 70,000 DWT displacement, design speed 14.5 kts, 9000 kW main engine
         $result = $optimizer->calculateDailyConsumption(
@@ -34,7 +34,7 @@ describe('A10: BunkerFuelConsumptionOptimizer', function (): void {
     });
 
     it('penalizes fuel consumption in adverse weather conditions above Beaufort 4', function (): void {
-        $optimizer = new BunkerFuelConsumptionOptimizer();
+        $optimizer = new BunkerFuelConsumptionOptimizer;
 
         $calm = $optimizer->calculateDailyConsumption(60000.0, 13.0, 14.5, 8500.0, 175.0, 600.0, 210.0, 2);
         $storm = $optimizer->calculateDailyConsumption(60000.0, 13.0, 14.5, 8500.0, 175.0, 600.0, 210.0, 7);
@@ -44,7 +44,7 @@ describe('A10: BunkerFuelConsumptionOptimizer', function (): void {
     });
 
     it('evaluates multi-port bunkering decision considering fuel price and deviation costs', function (): void {
-        $optimizer = new BunkerFuelConsumptionOptimizer();
+        $optimizer = new BunkerFuelConsumptionOptimizer;
 
         $candidates = [
             [
@@ -81,7 +81,7 @@ describe('A10: BunkerFuelConsumptionOptimizer', function (): void {
 
 describe('A11: LaytimeDemurrageCalculator', function (): void {
     it('calculates demurrage when net laytime exceeds allowed hours under SHINC terms', function (): void {
-        $calculator = new LaytimeDemurrageCalculator();
+        $calculator = new LaytimeDemurrageCalculator;
         $base = CarbonImmutable::parse('2026-05-01 08:00:00');
 
         $norTendered = $base;
@@ -105,7 +105,7 @@ describe('A11: LaytimeDemurrageCalculator', function (): void {
     });
 
     it('calculates despatch when loading is completed early and exempts rain interruption', function (): void {
-        $calculator = new LaytimeDemurrageCalculator();
+        $calculator = new LaytimeDemurrageCalculator;
         $base = CarbonImmutable::parse('2026-06-10 08:00:00');
 
         $norTendered = $base;
@@ -144,7 +144,7 @@ describe('A11: LaytimeDemurrageCalculator', function (): void {
 
 describe('A12: CiiCarbonIntensityRatingEngine', function (): void {
     it('determines attained CII and assigns IMO rating A-E according to MEPC.354(78)', function (): void {
-        $engine = new CiiCarbonIntensityRatingEngine();
+        $engine = new CiiCarbonIntensityRatingEngine;
 
         // Bulk Carrier 60,000 DWT berlayar 5000 nm, konsumsi 180 MT VLSFO
         $res = $engine->evaluateCii(
@@ -163,7 +163,7 @@ describe('A12: CiiCarbonIntensityRatingEngine', function (): void {
     });
 
     it('requires corrective action when carbon rating drops to inferior E', function (): void {
-        $engine = new CiiCarbonIntensityRatingEngine();
+        $engine = new CiiCarbonIntensityRatingEngine;
 
         // Konsumsi sangat boros: 2000 MT VLSFO untuk jarak pendek 500 nm pada kapal 60k DWT
         $res = $engine->evaluateCii(
@@ -182,7 +182,7 @@ describe('A12: CiiCarbonIntensityRatingEngine', function (): void {
 
 describe('A13: TimeCharterEquivalentCalculator', function (): void {
     it('computes net daily TCE rate and operating margin against vessel daily OPEX', function (): void {
-        $tceCalc = new TimeCharterEquivalentCalculator();
+        $tceCalc = new TimeCharterEquivalentCalculator;
 
         // Kargo 50,000 MT * $15/MT = $750,000 gross freight
         // 14 hari laut + 4 hari port = 18 hari total
@@ -215,7 +215,7 @@ describe('A13: TimeCharterEquivalentCalculator', function (): void {
 
 describe('A14: GeneralAverageContributionDistributor', function (): void {
     it('apportions sacrifices and expenditures across vessel, cargo, and freight interests', function (): void {
-        $gaDistributor = new GeneralAverageContributionDistributor();
+        $gaDistributor = new GeneralAverageContributionDistributor;
 
         // Kasus: Kapal tiba $10M, Kargo tiba $7.6M (+ Made good $400k sacrifice = $8M), Freight $2M. Total Contributory: $20M.
         // Kerugian GA: $1M (Jettison cargo $400k, Salvage tug $600k).

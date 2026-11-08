@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
-use Illuminate\Support\Collection;
 use Modules\Logistics\Contracts\VesselRegistry;
 use Modules\Port\Domain\Models\FleetBunkerTank;
 use Modules\Port\Domain\Models\FleetCertificate;
@@ -253,10 +251,9 @@ final class PortFleetService implements VesselRegistry
         // Menyediakan stub kompatibilitas master container
         return [
             'id' => $containerId,
-            'number' => 'MSKU' . str_pad((string) $containerId, 7, '0', STR_PAD_LEFT),
+            'number' => 'MSKU'.str_pad((string) $containerId, 7, '0', STR_PAD_LEFT),
             'iso_type' => '40HC',
             'line_party_id' => 1,
         ];
     }
 }
-

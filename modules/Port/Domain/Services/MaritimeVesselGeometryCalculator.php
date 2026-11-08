@@ -15,12 +15,12 @@ final class MaritimeVesselGeometryCalculator
     /**
      * Hitung koefisien bentuk hidrodinamis lambung kapal niaga.
      *
-     * @param float $displacementVolumeM3 Volume benaman kapal (m3)
-     * @param float $lengthBetweenPerpendicularsM Panjang antar garis tegak (LBP dalam meter)
-     * @param float $beamM Lebar kapal (meter)
-     * @param float $draftM Sarat air kapal (meter)
-     * @param float $midshipAreaM2 Luas penampang gading besar (midship section area m2)
-     * @param float $waterplaneAreaM2 Luas bidang garis air (waterplane area m2)
+     * @param  float  $displacementVolumeM3  Volume benaman kapal (m3)
+     * @param  float  $lengthBetweenPerpendicularsM  Panjang antar garis tegak (LBP dalam meter)
+     * @param  float  $beamM  Lebar kapal (meter)
+     * @param  float  $draftM  Sarat air kapal (meter)
+     * @param  float  $midshipAreaM2  Luas penampang gading besar (midship section area m2)
+     * @param  float  $waterplaneAreaM2  Luas bidang garis air (waterplane area m2)
      * @return array{
      *     block_coefficient_cb: float,
      *     midship_coefficient_cm: float,
@@ -67,11 +67,11 @@ final class MaritimeVesselGeometryCalculator
      * - GM awal tidak boleh kurang dari 0.15 meter untuk kapal barang umum.
      * - Untuk kapal muatan curah butiran (grain bulk), GM tidak boleh kurang dari 0.30 meter.
      *
-     * @param float $keelToCenterOfBuoyancyM Jarak lunas ke titik apung (KB)
-     * @param float $metacentricRadiusM Jari-jari metasentris (BM = IT / V)
-     * @param float $keelToCenterOfGravityM Jarak lunas ke titik berat kapal (KG)
-     * @param float $freeSurfaceCorrectionM Koreksi efek permukaan bebas cairan dalam tangki (FSC)
-     * @param bool $isGrainCarrier Kapal bermuatan curah butiran
+     * @param  float  $keelToCenterOfBuoyancyM  Jarak lunas ke titik apung (KB)
+     * @param  float  $metacentricRadiusM  Jari-jari metasentris (BM = IT / V)
+     * @param  float  $keelToCenterOfGravityM  Jarak lunas ke titik berat kapal (KG)
+     * @param  float  $freeSurfaceCorrectionM  Koreksi efek permukaan bebas cairan dalam tangki (FSC)
+     * @param  bool  $isGrainCarrier  Kapal bermuatan curah butiran
      * @return array{
      *     solid_gm_m: float,
      *     fluid_gm_m: float,

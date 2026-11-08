@@ -48,4 +48,3 @@ final class FleetCrewComplement extends Model
         return $this->stcw_compliant && ($this->total_crew_onboard >= $this->totalRequired());
     }
 }
-

@@ -7,7 +7,7 @@ use Modules\Port\Domain\StateMachines\VoyageStateMachine;
 
 describe('VoyageStateMachine (12 status)', function (): void {
     it('allows valid progression through voyage lifecycle', function (): void {
-        $sm = new VoyageStateMachine();
+        $sm = new VoyageStateMachine;
 
         expect($sm->canTransition(VoyageStateMachine::STATUS_PLANNED, VoyageStateMachine::STATUS_BALLAST_PASSAGE))->toBeTrue();
 
@@ -43,7 +43,7 @@ describe('VoyageStateMachine (12 status)', function (): void {
     });
 
     it('rejects invalid or backwards transitions', function (): void {
-        $sm = new VoyageStateMachine();
+        $sm = new VoyageStateMachine;
 
         expect($sm->canTransition(VoyageStateMachine::STATUS_COMPLETED, VoyageStateMachine::STATUS_PLANNED))->toBeFalse()
             ->and(fn () => $sm->transition(VoyageStateMachine::STATUS_COMPLETED, VoyageStateMachine::STATUS_PLANNED))
@@ -53,7 +53,7 @@ describe('VoyageStateMachine (12 status)', function (): void {
 
 describe('CharterPartyStateMachine (8 status)', function (): void {
     it('manages fixture negotiations, on-hire, off-hire suspension and redelivery', function (): void {
-        $sm = new CharterPartyStateMachine();
+        $sm = new CharterPartyStateMachine;
 
         expect($sm->canTransition(CharterPartyStateMachine::STATUS_NEGOTIATING, CharterPartyStateMachine::STATUS_FIXTURE_AGREED))->toBeTrue();
 

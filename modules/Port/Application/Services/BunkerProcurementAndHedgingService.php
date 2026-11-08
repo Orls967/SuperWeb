@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Services;
 
-use Carbon\CarbonImmutable;
-use DomainException;
-use Modules\Port\Domain\Models\FleetVessel;
-
 /**
  * Service Pengadaan Bahan Bakar Bunker, Pengujian Kualitas ISO 8217 & Lindung Nilai (Hedging).
  * Memeriksa parameter kritis bahan bakar kapal niaga guna mencegah kerusakan mesin di laut lepas.
@@ -76,9 +72,9 @@ final class BunkerProcurementAndHedgingService
     /**
      * Hitung kontrak lindung nilai (Bunker Swap / Collar Hedging) untuk melindungi margin TCE kapal.
      *
-     * @param float $volumeMt Volume bahan bakar yang dilindungi
-     * @param float $strikePriceUsd Harga patokan (strike price) kontrak derivatif
-     * @param float $actualMarketPriceUsd Harga pasar riil saat penyelesaian (settlement)
+     * @param  float  $volumeMt  Volume bahan bakar yang dilindungi
+     * @param  float  $strikePriceUsd  Harga patokan (strike price) kontrak derivatif
+     * @param  float  $actualMarketPriceUsd  Harga pasar riil saat penyelesaian (settlement)
      * @return array{
      *     volume_mt: float,
      *     strike_price: float,

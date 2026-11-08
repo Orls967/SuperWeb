@@ -44,4 +44,3 @@ final class FleetFreightContract extends Model
         return ($this->total_freight_estimate + $this->deadfreight_incurred) - $this->advance_freight_paid;
     }
 }
-

@@ -7,12 +7,25 @@ namespace Modules\Port;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Registry\TransactionTypeRegistry;
 use Modules\Logistics\Contracts\VesselRegistry;
+use Modules\Port\Application\Services\BunkerProcurementAndHedgingService;
+use Modules\Port\Application\Services\CanalTransitAndPassageTollService;
+use Modules\Port\Application\Services\ColdIroningShorePowerService;
 use Modules\Port\Application\Services\CommercialCharterService;
+use Modules\Port\Application\Services\CrewRotationAndPayrollService;
 use Modules\Port\Application\Services\GeneralAverageAdjustmentService;
 use Modules\Port\Application\Services\MarineServicesDisbursementService;
+use Modules\Port\Application\Services\MaritimeCargoCustodyService;
+use Modules\Port\Application\Services\MaritimeCasualtyInvestigationService;
 use Modules\Port\Application\Services\MaritimeEsgCiiService;
+use Modules\Port\Application\Services\MaritimeInsuranceClaimService;
+use Modules\Port\Application\Services\OceanFleetRouteOptimizationService;
+use Modules\Port\Application\Services\OceanFleetWeatherRoutingOptimumRouteService;
+use Modules\Port\Application\Services\PortFacilitySecurityAuditService;
 use Modules\Port\Application\Services\PortFleetLedgerService;
 use Modules\Port\Application\Services\PortFleetService;
+use Modules\Port\Application\Services\VesselBallastWaterManagementService;
+use Modules\Port\Application\Services\VesselDrydockingAndSurveyPlanningService;
+use Modules\Port\Application\Services\VesselMaintenanceWorkOrderService;
 use Modules\Port\Application\Services\VoyageExecutionService;
 use Modules\Port\Console\Commands\AuditPortCommand;
 use Modules\Port\Console\Commands\AuditPortFleetCommand;
@@ -35,28 +48,28 @@ class PortServiceProvider extends ServiceProvider
         $this->app->singleton(MaritimeEsgCiiService::class);
         $this->app->singleton(GeneralAverageAdjustmentService::class);
         $this->app->singleton(PortFleetLedgerService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\VesselMaintenanceWorkOrderService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\MaritimeCargoCustodyService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\BunkerProcurementAndHedgingService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\CanalTransitAndPassageTollService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\MaritimeInsuranceClaimService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\CrewRotationAndPayrollService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\VesselBallastWaterManagementService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\PortFacilitySecurityAuditService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\ColdIroningShorePowerService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\OceanFleetRouteOptimizationService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\MaritimeCasualtyInvestigationService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\VesselDrydockingAndSurveyPlanningService::class);
-        $this->app->singleton(\Modules\Port\Application\Services\OceanFleetWeatherRoutingOptimumRouteService::class);
+        $this->app->singleton(VesselMaintenanceWorkOrderService::class);
+        $this->app->singleton(MaritimeCargoCustodyService::class);
+        $this->app->singleton(BunkerProcurementAndHedgingService::class);
+        $this->app->singleton(CanalTransitAndPassageTollService::class);
+        $this->app->singleton(MaritimeInsuranceClaimService::class);
+        $this->app->singleton(CrewRotationAndPayrollService::class);
+        $this->app->singleton(VesselBallastWaterManagementService::class);
+        $this->app->singleton(PortFacilitySecurityAuditService::class);
+        $this->app->singleton(ColdIroningShorePowerService::class);
+        $this->app->singleton(OceanFleetRouteOptimizationService::class);
+        $this->app->singleton(MaritimeCasualtyInvestigationService::class);
+        $this->app->singleton(VesselDrydockingAndSurveyPlanningService::class);
+        $this->app->singleton(OceanFleetWeatherRoutingOptimumRouteService::class);
     }
 
     public function boot(): void
     {
         TransactionTypeRegistry::register(PortTransactionTypes::class);
 
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'port');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'port');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

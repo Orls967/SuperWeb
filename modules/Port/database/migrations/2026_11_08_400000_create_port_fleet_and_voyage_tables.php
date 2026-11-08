@@ -158,8 +158,8 @@ return new class extends Migration
             $table->decimal('planned_distance_nm', 10, 2)->default(1000.00);
             $table->decimal('actual_distance_nm', 10, 2)->default(0.00);
             $table->decimal('planned_speed_knots', 6, 2)->default(13.00);
-            $table->string('status', 32)->default('PLANNED'); 
-            // PLANNED, BALLAST_PASSAGE, ARRIVED_LOADPORT, TENDERED_NOR, COMMENCED_LOADING, 
+            $table->string('status', 32)->default('PLANNED');
+            // PLANNED, BALLAST_PASSAGE, ARRIVED_LOADPORT, TENDERED_NOR, COMMENCED_LOADING,
             // COMPLETED_LOADING, LADEN_PASSAGE, ARRIVED_DISCHPORT, DISCHARGING, COMPLETED_DISCHARGING, COMPLETED, CANCELLED
             $table->json('operational_notes')->nullable();
             $table->timestamps();
@@ -491,4 +491,3 @@ return new class extends Migration
         Schema::dropIfExists('prt_fleet_classes');
     }
 };
-

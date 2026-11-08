@@ -6,7 +6,7 @@ namespace Modules\Shared\Domain\Algorithms\Port;
 
 /**
  * A14: General Average Contribution Distributor Engine.
- * 
+ *
  * Standar: York-Antwerp Rules 2016 (Comité Maritime International / CMI).
  * Menghitung alokasi pembagian kerugian dan pengorbanan demi keselamatan bersama
  * (General Average Sacrifices & Extraordinary Expenditures) terhadap seluruh
@@ -17,12 +17,12 @@ final class GeneralAverageContributionDistributor
     /**
      * Hitung penyesuaian General Average (Average Adjustment Statement).
      *
-     * @param float $shipSoundValueUsd Nilai pasar wajar kapal dalam kondisi selamat
-     * @param float $shipParticularAverageDamageUsd Kerusakan khusus kapal non-GA
-     * @param float $cargoCommercialValueUsd Nilai faktur komersial kargo di pelabuhan tujuan
-     * @param float $cargoParticularAverageDamageUsd Kerusakan khusus kargo non-GA
-     * @param float $freightAtRiskUsd Uang tambang yang belum terbayar di muka (at owner's risk)
-     * @param float $freightPortExpensesSavedUsd Pengeluaran pelabuhan yang dihemat
+     * @param  float  $shipSoundValueUsd  Nilai pasar wajar kapal dalam kondisi selamat
+     * @param  float  $shipParticularAverageDamageUsd  Kerusakan khusus kapal non-GA
+     * @param  float  $cargoCommercialValueUsd  Nilai faktur komersial kargo di pelabuhan tujuan
+     * @param  float  $cargoParticularAverageDamageUsd  Kerusakan khusus kargo non-GA
+     * @param  float  $freightAtRiskUsd  Uang tambang yang belum terbayar di muka (at owner's risk)
+     * @param  float  $freightPortExpensesSavedUsd  Pengeluaran pelabuhan yang dihemat
      * @param array<int, array{
      *     interest: string, // SHIP, CARGO, FREIGHT
      *     description: string,
@@ -155,4 +155,3 @@ final class GeneralAverageContributionDistributor
         ];
     }
 }
-

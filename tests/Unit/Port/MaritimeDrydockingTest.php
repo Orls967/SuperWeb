@@ -30,7 +30,7 @@ describe('Maritime Drydocking & Special Survey Suite', function (): void {
     });
 
     it('plans detailed drydock specification and calculates shipyard repair cost', function (): void {
-        $service = new VesselDrydockingAndSurveyPlanningService();
+        $service = new VesselDrydockingAndSurveyPlanningService;
         $date = CarbonImmutable::now()->addMonths(2);
 
         $spec = $service->planDrydockSpecification(

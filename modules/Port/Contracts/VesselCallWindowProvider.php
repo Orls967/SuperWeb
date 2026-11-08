@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 
 /**
  * Kontrak G7-K27: Penyedia Jendela Waktu Panggilan Kapal & Dermaga (Vessel Call Window Provider).
- * 
+ *
  * Digunakan oleh modul maritim, logistik kargo, dan sistem charter untuk mengalokasikan
  * jendela waktu tambat kapal (berth window), pandu tunda, dan verifikasi ketersediaan dermaga.
  */
@@ -60,4 +60,3 @@ interface VesselCallWindowProvider
      */
     public function releaseCallWindow(int $bookingId, string $cancellationReason): bool;
 }
-

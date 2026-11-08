@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
 use Modules\Logistics\Contracts\CustodyVerifier;
 use Modules\Port\Domain\Models\FleetPortCall;
-use Modules\Port\Domain\Models\FleetVessel;
 
 /**
  * Service Pengawasan Kargo Maritim, Draft Survey & Verifikasi Rantai Kustodi.
@@ -24,16 +22,16 @@ final class MaritimeCargoCustodyService
      * Hitung Draft Survey kapal untuk menentukan bobot bersih kargo yang dimuat/dibongkar.
      * Standar: UN ECE Code of Uniform Standards and Procedures for the Performance of Draught Surveys.
      *
-     * @param float $draftFwdInitial Sarat depan awal (meter)
-     * @param float $draftAftInitial Sarat belakang awal (meter)
-     * @param float $draftMidInitial Sarat tengah awal (meter)
-     * @param float $draftFwdFinal Sarat depan akhir (meter)
-     * @param float $draftAftFinal Sarat belakang akhir (meter)
-     * @param float $draftMidFinal Sarat tengah akhir (meter)
-     * @param float $waterDensityInitial Densitas air laut saat survey awal (kg/L, misal 1.025)
-     * @param float $waterDensityFinal Densitas air laut saat survey akhir
-     * @param float $tpc Tonnage per Centimetre immersion (MT/cm)
-     * @param float $constantDeductible Koreksi bobot konstan kapal (stores, lube oil, unpumpable ballast)
+     * @param  float  $draftFwdInitial  Sarat depan awal (meter)
+     * @param  float  $draftAftInitial  Sarat belakang awal (meter)
+     * @param  float  $draftMidInitial  Sarat tengah awal (meter)
+     * @param  float  $draftFwdFinal  Sarat depan akhir (meter)
+     * @param  float  $draftAftFinal  Sarat belakang akhir (meter)
+     * @param  float  $draftMidFinal  Sarat tengah akhir (meter)
+     * @param  float  $waterDensityInitial  Densitas air laut saat survey awal (kg/L, misal 1.025)
+     * @param  float  $waterDensityFinal  Densitas air laut saat survey akhir
+     * @param  float  $tpc  Tonnage per Centimetre immersion (MT/cm)
+     * @param  float  $constantDeductible  Koreksi bobot konstan kapal (stores, lube oil, unpumpable ballast)
      * @return array{
      *     mean_draft_initial_m: float,
      *     mean_draft_final_m: float,

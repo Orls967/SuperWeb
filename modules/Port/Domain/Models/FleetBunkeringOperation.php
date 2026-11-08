@@ -48,4 +48,3 @@ final class FleetBunkeringOperation extends Model
         return $this->belongsTo(FleetPortCall::class, 'port_call_id');
     }
 }
-

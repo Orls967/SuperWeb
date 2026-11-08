@@ -46,4 +46,3 @@ final class FleetPortDisbursement extends Model
         return $this->belongsTo(FleetPortCall::class, 'port_call_id');
     }
 }
-

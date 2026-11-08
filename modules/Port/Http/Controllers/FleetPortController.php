@@ -7,7 +7,6 @@ namespace Modules\Port\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Port\Application\Services\CommercialCharterService;
@@ -19,7 +18,6 @@ use Modules\Port\Application\Services\PortFleetService;
 use Modules\Port\Application\Services\VoyageExecutionService;
 use Modules\Port\Domain\Models\FleetCharterParty;
 use Modules\Port\Domain\Models\FleetDemurrageInvoice;
-use Modules\Port\Domain\Models\FleetGeneralAverageCase;
 use Modules\Port\Domain\Models\FleetNoonReport;
 use Modules\Port\Domain\Models\FleetPortCall;
 use Modules\Port\Domain\Models\FleetPortDisbursement;
@@ -38,8 +36,8 @@ final class FleetPortController extends Controller
         private readonly MaritimeEsgCiiService $esgService,
         private readonly GeneralAverageAdjustmentService $gaService,
         private readonly PortFleetLedgerService $ledgerService,
-        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer(),
-        private readonly TimeCharterEquivalentCalculator $tceCalculator = new TimeCharterEquivalentCalculator()
+        private readonly BunkerFuelConsumptionOptimizer $bunkerOptimizer = new BunkerFuelConsumptionOptimizer,
+        private readonly TimeCharterEquivalentCalculator $tceCalculator = new TimeCharterEquivalentCalculator
     ) {}
 
     public function index(): View
@@ -135,7 +133,7 @@ final class FleetPortController extends Controller
 
         // 1. Buat pelayaran darurat Selat Malaka
         $voyage = $this->voyageService->planVoyage([
-            'voyage_code' => 'VOY-MALACCA-' . bin2hex(random_bytes(2)),
+            'voyage_code' => 'VOY-MALACCA-'.bin2hex(random_bytes(2)),
             'vessel_id' => $vessel->id,
             'voyage_number' => 'VOY-2026-M01',
             'origin_port' => 'IDJKT',
@@ -160,7 +158,7 @@ final class FleetPortController extends Controller
         // 3. Deklarasikan General Average York-Antwerp Rules
         $gaCase = $this->gaService->declareAndAdjustGeneralAverage(
             (int) $voyage->id,
-            'GA-MALACCA-' . strtoupper(bin2hex(random_bytes(3))),
+            'GA-MALACCA-'.strtoupper(bin2hex(random_bytes(3))),
             'Kapal terpaksa deviasi dan meminta bantuan salvage tug akibat badai Sumatra Squall di perairan Selat Malaka',
             'Richards Hogg Lindley Average Adjusters',
             18500000.0, // Sound value kapal
@@ -197,4 +195,3 @@ final class FleetPortController extends Controller
         ]);
     }
 }
-

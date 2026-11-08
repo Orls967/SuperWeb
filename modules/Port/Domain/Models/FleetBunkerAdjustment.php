@@ -36,4 +36,3 @@ final class FleetBunkerAdjustment extends Model
         return $this->belongsTo(FleetCharterParty::class, 'charter_party_id');
     }
 }
-

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Port\Application\Actions;
 
-use DomainException;
 use Modules\Port\Application\Services\OceanFleetWeatherRoutingOptimumRouteService;
-use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
 use Modules\Port\Domain\Models\FleetWeatherRouting;
 

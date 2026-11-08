@@ -9,6 +9,4 @@ use Modules\Shared\Domain\Algorithms\Port\GeneralAverageContributionDistributor 
 /**
  * Port Module Wrapper for GeneralAverageContributionDistributor.
  */
-class GeneralAverageContributionDistributor extends KernelGeneralAverageContributionDistributor
-{
-}
+class GeneralAverageContributionDistributor extends KernelGeneralAverageContributionDistributor {}

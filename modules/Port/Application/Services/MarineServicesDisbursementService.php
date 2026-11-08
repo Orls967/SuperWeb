@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Port\Application\Services;
 
 use Carbon\CarbonImmutable;
-use DomainException;
 use Modules\Port\Contracts\VesselCallWindowProvider;
 use Modules\Port\Domain\Models\FleetBerthBooking;
 use Modules\Port\Domain\Models\FleetBunkeringOperation;
@@ -127,6 +126,7 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
         }
 
         $booking->update(['booking_status' => 'CANCELLED']);
+
         return true;
     }
 
@@ -200,8 +200,8 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
             'density_at_15c_kg_m3' => $density,
             'sulphur_content_percentage' => $sulphur,
             'viscosity_cst_at_50c' => $viscosity,
-            'bunker_delivery_note_number' => $bdnNumber ?? ('BDN-' . strtoupper(bin2hex(random_bytes(4)))),
-            'marpol_seal_number' => $marpolSeal ?? ('SEAL-MARPOL-' . strtoupper(bin2hex(random_bytes(3)))),
+            'bunker_delivery_note_number' => $bdnNumber ?? ('BDN-'.strtoupper(bin2hex(random_bytes(4)))),
+            'marpol_seal_number' => $marpolSeal ?? ('SEAL-MARPOL-'.strtoupper(bin2hex(random_bytes(3)))),
             'bunkering_started_at' => CarbonImmutable::now()->subHours(4)->toDateTimeString(),
             'bunkering_completed_at' => CarbonImmutable::now()->toDateTimeString(),
             'compliance_status' => $isOffSpec ? 'OFF_SPEC' : 'COMPLIANT',
@@ -306,4 +306,3 @@ final class MarineServicesDisbursementService implements VesselCallWindowProvide
         ]);
     }
 }
-

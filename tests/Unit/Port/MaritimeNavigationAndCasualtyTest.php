@@ -15,7 +15,7 @@ uses(TestCase::class, RefreshDatabase::class);
 
 describe('Maritime Navigation, Great Circle & Casualty Investigation', function (): void {
     it('calculates great circle distance and verifies distance saved over rhumb line', function (): void {
-        $navService = new OceanFleetRouteOptimizationService();
+        $navService = new OceanFleetRouteOptimizationService;
 
         // Rute Tokyo (35.6°N, 139.6°E) ke San Francisco (37.7°N, -122.4°W)
         $route = $navService->calculateGreatCircleRoute(
@@ -31,7 +31,7 @@ describe('Maritime Navigation, Great Circle & Casualty Investigation', function 
     });
 
     it('generates intermediate waypoints along orthodromic track', function (): void {
-        $navService = new OceanFleetRouteOptimizationService();
+        $navService = new OceanFleetRouteOptimizationService;
 
         $waypoints = $navService->generateWaypointsAlongTrack(
             -6.10,
@@ -47,7 +47,7 @@ describe('Maritime Navigation, Great Circle & Casualty Investigation', function 
     });
 
     it('evaluates ocean current drift vector effect on speed made good', function (): void {
-        $navService = new OceanFleetRouteOptimizationService();
+        $navService = new OceanFleetRouteOptimizationService;
 
         // Kapal melaju 14 knots arah utara (0°), dibantu arus Kuroshio 3 knots arah utara (0°)
         $favorable = $navService->evaluateOceanCurrentVector(14.0, 0.0, 3.0, 0.0);
@@ -75,7 +75,7 @@ describe('Maritime Navigation, Great Circle & Casualty Investigation', function 
             'main_engine_power_kw' => 8000,
         ]);
 
-        $casService = new MaritimeCasualtyInvestigationService();
+        $casService = new MaritimeCasualtyInvestigationService;
 
         $report = $casService->logMarineCasualty(
             (int) $vessel->id,

@@ -6,7 +6,7 @@ namespace Modules\Shared\Domain\Algorithms\Port;
 
 /**
  * A13: Time Charter Equivalent (TCE) & Voyage Net Daily Revenue Calculator.
- * 
+ *
  * Standar: Baltic Exchange Voyage Evaluation & BIMCO Maritime Commercial Standards.
  * Menghitung metrik kinerja finansial pelayaran komparatif (USD/hari bersih),
  * margin kontribusi pelayaran terhadap biaya tetap (OPEX & pembiayaan modal),
@@ -17,20 +17,20 @@ final class TimeCharterEquivalentCalculator
     /**
      * Hitung tarif TCE harian bersih dari suatu voyage charter.
      *
-     * @param float $cargoQuantityMt Jumlah kargo dalam metrik ton
-     * @param float $freightRateUsdPerMt Tarif uang tambang per metrik ton
-     * @param float $seaSteamingDays Hari pelayaran di laut
-     * @param float $portDaysLoad Hari di pelabuhan muat
-     * @param float $portDaysDisch Hari di pelabuhan bongkar
-     * @param float $bunkerSeaCostUsd Total biaya bahan bakar di laut
-     * @param float $bunkerPortCostUsd Total biaya bahan bakar di pelabuhan
-     * @param float $portDisbursementsUsd Total PDA/FDA pelabuhan muat dan bongkar
-     * @param float $canalDuesUsd Biaya kanal/selat (jika ada)
-     * @param float $ballastBonusUsd Bonus ballast yang dibayarkan charterer (jika ada)
-     * @param float $demurrageEarnedUsd Uang demurrage yang diperoleh
-     * @param float $despatchPaidUsd Uang despas yang dibayarkan
-     * @param float $otherVoyageExpensesUsd Biaya ekstra asuransi/agensi
-     * @param float $dailyOpexTargetUsd Biaya operasional harian kapal (crewing, stores, spares, insurance)
+     * @param  float  $cargoQuantityMt  Jumlah kargo dalam metrik ton
+     * @param  float  $freightRateUsdPerMt  Tarif uang tambang per metrik ton
+     * @param  float  $seaSteamingDays  Hari pelayaran di laut
+     * @param  float  $portDaysLoad  Hari di pelabuhan muat
+     * @param  float  $portDaysDisch  Hari di pelabuhan bongkar
+     * @param  float  $bunkerSeaCostUsd  Total biaya bahan bakar di laut
+     * @param  float  $bunkerPortCostUsd  Total biaya bahan bakar di pelabuhan
+     * @param  float  $portDisbursementsUsd  Total PDA/FDA pelabuhan muat dan bongkar
+     * @param  float  $canalDuesUsd  Biaya kanal/selat (jika ada)
+     * @param  float  $ballastBonusUsd  Bonus ballast yang dibayarkan charterer (jika ada)
+     * @param  float  $demurrageEarnedUsd  Uang demurrage yang diperoleh
+     * @param  float  $despatchPaidUsd  Uang despas yang dibayarkan
+     * @param  float  $otherVoyageExpensesUsd  Biaya ekstra asuransi/agensi
+     * @param  float  $dailyOpexTargetUsd  Biaya operasional harian kapal (crewing, stores, spares, insurance)
      * @return array{
      *     gross_revenue_usd: float,
      *     total_voyage_costs_usd: float,
@@ -94,4 +94,3 @@ final class TimeCharterEquivalentCalculator
         ];
     }
 }
-

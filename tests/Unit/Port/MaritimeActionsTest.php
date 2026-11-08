@@ -16,9 +16,6 @@ use Modules\Port\Application\Actions\ScheduleVesselVoyageAction;
 use Modules\Port\Application\Actions\SettlePortFinalDisbursementAction;
 use Modules\Port\Application\Services\MarineServicesDisbursementService;
 use Modules\Port\Application\Services\PortFleetService;
-use Modules\Port\Domain\Models\FleetPortCall;
-use Modules\Port\Domain\Models\FleetPortDisbursement;
-use Modules\Port\Domain\Models\FleetVessel;
 use Modules\Port\Domain\Models\FleetVoyage;
 use Tests\TestCase;
 

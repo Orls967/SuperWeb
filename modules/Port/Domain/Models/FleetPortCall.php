@@ -82,4 +82,3 @@ final class FleetPortCall extends Model
         return $this->hasMany(FleetBunkeringOperation::class, 'port_call_id');
     }
 }
-
