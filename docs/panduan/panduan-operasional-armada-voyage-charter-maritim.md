@@ -149,3 +149,25 @@ php artisan prt:fleet-audit --corrupt
 - `SHA-256 hash chains verified`: $100\%$ valid, tidak ada manipulasi baris.
 - `Statutory certificates checked`: $0$ sertifikat aktif yang kedaluwarsa.
 - `Exit code`: `0` saat kondisi normal bersih, dan `1` saat korupsi data terdeteksi.
+
+---
+
+## 8. Panduan Pengujian & Verifikasi Kelaikan Maritim
+
+Untuk memastikan kualitas implementasi kode maritim memenuhi standar enterprise, tim pengembang dan tim QA dapat menjalankan suite pengujian maritim mandiri:
+
+```bash
+# Menjalankan seluruh pengujian unit algoritma & state machine maritim
+./vendor/bin/pest tests/Unit/Port/
+
+# Menjalankan pengujian skenario penerimaan Badai Selat Malaka & General Average
+./vendor/bin/pest tests/Acceptance/Port/MalaccaStraitStormAndGeneralAverageAcceptanceTest.php
+
+# Menjalankan pengujian endpoint HTTP dan verifikasi audit command
+./vendor/bin/pest tests/Acceptance/Port/PortFleetHttpAndAuditAcceptanceTest.php
+```
+
+### Parameter Ambang Verifikasi Otomatis:
+1. **Pencegahan Over-Dispersion Diskaun**: Seluruh perhitungan despatch dibatasi maksimal $50\%$ dari nilai klaim demurrage harian.
+2. **Kepatuhan Nilai Kontribusi**: Jumlah seluruh kontribusi General Average ($\sum \text{Kontribusi}$) wajib persis sama dengan total biaya kerugian laut bersama tanpa pembulatan residual.
+3. **Penyelarasan Ledger Zero-Difference**: Seluruh buku besar double-entry `prt:fleet-audit` wajib mencatatkan saldo selisih tepat 0.
