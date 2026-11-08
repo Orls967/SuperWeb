@@ -14252,6 +14252,1533 @@
                 }
             }
         },
+        "/aviation/bookings": {
+            "get": {
+                "operationId": "getAviationBookingsIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/bookings/confirm": {
+            "post": {
+                "operationId": "postAviationBookingsConfirm",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Confirm Booking (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationBookingsConfirm",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/bookings/hold": {
+            "post": {
+                "operationId": "postAviationBookingsHold",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Hold Seat (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, passenger, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "passenger",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationBookingsHold",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/bookings/{ticket}/refund": {
+            "post": {
+                "operationId": "postAviationBookingsRefund",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Refund Ticket (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "name": "ticket",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter ticket for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationBookingsRefund",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/cargo": {
+            "get": {
+                "operationId": "getAviationCargoIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, cargo_agent, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "cargo_agent",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/cargo/receive": {
+            "post": {
+                "operationId": "postAviationCargoReceive",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Receive Cargo (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, cargo_agent, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "cargo_agent",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationCargoReceive",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/dispatch": {
+            "get": {
+                "operationId": "getAviationDispatchIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, dispatcher, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dispatcher",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/dispatch/{flight}/depart": {
+            "post": {
+                "operationId": "postAviationDispatchDepart",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Depart Flight (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, dispatcher, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dispatcher",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "name": "flight",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter flight for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationDispatchDepart",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/dispatch/{flight}/execute": {
+            "post": {
+                "operationId": "postAviationDispatchExecute",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Execute Dispatch (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, dispatcher, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "dispatcher",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "name": "flight",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter flight for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationDispatchExecute",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/aviation/fleet": {
+            "get": {
+                "operationId": "getAviationFleetIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, maintenance_planner, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "maintenance_planner",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/ops": {
+            "get": {
+                "operationId": "getAviationOpsIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/reports": {
+            "get": {
+                "operationId": "getAviationReportsIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/reports/export": {
+            "get": {
+                "operationId": "getAviationReportsExport",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Export (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, customer_care, ops_controller, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "customer_care",
+                    "ops_controller",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/slots": {
+            "get": {
+                "operationId": "getAviationSlotsIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, station_manager, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "station_manager",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/aviation/slots/request": {
+            "post": {
+                "operationId": "postAviationSlotsRequest",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Request Slot (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, station_manager, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "station_manager",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postAviationSlotsRequest",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/b2b": {
             "get": {
                 "operationId": "getB2bIndex",
@@ -103518,6 +105045,200 @@
                         }
                     }
                 }
+            }
+        },
+        "/passenger": {
+            "get": {
+                "operationId": "getAviationPassengerIndex",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Index (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, passenger, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "passenger",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/passenger/ticket/{ticket}": {
+            "get": {
+                "operationId": "getAviationPassengerTicket",
+                "tags": [
+                    "Aviation"
+                ],
+                "summary": "Show Ticket (Aviation)",
+                "description": "Operational endpoint for Aviation module. Protected by role matrix: [admin, passenger, superadmin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "passenger",
+                    "superadmin"
+                ],
+                "parameters": [
+                    {
+                        "name": "ticket",
+                        "in": "path",
+                        "required": true,
+                        "description": "Identifier parameter ticket for this resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
             }
         },
         "/passport/{uuid}": {

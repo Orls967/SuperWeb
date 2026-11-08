@@ -10,6 +10,7 @@ use App\Quality\Audit\Fixtures\AiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ApiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstVerifyChainCorruptionFixture;
+use App\Quality\Audit\Fixtures\AviationAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\BiddingAuditCorruptionFixture;
@@ -103,6 +104,7 @@ final class AuditCommandRegistry
 
             'agri:audit' => new AgriAuditCorruptionFixture,
             'agy:audit' => new AgyAuditCorruptionFixture,
+            'avi:audit' => new AviationAuditCorruptionFixture,
             'ai:audit' => new AiAuditCorruptionFixture,
             'api:audit' => new ApiAuditCorruptionFixture,
             'ast:audit' => new AstAuditCorruptionFixture,

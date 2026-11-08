@@ -11,6 +11,11 @@
     "approved_additions": [
         {
             "key": "table_prefixes",
+            "decision": "DECISIONS.md#2026-11-08-g7-p7-aviasi-maritim-fase-177",
+            "count": 1
+        },
+        {
+            "key": "table_prefixes",
             "decision": "DECISIONS.md#2026-11-04-g6-p3-syariah-murabahah-fase-161",
             "count": 1
         },

@@ -6,6 +6,7 @@ use Modules\Agri\AgriServiceProvider;
 use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
+use Modules\Aviation\AviationServiceProvider;
 use Modules\B2b\B2bServiceProvider;
 use Modules\Banking\BankingServiceProvider;
 use Modules\Circular\CircularServiceProvider;
@@ -71,6 +72,7 @@ return [
     ProServicesServiceProvider::class,
     ForestServiceProvider::class,
     AppServiceProvider::class,
+    AviationServiceProvider::class,
     SharedServiceProvider::class,
     CoreServiceProvider::class,
     AutoServeServiceProvider::class,

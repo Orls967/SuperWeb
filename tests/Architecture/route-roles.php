@@ -11,6 +11,11 @@ use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Aviation\Domain\Models\AviationAirport;
+use Modules\Aviation\Domain\Models\AviationFlight;
+use Modules\Aviation\Domain\Models\AviationOperator;
+use Modules\Aviation\Domain\Models\AviationRoute;
+use Modules\Aviation\Domain\Models\AviationTicket;
 use Modules\Circular\Domain\Models\CirAuctionRound;
 use Modules\Circular\Domain\Models\CirBid;
 use Modules\Circular\Domain\Models\CirListing;
@@ -4369,4 +4374,181 @@ return [
     'hotel.mice.weddings.pay-milestone' => ['roles' => ['admin', 'finance', 'guest', 'hotel_admin', 'sales_mgr']],
     'hotel.mice.reconciliation' => ['roles' => ['admin', 'finance', 'hotel_admin']],
     'hotel.mice.reconciliation.audit' => ['roles' => ['admin', 'finance', 'hotel_admin']],
+
+    // Fase 177: Aviation Core
+    'aviation.ops.index' => ['roles' => ['admin', 'ops_controller', 'superadmin']],
+    'aviation.slots.index' => ['roles' => ['admin', 'station_manager', 'superadmin']],
+    'aviation.slots.request' => ['roles' => ['admin', 'station_manager', 'superadmin']],
+    'aviation.fleet.index' => ['roles' => ['admin', 'maintenance_planner', 'superadmin']],
+    'aviation.dispatch.index' => ['roles' => ['admin', 'dispatcher', 'ops_controller', 'superadmin']],
+    'aviation.dispatch.execute' => [
+        'roles' => ['admin', 'dispatcher', 'ops_controller', 'superadmin'],
+        'params' => function () {
+            $operator = AviationOperator::firstOrCreate(['code' => 'GA'], ['name' => 'Garuda', 'country' => 'ID', 'status' => 'active']);
+            $origin = AviationAirport::firstOrCreate(['iata_code' => 'CGK'], ['icao_code' => 'WIII', 'name' => 'Soekarno Hatta', 'city' => 'Jakarta', 'province' => 'DKI Jakarta', 'island' => 'Jawa', 'timezone' => 'Asia/Jakarta']);
+            $destination = AviationAirport::firstOrCreate(['iata_code' => 'DPS'], ['icao_code' => 'WADD', 'name' => 'Ngurah Rai', 'city' => 'Denpasar', 'province' => 'Bali', 'island' => 'Bali', 'timezone' => 'Asia/Makassar']);
+            $route = AviationRoute::firstOrCreate(
+                ['flight_number' => 'GA-404'],
+                [
+                    'origin_airport_id' => $origin->id,
+                    'destination_airport_id' => $destination->id,
+                    'distance_km' => 980,
+                    'scheduled_duration_minutes' => 110,
+                    'base_fare_minor' => 120000000,
+                    'currency' => 'IDR',
+                    'status' => 'active',
+                ]
+            );
+            $flight = AviationFlight::firstOrCreate(['flight_number' => 'GA-404'], [
+                'operator_id' => $operator->id,
+                'route_id' => $route->id,
+                'origin_airport_id' => $origin->id,
+                'destination_airport_id' => $destination->id,
+                'departure_time' => now()->addHours(2),
+                'arrival_time' => now()->addHours(4),
+                'status' => 'planned',
+            ]);
+
+            return ['flight' => $flight->id];
+        },
+    ],
+    'aviation.dispatch.depart' => [
+        'roles' => ['admin', 'dispatcher', 'ops_controller', 'superadmin'],
+        'params' => function () {
+            $operator = AviationOperator::firstOrCreate(['code' => 'GA'], ['name' => 'Garuda', 'country' => 'ID', 'status' => 'active']);
+            $origin = AviationAirport::firstOrCreate(['iata_code' => 'CGK'], ['icao_code' => 'WIII', 'name' => 'Soekarno Hatta', 'city' => 'Jakarta', 'province' => 'DKI Jakarta', 'island' => 'Jawa', 'timezone' => 'Asia/Jakarta']);
+            $destination = AviationAirport::firstOrCreate(['iata_code' => 'DPS'], ['icao_code' => 'WADD', 'name' => 'Ngurah Rai', 'city' => 'Denpasar', 'province' => 'Bali', 'island' => 'Bali', 'timezone' => 'Asia/Makassar']);
+            $route = AviationRoute::firstOrCreate(
+                ['flight_number' => 'GA-404'],
+                [
+                    'origin_airport_id' => $origin->id,
+                    'destination_airport_id' => $destination->id,
+                    'distance_km' => 980,
+                    'scheduled_duration_minutes' => 110,
+                    'base_fare_minor' => 120000000,
+                    'currency' => 'IDR',
+                    'status' => 'active',
+                ]
+            );
+            $flight = AviationFlight::firstOrCreate(['flight_number' => 'GA-404'], [
+                'operator_id' => $operator->id,
+                'route_id' => $route->id,
+                'origin_airport_id' => $origin->id,
+                'destination_airport_id' => $destination->id,
+                'departure_time' => now()->addHours(2),
+                'arrival_time' => now()->addHours(4),
+                'status' => 'planned',
+            ]);
+
+            return ['flight' => $flight->id];
+        },
+    ],
+    'aviation.cargo.index' => ['roles' => ['admin', 'cargo_agent', 'superadmin']],
+    'aviation.cargo.receive' => ['roles' => ['admin', 'cargo_agent', 'superadmin']],
+    'aviation.bookings.index' => ['roles' => ['admin', 'customer_care', 'superadmin']],
+    'aviation.bookings.hold' => ['roles' => ['admin', 'customer_care', 'passenger', 'superadmin']],
+    'aviation.bookings.confirm' => ['roles' => ['admin', 'customer_care', 'superadmin']],
+    'aviation.bookings.refund' => [
+        'roles' => ['admin', 'customer_care', 'superadmin'],
+        'params' => function () {
+            $operator = AviationOperator::firstOrCreate(['code' => 'GA'], ['name' => 'Garuda', 'country' => 'ID', 'status' => 'active']);
+            $origin = AviationAirport::firstOrCreate(['iata_code' => 'CGK'], ['icao_code' => 'WIII', 'name' => 'Soekarno Hatta', 'city' => 'Jakarta', 'province' => 'DKI Jakarta', 'island' => 'Jawa', 'timezone' => 'Asia/Jakarta']);
+            $destination = AviationAirport::firstOrCreate(['iata_code' => 'DPS'], ['icao_code' => 'WADD', 'name' => 'Ngurah Rai', 'city' => 'Denpasar', 'province' => 'Bali', 'island' => 'Bali', 'timezone' => 'Asia/Makassar']);
+            $route = AviationRoute::firstOrCreate(
+                ['flight_number' => 'GA-404'],
+                [
+                    'origin_airport_id' => $origin->id,
+                    'destination_airport_id' => $destination->id,
+                    'distance_km' => 980,
+                    'scheduled_duration_minutes' => 110,
+                    'base_fare_minor' => 120000000,
+                    'currency' => 'IDR',
+                    'status' => 'active',
+                ]
+            );
+            $flight = AviationFlight::firstOrCreate(['flight_number' => 'GA-404'], [
+                'operator_id' => $operator->id,
+                'route_id' => $route->id,
+                'origin_airport_id' => $origin->id,
+                'destination_airport_id' => $destination->id,
+                'departure_time' => now()->addHours(2),
+                'arrival_time' => now()->addHours(4),
+                'status' => 'planned',
+            ]);
+            $ticket = AviationTicket::firstOrCreate(['ticket_number' => 'TKT-TEST-ROUTE-01'], [
+                'flight_id' => $flight->id,
+                'passenger_party_id' => auth()->id() ?? 1,
+                'cabin' => 'Y',
+                'fare_basis' => 'STD',
+                'status' => 'issued',
+                'base_fare_minor' => 100000000,
+                'tax_minor' => 10000000,
+                'total_fare_minor' => 110000000,
+                'pii_name_encrypted' => 'Test Passenger',
+                'pii_blind_index' => hash('sha256', 'TEST PASSENGER'),
+            ]);
+            if (auth()->check()) {
+                $ticket->passenger_party_id = auth()->id();
+                $ticket->save();
+            }
+
+            return ['ticket' => $ticket->id];
+        },
+        'setup' => function ($user) {
+            AviationTicket::where('ticket_number', 'TKT-TEST-ROUTE-01')->update(['passenger_party_id' => $user->id]);
+        },
+    ],
+    'aviation.passenger.index' => ['roles' => ['admin', 'passenger', 'superadmin']],
+    'aviation.passenger.ticket' => [
+        'roles' => ['admin', 'passenger', 'superadmin'],
+        'params' => function () {
+            $operator = AviationOperator::firstOrCreate(['code' => 'GA'], ['name' => 'Garuda', 'country' => 'ID', 'status' => 'active']);
+            $origin = AviationAirport::firstOrCreate(['iata_code' => 'CGK'], ['icao_code' => 'WIII', 'name' => 'Soekarno Hatta', 'city' => 'Jakarta', 'province' => 'DKI Jakarta', 'island' => 'Jawa', 'timezone' => 'Asia/Jakarta']);
+            $destination = AviationAirport::firstOrCreate(['iata_code' => 'DPS'], ['icao_code' => 'WADD', 'name' => 'Ngurah Rai', 'city' => 'Denpasar', 'province' => 'Bali', 'island' => 'Bali', 'timezone' => 'Asia/Makassar']);
+            $route = AviationRoute::firstOrCreate(
+                ['flight_number' => 'GA-404'],
+                [
+                    'origin_airport_id' => $origin->id,
+                    'destination_airport_id' => $destination->id,
+                    'distance_km' => 980,
+                    'scheduled_duration_minutes' => 110,
+                    'base_fare_minor' => 120000000,
+                    'currency' => 'IDR',
+                    'status' => 'active',
+                ]
+            );
+            $flight = AviationFlight::firstOrCreate(['flight_number' => 'GA-404'], [
+                'operator_id' => $operator->id,
+                'route_id' => $route->id,
+                'origin_airport_id' => $origin->id,
+                'destination_airport_id' => $destination->id,
+                'departure_time' => now()->addHours(2),
+                'arrival_time' => now()->addHours(4),
+                'status' => 'planned',
+            ]);
+            $ticket = AviationTicket::firstOrCreate(['ticket_number' => 'TKT-TEST-ROUTE-01'], [
+                'flight_id' => $flight->id,
+                'passenger_party_id' => auth()->id() ?? 1,
+                'cabin' => 'Y',
+                'fare_basis' => 'STD',
+                'status' => 'issued',
+                'base_fare_minor' => 100000000,
+                'tax_minor' => 10000000,
+                'total_fare_minor' => 110000000,
+                'pii_name_encrypted' => 'Test Passenger',
+                'pii_blind_index' => hash('sha256', 'TEST PASSENGER'),
+            ]);
+            if (auth()->check()) {
+                $ticket->passenger_party_id = auth()->id();
+                $ticket->save();
+            }
+
+            return ['ticket' => $ticket->id];
+        },
+        'setup' => function ($user) {
+            AviationTicket::where('ticket_number', 'TKT-TEST-ROUTE-01')->update(['passenger_party_id' => $user->id]);
+        },
+    ],
+    'aviation.reports.index' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
+    'aviation.reports.export' => ['roles' => ['admin', 'customer_care', 'ops_controller', 'superadmin']],
 ];
