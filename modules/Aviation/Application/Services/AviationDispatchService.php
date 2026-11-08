@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Application\Exceptions\AirworthinessFailedException;
 use Modules\Aviation\Domain\Enums\FlightStatus;
-use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationWeightBalanceRecord;
 use Modules\Shared\Domain\Algorithms\Aviation\AirworthinessDispatchGate;
@@ -24,7 +23,6 @@ class AviationDispatchService
     /**
      * Memverifikasi gerbang pelepasan kelaikan terbang (A2) dan perhitungan W&B (A3).
      *
-     * @param int $flightId
      * @param array{
      *     dry_operating_weight_kg: int,
      *     passenger_count: int,
@@ -35,6 +33,7 @@ class AviationDispatchService
      *     cargo_center_of_gravity_mac_bps: int
      * } $wbPayload
      * @return array{flight: AviationFlight, airworthiness_passed: bool, wb_passed: bool, details: array}
+     *
      * @throws AirworthinessFailedException
      */
     public function evaluateAndDispatchFlight(int $flightId, array $wbPayload): array
@@ -120,4 +119,3 @@ class AviationDispatchService
         ];
     }
 }
-

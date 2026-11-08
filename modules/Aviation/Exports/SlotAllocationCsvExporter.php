@@ -11,8 +11,6 @@ class SlotAllocationCsvExporter extends BaseCsvExporter
     /**
      * Ekspor alokasi slot bandara per season ke dalam format CSV UTF-8.
      *
-     * @param int $airportId
-     * @param string $seasonCode
      * @return string Konten mentah CSV
      */
     public function export(int $airportId, string $seasonCode): string

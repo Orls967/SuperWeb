@@ -25,4 +25,3 @@ class AviationTicketPolicy
         return $user->hasRole(['admin', 'customer_care', 'superadmin']);
     }
 }
-

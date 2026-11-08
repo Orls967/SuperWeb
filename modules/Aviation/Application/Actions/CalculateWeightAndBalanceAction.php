@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Application\Actions;
 
-use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationWeightBalanceRecord;
 use Modules\Shared\Domain\Algorithms\Aviation\LoadAndBalanceChecker;
@@ -14,8 +13,7 @@ class CalculateWeightAndBalanceAction
 {
     public function __construct(
         private readonly LoadAndBalanceChecker $checker
-    ) {
-    }
+    ) {}
 
     public function execute(
         AviationFlight $flight,
@@ -80,4 +78,3 @@ class CalculateWeightAndBalanceAction
         return $result;
     }
 }
-

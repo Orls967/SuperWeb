@@ -35,7 +35,7 @@ class AviationSeatInventory extends Model
     public function availableSeats(): int
     {
         $maxAllowed = $this->total_capacity + $this->oversell_limit_seats;
+
         return max(0, $maxAllowed - ($this->held_seats + $this->booked_seats));
     }
 }
-

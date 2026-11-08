@@ -70,4 +70,3 @@ final class FlightStateMachine
         return self::TRANSITIONS;
     }
 }
-

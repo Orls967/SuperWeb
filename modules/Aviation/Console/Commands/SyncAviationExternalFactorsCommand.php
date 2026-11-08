@@ -43,4 +43,3 @@ class SyncAviationExternalFactorsCommand extends Command
         return self::SUCCESS;
     }
 }
-

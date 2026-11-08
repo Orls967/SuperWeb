@@ -53,4 +53,3 @@ class PurgePassengerPiiCommand extends Command
         return self::SUCCESS;
     }
 }
-

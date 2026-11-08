@@ -71,4 +71,3 @@ final class TicketStateMachine
         return self::TRANSITIONS;
     }
 }
-

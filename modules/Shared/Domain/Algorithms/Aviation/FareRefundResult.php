@@ -13,7 +13,5 @@ final class FareRefundResult
         public readonly int $totalRefundMinor,
         public readonly int $refundPercentageBps,
         public readonly FareRefundCertificate $certificate
-    ) {
-    }
+    ) {}
 }
-

@@ -24,4 +24,3 @@ class AviationSagaInstance extends Model
         'log_json' => 'array',
     ];
 }
-

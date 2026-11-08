@@ -17,8 +17,7 @@ final class FareRefundCertificate
         public readonly int $adminFeeMinor,
         public readonly int $taxRefundMinor,
         public readonly int $totalRefundMinor
-    ) {
-    }
+    ) {}
 
     public function hash(): string
     {
@@ -37,4 +36,3 @@ final class FareRefundCertificate
         ));
     }
 }
-

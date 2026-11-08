@@ -71,7 +71,7 @@ class AviationAircraft extends Model
         }
 
         $expiry = CarbonImmutable::parse($this->airworthiness_expires_at);
+
         return ! $expiry->startOfDay()->lessThan($date->startOfDay());
     }
 }
-

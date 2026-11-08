@@ -18,12 +18,9 @@ class AirCargoAcceptanceSaga
 {
     public function __construct(
         private readonly AcceptAirCargoConsignmentAction $acceptAction
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array $payload
-     * @param string $correlationId
      * @return array{saga_id: int, status: string, consignment: AviationCargoConsignment|null}
      */
     public function run(array $payload, string $correlationId): array
@@ -47,7 +44,7 @@ class AirCargoAcceptanceSaga
                 $saga->current_step = 'COMPLETED';
                 $saga->status = 'completed';
                 $saga->log_json = array_merge($saga->log_json ?? [], [
-                    ['step' => 'COMPLETED', 'awb' => $consignment->consignment_number, 'timestamp' => now()->toIso8601String()]
+                    ['step' => 'COMPLETED', 'awb' => $consignment->consignment_number, 'timestamp' => now()->toIso8601String()],
                 ]);
                 $saga->save();
 
@@ -61,7 +58,7 @@ class AirCargoAcceptanceSaga
                 $saga->current_step = 'COMPENSATED_REJECTED';
                 $saga->status = 'compensated';
                 $saga->log_json = array_merge($saga->log_json ?? [], [
-                    ['step' => 'COMPENSATED', 'error' => $e->getMessage(), 'timestamp' => now()->toIso8601String()]
+                    ['step' => 'COMPENSATED', 'error' => $e->getMessage(), 'timestamp' => now()->toIso8601String()],
                 ]);
                 $saga->save();
 
@@ -70,4 +67,3 @@ class AirCargoAcceptanceSaga
         });
     }
 }
-

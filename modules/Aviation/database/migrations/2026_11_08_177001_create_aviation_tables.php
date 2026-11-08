@@ -367,4 +367,3 @@ return new class extends Migration
         Schema::dropIfExists('avi_operators');
     }
 };
-

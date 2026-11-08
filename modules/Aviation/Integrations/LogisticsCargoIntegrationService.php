@@ -17,9 +17,6 @@ class LogisticsCargoIntegrationService
 
     /**
      * Memverifikasi rantai integritas kustodi kargo udara terhadap modul Logistics (K6).
-     *
-     * @param AviationCargoConsignment $consignment
-     * @return bool
      */
     public function verifyCargoCustodyChain(AviationCargoConsignment $consignment): bool
     {
@@ -47,4 +44,3 @@ class LogisticsCargoIntegrationService
             && ctype_xdigit($consignment->custody_hash_chain);
     }
 }
-

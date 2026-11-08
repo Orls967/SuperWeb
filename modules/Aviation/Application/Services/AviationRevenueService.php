@@ -22,7 +22,6 @@ class AviationRevenueService
      * Pengakuan pendapatan earned saat penerbangan telah departed / flown.
      * Mengubah unearned passenger revenue menjadi earned ticket revenue.
      *
-     * @param int $flightId
      * @return array{recognized_count: int, total_amount_minor: int, journal_reference: string}
      */
     public function recognizeFlownRevenue(int $flightId): array
@@ -67,4 +66,3 @@ class AviationRevenueService
         ];
     }
 }
-

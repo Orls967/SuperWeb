@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AviationMaintenanceTransition extends Model
 {
     public $timestamps = false;
+
     protected $table = 'avi_maintenance_transitions';
 
     protected $fillable = [
@@ -27,4 +28,3 @@ class AviationMaintenanceTransition extends Model
         return $this->belongsTo(AviationMaintenanceVisit::class, 'maintenance_visit_id');
     }
 }
-

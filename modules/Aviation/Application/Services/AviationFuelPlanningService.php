@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace Modules\Aviation\Application\Services;
 
 use InvalidArgumentException;
-use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationFlight;
-use Modules\Aviation\Domain\Models\AviationRoute;
 
 class AviationFuelPlanningService
 {
     /**
      * Hitung perencanaan bahan bakar penerbangan sesuai regulasi keselamatan ICAO Annex 6 & CASR Part 121.
      *
-     * @param int $flightId
-     * @param int $alternateDistanceKm
      * @return array{
      *     taxi_fuel_kg: int,
      *     trip_fuel_kg: int,
@@ -88,4 +84,3 @@ class AviationFuelPlanningService
         ];
     }
 }
-

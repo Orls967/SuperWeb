@@ -6,13 +6,10 @@ namespace Modules\Aviation\database\seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Domain\Enums\AviationCabin;
 use Modules\Aviation\Domain\Enums\CargoConsignmentStatus;
-use Modules\Aviation\Domain\Enums\FareClass;
 use Modules\Aviation\Domain\Enums\FlightStatus;
 use Modules\Aviation\Domain\Enums\MaintenanceVisitStatus;
-use Modules\Aviation\Domain\Enums\SlotRequestStatus;
 use Modules\Aviation\Domain\Enums\TicketStatus;
 use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationAirport;

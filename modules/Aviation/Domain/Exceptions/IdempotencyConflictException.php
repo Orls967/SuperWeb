@@ -13,4 +13,3 @@ final class IdempotencyConflictException extends RuntimeException
         return new self("Konflik idempotensi: aksi [{$action}] dengan kunci [{$key}] telah diproses dengan payload berbeda.");
     }
 }
-

@@ -30,4 +30,3 @@ class SlotSeasonPlanCommand extends Command
         return self::SUCCESS;
     }
 }
-

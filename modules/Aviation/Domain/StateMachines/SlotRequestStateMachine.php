@@ -70,4 +70,3 @@ final class SlotRequestStateMachine
         return self::TRANSITIONS;
     }
 }
-

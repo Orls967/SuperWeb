@@ -37,4 +37,3 @@ class AviationRefund extends Model
         return $this->belongsTo(AviationTicket::class, 'ticket_id');
     }
 }
-

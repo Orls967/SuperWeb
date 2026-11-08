@@ -29,4 +29,3 @@ class HoldSeatRequest extends FormRequest
         }
     }
 }
-

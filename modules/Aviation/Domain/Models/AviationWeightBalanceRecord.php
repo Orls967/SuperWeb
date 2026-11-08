@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AviationWeightBalanceRecord extends Model
 {
     public $timestamps = false;
+
     protected $table = 'avi_weight_balance_records';
 
     protected $fillable = [
@@ -60,4 +61,3 @@ class AviationWeightBalanceRecord extends Model
         return $this->belongsTo(AviationAircraft::class, 'aircraft_id');
     }
 }
-

@@ -33,4 +33,3 @@ class AviationOperator extends Model
         return $this->hasMany(AviationFlight::class, 'operator_id');
     }
 }
-

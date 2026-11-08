@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AviationCargoTransition extends Model
 {
     public $timestamps = false;
+
     protected $table = 'avi_cargo_transitions';
 
     protected $fillable = [
@@ -27,4 +28,3 @@ class AviationCargoTransition extends Model
         return $this->belongsTo(AviationCargoConsignment::class, 'consignment_id');
     }
 }
-

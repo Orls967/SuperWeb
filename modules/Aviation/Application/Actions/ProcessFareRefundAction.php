@@ -19,8 +19,7 @@ class ProcessFareRefundAction
     public function __construct(
         private readonly FareRefundCalculator $calculator,
         private readonly AviationLedgerPostingService $ledgerService
-    ) {
-    }
+    ) {}
 
     public function execute(
         int $ticketId,
@@ -35,6 +34,7 @@ class ProcessFareRefundAction
                 if ($existing->ticket_id !== $ticketId) {
                     throw IdempotencyConflictException::forAction('REFUND', $idempotencyKey);
                 }
+
                 return $existing;
             }
 
@@ -93,4 +93,3 @@ class ProcessFareRefundAction
         });
     }
 }
-

@@ -6,6 +6,7 @@ namespace App\Quality\Audit\Fixtures;
 
 use App\Quality\Audit\CorruptionFixture;
 use Modules\Aviation\Domain\Models\AviationAircraft;
+use Modules\Aviation\Domain\Models\AviationAirport;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationOperator;
 use Modules\Aviation\Domain\Models\AviationRoute;
@@ -24,7 +25,7 @@ final class AviationAuditCorruptionFixture implements CorruptionFixture
             ['name' => 'Corrupted Airlines', 'country' => 'ID']
         );
 
-        $airport1 = \Modules\Aviation\Domain\Models\AviationAirport::firstOrCreate(
+        $airport1 = AviationAirport::firstOrCreate(
             ['iata_code' => 'CR1'],
             [
                 'icao_code' => 'WCR1',
@@ -36,7 +37,7 @@ final class AviationAuditCorruptionFixture implements CorruptionFixture
             ]
         );
 
-        $airport2 = \Modules\Aviation\Domain\Models\AviationAirport::firstOrCreate(
+        $airport2 = AviationAirport::firstOrCreate(
             ['iata_code' => 'CR2'],
             [
                 'icao_code' => 'WCR2',
@@ -48,7 +49,7 @@ final class AviationAuditCorruptionFixture implements CorruptionFixture
             ]
         );
 
-        $route = \Modules\Aviation\Domain\Models\AviationRoute::firstOrCreate(
+        $route = AviationRoute::firstOrCreate(
             ['flight_number' => 'GA-CORRUPT-999'],
             [
                 'origin_airport_id' => $airport1->id,
@@ -91,7 +92,6 @@ final class AviationAuditCorruptionFixture implements CorruptionFixture
             'fuel_burn_kg' => 3000,
         ]);
 
-        return "GA-CORRUPT-999";
+        return 'GA-CORRUPT-999';
     }
 }
-

@@ -17,8 +17,7 @@ class SeatInventoryReserverService implements SeatInventoryReserver
     public function __construct(
         private readonly HoldSeatInventoryAction $holdAction,
         private readonly BookPassengerTicketAction $bookAction
-    ) {
-    }
+    ) {}
 
     public function hold(int $flightId, string $cabin, int $seats, string $idempotencyKey): array
     {
@@ -34,10 +33,10 @@ class SeatInventoryReserverService implements SeatInventoryReserver
 
     public function confirm(int $holdId, array $passengerPartyIds, string $idempotencyKey): array
     {
-        $names = array_map(fn($id) => "Passenger Party #{$id}", $passengerPartyIds);
+        $names = array_map(fn ($id) => "Passenger Party #{$id}", $passengerPartyIds);
         $tickets = $this->bookAction->execute($holdId, $passengerPartyIds, $names, $idempotencyKey);
 
-        return array_map(fn(AviationTicket $t) => (int) $t->id, $tickets);
+        return array_map(fn (AviationTicket $t) => (int) $t->id, $tickets);
     }
 
     public function release(int $holdId, string $idempotencyKey): void
@@ -63,4 +62,3 @@ class SeatInventoryReserverService implements SeatInventoryReserver
         });
     }
 }
-

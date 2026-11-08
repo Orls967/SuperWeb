@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Application\Services;
 
-use Illuminate\Support\Facades\DB;
+use Modules\Aviation\Application\Actions\AcceptAirCargoConsignmentAction;
 use Modules\Aviation\Application\Exceptions\DangerousGoodsRejectedException;
-use Modules\Aviation\Domain\Enums\CargoConsignmentStatus;
 use Modules\Aviation\Domain\Models\AviationCargoConsignment;
 use Modules\Aviation\Domain\Models\AviationFlight;
-use Modules\Aviation\Ledger\AviationAccounts;
 use Modules\Aviation\Ledger\AviationLedgerPostingService;
-use Modules\Aviation\Ledger\AviationTransactionTypes;
 use Modules\Shared\Domain\Algorithms\Aviation\DangerousGoodsEligibilityChecker;
 
 class AviationCargoService
@@ -19,14 +16,12 @@ class AviationCargoService
     public function __construct(
         private readonly DangerousGoodsEligibilityChecker $dgChecker,
         private readonly AviationLedgerPostingService $ledgerPostingService,
-        private readonly \Modules\Aviation\Application\Actions\AcceptAirCargoConsignmentAction $acceptCargoAction
+        private readonly AcceptAirCargoConsignmentAction $acceptCargoAction
     ) {}
 
     /**
      * Penerimaan konsinyasi kargo udara dengan verifikasi regulasi DG IATA (A5) & buku besar.
      *
-     * @param array $payload
-     * @return AviationCargoConsignment
      * @throws DangerousGoodsRejectedException
      */
     public function processCargoIntake(array $payload): AviationCargoConsignment

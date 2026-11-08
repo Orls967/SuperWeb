@@ -7,13 +7,7 @@ namespace Modules\Shared\Domain\Algorithms\Aviation;
 final class DangerousGoodsCertificate
 {
     /**
-     * @param string $unNumber
-     * @param string $mode
-     * @param int $weightGrams
-     * @param int|null $sectorDurationMinutes
-     * @param int|null $uldHoldoverMinutes
-     * @param bool $isEligible
-     * @param list<string> $violations
+     * @param  list<string>  $violations
      */
     public function __construct(
         public readonly string $unNumber,
@@ -23,8 +17,7 @@ final class DangerousGoodsCertificate
         public readonly ?int $uldHoldoverMinutes,
         public readonly bool $isEligible,
         public readonly array $violations
-    ) {
-    }
+    ) {}
 
     public function hash(): string
     {
@@ -40,4 +33,3 @@ final class DangerousGoodsCertificate
         ));
     }
 }
-

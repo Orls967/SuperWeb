@@ -17,8 +17,7 @@ class AviationLedgerPostingService
 {
     public function __construct(
         private readonly LedgerService $ledgerService
-    ) {
-    }
+    ) {}
 
     /**
      * Jurnal Penjualan Tiket Dibayar:
@@ -167,4 +166,3 @@ class AviationLedgerPostingService
         $this->ledgerService->post($dto);
     }
 }
-

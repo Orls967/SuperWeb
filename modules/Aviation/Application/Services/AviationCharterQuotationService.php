@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Application\Services;
 
-use InvalidArgumentException;
 use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationAirport;
 
@@ -94,4 +93,3 @@ class AviationCharterQuotationService
         ];
     }
 }
-

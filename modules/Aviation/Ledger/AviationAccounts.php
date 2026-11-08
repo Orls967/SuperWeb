@@ -12,22 +12,36 @@ use Modules\Banking\Domain\Enums\AccountKind;
 final class AviationAccounts
 {
     public const PASSENGER_UNEARNED = 'avi:passenger_unearned:IDR';
+
     public const TICKET_REVENUE = 'avi:ticket_revenue:IDR';
+
     public const TAX_PAYABLE = 'avi:tax_payable:IDR';
+
     public const REFUND_PAYABLE = 'avi:refund_payable:IDR';
+
     public const CARGO_RECEIVABLE = 'avi:cargo_receivable:IDR';
+
     public const CARGO_REVENUE = 'avi:cargo_revenue:IDR';
+
     public const MAINTENANCE_EXPENSE = 'avi:maintenance_expense:IDR';
+
     public const MAINTENANCE_PAYABLE = 'avi:maintenance_payable:IDR';
 
     // Akun Fase 178
     public const CARE_EXPENSE = 'avi:care_expense:IDR';
+
     public const CARE_PAYABLE = 'avi:care_payable:IDR';
+
     public const MILES_LIABILITY = 'avi:miles_liability:IDR';
+
     public const MILES_PROGRAM_EXPENSE = 'avi:miles_program_expense:IDR';
+
     public const MILES_BREAKAGE_REVENUE = 'avi:miles_breakage_revenue:IDR';
+
     public const CODESHARE_RECEIVABLE = 'avi:codeshare_receivable:IDR';
+
     public const CODESHARE_PAYABLE = 'avi:codeshare_payable:IDR';
+
     public const INSURANCE_RECOVERY_RECEIVABLE = 'avi:insurance_recovery_receivable:IDR';
 
     /**
@@ -151,4 +165,3 @@ final class AviationAccounts
         ];
     }
 }
-

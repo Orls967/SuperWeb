@@ -22,4 +22,3 @@ class ExecuteDispatchRequest extends FormRequest
         ];
     }
 }
-

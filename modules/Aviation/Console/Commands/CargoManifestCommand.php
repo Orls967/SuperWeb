@@ -22,6 +22,7 @@ class CargoManifestCommand extends Command
 
         if (! $flight) {
             $this->error("Penerbangan {$flightArg} tidak ditemukan.");
+
             return self::FAILURE;
         }
 
@@ -33,13 +34,12 @@ class CargoManifestCommand extends Command
         $totalWeightG = 0;
         foreach ($consignments as $c) {
             $totalWeightG += $c->weight_g;
-            $dgInfo = $c->is_dg ? "[DG: {$c->un_number}]" : "[NON-DG]";
+            $dgInfo = $c->is_dg ? "[DG: {$c->un_number}]" : '[NON-DG]';
             $this->line("  * AWB {$c->consignment_number}: {$c->weight_g} g | {$c->nature_of_goods} {$dgInfo} | Status: {$c->status}");
         }
 
-        $this->info("Total Berat Kargo: ".($totalWeightG / 1000)." kg.");
+        $this->info('Total Berat Kargo: '.($totalWeightG / 1000).' kg.');
 
         return self::SUCCESS;
     }
 }
-

@@ -30,4 +30,3 @@ class ConfirmBookingRequest extends FormRequest
         }
     }
 }
-

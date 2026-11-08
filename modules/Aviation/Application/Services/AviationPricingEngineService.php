@@ -13,9 +13,8 @@ class AviationPricingEngineService
     /**
      * Hitung tarif dinamis kursi berdasarkan kurva okupansi kabin dan jendela hari keberangkatan (D-Day).
      *
-     * @param int $flightId
-     * @param string $cabin 'Y' (Ekonomi) atau 'J' (Bisnis)
-     * @param string $fareBasis 'PROMO', 'STD', atau 'FLEX'
+     * @param  string  $cabin  'Y' (Ekonomi) atau 'J' (Bisnis)
+     * @param  string  $fareBasis  'PROMO', 'STD', atau 'FLEX'
      * @return array{
      *     base_fare_minor: int,
      *     tax_minor: int,
@@ -91,4 +90,3 @@ class AviationPricingEngineService
         ];
     }
 }
-

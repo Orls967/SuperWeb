@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Application\Actions\ProcessFareRefundAction;
 use Modules\Aviation\Domain\Enums\FlightStatus;
 use Modules\Aviation\Domain\Models\AviationFlight;
-use Modules\Aviation\Domain\Models\AviationRefund;
 use Modules\Aviation\Domain\Models\AviationSagaInstance;
 use Modules\Aviation\Domain\Models\AviationTicket;
 
@@ -20,13 +19,9 @@ class FlightCancellationMassRefundSaga
 {
     public function __construct(
         private readonly ProcessFareRefundAction $refundAction
-    ) {
-    }
+    ) {}
 
     /**
-     * @param int $flightId
-     * @param string $cancellationReason
-     * @param string $correlationId
      * @return array{saga_id: int, status: string, refunded_tickets: int, total_refund_minor: int}
      */
     public function run(int $flightId, string $cancellationReason, string $correlationId): array
@@ -78,7 +73,7 @@ class FlightCancellationMassRefundSaga
             $saga->current_step = 'COMPLETED';
             $saga->status = 'completed';
             $saga->log_json = [
-                ['step' => 'COMPLETED', 'tickets_refunded' => $refundedCount, 'total_minor' => $totalRefundMinor, 'timestamp' => now()->toIso8601String()]
+                ['step' => 'COMPLETED', 'tickets_refunded' => $refundedCount, 'total_minor' => $totalRefundMinor, 'timestamp' => now()->toIso8601String()],
             ];
             $saga->save();
 
@@ -91,4 +86,3 @@ class FlightCancellationMassRefundSaga
         });
     }
 }
-

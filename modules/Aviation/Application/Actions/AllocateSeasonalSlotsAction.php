@@ -16,8 +16,7 @@ class AllocateSeasonalSlotsAction
 {
     public function __construct(
         private readonly SlotCoordinationAllocator $allocator
-    ) {
-    }
+    ) {}
 
     public function execute(int $airportId, string $seasonCode): SlotCoordinationResult
     {
@@ -97,4 +96,3 @@ class AllocateSeasonalSlotsAction
         });
     }
 }
-

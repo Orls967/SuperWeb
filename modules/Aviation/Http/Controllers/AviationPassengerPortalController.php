@@ -51,4 +51,3 @@ class AviationPassengerPortalController extends Controller
         ]);
     }
 }
-

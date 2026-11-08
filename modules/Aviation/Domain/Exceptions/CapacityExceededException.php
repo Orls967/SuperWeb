@@ -13,4 +13,3 @@ final class CapacityExceededException extends RuntimeException
         return new self("Kapasitas kursi kabin [{$cabin}] pada penerbangan #{$flightId} tidak mencukupi (minta: {$requested}, tersedia: {$available}).");
     }
 }
-

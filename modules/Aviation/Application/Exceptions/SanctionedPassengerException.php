@@ -7,4 +7,3 @@ namespace Modules\Aviation\Application\Exceptions;
 use RuntimeException;
 
 class SanctionedPassengerException extends RuntimeException {}
-

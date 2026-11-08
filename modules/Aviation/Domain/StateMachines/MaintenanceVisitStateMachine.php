@@ -68,4 +68,3 @@ final class MaintenanceVisitStateMachine
         return self::TRANSITIONS;
     }
 }
-

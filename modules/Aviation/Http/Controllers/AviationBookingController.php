@@ -23,8 +23,7 @@ class AviationBookingController extends Controller
         private readonly HoldSeatInventoryAction $holdAction,
         private readonly BookPassengerTicketAction $bookAction,
         private readonly ProcessFareRefundAction $refundAction
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -91,8 +90,8 @@ class AviationBookingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Tiket berhasil diterbitkan dan pembayaran dicatat.',
-            'ticket_ids' => array_map(fn($t) => $t->id, $tickets),
-            'ticket_numbers' => array_map(fn($t) => $t->ticket_number, $tickets),
+            'ticket_ids' => array_map(fn ($t) => $t->id, $tickets),
+            'ticket_numbers' => array_map(fn ($t) => $t->ticket_number, $tickets),
         ], 200);
     }
 
@@ -113,4 +112,3 @@ class AviationBookingController extends Controller
         ], 200);
     }
 }
-

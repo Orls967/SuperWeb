@@ -39,4 +39,3 @@ class AviationSlot extends Model
         return $this->belongsTo(AviationOperator::class, 'operator_id');
     }
 }
-

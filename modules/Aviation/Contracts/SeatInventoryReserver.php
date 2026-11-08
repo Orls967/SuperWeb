@@ -14,10 +14,6 @@ interface SeatInventoryReserver
     /**
      * Reservasi sementara kursi dengan batas waktu TTL.
      *
-     * @param int $flightId
-     * @param string $cabin
-     * @param int $seats
-     * @param string $idempotencyKey
      * @return array{hold_id: int, fare_minor: int, currency: string, expires_at: string}
      */
     public function hold(int $flightId, string $cabin, int $seats, string $idempotencyKey): array;
@@ -25,20 +21,13 @@ interface SeatInventoryReserver
     /**
      * Konfirmasi pembayaran dan terbitkan tiket definitif.
      *
-     * @param int $holdId
-     * @param list<int> $passengerPartyIds
-     * @param string $idempotencyKey
+     * @param  list<int>  $passengerPartyIds
      * @return list<int> Daftar ID tiket yang berhasil diterbitkan
      */
     public function confirm(int $holdId, array $passengerPartyIds, string $idempotencyKey): array;
 
     /**
      * Lepaskan hold kursi yang dibatalkan atau kedaluwarsa.
-     *
-     * @param int $holdId
-     * @param string $idempotencyKey
-     * @return void
      */
     public function release(int $holdId, string $idempotencyKey): void;
 }
-

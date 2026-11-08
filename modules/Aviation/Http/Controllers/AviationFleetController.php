@@ -39,4 +39,3 @@ class AviationFleetController extends Controller
         ]);
     }
 }
-

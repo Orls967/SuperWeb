@@ -7,14 +7,7 @@ namespace Modules\Shared\Domain\Algorithms\Aviation;
 final class LoadAndBalanceCertificate
 {
     /**
-     * @param int $mtowKg
-     * @param int $totalWeightKg
-     * @param int $totalMoment
-     * @param int $cgMm
-     * @param int $cgForwardLimitMm
-     * @param int $cgAftLimitMm
-     * @param bool $isWithinEnvelope
-     * @param list<string> $violations
+     * @param  list<string>  $violations
      */
     public function __construct(
         public readonly int $mtowKg,
@@ -25,8 +18,7 @@ final class LoadAndBalanceCertificate
         public readonly int $cgAftLimitMm,
         public readonly bool $isWithinEnvelope,
         public readonly array $violations
-    ) {
-    }
+    ) {}
 
     public function hash(): string
     {
@@ -43,4 +35,3 @@ final class LoadAndBalanceCertificate
         ));
     }
 }
-

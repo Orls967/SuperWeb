@@ -17,16 +17,10 @@ class PassengerBookingSaga
 {
     public function __construct(
         private readonly SeatInventoryReserver $reserver
-    ) {
-    }
+    ) {}
 
     /**
-     * @param int $flightId
-     * @param string $cabin
-     * @param int $seats
-     * @param list<int> $passengerPartyIds
-     * @param string $correlationId
-     * @param bool $simulatePaymentFailure
+     * @param  list<int>  $passengerPartyIds
      * @return array{saga_id: int, status: string, tickets: list<int>}
      */
     public function run(
@@ -59,7 +53,7 @@ class PassengerBookingSaga
             $holdId = $holdData['hold_id'];
             $saga->current_step = 'SEATS_HELD';
             $saga->log_json = array_merge($saga->log_json ?? [], [
-                ['step' => 'SEATS_HELD', 'hold_id' => $holdId, 'timestamp' => now()->toIso8601String()]
+                ['step' => 'SEATS_HELD', 'hold_id' => $holdId, 'timestamp' => now()->toIso8601String()],
             ]);
             $saga->save();
 
@@ -71,7 +65,7 @@ class PassengerBookingSaga
                 $saga->current_step = 'COMPENSATED_KYC_REJECTED';
                 $saga->status = 'compensated';
                 $saga->log_json = array_merge($saga->log_json ?? [], [
-                    ['step' => 'COMPENSATED', 'reason' => 'SANCTIONED_PARTY', 'timestamp' => now()->toIso8601String()]
+                    ['step' => 'COMPENSATED', 'reason' => 'SANCTIONED_PARTY', 'timestamp' => now()->toIso8601String()],
                 ]);
                 $saga->save();
 
@@ -85,7 +79,7 @@ class PassengerBookingSaga
                 $saga->current_step = 'COMPENSATED_PAYMENT_FAILED';
                 $saga->status = 'compensated';
                 $saga->log_json = array_merge($saga->log_json ?? [], [
-                    ['step' => 'COMPENSATED', 'reason' => 'PAYMENT_FAILED', 'timestamp' => now()->toIso8601String()]
+                    ['step' => 'COMPENSATED', 'reason' => 'PAYMENT_FAILED', 'timestamp' => now()->toIso8601String()],
                 ]);
                 $saga->save();
 
@@ -98,7 +92,7 @@ class PassengerBookingSaga
             $saga->current_step = 'COMPLETED';
             $saga->status = 'completed';
             $saga->log_json = array_merge($saga->log_json ?? [], [
-                ['step' => 'COMPLETED', 'tickets' => $ticketIds, 'timestamp' => now()->toIso8601String()]
+                ['step' => 'COMPLETED', 'tickets' => $ticketIds, 'timestamp' => now()->toIso8601String()],
             ]);
             $saga->save();
 
@@ -110,4 +104,3 @@ class PassengerBookingSaga
         });
     }
 }
-

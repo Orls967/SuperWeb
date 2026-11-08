@@ -9,8 +9,7 @@ abstract class BaseCsvExporter
     /**
      * Konversi larik baris tabular menjadi string CSV ber-BOM UTF-8.
      *
-     * @param array<int, array<int, string>> $rows
-     * @return string
+     * @param  array<int, array<int, string>>  $rows
      */
     protected function generateCsvString(array $rows): string
     {
@@ -33,4 +32,3 @@ abstract class BaseCsvExporter
         return $csvData !== false ? $csvData : '';
     }
 }
-

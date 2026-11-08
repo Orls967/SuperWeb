@@ -30,4 +30,3 @@ final class AviationHttpTest extends TestCase
         $response->assertOk();
     }
 }
-

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Application\Services;
 
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Modules\Aviation\Domain\Enums\FlightStatus;
+use Modules\Aviation\Application\Sagas\FlightCancellationMassRefundSaga;
 use Modules\Aviation\Domain\Enums\TicketStatus;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationTicket;
@@ -17,15 +14,12 @@ class AviationIrropsOrchestratorService
 {
     public function __construct(
         private readonly HotelIrropsAccommodationService $hotelService,
-        private readonly \Modules\Aviation\Application\Sagas\FlightCancellationMassRefundSaga $massRefundSaga
+        private readonly FlightCancellationMassRefundSaga $massRefundSaga
     ) {}
 
     /**
      * Evaluasi tingkat keterlambatan penerbangan dan tentukan paket kompensasi wajib regulasi PM 89/2015.
      *
-     * @param int $flightId
-     * @param int $delayMinutes
-     * @param string $causeReason
      * @return array{
      *     category: int,
      *     compensation_type: string,
@@ -97,4 +91,3 @@ class AviationIrropsOrchestratorService
         ]);
     }
 }
-

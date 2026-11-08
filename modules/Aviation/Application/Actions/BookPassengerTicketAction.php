@@ -6,7 +6,6 @@ namespace Modules\Aviation\Application\Actions;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Domain\Enums\TicketStatus;
-use Modules\Aviation\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Aviation\Domain\Models\AviationSeatHold;
 use Modules\Aviation\Domain\Models\AviationSeatInventory;
 use Modules\Aviation\Domain\Models\AviationTicket;
@@ -16,14 +15,11 @@ class BookPassengerTicketAction
 {
     public function __construct(
         private readonly AviationLedgerPostingService $ledgerService
-    ) {
-    }
+    ) {}
 
     /**
-     * @param int $holdId
-     * @param list<int> $passengerPartyIds
-     * @param list<string> $passengerNames
-     * @param string $idempotencyKey
+     * @param  list<int>  $passengerPartyIds
+     * @param  list<string>  $passengerNames
      * @return list<AviationTicket>
      */
     public function execute(
@@ -99,4 +95,3 @@ class BookPassengerTicketAction
         });
     }
 }
-

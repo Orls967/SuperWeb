@@ -13,4 +13,3 @@ final class InvalidStateTransitionException extends RuntimeException
         return new self("Transisi status tidak valid untuk {$entity} dari [{$from}] ke [{$to}].");
     }
 }
-

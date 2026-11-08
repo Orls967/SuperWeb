@@ -7,7 +7,6 @@ namespace Modules\Aviation\Integrations;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
-use Modules\Aviation\Domain\Enums\MaintenanceVisitStatus;
 use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationMaintenanceVisit;
 
@@ -20,7 +19,6 @@ class AssetMaintenanceIntegrationService
     /**
      * Integrasi pembuatan Work Order perawatan berkala / overhaul pesawat ke modul Asset (K9).
      *
-     * @param AviationMaintenanceVisit $visit
      * @return int ID Work Order dari modul Asset
      */
     public function syncWorkOrderToAssetModule(AviationMaintenanceVisit $visit): int
@@ -72,4 +70,3 @@ class AssetMaintenanceIntegrationService
         return $fallbackId;
     }
 }
-

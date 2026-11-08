@@ -29,6 +29,7 @@ class HoldSeatInventoryAction
                 if ($existing->flight_id !== $flightId || $existing->cabin !== $cabin || $existing->seats_count !== $seats) {
                     throw IdempotencyConflictException::forAction('HOLD_SEAT', $idempotencyKey);
                 }
+
                 return $existing;
             }
 
@@ -79,4 +80,3 @@ class HoldSeatInventoryAction
         });
     }
 }
-

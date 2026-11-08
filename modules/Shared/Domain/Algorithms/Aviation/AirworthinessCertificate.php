@@ -7,11 +7,7 @@ namespace Modules\Shared\Domain\Algorithms\Aviation;
 final class AirworthinessCertificate
 {
     /**
-     * @param string $evalDate
-     * @param bool $isPermitted
-     * @param list<string> $reasons
-     * @param int $hoursMargin
-     * @param int $cyclesMargin
+     * @param  list<string>  $reasons
      */
     public function __construct(
         public readonly string $evalDate,
@@ -19,8 +15,7 @@ final class AirworthinessCertificate
         public readonly array $reasons,
         public readonly int $hoursMargin,
         public readonly int $cyclesMargin
-    ) {
-    }
+    ) {}
 
     public function hash(): string
     {
@@ -34,4 +29,3 @@ final class AirworthinessCertificate
         ));
     }
 }
-

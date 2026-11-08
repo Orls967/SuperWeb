@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Domain\Algorithms\Aviation;
 
-use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
-
 /**
  * A1: Aviation\SlotCoordinationAllocator
  *
@@ -19,10 +17,8 @@ use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 final class SlotCoordinationAllocator
 {
     /**
-     * @param int $capacity
-     * @param list<array{operator: string, held: int, usage_bps: int}> $historicalSlots
-     * @param list<array{operator: string, requested: int, is_new_entrant: bool, request_time: int}> $requests
-     * @return SlotCoordinationResult
+     * @param  list<array{operator: string, held: int, usage_bps: int}>  $historicalSlots
+     * @param  list<array{operator: string, requested: int, is_new_entrant: bool, request_time: int}>  $requests
      */
     public function allocate(int $capacity, array $historicalSlots, array $requests): SlotCoordinationResult
     {
@@ -61,6 +57,7 @@ final class SlotCoordinationAllocator
             if ($a['request_time'] === $b['request_time']) {
                 return strcmp($a['operator'], $b['operator']);
             }
+
             return $a['request_time'] <=> $b['request_time'];
         });
 
@@ -99,6 +96,7 @@ final class SlotCoordinationAllocator
             if ($a['request_time'] === $b['request_time']) {
                 return strcmp($a['operator'], $b['operator']);
             }
+
             return $a['request_time'] <=> $b['request_time'];
         });
 
@@ -152,4 +150,3 @@ final class SlotCoordinationAllocator
         return $result;
     }
 }
-

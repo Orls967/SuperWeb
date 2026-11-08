@@ -23,4 +23,3 @@ enum AviationTransactionTypes: string implements TransactionTypeRegistry
     case AVI_CODESHARE_SETTLE = 'AVI_CODESHARE_SETTLE';
     case AVI_INS_RECOVERY = 'AVI_INS_RECOVERY';
 }
-

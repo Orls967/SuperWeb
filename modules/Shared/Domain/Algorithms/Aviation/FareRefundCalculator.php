@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Domain\Algorithms\Aviation;
 
-use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
-
 /**
  * A4: Aviation\FareRefundCalculator
  *
@@ -24,12 +22,8 @@ final class FareRefundCalculator
     private const ADMIN_FEE_MINOR = 100000;
 
     /**
-     * @param string $fareClass FLEX, STD, PROMO
-     * @param int $baseFareMinor
-     * @param int $taxMinor
-     * @param int|null $hoursBeforeFlight null jika no-show
-     * @param bool $isCancelledByAirline
-     * @return FareRefundResult
+     * @param  string  $fareClass  FLEX, STD, PROMO
+     * @param  int|null  $hoursBeforeFlight  null jika no-show
      */
     public function calculate(
         string $fareClass,
@@ -67,13 +61,14 @@ final class FareRefundCalculator
             );
 
             FareRefundCertificateVerifier::verify($res);
+
             return $res;
         }
 
         // Tentukan pita waktu
         $bpsTable = [
-            'FLEX'  => [10000, 9000, 7000, 5000],
-            'STD'   => [8000, 6000, 3000, 0],
+            'FLEX' => [10000, 9000, 7000, 5000],
+            'STD' => [8000, 6000, 3000, 0],
             'PROMO' => [5000, 0, 0, 0],
         ];
 
@@ -128,4 +123,3 @@ final class FareRefundCalculator
         return $res;
     }
 }
-

@@ -12,10 +12,6 @@ class AviationReportViewModel
 {
     /**
      * Membangun data laporan kinerja komersial & keuangan aviasi per rentang waktu.
-     *
-     * @param string $startDate
-     * @param string $endDate
-     * @return array
      */
     public function build(string $startDate, string $endDate): array
     {
@@ -57,4 +53,3 @@ class AviationReportViewModel
         ];
     }
 }
-

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Aviation\Application\Services;
 
 use InvalidArgumentException;
-use Modules\Aviation\Domain\Models\AviationAircraft;
-use Modules\Aviation\Domain\Models\AviationAirport;
 use Modules\Aviation\Domain\Models\AviationFlight;
 
 class AviationAirportGateService
@@ -14,8 +12,6 @@ class AviationAirportGateService
     /**
      * Alokasi gerbang keberangkatan (aerobridge vs remote apron) berdasarkan klasifikasi bentang sayap ICAO.
      *
-     * @param int $flightId
-     * @param string $preferredGate
      * @return array{
      *     assigned_gate: string,
      *     gate_type: string,
@@ -77,4 +73,3 @@ class AviationAirportGateService
         ];
     }
 }
-

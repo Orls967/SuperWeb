@@ -42,4 +42,3 @@ class AviationSeatHold extends Model
         return CarbonImmutable::now()->isAfter($this->expires_at);
     }
 }
-

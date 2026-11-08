@@ -53,4 +53,3 @@ class AviationServiceProvider extends ServiceProvider
         }
     }
 }
-

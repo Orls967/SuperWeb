@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AviationSlotRequestTransition extends Model
 {
     public $timestamps = false;
+
     protected $table = 'avi_slot_request_transitions';
 
     protected $fillable = [
@@ -27,4 +28,3 @@ class AviationSlotRequestTransition extends Model
         return $this->belongsTo(AviationSlotRequest::class, 'slot_request_id');
     }
 }
-

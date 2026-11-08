@@ -18,8 +18,7 @@ class AviationSlotController extends Controller
 {
     public function __construct(
         private readonly AllocateSeasonalSlotsAction $allocateAction
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -73,4 +72,3 @@ class AviationSlotController extends Controller
         ], 201);
     }
 }
-

@@ -63,4 +63,3 @@ class AviationSlotRequest extends Model
         ]);
     }
 }
-

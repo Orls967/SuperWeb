@@ -49,4 +49,3 @@ class GenerateFlightManifestCommand extends Command
         return self::SUCCESS;
     }
 }
-

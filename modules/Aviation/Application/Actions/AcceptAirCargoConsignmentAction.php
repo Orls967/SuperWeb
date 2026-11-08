@@ -7,7 +7,6 @@ namespace Modules\Aviation\Application\Actions;
 use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Domain\Enums\CargoConsignmentStatus;
 use Modules\Aviation\Domain\Exceptions\DangerousGoodsRejectedException;
-use Modules\Aviation\Domain\Exceptions\IdempotencyConflictException;
 use Modules\Aviation\Domain\Models\AviationCargoConsignment;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Ledger\AviationLedgerPostingService;
@@ -20,8 +19,7 @@ class AcceptAirCargoConsignmentAction
         private readonly DangerousGoodsEligibilityChecker $dgChecker,
         private readonly AviationLedgerPostingService $ledgerService,
         private readonly ?CustodyVerifier $custodyVerifier = null
-    ) {
-    }
+    ) {}
 
     /**
      * @param array{
@@ -38,7 +36,6 @@ class AcceptAirCargoConsignmentAction
      *   uld_container_code?: string|null,
      *   idempotency_key: string
      * } $payload
-     * @return AviationCargoConsignment
      */
     public function execute(array $payload): AviationCargoConsignment
     {
@@ -125,4 +122,3 @@ class AcceptAirCargoConsignmentAction
         });
     }
 }
-

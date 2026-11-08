@@ -12,7 +12,6 @@ class AviationFlightTrackingService
     /**
      * Hitung progres jelajah penerbangan, sisa jarak, dan perkiraan waktu tiba aktual (ETA).
      *
-     * @param int $flightId
      * @return array{
      *     flight_status: string,
      *     progress_percentage: int,
@@ -77,4 +76,3 @@ class AviationFlightTrackingService
         ];
     }
 }
-

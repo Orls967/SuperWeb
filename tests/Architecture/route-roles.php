@@ -5,17 +5,17 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\AutoDex\Domain\Models\Brand;
-use Modules\Aviation\Domain\Models\AviationAirport;
-use Modules\Aviation\Domain\Models\AviationFlight;
-use Modules\Aviation\Domain\Models\AviationOperator;
-use Modules\Aviation\Domain\Models\AviationRoute;
-use Modules\Aviation\Domain\Models\AviationTicket;
 use Modules\AutoDex\Domain\Models\Car;
 use Modules\AutoServe\Domain\Enums\EstimateStatus;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Estimate;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
+use Modules\Aviation\Domain\Models\AviationAirport;
+use Modules\Aviation\Domain\Models\AviationFlight;
+use Modules\Aviation\Domain\Models\AviationOperator;
+use Modules\Aviation\Domain\Models\AviationRoute;
+use Modules\Aviation\Domain\Models\AviationTicket;
 use Modules\Circular\Domain\Models\CirAuctionRound;
 use Modules\Circular\Domain\Models\CirBid;
 use Modules\Circular\Domain\Models\CirListing;
@@ -4408,6 +4408,7 @@ return [
                 'arrival_time' => now()->addHours(4),
                 'status' => 'planned',
             ]);
+
             return ['flight' => $flight->id];
         },
     ],
@@ -4438,6 +4439,7 @@ return [
                 'arrival_time' => now()->addHours(4),
                 'status' => 'planned',
             ]);
+
             return ['flight' => $flight->id];
         },
     ],
@@ -4489,6 +4491,7 @@ return [
                 $ticket->passenger_party_id = auth()->id();
                 $ticket->save();
             }
+
             return ['ticket' => $ticket->id];
         },
         'setup' => function ($user) {
@@ -4539,6 +4542,7 @@ return [
                 $ticket->passenger_party_id = auth()->id();
                 $ticket->save();
             }
+
             return ['ticket' => $ticket->id];
         },
         'setup' => function ($user) {

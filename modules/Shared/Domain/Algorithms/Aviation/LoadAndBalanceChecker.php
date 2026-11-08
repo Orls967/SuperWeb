@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Domain\Algorithms\Aviation;
 
-use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
-
 /**
  * A3: Aviation\LoadAndBalanceChecker
  *
@@ -19,13 +17,7 @@ use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 final class LoadAndBalanceChecker
 {
     /**
-     * @param int $mtowKg
-     * @param int $cgForwardLimitMm
-     * @param int $cgAftLimitMm
-     * @param int $fuelWeightKg
-     * @param int $fuelArmMm
-     * @param list<array{name: string, weight_kg: int, arm_mm: int}> $stations
-     * @return LoadAndBalanceResult
+     * @param  list<array{name: string, weight_kg: int, arm_mm: int}>  $stations
      */
     public function check(
         int $mtowKg,
@@ -83,4 +75,3 @@ final class LoadAndBalanceChecker
         return $result;
     }
 }
-

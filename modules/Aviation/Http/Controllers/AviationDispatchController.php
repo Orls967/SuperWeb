@@ -21,8 +21,7 @@ class AviationDispatchController extends Controller
     public function __construct(
         private readonly DispatchFlightGateAction $dispatchAction,
         private readonly AviationLedgerPostingService $ledgerService
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -100,4 +99,3 @@ class AviationDispatchController extends Controller
         ]);
     }
 }
-

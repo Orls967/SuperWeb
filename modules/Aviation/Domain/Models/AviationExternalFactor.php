@@ -22,4 +22,3 @@ class AviationExternalFactor extends Model
         'effective_from' => 'datetime',
     ];
 }
-

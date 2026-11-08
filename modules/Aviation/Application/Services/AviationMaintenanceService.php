@@ -23,9 +23,6 @@ class AviationMaintenanceService
 
     /**
      * Jadwalkan kunjungan perawatan armada pesawat, integrasi ke modul Asset, dan posting provisi beban.
-     *
-     * @param array $payload
-     * @return AviationMaintenanceVisit
      */
     public function scheduleMaintenance(array $payload): AviationMaintenanceVisit
     {
@@ -74,7 +71,7 @@ class AviationMaintenanceService
         $visit = AviationMaintenanceVisit::findOrFail($visitId);
         $aircraft = AviationAircraft::findOrFail($visit->aircraft_id);
 
-        return DB::transaction(function () use ($visit, $aircraft, $hoursReset, $cyclesReset) {
+        return DB::transaction(function () use ($visit, $aircraft) {
             $visit->actual_end = now();
             $visit->transitionTo(MaintenanceVisitStatus::RELEASED_TO_SERVICE, 'MRO_INSPECTION_SIGNED_OFF');
 
@@ -93,4 +90,3 @@ class AviationMaintenanceService
         });
     }
 }
-

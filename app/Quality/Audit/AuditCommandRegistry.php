@@ -6,11 +6,11 @@ namespace App\Quality\Audit;
 
 use App\Quality\Audit\Fixtures\AgriAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AgyAuditCorruptionFixture;
-use App\Quality\Audit\Fixtures\AviationAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ApiAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AstVerifyChainCorruptionFixture;
+use App\Quality\Audit\Fixtures\AviationAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\BiddingAuditCorruptionFixture;

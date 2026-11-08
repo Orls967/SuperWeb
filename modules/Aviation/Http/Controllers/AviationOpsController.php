@@ -15,8 +15,7 @@ class AviationOpsController extends Controller
 {
     public function __construct(
         private readonly AviationExternalFactors $externalFactors
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -47,4 +46,3 @@ class AviationOpsController extends Controller
         ]);
     }
 }
-

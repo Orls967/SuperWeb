@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Shared\Domain\Algorithms\Aviation;
 
 use Carbon\CarbonImmutable;
-use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
 
 /**
  * A2: Aviation\AirworthinessDispatchGate
@@ -19,18 +18,6 @@ use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
  */
 final class AirworthinessDispatchGate
 {
-    /**
-     * @param CarbonImmutable $evalDate
-     * @param CarbonImmutable $certExpiry
-     * @param int $aCheckDueMinutes
-     * @param int $aCheckCurrentMinutes
-     * @param int $cyclesLimit
-     * @param int $cyclesCurrent
-     * @param int $flightDurationMinutes
-     * @param int $flightCycles
-     * @param CarbonImmutable|null $melDeferralExpiry
-     * @return AirworthinessResult
-     */
     public function evaluate(
         CarbonImmutable $evalDate,
         CarbonImmutable $certExpiry,
@@ -90,4 +77,3 @@ final class AirworthinessDispatchGate
         return $result;
     }
 }
-

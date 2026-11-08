@@ -41,7 +41,7 @@ class AviationAlgorithmsTest extends TestCase
      */
     public function test_vektor_a1_slot_coordination_allocator(): void
     {
-        $allocator = new SlotCoordinationAllocator();
+        $allocator = new SlotCoordinationAllocator;
 
         $historical = [
             ['operator' => 'A', 'held' => 4, 'usage_bps' => 9000],
@@ -107,7 +107,7 @@ class AviationAlgorithmsTest extends TestCase
      */
     public function test_vektor_a2_airworthiness_dispatch_gate(): void
     {
-        $gate = new AirworthinessDispatchGate();
+        $gate = new AirworthinessDispatchGate;
         $today = CarbonImmutable::parse('2026-11-08');
 
         // Case 1: Izin, margin 90 menit
@@ -203,7 +203,7 @@ class AviationAlgorithmsTest extends TestCase
      */
     public function test_vektor_a3_load_and_balance_checker(): void
     {
-        $checker = new LoadAndBalanceChecker();
+        $checker = new LoadAndBalanceChecker;
 
         $baseStations = [
             ['name' => 'OEW', 'weight_kg' => 13000, 'arm_mm' => 9000],
@@ -301,7 +301,7 @@ class AviationAlgorithmsTest extends TestCase
      */
     public function test_vektor_a4_fare_refund_calculator(): void
     {
-        $calc = new FareRefundCalculator();
+        $calc = new FareRefundCalculator;
 
         // 1. STD 100 jam
         $res1 = $calc->calculate('STD', 1500000, 250000, 100);
@@ -367,7 +367,7 @@ class AviationAlgorithmsTest extends TestCase
      */
     public function test_vektor_a5_dangerous_goods_eligibility_checker(): void
     {
-        $checker = new DangerousGoodsEligibilityChecker();
+        $checker = new DangerousGoodsEligibilityChecker;
 
         // 1. UN1993 PAX 4000 g -> Izin
         $res1 = $checker->check('UN1993', 'PAX', 4000);
@@ -418,4 +418,3 @@ class AviationAlgorithmsTest extends TestCase
         DangerousGoodsCertificateVerifier::verify($tamperedResult);
     }
 }
-

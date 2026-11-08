@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Aviation\Application\Services;
 
 use Carbon\Carbon;
-use InvalidArgumentException;
 use Modules\Aviation\Domain\Models\AviationFlight;
 
 class AviationCrewSchedulingService
@@ -13,7 +12,6 @@ class AviationCrewSchedulingService
     /**
      * Verifikasi kepatuhan batas waktu terbang awak pesawat (Flight Time Limitations / FTL) sesuai CASR 121.471.
      *
-     * @param int $flightId
      * @param array{
      *     captain_party_id: int,
      *     first_officer_party_id: int,
@@ -85,4 +83,3 @@ class AviationCrewSchedulingService
         ];
     }
 }
-

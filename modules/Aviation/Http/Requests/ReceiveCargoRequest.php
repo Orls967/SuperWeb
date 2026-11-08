@@ -38,4 +38,3 @@ class ReceiveCargoRequest extends FormRequest
         }
     }
 }
-

@@ -37,4 +37,3 @@ class MaintenanceForecastCommand extends Command
         return self::SUCCESS;
     }
 }
-

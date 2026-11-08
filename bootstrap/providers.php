@@ -3,10 +3,10 @@
 use App\Providers\AppServiceProvider;
 use Modules\Agency\AgencyServiceProvider;
 use Modules\Agri\AgriServiceProvider;
-use Modules\Aviation\AviationServiceProvider;
 use Modules\Asset\AssetServiceProvider;
 use Modules\AutoDex\AutoDexServiceProvider;
 use Modules\AutoServe\AutoServeServiceProvider;
+use Modules\Aviation\AviationServiceProvider;
 use Modules\B2b\B2bServiceProvider;
 use Modules\Banking\BankingServiceProvider;
 use Modules\Circular\CircularServiceProvider;

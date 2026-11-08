@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\AviationOps;
 
+use App\Models\User;
+use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Modules\Aviation\database\seeders\AviationRbacSeeder;
 use Modules\Aviation\Domain\Models\AviationAircraft;
 use Modules\Aviation\Domain\Models\AviationAirport;
 use Modules\Aviation\Domain\Models\AviationFlight;
@@ -13,7 +16,6 @@ use Modules\Aviation\Domain\Models\AviationOperator;
 use Modules\Aviation\Domain\Models\AviationRoute;
 use Modules\Aviation\Domain\Models\AviationSeatInventory;
 use Modules\Aviation\Domain\Models\AviationTicket;
-use App\Models\User;
 use Tests\TestCase;
 
 /**
@@ -27,8 +29,8 @@ class AviationOpsAcceptanceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\LedgerAccountsSeeder::class);
-        $this->seed(\Modules\Aviation\database\seeders\AviationRbacSeeder::class);
+        $this->seed(LedgerAccountsSeeder::class);
+        $this->seed(AviationRbacSeeder::class);
     }
 
     /**
@@ -367,4 +369,3 @@ class AviationOpsAcceptanceTest extends TestCase
         $this->assertNotEquals(0, $exitCorrupt, 'avi:audit harus mendeteksi korupsi data dan keluar dengan kode != 0');
     }
 }
-

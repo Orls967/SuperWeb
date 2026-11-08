@@ -70,4 +70,3 @@ class AviationMaintenanceVisit extends Model
         ]);
     }
 }
-

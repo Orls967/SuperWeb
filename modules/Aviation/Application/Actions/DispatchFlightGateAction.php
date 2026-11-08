@@ -18,8 +18,7 @@ class DispatchFlightGateAction
         private readonly AirworthinessDispatchGate $airworthinessGate,
         private readonly CalculateWeightAndBalanceAction $wbAction,
         private readonly ?MaintenanceWorkOrderRequester $woRequester = null
-    ) {
-    }
+    ) {}
 
     public function evaluateEligibility(AviationFlight $flight, ?CarbonImmutable $evalDate = null): AirworthinessResult
     {
@@ -94,4 +93,3 @@ class DispatchFlightGateAction
         }
     }
 }
-

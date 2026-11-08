@@ -14,13 +14,13 @@ final class SlotCoordinationCertificate
         public readonly array $waitlisted,
         public readonly int $remainingPool,
         public readonly string $hash = ''
-    ) {
-    }
+    ) {}
 
     public function calculateHash(): string
     {
         ksort($this->allocated);
         ksort($this->waitlisted);
+
         return hash('sha256', sprintf(
             '%d|%d|%d|%s|%s|%d',
             $this->capacity,
@@ -32,4 +32,3 @@ final class SlotCoordinationCertificate
         ));
     }
 }
-

@@ -17,8 +17,7 @@ class ScheduleMaintenanceVisitAction
     public function __construct(
         private readonly AviationLedgerPostingService $ledgerService,
         private readonly ?MaintenanceWorkOrderRequester $woRequester = null
-    ) {
-    }
+    ) {}
 
     public function execute(
         int $aircraftId,
@@ -67,4 +66,3 @@ class ScheduleMaintenanceVisitAction
         });
     }
 }
-

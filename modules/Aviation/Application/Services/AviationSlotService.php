@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Application\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Modules\Aviation\Domain\Enums\SlotMovementType;
 use Modules\Aviation\Domain\Enums\SlotRequestStatus;
-use Modules\Aviation\Domain\Models\AviationAirport;
-use Modules\Aviation\Domain\Models\AviationOperator;
 use Modules\Aviation\Domain\Models\AviationSlot;
 use Modules\Aviation\Domain\Models\AviationSlotRequest;
 use Modules\Shared\Domain\Algorithms\Aviation\SlotCoordinationAllocator;
@@ -24,9 +20,6 @@ class AviationSlotService
     /**
      * Alokasi batch slot musiman IATA WASG berdasarkan aturan 80/20 dan kuota pendatang baru 50%.
      *
-     * @param int $airportId
-     * @param string $seasonCode
-     * @param int $capacityPerSeason
      * @return array{allocated_count: int, rejected_count: int, historic_count: int, pool_count: int}
      */
     public function processSeasonalAllocation(int $airportId, string $seasonCode, int $capacityPerSeason): array
@@ -98,4 +91,3 @@ class AviationSlotService
             ->get();
     }
 }
-

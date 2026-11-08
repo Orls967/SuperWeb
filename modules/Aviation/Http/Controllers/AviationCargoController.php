@@ -18,8 +18,7 @@ class AviationCargoController extends Controller
 {
     public function __construct(
         private readonly AcceptAirCargoConsignmentAction $acceptAction
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -71,4 +70,3 @@ class AviationCargoController extends Controller
         }
     }
 }
-

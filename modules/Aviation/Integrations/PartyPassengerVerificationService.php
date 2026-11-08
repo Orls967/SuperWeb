@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Aviation\Integrations;
 
-use Illuminate\Support\Facades\DB;
 use Modules\Aviation\Application\Exceptions\SanctionedPassengerException;
 
 class PartyPassengerVerificationService
@@ -12,9 +11,8 @@ class PartyPassengerVerificationService
     /**
      * Memverifikasi data identitas penumpang terhadap modul Party & daftar cekal (No-Fly List).
      *
-     * @param int $partyId
-     * @param string $passengerName
      * @return array{is_verified: bool, status: string, risk_score: int}
+     *
      * @throws SanctionedPassengerException
      */
     public function verifyPassenger(int $partyId, string $passengerName): array
@@ -41,4 +39,3 @@ class PartyPassengerVerificationService
         ];
     }
 }
-

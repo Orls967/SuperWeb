@@ -44,4 +44,3 @@ class DispatchScanCommand extends Command
         return self::SUCCESS;
     }
 }
-

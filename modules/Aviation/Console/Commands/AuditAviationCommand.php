@@ -6,15 +6,12 @@ namespace Modules\Aviation\Console\Commands;
 
 use App\Quality\Audit\Fixtures\AviationAuditCorruptionFixture;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
 use Modules\Aviation\Domain\Models\AviationAirport;
 use Modules\Aviation\Domain\Models\AviationCargoConsignment;
 use Modules\Aviation\Domain\Models\AviationFlight;
 use Modules\Aviation\Domain\Models\AviationRefund;
 use Modules\Aviation\Domain\Models\AviationSeatInventory;
 use Modules\Aviation\Domain\Models\AviationSlot;
-use Modules\Aviation\Domain\Models\AviationTicket;
-use Modules\Aviation\Ledger\AviationAccounts;
 
 class AuditAviationCommand extends Command
 {
@@ -25,7 +22,7 @@ class AuditAviationCommand extends Command
     public function handle(): int
     {
         if ($this->option('corrupt')) {
-            $fixture = new AviationAuditCorruptionFixture();
+            $fixture = new AviationAuditCorruptionFixture;
             $corruptedRef = $fixture->corrupt();
             $this->warn("Data korupsi disuntikkan untuk pengujian sabotase: {$corruptedRef}");
         }
@@ -50,6 +47,7 @@ class AuditAviationCommand extends Command
         foreach ($departedFlights as $f) {
             if (! $f->aircraft) {
                 $discrepancies[] = "Penerbangan {$f->flight_number} (ID: {$f->id}) berstatus {$f->status} tanpa pesawat terdaftar.";
+
                 continue;
             }
 
@@ -133,4 +131,3 @@ class AuditAviationCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -82,4 +82,3 @@ class AviationTicket extends Model
         ]);
     }
 }
-

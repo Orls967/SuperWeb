@@ -20,10 +20,6 @@ class HotelIrropsAccommodationService
      * Menyediakan akomodasi hotel darurat bagi penumpang saat terjadi pembatalan/keterlambatan
      * penerbangan berat (IRROPS) sesuai regulasi PM 89/2015 via modul Hotel (G7-K16).
      *
-     * @param AviationFlight $flight
-     * @param AviationTicket $ticket
-     * @param string $hotelPropertyId
-     * @param string $roomId
      * @return array{success: bool, reservation_code: ?string, notes: string}
      */
     public function reserveEmergencyAccommodation(
@@ -53,7 +49,7 @@ class HotelIrropsAccommodationService
                     'notes' => "Akomodasi darurat IRROPS berhasil dipesan untuk tiket {$ticket->ticket_number}.",
                 ];
             } catch (Exception $e) {
-                Log::warning("Pemesanan akomodasi IRROPS via Hotel gagal: ".$e->getMessage());
+                Log::warning('Pemesanan akomodasi IRROPS via Hotel gagal: '.$e->getMessage());
             }
         }
 
@@ -65,4 +61,3 @@ class HotelIrropsAccommodationService
         ];
     }
 }
-

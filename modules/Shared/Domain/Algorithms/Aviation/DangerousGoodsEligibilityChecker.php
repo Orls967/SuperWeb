@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Domain\Algorithms\Aviation;
 
-use Modules\Shared\Domain\Math\Exceptions\InvalidCertificateException;
-
 /**
  * A5: Aviation\DangerousGoodsEligibilityChecker
  *
@@ -19,6 +17,7 @@ final class DangerousGoodsEligibilityChecker
 {
     /**
      * Tabel aturan bawaan standar IATA DGR asumsi simulasi.
+     *
      * @var array<string, array<string, int>>
      */
     private array $rulesTable = [
@@ -28,13 +27,8 @@ final class DangerousGoodsEligibilityChecker
     ];
 
     /**
-     * @param string $unNumber
-     * @param string $mode PAX atau CAO
-     * @param int $weightGrams
-     * @param int|null $sectorDurationMinutes
-     * @param int|null $uldHoldoverMinutes
-     * @param array<string, array<string, int>>|null $customRules
-     * @return DangerousGoodsResult
+     * @param  string  $mode  PAX atau CAO
+     * @param  array<string, array<string, int>>|null  $customRules
      */
     public function check(
         string $unNumber,
@@ -93,4 +87,3 @@ final class DangerousGoodsEligibilityChecker
         return $result;
     }
 }
-

@@ -44,4 +44,3 @@ class AviationRoute extends Model
         return $this->hasMany(AviationFlight::class, 'route_id');
     }
 }
-

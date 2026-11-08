@@ -35,4 +35,3 @@ class RefundSettleCommand extends Command
         return self::SUCCESS;
     }
 }
-

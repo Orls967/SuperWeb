@@ -66,4 +66,3 @@ final class CargoConsignmentStateMachine
         return self::TRANSITIONS;
     }
 }
-

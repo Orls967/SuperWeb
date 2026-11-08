@@ -50,4 +50,3 @@ class AviationAirport extends Model
         return $this->hasMany(AviationRoute::class, 'destination_airport_id');
     }
 }
-
