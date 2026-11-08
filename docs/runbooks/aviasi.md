@@ -12,7 +12,7 @@ Modul Aviasi menyediakan 11 perintah Artisan untuk automasi, pemantauan kelaikan
 |---|---|---|---|
 | `php artisan avi:audit` | Setiap 1 jam (`0 * * * *`) | Rekonsiliasi dua sumber: kapasitas inventori vs tiket, kargo hash chain, refund vs ledger, W&B departures. | Nol toleransi (exit code != 0 memicu PagerDuty P2). |
 | `php artisan avi:expire-holds` | Setiap 5 menit (`*/5 * * * *`) | Melepaskan kursi held yang melewati batas TTL (15 menit) kembali ke inventori komersial. | Idempoten, aman diulang kapan saja. |
-| `php artisan avi:reconcile-slots` | Mingguan (Minggu `02:00`) | Menghitung rasio utilisasi slot 80/20 IATA WASG untuk musim depan (`W26`/`S27`). | Peringatan jika data penerbangan belum lengkap. |
+| `php artisan avi:slot-usage-evaluate` | Mingguan (Minggu `02:00`) | Menghitung rasio utilisasi slot 80/20 IATA WASG untuk musim depan (`W26`/`S27`). | Peringatan jika data penerbangan belum lengkap. |
 | `php artisan avi:sync-factors` | Setiap 6 jam (`0 */6 * * *`) | Sinkronisasi harga avtur Jet A-1 dari MOPS Pertamina dan status peringatan debu vulkanik VONA. | Menggunakan nilai cache terakhir bila feed timeout. |
 | `php artisan avi:purge-pii` | Bulanan (Tgl 1 `03:00`) | Redaksi data identitas penumpang (nama lengkap, NIK/paspor) yang telah terbang > 90 hari demi kepatuhan UU PDP No. 27/2022. | Append-only audit log harus tetap utuh. |
 | `php artisan avi:manifest {flight_number}` | Ad-hoc (D-1 Jam keberangkatan) | Menghasilkan file CSV manifes resmi penumpang dan muatan kargo untuk otoritas bandara dan navigasi udara. | Wajib tersedia sebelum status penerbangan `airworthy_cleared`. |
@@ -62,3 +62,4 @@ Bila perintah `php artisan avi:audit` menghasilkan peringatan `STATUS: GAGAL`:
 - Pencarian data penumpang untuk keperluan pelaporan atau manifes menggunakan `pii_blind_index` (HMAC/SHA-256 ber-kunci).
 - Tiket dengan status `flown` yang telah melewati 90 hari kalender akan dibersihkan bidang nama aslinya menjadi `[REDACTED_PDP]` secara permanen melalui perintah `avi:purge-pii`.
 - Riwayat transisi status tiket pada tabel `avi_ticket_transitions` tetap dipertahankan sebagai bukti audit forensik tanpa mengekspos PII penumpang.
+

@@ -10,9 +10,9 @@ use Modules\Aviation\Domain\Models\AviationSlot;
 
 class ReconcileSlotUsageCommand extends Command
 {
-    protected $signature = 'avi:reconcile-slots {--airport= : Kode IATA bandara} {--season= : Kode season IATA (misal: W26)}';
+    protected $signature = 'avi:slot-usage-evaluate {--airport= : Kode IATA bandara} {--season= : Kode season IATA (misal: W26)}';
 
-    protected $description = 'Rekonsiliasi rasio pemanfaatan slot bandara IATA (Aturan Use-it-or-lose-it 80/20) untuk penentuan hak historis musim berikutnya';
+    protected $description = 'Evaluasi rasio pemanfaatan slot bandara IATA (Aturan Use-it-or-lose-it 80/20) untuk penentuan hak historis musim berikutnya';
 
     public function handle(): int
     {
@@ -62,3 +62,4 @@ class ReconcileSlotUsageCommand extends Command
         return self::SUCCESS;
     }
 }
+
