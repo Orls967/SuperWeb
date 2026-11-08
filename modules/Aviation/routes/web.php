@@ -5,12 +5,16 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Aviation\Http\Controllers\AviationBookingController;
 use Modules\Aviation\Http\Controllers\AviationCargoController;
+use Modules\Aviation\Http\Controllers\AviationCodeshareController;
 use Modules\Aviation\Http\Controllers\AviationDispatchController;
 use Modules\Aviation\Http\Controllers\AviationFleetController;
+use Modules\Aviation\Http\Controllers\AviationIrropsController;
+use Modules\Aviation\Http\Controllers\AviationLoyaltyController;
 use Modules\Aviation\Http\Controllers\AviationOpsController;
 use Modules\Aviation\Http\Controllers\AviationPassengerPortalController;
 use Modules\Aviation\Http\Controllers\AviationReportsController;
 use Modules\Aviation\Http\Controllers\AviationSlotController;
+use Modules\Aviation\Http\Controllers\AviationYieldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,5 +74,32 @@ Route::middleware(['web', 'auth'])->group(function (): void {
     Route::middleware(['role:admin,customer_care,ops_controller,superadmin'])->group(function (): void {
         Route::get('/aviation/reports', [AviationReportsController::class, 'index'])->name('aviation.reports.index');
         Route::get('/aviation/reports/export', [AviationReportsController::class, 'export'])->name('aviation.reports.export');
+    });
+
+    // Fase 178: Yield & Revenue Management
+    Route::middleware(['role:admin,ops_controller,superadmin'])->group(function (): void {
+        Route::get('/aviation/yield', [AviationYieldController::class, 'index'])->name('aviation.yield.index');
+        Route::post('/aviation/yield/optimize', [AviationYieldController::class, 'optimize'])->name('aviation.yield.optimize');
+    });
+
+    // Fase 178: Disrupsi Operasional (IRROPS) & Hak Penumpang PM 89
+    Route::middleware(['role:admin,customer_care,ops_controller,superadmin'])->group(function (): void {
+        Route::get('/aviation/irrops', [AviationIrropsController::class, 'index'])->name('aviation.irrops.index');
+        Route::post('/aviation/irrops/store', [AviationIrropsController::class, 'store'])->name('aviation.irrops.store');
+        Route::post('/aviation/irrops/dispatch-care', [AviationIrropsController::class, 'dispatchCare'])->name('aviation.irrops.dispatch-care');
+        Route::post('/aviation/irrops/reaccommodate', [AviationIrropsController::class, 'reaccommodate'])->name('aviation.irrops.reaccommodate');
+    });
+
+    // Fase 178: Codeshare & Aliansi Antar-Maskapai
+    Route::middleware(['role:admin,ops_controller,superadmin'])->group(function (): void {
+        Route::get('/aviation/codeshare', [AviationCodeshareController::class, 'index'])->name('aviation.codeshare.index');
+        Route::post('/aviation/codeshare/store', [AviationCodeshareController::class, 'store'])->name('aviation.codeshare.store');
+        Route::post('/aviation/codeshare/{id}/activate', [AviationCodeshareController::class, 'activate'])->name('aviation.codeshare.activate');
+    });
+
+    // Fase 178: Program Loyalitas Frequent Flyer
+    Route::middleware(['role:admin,customer_care,superadmin'])->group(function (): void {
+        Route::get('/aviation/loyalty', [AviationLoyaltyController::class, 'index'])->name('aviation.loyalty.index');
+        Route::post('/aviation/loyalty/enroll', [AviationLoyaltyController::class, 'enroll'])->name('aviation.loyalty.enroll');
     });
 });

@@ -7,6 +7,10 @@ namespace Modules\Aviation;
 use Illuminate\Support\ServiceProvider;
 use Modules\Aviation\Application\Services\SeatInventoryReserverService;
 use Modules\Aviation\Console\Commands\AuditAviationCommand;
+use Modules\Aviation\Console\Commands\AviationCodeshareProrateCommand;
+use Modules\Aviation\Console\Commands\AviationDisruptionInspectCommand;
+use Modules\Aviation\Console\Commands\AviationIrropsProcessCommand;
+use Modules\Aviation\Console\Commands\AviationYieldRebalanceCommand;
 use Modules\Aviation\Console\Commands\CargoManifestCommand;
 use Modules\Aviation\Console\Commands\DispatchScanCommand;
 use Modules\Aviation\Console\Commands\ExpireSeatHoldsCommand;
@@ -49,6 +53,10 @@ class AviationServiceProvider extends ServiceProvider
                 SyncAviationExternalFactorsCommand::class,
                 PurgePassengerPiiCommand::class,
                 GenerateFlightManifestCommand::class,
+                AviationIrropsProcessCommand::class,
+                AviationYieldRebalanceCommand::class,
+                AviationCodeshareProrateCommand::class,
+                AviationDisruptionInspectCommand::class,
             ]);
         }
     }

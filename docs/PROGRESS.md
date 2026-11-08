@@ -11891,12 +11891,12 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Aviation (`avi_`); air cargo tetap di Logistics · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP Lini 26
 > **Jalan pintas terlarang di fase ini:** shipment udara kedua di luar Logistics; memperluas `AirlineNetworkService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)
-- [ ] 178.2 Yield management by demand/season/lead time with immutable quoted fare and contract/floor guardrails
-- [ ] 178.3 Loyalty miles connect to group Travel Pass with conversion rates and liability ledger; prevent duplicate earning across codeshare
-- [ ] 178.4 Irregular operations: delay/cancellation → rebooking, passenger care vouchers, insurance trigger, hotel/ground transport coordination
-- [ ] 178.5 Tests: no oversell beyond defined policy, miles liability reconciles, cancellation settlement correct, disruption reroute capacity valid, `avi:audit` clean
-- [ ] 178.6 Quality gate Fase 178
+- [🔵] 178.1 Route network, schedule, fare classes, seat inventory, codeshare partner contracts and disruption handling (simulation)
+- [🔵] 178.2 Yield management by demand/season/lead time with immutable quoted fare and contract/floor guardrails
+- [🔵] 178.3 Loyalty miles connect to group Travel Pass with conversion rates and liability ledger; prevent duplicate earning across codeshare
+- [🔵] 178.4 Irregular operations: delay/cancellation → rebooking, passenger care vouchers, insurance trigger, hotel/ground transport coordination
+- [🔵] 178.5 Tests: no oversell beyond defined policy, miles liability reconciles, cancellation settlement correct, disruption reroute capacity valid, `avi:audit` clean
+- [🔵] 178.6 Quality gate Fase 178
 
 ## FASE 179 — LINI 27: PORTS, MARINE TERMINALS & TRADE FACILITATION
 > **Status audit:** 🔵 DIKERJAKAN (2026-11-03) · Pelaksana [G6-P1].
