@@ -4350,4 +4350,23 @@ return [
     'hotel.esg.donate' => ['roles' => ['admin', 'finance', 'hotel_admin']],
     'hotel.travel_pass.personalization' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
     'hotel.travel_pass.corporate_allocate' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+
+    // Fase 114: MICE & Wedding Sales Engine
+    'hotel.mice.pipeline' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.proposal.create' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.contract.convert' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.calculator' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.calculator.compute' => ['roles' => ['admin', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.room-blocks' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.mice.release-blocks.trigger' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.mice.room-blocks.pickup' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.mice.exhibitions' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.mice.exhibitions.reserve' => ['roles' => ['admin', 'front_desk', 'hotel_admin']],
+    'hotel.mice.banquets.beo' => ['roles' => ['admin', 'chef_banquet', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.banquets.beo.generate' => ['roles' => ['admin', 'chef_banquet', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.weddings' => ['roles' => ['admin', 'finance', 'guest', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.weddings.registry' => ['roles' => ['admin', 'finance', 'guest', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.weddings.pay-milestone' => ['roles' => ['admin', 'finance', 'guest', 'hotel_admin', 'sales_mgr']],
+    'hotel.mice.reconciliation' => ['roles' => ['admin', 'finance', 'hotel_admin']],
+    'hotel.mice.reconciliation.audit' => ['roles' => ['admin', 'finance', 'hotel_admin']],
 ];

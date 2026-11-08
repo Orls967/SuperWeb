@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Hotel\Http\Controllers\GuestStayPortalController;
 use Modules\Hotel\Http\Controllers\HotelAllianceExchangeController;
 use Modules\Hotel\Http\Controllers\HotelAwardNightBookingController;
+use Modules\Hotel\Http\Controllers\HotelBanquetBeoController;
 use Modules\Hotel\Http\Controllers\HotelBanquetMiceController;
 use Modules\Hotel\Http\Controllers\HotelBanquetProductionController;
 use Modules\Hotel\Http\Controllers\HotelBanquetTimesharePackageController;
@@ -19,6 +20,7 @@ use Modules\Hotel\Http\Controllers\HotelDestinationBundleController;
 use Modules\Hotel\Http\Controllers\HotelEnergyController;
 use Modules\Hotel\Http\Controllers\HotelEngineeringController;
 use Modules\Hotel\Http\Controllers\HotelEsgCarbonOffsetController;
+use Modules\Hotel\Http\Controllers\HotelExhibitionBoothController;
 use Modules\Hotel\Http\Controllers\HotelFolioSplitController;
 use Modules\Hotel\Http\Controllers\HotelFrontDeskController;
 use Modules\Hotel\Http\Controllers\HotelGuestPortalController;
@@ -27,16 +29,21 @@ use Modules\Hotel\Http\Controllers\HotelHousekeepingMobileController;
 use Modules\Hotel\Http\Controllers\HotelInventoryRateController;
 use Modules\Hotel\Http\Controllers\HotelLoyaltyBreakageAuditController;
 use Modules\Hotel\Http\Controllers\HotelLoyaltyPassportController;
+use Modules\Hotel\Http\Controllers\HotelMiceMarginCalculatorController;
+use Modules\Hotel\Http\Controllers\HotelMicePipelineController;
+use Modules\Hotel\Http\Controllers\HotelMiceReconciliationController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditFolioController;
 use Modules\Hotel\Http\Controllers\HotelNightAuditUiController;
 use Modules\Hotel\Http\Controllers\HotelPackageEscrowAuditController;
 use Modules\Hotel\Http\Controllers\HotelReservationUiController;
+use Modules\Hotel\Http\Controllers\HotelRoomBlockController;
 use Modules\Hotel\Http\Controllers\HotelSpaAppointmentController;
 use Modules\Hotel\Http\Controllers\HotelTimeshareSecondaryMarketController;
 use Modules\Hotel\Http\Controllers\HotelTimeshareSyndicationController;
 use Modules\Hotel\Http\Controllers\HotelTravelPassDashboardController;
 use Modules\Hotel\Http\Controllers\HotelTravelPersonalizationController;
 use Modules\Hotel\Http\Controllers\HotelVoucherCatalogController;
+use Modules\Hotel\Http\Controllers\HotelWeddingContractController;
 use Modules\Hotel\Http\Controllers\HotelYieldAndOverbookingController;
 
 Route::middleware(['web', 'auth', 'role:admin,hotel_admin,front_desk'])->prefix('hotel')->group(function () {
@@ -198,5 +205,40 @@ Route::middleware(['web', 'auth'])->group(function (): void {
     Route::middleware(['role:admin,hotel_admin,sales_mgr'])->group(function (): void {
         Route::get('/hotel/travel-pass/personalization', [HotelTravelPersonalizationController::class, 'index'])->name('hotel.travel_pass.personalization');
         Route::post('/hotel/travel-pass/corporate-allocate', [HotelCorporateLoyaltyController::class, 'allocate'])->name('hotel.travel_pass.corporate_allocate');
+
+        // Fase 114: MICE Sales & Proposals
+        Route::get('/hotel/mice/pipeline', [HotelMicePipelineController::class, 'index'])->name('hotel.mice.pipeline');
+        Route::post('/hotel/mice/proposals', [HotelMicePipelineController::class, 'createProposal'])->name('hotel.mice.proposal.create');
+        Route::post('/hotel/mice/contracts/convert', [HotelMicePipelineController::class, 'convertToContract'])->name('hotel.mice.contract.convert');
+        Route::get('/hotel/mice/calculator', [HotelMiceMarginCalculatorController::class, 'index'])->name('hotel.mice.calculator');
+        Route::post('/hotel/mice/calculator/compute', [HotelMiceMarginCalculatorController::class, 'calculate'])->name('hotel.mice.calculator.compute');
+    });
+
+    // Fase 114: Room Blocks & Allotments
+    Route::middleware(['role:admin,hotel_admin,front_desk'])->group(function (): void {
+        Route::get('/hotel/mice/room-blocks', [HotelRoomBlockController::class, 'index'])->name('hotel.mice.room-blocks');
+        Route::post('/hotel/mice/room-blocks/release', [HotelRoomBlockController::class, 'triggerRelease'])->name('hotel.mice.release-blocks.trigger');
+        Route::post('/hotel/mice/room-blocks/pickup', [HotelRoomBlockController::class, 'recordPickup'])->name('hotel.mice.room-blocks.pickup');
+        Route::get('/hotel/mice/exhibitions', [HotelExhibitionBoothController::class, 'index'])->name('hotel.mice.exhibitions');
+        Route::post('/hotel/mice/exhibitions/reserve', [HotelExhibitionBoothController::class, 'reserve'])->name('hotel.mice.exhibitions.reserve');
+    });
+
+    // Fase 114: Banquet BEO & Kitchen
+    Route::middleware(['role:admin,hotel_admin,chef_banquet,sales_mgr'])->group(function (): void {
+        Route::get('/hotel/mice/banquets/beo', [HotelBanquetBeoController::class, 'index'])->name('hotel.mice.banquets.beo');
+        Route::post('/hotel/mice/banquets/beo/generate', [HotelBanquetBeoController::class, 'generate'])->name('hotel.mice.banquets.beo.generate');
+    });
+
+    // Fase 114: Wedding Contracts & Milestone Payments
+    Route::middleware(['role:admin,hotel_admin,sales_mgr,finance,guest'])->group(function (): void {
+        Route::get('/hotel/mice/weddings', [HotelWeddingContractController::class, 'index'])->name('hotel.mice.weddings');
+        Route::get('/hotel/mice/weddings/gift-registry', [HotelWeddingContractController::class, 'giftRegistry'])->name('hotel.mice.weddings.registry');
+        Route::post('/hotel/mice/weddings/pay-milestone', [HotelWeddingContractController::class, 'processMilestonePayment'])->name('hotel.mice.weddings.pay-milestone');
+    });
+
+    // Fase 114: MICE Financial Reconciliation
+    Route::middleware(['role:admin,hotel_admin,finance'])->group(function (): void {
+        Route::get('/hotel/mice/reconciliation', [HotelMiceReconciliationController::class, 'index'])->name('hotel.mice.reconciliation');
+        Route::post('/hotel/mice/reconciliation/audit', [HotelMiceReconciliationController::class, 'reconcile'])->name('hotel.mice.reconciliation.audit');
     });
 });
