@@ -171,3 +171,26 @@ Untuk memastikan kualitas implementasi kode maritim memenuhi standar enterprise,
 1. **Pencegahan Over-Dispersion Diskaun**: Seluruh perhitungan despatch dibatasi maksimal $50\%$ dari nilai klaim demurrage harian.
 2. **Kepatuhan Nilai Kontribusi**: Jumlah seluruh kontribusi General Average ($\sum \text{Kontribusi}$) wajib persis sama dengan total biaya kerugian laut bersama tanpa pembulatan residual.
 3. **Penyelarasan Ledger Zero-Difference**: Seluruh buku besar double-entry `prt:fleet-audit` wajib mencatatkan saldo selisih tepat 0.
+
+---
+
+## 9. Prosedur Pemeliharaan & Migrasi Basis Data Produksi
+
+Saat melakukan pembaruan skema maritim di lingkungan produksi:
+1. Pastikan transaksi pelayaran aktif tidak berada dalam kondisi kritis transit pintu air atau sandar darurat.
+2. Jalankan migrasi basis data dengan flag `--force`:
+   ```bash
+   php artisan migrate --path=modules/Port/database/migrations/2026_11_08_400000_create_port_fleet_and_voyage_tables.php --force
+   ```
+3. Lakukan verifikasi sinkronisasi inventaris dokumentasi:
+   ```bash
+   php artisan docs:inventory
+   ```
+4. Jalankan seeder armada referensi jika melakukan instalasi awal pada lingkungan staging:
+   ```bash
+   php artisan db:seed --class=Database\\Seeders\\PortFleetT1Seeder
+   ```
+5. Eksekusi audit command untuk memastikan integritas buku besar 100% berimbang:
+   ```bash
+   php artisan prt:fleet-audit
+   ```
