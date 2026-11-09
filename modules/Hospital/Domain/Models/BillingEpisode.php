@@ -32,4 +32,14 @@ class BillingEpisode extends Model
     {
         return $this->hasMany(FolioItem::class, 'billing_episode_id');
     }
+
+    public function waterfalls(): HasMany
+    {
+        return $this->hasMany(ClaimWaterfall::class, 'billing_episode_id')->orderBy('step_order');
+    }
+
+    public function disputes(): HasMany
+    {
+        return $this->hasMany(ClaimDispute::class, 'billing_episode_id');
+    }
 }

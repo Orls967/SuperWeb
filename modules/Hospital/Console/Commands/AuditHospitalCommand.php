@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\Actions\GenerateDailyPolyclinicReportAction;
 use Modules\Hospital\Application\Services\ClinicalTrialAndResearchService;
 use Modules\Hospital\Domain\Models\Admission;
+use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\CodeBlueEvent;
+use Modules\Hospital\Domain\Models\FolioItem;
+use Modules\Hospital\Domain\Models\MedFridgeBreach;
+use Modules\Hospital\Domain\Models\MedicalWasteManifest;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Patient;
+use Modules\Hospital\Domain\Models\PharmacyBranchLot;
+use Modules\Hospital\Domain\Services\MedicalWasteManifestService;
 use Modules\Hospital\Domain\Services\PatientPassportService;
 
 class AuditHospitalCommand extends Command
@@ -27,7 +33,8 @@ class AuditHospitalCommand extends Command
     public function handle(
         ClinicalTrialAndResearchService $service,
         GenerateDailyPolyclinicReportAction $reportAction,
-        PatientPassportService $passportService
+        PatientPassportService $passportService,
+        MedicalWasteManifestService $wasteService
     ): int {
         $this->info('Starting Hospital & Clinical Trial Operations Audit (hsp:audit)...');
 
@@ -67,6 +74,50 @@ class AuditHospitalCommand extends Command
 
         // 3. Audit Invarian Code Blue: Seluruh event memiliki proof hash (INV-87-04)
         $invalidCodeBlue = CodeBlueEvent::whereNull('proof_hash')->orWhere('proof_hash', '')->count();
+        if ($invalidCodeBlue > 0) {
+            $auditNotes[] = "Pelanggaran INV-87-04: Ditemukan {$invalidCodeBlue} event Code Blue tanpa proof hash valid.";
+            $discrepancies += $invalidCodeBlue;
+        }
+
+        // 4. Audit Invarian Billing Episode & Folio Integrity (INV-88-01, INV-88-02)
+        $settledEpisodes = BillingEpisode::whereIn('status', ['BILLED', 'SETTLED', 'CLOSED'])->get();
+        foreach ($settledEpisodes as $ep) {
+            $folioSum = (int) FolioItem::where('billing_episode_id', $ep->id)->sum('subtotal_idr');
+            if ($folioSum !== $ep->total_charges_idr) {
+                $auditNotes[] = "Pelanggaran INV-88-01: Billing episode #{$ep->id} tidak konsisten! Folio ({$folioSum}) vs Total ({$ep->total_charges_idr})";
+                $discrepancies++;
+            }
+
+            if ($ep->status === 'SETTLED') {
+                $totalCovered = $ep->bpjs_coverage_idr + $ep->insurance_copay_idr + $ep->patient_share_idr;
+                if ($totalCovered < $ep->total_charges_idr && $ep->escrow_deposit_idr < ($ep->total_charges_idr - $totalCovered)) {
+                    $auditNotes[] = "Pelanggaran INV-88-02: Waterfall episode #{$ep->id} defisit tidak tertutup deposit!";
+                    $discrepancies++;
+                }
+            }
+        }
+
+        // 5. Audit Invarian Cold-Chain Farmasi (INV-88-03)
+        $activeBreaches = MedFridgeBreach::where('status', 'QUARANTINED')->pluck('fridge_unit_code')->all();
+        if (! empty($activeBreaches)) {
+            $compromisedLots = PharmacyBranchLot::whereIn('fridge_unit_code', $activeBreaches)
+                ->where('is_quarantined', false)
+                ->count();
+
+            if ($compromisedLots > 0) {
+                $auditNotes[] = "Pelanggaran INV-88-03: Ditemukan {$compromisedLots} lot farmasi aktif di dalam kulkas yang mengalami breach belum terselesaikan!";
+                $discrepancies += $compromisedLots;
+            }
+        }
+
+        // 6. Audit Invarian Limbah Medis B3 Festronik Hash Chain (INV-88-04)
+        $manifests = MedicalWasteManifest::has('custodyLogs')->limit(20)->get();
+        foreach ($manifests as $mnf) {
+            if (! $wasteService->verifyCustodyChainIntegrity($mnf)) {
+                $auditNotes[] = "Pelanggaran INV-88-04: Rantai kustodi Festronik manifest limbah {$mnf->manifest_number} terdeteksi rusak atau dimanipulasi!";
+                $discrepancies++;
+            }
+        }
         if ($invalidCodeBlue > 0) {
             $auditNotes[] = "Pelanggaran INV-87-04: Ditemukan {$invalidCodeBlue} event Code Blue tanpa proof hash valid.";
             $discrepancies += $invalidCodeBlue;
