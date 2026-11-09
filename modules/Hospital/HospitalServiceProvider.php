@@ -9,6 +9,10 @@ use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
 use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Application\Services\MedicalEmergencyResponseDispatcherService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
+use Modules\Hospital\Console\Commands\BedSweepCommand;
+use Modules\Hospital\Console\Commands\EfficiencyReportCommand;
+use Modules\Hospital\Console\Commands\PathwayScanCommand;
+use Modules\Hospital\Console\Commands\TelemetryScanCommand;
 use Modules\Hospital\Contracts\EncounterBillReader;
 use Modules\Hospital\Contracts\MedicalEmergencyResponseDispatcher;
 
@@ -34,6 +38,10 @@ class HospitalServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AuditHospitalCommand::class,
+                BedSweepCommand::class,
+                PathwayScanCommand::class,
+                EfficiencyReportCommand::class,
+                TelemetryScanCommand::class,
             ]);
         }
     }

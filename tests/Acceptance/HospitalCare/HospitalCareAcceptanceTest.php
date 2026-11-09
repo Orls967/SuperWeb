@@ -19,6 +19,7 @@ class HospitalCareAcceptanceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->artisan('db:seed', ['--class' => 'Database\\Seeders\\LedgerAccountsSeeder']);
         $this->artisan('db:seed', ['--class' => 'Modules\\Hospital\\database\\seeders\\HospitalDemoSeeder']);
     }
 
@@ -138,7 +139,7 @@ class HospitalCareAcceptanceTest extends TestCase
         $outputFirst = Artisan::output();
         Artisan::call('hospital:pathway-scan');
         $outputSecond = Artisan::output();
-        $this->assertStringContainsString('scanned', strtolower($outputFirst . $outputSecond));
+        $this->assertStringContainsString('pemindaian selesai', strtolower($outputFirst . $outputSecond));
 
         // 3. Telemetri breach -> alarm code blue dinaikkan idempoten
         Artisan::call('hospital:telemetry-scan');

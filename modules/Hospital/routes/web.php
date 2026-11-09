@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Hospital\Http\Controllers\HospitalCareController;
 use Modules\Hospital\Http\Controllers\HospitalController;
 use Modules\Hospital\Http\Controllers\LabDiagnosticImagingController;
 use Modules\Hospital\Http\Controllers\OutpatientController;
@@ -120,4 +121,49 @@ Route::prefix('hospital')->middleware(['web', 'auth'])->group(function () {
     Route::get('/imaging/pacs', [LabDiagnosticImagingController::class, 'pacsIndex'])
         ->middleware('role:admin,auditor,doctor')
         ->name('hospital.imaging.pacs.index');
+
+    // Fase 87: Identitas Pasien, EMR, Bed Management, Clinical Pathway & Critical Care
+    Route::get('/beds', [HospitalCareController::class, 'bedsIndex'])
+        ->middleware('role:admin,bed_manager,rs_admin')
+        ->name('hospital.beds.index');
+
+    Route::get('/er', [HospitalCareController::class, 'erIndex'])
+        ->middleware('role:admin,doctor,nurse')
+        ->name('hospital.er.index');
+
+    Route::get('/nursing', [HospitalCareController::class, 'nursingIndex'])
+        ->middleware('role:admin,nurse')
+        ->name('hospital.nursing.index');
+
+    Route::get('/critical-care', [HospitalCareController::class, 'criticalCareIndex'])
+        ->middleware('role:admin,doctor,nurse')
+        ->name('hospital.critical_care.index');
+
+    Route::get('/patients/{patient}/passport', [HospitalCareController::class, 'patientPassport'])
+        ->middleware('role:admin,doctor,hospital_registration')
+        ->name('hospital.patients.passport');
+
+    Route::get('/efficiency', [HospitalCareController::class, 'efficiencyIndex'])
+        ->middleware('role:admin,rs_admin')
+        ->name('hospital.efficiency.index');
+
+    Route::post('/admissions', [HospitalCareController::class, 'storeAdmission'])
+        ->middleware('role:admin,bed_manager,rs_admin,hospital_registration')
+        ->name('hospital.admissions.store');
+
+    Route::post('/admissions/{admission}/accrue-bed-day', [HospitalCareController::class, 'accrueBedDay'])
+        ->middleware('role:admin,bed_manager,rs_admin')
+        ->name('hospital.admissions.accrue_bed_day');
+
+    Route::post('/admissions/{admission}/discharge', [HospitalCareController::class, 'discharge'])
+        ->middleware('role:admin,bed_manager,rs_admin')
+        ->name('hospital.admissions.discharge');
+
+    Route::post('/code-blue/{event}/ack', [HospitalCareController::class, 'ackCodeBlue'])
+        ->middleware('role:admin,doctor,nurse')
+        ->name('hospital.code_blue.ack');
+
+    Route::post('/code-blue/{event}/resolve', [HospitalCareController::class, 'resolveCodeBlue'])
+        ->middleware('role:admin,doctor')
+        ->name('hospital.code_blue.resolve');
 });

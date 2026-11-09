@@ -58,4 +58,14 @@ class Patient extends Model
     {
         return $this->hasMany(OutpatientEncounter::class, 'patient_id');
     }
+
+    public function passportEvents(): HasMany
+    {
+        return $this->hasMany(PatientPassportEvent::class, 'patient_id');
+    }
+
+    public function admissions(): HasMany
+    {
+        return $this->hasMany(Admission::class, 'patient_id');
+    }
 }
