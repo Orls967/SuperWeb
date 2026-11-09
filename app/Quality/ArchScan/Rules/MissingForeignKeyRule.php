@@ -60,7 +60,12 @@ final class MissingForeignKeyRule implements Rule
             return [];
         }
 
-        $this->ensureMigrationIndicesLoaded();
+        $root = dirname(__DIR__, 4);
+        $isVirtualTestFile = ! file_exists($root.'/'.$file->relativePath);
+
+        if (! $isVirtualTestFile) {
+            $this->ensureMigrationIndicesLoaded();
+        }
 
         $tokens = $file->tokens();
         $violations = [];
@@ -89,7 +94,7 @@ final class MissingForeignKeyRule implements Rule
                     continue;
                 }
 
-                if (isset(self::$allModuleIndexes[$table][$column])) {
+                if (! $isVirtualTestFile && isset(self::$allModuleIndexes[$table][$column])) {
                     continue;
                 }
 
