@@ -45,3 +45,4 @@ Pada fasilitas kesehatan tingkat pertama (FKTP) dan poliklinik telemedis jejarin
 1. Validasi kepesertaan aktif peserta BPJS secara realtime sebelum sesi telekonsultasi dimulai.
 2. Pembuatan nomor rujukan internal untuk pasien Program Pengelolaan Penyakit Kronis (Prolanis).
 3. Pengiriman berkas e-resep BPJS langsung ke apotek PRB (Program Rujuk Balik) terdekat untuk dispensing obat 30 hari tanpa membebani pasien dengan biaya tambahan (*zero out-of-pocket payment*).
+

@@ -92,3 +92,4 @@ Berdasarkan audit atas modul `Hospital` yang ada, diputuskan langkah-langkah ter
 | `ChronicSubscription` & `AllergyMatrix` (Model) | **Perdalam (Deepen)** | Ditambahkan casting JSON, enkripsi field sensitif, query scopes untuk batch cron, serta relasi eksplisit ke episode billing dan akun ledger. |
 | **Kontrak G7-K30: `PatientReferralBooker`** | **Baru (New)** | Dibuat interface kontrak baru G7-K30 di modul `Hospital` untuk standarisasi pertukaran rujukan eksternal dan interoperabilitas jaringan apotek. |
 | `PatientReferralBookerService` | **Baru (New)** | Implementasi enterprise atas kontrak G7-K30 yang mengintegrasikan telemedicine, e-resep, apotek cabang, logistik cold-chain, dan bridging rujukan BPJS SISRUTE. |
+

@@ -50,3 +50,4 @@ Bila ditemukan anomali audit:
 - Modifikasi retroaktif status admisi rawat inap tanpa otorisasi kepala rekam medis.
 
 Sistem secara otomatis mengaktifkan status *Suspicious Integrity Breach* pada dashboard administrator dan mengirimkan peringatan prioritas tinggi ke Pejabat Kepatuhan Rumah Sakit (Chief Compliance Officer).
+

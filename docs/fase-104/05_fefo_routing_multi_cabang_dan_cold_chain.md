@@ -79,3 +79,4 @@ Serah terima obat keras ke tangan pasien diwajibkan mencatat bukti digital otent
 3. **Cryptographic Signature Hash**:
    $$\text{Hash}_{POD} = \text{SHA256}(\text{DeliveryCode} \parallel \text{NIK} \parallel \text{Token} \parallel \text{Timestamp})$$
 4. **Pembaruan Status**: Order berpindah ke `DELIVERED`, persediaan dipotong secara permanen dari buku besar, dan notifikasi konfirmasi dikirim ke dokter penerbit resep.
+

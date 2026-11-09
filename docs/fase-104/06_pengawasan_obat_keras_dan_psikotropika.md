@@ -61,3 +61,4 @@ Setiap transaksi dispensing narkotika menghasilkan entri serial pada `hsp_sipnap
 - Identitas Petugas Farmasi yang Melakukan Verifikasi Akhir.
 
 Di akhir siklus pelaporan bulanan, `SipnapRegulatoryReportingEngine` mengompilasi berkas laporan resmi dan menghitung hash SHA-256 integritas rantai untuk menjamin tidak ada manipulasi data masa lalu (*zero tampering*).
+

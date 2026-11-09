@@ -62,3 +62,4 @@ $$MPR = \left( \frac{\text{Total Hari Pasokan Obat yang Ditebus}}{\text{Jumlah H
 - **OPTIMAL** ($MPR \ge 80\%$): Pasien memiliki kepatuhan sangat baik; risiko komplikasi rendah.
 - **SUBOPTIMAL** ($50\% \le MPR < 80\%$): Pasien rentan mengalami kesenjangan terapi; sistem mengirimkan notifikasi pengingat ramah via aplikasi/WhatsApp.
 - **POOR** ($MPR < 50\%$): Kepatuhan buruk; sistem memicu *Clinical Outreach Flag* agar perawat edukator atau dokter keluarga menghubungi pasien secara langsung.
+

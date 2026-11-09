@@ -53,3 +53,4 @@ Semua endpoint HTTP telemedis dan e-pharmacy diproteksi oleh middleware `RoleMid
    Perubahan diagnosa klinis membentuk rantai blok hash SHA-256 yang ditandatangani secara kriptografis sehingga mencegah penghapusan jejak medis (*anti-tampering audit trail*).
 3. **Privasi Kurir Logistik**:
    Label kemasan obat kurir hanya memuat nama pasien, alamat, nomor telepon, dan instruksi penyimpanan (misal: "Simpan pada 2°C – 8°C"), tanpa mencantumkan indikasi medis sensitif (misal: "Obat ARV HIV" atau "Obat Onkologi").
+

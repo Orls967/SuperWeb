@@ -44,3 +44,4 @@ Setiap transaksi e-pharmacy terintegrasi langsung dengan buku besar keuangan rum
    - Debit Beban Pokok Persediaan Obat (HPP), Kredit Akun Persediaan Obat Apotek Cabang Terpilih berdasarkan nilai perolehan lot FEFO aktual.
 3. **Kliring Antar-Cabang (Inter-Branch Clearing)**:
    - Bila resep dipenuhi oleh cabang waralaba/rekanan jejaring, sistem membukukan kewajiban kliring antar-unit (`hsp_inter_branch_obligations`) yang diselesaikan secara netting berkala.
+

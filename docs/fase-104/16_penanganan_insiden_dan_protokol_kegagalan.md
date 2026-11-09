@@ -51,3 +51,4 @@ Bila koneksi internet atau server pusat SISRUTE Kemenkes mengalami *downtime*:
 2. **Point-In-Time Recovery (PITR)**: Log transaksi write-ahead diarsipkan setiap 5 menit dengan retensi 30 hari.
 3. **Verifikasi Integritas Dua Sumber (Two-Source Integrity Audit)**:
    Perintah `php artisan hosp:audit` dijalankan otomatis setiap jam untuk membuktikan tidak ada data resep atau mutasi saldo yang korup atau hilang.
+

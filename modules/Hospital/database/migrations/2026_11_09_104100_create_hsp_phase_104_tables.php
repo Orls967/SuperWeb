@@ -48,7 +48,7 @@ return new class extends Migration
                 $table->timestamp('delivered_at')->nullable();
                 $table->timestamps();
 
-                $table->index(['delivery_status', 'requires_cold_chain']);
+                $table->index(['delivery_status', 'requires_cold_chain'], 'hsp_med_deliv_status_cold_idx');
             });
         }
 
@@ -75,7 +75,7 @@ return new class extends Migration
                 $table->timestamp('bridged_at')->nullable();
                 $table->timestamps();
 
-                $table->index(['referral_direction', 'approval_status']);
+                $table->index(['referral_direction', 'approval_status'], 'hsp_bpjs_ref_dir_stat_idx');
             });
         }
 
@@ -93,7 +93,7 @@ return new class extends Migration
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
 
-                $table->index(['drug_a_code', 'drug_b_code']);
+                $table->index(['drug_a_code', 'drug_b_code'], 'hsp_drug_interact_pair_idx');
             });
         }
     }

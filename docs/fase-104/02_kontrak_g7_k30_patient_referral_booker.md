@@ -173,3 +173,4 @@ interface PatientReferralBooker
 | `dispatchMedicineDelivery` | < 600 ms (termasuk alokasi kurir) | Rantai dingin terjaga 2–8°C | Penolakan pengiriman jika kotak pendingin tidak tervalidasi |
 | `bridgeBpjsReferral` | < 1.200 ms (bridging HTTP REST) | Simulasi offline mock idempotent | Queue retry berjangka 3 kali dengan *exponential backoff* |
 | `bookInpatientFromReferral` | < 350 ms | 0% *overbooking* bed fisik | Lock pesimis baris bed dengan rollback transaksi atomik |
+

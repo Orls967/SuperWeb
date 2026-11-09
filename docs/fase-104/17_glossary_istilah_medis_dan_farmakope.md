@@ -42,3 +42,4 @@ Dokumen ini menyediakan kamus peristilahan teknis, singkatan farmakologi, serta 
 5. **Peraturan Menteri Kesehatan No. 3 Tahun 2015** tentang Peredaran, Penyimpanan, Pemusnahan, dan Pelaporan Narkotika, Psikotropika, dan Prekursor Farmasi.
 6. **Farmakope Indonesia Edisi VI (2020)**, Kementerian Kesehatan Republik Indonesia.
 7. **United States Pharmacopeia (USP <1079>)** — *Good Storage and Distribution Practices for Drug Products*.
+

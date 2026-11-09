@@ -86,3 +86,4 @@ Obat Look-Alike Sound-Alike (LASA) rentan tertukar saat pembacaan visual resep. 
 - `ePHEDrine` vs `EPINEPHRINE`
 
 Setiap order yang mengandung obat High-Alert atau LASA secara otomatis mewajibkan status `requires_independent_double_check = true` dan mengunci penerbitan surat jalan farmasi sampai diverifikasi oleh apoteker kedua.
+

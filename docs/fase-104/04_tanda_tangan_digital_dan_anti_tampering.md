@@ -86,3 +86,4 @@ Saat apotek menerima order, `DigitalPrescriptionSignatureVerifier::verifySignatu
 ## 5. Pertahanan Terhadap Replay Attack
 
 Setiap resep elektronik memiliki kode unik serial (`RX-TLM-XXXXXX`) yang dicatat pada audit log terdistribusi. Setelah status resep berubah menjadi `DISPENSED`, token digital dikunci secara permanen (`is_consumed = true`). Usaha penebusan kedua di apotek cabang lain akan ditolak oleh sistem verifikasi transaksi FEFO.
+

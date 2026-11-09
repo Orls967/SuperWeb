@@ -81,3 +81,4 @@ Repositori aturan interaksi obat dinamis kustom:
 | `recommendation` | `TEXT` | No | Panduan tindakan klinis bagi dokter/apoteker |
 | `is_active` | `BOOLEAN` | No | Status keaktifan aturan (Default: true) |
 | `created_at` / `updated_at` | `TIMESTAMP` | Yes | Jejak waktu modifikasi |
+

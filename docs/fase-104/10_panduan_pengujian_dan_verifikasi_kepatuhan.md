@@ -67,3 +67,4 @@ php artisan hsp:chronic-refill-cron
 ./vendor/bin/pest tests/Architecture/AuditCommandContractTest.php
 ./vendor/bin/pest tests/Architecture/RouteAuthorizationMatrixTest.php
 ```
+

@@ -99,3 +99,4 @@ sequenceDiagram
     K30->>K30: Bentuk Encounter Baru Rawat Inap
     K30->>Dokter: Return Kode Admisi, Nomor Bed, & Petunjuk Rujukan
 ```
+
