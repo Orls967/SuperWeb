@@ -18,8 +18,11 @@ use InvalidArgumentException;
 class ColdChainEquipmentCalibrationService
 {
     public const STATUS_CALIBRATED_ACCURATE = 'CALIBRATED_ACCURATE';
+
     public const STATUS_DRIFT_COMPENSATED = 'DRIFT_COMPENSATED';
+
     public const STATUS_CALIBRATION_DUE = 'CALIBRATION_DUE';
+
     public const STATUS_OUT_OF_SPECIFICATION = 'OUT_OF_SPECIFICATION';
 
     /**
@@ -35,10 +38,10 @@ class ColdChainEquipmentCalibrationService
     /**
      * Evaluasi kelayakan sensor berdasarkan data sertifikat kalibrasi terkini.
      *
-     * @param string $sensorDeviceCode ID atau serial number probe
-     * @param DateTimeImmutable $lastCalibrationDate Tanggal sertifikat kalibrasi terakhir
-     * @param DateTimeImmutable $evaluationDate Tanggal asesmen saat ini
-     * @param array<int, array{set_point: float, measured_average: float, expanded_uncertainty: float}> $calibrationPoints
+     * @param  string  $sensorDeviceCode  ID atau serial number probe
+     * @param  DateTimeImmutable  $lastCalibrationDate  Tanggal sertifikat kalibrasi terakhir
+     * @param  DateTimeImmutable  $evaluationDate  Tanggal asesmen saat ini
+     * @param  array<int, array{set_point: float, measured_average: float, expanded_uncertainty: float}>  $calibrationPoints
      * @return array{
      *     sensor_code: string,
      *     status: string,

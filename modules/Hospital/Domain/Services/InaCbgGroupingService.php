@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use DomainException;
 use Modules\Hospital\Application\DTOs\InaCbgCalculationDTO;
 use Modules\Hospital\Domain\Models\InaCbgTariff;
 
@@ -97,8 +96,6 @@ class InaCbgGroupingService
     /**
      * Menentukan tingkat keparahan (Severity Level) berdasarkan jumlah dan sifat diagnosa sekunder.
      *
-     * @param  array  $secondaryDiagnoses
-     * @param  array  $procedures
      *
      * @phpstan-param list<string> $secondaryDiagnoses
      * @phpstan-param list<string> $procedures

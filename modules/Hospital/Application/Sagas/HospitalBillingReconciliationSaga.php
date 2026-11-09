@@ -9,7 +9,6 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\DTOs\WaterfallBreakdownDTO;
 use Modules\Hospital\Domain\Models\BillingEpisode;
-use Modules\Hospital\Domain\Models\Encounter;
 use Modules\Hospital\Domain\Services\CoordinationOfBenefitsWaterfallService;
 use Modules\Hospital\Domain\Services\HospitalAccountsPostingService;
 use Modules\Hospital\Domain\Services\HospitalBillingCalculationService;

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use DomainException;
-
 /**
  * Mesin Koordinasi Manfaat Multi-Tingkat (MultiTierBenefitCoordinationEngine).
  * Menghitung pembagian tanggungan asuransi kesehatan berdasarkan sub-limit benefit:

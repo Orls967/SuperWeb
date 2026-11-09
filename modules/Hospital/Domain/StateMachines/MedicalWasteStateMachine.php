@@ -10,11 +10,17 @@ use Modules\Hospital\Domain\Models\MedicalWasteManifest;
 class MedicalWasteStateMachine
 {
     public const STATUS_LOGGED_IN_WARD = 'LOGGED_IN_WARD';
+
     public const STATUS_RECEIVED_AT_TPS = 'RECEIVED_AT_TPS';
+
     public const STATUS_HANDED_TO_TRANSPORTER = 'HANDED_TO_TRANSPORTER';
+
     public const STATUS_IN_TRANSIT = 'IN_TRANSIT';
+
     public const STATUS_INCINERATED = 'INCINERATED';
+
     public const STATUS_COMPLETED = 'COMPLETED';
+
     public const STATUS_DISCREPANCY_FLAGGED = 'DISCREPANCY_FLAGGED';
 
     /**

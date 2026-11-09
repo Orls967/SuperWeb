@@ -70,6 +70,7 @@ class AutomatedClaimAdjudicationSimulator
         // Jika BPJS Kesehatan: Pembayaran berbasis tarif paket flat INA-CBGs
         if ($payer === 'BPJS') {
             $approved = $billedAmountIdr; // Ditanggung penuh sesuai paket
+
             return [
                 'adjudication_id' => $adjudicationId,
                 'payer_code' => $payer,

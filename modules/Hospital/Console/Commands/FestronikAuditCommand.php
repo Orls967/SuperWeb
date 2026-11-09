@@ -69,10 +69,11 @@ class FestronikAuditCommand extends Command
 
         if ($corruptCount > 0) {
             $this->error("Peringatan Keamanan: Terdeteksi {$corruptCount} manifest dengan rantai hash tidak cocok!");
+
             return self::FAILURE;
         }
 
-        $this->info("Audit Festronik Selesai: " . count($rows) . " manifest diaudit. Seluruh rantai segel digital valid.");
+        $this->info('Audit Festronik Selesai: '.count($rows).' manifest diaudit. Seluruh rantai segel digital valid.');
 
         return self::SUCCESS;
     }

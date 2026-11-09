@@ -34,11 +34,11 @@ class RadioactiveMedicalWasteTrackerService
     /**
      * Hitung sisa radioaktivitas dan waktu peluruhan yang dibutuhkan.
      *
-     * @param string $isotope Radionuklida
-     * @param float $initialActivityMegaBq Aktivitas awal saat diproduksi/disimpan (MBq)
-     * @param float $wasteWeightGrams Berat total paket limbah (gram)
-     * @param DateTimeImmutable $storageStartTime Waktu mulai penyimpanan di decay room
-     * @param DateTimeImmutable $currentTime Waktu pengecekan saat ini
+     * @param  string  $isotope  Radionuklida
+     * @param  float  $initialActivityMegaBq  Aktivitas awal saat diproduksi/disimpan (MBq)
+     * @param  float  $wasteWeightGrams  Berat total paket limbah (gram)
+     * @param  DateTimeImmutable  $storageStartTime  Waktu mulai penyimpanan di decay room
+     * @param  DateTimeImmutable  $currentTime  Waktu pengecekan saat ini
      * @return array{
      *     isotope: string,
      *     elapsed_hours: float,
@@ -58,7 +58,7 @@ class RadioactiveMedicalWasteTrackerService
         DateTimeImmutable $currentTime
     ): array {
         $upperIsotope = strtoupper($isotope);
-        if (!isset(self::HALF_LIFE_HOURS[$upperIsotope])) {
+        if (! isset(self::HALF_LIFE_HOURS[$upperIsotope])) {
             throw new InvalidArgumentException("Radionuklida tidak terdaftar: {$isotope}");
         }
         if ($initialActivityMegaBq <= 0 || $wasteWeightGrams <= 0) {

@@ -97,3 +97,4 @@ Kemenkes mengakomodasi tarif tambahan (*add-on payment*) di luar paket INA-CBG u
 - Pembedahan Menggunakan Mikroskop Bedah Saraf (*Microsurgical Excision of Brain Lesion*).
 - Pemeriksaan MRI dengan Kontras Gadolinium & Spektroskopi.
 - Kemoterapi Obat Target Biologi (*Monoclonal Antibodies* seperti Trastuzumab, Rituximab).
+

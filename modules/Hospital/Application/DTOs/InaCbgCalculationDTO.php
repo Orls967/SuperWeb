@@ -7,9 +7,6 @@ namespace Modules\Hospital\Application\DTOs;
 final class InaCbgCalculationDTO
 {
     /**
-     * @param  array  $secondaryDiagnosisCodes
-     * @param  array  $procedureCodes
-     *
      * @phpstan-param list<string> $secondaryDiagnosisCodes
      * @phpstan-param list<string> $procedureCodes
      */

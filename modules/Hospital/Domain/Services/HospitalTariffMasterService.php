@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\Domain\Services;
 
 use DomainException;
-use Modules\Hospital\Domain\Models\TariffVersion;
 
 /**
  * Layanan Domain Master Tarif & Regionalisasi Pelayanan Rumah Sakit (HospitalTariffMasterService).

@@ -14,7 +14,7 @@ class HospitalClinicalCostingServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->costingService = new HospitalClinicalCostingService();
+        $this->costingService = new HospitalClinicalCostingService;
     }
 
     public function test_procedure_unit_cost_calculation_with_surplus_margin(): void

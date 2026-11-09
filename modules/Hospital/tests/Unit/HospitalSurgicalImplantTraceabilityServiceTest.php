@@ -15,7 +15,7 @@ class HospitalSurgicalImplantTraceabilityServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalSurgicalImplantTraceabilityService();
+        $this->service = new HospitalSurgicalImplantTraceabilityService;
     }
 
     public function test_verifies_valid_sterile_surgical_implant(): void

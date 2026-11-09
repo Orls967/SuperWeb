@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\Domain\Services;
 
 use Modules\Hospital\Application\DTOs\ClaimAgingSummaryDTO;
-use Modules\Hospital\Domain\Models\BpjsClaim;
 use Modules\Hospital\Domain\Models\ClaimWaterfall;
 
 /**

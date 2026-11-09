@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\database\seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Modules\Hospital\Application\DTOs\FolioItemDTO;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\ColdChainTelemetry;

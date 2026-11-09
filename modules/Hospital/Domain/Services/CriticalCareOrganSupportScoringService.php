@@ -18,15 +18,15 @@ class CriticalCareOrganSupportScoringService
     /**
      * Hitung skor SOFA berdasarkan 6 sistem organ (Respirasi, Koagulasi, Hepar, Kardiovaskular, SSP, Ginjal).
      *
-     * @param float $pao2Fio2Ratio Rasio PaO2/FiO2 (mmHg)
-     * @param bool $onMechanicalVentilation Apakah pasien menggunakan ventilator mekanik
-     * @param int $plateletsThousandPerMicroliter Jumlah trombosit (ribu/µL)
-     * @param float $bilirubinMgPerDl Bilirubin total serum (mg/dL)
-     * @param float $meanArterialPressure Mmrata MAP (mmHg)
-     * @param string $vasopressorSupport Tipe obat vasopresor ('NONE', 'DOPAMINE_LOW', 'DOPAMINE_HIGH', 'NOREPINEPHRINE')
-     * @param int $glasgowComaScale Nilai GCS (3 - 15)
-     * @param float $creatinineMgPerDl Kreatinin serum (mg/dL)
-     * @param float $urineOutputMlPerDay Pengeluaran urin 24 jam (mL/hari)
+     * @param  float  $pao2Fio2Ratio  Rasio PaO2/FiO2 (mmHg)
+     * @param  bool  $onMechanicalVentilation  Apakah pasien menggunakan ventilator mekanik
+     * @param  int  $plateletsThousandPerMicroliter  Jumlah trombosit (ribu/µL)
+     * @param  float  $bilirubinMgPerDl  Bilirubin total serum (mg/dL)
+     * @param  float  $meanArterialPressure  Mmrata MAP (mmHg)
+     * @param  string  $vasopressorSupport  Tipe obat vasopresor ('NONE', 'DOPAMINE_LOW', 'DOPAMINE_HIGH', 'NOREPINEPHRINE')
+     * @param  int  $glasgowComaScale  Nilai GCS (3 - 15)
+     * @param  float  $creatinineMgPerDl  Kreatinin serum (mg/dL)
+     * @param  float  $urineOutputMlPerDay  Pengeluaran urin 24 jam (mL/hari)
      * @return array{
      *     respiratory_score: int,
      *     coagulation_score: int,

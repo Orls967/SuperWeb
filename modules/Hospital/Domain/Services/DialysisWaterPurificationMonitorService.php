@@ -17,26 +17,31 @@ class DialysisWaterPurificationMonitorService
 {
     // Batas mutu AAMI / ISO 23500
     public const MAX_CONDUCTIVITY_MICROS_PER_CM = 20.0;
+
     public const MAX_ACTION_CONDUCTIVITY = 10.0;
 
     public const MAX_BACTERIA_CFU_PER_ML = 100.0;
+
     public const ACTION_BACTERIA_CFU_PER_ML = 50.0;
 
     public const MAX_ENDOTOXIN_EU_PER_ML = 0.25;
+
     public const ACTION_ENDOTOXIN_EU_PER_ML = 0.125;
 
     public const STATUS_OPTIMAL = 'WATER_QUALITY_OPTIMAL';
+
     public const STATUS_ACTION_REQUIRED = 'ACTION_LEVEL_WARNING';
+
     public const STATUS_HALT_DIALYSIS = 'CRITICAL_HALT_DIALYSIS';
 
     /**
      * Evaluasi parameter kualitas air dialisis.
      *
-     * @param string $roLoopIdentifier ID loop distribusi pipa RO
-     * @param float $conductivityMicroSiemens Konduktivitas elektrik (µS/cm)
-     * @param float $bacteriaColonyCfuPerMl Hitung koloni bakteri (CFU/mL)
-     * @param float $endotoxinEuPerMl Kadar endotoksin (EU/mL)
-     * @param float $chlorinePpm Kadar klorin bebas/total (ppm)
+     * @param  string  $roLoopIdentifier  ID loop distribusi pipa RO
+     * @param  float  $conductivityMicroSiemens  Konduktivitas elektrik (µS/cm)
+     * @param  float  $bacteriaColonyCfuPerMl  Hitung koloni bakteri (CFU/mL)
+     * @param  float  $endotoxinEuPerMl  Kadar endotoksin (EU/mL)
+     * @param  float  $chlorinePpm  Kadar klorin bebas/total (ppm)
      * @return array{
      *     loop_id: string,
      *     status: string,

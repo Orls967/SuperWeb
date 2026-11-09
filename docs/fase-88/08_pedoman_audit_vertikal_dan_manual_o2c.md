@@ -100,3 +100,4 @@ Menghitung indikator kinerja utama Revenue Cycle Management (DSO, CCR, IDR, NCR)
   php artisan hsp:o2c-kpi --gross=10000000000 --collected=9200000000 --receivables=1500000000 --total-claims=500 --clean-claims=460 --denied-claims=25
   ```
 - Menampilkan tabel komprehensif metrik RCM beserta status benchmark industri rumah sakit.
+

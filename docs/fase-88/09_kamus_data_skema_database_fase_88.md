@@ -157,3 +157,4 @@ Menyimpan berkas sengketa penolakan klaim BPJS/TPA dan pelacakan banding ke TKMK
 | `resolved_amount_idr` | BIGINT | Ya | - | Nilai akhir klaim yang disepakati dibayar |
 | `created_at` | TIMESTAMP | Ya | - | Waktu pengajuan sanggahan |
 | `updated_at` | TIMESTAMP | Ya | - | Waktu pembaruan status sidang |
+

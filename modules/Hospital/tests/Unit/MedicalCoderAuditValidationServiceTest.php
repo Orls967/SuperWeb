@@ -14,7 +14,7 @@ class MedicalCoderAuditValidationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->validationService = new MedicalCoderAuditValidationService();
+        $this->validationService = new MedicalCoderAuditValidationService;
     }
 
     public function test_symptom_as_primary_diagnosis_triggers_violation(): void

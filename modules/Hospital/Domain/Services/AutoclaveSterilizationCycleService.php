@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use DomainException;
 use Illuminate\Support\Str;
 
 /**

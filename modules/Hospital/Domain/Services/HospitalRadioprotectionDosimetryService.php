@@ -19,22 +19,27 @@ use InvalidArgumentException;
 class HospitalRadioprotectionDosimetryService
 {
     public const ANNUAL_WHOLE_BODY_NBD_MSV = 20.0;
+
     public const SINGLE_YEAR_MAX_NBD_MSV = 50.0;
+
     public const QUARTERLY_INVESTIGATION_THRESHOLD_MSV = 4.5;
+
     public const MONTHLY_INVESTIGATION_THRESHOLD_MSV = 1.5;
 
     public const STATUS_NORMAL_SAFE = 'DOSIMETRY_NORMAL_SAFE';
+
     public const STATUS_ELEVATED_INVESTIGATION = 'ELEVATED_REQUIRES_INVESTIGATION';
+
     public const STATUS_OVEREXPOSURE_ROTATION = 'OVEREXPOSURE_MANDATORY_ROTATION';
 
     /**
      * Evaluasi paparan dosis radiasi pekerja instalasi radiologi/kedokteran nuklir.
      *
-     * @param string $workerId NIP atau identitas staf radiasi
-     * @param string $workZone Unit kerja ('DIAGNOSTIC_XRAY', 'CT_SCAN', 'CATH_LAB_FLUOROSCOPY', 'NUCLEAR_MEDICINE', 'RADIOTHERAPY_LINAC')
-     * @param float $currentQuarterReadingMsv Dosis terukur TLD kuartal ini (mSv)
-     * @param float $yearToDateCumulativeMsv Dosis kumulatif tahun berjalan sebelum kuartal ini (mSv)
-     * @param bool $isPregnantStaff Apakah pekerja dalam kondisi hamil (NBD janin 1 mSv sepanjang masa gestasi)
+     * @param  string  $workerId  NIP atau identitas staf radiasi
+     * @param  string  $workZone  Unit kerja ('DIAGNOSTIC_XRAY', 'CT_SCAN', 'CATH_LAB_FLUOROSCOPY', 'NUCLEAR_MEDICINE', 'RADIOTHERAPY_LINAC')
+     * @param  float  $currentQuarterReadingMsv  Dosis terukur TLD kuartal ini (mSv)
+     * @param  float  $yearToDateCumulativeMsv  Dosis kumulatif tahun berjalan sebelum kuartal ini (mSv)
+     * @param  bool  $isPregnantStaff  Apakah pekerja dalam kondisi hamil (NBD janin 1 mSv sepanjang masa gestasi)
      * @return array{
      *     worker_id: string,
      *     work_zone: string,

@@ -18,21 +18,25 @@ use InvalidArgumentException;
 class EmergencyTriageEsiAlgorithmService
 {
     public const ESI_LEVEL_1_RESUSCITATION = 'ESI_1_RESUSCITATION_IMMEDIATE';
+
     public const ESI_LEVEL_2_EMERGENT = 'ESI_2_EMERGENT_HIGH_RISK';
+
     public const ESI_LEVEL_3_URGENT = 'ESI_3_URGENT_MULTIPLE_RESOURCES';
+
     public const ESI_LEVEL_4_LESS_URGENT = 'ESI_4_LESS_URGENT_ONE_RESOURCE';
+
     public const ESI_LEVEL_5_NON_URGENT = 'ESI_5_NON_URGENT_NO_RESOURCE';
 
     /**
      * Evaluasi alur triase ESI untuk pasien IGD.
      *
-     * @param bool $requiresImmediateLifeSaving Apakah pasien membutuhkan intervensi penyelamatan hidup seketika (apnea, henti jantung, syok berat)
-     * @param bool $isHighRiskConfusionLethargy Apakah pasien dalam kondisi risiko tinggi, disorientasi akut, atau nyeri hebat (VAS >= 7)
-     * @param array<string> $anticipatedResources Sumber daya diagnostik/terapi yang diprediksi dibutuhkan ('LAB', 'XRAY_CT', 'IV_HYDRATION', 'SPECIALTY_CONSULT', 'INVASIVE_PROCEDURE')
-     * @param int $heartRate Denyut nadi (bpm)
-     * @param int $respiratoryRate Laju pernapasan (x/menit)
-     * @param float $oxygenSaturation SpO2 (%)
-     * @param int $patientAgeYears Usia pasien dalam tahun
+     * @param  bool  $requiresImmediateLifeSaving  Apakah pasien membutuhkan intervensi penyelamatan hidup seketika (apnea, henti jantung, syok berat)
+     * @param  bool  $isHighRiskConfusionLethargy  Apakah pasien dalam kondisi risiko tinggi, disorientasi akut, atau nyeri hebat (VAS >= 7)
+     * @param  array<string>  $anticipatedResources  Sumber daya diagnostik/terapi yang diprediksi dibutuhkan ('LAB', 'XRAY_CT', 'IV_HYDRATION', 'SPECIALTY_CONSULT', 'INVASIVE_PROCEDURE')
+     * @param  int  $heartRate  Denyut nadi (bpm)
+     * @param  int  $respiratoryRate  Laju pernapasan (x/menit)
+     * @param  float  $oxygenSaturation  SpO2 (%)
+     * @param  int  $patientAgeYears  Usia pasien dalam tahun
      * @return array{
      *     esi_level: string,
      *     target_response_time_minutes: int,

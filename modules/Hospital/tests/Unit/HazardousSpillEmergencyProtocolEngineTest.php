@@ -14,7 +14,7 @@ class HazardousSpillEmergencyProtocolEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new HazardousSpillEmergencyProtocolEngine();
+        $this->engine = new HazardousSpillEmergencyProtocolEngine;
     }
 
     public function test_cytotoxic_chemotherapy_spill_triggers_code_orange_and_purple_bag(): void

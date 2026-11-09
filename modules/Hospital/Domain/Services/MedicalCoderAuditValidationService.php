@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use DomainException;
-
 /**
  * Layanan Audit & Validasi Koder Medis Elektronik (MedicalCoderAuditValidationService).
  * Memvalidasi kepatuhan kaidah koding rekam medis (ICD-10 & ICD-9-CM) sebelum diajukan ke BPJS / Asuransi:

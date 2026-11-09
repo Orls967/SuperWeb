@@ -10,6 +10,7 @@ use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Application\Services\MedicalEmergencyResponseDispatcherService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
 use Modules\Hospital\Console\Commands\BedSweepCommand;
+use Modules\Hospital\Console\Commands\BillingO2cKpiCommand;
 use Modules\Hospital\Console\Commands\ClaimAgingReportCommand;
 use Modules\Hospital\Console\Commands\ColdChainMonitorCommand;
 use Modules\Hospital\Console\Commands\EfficiencyReportCommand;
@@ -48,7 +49,7 @@ class HospitalServiceProvider extends ServiceProvider
                 ColdChainMonitorCommand::class,
                 ClaimAgingReportCommand::class,
                 FestronikAuditCommand::class,
-                \Modules\Hospital\Console\Commands\BillingO2cKpiCommand::class,
+                BillingO2cKpiCommand::class,
             ]);
         }
     }

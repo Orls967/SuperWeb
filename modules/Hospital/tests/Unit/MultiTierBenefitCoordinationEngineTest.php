@@ -14,7 +14,7 @@ class MultiTierBenefitCoordinationEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new MultiTierBenefitCoordinationEngine();
+        $this->engine = new MultiTierBenefitCoordinationEngine;
     }
 
     public function test_sublimit_capping_and_coinsurance_calculation(): void

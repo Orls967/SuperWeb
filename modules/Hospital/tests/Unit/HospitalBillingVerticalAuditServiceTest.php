@@ -20,7 +20,7 @@ class HospitalBillingVerticalAuditServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->auditService = new HospitalBillingVerticalAuditService();
+        $this->auditService = new HospitalBillingVerticalAuditService;
     }
 
     public function test_revenue_cycle_kpi_calculation_with_clean_metrics(): void

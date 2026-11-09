@@ -21,12 +21,17 @@ use InvalidArgumentException;
 class HospitalInfectionControlSurveillanceService
 {
     public const INFECTION_TYPE_VAP = 'VENTILATOR_ASSOCIATED_PNEUMONIA';
+
     public const INFECTION_TYPE_CAUTI = 'CATHETER_ASSOCIATED_UTI';
+
     public const INFECTION_TYPE_CLABSI = 'CENTRAL_LINE_BLOODSTREAM_INFECTION';
+
     public const INFECTION_TYPE_SSI = 'SURGICAL_SITE_INFECTION';
 
     public const ALERT_LEVEL_GREEN_NORMAL = 'ALERT_GREEN_WITHIN_BENCHMARK';
+
     public const ALERT_LEVEL_YELLOW_SURVEILLANCE = 'ALERT_YELLOW_ELEVATED_SURVEILLANCE';
+
     public const ALERT_LEVEL_RED_OUTBREAK = 'ALERT_RED_OUTBREAK_INVESTIGATION';
 
     /**
@@ -45,11 +50,11 @@ class HospitalInfectionControlSurveillanceService
     /**
      * Hitung tingkat infeksi nosokomial bangsal dan tentukan status outbreak.
      *
-     * @param string $wardCode Kode bangsal rawat inap / unit intensif
-     * @param string $infectionType Jenis HAIs
-     * @param int $confirmedInfectionCount Jumlah kasus infeksi terkonfirmasi biakan kultur
-     * @param int $totalDeviceDays Jumlah total hari pemakaian alat pasien di bangsal
-     * @param bool $isMdroIsolated Apakah ditemukan bakteri multiresisten (MRSA/CRE/ESBL)
+     * @param  string  $wardCode  Kode bangsal rawat inap / unit intensif
+     * @param  string  $infectionType  Jenis HAIs
+     * @param  int  $confirmedInfectionCount  Jumlah kasus infeksi terkonfirmasi biakan kultur
+     * @param  int  $totalDeviceDays  Jumlah total hari pemakaian alat pasien di bangsal
+     * @param  bool  $isMdroIsolated  Apakah ditemukan bakteri multiresisten (MRSA/CRE/ESBL)
      * @return array{
      *     ward_code: string,
      *     infection_type: string,
@@ -67,7 +72,7 @@ class HospitalInfectionControlSurveillanceService
         int $totalDeviceDays,
         bool $isMdroIsolated
     ): array {
-        if (!isset(self::BENCHMARK_THRESHOLDS[$infectionType])) {
+        if (! isset(self::BENCHMARK_THRESHOLDS[$infectionType])) {
             throw new InvalidArgumentException("Tipe infeksi HAIs tidak terdaftar: {$infectionType}");
         }
         if ($totalDeviceDays <= 0) {

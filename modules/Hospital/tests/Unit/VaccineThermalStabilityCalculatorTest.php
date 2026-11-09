@@ -14,7 +14,7 @@ class VaccineThermalStabilityCalculatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->calculator = new VaccineThermalStabilityCalculator();
+        $this->calculator = new VaccineThermalStabilityCalculator;
     }
 
     public function test_normal_chiller_telemetry_produces_optimal_mkt(): void

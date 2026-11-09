@@ -95,3 +95,4 @@ Untuk mencegah kecurangan (*fraud*) penggelapan kas:
   2. Supervisor Keuangan memeriksa rekam audit kronologis (*audit trail*) dan bukti fisik pembayaran.
   3. Manajer Keuangan memberikan otorisasi menggunakan kode sandi supervisor / biometrik.
   4. Sistem memposting jurnal balik otomatis (*reversal journal entry*) pada buku besar `HospitalAccounts` dan mengembalikan status `BillingEpisode` ke status sebelumnya.
+

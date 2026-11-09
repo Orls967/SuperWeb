@@ -14,7 +14,7 @@ class HospitalInfectionControlSurveillanceServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalInfectionControlSurveillanceService();
+        $this->service = new HospitalInfectionControlSurveillanceService;
     }
 
     public function test_normal_infection_rate_within_cdc_benchmark(): void

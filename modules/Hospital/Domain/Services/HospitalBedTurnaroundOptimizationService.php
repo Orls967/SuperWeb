@@ -17,8 +17,11 @@ use InvalidArgumentException;
 class HospitalBedTurnaroundOptimizationService
 {
     public const BED_STATUS_DISCHARGED_DIRTY = 'BED_DIRTY_PENDING_CLEANING';
+
     public const BED_STATUS_TERMINAL_CLEANING = 'BED_TERMINAL_CLEANING_ACTIVE';
+
     public const BED_STATUS_INSPECTED_READY = 'BED_INSPECTED_READY_FOR_ADMISSION';
+
     public const BED_STATUS_BLOCKED_MAINTENANCE = 'BED_BLOCKED_PHYSICAL_MAINTENANCE';
 
     /**
@@ -29,12 +32,12 @@ class HospitalBedTurnaroundOptimizationService
     /**
      * Evaluasi efisiensi turnaround tempat tidur bangsal.
      *
-     * @param string $bedCode Kode fisik tempat tidur (misal: 'BED-WARD-3A-102')
-     * @param string $cleaningType Jenis pembersihan ('ROUTINE_DISCHARGE', 'ISOLATION_TERMINAL_UV', 'INFECTIOUS_AIRBORNE')
-     * @param DateTimeImmutable $dischargeTime Waktu pasien pulang
-     * @param DateTimeImmutable $cleaningStartTime Waktu tim tata graha mulai sanitasi
-     * @param DateTimeImmutable $readyTime Waktu perawat kepala memvalidasi bed siap pakai
-     * @param bool $passedAtpBioluminescenceCheck Apakah lulus uji kebersihan swab ATP bioluminesensi (< 100 RLU)
+     * @param  string  $bedCode  Kode fisik tempat tidur (misal: 'BED-WARD-3A-102')
+     * @param  string  $cleaningType  Jenis pembersihan ('ROUTINE_DISCHARGE', 'ISOLATION_TERMINAL_UV', 'INFECTIOUS_AIRBORNE')
+     * @param  DateTimeImmutable  $dischargeTime  Waktu pasien pulang
+     * @param  DateTimeImmutable  $cleaningStartTime  Waktu tim tata graha mulai sanitasi
+     * @param  DateTimeImmutable  $readyTime  Waktu perawat kepala memvalidasi bed siap pakai
+     * @param  bool  $passedAtpBioluminescenceCheck  Apakah lulus uji kebersihan swab ATP bioluminesensi (< 100 RLU)
      * @return array{
      *     bed_code: string,
      *     cleaning_type: string,
@@ -70,17 +73,17 @@ class HospitalBedTurnaroundOptimizationService
         $finalStatus = self::BED_STATUS_INSPECTED_READY;
         $correctiveAction = null;
 
-        if (!$passedAtpBioluminescenceCheck) {
+        if (! $passedAtpBioluminescenceCheck) {
             $finalStatus = self::BED_STATUS_DISCHARGED_DIRTY;
             $correctiveAction = 'Uji ATP bioluminesensi menunjukkan residu kontaminasi biologis (> 100 RLU). Wajib dilakukan pembersihan ulang!';
-        } elseif (!$isWithinTime) {
+        } elseif (! $isWithinTime) {
             $correctiveAction = sprintf('Waktu turnaround (%d menit) melebihi batas target (%d menit). Evaluasi respons tim housekeeping.', $totalMinutes, $targetMinutes);
         }
 
         $rating = 'EXCELLENT';
-        if ($totalMinutes > $targetMinutes * 1.5 || !$passedAtpBioluminescenceCheck) {
+        if ($totalMinutes > $targetMinutes * 1.5 || ! $passedAtpBioluminescenceCheck) {
             $rating = 'POOR_DELAYED';
-        } elseif (!$isWithinTime) {
+        } elseif (! $isWithinTime) {
             $rating = 'ACCEPTABLE_MODERATE';
         }
 

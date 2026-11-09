@@ -15,7 +15,7 @@ class RadioactiveMedicalWasteTrackerServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new RadioactiveMedicalWasteTrackerService();
+        $this->service = new RadioactiveMedicalWasteTrackerService;
     }
 
     public function test_tc99m_decay_calculation_and_clearance_reached(): void

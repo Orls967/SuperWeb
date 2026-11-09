@@ -10,12 +10,19 @@ use Modules\Hospital\Domain\Models\BillingEpisode;
 class BillingEpisodeStateMachine
 {
     public const STATUS_OPEN = 'OPEN';
+
     public const STATUS_VERIFIED_CODER = 'VERIFIED_CODER';
+
     public const STATUS_BILLED = 'BILLED';
+
     public const STATUS_WATERFALL_PENDING = 'WATERFALL_PENDING';
+
     public const STATUS_SETTLED = 'SETTLED';
+
     public const STATUS_DISPUTED = 'DISPUTED';
+
     public const STATUS_REFUNDED = 'REFUNDED';
+
     public const STATUS_CLOSED = 'CLOSED';
 
     /**

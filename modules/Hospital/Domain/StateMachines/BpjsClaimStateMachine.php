@@ -10,12 +10,19 @@ use Modules\Hospital\Domain\Models\BpjsClaim;
 class BpjsClaimStateMachine
 {
     public const STATUS_DRAFT = 'DRAFT';
+
     public const STATUS_VERIFIED = 'VERIFIED';
+
     public const STATUS_SUBMITTED = 'SUBMITTED';
+
     public const STATUS_ADJUDICATED_APPROVED = 'APPROVED';
+
     public const STATUS_ADJUDICATED_DISPUTED = 'DISPUTED';
+
     public const STATUS_REVISED = 'REVISED';
+
     public const STATUS_PAID = 'PAID';
+
     public const STATUS_REJECTED = 'REJECTED';
 
     /**

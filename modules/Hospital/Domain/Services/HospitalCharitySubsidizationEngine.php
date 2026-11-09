@@ -18,20 +18,24 @@ use Modules\Hospital\Domain\ValueObjects\HospitalMoney;
 class HospitalCharitySubsidizationEngine
 {
     public const TIER_FULL_SUBSIDY = 'FULL_SUBSIDY_100';
+
     public const TIER_MAJOR_SUBSIDY = 'MAJOR_SUBSIDY_75';
+
     public const TIER_MODERATE_SUBSIDY = 'MODERATE_SUBSIDY_50';
+
     public const TIER_PARTIAL_SUBSIDY = 'PARTIAL_SUBSIDY_25';
+
     public const TIER_REJECTED = 'SUBSIDY_REJECTED';
 
     /**
      * Evaluasi kelayakan subsidi amal dan hitung komponen bantuan.
      *
-     * @param HospitalMoney $totalBill Tagihan kotor pasien yang belum tertanggung
-     * @param int $verifiedMonthlyIncome Income bulanan kepala keluarga (IDR)
-     * @param int $dependentsCount Jumlah tanggungan keluarga
-     * @param bool $hasValidSktm Memiliki SKTM resmi dari kelurahan
-     * @param bool $isEmergencyLifeThreatening Kasus gawat darurat mengancam jiwa
-     * @param int $availableCharityFundBalance Saldo dana charity RS yang tersedia (IDR)
+     * @param  HospitalMoney  $totalBill  Tagihan kotor pasien yang belum tertanggung
+     * @param  int  $verifiedMonthlyIncome  Income bulanan kepala keluarga (IDR)
+     * @param  int  $dependentsCount  Jumlah tanggungan keluarga
+     * @param  bool  $hasValidSktm  Memiliki SKTM resmi dari kelurahan
+     * @param  bool  $isEmergencyLifeThreatening  Kasus gawat darurat mengancam jiwa
+     * @param  int  $availableCharityFundBalance  Saldo dana charity RS yang tersedia (IDR)
      * @return array{
      *     tier: string,
      *     subsidy_ratio: float,

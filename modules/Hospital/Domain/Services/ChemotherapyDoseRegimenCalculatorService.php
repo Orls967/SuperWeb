@@ -19,6 +19,7 @@ use InvalidArgumentException;
 class ChemotherapyDoseRegimenCalculatorService
 {
     public const MAX_LIFETIME_DOXORUBICIN_MG_PER_M2 = 450.0;
+
     public const MAX_GFR_CALVERT_CAP = 125.0; // Batas atas GFR standar ASCO untuk Calvert formula
 
     /**
@@ -76,9 +77,9 @@ class ChemotherapyDoseRegimenCalculatorService
     /**
      * Verifikasi batas kumulatif kardiotoksisitas Doxorubicin / Anthracycline.
      *
-     * @param float $bsa Luas permukaan tubuh pasien (m²)
-     * @param float $plannedDoseMg Dosis yang direncanakan untuk siklus saat ini (mg)
-     * @param float $priorLifetimeCumulativeMg Total dosis kumulatif yang sudah pernah diterima pasien sebelumnya (mg)
+     * @param  float  $bsa  Luas permukaan tubuh pasien (m²)
+     * @param  float  $plannedDoseMg  Dosis yang direncanakan untuk siklus saat ini (mg)
+     * @param  float  $priorLifetimeCumulativeMg  Total dosis kumulatif yang sudah pernah diterima pasien sebelumnya (mg)
      * @return array{
      *     bsa_m2: float,
      *     planned_dose_mg: float,
@@ -102,7 +103,7 @@ class ChemotherapyDoseRegimenCalculatorService
         $isSafe = ($cumulativePerM2 <= self::MAX_LIFETIME_DOXORUBICIN_MG_PER_M2);
 
         $warning = null;
-        if (!$isSafe) {
+        if (! $isSafe) {
             $warning = sprintf(
                 'Dosis kumulatif Doxorubicin seumur hidup (%.1f mg/m²) melampaui ambang batas aman kardiotoksisitas (%.1f mg/m²). Risiko kardiomiopati irreversibel & gagal jantung kongestif tinggi!',
                 $cumulativePerM2,

@@ -113,3 +113,4 @@ Festronik adalah sistem manifes limbah elektronik resmi yang dikembangkan oleh D
    - Suhu ruang bakar primer (*primary chamber*): $800^\circ\text{C} \text{ s/d } 900^\circ\text{C}$.
    - Suhu ruang bakar sekunder (*secondary chamber*): Minimal $1.000^\circ\text{C} \text{ s/d } 1.200^\circ\text{C}$ dengan *residence time* gas cerobong minimal 2 detik guna mencegah pembentukan senyawa berbahaya dioksin dan furan.
    - Sertifikat Pemusnahan (*Certificate of Destruction*) diunggah ke Festronik dan disimpan dalam arsip lingkungan rumah sakit selama minimal 5 tahun.
+

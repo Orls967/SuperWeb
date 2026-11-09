@@ -14,7 +14,7 @@ class AutoclaveSterilizationCycleServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new AutoclaveSterilizationCycleService();
+        $this->service = new AutoclaveSterilizationCycleService;
     }
 
     public function test_standard_prevacuum_cycle_passes_when_parameters_met(): void

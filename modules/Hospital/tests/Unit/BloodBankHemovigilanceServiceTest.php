@@ -15,7 +15,7 @@ class BloodBankHemovigilanceServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new BloodBankHemovigilanceService();
+        $this->service = new BloodBankHemovigilanceService;
     }
 
     public function test_compatible_prc_release_within_cold_chain_passes(): void

@@ -16,19 +16,23 @@ use InvalidArgumentException;
 class InaCbgDisputeResolutionEngine
 {
     public const DISPUTE_CODE_CODING_DIAGNOSIS = 'DISPUTE_PRIMARY_DIAGNOSIS_ACCURACY';
+
     public const DISPUTE_CODE_PROCEDURE_BUNDLING = 'DISPUTE_UNBUNDLED_SURGICAL_PROCEDURE';
+
     public const DISPUTE_CODE_MEDICAL_NECESSITY = 'DISPUTE_MEDICAL_INDICATION_ADMISSION';
+
     public const DISPUTE_CODE_SPECIAL_PROCEDURE_SUBACUTE = 'DISPUTE_SUBACUTE_REHABILITATION_TARIFF';
+
     public const DISPUTE_CODE_MEDICATION_RESTRICTION = 'DISPUTE_FORNAS_RESTRICTION_OFF_LABEL';
 
     /**
      * Susun berkas justifikasi klinis untuk banding klaim INA-CBG.
      *
-     * @param string $disputeCode Kode pokok sengketa
-     * @param string $icd10Primary Diagnosis primer yang diajukan RS
-     * @param array<string> $supportingEvidenceCodes Daftar bukti medis (LAB_RESULT, RADIOLOGY_REPORT, RESUME_MEDIS, PATHOLOGY)
-     * @param int $claimedTariffInCents Nilai klaim RS dalam sen
-     * @param int $adjudicatedTariffInCents Nilai yang disetujui verifikator BPJS dalam sen
+     * @param  string  $disputeCode  Kode pokok sengketa
+     * @param  string  $icd10Primary  Diagnosis primer yang diajukan RS
+     * @param  array<string>  $supportingEvidenceCodes  Daftar bukti medis (LAB_RESULT, RADIOLOGY_REPORT, RESUME_MEDIS, PATHOLOGY)
+     * @param  int  $claimedTariffInCents  Nilai klaim RS dalam sen
+     * @param  int  $adjudicatedTariffInCents  Nilai yang disetujui verifikator BPJS dalam sen
      * @return array{
      *     dispute_code: string,
      *     contested_amount_cents: int,

@@ -15,12 +15,13 @@ class HospitalInventoryFefoValuationServiceTest extends TestCase
     use RefreshDatabase;
 
     private HospitalInventoryFefoValuationService $valuationService;
+
     private PharmacyBranch $branch;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->valuationService = new HospitalInventoryFefoValuationService();
+        $this->valuationService = new HospitalInventoryFefoValuationService;
 
         $this->branch = PharmacyBranch::firstOrCreate(
             ['branch_code' => 'PB-FEFO-01'],

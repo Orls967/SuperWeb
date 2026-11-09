@@ -14,7 +14,7 @@ class MedicalGasPipelineSystemMonitorServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new MedicalGasPipelineSystemMonitorService();
+        $this->service = new MedicalGasPipelineSystemMonitorService;
     }
 
     public function test_normal_operating_oxygen_pressure(): void

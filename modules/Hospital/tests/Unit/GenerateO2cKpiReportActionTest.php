@@ -17,8 +17,8 @@ class GenerateO2cKpiReportActionTest extends TestCase
     {
         parent::setUp();
         $this->action = new GenerateO2cKpiReportAction(
-            new HospitalBillingVerticalAuditService(),
-            new ClaimAgingAnalysisService()
+            new HospitalBillingVerticalAuditService,
+            new ClaimAgingAnalysisService
         );
     }
 

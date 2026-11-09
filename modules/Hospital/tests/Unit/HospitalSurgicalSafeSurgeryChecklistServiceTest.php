@@ -14,7 +14,7 @@ class HospitalSurgicalSafeSurgeryChecklistServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalSurgicalSafeSurgeryChecklistService();
+        $this->service = new HospitalSurgicalSafeSurgeryChecklistService;
     }
 
     public function test_sign_in_phase_passes_with_complete_checks(): void

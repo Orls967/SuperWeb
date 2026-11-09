@@ -124,3 +124,4 @@ Perawat Ruangan ICU          Petugas TPS Internal RS          Transporter Truk B
          |                               |<-- 5. Manifes Terkunci Permanen di Sistem Festronik --------|
 ```
 Rantai hash bertingkat ini menjamin bahwa seluruh data limbah medis tercatat secara abadi (*immutable*) dan tidak dapat dimanipulasi oleh pihak mana pun.
+

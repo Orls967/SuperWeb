@@ -143,9 +143,6 @@ class ClaimDenialManagementEngine
     /**
      * Membuat ringkasan dokumen berkas banding klinis (Dossier Header).
      *
-     * @param  string  $claimNumber
-     * @param  string  $dpjpDoctorName
-     * @param  string  $clinicalRationale
      * @param  array<int, string>  $attachedEvidenceCodes
      * @return array<string, mixed>
      */

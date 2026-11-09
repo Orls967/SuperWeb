@@ -15,7 +15,7 @@ class HospitalCharitySubsidizationEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new HospitalCharitySubsidizationEngine();
+        $this->engine = new HospitalCharitySubsidizationEngine;
     }
 
     public function test_full_subsidy_for_extreme_poverty_with_valid_sktm(): void

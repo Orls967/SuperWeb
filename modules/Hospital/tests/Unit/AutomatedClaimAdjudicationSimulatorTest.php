@@ -14,7 +14,7 @@ class AutomatedClaimAdjudicationSimulatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->simulator = new AutomatedClaimAdjudicationSimulator();
+        $this->simulator = new AutomatedClaimAdjudicationSimulator;
     }
 
     public function test_bpjs_full_adjudication_simulation(): void

@@ -65,3 +65,4 @@ Seluruh arsitektur kode dan logika bisnis pada modul `Hospital` Fase 88 dirancan
    - Regulasi Nilai Batas Dosis (NBD) pekerja radiasi $20 \text{ mSv/tahun}$, dosimetri badge TLD, dan proteksi kehamilan.
 7. **Pernyataan Standar Akuntansi Keuangan (PSAK) No. 71 tentang Instrumen Keuangan**:
    - Pedoman pengakuan cadangan penurunan nilai piutang ragu berbasis kerugian kredit ekspektasian (*Expected Credit Loss* / ECL) pada portofolio piutang klaim rumah sakit.
+

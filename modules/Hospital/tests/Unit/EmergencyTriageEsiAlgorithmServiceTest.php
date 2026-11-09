@@ -14,7 +14,7 @@ class EmergencyTriageEsiAlgorithmServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new EmergencyTriageEsiAlgorithmService();
+        $this->service = new EmergencyTriageEsiAlgorithmService;
     }
 
     public function test_resuscitation_immediate_life_saving_is_esi_level_1(): void

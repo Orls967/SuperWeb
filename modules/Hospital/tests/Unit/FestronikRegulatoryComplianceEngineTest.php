@@ -14,7 +14,7 @@ class FestronikRegulatoryComplianceEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new FestronikRegulatoryComplianceEngine();
+        $this->engine = new FestronikRegulatoryComplianceEngine;
     }
 
     public function test_tps_storage_duration_compliance_under_48_hours(): void

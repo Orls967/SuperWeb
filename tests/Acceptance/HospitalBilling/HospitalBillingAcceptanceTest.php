@@ -7,27 +7,27 @@ namespace Tests\Acceptance\HospitalBilling;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Modules\Core\Domain\Models\RbacRole;
 use Modules\Hospital\Application\DTOs\FolioItemDTO;
 use Modules\Hospital\Application\Sagas\HospitalBillingReconciliationSaga;
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\BillingEpisode;
-use Modules\Hospital\Domain\Models\ColdChainTelemetry;
 use Modules\Hospital\Domain\Models\Encounter;
 use Modules\Hospital\Domain\Models\FolioItem;
-use Modules\Hospital\Domain\Models\GuaranteeLetter;
-use Modules\Hospital\Domain\Models\InaCbgTariff;
 use Modules\Hospital\Domain\Models\MedFridgeBreach;
 use Modules\Hospital\Domain\Models\MedicalWasteManifest;
 use Modules\Hospital\Domain\Models\Patient;
+use Modules\Hospital\Domain\Models\PharmacyBranch;
 use Modules\Hospital\Domain\Models\PharmacyBranchLot;
+use Modules\Hospital\Domain\Services\BloodBankHemovigilanceService;
+use Modules\Hospital\Domain\Services\CatastrophicCaseClaimEngine;
 use Modules\Hospital\Domain\Services\ClaimAgingAnalysisService;
 use Modules\Hospital\Domain\Services\ColdChainMonitoringService;
-use Modules\Hospital\Domain\Services\CoordinationOfBenefitsWaterfallService;
 use Modules\Hospital\Domain\Services\HospitalBillingCalculationService;
+use Modules\Hospital\Domain\Services\HospitalCharitySubsidizationEngine;
+use Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService;
+use Modules\Hospital\Domain\Services\InaCbgDisputeResolutionEngine;
 use Modules\Hospital\Domain\Services\InaCbgGroupingService;
 use Modules\Hospital\Domain\Services\MedicalWasteManifestService;
-use Modules\Insurance\Contracts\CashlessGuaranteeRequester;
+use Modules\Hospital\Domain\ValueObjects\HospitalMoney;
 use Tests\TestCase;
 
 class HospitalBillingAcceptanceTest extends TestCase
@@ -35,8 +35,11 @@ class HospitalBillingAcceptanceTest extends TestCase
     use RefreshDatabase;
 
     private User $financeUser;
+
     private User $unauthorizedUser;
+
     private Patient $patient;
+
     private Encounter $encounter;
 
     protected function setUp(): void
@@ -237,7 +240,7 @@ class HospitalBillingAcceptanceTest extends TestCase
         $coldChainService = app(ColdChainMonitoringService::class);
         $fridgeCode = 'FRIDGE-CHILLER-TEST-01';
 
-        $branch = \Modules\Hospital\Domain\Models\PharmacyBranch::firstOrCreate(
+        $branch = PharmacyBranch::firstOrCreate(
             ['branch_code' => 'PB-TEST-01'],
             ['name' => 'Instalasi Farmasi RS', 'type' => 'HOSPITAL', 'city' => 'Jakarta', 'is_active' => true]
         );
@@ -380,9 +383,9 @@ class HospitalBillingAcceptanceTest extends TestCase
     public function test_9_dispute_appeal_catastrophic_stop_loss_and_charity_subsidization(): void
     {
         // 1. Uji Konstruksi Banding Sanggahan INA-CBG
-        $disputeEngine = new \Modules\Hospital\Domain\Services\InaCbgDisputeResolutionEngine();
+        $disputeEngine = new InaCbgDisputeResolutionEngine;
         $appeal = $disputeEngine->constructDisputeAppeal(
-            \Modules\Hospital\Domain\Services\InaCbgDisputeResolutionEngine::DISPUTE_CODE_CODING_DIAGNOSIS,
+            InaCbgDisputeResolutionEngine::DISPUTE_CODE_CODING_DIAGNOSIS,
             'I21.0',
             ['RESUME_MEDIS', 'LAB_RESULT', 'RADIOLOGY_REPORT'],
             25_000_000_00, // Rp 25.000.000 klaim RS
@@ -393,7 +396,7 @@ class HospitalBillingAcceptanceTest extends TestCase
         $this->assertSame('SUBMIT_FORMAL_DISPUTE_TKMKB', $appeal['recommended_action']);
 
         // 2. Uji Evaluasi Kasus Katastropik Stop-Loss Internal RS
-        $stopLossEngine = new \Modules\Hospital\Domain\Services\CatastrophicCaseClaimEngine();
+        $stopLossEngine = new CatastrophicCaseClaimEngine;
         $catastrophic = $stopLossEngine->evaluateCatastrophicFinancials(
             'CABG_SURGERY',
             220_000_000,
@@ -405,8 +408,8 @@ class HospitalBillingAcceptanceTest extends TestCase
         $this->assertGreaterThan(0, $catastrophic['stop_loss_reinsurance_claim_idr']);
 
         // 3. Uji Alokasi Dana Charity & Zakat RS Bagi Pasien Pra-Sejahtera Ber-SKTM
-        $charityEngine = new \Modules\Hospital\Domain\Services\HospitalCharitySubsidizationEngine();
-        $bill = new \Modules\Hospital\Domain\ValueObjects\HospitalMoney(8_000_000_00, 'IDR');
+        $charityEngine = new HospitalCharitySubsidizationEngine;
+        $bill = new HospitalMoney(8_000_000_00, 'IDR');
         $subsidy = $charityEngine->evaluateCharitySubsidy(
             $bill,
             1_500_000,
@@ -415,7 +418,7 @@ class HospitalBillingAcceptanceTest extends TestCase
             false,
             50_000_000
         );
-        $this->assertSame(\Modules\Hospital\Domain\Services\HospitalCharitySubsidizationEngine::TIER_FULL_SUBSIDY, $subsidy['tier']);
+        $this->assertSame(HospitalCharitySubsidizationEngine::TIER_FULL_SUBSIDY, $subsidy['tier']);
         $this->assertSame(8_000_000_00, $subsidy['subsidized_amount']->amountInMinor);
         $this->assertSame(0, $subsidy['patient_copay']->amountInMinor);
     }
@@ -426,26 +429,26 @@ class HospitalBillingAcceptanceTest extends TestCase
     public function test_10_surgical_implant_udi_and_blood_bank_hemovigilance_verification(): void
     {
         // 1. Verifikasi UDI Implan Jantung Kamar Bedah
-        $implantService = new \Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService();
+        $implantService = new HospitalSurgicalImplantTraceabilityService;
         $implantCheck = $implantService->verifyImplantForSurgery(
             '01088812345678901729111010STENT991',
             'KEMENKES RI AKL 30501918234',
-            \Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService::IMPLANT_CATEGORY_CARDIAC_STENT,
+            HospitalSurgicalImplantTraceabilityService::IMPLANT_CATEGORY_CARDIAC_STENT,
             new \DateTimeImmutable('2028-12-31'),
             new \DateTimeImmutable('2026-11-10'),
             [],
             'STENT991'
         );
         $this->assertTrue($implantCheck['is_approved_for_implantation']);
-        $this->assertSame(\Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService::STATUS_VERIFIED_STERILE, $implantCheck['status']);
+        $this->assertSame(HospitalSurgicalImplantTraceabilityService::STATUS_VERIFIED_STERILE, $implantCheck['status']);
 
         // 2. Verifikasi Transfusi Bank Darah Hemovigilance
-        $bloodService = new \Modules\Hospital\Domain\Services\BloodBankHemovigilanceService();
+        $bloodService = new BloodBankHemovigilanceService;
         $bloodCheck = $bloodService->verifyBloodRelease(
             'PMI-BDG-202611-9988',
             'O_POSITIVE',
             'O_POSITIVE',
-            \Modules\Hospital\Domain\Services\BloodBankHemovigilanceService::BLOOD_PRODUCT_PACKED_RED_CELLS,
+            BloodBankHemovigilanceService::BLOOD_PRODUCT_PACKED_RED_CELLS,
             true,
             true,
             3.8, // 3.8°C dalam batas 2.0 - 6.0°C
@@ -453,6 +456,6 @@ class HospitalBillingAcceptanceTest extends TestCase
             new \DateTimeImmutable('2026-11-10 12:00:00')
         );
         $this->assertTrue($bloodCheck['is_safe_for_transfusion']);
-        $this->assertSame(\Modules\Hospital\Domain\Services\BloodBankHemovigilanceService::CROSSMATCH_COMPATIBLE, $bloodCheck['crossmatch_verdict']);
+        $this->assertSame(BloodBankHemovigilanceService::CROSSMATCH_COMPATIBLE, $bloodCheck['crossmatch_verdict']);
     }
 }

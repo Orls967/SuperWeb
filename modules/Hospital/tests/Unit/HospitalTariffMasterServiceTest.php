@@ -14,7 +14,7 @@ class HospitalTariffMasterServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalTariffMasterService();
+        $this->service = new HospitalTariffMasterService;
     }
 
     public function test_regional_tariff_calculation_applies_correct_multipliers(): void

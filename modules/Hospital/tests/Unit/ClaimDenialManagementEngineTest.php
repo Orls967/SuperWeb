@@ -14,7 +14,7 @@ class ClaimDenialManagementEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new ClaimDenialManagementEngine();
+        $this->engine = new ClaimDenialManagementEngine;
     }
 
     public function test_denial_evaluation_with_complete_evidence_has_high_overturn_probability(): void

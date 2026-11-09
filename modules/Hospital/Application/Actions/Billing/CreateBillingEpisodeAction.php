@@ -6,7 +6,6 @@ namespace Modules\Hospital\Application\Actions\Billing;
 
 use DomainException;
 use Illuminate\Support\Str;
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\Encounter;
 use Modules\Hospital\Domain\StateMachines\BillingEpisodeStateMachine;

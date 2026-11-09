@@ -110,6 +110,7 @@ class HospitalInventoryFefoValuationService
 
             if ($lot->is_quarantined) {
                 $quarantinedVal += $cost;
+
                 continue;
             }
 

@@ -17,21 +17,26 @@ use InvalidArgumentException;
 class HazardousSpillEmergencyProtocolEngine
 {
     public const SPILL_TYPE_INFECTIOUS_BLOOD = 'INFECTIOUS_BLOOD_BODY_FLUID';
+
     public const SPILL_TYPE_CYTOTOXIC_CHEMO = 'CYTOTOXIC_CHEMOTHERAPY';
+
     public const SPILL_TYPE_MERCURY_METALLIC = 'MERCURY_HEAVY_METAL';
+
     public const SPILL_TYPE_CHEMICAL_FORMALIN = 'CHEMICAL_FORMALIN_SOLVENT';
 
     public const SEVERITY_MINOR = 'MINOR_SPILL';
+
     public const SEVERITY_MAJOR = 'MAJOR_SPILL';
+
     public const SEVERITY_CATASTROPHIC = 'CATASTROPHIC_CONTAMINATION';
 
     /**
      * Tentukan klasifikasi insiden dan prosedur dekontaminasi.
      *
-     * @param string $spillType Tipe substansi tumpahan
-     * @param float $volumeMilliliters Estimasi volume tumpahan (mL)
-     * @param bool $isAerosolized Apakah tumpahan tersirkulasi atau berpotensi aerosol
-     * @param bool $occurredInPublicArea Apakah terjadi di koridor umum atau ruang pasien
+     * @param  string  $spillType  Tipe substansi tumpahan
+     * @param  float  $volumeMilliliters  Estimasi volume tumpahan (mL)
+     * @param  bool  $isAerosolized  Apakah tumpahan tersirkulasi atau berpotensi aerosol
+     * @param  bool  $occurredInPublicArea  Apakah terjadi di koridor umum atau ruang pasien
      * @return array{
      *     spill_type: string,
      *     severity: string,
@@ -62,7 +67,7 @@ class HazardousSpillEmergencyProtocolEngine
             self::SPILL_TYPE_CHEMICAL_FORMALIN,
         ];
 
-        if (!in_array($spillType, $validTypes, true)) {
+        if (! in_array($spillType, $validTypes, true)) {
             throw new InvalidArgumentException("Tipe tumpahan tidak valid: {$spillType}");
         }
 
@@ -129,9 +134,9 @@ class HazardousSpillEmergencyProtocolEngine
             '1. Amankan area sekitar dan pasang tanda bahaya Biohazard / Spillage.',
             '2. Kenakan seluruh APD sesuai SOP penanganan tumpahan.',
             '3. Batasi penyebaran cairan dengan absorbent pad dari arah luar ke dalam.',
-            '4. Aplikasikan larutan netralisasi: ' . $neutralizingAgent . ' dan tunggu waktu kontak minimal ' . $contactTimeMinutes . ' menit.',
+            '4. Aplikasikan larutan netralisasi: '.$neutralizingAgent.' dan tunggu waktu kontak minimal '.$contactTimeMinutes.' menit.',
             '5. Angkat residu dan pad serapan menggunakan serokan dan spatula plastik sekali pakai.',
-            '6. Masukkan seluruh material terdekontaminasi ke dalam wadah khusus: ' . $wasteBinType . '.',
+            '6. Masukkan seluruh material terdekontaminasi ke dalam wadah khusus: '.$wasteBinType.'.',
             '7. Pel dan bilas area tumpahan dengan air bersih dan desinfektan lantai RS.',
             '8. Timbang kantong limbah dan catat manifest Festronik dengan barcode darurat.',
         ];

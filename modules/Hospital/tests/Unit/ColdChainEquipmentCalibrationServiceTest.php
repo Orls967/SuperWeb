@@ -15,7 +15,7 @@ class ColdChainEquipmentCalibrationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new ColdChainEquipmentCalibrationService();
+        $this->service = new ColdChainEquipmentCalibrationService;
     }
 
     public function test_sensor_is_calibrated_and_accurate_within_tolerance(): void

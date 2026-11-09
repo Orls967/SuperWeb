@@ -18,25 +18,31 @@ use InvalidArgumentException;
 class HospitalSurgicalImplantTraceabilityService
 {
     public const IMPLANT_CATEGORY_ORTHOPEDIC = 'ORTHOPEDIC_SCREW_PLATE';
+
     public const IMPLANT_CATEGORY_CARDIAC_STENT = 'CARDIOLOGY_DRUG_ELUTING_STENT';
+
     public const IMPLANT_CATEGORY_OPHTHALMIC_LENS = 'OPHTHALMOLOGY_INTRAOCULAR_LENS';
+
     public const IMPLANT_CATEGORY_NEUROSURGICAL_MESH = 'NEUROSURGERY_TITANIUM_MESH';
 
     public const STATUS_VERIFIED_STERILE = 'VERIFIED_STERILE_READY_FOR_USE';
+
     public const STATUS_EXPIRED_STERILITY = 'EXPIRED_STERILITY_REJECTED';
+
     public const STATUS_RECALLED_BATCH = 'MANUFACTURER_RECALL_QUARANTINED';
+
     public const STATUS_INVALID_REGISTRATION = 'INVALID_AKL_REGISTRATION';
 
     /**
      * Verifikasi kelaikan implan bedah sebelum insersi ke tubuh pasien di kamar operasi.
      *
-     * @param string $udiBarcode Barcode Unique Device Identification (GS1 format)
-     * @param string $aklRegistrationNumber Nomor izin edar Kemenkes RI (misal: KEMENKES RI AKL 30501918234)
-     * @param string $category Kategori implan
-     * @param DateTimeImmutable $sterilizationExpiryDate Tanggal kedaluwarsa sterilitas kemasan
-     * @param DateTimeImmutable $operationDate Tanggal tindakan bedah
-     * @param array<string> $activeRecallLotNumbers Daftar nomor lot yang sedang ditarik oleh pabrik/BPOM
-     * @param string $lotNumber Nomor lot implan
+     * @param  string  $udiBarcode  Barcode Unique Device Identification (GS1 format)
+     * @param  string  $aklRegistrationNumber  Nomor izin edar Kemenkes RI (misal: KEMENKES RI AKL 30501918234)
+     * @param  string  $category  Kategori implan
+     * @param  DateTimeImmutable  $sterilizationExpiryDate  Tanggal kedaluwarsa sterilitas kemasan
+     * @param  DateTimeImmutable  $operationDate  Tanggal tindakan bedah
+     * @param  array<string>  $activeRecallLotNumbers  Daftar nomor lot yang sedang ditarik oleh pabrik/BPOM
+     * @param  string  $lotNumber  Nomor lot implan
      * @return array{
      *     udi_barcode: string,
      *     lot_number: string,
@@ -63,7 +69,7 @@ class HospitalSurgicalImplantTraceabilityService
 
         // Validasi format nomor registrasi Kemenkes AKL/AKD
         $cleanedReg = strtoupper(trim($aklRegistrationNumber));
-        if (!str_contains($cleanedReg, 'AKL') && !str_contains($cleanedReg, 'AKD')) {
+        if (! str_contains($cleanedReg, 'AKL') && ! str_contains($cleanedReg, 'AKD')) {
             return [
                 'udi_barcode' => $udiBarcode,
                 'lot_number' => $lotNumber,
@@ -107,7 +113,7 @@ class HospitalSurgicalImplantTraceabilityService
 
         // Terverifikasi lolos: hasilkan token penelusuran permanen rekam medis
         $auditPayload = sprintf('%s|%s|%s|%s|%s', $udiBarcode, $lotNumber, $aklRegistrationNumber, $category, $operationDate->format('Y-m-d'));
-        $auditToken = 'IMP-TRACE-' . strtoupper(hash('sha256', $auditPayload));
+        $auditToken = 'IMP-TRACE-'.strtoupper(hash('sha256', $auditPayload));
 
         return [
             'udi_barcode' => $udiBarcode,

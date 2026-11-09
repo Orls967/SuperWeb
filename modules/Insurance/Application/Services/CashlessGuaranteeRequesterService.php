@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Insurance\Application\Services;
 
 use DomainException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Insurance\Contracts\CashlessGuaranteeRequester;
 

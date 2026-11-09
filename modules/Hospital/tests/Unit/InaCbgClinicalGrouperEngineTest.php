@@ -14,7 +14,7 @@ class InaCbgClinicalGrouperEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new InaCbgClinicalGrouperEngine();
+        $this->engine = new InaCbgClinicalGrouperEngine;
     }
 
     public function test_cardiac_case_with_major_complication_assigned_severity_three(): void

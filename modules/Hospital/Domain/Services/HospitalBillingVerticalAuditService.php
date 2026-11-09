@@ -7,7 +7,6 @@ namespace Modules\Hospital\Domain\Services;
 use DomainException;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\BpjsClaim;
-use Modules\Hospital\Domain\Models\ClaimDispute;
 use Modules\Hospital\Domain\Models\ClaimWaterfall;
 use Modules\Hospital\Domain\Models\FolioItem;
 

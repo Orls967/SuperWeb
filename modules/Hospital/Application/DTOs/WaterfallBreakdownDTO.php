@@ -7,8 +7,6 @@ namespace Modules\Hospital\Application\DTOs;
 final class WaterfallBreakdownDTO
 {
     /**
-     * @param  array  $layerDetails
-     *
      * @phpstan-param list<array<string, mixed>> $layerDetails
      */
     public function __construct(

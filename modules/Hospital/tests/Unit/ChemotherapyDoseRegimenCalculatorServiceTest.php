@@ -14,7 +14,7 @@ class ChemotherapyDoseRegimenCalculatorServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->calculator = new ChemotherapyDoseRegimenCalculatorService();
+        $this->calculator = new ChemotherapyDoseRegimenCalculatorService;
     }
 
     public function test_mosteller_bsa_calculation(): void

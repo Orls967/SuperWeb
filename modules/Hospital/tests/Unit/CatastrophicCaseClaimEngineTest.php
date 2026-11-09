@@ -14,7 +14,7 @@ class CatastrophicCaseClaimEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new CatastrophicCaseClaimEngine();
+        $this->engine = new CatastrophicCaseClaimEngine;
     }
 
     public function test_evaluates_catastrophic_case_when_deficit_exceeds_stop_loss_threshold(): void

@@ -20,9 +20,13 @@ use InvalidArgumentException;
 class MedicalGasPipelineSystemMonitorService
 {
     public const GAS_TYPE_OXYGEN = 'MEDICAL_OXYGEN_O2';
+
     public const GAS_TYPE_MEDICAL_AIR_4BAR = 'MEDICAL_AIR_4_BAR';
+
     public const GAS_TYPE_SURGICAL_AIR_7BAR = 'SURGICAL_AIR_7_BAR';
+
     public const GAS_TYPE_VACUUM = 'MEDICAL_VACUUM_NEGATIVE_PRESSURE';
+
     public const GAS_TYPE_NITROUS_OXIDE = 'NITROUS_OXIDE_N2O';
 
     /**
@@ -41,11 +45,11 @@ class MedicalGasPipelineSystemMonitorService
     /**
      * Evaluasi pembacaan sensor manifold / zona pipa gas medis.
      *
-     * @param string $zoneCode Kode zona (misal: 'ZONE-ICU-03', 'ZONE-OR-SUITE-A')
-     * @param string $gasType Jenis gas
-     * @param float $measuredPressureBar Tekanan terukur di manifold (bar)
-     * @param float $flowRateLitersPerMin Laju aliran gas aktual (L/menit)
-     * @param int $activeVentilatorsCount Jumlah ventilator/outlet aktif yang terhubung
+     * @param  string  $zoneCode  Kode zona (misal: 'ZONE-ICU-03', 'ZONE-OR-SUITE-A')
+     * @param  string  $gasType  Jenis gas
+     * @param  float  $measuredPressureBar  Tekanan terukur di manifold (bar)
+     * @param  float  $flowRateLitersPerMin  Laju aliran gas aktual (L/menit)
+     * @param  int  $activeVentilatorsCount  Jumlah ventilator/outlet aktif yang terhubung
      * @return array{
      *     zone_code: string,
      *     gas_type: string,
@@ -64,7 +68,7 @@ class MedicalGasPipelineSystemMonitorService
         float $flowRateLitersPerMin,
         int $activeVentilatorsCount
     ): array {
-        if (!isset(self::NORMAL_PRESSURE_RANGES[$gasType])) {
+        if (! isset(self::NORMAL_PRESSURE_RANGES[$gasType])) {
             throw new InvalidArgumentException("Tipe gas medis tidak dikenali: {$gasType}");
         }
 
@@ -92,7 +96,7 @@ class MedicalGasPipelineSystemMonitorService
         $expectedMaxFlow = max(10.0, $activeVentilatorsCount * 30.0); // Rata-rata 30 L/min per ventilator
         if ($flowRateLitersPerMin > ($expectedMaxFlow * 2.5)) {
             $leakSuspicion = true;
-            if (!$isAlarm) {
+            if (! $isAlarm) {
                 $isAlarm = true;
                 $alarmSeverity = 'POSSIBLE_PIPE_RUPTURE';
             }

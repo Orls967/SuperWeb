@@ -10,9 +10,13 @@ use Modules\Hospital\Domain\Models\MedFridgeBreach;
 class ColdChainStateMachine
 {
     public const STATUS_OPTIMAL = 'OPTIMAL';
+
     public const STATUS_WARNING = 'WARNING';
+
     public const STATUS_QUARANTINED = 'QUARANTINED';
+
     public const STATUS_DISPOSED = 'DISPOSED';
+
     public const STATUS_RELEASED = 'RELEASED';
 
     /**

@@ -7,8 +7,6 @@ namespace Modules\Hospital\Application\DTOs;
 final class ClaimAgingSummaryDTO
 {
     /**
-     * @param  array  $unpaidClaims
-     *
      * @phpstan-param list<array<string, mixed>> $unpaidClaims
      */
     public function __construct(

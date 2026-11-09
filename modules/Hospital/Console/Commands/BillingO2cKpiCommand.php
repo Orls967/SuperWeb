@@ -37,10 +37,10 @@ class BillingO2cKpiCommand extends Command
                 ['Gross Revenue (IDR)', number_format($report['financial_summary']['gross_revenue_idr'], 2), 'OK'],
                 ['Net Collected (IDR)', number_format($report['financial_summary']['net_collected_idr'], 2), 'OK'],
                 ['Total AR (IDR)', number_format($report['financial_summary']['total_ar_idr'], 2), 'OK'],
-                ['Days Sales Outstanding (DSO)', $report['rcm_kpi']['days_sales_outstanding_dso'] . ' Hari', $report['rcm_kpi']['dso_status']],
-                ['Clean Claim Rate', $report['rcm_kpi']['clean_claim_rate_percent'] . '%', $report['rcm_kpi']['clean_claim_status']],
-                ['Initial Denial Rate', $report['rcm_kpi']['denial_rate_percent'] . '%', $report['rcm_kpi']['denial_status']],
-                ['Net Collection Rate', $report['rcm_kpi']['net_collection_rate_percent'] . '%', $report['rcm_kpi']['collection_status']],
+                ['Days Sales Outstanding (DSO)', $report['rcm_kpi']['days_sales_outstanding_dso'].' Hari', $report['rcm_kpi']['dso_status']],
+                ['Clean Claim Rate', $report['rcm_kpi']['clean_claim_rate_percent'].'%', $report['rcm_kpi']['clean_claim_status']],
+                ['Initial Denial Rate', $report['rcm_kpi']['denial_rate_percent'].'%', $report['rcm_kpi']['denial_status']],
+                ['Net Collection Rate', $report['rcm_kpi']['net_collection_rate_percent'].'%', $report['rcm_kpi']['collection_status']],
             ]
         );
 

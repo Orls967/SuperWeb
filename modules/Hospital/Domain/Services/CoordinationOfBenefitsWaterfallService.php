@@ -7,7 +7,6 @@ namespace Modules\Hospital\Domain\Services;
 use DomainException;
 use Modules\Hospital\Application\DTOs\WaterfallBreakdownDTO;
 use Modules\Hospital\Domain\Models\BillingEpisode;
-use Modules\Hospital\Domain\Models\ClaimWaterfall;
 use Modules\Insurance\Contracts\CashlessGuaranteeRequester;
 
 /**

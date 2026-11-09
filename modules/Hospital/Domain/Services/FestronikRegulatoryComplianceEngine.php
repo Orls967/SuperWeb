@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use DomainException;
-
 /**
  * Mesin Kepatuhan Regulasi Limbah Medis B3 & Festronik (FestronikRegulatoryComplianceEngine).
  * Mengimplementasikan regulasi Permen LHK RI No. P.56/Menlhk-Setjen/2015:
@@ -105,7 +103,7 @@ class FestronikRegulatoryComplianceEngine
             $warning = "Pelanggaran Permen LHK P.56/2015: Limbah {$category} telah disimpan selama {$storedDurationHours} jam (maksimal batas izin: {$allowedHours} jam pada suhu {$tpsStorageTempCelsius}°C). Wajib segera diangkut transporter berizin!";
         } elseif ($storedDurationHours > ($allowedHours * 0.8)) {
             $status = 'NEAR_DEADLINE_WARNING';
-            $warning = "Peringatan: Masa simpan TPS limbah {$category} mendekati batas maksimal (tersisa " . ($allowedHours - $storedDurationHours) . ' jam).';
+            $warning = "Peringatan: Masa simpan TPS limbah {$category} mendekati batas maksimal (tersisa ".($allowedHours - $storedDurationHours).' jam).';
         }
 
         return [

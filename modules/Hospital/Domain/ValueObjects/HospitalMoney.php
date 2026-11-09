@@ -35,12 +35,14 @@ final readonly class HospitalMoney
     public function add(self $other): self
     {
         $this->assertSameCurrency($other);
+
         return new self($this->amountInMinor + $other->amountInMinor, $this->currency);
     }
 
     public function subtract(self $other): self
     {
         $this->assertSameCurrency($other);
+
         return new self($this->amountInMinor - $other->amountInMinor, $this->currency);
     }
 

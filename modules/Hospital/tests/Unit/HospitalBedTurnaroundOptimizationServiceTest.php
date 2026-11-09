@@ -15,7 +15,7 @@ class HospitalBedTurnaroundOptimizationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalBedTurnaroundOptimizationService();
+        $this->service = new HospitalBedTurnaroundOptimizationService;
     }
 
     public function test_routine_bed_turnaround_within_benchmark_passes(): void

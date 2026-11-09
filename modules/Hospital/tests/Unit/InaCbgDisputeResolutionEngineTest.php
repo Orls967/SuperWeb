@@ -14,7 +14,7 @@ class InaCbgDisputeResolutionEngineTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->engine = new InaCbgDisputeResolutionEngine();
+        $this->engine = new InaCbgDisputeResolutionEngine;
     }
 
     public function test_construct_dispute_appeal_for_primary_diagnosis_with_strong_evidence(): void

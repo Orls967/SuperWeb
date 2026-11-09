@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions\Billing;
 
-use Modules\Hospital\Domain\Services\HospitalBillingVerticalAuditService;
 use Modules\Hospital\Domain\Services\ClaimAgingAnalysisService;
+use Modules\Hospital\Domain\Services\HospitalBillingVerticalAuditService;
 
 /**
  * GenerateO2cKpiReportAction
@@ -22,13 +22,6 @@ class GenerateO2cKpiReportAction
     /**
      * Eksekusi agregasi laporan O2C RS.
      *
-     * @param int $grossRevenueCents
-     * @param int $netCollectedCents
-     * @param int $totalReceivablesCents
-     * @param int $totalClaimsCount
-     * @param int $firstPassCleanClaimsCount
-     * @param int $deniedClaimsCount
-     * @param int $operatingDays
      * @return array<string, mixed>
      */
     public function execute(

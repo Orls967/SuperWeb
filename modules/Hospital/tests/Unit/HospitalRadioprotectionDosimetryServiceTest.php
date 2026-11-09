@@ -14,7 +14,7 @@ class HospitalRadioprotectionDosimetryServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new HospitalRadioprotectionDosimetryService();
+        $this->service = new HospitalRadioprotectionDosimetryService;
     }
 
     public function test_normal_radiation_exposure_within_safe_limits(): void

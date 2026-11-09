@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use InvalidArgumentException;
-
 /**
  * HospitalSurgicalSafeSurgeryChecklistService
  *
@@ -17,10 +15,13 @@ use InvalidArgumentException;
 class HospitalSurgicalSafeSurgeryChecklistService
 {
     public const STAGE_SIGN_IN = 'STAGE_SIGN_IN_PRE_INDUCTION';
+
     public const STAGE_TIME_OUT = 'STAGE_TIME_OUT_PRE_INCISION';
+
     public const STAGE_SIGN_OUT = 'STAGE_SIGN_OUT_PRE_CLOSURE';
 
     public const STATUS_CHECKLIST_VERIFIED = 'CHECKLIST_VERIFIED_COMPLETE';
+
     public const STATUS_CHECKLIST_HALTED = 'CHECKLIST_HALTED_SAFETY_STOP';
 
     /**
@@ -36,13 +37,13 @@ class HospitalSurgicalSafeSurgeryChecklistService
     ): array {
         $haltReasons = [];
 
-        if (!$patientIdentityConfirmed) {
+        if (! $patientIdentityConfirmed) {
             $haltReasons[] = 'Identitas pasien atau gelang rekam medis belum terkonfirmasi oleh pasien/keluarga.';
         }
-        if (!$surgicalSiteMarked) {
+        if (! $surgicalSiteMarked) {
             $haltReasons[] = 'Penandaan lokasi operasi (surgical site marking) belum dilakukan oleh dokter operator.';
         }
-        if (!$anesthesiaSafetyCheckComplete || !$pulseOximeterFunctioning) {
+        if (! $anesthesiaSafetyCheckComplete || ! $pulseOximeterFunctioning) {
             $haltReasons[] = 'Pemeriksaan keselamatan mesin anestesi / oksimetri belum siap.';
         }
 
@@ -69,10 +70,10 @@ class HospitalSurgicalSafeSurgeryChecklistService
     ): array {
         $haltReasons = [];
 
-        if (!$entireTeamIntroduced || !$verbalPatientAndProcedureConfirmed) {
+        if (! $entireTeamIntroduced || ! $verbalPatientAndProcedureConfirmed) {
             $haltReasons[] = 'Konfirmasi verbal nama pasien, tindakan bedah, dan peran seluruh tim belum serempak.';
         }
-        if (!$prophylacticAntibioticsAdministeredPastHour) {
+        if (! $prophylacticAntibioticsAdministeredPastHour) {
             $haltReasons[] = 'Antibiotik profilaksis belum diinjeksikan dalam 60 menit sebelum insisi.';
         }
 
@@ -112,7 +113,7 @@ class HospitalSurgicalSafeSurgeryChecklistService
         if ($instrumentCountInitial !== $instrumentCountFinal) {
             $haltReasons[] = sprintf('Hitungan instrumen klem bedah selisih (%d awal vs %d akhir).', $instrumentCountInitial, $instrumentCountFinal);
         }
-        if (!$specimenCorrectlyLabeledWithPatientId) {
+        if (! $specimenCorrectlyLabeledWithPatientId) {
             $haltReasons[] = 'Label nama pasien pada spesimen patologi anatomi belum terverifikasi.';
         }
 

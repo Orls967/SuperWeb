@@ -14,7 +14,7 @@ class CriticalCareOrganSupportScoringServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new CriticalCareOrganSupportScoringService();
+        $this->service = new CriticalCareOrganSupportScoringService;
     }
 
     public function test_severe_septic_shock_multiorgan_failure_score(): void

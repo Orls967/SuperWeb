@@ -72,7 +72,7 @@ class ColdChainMonitorCommand extends Command
         );
 
         $activeBreaches = MedFridgeBreach::where('status', 'QUARANTINED')->count();
-        $this->line("Total Unit Terpantau: " . count($rows) . " | Unit Beresiko: {$unhealthyCount} | Insiden Breach Aktif: {$activeBreaches}");
+        $this->line('Total Unit Terpantau: '.count($rows)." | Unit Beresiko: {$unhealthyCount} | Insiden Breach Aktif: {$activeBreaches}");
 
         return self::SUCCESS;
     }

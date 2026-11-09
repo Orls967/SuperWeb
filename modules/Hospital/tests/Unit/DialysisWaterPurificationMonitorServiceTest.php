@@ -14,7 +14,7 @@ class DialysisWaterPurificationMonitorServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DialysisWaterPurificationMonitorService();
+        $this->service = new DialysisWaterPurificationMonitorService;
     }
 
     public function test_optimal_water_quality_passes_all_checks(): void
