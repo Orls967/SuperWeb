@@ -58,8 +58,8 @@ return new class extends Migration
                 $table->id();
                 $table->string('referral_code', 32)->unique();
                 $table->foreignId('patient_id')->constrained('hsp_patients')->cascadeOnDelete();
-                $table->unsignedBigInteger('tele_consult_id')->nullable();
-                $table->unsignedBigInteger('encounter_id')->nullable();
+                $table->foreignId('tele_consult_id')->nullable()->constrained('hsp_tele_consults')->nullOnDelete();
+                $table->foreignId('encounter_id')->nullable()->constrained('hsp_encounters')->nullOnDelete();
                 $table->string('referral_direction', 16)->default('OUTBOUND'); // OUTBOUND, INBOUND
                 $table->string('referral_type', 32)->default('HORIZONTAL'); // HORIZONTAL, VERTICAL_UP, VERTICAL_DOWN
                 $table->string('sisrute_reference_number', 64)->nullable()->unique();

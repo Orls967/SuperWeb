@@ -74,7 +74,7 @@ class RenalHepaticDosingAdjustmentCalculator
      * @return array{score: int, class: string, one_year_survival_pct: int}
      */
     public function calculateChildPugh(
-        float $totalBilirubinMgDl,
+        float $serumBilirubinMgDl,
         float $serumAlbuminGDl,
         float $inrValue,
         string $ascitesGrade = 'NONE',
@@ -83,9 +83,9 @@ class RenalHepaticDosingAdjustmentCalculator
         $score = 0;
 
         // 1. Bilirubin
-        if ($totalBilirubinMgDl < 2.0) {
+        if ($serumBilirubinMgDl < 2.0) {
             $score += 1;
-        } elseif ($totalBilirubinMgDl <= 3.0) {
+        } elseif ($serumBilirubinMgDl <= 3.0) {
             $score += 2;
         } else {
             $score += 3;

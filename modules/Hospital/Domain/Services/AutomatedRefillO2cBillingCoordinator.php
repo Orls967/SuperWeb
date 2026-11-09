@@ -8,6 +8,7 @@ use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Support\Posting;
 use Modules\Hospital\Domain\Models\EPharmacyOrder;
+use Modules\Hospital\Ledger\HospitalTransactionTypes;
 
 /**
  * Automated Refill O2C (Order-to-Cash) Billing & Revenue Split Coordinator.
@@ -45,7 +46,7 @@ class AutomatedRefillO2cBillingCoordinator
 
         // Posting berimbang ke Ledger Buku Besar
         $this->ledgerService->post(new PostingDTO(
-            type: 'EPHARMACY_O2C_SETTLEMENT',
+            type: HospitalTransactionTypes::EPHARMACY_O2C_SETTLEMENT->value,
             description: "Penebusan e-resep farmasi order {$order->order_code} (Obat + Kurir)",
             idempotencyKey: $idempotencyKey,
             entries: Posting::lines()
@@ -80,7 +81,7 @@ class AutomatedRefillO2cBillingCoordinator
         $idempotencyKey = "POST-TC-{$consultCode}";
 
         $this->ledgerService->post(new PostingDTO(
-            type: 'TELECONSULT_REVENUE_SPLIT',
+            type: HospitalTransactionTypes::TELECONSULT_REVENUE_SPLIT->value,
             description: "Jasa konsultasi telemedis {$consultCode} (Split DPJP + RS)",
             idempotencyKey: $idempotencyKey,
             entries: Posting::lines()
