@@ -504,7 +504,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 24 | **Forest** | `for_` | 1 |
 | 25 | **Governance** | `gov_` | 1 |
 | 26 | **Hcm** | `hcm_` | 7 |
-| 27 | **Hospital** | `hsp_` | 15 |
+| 27 | **Hospital** | `hsp_` | 16 |
 | 28 | **Hotel** | `htl_` | 20 |
 | 29 | **Insurance** | `ins_` | 8 |
 | 30 | **Integration** | `intg_` | 340 |
@@ -542,7 +542,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Venue** | `ven_` | 12 |
 | 63 | **Wealth** | `wm_` | 2 |
 | 64 | **Wms** | `wms_` | 2 |
-| | **Total: 64 Modul** | | **672 Migrasi** |
+| | **Total: 64 Modul** | | **673 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -573,7 +573,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Food** | 2 | `food/brands` ... | web, auth, role:brand_manager,admin |
 | **Forest** | 6 | `forest/plots`, `forest/plots/{id}`, `forest/permits` ... | web, auth, role:admin,forester,superadmin |
 | **Hcm** | 12 | `hcm`, `hcm/operations`, `hcm/operations/department` ... | web, auth, role:admin,hcm_manager |
-| **Hospital** | 39 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
+| **Hospital** | 47 | `hospital/outpatient/registration`, `hospital/outpatient/queue-board`, `hospital/outpatient/queue/{queue}/call` ... | web, auth, role:admin,hospital_registration |
 | **Hotel** | 93 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 97 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
@@ -611,7 +611,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1598 Rute** | | |
+| **Total** | **1606 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -719,6 +719,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hotel:setback-scan` | `manual` | Memindai sensor okupansi kamar dan mengaktifkan HVAC setback H4 |
 | `hotel:sync-banquet-bom` | `manual` | Synchronize banquet recipe Bill of Materials (BOM) with procurement inventory requisitions |
 | `hsp:audit` | `manual` | Audit dua-sumber operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, paspor kesehatan, code blue, dan rekonsiliasi buku besar |
+| `hsp:claim-aging-report` | `manual` | Menghasilkan laporan umur piutang klaim asuransi & estimasi cadangan kerugian penurunan nilai |
+| `hsp:cold-chain-monitor` | `manual` | Pemantauan real-time dan evaluasi Mean Kinetic Temperature (MKT) unit pendingin farmasi |
+| `hsp:festronik-audit` | `manual` | Audit kepatuhan regulasi TPS B3 dan verifikasi integritas rantai segel hash Festronik |
+| `hsp:o2c-kpi` | `manual` | Kompilasi KPI Revenue Cycle Management (RCM) dan Order-to-Cash (O2C) RS |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
 | `ins:cat-run` | `manual` | Jalankan simulasi pemodelan bencana katastrofe deterministik berseed (Fase 157) |
@@ -883,7 +887,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 267 Command** | **37 Terjadwal** | |
+| **Total: 271 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
