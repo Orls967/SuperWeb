@@ -41,8 +41,11 @@ use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
+use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
+use Modules\Hospital\Domain\Models\CodeBlueEvent;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
+use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelReservation;
 use Modules\Hotel\Domain\Models\HotelRoom;
@@ -1046,6 +1049,32 @@ return [
 
             return ['claim' => $claim->id];
         },
+    ],
+    'hospital.beds.index' => ['roles' => ['admin', 'bed_manager', 'rs_admin']],
+    'hospital.er.index' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.nursing.index' => ['roles' => ['admin', 'nurse']],
+    'hospital.critical_care.index' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.patients.passport' => [
+        'roles' => ['admin', 'doctor', 'hospital_registration'],
+        'params' => fn () => ['patient' => Patient::firstOrCreate(['mrn' => 'MRN-TEST-001'], ['name' => 'Test Patient', 'date_of_birth' => '1990-01-01', 'blood_type' => 'O', 'passport_hash' => '0000000000000000000000000000000000000000000000000000000000000000'])->id],
+    ],
+    'hospital.efficiency.index' => ['roles' => ['admin', 'rs_admin']],
+    'hospital.admissions.store' => ['roles' => ['admin', 'bed_manager', 'hospital_registration', 'rs_admin']],
+    'hospital.admissions.accrue_bed_day' => [
+        'roles' => ['admin', 'bed_manager', 'rs_admin'],
+        'params' => fn () => ['admission' => Admission::firstOrCreate(['admission_no' => 'ADM-ARCH-001'], ['patient_id' => 1, 'entitled_class' => 'CLASS_1', 'current_class' => 'CLASS_1', 'status' => 'admitted'])->id],
+    ],
+    'hospital.admissions.discharge' => [
+        'roles' => ['admin', 'bed_manager', 'rs_admin'],
+        'params' => fn () => ['admission' => Admission::firstOrCreate(['admission_no' => 'ADM-ARCH-001'], ['patient_id' => 1, 'entitled_class' => 'CLASS_1', 'current_class' => 'CLASS_1', 'status' => 'admitted'])->id],
+    ],
+    'hospital.code_blue.ack' => [
+        'roles' => ['admin', 'doctor', 'nurse'],
+        'params' => fn () => ['event' => CodeBlueEvent::firstOrCreate(['event_no' => 'CB-ARCH-001'], ['status' => 'raised', 'escalation_level' => 'NURSE', 'proof_hash' => 'proof-001'])->id],
+    ],
+    'hospital.code_blue.resolve' => [
+        'roles' => ['admin', 'doctor'],
+        'params' => fn () => ['event' => CodeBlueEvent::firstOrCreate(['event_no' => 'CB-ARCH-001'], ['status' => 'raised', 'escalation_level' => 'NURSE', 'proof_hash' => 'proof-001'])->id],
     ],
     'hospital.epharmacy.routing.dispatch' => ['roles' => ['admin', 'pharmacist']],
     'hospital.epharmacy.subscriptions.index' => ['roles' => ['admin', 'auditor', 'doctor', 'pharmacist']],

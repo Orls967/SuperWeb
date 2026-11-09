@@ -9104,7 +9104,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** R1–R4 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
+- [🔵] 87.1 Modul `Hosp` (`hsp_`): provider, MenuRegistry "Kesehatan", roles (`doctor`, `nurse`, `pharmacist`, `rs_admin`, `billing_rs`), policies, arch test batas modul; tabel `hsp_patients`, `hsp_encounters`, `hsp_admissions`, `hsp_beds`, `hsp_orders`
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9113,7 +9113,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
+- [🔵] 87.2 **Human Passport kesehatan**: hash-chain append-only (alergi, golongan darah, diagnosis kronis, riwayat obat/bedah, imunisasi) — memperluas pola Vehicle Passport Fase 5A; QR dipindai di pendaftaran; privasi ter-encrypt, akses hanya role klinis yang berwenang
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9122,7 +9122,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_2_patient_registration_with_hash_chained_health_passport
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
+- [🔵] 87.3 **Bed management real-time**: 100.000 tempat tidur (kelas: VIP, kelas 1–3, isolasi, ICU/HDU) — okupansi live, alokasi anti-bentrok (lockForUpdate), discharge → kamar masuk antrean kebersihan → occupancy & days-of-revenue-occupancy (DOR)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9131,7 +9131,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
+- [🔵] 87.4 **Clinical pathway (CPG simulasi)**: order dokter (medis, lab, radiologi, prosedur) dijadwalkan berurutan per diagnosis → keterlambatan order memicu alert ke perawat; status order real-time (pending → in-progress → resulted)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9140,7 +9140,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
+- [🔵] 87.5 IoT critical care simulasi: monitor pasien memancarkan telemetri (SpO2, ECG, suhu) → ambang batas → **code blue alert** prioritas ke perawat via Notification + halaman monitor → seluruh kejadian tercatat hash-chain sebagai bukti review mutu & malpractice defense
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9149,7 +9149,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
+- [🔵] 87.6 Seeder skala: 10 juta pasien, 100 juta encounter/tahun (12 bulan riwayat), 500.000 kamar-tempat-tidur, telemetri ICU 1 juta titik/jam; benchmark query antrean IGD & bed board
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -9158,7 +9158,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_3_real_time_bed_allocation_and_anti_overlap_guardrail
     - akses: route GET /hospital [role: admin, hospital_admin, doctor]
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
+- [🔵] 87.7 Tests: (a) alokasi bed ganda ditolak (b) paspor pasien hash valid & manipulasi terdeteksi (c) clinical pathway telat memicu alert 1x (d) telemetri ambang → code blue alert idempoten (e) query budget bed board ≤ ambang
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: tooling
@@ -9167,7 +9167,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - file: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php
     - test: modules/Hospital/tests/Feature/HospitalEmrAndBedManagementTest.php::test_87_4_and_87_5_clinical_pathway_alerts_and_icu_code_blue_telemetry
     - (dibatalkan) gate: docs/gates/fase-87.md
-- [ ] 87.8 Quality gate Fase 87
+- [🔵] 87.8 Quality gate Fase 87
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen

@@ -37,6 +37,61 @@ class HospitalDemoSeeder extends Seeder
             ]
         );
 
+        HospitalBed::firstOrCreate(
+            ['bed_code' => 'BED-K1-01'],
+            [
+                'ward_name' => 'Bangsal Mawar',
+                'room_number' => 'K1-301',
+                'bed_class' => 'CLASS_1',
+                'rate_per_day_idr' => 750000,
+                'status' => 'AVAILABLE',
+            ]
+        );
+
+        HospitalBed::firstOrCreate(
+            ['bed_code' => 'BED-K2-01'],
+            [
+                'ward_name' => 'Bangsal Anggrek',
+                'room_number' => 'K2-401',
+                'bed_class' => 'CLASS_2',
+                'rate_per_day_idr' => 500000,
+                'status' => 'AVAILABLE',
+            ]
+        );
+
+        HospitalBed::firstOrCreate(
+            ['bed_code' => 'BED-K3-01'],
+            [
+                'ward_name' => 'Bangsal Dahlia',
+                'room_number' => 'K3-501',
+                'bed_class' => 'CLASS_3',
+                'rate_per_day_idr' => 300000,
+                'status' => 'AVAILABLE',
+            ]
+        );
+
+        HospitalBed::firstOrCreate(
+            ['bed_code' => 'BED-ISO-01'],
+            [
+                'ward_name' => 'Ruang Isolasi Infeksius',
+                'room_number' => 'ISO-201',
+                'bed_class' => 'ISOLATION',
+                'rate_per_day_idr' => 1800000,
+                'status' => 'AVAILABLE',
+            ]
+        );
+
+        HospitalBed::firstOrCreate(
+            ['bed_code' => 'BED-HDU-01'],
+            [
+                'ward_name' => 'High Dependency Unit',
+                'room_number' => 'HDU-102',
+                'bed_class' => 'HDU',
+                'rate_per_day_idr' => 2000000,
+                'status' => 'AVAILABLE',
+            ]
+        );
+
         // 2. Create demo patient
         $patient = Patient::firstOrCreate(
             ['mrn' => 'MRN-HSP-001'],
