@@ -10,7 +10,10 @@ use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Application\Services\MedicalEmergencyResponseDispatcherService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
 use Modules\Hospital\Console\Commands\BedSweepCommand;
+use Modules\Hospital\Console\Commands\ClaimAgingReportCommand;
+use Modules\Hospital\Console\Commands\ColdChainMonitorCommand;
 use Modules\Hospital\Console\Commands\EfficiencyReportCommand;
+use Modules\Hospital\Console\Commands\FestronikAuditCommand;
 use Modules\Hospital\Console\Commands\PathwayScanCommand;
 use Modules\Hospital\Console\Commands\TelemetryScanCommand;
 use Modules\Hospital\Contracts\EncounterBillReader;
@@ -42,6 +45,9 @@ class HospitalServiceProvider extends ServiceProvider
                 PathwayScanCommand::class,
                 EfficiencyReportCommand::class,
                 TelemetryScanCommand::class,
+                ColdChainMonitorCommand::class,
+                ClaimAgingReportCommand::class,
+                FestronikAuditCommand::class,
             ]);
         }
     }
