@@ -76,3 +76,4 @@ Setelah seluruh chunk selesai diproses:
 3. Menghasilkan laporan audit kepatuhan integritas yang disimpan di `BackfillCheckpointAuditStore`.
 
 Dengan pendekatan arsitektur ini, modul Platform menjamin proses backfill data berjalan secara aman, terukur, dan tidak mengganggu performa transaksi pengguna aktif.
+

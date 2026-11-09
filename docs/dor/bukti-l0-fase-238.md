@@ -39,3 +39,4 @@ Worktree: `/Users/orl123456/Documents/typeshit/sw-w8-p1`
      - B1 Logika: $\ge 7.500$ LOC
      - B3 Dokumentasi: $\ge 1.500$ baris
      - Anti-Padding T-10: 0 pelanggaran.
+

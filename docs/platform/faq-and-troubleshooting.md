@@ -24,3 +24,4 @@ Dokumen ini merangkum pertanyaan umum dan pemecahan kendala teknis yang sering d
 | Kunci Lingkungan Macet (`EnvironmentLockedException`) | Sesi deployment sebelumnya mati tanpa melepas lease | Jalankan `php artisan platform:environment-unlock --environment=<env>` |
 | Job Backfill Tertahan di Status `processing` | Worker terbunuh oleh Linux OOM-killer | Jalankan `php artisan platform:backfill-resume --stale-minutes=15` |
 | Hash Jejak Audit Tidak Valid (`AuditTamperingException`) | Ada manipulasi manual langsung pada tabel database | Lakukan investigasi forensik dan sinkronkan ulang rantai hash |
+

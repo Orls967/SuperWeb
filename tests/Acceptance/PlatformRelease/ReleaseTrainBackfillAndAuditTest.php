@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Platform\Domain\Models\DataBackfill;
-use Modules\Platform\Domain\Models\DataBackfillChunk;
 use Modules\Platform\Domain\Models\ReleaseHotfix;
 use Modules\Platform\Domain\Models\ReleaseTrain;
 use Modules\Platform\Domain\Services\BackfillChunkProcessor;

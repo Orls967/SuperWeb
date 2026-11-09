@@ -13,6 +13,7 @@ use Modules\Platform\Domain\Models\ChangeDeployment;
 use Modules\Platform\Domain\Models\ChangeRequest;
 use Modules\Platform\Domain\Models\ChangeRollbackPlan;
 use Modules\Platform\Domain\Models\ReleaseTrain;
+use Modules\Platform\Domain\Services\CanaryRollbackOrchestrator;
 use Tests\TestCase;
 
 class CanaryDeploymentAutoRollbackTest extends TestCase
@@ -105,7 +106,7 @@ class CanaryDeploymentAutoRollbackTest extends TestCase
         ]);
 
         // Trigger automated rollback service
-        $service = app(\Modules\Platform\Domain\Services\CanaryRollbackOrchestrator::class);
+        $service = app(CanaryRollbackOrchestrator::class);
         $result = $service->executeAutomatedRollback($deployment, $observation);
 
         $this->assertTrue($result->isSuccess());

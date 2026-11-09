@@ -84,3 +84,4 @@ Jika sebuah deployment mengalami penghentian paksa (abrupt process termination):
 Selain penguncian lingkungan aplikasi, operasi migrasi data massal (`DataBackfill`) memiliki interaksi erat dengan kunci penerapan:
 - Ketika sebuah tabel sedang menjalani proses DDL terdistribusi atau backfill masif, `MigrationLockContentionEstimator` akan memberikan peringatan jika deployment baru berusaha mengubah skema tabel yang sama.
 - Sistem secara otomatis menunda inisiasi backfill baru sampai deployment canary yang aktif selesai dipromosikan ke produksi penuh.
+

@@ -54,3 +54,4 @@ Fase 238 menghadirkan fondasi rilis enterprise:
 - Dilarang tipe data float untuk metrik akurasi finansial atau kuota absolut; gunakan integer minor unit / fixed-point basis point.
 - Dilarang panggilan `now()` langsung di domain logic; gunakan parameter timestamp atau `ClockInterface`.
 - Semua rute HTTP baru berada di bawah prefix `platform` dan dilindungi middleware `['web', 'auth', 'role:admin,superadmin']`.
+

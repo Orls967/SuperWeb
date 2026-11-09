@@ -110,3 +110,4 @@ Contoh keluaran laporan konsol:
 1. **Jika MTTR Tinggi**: Perbaiki otomatisasi skrip rollback dan tingkatkan cakupan health check sintetis pra-rilis.
 2. **Jika CFR Tinggi**: Perketat kuorum CAB untuk perubahan berisiko tinggi dan terapkan linter migrasi skema `platform:migration-lint` di gerbang pra-penggabungan PR.
 3. **Jika Lead Time Tinggi**: Kurangi ukuran batch rilis dengan mempercepat siklus Release Train dari dua mingguan menjadi mingguan atau harian.
+

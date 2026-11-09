@@ -95,3 +95,4 @@ Setiap insiden SEV-1 dan SEV-2 wajib diakhiri dengan penyusunan dokumen retrospe
 2. **Akar Masalah (Root Cause)**: Analisis 5-Whys yang berfokus pada kelemahan sistemik, bukan kesalahan individu pengembang.
 3. **Pelajaran yang Dipetik (Lessons Learned)**: Identifikasi apa yang berjalan baik, apa yang berjalan buruk, dan di mana sistem deteksi terlambat.
 4. **Tindakan Pencegahan (Action Items)**: Daftar tiket perbaikan dengan penanggung jawab dan tanggal penyelesaian terikat.
+

@@ -70,3 +70,4 @@ Setelah hotfix berhasil diterapkan dan distabilkan di lingkungan produksi:
 1. Patch hotfix wajib segera di-cherry-pick atau digabungkan kembali ke cabang `master` dan kereta rilis berikutnya (`next release train`).
 2. Hal ini bertujuan untuk mencegah insiden berulang (regression reappearance) pada siklus rilis terjadwal mendatang.
 3. Audit ledger mencatat penutupan tiket hotfix dan memverifikasi integritas merge commit.
+

@@ -38,3 +38,4 @@ Dasbor metrik rilis dapat diakses melalui antarmuka web di `/platform/metrics` y
 - Perbandingan langsung kurva latensi canary terhadap baseline.
 - Sisa anggaran kesalahan (Error Budget Burn Rate).
 - Status antrean pemrosesan job backfill data.
+

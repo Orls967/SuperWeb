@@ -57,3 +57,4 @@ Ketika perubahan melibatkan koordinasi antar subsistem:
 - `DeploymentPipelineOrchestrator` memetakan urutan ketergantungan deployment menggunakan topologi topological sort.
 - Subsistem database dan migrasi selalu diterapkan dan diverifikasi terlebih dahulu sebelum subsistem backend aplikasi dan antarmuka web diperbarui.
 - Jika terjadi kegagalan pada salah satu subsistem di tengah jalan, orchestrator secara berurutan memicu pembalikan berantai terbalik (cascading rollback) untuk memulihkan ke konsistensi awal.
+

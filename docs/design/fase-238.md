@@ -167,3 +167,4 @@ Memeriksa AST atau token SQL file migrasi untuk mendeteksi bahaya:
 Mengevaluasi apakah rasio error canary deployment secara statistik signifikan lebih buruk daripada baseline traffic menggunakan uji proporsi dua populasi:
 $$Z = \frac{p_{canary} - p_{baseline}}{\sqrt{p_{pooled}(1 - p_{pooled}) \left(\frac{1}{n_{canary}} + \frac{1}{n_{baseline}}\right)}}$$
 Jika $Z \ge 3.0$ (probabilitas $\alpha < 0.0013$) ATAU rasio error canary $\ge 3.0 \times$ rasio error baseline dengan sampel $n_{canary} \ge 100$, evaluator mengembalikan status rekomendasi `rollback` dan memicu callback auto-rollback plan.
+
