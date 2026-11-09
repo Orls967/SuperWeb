@@ -41,3 +41,12 @@ Dalam waktu maksimal $2 \times 24$ jam setelah insiden SEV-1 atau SEV-2 dinyatak
 1. Rekam dokumen postmortem formal pada tabel `plt_postmortems` menggunakan form dev portal atau artisan CLI.
 2. Identifikasi 5-Whys root cause analysis tanpa menyalahkan individu (blameless postmortem culture).
 3. Daftarkan minimal 2 tindakan preventif terukur (action items) yang memiliki tiket pelacakan dan batas waktu implementasi.
+
+---
+
+## 4. Pelacakan SLA & Integrasi Dashboard Observabilitas
+
+- Setiap insiden terhubung secara otomatis ke catatan observabilitas `plt_service_slos` melalui kolom korelasi `service_name`.
+- Penghitungan MTTR (Mean Time to Resolution) dan MTBF (Mean Time Between Failures) diperbarui secara real-time pada ViewModel `SloMonitorViewModel`.
+- Stakeholder bisnis dan pimpinan engineering menerima ringkasan otomatis setiap penutupan tiket insiden berskala SEV-1 dan SEV-2.
+
