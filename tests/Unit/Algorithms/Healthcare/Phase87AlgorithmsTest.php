@@ -393,4 +393,99 @@ class Phase87AlgorithmsTest extends TestCase
         $this->assertEquals(150, $audit['first_defib_interval_sec']);
         $this->assertTrue($engine->verifyCertificate($audit));
     }
+
+    /**
+     * Uji B10: ClinicalNutritionRiskCalculator.
+     */
+    public function test_b10_nutrition_risk_calculator_and_verifier(): void
+    {
+        $calc = new \Modules\Hospital\Domain\Algorithms\ClinicalNutritionRiskCalculator();
+
+        $inputAtRisk = [
+            'bmi' => 17.5,
+            'weight_loss_pct_3months' => 8.0,
+            'food_intake_reduction_pct_last_week' => 50.0,
+            'disease_severity_score' => 2,
+            'age_years' => 72,
+        ];
+
+        $res = $calc->evaluate($inputAtRisk);
+        $this->assertTrue($res['is_at_nutritional_risk']);
+        $this->assertGreaterThanOrEqual(3, $res['total_nrs_score']);
+        $this->assertTrue($calc->verifyCertificate($res, $inputAtRisk));
+
+        // Tamper test
+        $tampered = $res;
+        $tampered['total_nrs_score'] = 0;
+        $this->assertFalse($calc->verifyCertificate($tampered, $inputAtRisk));
+    }
+
+    /**
+     * Uji B11: FallRiskAssessmentEngine.
+     */
+    public function test_b11_fall_risk_assessment_engine_and_verifier(): void
+    {
+        $engine = new \Modules\Hospital\Domain\Algorithms\FallRiskAssessmentEngine();
+
+        $highRiskProfile = [
+            'history_of_falling_past_3months' => true,
+            'secondary_diagnosis_present' => true,
+            'ambulatory_aid' => 'FURNITURE_HOLD',
+            'iv_line_or_heparin_lock' => true,
+            'gait_transferring' => 'IMPAIRED',
+            'mental_status' => 'FORGETS_LIMITATIONS',
+        ];
+
+        $res = $engine->evaluate($highRiskProfile);
+        $this->assertEquals('HIGH_RISK', $res['risk_category']);
+        $this->assertGreaterThanOrEqual(45, $res['morse_score']);
+        $this->assertContains('YELLOW_FALL_RISK_WRISTBAND', $res['prevention_bundle']);
+        $this->assertTrue($engine->verifyCertificate($res, $highRiskProfile));
+    }
+
+    /**
+     * Uji B12: AntibioticStewardshipRuleEngine.
+     */
+    public function test_b12_antibiotic_stewardship_rule_engine_and_verifier(): void
+    {
+        $engine = new \Modules\Hospital\Domain\Algorithms\AntibioticStewardshipRuleEngine();
+
+        // 1. Reserve antibiotic tanpa persetujuan PPRA -> Ditolak
+        $unapprovedReserve = [
+            'antibiotic_code' => 'COLISTIN',
+            'antibiotic_name' => 'Colistin 1M IU',
+            'indication_type' => 'EMPIRIC',
+            'duration_days' => 5,
+            'culture_sensitivity_tested' => false,
+            'ppra_committee_approval' => false,
+        ];
+        $evalUnapproved = $engine->evaluate($unapprovedReserve);
+        $this->assertFalse($evalUnapproved['is_prescription_allowed']);
+        $this->assertEquals('RESERVE', $evalUnapproved['aware_category']);
+        $this->assertTrue($engine->verifyCertificate($evalUnapproved, $unapprovedReserve));
+
+        // 2. Profilaksis bedah lebih dari 24 jam -> Ditolak
+        $prolongedProphylaxis = [
+            'antibiotic_code' => 'CEFAZOLIN',
+            'antibiotic_name' => 'Cefazolin 1g',
+            'indication_type' => 'PROPHYLAXIS_SURGICAL',
+            'duration_days' => 3,
+            'culture_sensitivity_tested' => false,
+            'ppra_committee_approval' => false,
+        ];
+        $evalProlonged = $engine->evaluate($prolongedProphylaxis);
+        $this->assertFalse($evalProlonged['is_prescription_allowed']);
+
+        // 3. Access antibiotic indikasi empiris standar -> Disetujui
+        $validAccess = [
+            'antibiotic_code' => 'AMPICILLIN',
+            'antibiotic_name' => 'Ampicillin 1g',
+            'indication_type' => 'EMPIRIC',
+            'duration_days' => 3,
+            'culture_sensitivity_tested' => false,
+            'ppra_committee_approval' => false,
+        ];
+        $evalValid = $engine->evaluate($validAccess);
+        $this->assertTrue($evalValid['is_prescription_allowed']);
+    }
 }
