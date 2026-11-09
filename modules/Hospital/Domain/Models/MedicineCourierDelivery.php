@@ -42,6 +42,7 @@ class MedicineCourierDelivery extends Model
         'last_recorded_temp_c' => 'float',
         'destination_latitude' => 'float',
         'destination_longitude' => 'float',
+        'pod_recipient_nik' => 'encrypted',
         'dispatched_at' => 'datetime',
         'delivered_at' => 'datetime',
     ];

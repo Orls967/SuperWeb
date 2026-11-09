@@ -53,34 +53,18 @@ flowchart TD
 Alur interaksi berurutan saat pasien melakukan telekonsultasi hingga obat diserahkan:
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Pasien as Pasien
-    actor Dokter as Dokter Spesialis
-    participant K30 as PatientReferralBookerService
-    participant CDS as CDSEngine
-    participant Apotek as Cabang Apotek Terpilih
-    actor Kurir as Kurir Farmasi
-    participant Sensor as Sensor IoT Dingin
-
-    Pasien->>K30: Request Booking Telekonsultasi
-    K30->>Dokter: Jadwalkan Sesi Video & Buka Rekam Medis
-    Dokter->>Pasien: Lakukan Konsultasi Klinis & Anamnesis
-    Dokter->>CDS: Submit Draf Resep (Obat, Dosis, Durasi)
-    CDS->>CDS: Cek Alergi, DDI, Klirens Ginjal & Dosis Max
-    CDS-->>Dokter: Status Disetujui (PrescriptionSafetyScore: SAFE)
-    Dokter->>K30: Terbitkan Resep dengan Tanda Tangan Digital
-    K30->>Apotek: Rute Geospasial ke Apotek Terdekat & Alokasi FEFO
-    Apotek->>Apotek: Racik Obat & Verifikasi Double-Check Label
-    Apotek->>Kurir: Serahkan Boks Pendingin (Suhu Awal 4.0°C)
-    Kurir->>Pasien: Menuju Alamat Antar
-    loop Selama Perjalanan
-        Sensor->>Kurir: Kirim Telemetri Suhu Realtime (2°C - 8°C)
-    end
-    Kurir->>Pasien: Tiba di Lokasi & Minta Verifikasi NIK KTP
-    Pasien->>Kurir: Tanda Tangan Digital e-POD
-    Kurir->>K30: Selesaikan Pengantaran (Status: DELIVERED)
-    K30->>Dokter: Notifikasi Obat Telah Diterima Pasien
+flowchart TD
+    P1["1. Pasien Request Booking Telekonsultasi"] --> P2["2. Jadwalkan Sesi Video & Buka Rekam Medis"]
+    P2 --> P3["3. Lakukan Konsultasi Klinis & Anamnesis"]
+    P3 --> P4["4. Submit Draf Resep ke CDSEngine"]
+    P4 --> P5["5. Cek Alergi, DDI, Klirens Ginjal & Dosis Max"]
+    P5 --> P6["6. Terbitkan Resep dengan Tanda Tangan Digital"]
+    P6 --> P7["7. Rute Geospasial ke Apotek Terdekat & Alokasi FEFO"]
+    P7 --> P8["8. Racik Obat & Verifikasi Double-Check Label"]
+    P8 --> P9["9. Serahkan Boks Pendingin (Suhu Awal 4.0°C)"]
+    P9 --> P10["10. Telemetri Sensor IoT Dingin Realtime (2°C - 8°C)"]
+    P10 --> P11["11. Verifikasi NIK KTP & Tanda Tangan Digital e-POD"]
+    P11 --> P12["12. Selesaikan Pengantaran (Status: DELIVERED)"]
 ```
 
 ---
@@ -90,13 +74,11 @@ sequenceDiagram
 Ketika kondisi pasien memburuk selama telekonsultasi dan memerlukan rawat inap:
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    Dokter->>K30: bookInpatientFromReferral(teleConsultId, wardClass, ICD-10)
-    K30->>K30: Cari Bed Tersedia (status: AVAILABLE) & Lock
-    K30->>K30: Update Bed status = OCCUPIED
-    K30->>K30: Buat Admission (admission_no, hospital_bed_id, ADMITTED)
-    K30->>K30: Bentuk Encounter Baru Rawat Inap
-    K30->>Dokter: Return Kode Admisi, Nomor Bed, & Petunjuk Rujukan
+flowchart TD
+    R1["1. bookInpatientFromReferral(teleConsultId, wardClass, ICD-10)"] --> R2["2. Cari Bed Tersedia (status: AVAILABLE) & Lock"]
+    R2 --> R3["3. Update Bed status = OCCUPIED"]
+    R3 --> R4["4. Buat Admission (admission_no, hospital_bed_id, ADMITTED)"]
+    R4 --> R5["5. Bentuk Encounter Baru Rawat Inap"]
+    R5 --> R6["6. Return Kode Admisi, Nomor Bed, & Petunjuk Rujukan"]
 ```
 
