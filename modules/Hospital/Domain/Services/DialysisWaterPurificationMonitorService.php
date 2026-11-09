@@ -34,7 +34,7 @@ class DialysisWaterPurificationMonitorService
      *
      * @param string $roLoopIdentifier ID loop distribusi pipa RO
      * @param float $conductivityMicroSiemens Konduktivitas elektrik (µS/cm)
-     * @param float $totalBacteriaCfuPerMl Hitung koloni bakteri (CFU/mL)
+     * @param float $bacteriaColonyCfuPerMl Hitung koloni bakteri (CFU/mL)
      * @param float $endotoxinEuPerMl Kadar endotoksin (EU/mL)
      * @param float $chlorinePpm Kadar klorin bebas/total (ppm)
      * @return array{
@@ -49,7 +49,7 @@ class DialysisWaterPurificationMonitorService
     public function evaluateDialysisWaterQuality(
         string $roLoopIdentifier,
         float $conductivityMicroSiemens,
-        float $totalBacteriaCfuPerMl,
+        float $bacteriaColonyCfuPerMl,
         float $endotoxinEuPerMl,
         float $chlorinePpm
     ): array {
@@ -85,14 +85,14 @@ class DialysisWaterPurificationMonitorService
             $actions[] = 'Jadwalkan flushing membran RO dan cek status garam softener.';
         }
 
-        if ($totalBacteriaCfuPerMl >= self::MAX_BACTERIA_CFU_PER_ML) {
-            $breached[] = sprintf('Kultur bakteri %.1f CFU/mL melampaui ambang bahaya 100 CFU/mL', $totalBacteriaCfuPerMl);
+        if ($bacteriaColonyCfuPerMl >= self::MAX_BACTERIA_CFU_PER_ML) {
+            $breached[] = sprintf('Kultur bakteri %.1f CFU/mL melampaui ambang bahaya 100 CFU/mL', $bacteriaColonyCfuPerMl);
             $isSafe = false;
             $status = self::STATUS_HALT_DIALYSIS;
             $disinfectionRequired = true;
             $actions[] = 'Sterilisasi kimiawi menyeluruh sistem pipa loop menggunakan asam perasetat / ozonisasi.';
-        } elseif ($totalBacteriaCfuPerMl >= self::ACTION_BACTERIA_CFU_PER_ML) {
-            $breached[] = sprintf('Kultur bakteri %.1f CFU/mL memasuki action level (50-100 CFU/mL)', $totalBacteriaCfuPerMl);
+        } elseif ($bacteriaColonyCfuPerMl >= self::ACTION_BACTERIA_CFU_PER_ML) {
+            $breached[] = sprintf('Kultur bakteri %.1f CFU/mL memasuki action level (50-100 CFU/mL)', $bacteriaColonyCfuPerMl);
             if ($status !== self::STATUS_HALT_DIALYSIS) {
                 $status = self::STATUS_ACTION_REQUIRED;
             }
