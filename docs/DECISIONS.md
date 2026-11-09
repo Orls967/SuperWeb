@@ -2942,3 +2942,42 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
 
 
 
+
+<a id="g7-d54"></a>
+<a id="g7-d55"></a>
+<a id="g7-d56"></a>
+<a id="g7-d57"></a>
+<a id="g7-d59"></a>
+<a id="g7-d60"></a>
+<a id="g7-d61"></a>
+<a id="d87-1"></a>
+<a id="d87-2"></a>
+<a id="d87-3"></a>
+<a id="d87-4"></a>
+<a id="d87-5"></a>
+<a id="d87-6"></a>
+<a id="d87-7"></a>
+<a id="d87-8"></a>
+## 2026-11-09: [G7-P8.1] Modul Hospital — Identitas Pasien, EMR, Bed Management, Clinical Pathway & Critical Care (Fase 87, G7-D54..G7-D57, G7-D59..G7-D61, D87-1..D87-8)
+- **Anchor:** `2026-11-09-g7-p8-kesehatan-fase-87` / `g7-d54` / `g7-d55` / `g7-d56` / `g7-d57` / `g7-d59` / `g7-d60` / `g7-d61` / `d87-1` / `d87-2` / `d87-3` / `d87-4` / `d87-5` / `d87-6` / `d87-7` / `d87-8`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/konsep/rumah-sakit.md`](konsep/rumah-sakit.md) (Konsep Fase 87 & 88)
+  - [`docs/design/fase-87.md`](design/fase-87.md) (Desain Arsitektur & Diagram Fase 87)
+  - [`docs/dor/fase-87.md`](dor/fase-87.md) (Definition of Ready & RAB Fase 87)
+  - [`docs/decisions/ADR-0054-satuan-medis-dan-keuangan.md`](decisions/ADR-0054-satuan-medis-dan-keuangan.md) (G7-D54: Satuan Medis dan Keuangan)
+  - [`docs/decisions/ADR-0055-perlindungan-data-medis-dan-pdp.md`](decisions/ADR-0055-perlindungan-data-medis-dan-pdp.md) (G7-D55: Perlindungan Data Medis & UU PDP)
+  - [`docs/decisions/ADR-0056-alokasi-bed-anti-bentrok-dan-upgrade.md`](decisions/ADR-0056-alokasi-bed-anti-bentrok-dan-upgrade.md) (G7-D56: Alokasi Bed Anti-Bentrok & Upgrade Diserap RS)
+  - [`docs/decisions/ADR-0057-folio-dan-pengakuan-pendapatan-append-only.md`](decisions/ADR-0057-folio-dan-pengakuan-pendapatan-append-only.md) (G7-D57: Folio & Pendapatan Append-Only)
+  - [`docs/decisions/ADR-0059-gerbang-kepekaan-eksternal-hospital.md`](decisions/ADR-0059-gerbang-kepekaan-eksternal-hospital.md) (G7-D59: Gerbang Kepekaan HospitalExternalFactors)
+  - [`docs/decisions/ADR-0060-jejak-append-only-paspor-dan-spesimen.md`](decisions/ADR-0060-jejak-append-only-paspor-dan-spesimen.md) (G7-D60: Jejak Kriptografis CanonicalHashChain Paspor Pasien)
+- **Konteks:**
+  - Melaksanakan Fase 87 Rumah Sakit I: Identitas Pasien, EMR, Bed Management, Clinical Pathway & Critical Care pada modul `Hospital` (`hsp_`), memperdalam arsitektur tanpa mengubah kontrak publik `EncounterBillReader` dan `MedicalEmergencyResponseDispatcher`.
+- **Keputusan:**
+  1. **D87-1 (Identitas Pasien, KYC & Human Passport Kriptografis - G7-D55, G7-D60)**: Registrasi pasien terikat Party KYC dengan pencarian blind-index HMAC; paspor kesehatan append-only berantai hash CanonicalHashChain dan enkripsi at-rest. Siklus hidup admisi dikawal `AdmissionStateMachine` 8 status (`requested` -> `bed_reserved` -> `admitted` -> `transferred` -> `discharge_planned` -> `discharged` -> `readmitted` -> `cancelled`).
+  2. **D87-2 (Alokasi Ranjang Deterministik B1, Saga Admisi & Kebersihan - G7-D56)**: Alokasi ranjang berjenjang via B1 `BedAssignmentOptimizer` dengan kuncian `lockForUpdate()`, penjaminan non-substitusi ICU/Isolasi, dan proteksi biaya upgrade diserap RS. Orkestrasi admisi dikawal `InpatientAdmissionSaga` dengan kompensasi pelepasan kuncian bila escrow deposit gagal. Siklus status ranjang dikawal `HospitalBedStateMachine` 7 status.
+  3. **D87-3 (Clinical Pathway Orders, Analisis Keterlambatan B3 & Alert Tepat Sekali)**: Rantai order dokter dijadwalkan berurutan per diagnosis ICD-10. Deteksi keterlambatan order via B3 `ClinicalPathwayDelayDetector` mengirimkan notifikasi perawat tepat 1 kali pada keterlambatan > 15 menit dan menjadwalkan ulang proyeksi order turunan tanpa alert berulang. Status order dikawal `ClinicalOrderStateMachine` 7 status.
+  4. **D87-4 (Evaluasi NEWS2 B2, Telemetri IoT & Code Blue Idempoten B5 - G7-D54)**: Agregasi tanda vital fisiologis via B2 `EarlyWarningScoreCalculator` berstandar RCP NEWS2. Deteksi anomali ganda dalam jendela 3 menit via B5 `CodeBlueEscalationPlanner` memicu alarm Code Blue tepat 1 kali per episode dan merencanakan eskalasi bertingkat (menit 0 perawat, menit 2 dokter, menit 5 tim resusitasi) yang tercatat di `CodeBlueEventStateMachine` 7 status.
+  5. **D87-5 (Integrasi Lintas Modul)**: Integrasi dengan modul HCM (roster nakes), Asset (kalibrasi ranjang/alkes), Core Digital Twin (peta bangsal), dan Party (KYC). Menjaga kontrak `EncounterBillReader` dan `MedicalEmergencyResponseDispatcher` tetap kompatibel 100%.
+  6. **D87-6 (Respons Kepekaan Eksternal - G7-D59)**: Pembacaan faktor risiko lingkungan (DBD, ISPA kabut asap, banjir akses RS) melalui gerbang tunggal `HospitalExternalFactors` pada tabel `hsp_external_factors` untuk memicu alih fungsi kapasitas bangsal darurat dengan persetujuan `rs_admin`.
+  7. **D87-7 (Penjurnalan Buku Besar Akuntansi Rawat Inap - G7-D57)**: Pencatatan escrow deposit rawat inap (`hsp:patient_deposit_escrow`), pengakuan pendapatan bed-day harian (`hsp:patient_receivable` vs `hsp:hospital_revenue`), dan pembalik koreksi tarif tanpa nilai negatif.
+  8. **D87-8 (Audit Dua Sumber hsp:audit)**: Penguatan perintah `hsp:audit` memvalidasi invarian: alokasi ranjang aktif $\le 1$, saldo ledger bed-day cocok dengan riwayat hari-rawat, hash chain paspor valid, dan nihil teks terbuka data medis.
