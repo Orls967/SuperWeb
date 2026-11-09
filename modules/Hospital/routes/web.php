@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Hospital\Http\Controllers\HospitalBillingController;
 use Modules\Hospital\Http\Controllers\HospitalCareController;
 use Modules\Hospital\Http\Controllers\HospitalController;
 use Modules\Hospital\Http\Controllers\LabDiagnosticImagingController;
@@ -166,4 +167,37 @@ Route::prefix('hospital')->middleware(['web', 'auth'])->group(function () {
     Route::post('/code-blue/{event}/resolve', [HospitalCareController::class, 'resolveCodeBlue'])
         ->middleware('role:admin,doctor')
         ->name('hospital.code_blue.resolve');
+
+    // Fase 88: Order-to-Cash, Billing Episode, Waterfall CoB, Cold-Chain & Waste
+    Route::post('/billing/episodes', [HospitalBillingController::class, 'createEpisode'])
+        ->middleware('role:admin,hospital_finance,cashier,rs_admin')
+        ->name('hospital.billing.episodes.create');
+
+    Route::post('/billing/folio-items', [HospitalBillingController::class, 'addFolioItem'])
+        ->middleware('role:admin,hospital_finance,cashier,doctor,nurse,rs_admin')
+        ->name('hospital.billing.folio_items.add');
+
+    Route::post('/billing/reconcile-settle', [HospitalBillingController::class, 'reconcileAndSettle'])
+        ->middleware('role:admin,hospital_finance,cashier,rs_admin')
+        ->name('hospital.billing.reconcile_settle');
+
+    Route::post('/operations/cold-chain', [HospitalBillingController::class, 'recordColdChain'])
+        ->middleware('role:admin,pharmacist,nurse,rs_admin')
+        ->name('hospital.operations.cold_chain.record');
+
+    Route::post('/operations/medical-waste', [HospitalBillingController::class, 'logWaste'])
+        ->middleware('role:admin,nurse,rs_admin,environmental_officer')
+        ->name('hospital.operations.waste.log');
+
+    Route::post('/operations/medical-waste/handover', [HospitalBillingController::class, 'handoverWaste'])
+        ->middleware('role:admin,environmental_officer,rs_admin')
+        ->name('hospital.operations.waste.handover');
+
+    Route::get('/operations/medical-waste/verify-chain', [HospitalBillingController::class, 'verifyWasteCustody'])
+        ->middleware('role:admin,environmental_officer,rs_admin')
+        ->name('hospital.operations.waste.verify_chain');
+
+    Route::get('/billing/aging-report', [HospitalBillingController::class, 'getAgingReport'])
+        ->middleware('role:admin,hospital_finance,rs_admin')
+        ->name('hospital.billing.aging_report');
 });

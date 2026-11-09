@@ -7,6 +7,7 @@ namespace Modules\Insurance;
 use Illuminate\Support\ServiceProvider;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Insurance\Application\Services\CashlessGuaranteeRequesterService;
 use Modules\Insurance\Application\Services\EventCoverBinderService;
 use Modules\Insurance\Application\Services\FullInsuranceService;
 use Modules\Insurance\Application\Services\InsurTechClaimsService;
@@ -19,6 +20,7 @@ use Modules\Insurance\Console\Commands\AuditTakafulCommand;
 use Modules\Insurance\Console\Commands\CatRunCommand;
 use Modules\Insurance\Console\Commands\CedePeriodCommand;
 use Modules\Insurance\Console\Commands\SolvencySnapshotCommand;
+use Modules\Insurance\Contracts\CashlessGuaranteeRequester;
 use Modules\Insurance\Contracts\EventCoverBinder;
 use Modules\Insurance\Contracts\ParametricTriggerRecorder;
 use Modules\Shared\Application\MenuRegistry;
@@ -44,6 +46,10 @@ class InsuranceServiceProvider extends ServiceProvider
         $this->app->bind(
             ParametricTriggerRecorder::class,
             ParametricTriggerRecorderService::class
+        );
+        $this->app->bind(
+            CashlessGuaranteeRequester::class,
+            CashlessGuaranteeRequesterService::class
         );
     }
 

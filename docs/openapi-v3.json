@@ -46035,6 +46035,423 @@
                 ]
             }
         },
+        "/hospital/billing/aging-report": {
+            "get": {
+                "operationId": "getHospitalBillingAgingReport",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Get Aging Report (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, hospital_finance, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "hospital_finance",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/hospital/billing/episodes": {
+            "post": {
+                "operationId": "postHospitalBillingEpisodesCreate",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Create Episode (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, cashier, hospital_finance, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "cashier",
+                    "hospital_finance",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalBillingEpisodesCreate",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospital/billing/folio-items": {
+            "post": {
+                "operationId": "postHospitalBillingFolioItemsAdd",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Add Folio Item (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, cashier, doctor, hospital_finance, nurse, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "cashier",
+                    "doctor",
+                    "hospital_finance",
+                    "nurse",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalBillingFolioItemsAdd",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospital/billing/reconcile-settle": {
+            "post": {
+                "operationId": "postHospitalBillingReconcileSettle",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Reconcile And Settle (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, cashier, hospital_finance, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "cashier",
+                    "hospital_finance",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalBillingReconcileSettle",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/hospital/code-blue/{event}/ack": {
             "post": {
                 "operationId": "postHospitalCodeBlueAck",
@@ -47251,6 +47668,420 @@
                 "x-allowed-roles": [
                     "admin",
                     "nurse"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CursorPaginationParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/hospital/operations/cold-chain": {
+            "post": {
+                "operationId": "postHospitalOperationsColdChainRecord",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Record Cold Chain (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, nurse, pharmacist, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "nurse",
+                    "pharmacist",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalOperationsColdChainRecord",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospital/operations/medical-waste": {
+            "post": {
+                "operationId": "postHospitalOperationsWasteLog",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Log Waste (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, environmental_officer, nurse, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "environmental_officer",
+                    "nurse",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalOperationsWasteLog",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospital/operations/medical-waste/handover": {
+            "post": {
+                "operationId": "postHospitalOperationsWasteHandover",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Handover Waste (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, environmental_officer, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "environmental_officer",
+                    "rs_admin"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postHospitalOperationsWasteHandover",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospital/operations/medical-waste/verify-chain": {
+            "get": {
+                "operationId": "getHospitalOperationsWasteVerifyChain",
+                "tags": [
+                    "Hospital"
+                ],
+                "summary": "Verify Waste Custody (Hospital)",
+                "description": "Operational endpoint for Hospital module. Protected by role matrix: [admin, environmental_officer, rs_admin].",
+                "x-allowed-roles": [
+                    "admin",
+                    "environmental_officer",
+                    "rs_admin"
                 ],
                 "parameters": [
                     {
