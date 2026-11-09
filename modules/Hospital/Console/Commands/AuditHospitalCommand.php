@@ -44,14 +44,14 @@ class AuditHospitalCommand extends Command
 
         // 1. Audit Invarian Ranjang: Tidak ada ranjang dengan > 1 pasien aktif (INV-87-01)
         $multiOccupancy = Admission::whereIn('status', ['admitted', 'transferred', 'discharge_planned'])
-            ->select('bed_id', DB::raw('count(*) as count'))
-            ->groupBy('bed_id')
+            ->select('hospital_bed_id', DB::raw('count(*) as count'))
+            ->groupBy('hospital_bed_id')
             ->having('count', '>', 1)
             ->get();
 
         if ($multiOccupancy->isNotEmpty()) {
             foreach ($multiOccupancy as $dup) {
-                $auditNotes[] = "Pelanggaran INV-87-01: Bed #{$dup->bed_id} ditempati oleh {$dup->count} pasien aktif!";
+                $auditNotes[] = "Pelanggaran INV-87-01: Bed #{$dup->hospital_bed_id} ditempati oleh {$dup->count} pasien aktif!";
                 $discrepancies++;
             }
         }
@@ -127,7 +127,7 @@ class AuditHospitalCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('Hospital audit PASSED cleanly with 0 discrepancy (0 discrepancies).');
+        $this->info('Hospital audit PASSED with 0 discrepancy (cleanly with 0 discrepancies).');
 
         return self::SUCCESS;
     }

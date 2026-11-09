@@ -19,6 +19,7 @@ class Admission extends Model
         'admission_no',
         'patient_id',
         'encounter_id',
+        'hospital_bed_id',
         'bed_id',
         'entitled_class',
         'current_class',
@@ -30,6 +31,16 @@ class Admission extends Model
         'admitted_at',
         'discharged_at',
     ];
+
+    public function getBedIdAttribute(): ?int
+    {
+        return $this->attributes['hospital_bed_id'] ?? null;
+    }
+
+    public function setBedIdAttribute(?int $value): void
+    {
+        $this->attributes['hospital_bed_id'] = $value;
+    }
 
     protected $casts = [
         'is_upgraded' => 'boolean',
@@ -47,7 +58,7 @@ class Admission extends Model
 
     public function bed(): BelongsTo
     {
-        return $this->belongsTo(HospitalBed::class, 'bed_id');
+        return $this->belongsTo(HospitalBed::class, 'hospital_bed_id');
     }
 
     public function encounter(): BelongsTo

@@ -55,7 +55,7 @@ return new class extends Migration
             $table->string('admission_no', 32)->unique();
             $table->unsignedBigInteger('patient_id')->index();
             $table->unsignedBigInteger('encounter_id')->nullable()->index();
-            $table->unsignedBigInteger('bed_id')->nullable()->index();
+            $table->unsignedBigInteger('hospital_bed_id')->nullable()->index();
             $table->string('entitled_class', 16); // VIP, CLASS_1, CLASS_2, CLASS_3, ICU, HDU, ISOLATION
             $table->string('current_class', 16);
             $table->boolean('is_upgraded')->default(false);
@@ -69,7 +69,7 @@ return new class extends Migration
 
             $table->foreign('patient_id')->references('id')->on('hsp_patients')->cascadeOnDelete();
             $table->foreign('encounter_id')->references('id')->on('hsp_encounters')->nullOnDelete();
-            $table->foreign('bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
+            $table->foreign('hospital_bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
         });
 
         // 4. hsp_admission_transitions (Riwayat Transisi Append-Only)
