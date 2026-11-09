@@ -7,7 +7,9 @@ namespace Modules\Hospital\tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\ClaimWaterfall;
+use Modules\Hospital\Domain\Models\Encounter;
 use Modules\Hospital\Domain\Models\FolioItem;
+use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Services\HospitalBillingVerticalAuditService;
 use Tests\TestCase;
 
@@ -25,9 +27,25 @@ class HospitalBillingVerticalAuditServiceTest extends TestCase
 
     public function test_revenue_cycle_kpi_calculation_with_clean_metrics(): void
     {
+        $patient = Patient::create([
+            'mrn' => 'MRN-'.strtoupper(uniqid()),
+            'name' => 'Budi Santoso',
+            'date_of_birth' => '1985-05-15',
+            'blood_type' => 'O_POSITIVE',
+            'passport_hash' => 'HASH-PASSPORT-01',
+        ]);
+
+        $encounter = Encounter::create([
+            'encounter_code' => 'ENC-'.strtoupper(uniqid()),
+            'patient_id' => $patient->id,
+            'encounter_type' => 'INPATIENT',
+            'admitted_at' => now(),
+            'status' => 'IN_PROGRESS',
+        ]);
+
         $episode = BillingEpisode::create([
             'episode_code' => 'EP-KPI-01',
-            'encounter_id' => 1,
+            'encounter_id' => $encounter->id,
             'escrow_deposit_idr' => 2_000_000,
             'total_charges_idr' => 10_000_000,
             'bpjs_coverage_idr' => 8_000_000,
