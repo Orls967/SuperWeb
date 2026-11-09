@@ -96,6 +96,8 @@ use Modules\Mobility\Ev\Domain\Models\EvStation;
 use Modules\Mobility\Fleet\Domain\Models\FleetContract;
 use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Partner\Domain\Models\Partner;
+use Modules\Platform\Domain\Models\ChangeRequest;
+use Modules\Platform\Domain\Models\ReleaseTrain;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
 use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\BuildingZone;
@@ -4769,4 +4771,47 @@ return [
             return ['phaseId' => 237];
         },
     ],
+
+    // Fase 238: Change Management & Release Train
+    'platform.change.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.change.show' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            $owner = User::firstOrCreate(['email' => 'admin@platform-route-test.local'], ['name' => 'Admin User', 'password' => bcrypt('password'), 'role' => 'admin']);
+            $cr = ChangeRequest::firstOrCreate(
+                ['reference_number' => 'CR-ARCH-ROUTE-01'],
+                [
+                    'title' => 'Arch Test CR',
+                    'requester_id' => $owner->id,
+                    'target_module' => 'Core',
+                    'change_type' => 'normal',
+                    'status' => 'draft',
+                    'risk_score' => 2500,
+                    'risk_tier' => 'low',
+                ]
+            );
+
+            return ['change' => $cr->id];
+        },
+    ],
+    'platform.release.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.release.show' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            $owner = User::firstOrCreate(['email' => 'admin@platform-route-test.local'], ['name' => 'Admin User', 'password' => bcrypt('password'), 'role' => 'admin']);
+            $train = ReleaseTrain::firstOrCreate(
+                ['train_code' => 'REL-ARCH-ROUTE-01'],
+                [
+                    'version' => 'v8.9.0',
+                    'release_manager_id' => $owner->id,
+                    'status' => 'open',
+                    'freeze_at' => now()->addDays(5),
+                    'scheduled_deploy_at' => now()->addDays(7),
+                ]
+            );
+
+            return ['train' => $train->id];
+        },
+    ],
+    'platform.backfills.index' => ['roles' => ['admin', 'superadmin']],
 ];

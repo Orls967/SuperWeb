@@ -3013,3 +3013,22 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   7. **W8-D10 (Data Synthesizer, PII Masking & Blind Indexing)**: Mekanisme isolasi data pengujian dengan masking PII deterministik berbasis hashing HMAC, verifikasi kepatuhan masking (`platform:mask-verify`), dan anonimisasi dataset sandbox (`platform:anonymize`).
   8. **W8-D11 (Audit Platform Dua Sumber platform:audit & Service SLO)**: Perintah `platform:audit` memverifikasi konsistensi dua sumber (database record sandbox/metrik vs filesystem/git baseline); evaluasi Error Budget SLO dengan peringatan burn-rate bertingkat.
 
+<a id="2026-11-10-w8-p1-fase-238-release-train-change-management"></a>
+<a id="w8-d06"></a>
+<a id="w8-d07"></a>
+<a id="w8-d08"></a>
+## 2026-11-10: [W8-P1.2] Release Train, Change Management & Keamanan Deploy (Fase 238, W8-D06..W8-D08)
+- **Anchor:** `2026-11-10-w8-p1-fase-238-release-train-change-management` / `w8-d06` / `w8-d07` / `w8-d08`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-238.md`](design/fase-238.md) (Desain Arsitektur & Diagram Fase 238)
+  - [`docs/dor/fase-238.md`](dor/fase-238.md) (Definition of Ready & RAB Fase 238)
+  - [`docs/dor/bukti-l0-fase-238.md`](dor/bukti-l0-fase-238.md) (Bukti Kondisi Awal L.0 Fase 238)
+  - [`docs/decisions/ADR-0238-release-train-change-management.md`](decisions/ADR-0238-release-train-change-management.md)
+- **Konteks:**
+  - Memperluas fondasi Platform pada Fase 238 dengan tata kelola perubahan (Change Management), orkestrasi rilis berkelanjutan (Release Train), linter keselamatan skema database (MySQL 8.4 DDL Linter), dan proteksi canary deployment dengan rollback otomatis.
+- **Keputusan:**
+  1. **W8-D06 (State Machine Change Request 9-Status & Algoritma A4 ChangeRiskScorer)**: Penerapan `ChangeRequestStateMachine` dengan 9 status teratur (`draft` -> `assessed` -> `cab_review` -> `approved` -> `scheduled` -> `deploying` -> `verified` / `rolled_back` -> `closed`). Algoritma A4 `ChangeRiskScorer` mengalkulasi skor risiko perubahan 0-100 dari diff LOC, bobot modul target, risiko DDL, dan track record historis. Skor > 65 mewajibkan CAB review.
+  2. **W8-D07 (Algoritma Bersertifikat A5 Database Migration Safety Linter)**: Linter statis migrasi skema basis data `MigrationSafetyLinter` untuk memvalidasi kompatibilitas MySQL 8.4: menangkap penguncian tabel eksklusif (exclusive table lock), penambahan kolom NOT NULL tanpa default, drop kolom/tabel tanpa deprecation, dan perubahan kunci asing berisiko. Enforced pra-deploy via `platform:migration-lint` (exit code 1 bila ada pelanggaran).
+  3. **W8-D08 (Algoritma Bersertifikat A6 Canary Error Evaluator & Automated Rollback)**: Evaluasi deviasi statistik rasio galat (Z-Score Hypothesis Test) antara canary traffic dan baseline traffic via A6 `CanaryErrorEvaluator`. Deviasi $Z \ge 3.0$ atau rasio error canary $\ge 3.0\times$ baseline memicu status rekomendasi `rollback` dan eksekusi rencana rollback otomatis (`plt_rollback_plans`).
+
+

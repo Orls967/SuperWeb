@@ -521,7 +521,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 41 | **Partner** | `ptn_` | 1 |
 | 42 | **Party** | `pty_` | 3 |
 | 43 | **Payment** | `pay_` | 3 |
-| 44 | **Platform** | `plt_` | 8 |
+| 44 | **Platform** | `plt_` | 9 |
 | 45 | **Plm** | `plm_` | 1 |
 | 46 | **Port** | `prt_` | 2 |
 | 47 | **Pricing** | `pric_` | 7 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **683 Migrasi** |
+| | **Total: 65 Modul** | | **684 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -591,7 +591,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Partner** | 7 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Payment** | 2 | `payment/inspector`, `payment/inspector/{uuid}` | web, auth, role:admin,auditor,treasury |
-| **Platform** | 12 | `platform/dev`, `platform/dev/sandboxes`, `platform/dev/sandboxes/{sandbox}` ... | web, auth, role:admin,superadmin |
+| **Platform** | 17 | `platform/dev`, `platform/change`, `platform/change/{change}` ... | web, auth, role:admin,superadmin |
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 10 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1623 Rute** | | |
+| **Total** | **1628 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -814,9 +814,18 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
 | `platform:anonymize` | `manual` | Menjalankan anonimisasi PII batch pada database sandbox |
 | `platform:audit` | `manual` | Menjalankan audit rekonsiliasi dua sumber infrastruktur platform (DB vs filesystem/git baseline) |
+| `platform:backfill-inspect` | `manual` | Memeriksa progres, throughput dan estimasi selesai (ETA) pekerjaan backfill |
+| `platform:backfill-run` | `manual` | Menjalankan eksekusi data backfill secara berulang dan idempoten per chunk |
+| `platform:canary-evaluate` | `manual` | Mengevaluasi distribusi statistik error rate canary deployment vs baseline |
+| `platform:change-check` | `manual` | Memeriksa audit kelayakan seluruh tiket Change Request aktif terhadap kebijakan ITIL enterprise |
 | `platform:chaos-verify` | `manual` | Simulasi platform-wide chaos & cryptographic tamper verifier membuktikan 100% deteksi sabotase dan pemulihan audit |
+| `platform:dora-metrics` | `manual` | Menghasilkan laporan metrik DORA inti (Deployment Frequency, Lead Time, CFR, MTTR) |
 | `platform:error-budget` | `manual` | Menghitung sisa error budget dan burn rate seluruh layanan pilar |
 | `platform:mask-verify` | `manual` | Memverifikasi bahwa tidak ada kebocoran PII terbuka dalam dataset sandbox |
+| `platform:migration-lint` | `manual` | Memindai integritas keamanan DDL migrasi database MySQL 8.4 |
+| `platform:release-notes` | `manual` | Menghasilkan dokumen catatan rilis terstruktur untuk Release Train |
+| `platform:release-train-freeze` | `manual` | Membekukan gerbong rilis (code freeze) sebelum staging deployment |
+| `platform:release-train-open` | `manual` | Membuka gerbong rilis berkala baru (Release Train) |
 | `platform:sandbox-expire` | `manual` | Menonaktifkan dan menandai kadaluarsa sandbox environment yang telah melampaui batas waktu TTL |
 | `platform:stress-concurrency` | `manual` | Stress harness konkurensi deterministik & beban tinggi multi-modul pada 6 titik kritis |
 | `platform:synth-data` | `manual` | Menghasilkan dataset tiruan deterministik bebas PII untuk pengujian sandbox |
@@ -904,7 +913,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 286 Command** | **37 Terjadwal** | |
+| **Total: 295 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
