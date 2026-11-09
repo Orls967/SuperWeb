@@ -504,7 +504,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 24 | **Forest** | `for_` | 1 |
 | 25 | **Governance** | `gov_` | 1 |
 | 26 | **Hcm** | `hcm_` | 7 |
-| 27 | **Hospital** | `hsp_` | 16 |
+| 27 | **Hospital** | `hsp_` | 17 |
 | 28 | **Hotel** | `htl_` | 20 |
 | 29 | **Insurance** | `ins_` | 8 |
 | 30 | **Integration** | `intg_` | 340 |
@@ -542,7 +542,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Venue** | `ven_` | 12 |
 | 63 | **Wealth** | `wm_` | 2 |
 | 64 | **Wms** | `wms_` | 2 |
-| | **Total: 64 Modul** | | **673 Migrasi** |
+| | **Total: 64 Modul** | | **674 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -719,10 +719,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hotel:setback-scan` | `manual` | Memindai sensor okupansi kamar dan mengaktifkan HVAC setback H4 |
 | `hotel:sync-banquet-bom` | `manual` | Synchronize banquet recipe Bill of Materials (BOM) with procurement inventory requisitions |
 | `hsp:audit` | `manual` | Audit dua-sumber operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, paspor kesehatan, code blue, dan rekonsiliasi buku besar |
+| `hsp:chronic-refill-cron` | `manual` | Menjalankan proses batch pengisian ulang otomatis bulanan untuk langganan obat kronis yang jatuh tempo |
 | `hsp:claim-aging-report` | `manual` | Menghasilkan laporan umur piutang klaim asuransi & estimasi cadangan kerugian penurunan nilai |
 | `hsp:cold-chain-monitor` | `manual` | Pemantauan real-time dan evaluasi Mean Kinetic Temperature (MKT) unit pendingin farmasi |
 | `hsp:festronik-scan` | `manual` | Audit kepatuhan regulasi TPS B3 dan verifikasi integritas rantai segel hash Festronik |
 | `hsp:o2c-kpi` | `manual` | Kompilasi KPI Revenue Cycle Management (RCM) dan Order-to-Cash (O2C) RS |
+| `hsp:telemedicine-scan` | `manual` | Memindai integritas operasional telemedicine, pemenuhan e-resep, pengantaran cold-chain, dan langganan obat kronis |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
 | `ins:cat-run` | `manual` | Jalankan simulasi pemodelan bencana katastrofe deterministik berseed (Fase 157) |
@@ -887,7 +889,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 271 Command** | **37 Terjadwal** | |
+| **Total: 273 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -905,7 +907,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
 | **Forest** | `ForestAccounts` | 3 | `ar:for:timber:IDR`, `for:revenue:IDR` ... |
 | **Hcm** | `HcmAccounts` | 17 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
-| **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
+| **Hospital** | `HospitalAccounts` | 33 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 49 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 16 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 7 | `lgx:carrier_cost:IDR`, `lgx:carrier_payable:IDR` ... |
@@ -930,6 +932,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 38 Registry** | | **511 Akun** | |
+| **Total: 38 Registry** | | **515 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

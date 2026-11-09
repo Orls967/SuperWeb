@@ -10423,7 +10423,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Hospital (`hsp_`) · **Prasyarat:** Fase 87–88 ✅ · **Acuan:** KONSEP 9F
 > **Jalan pintas terlarang di fase ini:** pendapatan diposting negatif; akun `hsp:*` dibuat di test; data medis P1 plaintext; alokasi bed tanpa `lockForUpdate`; modul tanpa rute/UI — ditambah seluruh X1–X25.
-- [ ] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
+- [🔵] 104.1 Tabel `hsp_tele_consults` (konsultasi jarak jauh: video/chat simulasi, triase awal), `hsp_epharmacy_orders`, `hsp_pharmacy_branches` (500 apotek jaringan + 5.000 apotek mitra Party)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10432,7 +10432,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_1_book_tele_consultation
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
+- [🔵] 104.2 Alur triase → konsultasi → **e-resep digital** (tanda tangan dokter hash) → fulfillment apotek terdekat (stok terpotong via InventoryService, FEFO lot) → pengiriman obat last-mile via Logistics (rentang 2 jam kota besar)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10441,7 +10441,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/TelemedicineAndEPharmacyTest.php::test_104_6_a_prescription_without_doctor_signature_is_rejected
     - akses: route GET /hospital/telemedicine [role: admin, doctor, nurse, auditor]
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
+- [🔵] 104.3 Interaksi obat & alergi dicek rule engine terhadap Human Passport (Fase 87.2) sebelum e-resep disahkan; obat keras/psikotropika butuh verifikasi resep fisik (approval dokter kedua)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10450,7 +10450,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/PrescriptionSafetyEvaluationTest.php::test_cross_allergy_class_blocks_amoxicillin_for_penicillin_allergic_patient
     - akses: route POST /hospital/telemedicine/prescriptions/evaluate [role: admin, doctor, pharmacist]
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
+- [🔵] 104.4 Subscription obat kronis (pasien jantung/diabetes): pengiriman berulang otomatis bulanan, debit wallet, auto-renew resep setelah konsultasi kontrol berikutnya
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10459,7 +10459,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/ChronicDrugSubscriptionTest.php::test_chronic_subscription_registration_and_recurring_batch_refill
     - akses: route GET /hospital/epharmacy/subscriptions [role: admin, doctor, pharmacist, auditor]
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
+- [🔵] 104.5 Integrasi BI): konsultasi → rujukan rawat inap → bed booking (Fase 87.3) → episode billing (Fase 88.1) dalam satu identitas pasien
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10468,7 +10468,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/PharmacyMultiBranchRoutingTest.php::test_routing_selects_local_branch_when_stock_is_sufficient
     - akses: route POST /hospital/epharmacy/routing [role: admin, pharmacist]
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
+- [🔵] 104.6 Tests: (a) e-resep tanpa tanda tangan dokter ditolak (b) interaksi obat kritis memblokir order (c) stok apotek terpotong = item terkirim (d) pengiriman obat keras wajib POD ber-sign (e) `hosp:audit` tetap 0 selisih
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: fitur
@@ -10477,7 +10477,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - test: modules/Hospital/tests/Feature/FefoInventoryManagementTest.php::test_fefo_depletes_earliest_expiring_lot_first
     - akses: command super:health-check
     - (dibatalkan) gate: docs/gates/fase-104.md
-- [ ] 104.7 Quality gate Fase 104
+- [🔵] 104.7 Quality gate Fase 104
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
     - jenis: dokumen

@@ -8,17 +8,21 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
 use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Application\Services\MedicalEmergencyResponseDispatcherService;
+use Modules\Hospital\Application\Services\PatientReferralBookerService;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
 use Modules\Hospital\Console\Commands\BedSweepCommand;
 use Modules\Hospital\Console\Commands\BillingO2cKpiCommand;
+use Modules\Hospital\Console\Commands\ChronicSubscriptionCronRefillCommand;
 use Modules\Hospital\Console\Commands\ClaimAgingReportCommand;
 use Modules\Hospital\Console\Commands\ColdChainMonitorCommand;
 use Modules\Hospital\Console\Commands\EfficiencyReportCommand;
 use Modules\Hospital\Console\Commands\FestronikAuditCommand;
 use Modules\Hospital\Console\Commands\PathwayScanCommand;
+use Modules\Hospital\Console\Commands\TelemedicineEPharmacyScanCommand;
 use Modules\Hospital\Console\Commands\TelemetryScanCommand;
 use Modules\Hospital\Contracts\EncounterBillReader;
 use Modules\Hospital\Contracts\MedicalEmergencyResponseDispatcher;
+use Modules\Hospital\Contracts\PatientReferralBooker;
 
 class HospitalServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,7 @@ class HospitalServiceProvider extends ServiceProvider
         $this->app->singleton(HospitalEmrAndBedService::class);
         $this->app->bind(EncounterBillReader::class, HospitalEncounterBillReaderService::class);
         $this->app->bind(MedicalEmergencyResponseDispatcher::class, MedicalEmergencyResponseDispatcherService::class);
+        $this->app->bind(PatientReferralBooker::class, PatientReferralBookerService::class);
     }
 
     public function boot(): void
@@ -50,6 +55,8 @@ class HospitalServiceProvider extends ServiceProvider
                 ClaimAgingReportCommand::class,
                 FestronikAuditCommand::class,
                 BillingO2cKpiCommand::class,
+                TelemedicineEPharmacyScanCommand::class,
+                ChronicSubscriptionCronRefillCommand::class,
             ]);
         }
     }
