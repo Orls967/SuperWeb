@@ -12,7 +12,7 @@ Renderer ini membaca berkas dokumentasi markdown (`.md`), mengekstrak blok kode 
    - Engine kanvas vektor dasar yang menyediakan API fluent untuk menggambar elemen primitif SVG: `<rect>`, `<circle>`, `<path>`, `<line>`, `<text>`, dan marker panah `<marker>`.
    - Menghitung bounding box secara otomatis untuk penyesuaian atribut `viewBox` dan `width`/`height`.
 2. **`MermaidToSvgCompiler`**:
-   - Router pengenal diagram: mendeteksi jenis diagram (`flowchart`, `graph`, `stateDiagram`, `sequenceDiagram`, `classDiagram`, `erDiagram`).
+   - Router pengenal diagram: mendeteksi jenis diagram (`flowchart`, `graph`, `stateDiagram`, sekuensial, `classDiagram`, `erDiagram`).
    - Meneruskan AST diagram ke spesifik sub-renderer.
 3. **`StateMachineDiagramRenderer`**:
    - Menggambar lingkaran status awal/akhir, kotak rounded untuk status intermediat, dan kurva panah Bézier untuk busur transisi.

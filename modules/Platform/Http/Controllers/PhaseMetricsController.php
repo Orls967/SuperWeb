@@ -14,7 +14,7 @@ class PhaseMetricsController extends Controller
     public function index(): View
     {
         $metrics = PhaseMetricSnapshot::latest()->paginate(20);
-        $viewModel = new QualityMetricsViewModel($metrics);
+        $viewModel = new QualityMetricsViewModel($metrics->getCollection());
 
         return view('platform::dev.metrics.index', [
             'viewModel' => $viewModel,

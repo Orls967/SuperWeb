@@ -591,7 +591,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Partner** | 7 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Payment** | 2 | `payment/inspector`, `payment/inspector/{uuid}` | web, auth, role:admin,auditor,treasury |
-| **Platform** | 12 | `platform/dev`, `platform/dev/sandboxes`, `platform/dev/sandboxes/{sandbox}` ... | web, auth |
+| **Platform** | 12 | `platform/dev`, `platform/dev/sandboxes`, `platform/dev/sandboxes/{sandbox}` ... | web, auth, role:admin,superadmin |
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 10 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |

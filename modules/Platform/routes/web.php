@@ -12,7 +12,7 @@ use Modules\Platform\Http\Controllers\SandboxLifecycleApiController;
 use Modules\Platform\Http\Controllers\SloMonitoringApiController;
 use Modules\Platform\Http\Controllers\SloTrackerController;
 
-Route::prefix('platform')->middleware(['web', 'auth'])->name('platform.')->group(function (): void {
+Route::prefix('platform')->middleware(['web', 'auth', 'role:admin,superadmin'])->name('platform.')->group(function (): void {
     Route::get('/dev', [DevPortalDashboardController::class, 'index'])->name('dev.dashboard');
 
     Route::prefix('dev')->name('dev.')->group(function (): void {

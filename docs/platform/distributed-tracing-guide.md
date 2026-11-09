@@ -43,23 +43,15 @@ Ketika permintaan HTTP masuk ke sistem:
 4. Respons HTTP secara otomatis menyertakan header `X-Correlation-Id` dan `traceparent` kembali ke pemanggil (client/gateway).
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Client as Klien / Gateway
-    participant Mid as CorrelationIdMiddleware
-    participant Core as Core Context Holder
-    participant ModA as Modul Bisnis A
-    participant ModB as Modul Bisnis B
-    participant Resp as HTTP Response
-
-    Client->>Mid: HTTP GET /platform/dev (X-Correlation-Id: req-777)
-    Mid->>Core: CorrelationContextHolder::set('req-777')
-    Mid->>ModA: Forward request dengan Trace Context
-    ModA->>ModB: Panggilan RPC / Event Bus (membawa Trace ID)
-    ModB-->>ModA: Hasil eksekusi sukses
-    ModA-->>Mid: Return Response
-    Mid->>Resp: Set header 'X-Correlation-Id: req-777'
-    Resp-->>Client: 200 OK (X-Correlation-Id: req-777)
+flowchart TD
+    Client["Klien / Gateway"] -->|1. HTTP GET req-777| Mid["CorrelationIdMiddleware"]
+    Mid -->|2. Simpan Trace Context| Core["CorrelationContextHolder"]
+    Mid -->|3. Forward request| ModA["Modul Bisnis A"]
+    ModA -->|4. RPC / Event Bus kirim ID| ModB["Modul Bisnis B"]
+    ModB -->|5. Eksekusi sukses| ModA
+    ModA -->|6. Return Response| Mid
+    Mid -->|7. Set Header X-Correlation-Id| Resp["HTTP Response"]
+    Resp -->|8. 200 OK ke Klien| Client
 ```
 
 ---

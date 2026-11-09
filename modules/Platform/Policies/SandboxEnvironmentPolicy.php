@@ -16,7 +16,7 @@ class SandboxEnvironmentPolicy
 
     public function view(User $user, SandboxEnvironment $sandbox): bool
     {
-        return $user->id === $sandbox->owner_id;
+        return $user->id === $sandbox->owner_id || in_array($user->role, ['admin', 'superadmin'], true);
     }
 
     public function create(User $user): bool
@@ -26,11 +26,11 @@ class SandboxEnvironmentPolicy
 
     public function update(User $user, SandboxEnvironment $sandbox): bool
     {
-        return $user->id === $sandbox->owner_id;
+        return $user->id === $sandbox->owner_id || in_array($user->role, ['admin', 'superadmin'], true);
     }
 
     public function delete(User $user, SandboxEnvironment $sandbox): bool
     {
-        return $user->id === $sandbox->owner_id;
+        return $user->id === $sandbox->owner_id || in_array($user->role, ['admin', 'superadmin'], true);
     }
 }
