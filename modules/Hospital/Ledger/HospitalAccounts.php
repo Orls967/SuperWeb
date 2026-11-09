@@ -221,6 +221,34 @@ final class HospitalAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'hsp:courier_payable:IDR',
+                'name' => 'Hospital Medicine Courier Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:doctor_payable:IDR',
+                'name' => 'Hospital Teleconsultation Doctor Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:telemedicine_receivable:IDR',
+                'name' => 'Hospital Telemedicine Patient Receivable',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'hsp:telemedicine_revenue:IDR',
+                'name' => 'Hospital Telemedicine Consultation Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
         ];
     }
 }

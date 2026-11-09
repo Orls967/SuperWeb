@@ -907,7 +907,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
 | **Forest** | `ForestAccounts` | 3 | `ar:for:timber:IDR`, `for:revenue:IDR` ... |
 | **Hcm** | `HcmAccounts` | 17 | `hcm:bounty_payout:IDR`, `hcm:gig_cost_expense:IDR` ... |
-| **Hospital** | `HospitalAccounts` | 29 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
+| **Hospital** | `HospitalAccounts` | 33 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 49 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 16 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 7 | `lgx:carrier_cost:IDR`, `lgx:carrier_payable:IDR` ... |
@@ -932,6 +932,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 38 Registry** | | **511 Akun** | |
+| **Total: 38 Registry** | | **515 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
