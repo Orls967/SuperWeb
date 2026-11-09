@@ -53,6 +53,7 @@ return [
         'pty_' => 'Party',
         'pay_' => 'Payment',
         'plm_' => 'Plm',
+        'plt_' => 'Platform',
         'pric_' => 'Pricing',
         'prc_' => 'Procurement',
         'prp_' => 'Proptech',

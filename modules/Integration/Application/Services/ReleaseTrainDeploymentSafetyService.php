@@ -18,6 +18,8 @@ use InvalidArgumentException;
  *  - 238.4 Canary & blue-green simulation: traffic ramping, automated rollback on error spikes
  *  - 238.6 Edge case: Urgent hotfix separate approval + mandatory post-merge review
  *  - 238.7 Data rollback safety: expand-contract pattern enforcement for populated schemas
+ *
+ * @deprecated Retired via W8-P1 (Fase 238). Use Modules\Platform instead.
  */
 class ReleaseTrainDeploymentSafetyService
 {
