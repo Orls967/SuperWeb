@@ -10,9 +10,6 @@ use Modules\Hospital\Domain\StateMachines\HospitalBedStateMachine;
 final class CertifyBedCleaningSanitationAction
 {
     /**
-     * @param int $bedId
-     * @param string $sanitizerStaffName
-     * @param int $actorId
      * @return array<string, mixed>
      */
     public function execute(int $bedId, string $sanitizerStaffName, int $actorId): array

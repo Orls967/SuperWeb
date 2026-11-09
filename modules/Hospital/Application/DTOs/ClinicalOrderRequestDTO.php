@@ -7,7 +7,7 @@ namespace Modules\Hospital\Application\DTOs;
 final class ClinicalOrderRequestDTO
 {
     /**
-     * @param array<string, mixed> $parameters
+     * @param  array<string, mixed>  $parameters
      */
     public function __construct(
         public readonly int $admissionId,
@@ -22,7 +22,7 @@ final class ClinicalOrderRequestDTO
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {

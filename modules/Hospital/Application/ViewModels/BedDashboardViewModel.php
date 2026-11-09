@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\ViewModels;
 
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\HospitalBed;
 
 final class BedDashboardViewModel

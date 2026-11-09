@@ -21,3 +21,4 @@ Pencatatan konvensional pasca resusitasi rentan terhadap bias ingatan klinisi (*
   - Memungkinkan audit mutu objektif untuk pembelajaran berkelanjutan komite resusitasi rumah sakit tanpa keraguan integritas data.
 - **Negatif**:
   - Petugas pencatat waktu resusitasi (*timekeeper*) memerlukan disiplin input waktu yang ketat selama situasi gawat darurat berlangsung.
+

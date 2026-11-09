@@ -6,7 +6,6 @@ namespace Modules\Hospital\Application\ViewModels;
 
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\HospitalBed;
-use Modules\Hospital\Domain\Models\Patient;
 
 final class EmergencyTriageViewModel
 {

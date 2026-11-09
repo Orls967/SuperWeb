@@ -11,6 +11,7 @@ use Modules\Hospital\Domain\Services\PatientPassportService;
 final class EvaluatePaediatricTelemetryAction
 {
     private PaediatricEarlyWarningScoreCalculator $calculator;
+
     private PatientPassportService $passportService;
 
     public function __construct(
@@ -22,7 +23,7 @@ final class EvaluatePaediatricTelemetryAction
     }
 
     /**
-     * @param array<string, mixed> $vitals
+     * @param  array<string, mixed>  $vitals
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $vitals, int $actorId): array

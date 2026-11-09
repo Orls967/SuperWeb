@@ -16,11 +16,12 @@ use Modules\Hospital\Domain\StateMachines\ClinicalOrderStateMachine;
 class PathwayScanCommand extends Command
 {
     protected $signature = 'hospital:pathway-scan';
+
     protected $description = 'Memindai jadwal order jalur klinis dan mendeteksi keterlambatan order pertama (> 15 menit)';
 
     public function handle(ClinicalPathwayDelayDetector $detector): int
     {
-        $this->info("Memulai pemindaian jalur klinis (hospital:pathway-scan)...");
+        $this->info('Memulai pemindaian jalur klinis (hospital:pathway-scan)...');
 
         $pendingOrders = HospitalOrder::whereIn('status', [
             'SCHEDULED',
@@ -63,7 +64,7 @@ class PathwayScanCommand extends Command
                         $targetOrder,
                         ClinicalOrderStateMachine::STATUS_DELAYED,
                         $result->alert['delay_minutes'],
-                        "Peringatan keterlambatan terdeteksi oleh pathway scan"
+                        'Peringatan keterlambatan terdeteksi oleh pathway scan'
                     );
 
                     $alertsTriggered++;

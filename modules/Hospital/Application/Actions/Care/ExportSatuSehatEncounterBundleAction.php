@@ -19,7 +19,6 @@ final class ExportSatuSehatEncounterBundleAction
     /**
      * Mengekspor admisi rawat inap beserta diagnosa dan riwayat observasi ke dalam FHIR Bundle.
      *
-     * @param int $admissionId
      * @return array<string, mixed>
      */
     public function execute(int $admissionId): array
@@ -29,7 +28,7 @@ final class ExportSatuSehatEncounterBundleAction
         $resources = [];
         $resources[] = $this->fhirMapper->mapEncounter($admission);
 
-        if (!empty($admission->diagnosis_icd10)) {
+        if (! empty($admission->diagnosis_icd10)) {
             $resources[] = $this->fhirMapper->mapCondition(
                 admissionId: $admission->id,
                 patientId: $admission->patient_id,
@@ -38,7 +37,7 @@ final class ExportSatuSehatEncounterBundleAction
             );
         }
 
-        $bundleDTO = $this->fhirMapper->createBundle('BUNDLE-ADM-' . $admission->id, $resources);
+        $bundleDTO = $this->fhirMapper->createBundle('BUNDLE-ADM-'.$admission->id, $resources);
 
         return [
             'success' => true,

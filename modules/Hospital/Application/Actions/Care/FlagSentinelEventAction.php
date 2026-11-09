@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\Application\Actions\Care;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Services\PatientPassportService;
 
 final class FlagSentinelEventAction
@@ -35,7 +33,7 @@ final class FlagSentinelEventAction
      */
     public function execute(array $data): array
     {
-        $incidentId = 'INC-' . date('Ymd') . '-' . strtoupper(substr(hash('sha256', uniqid()), 0, 6));
+        $incidentId = 'INC-'.date('Ymd').'-'.strtoupper(substr(hash('sha256', uniqid()), 0, 6));
 
         $payload = [
             'incident_id' => $incidentId,

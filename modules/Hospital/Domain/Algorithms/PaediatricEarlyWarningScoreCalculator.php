@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
-
 final class PaediatricEarlyWarningScoreCalculator
 {
     /**
@@ -97,8 +95,8 @@ final class PaediatricEarlyWarningScoreCalculator
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @param array<string, mixed> $originalInput
+     * @param  array<string, mixed>  $result
+     * @param  array<string, mixed>  $originalInput
      */
     public function verifyCertificate(array $result, array $originalInput): bool
     {

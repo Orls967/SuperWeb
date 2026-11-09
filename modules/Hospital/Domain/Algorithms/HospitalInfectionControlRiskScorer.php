@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
-
 final class HospitalInfectionControlRiskScorer
 {
     /**
@@ -42,7 +40,7 @@ final class HospitalInfectionControlRiskScorer
         $score = 0;
         $precautions = ['STANDARD_HAND_HYGIENE', 'UNIVERSAL_MASKING'];
 
-        if (!empty($profile['has_invasive_device'])) {
+        if (! empty($profile['has_invasive_device'])) {
             $score += 15;
             $deviceDays = (int) ($profile['device_days'] ?? 0);
             if ($deviceDays > 7) {
@@ -53,18 +51,18 @@ final class HospitalInfectionControlRiskScorer
             }
         }
 
-        if (!empty($profile['is_immunocompromised'])) {
+        if (! empty($profile['is_immunocompromised'])) {
             $score += 20;
             $precautions[] = 'PROTECTIVE_ENVIRONMENT_CONSIDERATION';
         }
 
-        if (!empty($profile['prior_multidrug_resistant_organism'])) {
+        if (! empty($profile['prior_multidrug_resistant_organism'])) {
             $score += 25;
             $precautions[] = 'CONTACT_PRECAUTION';
             $precautions[] = 'DEDICATED_EQUIPMENT';
         }
 
-        if (!empty($profile['has_open_wound'])) {
+        if (! empty($profile['has_open_wound'])) {
             $score += 10;
             $precautions[] = 'STRICT_ASEPTIC_DRESSING';
         }
@@ -77,19 +75,19 @@ final class HospitalInfectionControlRiskScorer
             $score += 10;
         }
 
-        if (!empty($profile['respiratory_symptoms'])) {
+        if (! empty($profile['respiratory_symptoms'])) {
             $score += 15;
             $precautions[] = 'DROPLET_PRECAUTION';
             $precautions[] = 'AIRBORNE_ISOLATION_EVALUATION';
         }
 
-        if (!empty($profile['diarrhea_active'])) {
+        if (! empty($profile['diarrhea_active'])) {
             $score += 15;
             $precautions[] = 'ENTERIC_CONTACT_PRECAUTION';
             $precautions[] = 'SOAP_WATER_HYGIENE_MANDATORY';
         }
 
-        if (!empty($profile['icu_stay'])) {
+        if (! empty($profile['icu_stay'])) {
             $score += 10;
         }
 
@@ -135,9 +133,8 @@ final class HospitalInfectionControlRiskScorer
     /**
      * Verifikasi integritas sertifikat kalkulasi risiko infeksi.
      *
-     * @param array<string, mixed> $evaluation
-     * @param array<string, mixed> $originalProfile
-     * @return bool
+     * @param  array<string, mixed>  $evaluation
+     * @param  array<string, mixed>  $originalProfile
      */
     public function verifyCertificate(array $evaluation, array $originalProfile): bool
     {

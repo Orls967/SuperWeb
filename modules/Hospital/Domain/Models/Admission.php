@@ -61,8 +61,7 @@ class Admission extends Model
     }
 
     /**
-     * @param string $assessmentKey
-     * @param array<string, mixed> $assessmentPayload
+     * @param  array<string, mixed>  $assessmentPayload
      */
     public function recordClinicalAssessment(string $assessmentKey, array $assessmentPayload): void
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Sagas;
 
-use DomainException;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Domain\Models\Admission;

@@ -19,8 +19,6 @@ final class GenerateInpatientSummaryReportAction
     }
 
     /**
-     * @param int $totalBeds
-     * @param int $periodDays
      * @return array<string, mixed>
      */
     public function execute(int $totalBeds, int $periodDays = 30): array

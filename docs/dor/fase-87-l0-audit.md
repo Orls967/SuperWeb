@@ -22,3 +22,4 @@
 - `HospitalEmrAndBedService`: Dipakai ulang dan diperdalam sebagai fasad koordinasi, mendelegasikan aksi bisnis berat ke Action-action baru di `Modules\Hospital\Application\Actions\Care\`.
 - `HospitalAccounts`: Dipakai penuh tanpa modifikasi karena akun `hsp:patient_deposit_escrow:IDR`, `hsp:patient_receivable:IDR`, dan `hsp:hospital_revenue:IDR` sudah terdaftar resmi.
 - `EncounterBillReader` & `MedicalEmergencyResponseDispatcher`: Dipertahankan utuh tanda tangannya untuk menjamin integrasi modul Insurance dan Venue tetap hijau.
+

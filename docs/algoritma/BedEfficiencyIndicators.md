@@ -41,3 +41,4 @@ $$\text{BOR} = \frac{\text{ALOS}}{\text{ALOS} + \text{TOI}} \times 10.000$$
 
 - Kompleksitas: $O(1)$ waktu dan ruang.
 - Lokasi Kode: `Modules\Hospital\Domain\Algorithms\BedEfficiencyIndicators.php`
+

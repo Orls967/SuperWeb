@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
-
 final class AntibioticStewardshipRuleEngine
 {
     /**
@@ -39,8 +37,8 @@ final class AntibioticStewardshipRuleEngine
         $code = strtoupper((string) ($prescription['antibiotic_code'] ?? ''));
         $indication = strtoupper((string) ($prescription['indication_type'] ?? 'EMPIRIC'));
         $duration = (int) ($prescription['duration_days'] ?? 1);
-        $cultureTested = !empty($prescription['culture_sensitivity_tested']);
-        $ppraApproved = !empty($prescription['ppra_committee_approval']);
+        $cultureTested = ! empty($prescription['culture_sensitivity_tested']);
+        $ppraApproved = ! empty($prescription['ppra_committee_approval']);
 
         $blockingReasons = [];
         $auditFlags = [];
@@ -54,11 +52,11 @@ final class AntibioticStewardshipRuleEngine
 
         // Aturan Kategori RESERVE: Wajib Persetujuan PPRA & Bukti Kultur
         if ($awareCategory === 'RESERVE') {
-            if (!$ppraApproved) {
+            if (! $ppraApproved) {
                 $blockingReasons[] = "Antibiotik kategori RESERVE ({$code}) wajib memperoleh persetujuan tertulis Komite PPRA.";
             }
-            if (!$cultureTested) {
-                $blockingReasons[] = "Antibiotik kategori RESERVE wajib didukung hasil uji kepekaan kultur mikroorganisme.";
+            if (! $cultureTested) {
+                $blockingReasons[] = 'Antibiotik kategori RESERVE wajib didukung hasil uji kepekaan kultur mikroorganisme.';
             }
             $auditFlags[] = 'HIGH_PRIORITY_ANTIMICROBIAL_STEWARDSHIP_AUDIT';
         }
@@ -69,12 +67,12 @@ final class AntibioticStewardshipRuleEngine
                 $blockingReasons[] = "Profilaksis bedah tidak boleh melebihi 24 jam (durasi diminta: {$duration} hari).";
             }
             if ($awareCategory === 'RESERVE') {
-                $blockingReasons[] = "Antibiotik kategori RESERVE dilarang digunakan untuk profilaksis bedah rutin.";
+                $blockingReasons[] = 'Antibiotik kategori RESERVE dilarang digunakan untuk profilaksis bedah rutin.';
             }
         }
 
         // Aturan WATCH Terapi Empiris: Re-evaluasi 72 jam
-        if ($awareCategory === 'WATCH' && $duration > 3 && !$cultureTested) {
+        if ($awareCategory === 'WATCH' && $duration > 3 && ! $cultureTested) {
             $auditFlags[] = '72_HOUR_ANTIBIOTIC_TIME_OUT_EVALUATION_REQUIRED';
         }
 
@@ -83,7 +81,7 @@ final class AntibioticStewardshipRuleEngine
 
         $inputSerialized = json_encode($prescription, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $inputHash = hash('sha256', $inputSerialized);
-        $sigPayload = "ASRE-V1:{$code}:{$awareCategory}:" . ($isAllowed ? '1' : '0') . ":{$inputHash}";
+        $sigPayload = "ASRE-V1:{$code}:{$awareCategory}:".($isAllowed ? '1' : '0').":{$inputHash}";
         $signature = hash_hmac('sha256', $sigPayload, 'HSP_SECRET_ANTIBIOTIC_STEWARDSHIP_2026');
 
         return [
@@ -102,8 +100,8 @@ final class AntibioticStewardshipRuleEngine
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @param array<string, mixed> $originalPrescription
+     * @param  array<string, mixed>  $result
+     * @param  array<string, mixed>  $originalPrescription
      */
     public function verifyCertificate(array $result, array $originalPrescription): bool
     {
@@ -117,7 +115,7 @@ final class AntibioticStewardshipRuleEngine
 
         $code = strtoupper((string) ($originalPrescription['antibiotic_code'] ?? ''));
         $cat = $result['aware_category'] ?? '';
-        $allowed = !empty($result['is_prescription_allowed']) ? '1' : '0';
+        $allowed = ! empty($result['is_prescription_allowed']) ? '1' : '0';
 
         $expectedSigPayload = "ASRE-V1:{$code}:{$cat}:{$allowed}:{$inputHash}";
         $expectedSig = hash_hmac('sha256', $expectedSigPayload, 'HSP_SECRET_ANTIBIOTIC_STEWARDSHIP_2026');

@@ -10,9 +10,6 @@ use Modules\Hospital\Domain\StateMachines\HospitalBedStateMachine;
 final class LockBedForMaintenanceAction
 {
     /**
-     * @param int $bedId
-     * @param string $defectDescription
-     * @param int $actorId
      * @return array<string, mixed>
      */
     public function execute(int $bedId, string $defectDescription, int $actorId): array

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions\Care;
 
-use Carbon\CarbonImmutable;
 use Modules\Hospital\Domain\Models\Admission;
-use Modules\Hospital\Domain\Services\HospitalLedgerPostingService;
 
 final class ReconcileDailyInpatientBillingAction
 {
@@ -20,8 +18,7 @@ final class ReconcileDailyInpatientBillingAction
     /**
      * Menjalankan akrual massal sewa kamar ranjang harian untuk seluruh admisi aktif.
      *
-     * @param string $serviceDate YYYY-MM-DD
-     * @param int $actorId
+     * @param  string  $serviceDate  YYYY-MM-DD
      * @return array{
      *     service_date: string,
      *     total_active_admissions: int,
@@ -41,8 +38,9 @@ final class ReconcileDailyInpatientBillingAction
         $skipped = [];
 
         foreach ($activeAdmissions as $admission) {
-            if (!$admission->bed) {
+            if (! $admission->bed) {
                 $skipped[] = $admission->id;
+
                 continue;
             }
 

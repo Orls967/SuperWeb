@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -25,7 +24,6 @@ final class BedAssignmentOptimizer
      *     bed_code: string|int,
      *     bed_class: string
      * }> $beds
-     * @return BedAssignmentResult
      */
     public function optimize(array $patients, array $beds): BedAssignmentResult
     {
@@ -38,6 +36,7 @@ final class BedAssignmentOptimizer
             if ($a['waiting_minutes'] !== $b['waiting_minutes']) {
                 return $b['waiting_minutes'] <=> $a['waiting_minutes']; // Menurun
             }
+
             return strcmp((string) $a['id'], (string) $b['id']);
         });
 
@@ -133,9 +132,9 @@ final class BedAssignmentOptimizer
 final class BedAssignmentResult
 {
     /**
-     * @param list<array<string, mixed>> $sortedPatients
-     * @param list<array{patient_id: string, bed_code: string, bed_class: string, is_upgrade: bool}> $assignments
-     * @param list<array{patient_id: string, required_class: string, status: string}> $unassigned
+     * @param  list<array<string, mixed>>  $sortedPatients
+     * @param  list<array{patient_id: string, bed_code: string, bed_class: string, is_upgrade: bool}>  $assignments
+     * @param  list<array{patient_id: string, required_class: string, status: string}>  $unassigned
      */
     public function __construct(
         public readonly array $sortedPatients,
@@ -159,6 +158,7 @@ final class BedAssignmentResult
                 return $a;
             }
         }
+
         return null;
     }
 
@@ -169,6 +169,7 @@ final class BedAssignmentResult
                 return true;
             }
         }
+
         return false;
     }
 }
@@ -178,9 +179,9 @@ final class BedAssignmentCertificate
     public readonly string $sha256;
 
     /**
-     * @param list<string> $sortedPatientIds
-     * @param list<array{patient_id: string, bed_code: string, bed_class: string, is_upgrade: bool}> $assignments
-     * @param list<array{patient_id: string, required_class: string, status: string}> $unassigned
+     * @param  list<string>  $sortedPatientIds
+     * @param  list<array{patient_id: string, bed_code: string, bed_class: string, is_upgrade: bool}>  $assignments
+     * @param  list<array{patient_id: string, required_class: string, status: string}>  $unassigned
      */
     public function __construct(
         public readonly array $sortedPatientIds,
@@ -211,7 +212,7 @@ final class BedAssignmentCertificateVerifier
 
         $expectedHash = hash('sha256', $payload);
         if (! hash_equals($expectedHash, $certificate->sha256)) {
-            throw new RuntimeException("Sertifikat alokasi bed tidak valid: hash payload tidak cocok.");
+            throw new RuntimeException('Sertifikat alokasi bed tidak valid: hash payload tidak cocok.');
         }
 
         // Validasi tidak ada ranjang yang dialokasikan ganda

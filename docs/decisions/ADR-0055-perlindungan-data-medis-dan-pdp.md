@@ -13,3 +13,4 @@ Undang-Undang No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP) dan Pe
 ## Konsekuensi
 - Memenuhi kepatuhan hukum tertinggi pelindungan data pribadi medis.
 - Pencarian data medis terbatas pada indeks terstruktur.
+

@@ -10,3 +10,4 @@ Rekam medis pasien, sampel laboratorium, dan manifest limbah B3 rentan terhadap 
 
 ## Konsekuensi
 - Integritas data dapat dibuktikan secara matematis di pengadilan dan audit akreditasi.
+

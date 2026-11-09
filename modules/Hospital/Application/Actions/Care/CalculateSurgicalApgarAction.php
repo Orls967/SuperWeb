@@ -11,6 +11,7 @@ use Modules\Hospital\Domain\Services\PatientPassportService;
 final class CalculateSurgicalApgarAction
 {
     private SurgicalApgarScoreCalculator $calculator;
+
     private PatientPassportService $passportService;
 
     public function __construct(
@@ -22,7 +23,7 @@ final class CalculateSurgicalApgarAction
     }
 
     /**
-     * @param array<string, mixed> $surgicalData
+     * @param  array<string, mixed>  $surgicalData
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $surgicalData, int $actorId): array

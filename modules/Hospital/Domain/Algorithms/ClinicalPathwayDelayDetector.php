@@ -24,8 +24,6 @@ final class ClinicalPathwayDelayDetector
      *     prerequisites: list<string>,
      *     actual_start_minute?: ?int
      * }> $orders
-     * @param int $toleranceMinutes
-     * @return PathwayDelayResult
      */
     public function detectDelays(array $orders, int $toleranceMinutes = self::DEFAULT_TOLERANCE_MINUTES): PathwayDelayResult
     {
@@ -90,9 +88,9 @@ final class ClinicalPathwayDelayDetector
 final class PathwayDelayResult
 {
     /**
-     * @param array<string, int> $projectedStarts
-     * @param array<string, int> $projectedCompletions
-     * @param ?array{order_id: string, order_type: string, delay_minutes: int} $alert
+     * @param  array<string, int>  $projectedStarts
+     * @param  array<string, int>  $projectedCompletions
+     * @param  ?array{order_id: string, order_type: string, delay_minutes: int}  $alert
      */
     public function __construct(
         public readonly array $projectedStarts,
@@ -107,9 +105,9 @@ final class ClinicalPathwayScheduleCertificate
     public readonly string $sha256;
 
     /**
-     * @param ?array{order_id: string, order_type: string, delay_minutes: int} $alert
-     * @param array<string, int> $projectedStarts
-     * @param array<string, int> $projectedCompletions
+     * @param  ?array{order_id: string, order_type: string, delay_minutes: int}  $alert
+     * @param  array<string, int>  $projectedStarts
+     * @param  array<string, int>  $projectedCompletions
      */
     public function __construct(
         public readonly int $orderCount,
@@ -143,7 +141,7 @@ final class PathwayScheduleCertificateVerifier
 
         $expectedHash = hash('sha256', $payload);
         if (! hash_equals($expectedHash, $certificate->sha256)) {
-            throw new RuntimeException("Sertifikat jadwal pathway tidak valid: hash tidak cocok.");
+            throw new RuntimeException('Sertifikat jadwal pathway tidak valid: hash tidak cocok.');
         }
     }
 }

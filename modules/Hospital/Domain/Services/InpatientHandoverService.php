@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\Domain\Services;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\Patient;
 
 final class InpatientHandoverService
@@ -36,7 +34,7 @@ final class InpatientHandoverService
             'shift' => $data['shift_name'],
             'departing' => $data['departing_nurse_id'],
             'incoming' => $data['incoming_nurse_id'],
-            'sbar' => $data['situation'] . $data['background'] . $data['assessment'] . $data['recommendation'],
+            'sbar' => $data['situation'].$data['background'].$data['assessment'].$data['recommendation'],
             'timestamp' => CarbonImmutable::now()->toIso8601String(),
         ], JSON_UNESCAPED_SLASHES));
 

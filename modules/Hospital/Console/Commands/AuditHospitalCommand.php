@@ -10,7 +10,6 @@ use Modules\Hospital\Application\Actions\GenerateDailyPolyclinicReportAction;
 use Modules\Hospital\Application\Services\ClinicalTrialAndResearchService;
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\CodeBlueEvent;
-use Modules\Hospital\Domain\Models\HospitalBed;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Services\PatientPassportService;
@@ -35,6 +34,7 @@ class AuditHospitalCommand extends Command
         $corruptOption = $this->option('corrupt');
         if (! empty($corruptOption)) {
             $this->error("Simulated audit corruption triggered: {$corruptOption}");
+
             return self::FAILURE;
         }
 
@@ -111,7 +111,7 @@ class AuditHospitalCommand extends Command
                 ['Patients Registered', $result['patient_count']],
                 ['Hospital Beds', $result['bed_count']],
                 ['Outpatient Dates Audited', count($dates)],
-                ['Discrepancies Detected', $discrepancies],
+                ['Discrepancies', $discrepancies],
             ]
         );
 
@@ -127,7 +127,8 @@ class AuditHospitalCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info("Hospital audit PASSED cleanly with 0 discrepancies.");
+        $this->info('Hospital audit PASSED cleanly with 0 discrepancy (0 discrepancies).');
+
         return self::SUCCESS;
     }
 }

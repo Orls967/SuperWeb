@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions\Care;
 
-use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\HospitalOrder;
 use Modules\Hospital\Domain\StateMachines\ClinicalOrderStateMachine;
 
@@ -25,7 +24,7 @@ class ScheduleClinicalOrderAction
      */
     public function execute(array $data): HospitalOrder
     {
-        $orderCode = 'ORD-' . date('Ymd') . '-' . substr(hash('sha256', $data['description'] . microtime()), 0, 8);
+        $orderCode = 'ORD-'.date('Ymd').'-'.substr(hash('sha256', $data['description'].microtime()), 0, 8);
 
         $order = HospitalOrder::create([
             'order_code' => strtoupper($orderCode),

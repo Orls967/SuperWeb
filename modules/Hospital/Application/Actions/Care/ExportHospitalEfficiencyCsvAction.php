@@ -27,12 +27,12 @@ final class ExportHospitalEfficiencyCsvAction
         $csvLines[] = 'Indikator,Nilai,Satuan,Status Standar Kemenkes RI';
         $csvLines[] = "Total Kapasitas Ranjang,{$metrics['total_beds']},unit,Kapasitas Aktif";
         $csvLines[] = "Ranjang Terisi,{$metrics['occupied_beds']},unit,Sensur Harian";
-        $csvLines[] = "Bed Occupancy Rate (BOR)," . ($metrics['bor_percent'] / 100) . "%,persen," . ($metrics['bor_percent'] >= 7500 && $metrics['bor_percent'] <= 8500 ? 'IDEAL' : 'PERINGATAN');
-        $csvLines[] = "Average Length of Stay (ALOS)," . ($metrics['alos_days'] / 1000) . ",hari,Standar 3 - 9 Hari";
-        $csvLines[] = "Turn Over Interval (TOI)," . ($metrics['toi_days'] / 1000) . ",hari,Standar 1 - 3 Hari";
-        $csvLines[] = "Bed Turn Over (BTO)," . ($metrics['bto_times'] / 1000) . ",kali,Standar >= 30 kali/tahun";
+        $csvLines[] = 'Bed Occupancy Rate (BOR),'.($metrics['bor_percent'] / 100).'%,persen,'.($metrics['bor_percent'] >= 7500 && $metrics['bor_percent'] <= 8500 ? 'IDEAL' : 'PERINGATAN');
+        $csvLines[] = 'Average Length of Stay (ALOS),'.($metrics['alos_days'] / 1000).',hari,Standar 3 - 9 Hari';
+        $csvLines[] = 'Turn Over Interval (TOI),'.($metrics['toi_days'] / 1000).',hari,Standar 1 - 3 Hari';
+        $csvLines[] = 'Bed Turn Over (BTO),'.($metrics['bto_times'] / 1000).',kali,Standar >= 30 kali/tahun';
         $csvLines[] = "Evaluasi Barber-Johnson,{$metrics['barber_johnson_status']},kategori,Hasil Komputasi Sertifikat B4";
 
-        return implode("\n", $csvLines) . "\n";
+        return implode("\n", $csvLines)."\n";
     }
 }

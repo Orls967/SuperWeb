@@ -9,7 +9,7 @@ final class ValidateSatuSehatFHIRComplianceAction
     /**
      * Memvalidasi format payload FHIR Bundle terhadap spesifikasi SatuSehat Kemenkes RI.
      *
-     * @param array<string, mixed> $fhirBundleJson
+     * @param  array<string, mixed>  $fhirBundleJson
      * @return array{
      *     is_valid: bool,
      *     compliance_score_pct: int,
@@ -25,7 +25,7 @@ final class ValidateSatuSehatFHIRComplianceAction
         }
 
         if (empty($fhirBundleJson['id'])) {
-            $errors[] = "Bundle id tidak boleh kosong";
+            $errors[] = 'Bundle id tidak boleh kosong';
         }
 
         if (($fhirBundleJson['type'] ?? '') !== 'transaction') {
@@ -33,8 +33,8 @@ final class ValidateSatuSehatFHIRComplianceAction
         }
 
         $entries = $fhirBundleJson['entry'] ?? [];
-        if (!is_array($entries) || count($entries) === 0) {
-            $errors[] = "Bundle harus memiliki minimal 1 entry resource";
+        if (! is_array($entries) || count($entries) === 0) {
+            $errors[] = 'Bundle harus memiliki minimal 1 entry resource';
         } else {
             foreach ($entries as $idx => $entry) {
                 if (empty($entry['fullUrl'])) {

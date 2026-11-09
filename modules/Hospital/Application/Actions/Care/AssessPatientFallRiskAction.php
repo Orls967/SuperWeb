@@ -11,6 +11,7 @@ use Modules\Hospital\Domain\Services\PatientPassportService;
 final class AssessPatientFallRiskAction
 {
     private FallRiskAssessmentEngine $engine;
+
     private PatientPassportService $passportService;
 
     public function __construct(
@@ -22,7 +23,7 @@ final class AssessPatientFallRiskAction
     }
 
     /**
-     * @param array<string, mixed> $fallRiskProfile
+     * @param  array<string, mixed>  $fallRiskProfile
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $fallRiskProfile, int $actorId): array

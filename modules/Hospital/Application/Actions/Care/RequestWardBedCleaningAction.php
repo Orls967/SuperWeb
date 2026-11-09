@@ -10,9 +10,7 @@ use Modules\Hospital\Domain\StateMachines\HospitalBedStateMachine;
 final class RequestWardBedCleaningAction
 {
     /**
-     * @param int $bedId
-     * @param string $priority // ROUTINE, STAT, TERMINAL_DISINFECTION
-     * @param int $actorId
+     * @param  string  $priority  // ROUTINE, STAT, TERMINAL_DISINFECTION
      * @return array<string, mixed>
      */
     public function execute(int $bedId, string $priority, int $actorId): array

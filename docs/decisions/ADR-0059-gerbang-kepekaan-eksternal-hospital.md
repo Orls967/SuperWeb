@@ -10,3 +10,4 @@ Operasional rumah sakit sangat dipengaruhi faktor eksternal: cuaca ekstrem, lonj
 
 ## Konsekuensi
 - Menghilangkan hardcoded magic numbers pada logika antisipasi bencana rumah sakit.
+

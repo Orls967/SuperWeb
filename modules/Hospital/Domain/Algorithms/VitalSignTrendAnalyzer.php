@@ -39,7 +39,7 @@ final class VitalSignTrendAnalyzer
     {
         $n = count($history);
         if ($n < 2) {
-            throw new InvalidArgumentException("Minimal 2 titik data waktu vital diperlukan untuk analisis tren.");
+            throw new InvalidArgumentException('Minimal 2 titik data waktu vital diperlukan untuk analisis tren.');
         }
 
         $hrValues = array_column($history, 'heart_rate');
@@ -95,7 +95,7 @@ final class VitalSignTrendAnalyzer
     }
 
     /**
-     * @param list<float|int> $yValues
+     * @param  list<float|int>  $yValues
      */
     private function calculateSlope(array $yValues): float
     {
@@ -123,9 +123,8 @@ final class VitalSignTrendAnalyzer
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @param list<array<string, mixed>> $history
-     * @return bool
+     * @param  array<string, mixed>  $result
+     * @param  list<array<string, mixed>>  $history
      */
     public function verifyCertificate(array $result, array $history): bool
     {

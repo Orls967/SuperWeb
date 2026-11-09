@@ -11,3 +11,4 @@ Pencatatan pendapatan rumah sakit sering mengalami pembatalan tindakan, koreksi 
 
 ## Konsekuensi
 - Menjamin kepatuhan penuh terhadap standar audit akuntansi double-entry SuperWeb.
+

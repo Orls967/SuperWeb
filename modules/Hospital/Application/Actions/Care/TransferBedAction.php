@@ -17,19 +17,12 @@ use Modules\Hospital\Domain\StateMachines\HospitalBedStateMachine;
  */
 class TransferBedAction
 {
-    /**
-     * @param int $admissionId
-     * @param int $newBedId
-     * @param string $reason
-     * @param ?int $actorId
-     * @return Admission
-     */
     public function execute(int $admissionId, int $newBedId, string $reason, ?int $actorId = null): Admission
     {
         return DB::transaction(function () use ($admissionId, $newBedId, $reason, $actorId): Admission {
             $admission = Admission::where('id', $admissionId)->lockForUpdate()->firstOrFail();
             if ($admission->status !== AdmissionStateMachine::STATUS_ADMITTED) {
-                throw new DomainException("Pasien tidak dalam status rawat inap aktif untuk dipindahkan.");
+                throw new DomainException('Pasien tidak dalam status rawat inap aktif untuk dipindahkan.');
             }
 
             $currentBed = $admission->bed;

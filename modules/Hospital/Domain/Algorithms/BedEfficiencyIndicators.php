@@ -15,15 +15,15 @@ use RuntimeException;
 final class BedEfficiencyIndicators
 {
     /**
-     * @param int $bedCount Jumlah tempat tidur operasional
-     * @param int $periodDays Jumlah hari dalam periode pengamatan
-     * @param int $inpatientDays Total hari rawat pasien dalam periode
-     * @param int $discharges Total pasien keluar (hidup + mati)
+     * @param  int  $bedCount  Jumlah tempat tidur operasional
+     * @param  int  $periodDays  Jumlah hari dalam periode pengamatan
+     * @param  int  $inpatientDays  Total hari rawat pasien dalam periode
+     * @param  int  $discharges  Total pasien keluar (hidup + mati)
      */
     public function calculate(int $bedCount, int $periodDays, int $inpatientDays, int $discharges): BarberJohnsonResult
     {
         if ($bedCount <= 0 || $periodDays <= 0 || $discharges <= 0) {
-            throw new InvalidArgumentException("Parameter perhitungan efisiensi bed harus bernilai positif.");
+            throw new InvalidArgumentException('Parameter perhitungan efisiensi bed harus bernilai positif.');
         }
 
         $totalCapacity = $bedCount * $periodDays;
@@ -138,7 +138,7 @@ final class BedEfficiencyCertificateVerifier
 
         $expectedHash = hash('sha256', $payload);
         if (! hash_equals($expectedHash, $certificate->sha256)) {
-            throw new RuntimeException("Sertifikat efisiensi bed tidak valid: hash tidak cocok.");
+            throw new RuntimeException('Sertifikat efisiensi bed tidak valid: hash tidak cocok.');
         }
     }
 }

@@ -15,11 +15,17 @@ use Modules\Hospital\Domain\Models\HospitalBedTransition;
 final class HospitalBedStateMachine
 {
     public const STATUS_AVAILABLE = 'available';
+
     public const STATUS_RESERVED = 'reserved';
+
     public const STATUS_OCCUPIED = 'occupied';
+
     public const STATUS_CLEANING = 'cleaning';
+
     public const STATUS_MAINTENANCE = 'maintenance';
+
     public const STATUS_ISOLATED_HOLD = 'isolated_hold';
+
     public const STATUS_OUT_OF_SERVICE = 'out_of_service';
 
     private const TRANSITIONS = [
@@ -37,6 +43,7 @@ final class HospitalBedStateMachine
         $fromNorm = strtolower($from);
         $toNorm = strtolower($to);
         $allowed = self::TRANSITIONS[$fromNorm] ?? [];
+
         return in_array($toNorm, $allowed, true);
     }
 

@@ -18,11 +18,12 @@ use Modules\Hospital\Domain\StateMachines\CodeBlueEventStateMachine;
 class TelemetryScanCommand extends Command
 {
     protected $signature = 'hospital:telemetry-scan';
+
     protected $description = 'Memindai telemetri vital pasien bangsal dan memicu eskalasi Code Blue jika terjadi pelanggaran ganda';
 
     public function handle(CodeBlueEscalationPlanner $planner): int
     {
-        $this->info("Memulai pemindaian telemetri IoT (hospital:telemetry-scan)...");
+        $this->info('Memulai pemindaian telemetri IoT (hospital:telemetry-scan)...');
 
         $encounters = VitalsTelemetry::select('encounter_id')->distinct()->pluck('encounter_id');
         $raisedEvents = 0;
@@ -62,7 +63,7 @@ class TelemetryScanCommand extends Command
 
                 if (! $activeEvent) {
                     $admission = Admission::where('encounter_id', $encId)->first();
-                    $eventNo = 'CB-' . date('Ymd') . '-' . substr(hash('sha256', "cb:{$encId}:" . microtime()), 0, 6);
+                    $eventNo = 'CB-'.date('Ymd').'-'.substr(hash('sha256', "cb:{$encId}:".microtime()), 0, 6);
 
                     CodeBlueEvent::create([
                         'event_no' => strtoupper($eventNo),

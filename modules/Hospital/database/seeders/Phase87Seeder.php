@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\database\seeders;
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\HospitalBed;
 use Modules\Hospital\Domain\Models\Patient;
@@ -58,7 +58,7 @@ final class Phase87Seeder extends Seeder
                 $dept = $departments[$i % count($departments)];
                 $floor = (int) (($i / 30) + 1);
                 $wing = ($i % 2 === 0) ? 'Timur' : 'Barat';
-                $code = sprintf("%s-%s-%03d", $prefix, substr($cls, 0, 3), $i);
+                $code = sprintf('%s-%s-%03d', $prefix, substr($cls, 0, 3), $i);
 
                 $status = 'AVAILABLE';
                 if ($i % 23 === 0) {
@@ -81,7 +81,7 @@ final class Phase87Seeder extends Seeder
 
                 $bedInsertBatch[] = [
                     'bed_code' => $code,
-                    'room_number' => "R-{$floor}" . sprintf("%02d", ($i % 20) + 1),
+                    'room_number' => "R-{$floor}".sprintf('%02d', ($i % 20) + 1),
                     'ward_name' => $dept,
                     'bed_class' => $cls,
                     'rate_per_day_idr' => $rate,
@@ -106,8 +106,8 @@ final class Phase87Seeder extends Seeder
         $patientBatch = [];
 
         for ($p = 1; $p <= 60; $p++) {
-            $nik = sprintf("317101%02d08%04d", ($p % 28) + 1, $p + 1000);
-            $mrn = sprintf("MRN-2026-%05d", $p);
+            $nik = sprintf('317101%02d08%04d', ($p % 28) + 1, $p + 1000);
+            $mrn = sprintf('MRN-2026-%05d', $p);
             $initialHash = hash('sha256', "PASSPORT-GENESIS-{$mrn}");
 
             $patient = Patient::firstOrCreate(
@@ -141,7 +141,7 @@ final class Phase87Seeder extends Seeder
                 $occupiedBed = HospitalBed::where('status', 'AVAILABLE')->first();
                 if ($occupiedBed) {
                     $encId = DB::table('hsp_encounters')->insertGetId([
-                        'encounter_code' => sprintf("ENC-%s-%04d", date('Ymd'), $p),
+                        'encounter_code' => sprintf('ENC-%s-%04d', date('Ymd'), $p),
                         'patient_id' => $patient->id,
                         'encounter_type' => 'INPATIENT',
                         'admitted_at' => CarbonImmutable::now()->subDays($p % 7 + 1),
@@ -158,7 +158,7 @@ final class Phase87Seeder extends Seeder
                     Admission::firstOrCreate(
                         ['patient_id' => $patient->id, 'status' => 'admitted'],
                         [
-                            'admission_no' => sprintf("ADM-%s-%04d", date('Ymd'), $p),
+                            'admission_no' => sprintf('ADM-%s-%04d', date('Ymd'), $p),
                             'encounter_id' => $encId,
                             'bed_id' => $occupiedBed->id,
                             'entitled_class' => $occupiedBed->bed_class,

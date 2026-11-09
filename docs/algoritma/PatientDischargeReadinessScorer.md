@@ -24,3 +24,4 @@ SigPayload = "PDRS-V1:{points}:{status}:{isReady}:{input_hash}"
 Signature = HMAC_SHA256(SigPayload, SECRET_KEY)
 ```
 Sertifikat ini disertakan ke dalam *Discharge Summary* dan resume medis elektronik pasien.
+

@@ -7,7 +7,6 @@ namespace Modules\Hospital\Domain\Services;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Domain\Models\ClinicalOrderTransition;
-use Modules\Hospital\Domain\Services\PatientPassportService;
 use Modules\Hospital\Domain\StateMachines\ClinicalOrderStateMachine;
 
 final class ClinicalOrderFulfillmentService
@@ -23,15 +22,13 @@ final class ClinicalOrderFulfillmentService
      * Memperbarui pemenuhan order klinis laboratorium/radiologi/farmasi
      * beserta hasil numerik dan bukti otentikasi pelaksana.
      *
-     * @param int $orderId
-     * @param array<string, mixed> $resultPayload
-     * @param int $actorId
+     * @param  array<string, mixed>  $resultPayload
      * @return array<string, mixed>
      */
     public function fulfillOrder(int $orderId, array $resultPayload, int $actorId): array
     {
         $order = DB::table('hsp_clinical_orders')->where('id', $orderId)->first();
-        if (!$order) {
+        if (! $order) {
             return ['success' => false, 'message' => "Order #{$orderId} tidak ditemukan."];
         }
 

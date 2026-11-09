@@ -22,15 +22,12 @@ final class EscalateUnresolvedClinicalOrderAction
      * Memindai order klinis (lab/farmasi/radiologi) yang mengalami keterlambatan SLA
      * dan menaikkan eskalasi ke Duty Medical Officer (DMO) / Kepala Ruangan.
      *
-     * @param int $orderId
-     * @param string $reason
-     * @param int $actorId
      * @return array<string, mixed>
      */
     public function execute(int $orderId, string $reason, int $actorId): array
     {
         $order = DB::table('hsp_clinical_orders')->where('id', $orderId)->first();
-        if (!$order) {
+        if (! $order) {
             return ['success' => false, 'message' => "Order #{$orderId} tidak ditemukan."];
         }
 

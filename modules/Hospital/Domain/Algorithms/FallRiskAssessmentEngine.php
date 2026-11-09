@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
-
 final class FallRiskAssessmentEngine
 {
     /**
@@ -39,12 +37,12 @@ final class FallRiskAssessmentEngine
         $bundle = ['BED_LOWEST_POSITION', 'CALL_BELL_WITHIN_REACH', 'NON_SKID_FOOTWEAR'];
         $bedReqs = ['SIDE_RAILS_UP_2'];
 
-        if (!empty($profile['history_of_falling_past_3months'])) {
+        if (! empty($profile['history_of_falling_past_3months'])) {
             $score += 25;
             $bundle[] = 'YELLOW_FALL_RISK_WRISTBAND';
         }
 
-        if (!empty($profile['secondary_diagnosis_present'])) {
+        if (! empty($profile['secondary_diagnosis_present'])) {
             $score += 15;
         }
 
@@ -57,7 +55,7 @@ final class FallRiskAssessmentEngine
             $bundle[] = 'MOBILITY_DEVICE_SAFETY_CHECK';
         }
 
-        if (!empty($profile['iv_line_or_heparin_lock'])) {
+        if (! empty($profile['iv_line_or_heparin_lock'])) {
             $score += 20;
             $bundle[] = 'IV_POLE_WHEEL_LOCK_SAFETY';
         }
@@ -106,8 +104,8 @@ final class FallRiskAssessmentEngine
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @param array<string, mixed> $originalProfile
+     * @param  array<string, mixed>  $result
+     * @param  array<string, mixed>  $originalProfile
      */
     public function verifyCertificate(array $result, array $originalProfile): bool
     {

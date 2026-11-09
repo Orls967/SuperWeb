@@ -42,3 +42,4 @@ Hasil perencana menghasilkan `CodeBlueEscalationCertificate` yang mencatat hash 
 
 - Kompleksitas: $O(K)$ di mana $K$ adalah jumlah titik telemetri dalam riwayat (efektif $O(1)$ untuk sliding window 3 menit).
 - Lokasi Kode: `Modules\Hospital\Domain\Algorithms\CodeBlueEscalationPlanner.php`
+

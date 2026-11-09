@@ -61,7 +61,7 @@ class EvaluateVitalsTelemetryAction
         );
 
         // 2. Simpan pembacaan telemetri ke basis data
-        $proofHash = hash('sha256', "vitals:{$encounterId}:{$spo2}:{$hr}:{$news2Result->totalScore}:" . microtime());
+        $proofHash = hash('sha256', "vitals:{$encounterId}:{$spo2}:{$hr}:{$news2Result->totalScore}:".microtime());
         $vitals = VitalsTelemetry::create([
             'encounter_id' => $encounterId,
             'spo2_percent' => $spo2,
@@ -106,7 +106,7 @@ class EvaluateVitalsTelemetryAction
                 ->first();
 
             if (! $existingActive) {
-                $eventNo = 'CB-' . date('Ymd') . '-' . substr(hash('sha256', "cb:{$encounterId}:{$minute}"), 0, 6);
+                $eventNo = 'CB-'.date('Ymd').'-'.substr(hash('sha256', "cb:{$encounterId}:{$minute}"), 0, 6);
                 $admission = Admission::where('encounter_id', $encounterId)->first();
 
                 $codeBlueEvent = CodeBlueEvent::create([

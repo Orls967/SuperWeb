@@ -7,9 +7,9 @@ namespace Modules\Hospital\Application\DTOs;
 final class PatientDischargeSummaryDTO
 {
     /**
-     * @param list<string> $secondaryDiagnoses
-     * @param list<array<string, mixed>> $dischargeMedications
-     * @param list<string> $followUpInstructions
+     * @param  list<string>  $secondaryDiagnoses
+     * @param  list<array<string, mixed>>  $dischargeMedications
+     * @param  list<string>  $followUpInstructions
      */
     public function __construct(
         public readonly int $admissionId,
@@ -17,11 +17,14 @@ final class PatientDischargeSummaryDTO
         public readonly int $attendingDoctorId,
         public readonly string $primaryDiagnosisIcd10,
         public readonly string $primaryDiagnosisDescription,
-        public readonly list<string> $secondaryDiagnoses,
+        /** @var list<string> */
+        public readonly array $secondaryDiagnoses,
         public readonly string $dischargeDisposition, // HOME, REFERRED, DECEASED, AGAINST_MEDICAL_ADVICE
         public readonly string $clinicalConditionAtDischarge, // CURED, IMPROVED, UNCHANGED
-        public readonly list<array<string, mixed>> $dischargeMedications,
-        public readonly list<string> $followUpInstructions,
+        /** @var list<array<string, mixed>> */
+        public readonly array $dischargeMedications,
+        /** @var list<string> */
+        public readonly array $followUpInstructions,
         public readonly ?string $followUpDate = null,
         public readonly int $totalLengthOfStayDays = 1,
         public readonly int $totalBilledIdr = 0

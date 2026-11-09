@@ -21,3 +21,4 @@ Kemiringan dihitung secara simultan untuk tiga indikator hemodinamik utama:
 - `STABLE`: Tanpa pola divergensi bahaya.
 - `ELEVATED_WATCH`: Terdeteksi 1 anomali tren; perawat meningkatkan frekuensi pemantauan menjadi tiap 30 menit.
 - `CRITICAL_RRT_ESCALATION`: Terdeteksi $\ge 2$ sinyal divergensi; aktivasi otomatis Tim Respons Cepat (*Rapid Response Team*).
+

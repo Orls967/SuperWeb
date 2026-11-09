@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Hospital\Domain\StateMachines;
 
 use DomainException;
-use Modules\Hospital\Domain\Models\HospitalOrder;
 use Modules\Hospital\Domain\Models\ClinicalOrderTransition;
+use Modules\Hospital\Domain\Models\HospitalOrder;
 
 /**
  * State Machine untuk siklus hidup order klinis dokter (7 status).
@@ -15,11 +15,17 @@ use Modules\Hospital\Domain\Models\ClinicalOrderTransition;
 final class ClinicalOrderStateMachine
 {
     public const STATUS_ORDERED = 'ordered';
+
     public const STATUS_SCHEDULED = 'scheduled';
+
     public const STATUS_IN_PROGRESS = 'in_progress';
+
     public const STATUS_COMPLETED = 'completed';
+
     public const STATUS_DELAYED = 'delayed';
+
     public const STATUS_CANCELLED = 'cancelled';
+
     public const STATUS_ESCALATED = 'escalated';
 
     private const TRANSITIONS = [
@@ -37,6 +43,7 @@ final class ClinicalOrderStateMachine
         $fromNorm = strtolower($from);
         $toNorm = strtolower($to);
         $allowed = self::TRANSITIONS[$fromNorm] ?? [];
+
         return in_array($toNorm, $allowed, true);
     }
 

@@ -15,11 +15,12 @@ use Modules\Hospital\Domain\StateMachines\HospitalBedStateMachine;
 class BedSweepCommand extends Command
 {
     protected $signature = 'hospital:bed-sweep {--auto-clean : Otomatis selesaikan sanitasi ranjang yang melebihi batas waktu}';
+
     protected $description = 'Memindai status ranjang rawat inap, sanitasi kebersihan, dan audit ketersediaan';
 
     public function handle(): int
     {
-        $this->info("Memulai pemindaian status tempat tidur (hospital:bed-sweep)...");
+        $this->info('Memulai pemindaian status tempat tidur (hospital:bed-sweep)...');
 
         $cleaningBeds = HospitalBed::where('status', 'CLEANING')->get();
         $cleanedCount = 0;

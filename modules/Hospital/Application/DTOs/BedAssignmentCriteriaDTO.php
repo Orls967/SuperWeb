@@ -7,8 +7,8 @@ namespace Modules\Hospital\Application\DTOs;
 final class BedAssignmentCriteriaDTO
 {
     /**
-     * @param array<string, mixed> $requiredEquipment
-     * @param list<string> $clinicalFlags
+     * @param  array<string, mixed>  $requiredEquipment
+     * @param  list<string>  $clinicalFlags
      */
     public function __construct(
         public readonly int $patientId,
@@ -19,13 +19,14 @@ final class BedAssignmentCriteriaDTO
         public readonly bool $requiresIsolation,
         public readonly ?string $isolationType = null,
         public readonly array $requiredEquipment = [],
-        public readonly list<string> $clinicalFlags = [],
+        /** @var list<string> */
+        public readonly array $clinicalFlags = [],
         public readonly ?string $preferredWard = null,
         public readonly ?string $sourceDepartment = 'IGD'
     ) {}
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): self
     {

@@ -20,10 +20,8 @@ final class AuditClinicalPathwayAdherenceAction
     /**
      * Memeriksa kepatuhan Clinical Pathway pada admisi rawat inap aktif.
      *
-     * @param int $admissionId
-     * @param list<array{code: string, day: int}> $plannedSteps
-     * @param list<array{code: string, day: int}> $executedSteps
-     * @param int $currentDay
+     * @param  list<array{code: string, day: int}>  $plannedSteps
+     * @param  list<array{code: string, day: int}>  $executedSteps
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $plannedSteps, array $executedSteps, int $currentDay): array

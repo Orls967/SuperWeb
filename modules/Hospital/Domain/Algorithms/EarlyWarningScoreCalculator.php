@@ -14,18 +14,21 @@ use RuntimeException;
 final class EarlyWarningScoreCalculator
 {
     public const RISK_LOW = 'RENDAH';
+
     public const RISK_LOW_MEDIUM = 'RENDAH_SEDANG';
+
     public const RISK_MEDIUM = 'SEDANG';
+
     public const RISK_HIGH = 'TINGGI';
 
     /**
-     * @param int $respirationRate Laju napas per menit
-     * @param int $spo2Percent Saturasi oksigen (%)
-     * @param bool $supplementalOxygen Apakah menggunakan oksigen tambahan
-     * @param int $systolicBp Tekanan darah sistolik (mmHg)
-     * @param int $heartRate Denyut nadi (bpm)
-     * @param string $consciousness Tingkat kesadaran ('A'=Alert, lainnya CVPU)
-     * @param int $tempDeciC Suhu tubuh dalam 0,1 °C (misal 368 = 36,8 °C)
+     * @param  int  $respirationRate  Laju napas per menit
+     * @param  int  $spo2Percent  Saturasi oksigen (%)
+     * @param  bool  $supplementalOxygen  Apakah menggunakan oksigen tambahan
+     * @param  int  $systolicBp  Tekanan darah sistolik (mmHg)
+     * @param  int  $heartRate  Denyut nadi (bpm)
+     * @param  string  $consciousness  Tingkat kesadaran ('A'=Alert, lainnya CVPU)
+     * @param  int  $tempDeciC  Suhu tubuh dalam 0,1 °C (misal 368 = 36,8 °C)
      */
     public function calculate(
         int $respirationRate,
@@ -132,7 +135,7 @@ final class EarlyWarningScoreCalculator
 final class News2ScoreResult
 {
     /**
-     * @param array<string, int> $breakdown
+     * @param  array<string, int>  $breakdown
      */
     public function __construct(
         public readonly int $totalScore,
@@ -147,7 +150,7 @@ final class News2CalculationCertificate
     public readonly string $sha256;
 
     /**
-     * @param array<string, int> $breakdown
+     * @param  array<string, int>  $breakdown
      */
     public function __construct(
         public readonly int $totalScore,
@@ -181,7 +184,7 @@ final class News2CertificateVerifier
 
         $expectedHash = hash('sha256', $payload);
         if (! hash_equals($expectedHash, $certificate->sha256)) {
-            throw new RuntimeException("Sertifikat NEWS2 tidak valid: hash tidak cocok.");
+            throw new RuntimeException('Sertifikat NEWS2 tidak valid: hash tidak cocok.');
         }
 
         $sum = array_sum($certificate->breakdown);

@@ -19,8 +19,7 @@ final class CodeBlueEscalationPlanner
      *     spo2: int,
      *     heart_rate: int
      * }> $telemetryReadings
-     * @param ?int $ackMinute Menit staf klinis meng-acknowledge (null jika tidak di-ack)
-     * @return CodeBluePlanResult
+     * @param  ?int  $ackMinute  Menit staf klinis meng-acknowledge (null jika tidak di-ack)
      */
     public function plan(array $telemetryReadings, ?int $ackMinute = null): CodeBluePlanResult
     {
@@ -50,6 +49,7 @@ final class CodeBlueEscalationPlanner
                 escalations: [],
                 generatedAt: time()
             );
+
             return new CodeBluePlanResult(false, null, [], $certificate);
         }
 
@@ -89,7 +89,7 @@ final class CodeBlueEscalationPlanner
 final class CodeBluePlanResult
 {
     /**
-     * @param list<string> $escalations
+     * @param  list<string>  $escalations
      */
     public function __construct(
         public readonly bool $isTriggered,
@@ -104,7 +104,7 @@ final class CodeBlueEscalationCertificate
     public readonly string $sha256;
 
     /**
-     * @param list<string> $escalations
+     * @param  list<string>  $escalations
      */
     public function __construct(
         public readonly bool $isTriggered,
@@ -135,7 +135,7 @@ final class CodeBlueCertificateVerifier
 
         $expectedHash = hash('sha256', $payload);
         if (! hash_equals($expectedHash, $certificate->sha256)) {
-            throw new RuntimeException("Sertifikat Code Blue tidak valid: hash tidak cocok.");
+            throw new RuntimeException('Sertifikat Code Blue tidak valid: hash tidak cocok.');
         }
     }
 }

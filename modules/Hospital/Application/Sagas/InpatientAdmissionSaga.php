@@ -48,6 +48,7 @@ class InpatientAdmissionSaga
         $existingSaga = CareSagaRecord::where('saga_ref', $idempotencyKey)->first();
         if ($existingSaga !== null && $existingSaga->status === 'COMPLETED') {
             $payload = $existingSaga->payload;
+
             return [
                 'success' => true,
                 'admission_id' => (int) $payload['admission_id'],
@@ -119,7 +120,7 @@ class InpatientAdmissionSaga
             // Buat draf admisi
             $isUpgrade = strtoupper($targetBed->bed_class) !== $reqClass;
             $admission = Admission::create([
-                'admission_no' => 'ADM-' . date('Ymd') . '-' . str_pad((string) $patient->id, 5, '0', STR_PAD_LEFT) . '-' . substr(md5($idempotencyKey), 0, 4),
+                'admission_no' => 'ADM-'.date('Ymd').'-'.str_pad((string) $patient->id, 5, '0', STR_PAD_LEFT).'-'.substr(md5($idempotencyKey), 0, 4),
                 'patient_id' => $patient->id,
                 'bed_id' => $targetBed->id,
                 'entitled_class' => $reqClass,
@@ -177,7 +178,7 @@ class InpatientAdmissionSaga
                     HospitalBedStateMachine::transition($targetBed, HospitalBedStateMachine::STATUS_AVAILABLE, 'Kompensasi: pelepasan kuncian gagal deposit', $actorId);
                     $compensationLog[] = "Bed #{$targetBed->id} dikembalikan ke AVAILABLE";
                 } catch (Exception $ex) {
-                    $compensationLog[] = "Gagal kompensasi bed: " . $ex->getMessage();
+                    $compensationLog[] = 'Gagal kompensasi bed: '.$ex->getMessage();
                 }
             }
 
@@ -186,7 +187,7 @@ class InpatientAdmissionSaga
                     AdmissionStateMachine::transition($admission, AdmissionStateMachine::STATUS_CANCELLED, 'Kompensasi: pembatalan admisi', $actorId);
                     $compensationLog[] = "Admisi #{$admission->id} dibatalkan";
                 } catch (Exception $ex) {
-                    $compensationLog[] = "Gagal kompensasi admisi: " . $ex->getMessage();
+                    $compensationLog[] = 'Gagal kompensasi admisi: '.$ex->getMessage();
                 }
             }
 

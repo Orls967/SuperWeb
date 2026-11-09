@@ -7,14 +7,14 @@ namespace Modules\Hospital\Application\DTOs;
 final class FHIRBundlePayloadDTO
 {
     /**
-     * @param list<array<string, mixed>> $resources
+     * @param  list<array<string, mixed>>  $resources
      */
     public function __construct(
         public readonly string $bundleType, // transaction, batch, collection, document
         public readonly string $bundleIdentifier,
         public readonly string $timestamp,
         public readonly int $totalResources,
-        public readonly list<array<string, mixed>> $resources = []
+        public readonly array $resources = []
     ) {}
 
     /**
@@ -25,7 +25,7 @@ final class FHIRBundlePayloadDTO
         $entries = [];
         foreach ($this->resources as $res) {
             $entries[] = [
-                'fullUrl' => 'urn:uuid:' . ($res['id'] ?? uniqid()),
+                'fullUrl' => 'urn:uuid:'.($res['id'] ?? uniqid()),
                 'resource' => $res,
                 'request' => [
                     'method' => 'POST',

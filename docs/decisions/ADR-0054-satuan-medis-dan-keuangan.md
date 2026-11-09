@@ -13,3 +13,4 @@ Pengelolaan rekam medis dan transaksi rumah sakit melibatkan berbagai satuan fis
 ## Konsekuensi
 - Menghilangkan bug pembulatan IEEE-754 pada seluruh perhitungan akuntansi dan formula klinis.
 - Mengikuti Konvensi Umum SuperWeb U-1 dan U-2.
+

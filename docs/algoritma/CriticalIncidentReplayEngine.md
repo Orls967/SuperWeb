@@ -22,3 +22,4 @@ Hasil verifikasi ditandatangani menggunakan HMAC-SHA256 untuk disimpan sebagai l
 SigPayload = "CIRE-V1:{final_merkle_root}:{audit_status}:{total_events}"
 Signature = HMAC_SHA256(SigPayload, SECRET_KEY)
 ```
+

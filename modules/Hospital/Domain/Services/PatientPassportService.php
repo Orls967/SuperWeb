@@ -6,7 +6,6 @@ namespace Modules\Hospital\Domain\Services;
 
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\PatientPassportEvent;
-use RuntimeException;
 
 /**
  * G7-D60: Layanan Kriptografis Paspor Kesehatan Pasien (Human Passport).
@@ -19,7 +18,7 @@ class PatientPassportService
     /**
      * Merekam peristiwa klinis baru ke dalam rantai paspor pasien.
      *
-     * @param array<string, mixed> $payloadData
+     * @param  array<string, mixed>  $payloadData
      */
     public function recordEvent(
         Patient $patient,
@@ -63,7 +62,7 @@ class PatientPassportService
     /**
      * Alias pelengkap untuk kompatibilitas dengan aksi domain.
      *
-     * @param array<string, mixed> $eventPayload
+     * @param  array<string, mixed>  $eventPayload
      */
     public function appendEvent(
         int $patientId,
@@ -72,6 +71,7 @@ class PatientPassportService
         ?int $actorId = null
     ): PatientPassportEvent {
         $patient = Patient::findOrFail($patientId);
+
         return $this->recordEvent($patient, $eventType, $eventPayload, $actorId);
     }
 
@@ -81,6 +81,7 @@ class PatientPassportService
     public function detectTampering(int $patientId): bool
     {
         $patient = Patient::findOrFail($patientId);
+
         return ! $this->verifyChain($patient);
     }
 

@@ -43,3 +43,4 @@ SigPayload = "HICR-V1:{score}:{category}:{isolation}:{input_hash}"
 Signature = HMAC_SHA256(SigPayload, SECRET_KEY)
 ```
 Invarian: Nilai skor, rekomendasi ruang isolasi, dan bundle kewaspadaan tidak dapat diubah tanpa merusak verifikasi HMAC.
+

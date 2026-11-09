@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Algorithms;
 
-use InvalidArgumentException;
-
 final class ClinicalNutritionRiskCalculator
 {
     /**
@@ -66,7 +64,7 @@ final class ClinicalNutritionRiskCalculator
 
         $inputSerialized = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $inputHash = hash('sha256', $inputSerialized);
-        $sigPayload = "CNRC-V1:{$totalScore}:{$nutritionScore}:{$diseaseScore}:{$ageScore}:" . ($isAtRisk ? '1' : '0') . ":{$inputHash}";
+        $sigPayload = "CNRC-V1:{$totalScore}:{$nutritionScore}:{$diseaseScore}:{$ageScore}:".($isAtRisk ? '1' : '0').":{$inputHash}";
         $signature = hash_hmac('sha256', $sigPayload, 'HSP_SECRET_NUTRITION_RISK_2026');
 
         return [
@@ -86,8 +84,8 @@ final class ClinicalNutritionRiskCalculator
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @param array<string, mixed> $originalInput
+     * @param  array<string, mixed>  $result
+     * @param  array<string, mixed>  $originalInput
      */
     public function verifyCertificate(array $result, array $originalInput): bool
     {
@@ -103,7 +101,7 @@ final class ClinicalNutritionRiskCalculator
         $nutr = $result['impaired_nutritional_status_score'] ?? 0;
         $dis = $result['disease_severity_score'] ?? 0;
         $age = $result['age_adjustment_score'] ?? 0;
-        $risk = !empty($result['is_at_nutritional_risk']) ? '1' : '0';
+        $risk = ! empty($result['is_at_nutritional_risk']) ? '1' : '0';
 
         $expectedSigPayload = "CNRC-V1:{$total}:{$nutr}:{$dis}:{$age}:{$risk}:{$inputHash}";
         $expectedSig = hash_hmac('sha256', $expectedSigPayload, 'HSP_SECRET_NUTRITION_RISK_2026');

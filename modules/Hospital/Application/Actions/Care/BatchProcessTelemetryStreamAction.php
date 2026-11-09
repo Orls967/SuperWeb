@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions\Care;
 
-use Modules\Hospital\Domain\Models\Admission;
-
 final class BatchProcessTelemetryStreamAction
 {
     private EvaluateVitalsTelemetryAction $evaluator;
@@ -16,7 +14,7 @@ final class BatchProcessTelemetryStreamAction
     }
 
     /**
-     * @param list<array<string, mixed>> $telemetryReadings
+     * @param  list<array<string, mixed>>  $telemetryReadings
      * @return array{
      *     total_processed: int,
      *     alerts_triggered: int,
@@ -31,7 +29,7 @@ final class BatchProcessTelemetryStreamAction
         foreach ($telemetryReadings as $reading) {
             $res = $this->evaluator->execute($reading);
             $results[] = $res;
-            if (!empty($res['code_blue_triggered']) || (($res['news2_score'] ?? 0) >= 7)) {
+            if (! empty($res['code_blue_triggered']) || (($res['news2_score'] ?? 0) >= 7)) {
                 $alertsCount++;
             }
         }

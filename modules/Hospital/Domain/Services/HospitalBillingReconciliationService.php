@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Hospital\Domain\Services;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Domain\Models\Admission;
 
 final class HospitalBillingReconciliationService
@@ -14,7 +13,6 @@ final class HospitalBillingReconciliationService
      * Merekonstruksi dan memverifikasi saldo piutang pasien rawat inap
      * terhadap mutasi buku besar harian.
      *
-     * @param int $admissionId
      * @return array<string, mixed>
      */
     public function reconcileAdmissionFolio(int $admissionId): array

@@ -7,9 +7,9 @@ namespace Modules\Hospital\Application\DTOs;
 final class CodeBlueIncidentDTO
 {
     /**
-     * @param list<string> $cprActionsPerformed
-     * @param list<int> $responderUserIds
-     * @param array<string, mixed> $medicationsAdministered
+     * @param  list<string>  $cprActionsPerformed
+     * @param  list<int>  $responderUserIds
+     * @param  array<string, mixed>  $medicationsAdministered
      */
     public function __construct(
         public readonly int $codeBlueEventId,
@@ -21,8 +21,10 @@ final class CodeBlueIncidentDTO
         public readonly int $totalCprMinutes,
         public readonly int $shocksDelivered,
         public readonly bool $roscAchieved, // Return of Spontaneous Circulation
-        public readonly list<string> $cprActionsPerformed = [],
-        public readonly list<int> $responderUserIds = [],
+        /** @var list<string> */
+        public readonly array $cprActionsPerformed = [],
+        /** @var list<int> */
+        public readonly array $responderUserIds = [],
         public readonly array $medicationsAdministered = [],
         public readonly ?string $finalOutcome = 'TRANSFERRED_ICU'
     ) {}

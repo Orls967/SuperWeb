@@ -11,6 +11,7 @@ use Modules\Hospital\Domain\Services\PatientPassportService;
 final class AssessNutritionRiskAction
 {
     private ClinicalNutritionRiskCalculator $calculator;
+
     private PatientPassportService $passportService;
 
     public function __construct(
@@ -22,7 +23,7 @@ final class AssessNutritionRiskAction
     }
 
     /**
-     * @param array<string, mixed> $nutritionData
+     * @param  array<string, mixed>  $nutritionData
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $nutritionData, int $actorId): array

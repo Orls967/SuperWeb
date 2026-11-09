@@ -7,7 +7,6 @@ namespace Modules\Hospital\Domain\Services\FHIR;
 use Carbon\CarbonImmutable;
 use Modules\Hospital\Application\DTOs\FHIRBundlePayloadDTO;
 use Modules\Hospital\Domain\Models\Admission;
-use Modules\Hospital\Domain\Models\Patient;
 
 final class SatuSehatFHIRMappingService
 {
@@ -26,15 +25,15 @@ final class SatuSehatFHIRMappingService
     public function mapEncounter(Admission $admission): array
     {
         $patient = $admission->patient;
-        $ihsPatientId = $patient?->nik ? 'P' . substr($patient->nik, -8) : 'P-UNKNOWN';
+        $ihsPatientId = $patient?->nik ? 'P'.substr($patient->nik, -8) : 'P-UNKNOWN';
 
         return [
             'resourceType' => 'Encounter',
-            'id' => 'encounter-' . $admission->id,
+            'id' => 'encounter-'.$admission->id,
             'identifier' => [
                 [
                     'system' => "http://sys-ids.kemkes.go.id/encounter/{$this->organizationId}",
-                    'value' => 'ADM-' . $admission->id,
+                    'value' => 'ADM-'.$admission->id,
                 ],
             ],
             'status' => $this->mapEncounterStatus($admission->status),
@@ -60,14 +59,14 @@ final class SatuSehatFHIRMappingService
     /**
      * Memetakan observasi tanda vital & NEWS2 ke Resource Observation FHIR R4.
      *
-     * @param array<string, mixed> $vitals
+     * @param  array<string, mixed>  $vitals
      * @return array<string, mixed>
      */
     public function mapNews2Observation(int $admissionId, int $patientId, array $vitals, int $news2Score): array
     {
         return [
             'resourceType' => 'Observation',
-            'id' => 'obs-news2-' . uniqid(),
+            'id' => 'obs-news2-'.uniqid(),
             'status' => 'final',
             'category' => [
                 [
@@ -123,7 +122,7 @@ final class SatuSehatFHIRMappingService
     {
         return [
             'resourceType' => 'Condition',
-            'id' => 'cond-' . uniqid(),
+            'id' => 'cond-'.uniqid(),
             'clinicalStatus' => [
                 'coding' => [
                     [
@@ -166,7 +165,7 @@ final class SatuSehatFHIRMappingService
     /**
      * Membentuk FHIR Bundle Transaction untuk sinkronisasi SatuSehat.
      *
-     * @param list<array<string, mixed>> $resources
+     * @param  list<array<string, mixed>>  $resources
      */
     public function createBundle(string $bundleId, array $resources): FHIRBundlePayloadDTO
     {

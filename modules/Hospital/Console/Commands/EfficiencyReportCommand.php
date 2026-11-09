@@ -16,6 +16,7 @@ use Modules\Hospital\Domain\Models\HospitalBed;
 class EfficiencyReportCommand extends Command
 {
     protected $signature = 'hospital:efficiency-report {date? : Tanggal analisis YYYY-MM-DD} {--csv : Ekspor keluaran dalam format CSV}';
+
     protected $description = 'Menghitung indikator efisiensi tempat tidur Barber-Johnson (BOR, ALOS, TOI, BTO)';
 
     public function handle(BedEfficiencyIndicators $calculator): int
@@ -44,11 +45,12 @@ class EfficiencyReportCommand extends Command
         $res = $calculator->calculate($totalBeds, $periodDays, $inpatientDays, $discharges);
 
         if ($this->option('csv')) {
-            $this->line("metric,value_raw,unit,formatted");
+            $this->line('metric,value_raw,unit,formatted');
             $this->line("BOR,{$res->borBps},bps,{$res->borPercentage()}%");
             $this->line("ALOS,{$res->alosMilli},milli,{$res->alosDays()} hari");
             $this->line("TOI,{$res->toiMilli},milli,{$res->toiDays()} hari");
             $this->line("BTO,{$res->btoMilli},milli,{$res->btoTurns()} kali");
+
             return self::SUCCESS;
         }
 

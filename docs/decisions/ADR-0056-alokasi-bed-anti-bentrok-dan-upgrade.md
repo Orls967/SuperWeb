@@ -12,3 +12,4 @@ Konkurensi admisi di rumah sakit besar kerap memicu terjadinya alokasi tempat ti
 ## Konsekuensi
 - Mencegah insiden operasional pasien tiba di kamar yang sudah terisi.
 - Tagihan pasien tetap adil dan transparan.
+

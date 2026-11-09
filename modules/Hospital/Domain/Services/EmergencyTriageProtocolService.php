@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Domain\Services;
 
-use Carbon\CarbonImmutable;
-
 final class EmergencyTriageProtocolService
 {
     /**
@@ -28,7 +26,7 @@ final class EmergencyTriageProtocolService
      */
     public function stratify(array $criteria): array
     {
-        if (!empty($criteria['requires_immediate_life_saving_intervention'])) {
+        if (! empty($criteria['requires_immediate_life_saving_intervention'])) {
             return [
                 'esi_level' => 1,
                 'esi_name' => 'RESUSCITATION',
@@ -38,9 +36,9 @@ final class EmergencyTriageProtocolService
             ];
         }
 
-        if (!empty($criteria['high_risk_situation_or_confused'])
-            || !empty($criteria['severe_pain_or_distress'])
-            || !empty($criteria['vital_danger_zone'])
+        if (! empty($criteria['high_risk_situation_or_confused'])
+            || ! empty($criteria['severe_pain_or_distress'])
+            || ! empty($criteria['vital_danger_zone'])
         ) {
             return [
                 'esi_level' => 2,

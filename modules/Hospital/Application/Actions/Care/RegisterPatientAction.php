@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Hospital\Application\Actions\Care;
 
-use DomainException;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Services\PatientPassportService;
 
@@ -40,7 +39,7 @@ class RegisterPatientAction
             return $existing;
         }
 
-        $mrn = 'MRN-' . date('Ymd') . '-' . substr(hash('sha256', $data['nik'] . microtime()), 0, 6);
+        $mrn = 'MRN-'.date('Ymd').'-'.substr(hash('sha256', $data['nik'].microtime()), 0, 6);
 
         $patient = Patient::create([
             'mrn' => strtoupper($mrn),

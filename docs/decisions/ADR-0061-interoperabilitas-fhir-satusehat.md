@@ -21,3 +21,4 @@ Rumah sakit membutuhkan arsitektur pemetaan yang mampu mentransformasikan entita
   - Memudahkan integrasi lanjutan ke modul klaim BPJS Kesehatan VClaim dan asuransi swasta.
 - **Negatif**:
   - Diperlukan pemeliharaan kamus pemetaan terminologi (LOINC untuk observasi laboratorium/vital sign, SNOMED-CT untuk prosedur khusus, dan ICD-10 untuk diagnosis).
+

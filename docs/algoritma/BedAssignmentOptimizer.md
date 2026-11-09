@@ -62,3 +62,4 @@ Setiap pemanggilan algoritma menghasilkan objek sertifikat `BedAssignmentCertifi
 - Waktu: $O(N \log N + M \log M)$ di mana $N$ adalah jumlah permintaan pasien dan $M$ adalah jumlah ranjang.
 - Ruang: $O(N + M)$ untuk menyimpan struktur antrean dan lookup ranjang.
 - Lokasi Kode: `Modules\Hospital\Domain\Algorithms\BedAssignmentOptimizer.php`
+

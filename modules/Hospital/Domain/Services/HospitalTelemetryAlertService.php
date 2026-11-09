@@ -12,8 +12,8 @@ final class HospitalTelemetryAlertService
     /**
      * Memproses multicast alert telemetri ke nurse station dan dokter jaga ICU/IGD.
      *
-     * @param array<string, mixed> $telemetryData
-     * @param list<string> $recipientRoles
+     * @param  array<string, mixed>  $telemetryData
+     * @param  list<string>  $recipientRoles
      * @return array<string, mixed>
      */
     public function dispatchCriticalTelemetryAlert(
@@ -24,7 +24,7 @@ final class HospitalTelemetryAlertService
         array $telemetryData,
         array $recipientRoles = ['nurse', 'doctor', 'bed_manager']
     ): array {
-        $alertId = 'ALT-' . strtoupper(substr(hash('sha256', uniqid((string) $admissionId, true)), 0, 10));
+        $alertId = 'ALT-'.strtoupper(substr(hash('sha256', uniqid((string) $admissionId, true)), 0, 10));
 
         $payload = [
             'alert_id' => $alertId,

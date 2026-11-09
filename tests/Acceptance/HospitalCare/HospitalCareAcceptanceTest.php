@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\HospitalCare;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use App\Models\User;
 use Modules\Hospital\Domain\Models\HospitalBed;
 use Modules\Hospital\Domain\Models\Patient;
-use Modules\Hospital\Domain\Models\Admission;
 use Tests\TestCase;
 
 class HospitalCareAcceptanceTest extends TestCase
@@ -67,7 +66,7 @@ class HospitalCareAcceptanceTest extends TestCase
         $patient = Patient::first();
         $bed = HospitalBed::where('status', 'AVAILABLE')->where('bed_class', 'CLASS_1')->first();
 
-        $idempotencyKey = 'hsp:admission:' . $patient->id . ':test-admission-001';
+        $idempotencyKey = 'hsp:admission:'.$patient->id.':test-admission-001';
 
         // 1. Eksekusi admisi via saga tanpa key -> 422
         $responseNoKey = $this->actingAs($bedManager)->postJson('/hospital/admissions', [
@@ -106,7 +105,7 @@ class HospitalCareAcceptanceTest extends TestCase
         // Pengakuan bed-day harian
         $admissionId = $response->json('admission_id');
         $accrueResponse = $this->actingAs($bedManager)->withHeaders([
-            'Idempotency-Key' => 'hsp:bedday:' . $admissionId . ':day-1',
+            'Idempotency-Key' => 'hsp:bedday:'.$admissionId.':day-1',
         ])->postJson("/hospital/admissions/{$admissionId}/accrue-bed-day", [
             'days' => 1,
         ]);
@@ -139,7 +138,7 @@ class HospitalCareAcceptanceTest extends TestCase
         $outputFirst = Artisan::output();
         Artisan::call('hospital:pathway-scan');
         $outputSecond = Artisan::output();
-        $this->assertStringContainsString('pemindaian selesai', strtolower($outputFirst . $outputSecond));
+        $this->assertStringContainsString('pemindaian selesai', strtolower($outputFirst.$outputSecond));
 
         // 3. Telemetri breach -> alarm code blue dinaikkan idempoten
         Artisan::call('hospital:telemetry-scan');
@@ -177,7 +176,7 @@ class HospitalCareAcceptanceTest extends TestCase
         // 2. Injeksi kerusakan ranjang (alokasi ganda buatan)
         $bed = HospitalBed::first();
         $originalStatus = $bed->status;
-        
+
         // Buat anomali: status occupied tetapi bed_day diakui melebihi batas ledger
         $exitCodeFixture = Artisan::call('hsp:audit', ['--corrupt' => 'double_occupancy']);
         $this->assertNotEquals(0, $exitCodeFixture, 'Audit pada data korup wajib keluar dengan kode != 0');

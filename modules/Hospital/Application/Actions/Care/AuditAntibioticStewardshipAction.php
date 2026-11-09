@@ -11,6 +11,7 @@ use Modules\Hospital\Domain\Services\PatientPassportService;
 final class AuditAntibioticStewardshipAction
 {
     private AntibioticStewardshipRuleEngine $engine;
+
     private PatientPassportService $passportService;
 
     public function __construct(
@@ -22,7 +23,7 @@ final class AuditAntibioticStewardshipAction
     }
 
     /**
-     * @param array<string, mixed> $prescription
+     * @param  array<string, mixed>  $prescription
      * @return array<string, mixed>
      */
     public function execute(int $admissionId, array $prescription, int $actorId): array

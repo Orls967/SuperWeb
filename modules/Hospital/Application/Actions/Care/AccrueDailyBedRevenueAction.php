@@ -24,7 +24,7 @@ class AccrueDailyBedRevenueAction
         $dailyRate = $admission->bed?->rate_per_day_idr ?? 500000;
         $totalAccrual = $dailyRate * $days;
 
-        $key = $idempotencyKey ?? "hsp:bedday:{$admission->id}:" . date('Ymd');
+        $key = $idempotencyKey ?? "hsp:bedday:{$admission->id}:".date('Ymd');
 
         $this->ledgerPostingService->postDailyBedDayAccrual($admission->id, (int) $totalAccrual, $key);
 

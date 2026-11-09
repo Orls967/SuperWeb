@@ -20,7 +20,7 @@ class ActivateEmergencyFloodStandbyAction
     {
         $blockedHours = $this->externalFactors->getFactor('flood_access_blocked_hours', $cityCode);
         if ($blockedHours < 2) {
-            throw new DomainException("Akses jalan RS belum terputus banjir melebihi ambang batas 2 jam.");
+            throw new DomainException('Akses jalan RS belum terputus banjir melebihi ambang batas 2 jam.');
         }
 
         return [

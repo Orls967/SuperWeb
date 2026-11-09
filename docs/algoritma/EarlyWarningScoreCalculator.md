@@ -69,3 +69,4 @@ Hasil kalkulasi dibungkus dalam `News2CalculationCertificate` yang memverifikasi
 
 - Kompleksitas: $O(1)$ waktu dan ruang.
 - Lokasi Kode: `Modules\Hospital\Domain\Algorithms\EarlyWarningScoreCalculator.php`
+

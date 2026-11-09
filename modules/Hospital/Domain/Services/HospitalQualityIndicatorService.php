@@ -6,7 +6,6 @@ namespace Modules\Hospital\Domain\Services;
 
 use Carbon\CarbonImmutable;
 use Modules\Hospital\Domain\Models\Admission;
-use Modules\Hospital\Domain\Models\HospitalBed;
 
 final class HospitalQualityIndicatorService
 {
@@ -30,14 +29,16 @@ final class HospitalQualityIndicatorService
         // Kepatuhan pencegahan risiko jatuh (adanya skrining Morse)
         $screenedFallRiskCount = $admissions->filter(function ($adm) {
             $meta = is_array($adm->metadata) ? $adm->metadata : (json_decode($adm->metadata ?? '[]', true) ?: []);
-            return !empty($meta['fall_risk_assessment']);
+
+            return ! empty($meta['fall_risk_assessment']);
         })->count();
         $fallRiskCompliancePct = round(($screenedFallRiskCount / $totalAdmissions) * 100, 2);
 
         // Kepatuhan skrining gizi (NRS-2002)
         $screenedNutritionCount = $admissions->filter(function ($adm) {
             $meta = is_array($adm->metadata) ? $adm->metadata : (json_decode($adm->metadata ?? '[]', true) ?: []);
-            return !empty($meta['nutrition_risk_screening']);
+
+            return ! empty($meta['nutrition_risk_screening']);
         })->count();
         $nutritionCompliancePct = round(($screenedNutritionCount / $totalAdmissions) * 100, 2);
 

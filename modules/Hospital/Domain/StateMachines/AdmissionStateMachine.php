@@ -15,12 +15,19 @@ use Modules\Hospital\Domain\Models\AdmissionTransition;
 final class AdmissionStateMachine
 {
     public const STATUS_REQUESTED = 'requested';
+
     public const STATUS_BED_RESERVED = 'bed_reserved';
+
     public const STATUS_ADMITTED = 'admitted';
+
     public const STATUS_TRANSFERRED = 'transferred';
+
     public const STATUS_DISCHARGE_PLANNED = 'discharge_planned';
+
     public const STATUS_DISCHARGED = 'discharged';
+
     public const STATUS_READMITTED = 'readmitted';
+
     public const STATUS_CANCELLED = 'cancelled';
 
     /**
@@ -40,6 +47,7 @@ final class AdmissionStateMachine
     public static function canTransition(string $from, string $to): bool
     {
         $allowed = self::TRANSITIONS[$from] ?? [];
+
         return in_array($to, $allowed, true);
     }
 

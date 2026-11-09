@@ -7,7 +7,6 @@ namespace Modules\Hospital\Domain\Services;
 use Carbon\CarbonImmutable;
 use Modules\Hospital\Domain\Algorithms\HospitalInfectionControlRiskScorer;
 use Modules\Hospital\Domain\Models\Admission;
-use Modules\Hospital\Domain\Models\HospitalBed;
 
 final class HospitalInfectionSurveillanceService
 {
@@ -21,7 +20,7 @@ final class HospitalInfectionSurveillanceService
     /**
      * Memindai risiko infeksi ruang rawat dan mengevaluasi kesesuaian isolasi ranjang.
      *
-     * @param array<string, mixed> $patientClinicalProfile
+     * @param  array<string, mixed>  $patientClinicalProfile
      * @return array<string, mixed>
      */
     public function auditAdmissionInfectionControl(Admission $admission, array $patientClinicalProfile): array
@@ -33,12 +32,12 @@ final class HospitalInfectionSurveillanceService
         $mismatchReason = null;
 
         if ($eval['recommended_isolation'] === 'AIRBORNE_OR_NEGATIVE_PRESSURE') {
-            if (!$bed || $bed->class !== 'ISOLATION') {
+            if (! $bed || $bed->class !== 'ISOLATION') {
                 $isolationCompatible = false;
                 $mismatchReason = 'Pasien membutuhkan ruang isolasi bertekanan negatif tapi ditempatkan di bangsal non-isolasi.';
             }
         } elseif ($eval['recommended_isolation'] === 'CONTACT_ISOLATION_SINGLE_ROOM') {
-            if (!$bed || ($bed->class !== 'ISOLATION' && $bed->class !== 'VIP')) {
+            if (! $bed || ($bed->class !== 'ISOLATION' && $bed->class !== 'VIP')) {
                 $isolationCompatible = false;
                 $mismatchReason = 'Pasien membutuhkan contact precaution kamar terpisah/single room.';
             }

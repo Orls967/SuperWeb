@@ -41,7 +41,7 @@ final class CriticalIncidentReplayEngine
     public function replay(array $timeline): array
     {
         if (empty($timeline)) {
-            throw new InvalidArgumentException("Timeline peristiwa kegawatan darurat tidak boleh kosong.");
+            throw new InvalidArgumentException('Timeline peristiwa kegawatan darurat tidak boleh kosong.');
         }
 
         $prevHash = 'GENESIS_CRITICAL_INCIDENT_HASH_2026';
@@ -92,9 +92,9 @@ final class CriticalIncidentReplayEngine
         $defibInterval = ($activationTs && $firstDefibTs) ? max(0, $firstDefibTs - $activationTs) : null;
         $epiInterval = ($activationTs && $firstEpiTs) ? max(0, $firstEpiTs - $activationTs) : null;
 
-        $auditStatus = $isChainValid ? 'VERIFIED_AUDIT_TRAIL' : 'CHAIN_TAMPERED_AT_SEQUENCE_' . $corruptIndex;
+        $auditStatus = $isChainValid ? 'VERIFIED_AUDIT_TRAIL' : 'CHAIN_TAMPERED_AT_SEQUENCE_'.$corruptIndex;
 
-        $sigPayload = "CIRE-V1:{$prevHash}:{$auditStatus}:" . count($timeline);
+        $sigPayload = "CIRE-V1:{$prevHash}:{$auditStatus}:".count($timeline);
         $signature = hash_hmac('sha256', $sigPayload, 'HSP_SECRET_INCIDENT_REPLAY_2026');
 
         return [
@@ -115,8 +115,7 @@ final class CriticalIncidentReplayEngine
     }
 
     /**
-     * @param array<string, mixed> $result
-     * @return bool
+     * @param  array<string, mixed>  $result
      */
     public function verifyCertificate(array $result): bool
     {

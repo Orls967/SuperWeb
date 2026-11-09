@@ -4,21 +4,30 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Algorithms\Healthcare;
 
-use Modules\Hospital\Domain\Algorithms\BedAssignmentOptimizer;
+use Modules\Hospital\Domain\Algorithms\AntibioticStewardshipRuleEngine;
 use Modules\Hospital\Domain\Algorithms\BedAssignmentCertificate;
 use Modules\Hospital\Domain\Algorithms\BedAssignmentCertificateVerifier;
-use Modules\Hospital\Domain\Algorithms\EarlyWarningScoreCalculator;
-use Modules\Hospital\Domain\Algorithms\News2CalculationCertificate;
-use Modules\Hospital\Domain\Algorithms\News2CertificateVerifier;
-use Modules\Hospital\Domain\Algorithms\ClinicalPathwayDelayDetector;
-use Modules\Hospital\Domain\Algorithms\ClinicalPathwayScheduleCertificate;
-use Modules\Hospital\Domain\Algorithms\PathwayScheduleCertificateVerifier;
-use Modules\Hospital\Domain\Algorithms\BedEfficiencyIndicators;
+use Modules\Hospital\Domain\Algorithms\BedAssignmentOptimizer;
 use Modules\Hospital\Domain\Algorithms\BedEfficiencyCertificate;
 use Modules\Hospital\Domain\Algorithms\BedEfficiencyCertificateVerifier;
-use Modules\Hospital\Domain\Algorithms\CodeBlueEscalationPlanner;
-use Modules\Hospital\Domain\Algorithms\CodeBlueEscalationCertificate;
+use Modules\Hospital\Domain\Algorithms\BedEfficiencyIndicators;
+use Modules\Hospital\Domain\Algorithms\ClinicalNutritionRiskCalculator;
+use Modules\Hospital\Domain\Algorithms\ClinicalPathwayDelayDetector;
+use Modules\Hospital\Domain\Algorithms\ClinicalPathwayScheduleCertificate;
 use Modules\Hospital\Domain\Algorithms\CodeBlueCertificateVerifier;
+use Modules\Hospital\Domain\Algorithms\CodeBlueEscalationCertificate;
+use Modules\Hospital\Domain\Algorithms\CodeBlueEscalationPlanner;
+use Modules\Hospital\Domain\Algorithms\CriticalIncidentReplayEngine;
+use Modules\Hospital\Domain\Algorithms\EarlyWarningScoreCalculator;
+use Modules\Hospital\Domain\Algorithms\FallRiskAssessmentEngine;
+use Modules\Hospital\Domain\Algorithms\HospitalInfectionControlRiskScorer;
+use Modules\Hospital\Domain\Algorithms\News2CalculationCertificate;
+use Modules\Hospital\Domain\Algorithms\News2CertificateVerifier;
+use Modules\Hospital\Domain\Algorithms\PaediatricEarlyWarningScoreCalculator;
+use Modules\Hospital\Domain\Algorithms\PathwayScheduleCertificateVerifier;
+use Modules\Hospital\Domain\Algorithms\PatientDischargeReadinessScorer;
+use Modules\Hospital\Domain\Algorithms\SurgicalApgarScoreCalculator;
+use Modules\Hospital\Domain\Algorithms\VitalSignTrendAnalyzer;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -29,7 +38,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b1_bed_assignment_optimizer_vector_and_verifier(): void
     {
-        $optimizer = new BedAssignmentOptimizer();
+        $optimizer = new BedAssignmentOptimizer;
 
         $beds = [
             ['bed_code' => '101', 'bed_class' => 'ICU'],
@@ -85,7 +94,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b2_early_warning_score_calculator_vector_and_verifier(): void
     {
-        $calculator = new EarlyWarningScoreCalculator();
+        $calculator = new EarlyWarningScoreCalculator;
 
         // 1. (18, 97, tidak, 120, 72, A, 368) -> 0 RENDAH
         $res1 = $calculator->calculate(18, 97, false, 120, 72, 'A', 368);
@@ -131,7 +140,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b3_clinical_pathway_delay_detector_vector_and_verifier(): void
     {
-        $detector = new ClinicalPathwayDelayDetector();
+        $detector = new ClinicalPathwayDelayDetector;
 
         $orders = [
             [
@@ -188,7 +197,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b4_bed_efficiency_indicators_vector_and_verifier(): void
     {
-        $indicators = new BedEfficiencyIndicators();
+        $indicators = new BedEfficiencyIndicators;
 
         // 1. 200 bed, 30 hari, 4.800 hari-rawat, 1.000 keluar -> BOR 8.000, ALOS 4.800, TOI 1.200, BTO 5.000
         $res1 = $indicators->calculate(200, 30, 4800, 1000);
@@ -227,7 +236,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b5_code_blue_escalation_planner_vector_and_verifier(): void
     {
-        $planner = new CodeBlueEscalationPlanner();
+        $planner = new CodeBlueEscalationPlanner;
 
         $readings = [
             ['minute' => 0, 'spo2' => 90, 'heart_rate' => 80],
@@ -286,7 +295,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b6_infection_control_risk_scorer_and_verifier(): void
     {
-        $scorer = new \Modules\Hospital\Domain\Algorithms\HospitalInfectionControlRiskScorer();
+        $scorer = new HospitalInfectionControlRiskScorer;
 
         $profile = [
             'has_invasive_device' => true,
@@ -316,7 +325,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b7_patient_discharge_readiness_scorer_and_verifier(): void
     {
-        $scorer = new \Modules\Hospital\Domain\Algorithms\PatientDischargeReadinessScorer();
+        $scorer = new PatientDischargeReadinessScorer;
 
         $readyCriteria = [
             'vitals_stable_24h' => true,
@@ -347,7 +356,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b8_vital_sign_trend_analyzer_and_verifier(): void
     {
-        $analyzer = new \Modules\Hospital\Domain\Algorithms\VitalSignTrendAnalyzer();
+        $analyzer = new VitalSignTrendAnalyzer;
 
         // Dekompensasi: HR naik drastis (80->95->110->130), SBP turun drastis (120->105->90->75)
         $history = [
@@ -369,7 +378,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b9_critical_incident_replay_engine_and_verifier(): void
     {
-        $engine = new \Modules\Hospital\Domain\Algorithms\CriticalIncidentReplayEngine();
+        $engine = new CriticalIncidentReplayEngine;
 
         // Urutan hash berantai
         $e0Prev = 'GENESIS_CRITICAL_INCIDENT_HASH_2026';
@@ -399,7 +408,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b10_nutrition_risk_calculator_and_verifier(): void
     {
-        $calc = new \Modules\Hospital\Domain\Algorithms\ClinicalNutritionRiskCalculator();
+        $calc = new ClinicalNutritionRiskCalculator;
 
         $inputAtRisk = [
             'bmi' => 17.5,
@@ -425,7 +434,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b11_fall_risk_assessment_engine_and_verifier(): void
     {
-        $engine = new \Modules\Hospital\Domain\Algorithms\FallRiskAssessmentEngine();
+        $engine = new FallRiskAssessmentEngine;
 
         $highRiskProfile = [
             'history_of_falling_past_3months' => true,
@@ -448,7 +457,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b12_antibiotic_stewardship_rule_engine_and_verifier(): void
     {
-        $engine = new \Modules\Hospital\Domain\Algorithms\AntibioticStewardshipRuleEngine();
+        $engine = new AntibioticStewardshipRuleEngine;
 
         // 1. Reserve antibiotic tanpa persetujuan PPRA -> Ditolak
         $unapprovedReserve = [
@@ -494,7 +503,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b13_surgical_apgar_score_calculator_and_verifier(): void
     {
-        $calc = new \Modules\Hospital\Domain\Algorithms\SurgicalApgarScoreCalculator();
+        $calc = new SurgicalApgarScoreCalculator;
 
         $highRiskInput = [
             'estimated_blood_loss_ml' => 1200, // 0 poin
@@ -523,7 +532,7 @@ class Phase87AlgorithmsTest extends TestCase
      */
     public function test_b14_paediatric_early_warning_score_calculator_and_verifier(): void
     {
-        $calc = new \Modules\Hospital\Domain\Algorithms\PaediatricEarlyWarningScoreCalculator();
+        $calc = new PaediatricEarlyWarningScoreCalculator;
 
         $criticalInput = [
             'behaviour' => 'LETHARGIC_CONFUSED', // 3 poin

@@ -14,11 +14,17 @@ use Modules\Hospital\Domain\Models\CodeBlueEvent;
 final class CodeBlueEventStateMachine
 {
     public const STATUS_DETECTED = 'detected';
+
     public const STATUS_RAISED = 'raised';
+
     public const STATUS_ACKNOWLEDGED = 'acknowledged';
+
     public const STATUS_TEAM_DISPATCHED = 'team_dispatched';
+
     public const STATUS_RESOLVED = 'resolved';
+
     public const STATUS_ESCALATED = 'escalated';
+
     public const STATUS_CLOSED = 'closed';
 
     private const TRANSITIONS = [
@@ -36,6 +42,7 @@ final class CodeBlueEventStateMachine
         $fromNorm = strtolower($from);
         $toNorm = strtolower($to);
         $allowed = self::TRANSITIONS[$fromNorm] ?? [];
+
         return in_array($toNorm, $allowed, true);
     }
 

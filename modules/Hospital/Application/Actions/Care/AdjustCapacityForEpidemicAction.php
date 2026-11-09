@@ -20,9 +20,9 @@ class AdjustCapacityForEpidemicAction
     ) {}
 
     /**
-     * @param string $epidemicType 'DENGUE' atau 'RESPIRATORY'
-     * @param int $bedQuota Jumlah ranjang reguler yang dialihkan menjadi isolasi
-     * @param int $actorId Petugas rs_admin yang menyetujui
+     * @param  string  $epidemicType  'DENGUE' atau 'RESPIRATORY'
+     * @param  int  $bedQuota  Jumlah ranjang reguler yang dialihkan menjadi isolasi
+     * @param  int  $actorId  Petugas rs_admin yang menyetujui
      * @return array{beds_converted: int, status: string, message: string}
      */
     public function execute(string $epidemicType, int $bedQuota, int $actorId): array
@@ -35,7 +35,7 @@ class AdjustCapacityForEpidemicAction
         };
 
         if (! $isEmergency) {
-            throw new DomainException("Indeks faktor eksternal belum mencapai ambang kedaruratan epidemi.");
+            throw new DomainException('Indeks faktor eksternal belum mencapai ambang kedaruratan epidemi.');
         }
 
         // Cari ranjang kelas reguler yang AVAILABLE
