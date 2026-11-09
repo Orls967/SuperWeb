@@ -48,6 +48,7 @@ class HospitalServiceProvider extends ServiceProvider
                 ColdChainMonitorCommand::class,
                 ClaimAgingReportCommand::class,
                 FestronikAuditCommand::class,
+                \Modules\Hospital\Console\Commands\BillingO2cKpiCommand::class,
             ]);
         }
     }
