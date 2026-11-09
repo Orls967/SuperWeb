@@ -272,7 +272,125 @@ class Phase87AlgorithmsTest extends TestCase
             customSha256: 'corrupted-code-blue-hash'
         );
 
-        $this->expectException(RuntimeException::class);
-        CodeBlueCertificateVerifier::verify($corruptCert);
+        $caught = false;
+        try {
+            CodeBlueCertificateVerifier::verify($corruptCert);
+        } catch (RuntimeException $e) {
+            $caught = true;
+        }
+        $this->assertTrue($caught);
+    }
+
+    /**
+     * Uji B6: HospitalInfectionControlRiskScorer.
+     */
+    public function test_b6_infection_control_risk_scorer_and_verifier(): void
+    {
+        $scorer = new \Modules\Hospital\Domain\Algorithms\HospitalInfectionControlRiskScorer();
+
+        $profile = [
+            'has_invasive_device' => true,
+            'device_days' => 8,
+            'is_immunocompromised' => true,
+            'prior_multidrug_resistant_organism' => true,
+            'has_open_wound' => false,
+            'current_antibiotic_days' => 10,
+            'respiratory_symptoms' => false,
+            'diarrhea_active' => false,
+            'icu_stay' => true,
+        ];
+
+        $res = $scorer->evaluate($profile);
+        $this->assertGreaterThanOrEqual(60, $res['risk_score']);
+        $this->assertEquals('VERY_HIGH', $res['risk_category']);
+        $this->assertTrue($scorer->verifyCertificate($res, $profile));
+
+        // Tamper test
+        $tampered = $res;
+        $tampered['risk_score'] = 10;
+        $this->assertFalse($scorer->verifyCertificate($tampered, $profile));
+    }
+
+    /**
+     * Uji B7: PatientDischargeReadinessScorer.
+     */
+    public function test_b7_patient_discharge_readiness_scorer_and_verifier(): void
+    {
+        $scorer = new \Modules\Hospital\Domain\Algorithms\PatientDischargeReadinessScorer();
+
+        $readyCriteria = [
+            'vitals_stable_24h' => true,
+            'oral_intake_adequate' => true,
+            'independent_or_assisted_ambulation' => true,
+            'pain_controlled' => true,
+            'iv_medications_converted_to_oral' => true,
+            'caregiver_trained' => true,
+            'transportation_arranged' => true,
+            'pending_critical_lab_results' => false,
+            'news2_score' => 1,
+        ];
+
+        $evalReady = $scorer->evaluate($readyCriteria);
+        $this->assertTrue($evalReady['is_ready_for_discharge']);
+        $this->assertEquals(100, $evalReady['readiness_score_pct']);
+        $this->assertTrue($scorer->verifyCertificate($evalReady, $readyCriteria));
+
+        $blockedCriteria = $readyCriteria;
+        $blockedCriteria['pending_critical_lab_results'] = true;
+        $evalBlocked = $scorer->evaluate($blockedCriteria);
+        $this->assertFalse($evalBlocked['is_ready_for_discharge']);
+        $this->assertContains('Terdapat hasil pemeriksaan laboratorium kritis yang belum diverifikasi DPJP', $evalBlocked['blocking_reasons']);
+    }
+
+    /**
+     * Uji B8: VitalSignTrendAnalyzer.
+     */
+    public function test_b8_vital_sign_trend_analyzer_and_verifier(): void
+    {
+        $analyzer = new \Modules\Hospital\Domain\Algorithms\VitalSignTrendAnalyzer();
+
+        // Dekompensasi: HR naik drastis (80->95->110->130), SBP turun drastis (120->105->90->75)
+        $history = [
+            ['timestamp' => '2026-11-09 10:00:00', 'heart_rate' => 80, 'systolic_bp' => 120, 'respiratory_rate' => 16, 'spo2' => 98.0, 'temperature' => 37.0],
+            ['timestamp' => '2026-11-09 10:15:00', 'heart_rate' => 95, 'systolic_bp' => 105, 'respiratory_rate' => 20, 'spo2' => 96.0, 'temperature' => 37.2],
+            ['timestamp' => '2026-11-09 10:30:00', 'heart_rate' => 110, 'systolic_bp' => 90, 'respiratory_rate' => 24, 'spo2' => 93.0, 'temperature' => 37.5],
+            ['timestamp' => '2026-11-09 10:45:00', 'heart_rate' => 130, 'systolic_bp' => 75, 'respiratory_rate' => 28, 'spo2' => 89.0, 'temperature' => 38.0],
+        ];
+
+        $result = $analyzer->analyze($history);
+        $this->assertTrue($result['is_deteriorating_rapidly']);
+        $this->assertGreaterThan(0, $result['hr_slope']);
+        $this->assertLessThan(0, $result['sbp_slope']);
+        $this->assertTrue($analyzer->verifyCertificate($result, $history));
+    }
+
+    /**
+     * Uji B9: CriticalIncidentReplayEngine.
+     */
+    public function test_b9_critical_incident_replay_engine_and_verifier(): void
+    {
+        $engine = new \Modules\Hospital\Domain\Algorithms\CriticalIncidentReplayEngine();
+
+        // Urutan hash berantai
+        $e0Prev = 'GENESIS_CRITICAL_INCIDENT_HASH_2026';
+        $e0Ser = json_encode(['sequence' => 0, 'event_type' => 'CODE_BLUE_ACTIVATED', 'timestamp' => '2026-11-09 12:00:00', 'actor_id' => 1, 'actor_role' => 'nurse', 'payload' => [], 'prev_hash' => $e0Prev], JSON_UNESCAPED_SLASHES);
+        $h0 = hash('sha256', $e0Ser);
+
+        $e1Ser = json_encode(['sequence' => 1, 'event_type' => 'CPR_INITIATED', 'timestamp' => '2026-11-09 12:01:00', 'actor_id' => 2, 'actor_role' => 'doctor', 'payload' => [], 'prev_hash' => $h0], JSON_UNESCAPED_SLASHES);
+        $h1 = hash('sha256', $e1Ser);
+
+        $e2Ser = json_encode(['sequence' => 2, 'event_type' => 'SHOCK_DELIVERED', 'timestamp' => '2026-11-09 12:02:30', 'actor_id' => 2, 'actor_role' => 'doctor', 'payload' => ['joules' => 200], 'prev_hash' => $h1], JSON_UNESCAPED_SLASHES);
+
+        $timeline = [
+            ['sequence' => 0, 'event_type' => 'CODE_BLUE_ACTIVATED', 'timestamp' => '2026-11-09 12:00:00', 'actor_id' => 1, 'actor_role' => 'nurse', 'payload' => [], 'prev_hash' => $e0Prev],
+            ['sequence' => 1, 'event_type' => 'CPR_INITIATED', 'timestamp' => '2026-11-09 12:01:00', 'actor_id' => 2, 'actor_role' => 'doctor', 'payload' => [], 'prev_hash' => $h0],
+            ['sequence' => 2, 'event_type' => 'SHOCK_DELIVERED', 'timestamp' => '2026-11-09 12:02:30', 'actor_id' => 2, 'actor_role' => 'doctor', 'payload' => ['joules' => 200], 'prev_hash' => $h1],
+        ];
+
+        $audit = $engine->replay($timeline);
+        $this->assertTrue($audit['is_chain_valid']);
+        $this->assertEquals(60, $audit['first_cpr_interval_sec']);
+        $this->assertEquals(150, $audit['first_defib_interval_sec']);
+        $this->assertTrue($engine->verifyCertificate($audit));
     }
 }
