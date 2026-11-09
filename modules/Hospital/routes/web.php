@@ -123,6 +123,26 @@ Route::prefix('hospital')->middleware(['web', 'auth'])->group(function () {
         ->middleware('role:admin,auditor,doctor')
         ->name('hospital.imaging.pacs.index');
 
+    Route::post('/radiology/dicom/studies', [LabDiagnosticImagingController::class, 'uploadDicomStudy'])
+        ->middleware('role:admin,doctor,nurse')
+        ->name('hospital.radiology.dicom.studies.store');
+
+    Route::get('/radiology/dicom/studies/{id}/metadata', [LabDiagnosticImagingController::class, 'viewDicomMetadata'])
+        ->middleware('role:admin,auditor,doctor')
+        ->name('hospital.radiology.dicom.studies.metadata');
+
+    Route::post('/laboratory/clearings/settle', [LabDiagnosticImagingController::class, 'settleInterBranchClearing'])
+        ->middleware('role:admin')
+        ->name('hospital.laboratory.clearings.settle');
+
+    Route::post('/laboratory/qc/evaluate', [LabDiagnosticImagingController::class, 'evaluateQc'])
+        ->middleware('role:admin,doctor,pharmacist')
+        ->name('hospital.laboratory.qc.evaluate');
+
+    Route::post('/laboratory/outsourcing/manifests', [LabDiagnosticImagingController::class, 'dispatchManifest'])
+        ->middleware('role:admin,doctor')
+        ->name('hospital.laboratory.outsourcing.manifests.store');
+
     // Fase 87: Identitas Pasien, EMR, Bed Management, Clinical Pathway & Critical Care
     Route::get('/beds', [HospitalCareController::class, 'bedsIndex'])
         ->middleware('role:admin,bed_manager,rs_admin')

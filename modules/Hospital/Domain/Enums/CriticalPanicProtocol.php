@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Hospital\Domain\Enums;
+
+enum CriticalPanicProtocol: string
+{
+    case CRITICAL_HOLD_AND_PAGE = 'CRITICAL_HOLD_AND_PAGE';
+    case STAT_CODE_HEART_PAGE = 'STAT_CODE_HEART_PAGE';
+    case STAT_GLUCOSE_HYPO_PAGE = 'STAT_GLUCOSE_HYPO_PAGE';
+    case STAT_BLEEDING_ALERT = 'STAT_BLEEDING_ALERT';
+    case STAT_TRANSFUSION_PAGE = 'STAT_TRANSFUSION_PAGE';
+    case STAT_ICU_INTUBATION_PAGE = 'STAT_ICU_INTUBATION_PAGE';
+    case STANDARD_REPORT = 'STANDARD_REPORT';
+}

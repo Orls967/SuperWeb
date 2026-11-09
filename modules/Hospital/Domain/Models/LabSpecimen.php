@@ -32,4 +32,14 @@ class LabSpecimen extends Model
     {
         return $this->hasMany(LabResult::class, 'specimen_id');
     }
+
+    public function custodyTransfers(): HasMany
+    {
+        return $this->hasMany(LabCustodyTransfer::class, 'specimen_id');
+    }
+
+    public function custodyLogs(): HasMany
+    {
+        return $this->hasMany(SpecimenCustodyChainLog::class, 'specimen_id');
+    }
 }
