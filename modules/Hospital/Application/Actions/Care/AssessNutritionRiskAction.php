@@ -47,7 +47,8 @@ final class AssessNutritionRiskAction
         return [
             'success' => true,
             'admission_id' => $admission->id,
-            'evaluation' => $result,
+            'nutrition_risk_result' => $result,
+            'action_plan' => $result['clinical_action_plan'],
         ];
     }
 }

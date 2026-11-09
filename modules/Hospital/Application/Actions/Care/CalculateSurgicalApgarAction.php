@@ -47,7 +47,9 @@ final class CalculateSurgicalApgarAction
         return [
             'success' => true,
             'admission_id' => $admission->id,
-            'evaluation' => $result,
+            'apgar_score' => $result['total_score'],
+            'apgar_evaluation' => $result,
+            'disposition' => $result['postop_disposition_recommendation'],
         ];
     }
 }

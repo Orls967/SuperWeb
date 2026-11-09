@@ -47,7 +47,8 @@ final class AssessPatientFallRiskAction
         return [
             'success' => true,
             'admission_id' => $admission->id,
-            'evaluation' => $result,
+            'fall_risk_result' => $result,
+            'assigned_bundle' => $result['prevention_bundle'],
         ];
     }
 }

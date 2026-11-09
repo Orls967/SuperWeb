@@ -47,7 +47,9 @@ final class EvaluatePaediatricTelemetryAction
         return [
             'success' => true,
             'admission_id' => $admission->id,
-            'evaluation' => $result,
+            'pews_score' => $result['total_pews_score'],
+            'pews_evaluation' => $result,
+            'escalation' => $result['escalation_action'],
         ];
     }
 }
