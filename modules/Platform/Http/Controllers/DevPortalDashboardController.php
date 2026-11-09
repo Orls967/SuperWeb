@@ -27,9 +27,8 @@ class DevPortalDashboardController extends Controller
 
         $viewModel = new DevPortalDashboardViewModel(
             sandboxes: $sandboxes,
-            slos: $slos,
-            recentMetrics: $metrics,
-            user: $user
+            metrics: $metrics,
+            slos: $slos
         );
 
         return view('platform::dev.dashboard', [
