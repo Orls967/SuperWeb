@@ -6,6 +6,9 @@ namespace Modules\Platform\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Modules\Platform\Domain\Audit\BackfillIntegrityAuditor;
+use Modules\Platform\Domain\Audit\ChangeRequestAuditValidator;
+use Modules\Platform\Domain\Audit\ReleaseTrainAuditValidator;
 use Modules\Platform\Domain\Models\PlatformAuditRun;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
 
@@ -38,6 +41,16 @@ class PlatformAuditCommand extends Command
         if ($configPrefix !== 'Platform') {
             $discrepancies[] = 'Konfigurasi table_prefixes untuk plt_ tidak sinkron dengan modul Platform.';
         }
+
+        // Dimensi 3: Audit Change Request, Release Train, dan Backfills
+        $changeAudit = (new ChangeRequestAuditValidator)->auditAll();
+        $discrepancies = array_merge($discrepancies, $changeAudit);
+
+        $trainAudit = (new ReleaseTrainAuditValidator)->auditAll();
+        $discrepancies = array_merge($discrepancies, $trainAudit);
+
+        $backfillAudit = (new BackfillIntegrityAuditor)->auditAll();
+        $discrepancies = array_merge($discrepancies, $backfillAudit);
 
         // Simulasi deteksi korupsi fixture pengujian
         if ($isCorruptTest) {

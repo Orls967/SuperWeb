@@ -3,10 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Platform\Http\Controllers\ChangeManagementController;
 use Modules\Platform\Http\Controllers\CorrelationTraceController;
+use Modules\Platform\Http\Controllers\DataBackfillController;
 use Modules\Platform\Http\Controllers\DevPortalDashboardController;
 use Modules\Platform\Http\Controllers\PhaseMetricsController;
 use Modules\Platform\Http\Controllers\QualityMetricsApiController;
+use Modules\Platform\Http\Controllers\ReleaseTrainController;
 use Modules\Platform\Http\Controllers\SandboxController;
 use Modules\Platform\Http\Controllers\SandboxLifecycleApiController;
 use Modules\Platform\Http\Controllers\SloMonitoringApiController;
@@ -14,6 +17,15 @@ use Modules\Platform\Http\Controllers\SloTrackerController;
 
 Route::prefix('platform')->middleware(['web', 'auth', 'role:admin,superadmin'])->name('platform.')->group(function (): void {
     Route::get('/dev', [DevPortalDashboardController::class, 'index'])->name('dev.dashboard');
+
+    // Fase 238: Change Management, Release Train & Backfills
+    Route::get('/change', [ChangeManagementController::class, 'index'])->name('change.index');
+    Route::get('/change/{change}', [ChangeManagementController::class, 'show'])->name('change.show');
+
+    Route::get('/release', [ReleaseTrainController::class, 'index'])->name('release.index');
+    Route::get('/release/{train}', [ReleaseTrainController::class, 'show'])->name('release.show');
+
+    Route::get('/backfills', [DataBackfillController::class, 'index'])->name('backfills.index');
 
     Route::prefix('dev')->name('dev.')->group(function (): void {
         Route::get('/sandboxes', [SandboxController::class, 'index'])->name('sandboxes.index');

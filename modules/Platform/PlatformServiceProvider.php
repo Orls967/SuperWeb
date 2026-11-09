@@ -14,11 +14,20 @@ use App\Console\Commands\QualityPipelineStatusCommand;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Platform\Console\Commands\BackfillInspectCommand;
+use Modules\Platform\Console\Commands\BackfillRunCommand;
+use Modules\Platform\Console\Commands\CanaryEvaluateCommand;
+use Modules\Platform\Console\Commands\ChangeAuditCommand;
+use Modules\Platform\Console\Commands\DoraMetricsReportCommand;
+use Modules\Platform\Console\Commands\MigrationLintCommand;
 use Modules\Platform\Console\Commands\PlatformAnonymizeCommand;
 use Modules\Platform\Console\Commands\PlatformAuditCommand;
 use Modules\Platform\Console\Commands\PlatformErrorBudgetCommand;
 use Modules\Platform\Console\Commands\PlatformMaskVerifyCommand;
 use Modules\Platform\Console\Commands\PlatformSynthDataCommand;
+use Modules\Platform\Console\Commands\ReleaseNotesCommand;
+use Modules\Platform\Console\Commands\ReleaseTrainFreezeCommand;
+use Modules\Platform\Console\Commands\ReleaseTrainOpenCommand;
 use Modules\Platform\Console\Commands\SandboxExpireCommand;
 use Modules\Platform\Domain\Actions\AnonymizeDatasetAction;
 use Modules\Platform\Domain\Actions\CalculateErrorBudgetAction;
@@ -38,11 +47,17 @@ use Modules\Platform\Domain\Actions\RotatePiiSaltAction;
 use Modules\Platform\Domain\Actions\TraceCorrelationChainAction;
 use Modules\Platform\Domain\Actions\TrackServiceSloAction;
 use Modules\Platform\Domain\Actions\VerifyMaskingAction;
+use Modules\Platform\Domain\Algorithms\CanaryErrorEvaluator;
+use Modules\Platform\Domain\Algorithms\ChangeRiskScorer;
+use Modules\Platform\Domain\Algorithms\MigrationSafetyLinter;
 use Modules\Platform\Domain\Chaos\DatabaseTamperSimulator;
 use Modules\Platform\Domain\Chaos\DataLeakageTamperSimulator;
 use Modules\Platform\Domain\Chaos\LatencyInjectionSimulator;
 use Modules\Platform\Domain\Events\PlatformEventDispatcher;
+use Modules\Platform\Domain\Listeners\PlatformReleaseAuditSubscriber;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
+use Modules\Platform\Domain\Services\BackfillChunkProcessor;
+use Modules\Platform\Domain\Services\CanaryRollbackOrchestrator;
 use Modules\Platform\Domain\Services\CorrelationTracerService;
 use Modules\Platform\Domain\Services\DeterministicDataFactory;
 use Modules\Platform\Domain\Services\MaskRuleRepository;
@@ -52,6 +67,7 @@ use Modules\Platform\Domain\Services\PiiVaultAnonymizer;
 use Modules\Platform\Domain\Services\PlatformAuditReportBuilder;
 use Modules\Platform\Domain\Services\QualityPhaseRatchetEvaluator;
 use Modules\Platform\Domain\Services\QualityRatchetDebtService;
+use Modules\Platform\Domain\Services\ReleaseNotesGeneratorService;
 use Modules\Platform\Domain\Services\SandboxDatabaseMigrator;
 use Modules\Platform\Domain\Services\SandboxGarbageCollector;
 use Modules\Platform\Domain\Services\SandboxHealthCheckService;
@@ -109,6 +125,12 @@ class PlatformServiceProvider extends ServiceProvider
         $this->app->singleton(LatencyInjectionSimulator::class);
         $this->app->singleton(DatabaseTamperSimulator::class);
         $this->app->singleton(DataLeakageTamperSimulator::class);
+        $this->app->singleton(MigrationSafetyLinter::class);
+        $this->app->singleton(ChangeRiskScorer::class);
+        $this->app->singleton(CanaryErrorEvaluator::class);
+        $this->app->singleton(CanaryRollbackOrchestrator::class);
+        $this->app->singleton(BackfillChunkProcessor::class);
+        $this->app->singleton(ReleaseNotesGeneratorService::class);
 
         // Binding Actions
         $this->app->bind(CreateSandboxAction::class);
@@ -141,6 +163,7 @@ class PlatformServiceProvider extends ServiceProvider
 
         // Daftarkan Event Subscribers
         Event::subscribe(SandboxLifecycleAuditSubscriber::class);
+        Event::subscribe(PlatformReleaseAuditSubscriber::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -157,6 +180,15 @@ class PlatformServiceProvider extends ServiceProvider
                 PlatformAnonymizeCommand::class,
                 PlatformErrorBudgetCommand::class,
                 PlatformAuditCommand::class,
+                MigrationLintCommand::class,
+                ReleaseNotesCommand::class,
+                ReleaseTrainOpenCommand::class,
+                ReleaseTrainFreezeCommand::class,
+                BackfillRunCommand::class,
+                BackfillInspectCommand::class,
+                CanaryEvaluateCommand::class,
+                ChangeAuditCommand::class,
+                DoraMetricsReportCommand::class,
             ]);
         }
     }

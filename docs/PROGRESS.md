@@ -12756,14 +12756,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
 > **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `ReleaseTrainDeploymentSafetyService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
-- [ ] 238.2 Change advisory: risk score per change (blast radius: money/PII/availability) → risk tinggi butuh CAB simulasi → rollback plan wajib → post-deploy verification
-- [ ] 238.3 Database migration safety: expand-contract pattern, backfill idempoten di background, lint schema (tanpa breaking tanpa approval), dual-write bila perlu
-- [ ] 238.4 Canary & blue-green simulasi: rollout bertahap → error rate monitor → auto-rollback → metrik deploy tercatat (change failure rate, MTTR deploy)
-- [ ] 238.5 Tests: breaking migration ditolak lint, canary rollback otomatis saat error spike, release notes lengkap, rollback plan teruji, `platform:audit` clean
-- [ ] 238.6 Edge case: hotfix mendadak → approval terpisah + post-merge review wajib sebelum normal train
-- [ ] 238.7 Rollback data: schema yang sudah berisi data → expand-contract, tak bisa revert kasar
-- [ ] 238.8 Quality gate Fase 238
+- [🔵] 238.1 Release train terjadwal (mis. mingguan) + hotfix path (approval terpisah) → release notes otomatis dari commit/flag → stakeholder notified
+- [🔵] 238.2 Change advisory: risk score per change (blast radius: money/PII/availability) → risk tinggi butuh CAB simulasi → rollback plan wajib → post-deploy verification
+- [🔵] 238.3 Database migration safety: expand-contract pattern, backfill idempoten di background, lint schema (tanpa breaking tanpa approval), dual-write bila perlu
+- [🔵] 238.4 Canary & blue-green simulasi: rollout bertahap → error rate monitor → auto-rollback → metrik deploy tercatat (change failure rate, MTTR deploy)
+- [🔵] 238.5 Tests: breaking migration ditolak lint, canary rollback otomatis saat error spike, release notes lengkap, rollback plan teruji, `platform:audit` clean
+- [🔵] 238.6 Edge case: hotfix mendadak → approval terpisah + post-merge review wajib sebelum normal train
+- [🔵] 238.7 Rollback data: schema yang sudah berisi data → expand-contract, tak bisa revert kasar
+- [🔵] 238.8 Quality gate Fase 238
 
 ## FASE 239 — PLATFORM: PERFORMANCE ENGINEERING & COST OPTIMIZATION
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `PerformanceCostOptimizationService`; 1 migrasi; test `PerformanceCostOptimizationTest` — commit `d3e76c0`, +443 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
