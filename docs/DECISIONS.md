@@ -2970,6 +2970,8 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   - [`docs/decisions/ADR-0057-folio-dan-pengakuan-pendapatan-append-only.md`](decisions/ADR-0057-folio-dan-pengakuan-pendapatan-append-only.md) (G7-D57: Folio & Pendapatan Append-Only)
   - [`docs/decisions/ADR-0059-gerbang-kepekaan-eksternal-hospital.md`](decisions/ADR-0059-gerbang-kepekaan-eksternal-hospital.md) (G7-D59: Gerbang Kepekaan HospitalExternalFactors)
   - [`docs/decisions/ADR-0060-jejak-append-only-paspor-dan-spesimen.md`](decisions/ADR-0060-jejak-append-only-paspor-dan-spesimen.md) (G7-D60: Jejak Kriptografis CanonicalHashChain Paspor Pasien)
+  - [`docs/decisions/ADR-0061-interoperabilitas-fhir-satusehat.md`](decisions/ADR-0061-interoperabilitas-fhir-satusehat.md) (G7-D61: Interoperabilitas Standar FHIR R4 SatuSehat Kemenkes RI)
+  - [`docs/decisions/ADR-0062-audit-forensik-kegawatan-code-blue.md`](decisions/ADR-0062-audit-forensik-kegawatan-code-blue.md) (G7-D62: Audit Trail Forensik Kriptografis Kejadian Henti Jantung Code Blue)
 - **Konteks:**
   - Melaksanakan Fase 87 Rumah Sakit I: Identitas Pasien, EMR, Bed Management, Clinical Pathway & Critical Care pada modul `Hospital` (`hsp_`), memperdalam arsitektur tanpa mengubah kontrak publik `EncounterBillReader` dan `MedicalEmergencyResponseDispatcher`.
 - **Keputusan:**

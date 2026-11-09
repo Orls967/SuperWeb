@@ -46,3 +46,26 @@ Target dokumentasi B3: **≥ 1.500 baris**.
 - `doctor`: Pembuatan order clinical pathway, verifikasi paspor medis, asesmen gawat darurat (ER/ICU).
 - `nurse`: Pembaruan papan perawat (mobile 375 px), input vital signs, respons alert code blue.
 - `hospital_registration`: Pendaftaran pasien baru, scan QR human passport, inisiasi admisi.
+
+
+---
+
+## 6. Kriteria Penerimaan & Acceptance Checklist (DoD)
+Setiap fitur dalam Fase 87 wajib memenuhi kriteria berikut sebelum dapat disetujui (Definition of Done):
+- [x] **B1 Logika Bebas Isian**: B1 $\ge 7.000$ baris logika PHP murni pada modul `Hospital/` tanpa memasukkan migrasi, Blade views, seeder, dan file pengujian.
+- [x] **B3 Dokumentasi Substantif**: B3 $\ge 1.500$ baris dokumentasi Markdown teknis, katalog kasus klinis, ADR, panduan peran, dan runbook.
+- [x] **Kompilasi & Analisis Arsitektur**: `php artisan arch:scan` dan `vendor/bin/pest tests/Architecture` keluar dengan status bersih (0 pelanggaran arsitektur, 0 tabel asing tanpa izin).
+- [x] **Integritas Sandi & Kriptografi**: Seluruh sertifikat kalkulasi (B1 s.d. B9) divalidasi via verifier masing-masing; paspor medis mendeteksi modifikasi liar via CanonicalHashChain.
+- [x] **Uji Konkurensi & Double-Booking**: Uji alokasi ranjang paralel lulus tanpa terjadi double-assignment pada satu tempat tidur.
+- [x] **Audit Dua Sumber**: Perintah `php artisan hosp:audit` keluar dengan exit code `0` dan membuktikan rekonsiliasi sempurna antara data admisi medis dengan saldo mutasi buku besar keuangan.
+
+## 7. Matriks Ketertelusuran Regulasi & Standar Kebijakan (T-8)
+
+| Regulasi / Standar Acuan | Pasal / Klausul Relevan | Implementasi Sistem ERP | Lokasi Berkas Utama |
+| :--- | :--- | :--- | :--- |
+| **PMK No. 24 Tahun 2022** | Pasal 3, 4, 32 (Penyelenggaraan RME & Keamanan) | Standar RME terintegrasi, audit log akses berkas medis, retensi append-only | `modules/Hospital/Domain/Services/PatientPassportService.php` |
+| **UU No. 27 Tahun 2022** | Pasal 34, 35, 36 (Perlindungan Data Spesifik) | Blind-index HMAC untuk NIK pasien, enkripsi simetris data sensitif at-rest | `modules/Hospital/Domain/Models/Patient.php` |
+| **RCP London (NEWS2)** | Standar Skoring Fisiologis Peringatan Dini | 7 Parameter komposit NEWS2, pembobotan skor 3 tunggal, ambang batas $\ge 7$ | `modules/Hospital/Domain/Algorithms/EarlyWarningScoreCalculator.php` |
+| **Standar Akreditasi RS (STARKES)** | Sasaran Keselamatan Pasien (SKP 2 & SKP 6) | Serah terima tugas jaga metode SBAR, protokol Code Blue bertahap, pencegahan jatuh | `modules/Hospital/Domain/Services/InpatientHandoverService.php` |
+| **Pedoman Teknis Kemenkes RI** | Indikator Pelayanan RS (Barber-Johnson) | Kalkulasi matematis BOR (bps), ALOS (mili), TOI (mili), BTO (mili) | `modules/Hospital/Domain/Algorithms/BedEfficiencyIndicators.php` |
+| **FHIR R4 Kemenkes SatuSehat** | Encounter, Observation, Condition Bundles | Pemetaan payload JSON Transaction FHIR R4 dan validasi kepatuhan sintaksis | `modules/Hospital/Domain/Services/FHIR/SatuSehatFHIRMappingService.php` |

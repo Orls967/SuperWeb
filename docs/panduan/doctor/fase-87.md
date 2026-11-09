@@ -24,3 +24,31 @@ Panduan operasional harian untuk peran `doctor` di modul Rumah Sakit (Hospital).
 ## 3. Efek Terlihat pada Buku Besar & Sistem
 - Order tindakan dokter yang diselesaikan mencatatkan baris item folio siap tagih.
 - Pemeriksaan paspor medis mencatatkan log audit akses pada `hsp_data_vault_accesses` untuk mematuhi UU PDP.
+
+
+---
+
+## 4. Evaluasi Kesiapan Pemulangan Pasien (Discharge Readiness)
+Sebelum menandatangani resume medis pemulangan (*discharge summary*), dokter DPJP wajib menjalankan asesmen kesiapan via `PatientDischargeReadinessScorer`:
+1. **Pemeriksaan 7 Kriteria Kelayakan**:
+   - Tanda vital stabil tanpa demam dalam 24 jam terakhir (NEWS2 $\le 2$).
+   - Toleransi obat dan nutrisi per oral penuh.
+   - Nyeri terkontrol dengan obat minum (skor VAS $\le 3$).
+   - Bebas alat invasif yang tidak diperlukan di rumah.
+   - Hasil pemeriksaan laboratorium kritis (kultur darah, marker jantung, fungsi ginjal) telah ditinjau dan divalidasi.
+   - Keluarga/caregiver telah mendapatkan edukasi perawatan lanjutan dan jadwal kontrol ulang.
+2. **Kalkulasi & Verifikasi**:
+   - Tekan tombol **Hitung Skor Kesiapan KRS**.
+   - Jika skor $\ge 80\%$ dan tanpa *blocking reason*, sistem menerbitkan sertifikat kesiapan KRS dan mengaktifkan tombol pelepasan ranjang.
+   - Apabila terdapat *hard blocker* (misal: hasil lab kritis belum dibaca), sistem mengunci proses pemulangan demi keselamatan pasien.
+
+## 5. Kepemimpinan Resusitasi Lanjutan (ACLS Code Blue)
+1. **Peran Tim Leader**:
+   - Dokter memimpin resusitasi dengan komunikasi tertutup (*closed-loop communication*).
+   - Menugaskan perawat 1 (kompresi dada bergantian tiap 2 menit), perawat 2 (ventilasi bag-valve-mask + oksigen 100%), perawat 3 (akses IV/IO & obat-obatan), dan pencatat waktu (*timekeeper*).
+2. **Algoritma Irama Jantung**:
+   - **VF / Pulseless VT (Shockable)**: Segera kejut listrik bifasik 200 Joule, langsung lanjutkan CPR 2 menit tanpa periksa nadi, pasang akses IV, berikan epinefrin 1 mg setelah kejut kedua, amiodaron 300 mg bolus setelah kejut ketiga.
+   - **Asystole / PEA (Non-Shockable)**: CPR berkualitas tinggi, berikan epinefrin 1 mg segera, evaluasi penyebab 5H dan 5T (Hipovolemia, Hipoksia, Hidrogen ion/asidosis, Hipo/hiperkalemia, Hipotermia; Tension pneumothorax, Tamponade jantung, Toksin, Trombosis paru, Trombosis koroner).
+3. **Dokumentasi Terverifikasi**:
+   - Setelah resusitasi selesai, dokter mengisi ringkasan tindakan resusitasi.
+   - Sistem merekonstruksi kronologi via `CriticalIncidentReplayEngine` untuk jaminan mutu mediko-legal.

@@ -238,3 +238,74 @@ flowchart LR
     HospTelemetry -->|MedicalEmergencyResponseDispatcher| VenueMod[Modul Venue Emergency]
     HospAdmission -->|Posting Akuntansi| LedgerMod[Sistem Buku Besar / Ledger]
 ```
+
+
+## 6. Sequence Diagram Alur Pertukaran FHIR SatuSehat Kemenkes RI (D6)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Simrs as SIMRS Hospital Module
+    participant Mapper as SatuSehatFHIRMappingService
+    participant Validator as ValidateSatuSehatFHIRComplianceAction
+    participant Dto as FHIRBundlePayloadDTO
+    participant Outbox as HSP FHIR Outbox Queue
+    participant Kemkes as SatuSehat Kemenkes Gateway
+
+    Simrs->>Mapper: mapEncounter(Admission $admission)
+    Mapper->>Mapper: Konversi status, identifier IHS, periode rawat
+    Simrs->>Mapper: mapNews2Observation(Vitals, News2Score)
+    Mapper->>Mapper: Format LOINC 96552-5 & komponen vital
+    Simrs->>Mapper: mapCondition(ICD10Code)
+    Mapper->>Dto: createBundle(bundle_id, [Encounter, Observation, Condition])
+    Dto-->>Validator: Validasi kepatuhan sintaksis R4
+    alt Validasi Berhasil
+        Validator-->>Outbox: Enqueue FHIR Bundle Transaction
+        Outbox->>Kemkes: HTTP POST /fhir-r4/v1/Bundle (OAuth2 Bearer)
+        Kemkes-->>Outbox: HTTP 200 OK (Resource IDs Committed)
+        Outbox-->>Simrs: Update status sinkronisasi SATUSEHAT_SYNCED
+    else Validasi Gagal
+        Validator-->>Simrs: Alert format tidak patuh (HSP-ERR-017)
+    end
+```
+
+## 7. Sequence Diagram Rekonstruksi Forensik Code Blue Replay (D7)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Nurse as Perawat / Sensor Telemetri
+    participant Planner as CodeBlueEscalationPlanner
+    participant Event as CodeBlueEvent Record
+    participant Rrt as Tim Resusitasi / ACLS
+    participant Replay as CriticalIncidentReplayEngine
+    participant Passport as PatientPassportService
+
+    Nurse->>Planner: Input Pemburukan Vital (SpO2 < 85% menit ke-1 & 2)
+    Planner->>Event: Pemicu Alarm Code Blue (Menit 0)
+    Event-->>Nurse: Banner Merah & Sirine Bangsal
+    Note over Nurse, Event: Jika belum di-ack hingga Menit 2
+    Planner->>Event: Eskalasi Panggilan Dokter Jaga (Menit 2)
+    Note over Event, Rrt: Jika belum resolusi hingga Menit 5
+    Planner->>Rrt: Broadcast Sirine Sentral Tim Resusitasi (Menit 5)
+    Rrt->>Event: Resusitasi ACLS Selesai (ROSC Tercapai)
+    Event->>Replay: Eksekusi Timeline Audit Replay
+    Replay->>Replay: Validasi Rantai Hash Merkle H0..Hn
+    Replay->>Passport: Rekam Sertifikat CIRE-V1 ke Paspor Pasien
+    Passport-->>Nurse: Bukti Audit Terkunci Permanen
+```
+
+## 8. Matriks Hak Akses Peran & Kapabilitas Layanan (RBAC Matrix)
+
+| Endpoint / Layanan Domain | `hospital_registration` | `bed_manager` | `nurse` | `doctor` | `rs_admin` |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `/hospital/beds` (Papan Kontrol Ranjang) | Read-Only | **Read & Write** | Read-Only | Read-Only | **Read & Write** |
+| `/hospital/er` (Papan Triase & IGD) | Read-Only | Read-Only | **Read & Write** | **Read & Write** | Read-Only |
+| `/hospital/nursing` (Terminal Bangsal 375px) | Ditolak (403) | Ditolak (403) | **Read & Write** | Read-Only | Read-Only |
+| `/hospital/critical-care` (Monitor ICU & Code Blue) | Ditolak (403) | Read-Only | **Read & Write** | **Read & Write** | Read-Only |
+| `/hospital/efficiency` (Analisis Barber-Johnson) | Ditolak (403) | Read-Only | Ditolak (403) | Ditolak (403) | **Read & Write** |
+| `/hospital/patients/{id}/passport` (Paspor Medis) | Read-Only | Ditolak (403) | Read-Only | **Read & Write** | Audit Log |
+| `InpatientAdmissionSaga` (Admisi Rawat Inap) | Inisiasi | **Eksekusi** | Ditolak (403) | Ditolak (403) | **Eksekusi** |
+| `BedDischargeAndCleaningSaga` (Pemulangan & Cuci) | Ditolak (403) | **Eksekusi** | Konfirmasi Cuci | Rekomendasi KRS | **Eksekusi** |
+| `AdjustCapacityForEpidemicAction` (Kontingensi KLB) | Ditolak (403) | Ditolak (403) | Ditolak (403) | Ditolak (403) | **Eksekusi** |
+| `hsp:audit` (Audit Dua Sumber & CLI) | Ditolak | Ditolak | Ditolak | Ditolak | **Eksekusi** |
