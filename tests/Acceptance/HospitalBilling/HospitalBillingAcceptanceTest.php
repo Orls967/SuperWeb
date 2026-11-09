@@ -373,4 +373,86 @@ class HospitalBillingAcceptanceTest extends TestCase
         $this->assertStringContainsString('Hospital audit PASSED with 0 discrepancy', $output);
         $this->assertStringContainsString('HEALTHY', $output);
     }
+
+    /**
+     * Skenario 9: Integrasi Dispute Banding INA-CBG, Stop-Loss Reasuransi, dan Subsidi Charity Dhuafa.
+     */
+    public function test_9_dispute_appeal_catastrophic_stop_loss_and_charity_subsidization(): void
+    {
+        // 1. Uji Konstruksi Banding Sanggahan INA-CBG
+        $disputeEngine = new \Modules\Hospital\Domain\Services\InaCbgDisputeResolutionEngine();
+        $appeal = $disputeEngine->constructDisputeAppeal(
+            \Modules\Hospital\Domain\Services\InaCbgDisputeResolutionEngine::DISPUTE_CODE_CODING_DIAGNOSIS,
+            'I21.0',
+            ['RESUME_MEDIS', 'LAB_RESULT', 'RADIOLOGY_REPORT'],
+            25_000_000_00, // Rp 25.000.000 klaim RS
+            12_000_000_00  // Rp 12.000.000 adjudikasi BPJS
+        );
+        $this->assertSame(13_000_000_00, $appeal['contested_amount_cents']);
+        $this->assertGreaterThanOrEqual(80, $appeal['appeal_viability_score']);
+        $this->assertSame('SUBMIT_FORMAL_DISPUTE_TKMKB', $appeal['recommended_action']);
+
+        // 2. Uji Evaluasi Kasus Katastropik Stop-Loss Internal RS
+        $stopLossEngine = new \Modules\Hospital\Domain\Services\CatastrophicCaseClaimEngine();
+        $catastrophic = $stopLossEngine->evaluateCatastrophicFinancials(
+            'CABG_SURGERY',
+            220_000_000,
+            90_000_000,
+            8
+        );
+        $this->assertTrue($catastrophic['is_stop_loss_triggered']);
+        $this->assertSame(130_000_000, $catastrophic['net_hospital_deficit_idr']);
+        $this->assertGreaterThan(0, $catastrophic['stop_loss_reinsurance_claim_idr']);
+
+        // 3. Uji Alokasi Dana Charity & Zakat RS Bagi Pasien Pra-Sejahtera Ber-SKTM
+        $charityEngine = new \Modules\Hospital\Domain\Services\HospitalCharitySubsidizationEngine();
+        $bill = new \Modules\Hospital\Domain\ValueObjects\HospitalMoney(8_000_000_00, 'IDR');
+        $subsidy = $charityEngine->evaluateCharitySubsidy(
+            $bill,
+            1_500_000,
+            4,
+            true,
+            false,
+            50_000_000
+        );
+        $this->assertSame(\Modules\Hospital\Domain\Services\HospitalCharitySubsidizationEngine::TIER_FULL_SUBSIDY, $subsidy['tier']);
+        $this->assertSame(8_000_000_00, $subsidy['subsidized_amount']->amountInMinor);
+        $this->assertSame(0, $subsidy['patient_copay']->amountInMinor);
+    }
+
+    /**
+     * Skenario 10: Verifikasi Penelusuran Implan Bedah UDI & Keamanan Rantai Dingin Bank Darah.
+     */
+    public function test_10_surgical_implant_udi_and_blood_bank_hemovigilance_verification(): void
+    {
+        // 1. Verifikasi UDI Implan Jantung Kamar Bedah
+        $implantService = new \Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService();
+        $implantCheck = $implantService->verifyImplantForSurgery(
+            '01088812345678901729111010STENT991',
+            'KEMENKES RI AKL 30501918234',
+            \Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService::IMPLANT_CATEGORY_CARDIAC_STENT,
+            new \DateTimeImmutable('2028-12-31'),
+            new \DateTimeImmutable('2026-11-10'),
+            [],
+            'STENT991'
+        );
+        $this->assertTrue($implantCheck['is_approved_for_implantation']);
+        $this->assertSame(\Modules\Hospital\Domain\Services\HospitalSurgicalImplantTraceabilityService::STATUS_VERIFIED_STERILE, $implantCheck['status']);
+
+        // 2. Verifikasi Transfusi Bank Darah Hemovigilance
+        $bloodService = new \Modules\Hospital\Domain\Services\BloodBankHemovigilanceService();
+        $bloodCheck = $bloodService->verifyBloodRelease(
+            'PMI-BDG-202611-9988',
+            'O_POSITIVE',
+            'O_POSITIVE',
+            \Modules\Hospital\Domain\Services\BloodBankHemovigilanceService::BLOOD_PRODUCT_PACKED_RED_CELLS,
+            true,
+            true,
+            3.8, // 3.8°C dalam batas 2.0 - 6.0°C
+            new \DateTimeImmutable('2026-11-30'),
+            new \DateTimeImmutable('2026-11-10 12:00:00')
+        );
+        $this->assertTrue($bloodCheck['is_safe_for_transfusion']);
+        $this->assertSame(\Modules\Hospital\Domain\Services\BloodBankHemovigilanceService::CROSSMATCH_COMPATIBLE, $bloodCheck['crossmatch_verdict']);
+    }
 }
