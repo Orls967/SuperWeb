@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Hospital\Application\Services;
 
 use Modules\Hospital\Domain\Models\LabCriticalRange;
+use Modules\Hospital\Domain\Models\LaboratoryLoincCatalog;
 
 class CriticalRangeNotifierService
 {
@@ -21,37 +22,51 @@ class CriticalRangeNotifierService
     {
         $range = LabCriticalRange::where('test_code', $testCode)->first();
 
-        if (! $range) {
+        if ($range) {
+            $panicLow = $range->panic_low !== null ? (float) $range->panic_low : null;
+            $panicHigh = $range->panic_high !== null ? (float) $range->panic_high : null;
+
+            $isPanic = false;
+
+            if ($panicLow !== null && $numericValue < $panicLow) {
+                $isPanic = true;
+            } elseif ($panicHigh !== null && $numericValue > $panicHigh) {
+                $isPanic = true;
+            }
+
+            if ($isPanic) {
+                return [
+                    'is_panic' => true,
+                    'protocol' => $range->notification_protocol ?? 'CRITICAL_HOLD_AND_PAGE',
+                    'message' => "CRITICAL PANIC VALUE ALERT: {$testCode} result {$numericValue} breaches life-safety limits.",
+                ];
+            }
+
             return [
                 'is_panic' => false,
-                'protocol' => 'NONE',
-                'message' => 'No critical panic range defined.',
+                'protocol' => 'STANDARD_REPORT',
+                'message' => 'Result is within non-panic limits.',
             ];
         }
 
-        $panicLow = $range->panic_low !== null ? (float) $range->panic_low : null;
-        $panicHigh = $range->panic_high !== null ? (float) $range->panic_high : null;
+        // Fallback: evaluate against LaboratoryLoincCatalog
+        $loinc = LaboratoryLoincCatalog::where('loinc_num', $testCode)
+            ->orWhere('component', $testCode)
+            ->orWhere('component', 'like', "%{$testCode}%")
+            ->first();
 
-        $isPanic = false;
-
-        if ($panicLow !== null && $numericValue < $panicLow) {
-            $isPanic = true;
-        } elseif ($panicHigh !== null && $numericValue > $panicHigh) {
-            $isPanic = true;
-        }
-
-        if ($isPanic) {
+        if ($loinc && $loinc->isValuePanic($numericValue)) {
             return [
                 'is_panic' => true,
-                'protocol' => $range->notification_protocol,
-                'message' => "CRITICAL PANIC VALUE ALERT: {$testCode} result {$numericValue} breaches life-safety limits.",
+                'protocol' => 'CRITICAL_HOLD_AND_PAGE',
+                'message' => "CRITICAL PANIC VALUE ALERT: {$loinc->component} result {$numericValue} breaches life-safety limits.",
             ];
         }
 
         return [
             'is_panic' => false,
-            'protocol' => 'STANDARD_REPORT',
-            'message' => 'Result is within non-panic limits.',
+            'protocol' => 'NONE',
+            'message' => 'No critical panic range defined.',
         ];
     }
 }

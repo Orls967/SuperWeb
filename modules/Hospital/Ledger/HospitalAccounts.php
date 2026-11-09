@@ -249,6 +249,20 @@ final class HospitalAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => false,
             ],
+            [
+                'code' => 'hsp:lab_diagnostic_revenue:IDR',
+                'name' => 'Hospital Pathology & Diagnostic Lab Revenue',
+                'kind' => AccountKind::REVENUE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'hsp:lab_clearing_suspense:IDR',
+                'name' => 'Hospital Outsourced Lab Clearing Suspense',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

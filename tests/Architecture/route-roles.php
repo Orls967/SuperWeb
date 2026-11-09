@@ -44,6 +44,7 @@ use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\ClinicalTrial;
 use Modules\Hospital\Domain\Models\CodeBlueEvent;
+use Modules\Hospital\Domain\Models\ImagingStudy;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
@@ -1081,9 +1082,42 @@ return [
     'hospital.imaging.pacs.index' => ['roles' => ['admin', 'auditor', 'doctor']],
     'hospital.index' => ['roles' => ['admin', 'doctor', 'hospital_admin']],
     'hospital.laboratory.catalog.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse', 'pharmacist']],
+    'hospital.laboratory.clearings.settle' => ['roles' => ['admin']],
     'hospital.laboratory.outsourcing.index' => ['roles' => ['admin', 'auditor', 'doctor']],
+    'hospital.laboratory.outsourcing.manifests.store' => ['roles' => ['admin', 'doctor']],
+    'hospital.laboratory.qc.evaluate' => ['roles' => ['admin', 'doctor', 'pharmacist']],
     'hospital.laboratory.results.verify' => ['roles' => ['admin', 'doctor']],
     'hospital.laboratory.specimens.custody' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.radiology.dicom.studies.store' => ['roles' => ['admin', 'doctor', 'nurse']],
+    'hospital.radiology.dicom.studies.metadata' => [
+        'roles' => ['admin', 'auditor', 'doctor'],
+        'params' => function (): array {
+            $study = ImagingStudy::first();
+            if (! $study) {
+                $patient = Patient::firstOrCreate(
+                    ['mrn' => 'MRN-DICOM-001'],
+                    [
+                        'name' => 'Test Patient',
+                        'date_of_birth' => '1990-01-01',
+                        'blood_type' => 'O+',
+                        'national_id_nik' => '3171010101010001',
+                        'passport_hash' => hash('sha256', 'MRN-DICOM-001'),
+                    ]
+                );
+                $study = ImagingStudy::create([
+                    'study_instance_uid' => '1.2.826.0.1.3680043.9.7134.1',
+                    'patient_id' => $patient->id,
+                    'modality' => 'CT',
+                    'body_part' => 'Chest',
+                    'performed_at' => now(),
+                    'fee_idr' => 750000,
+                    'status' => 'COMPLETED',
+                ]);
+            }
+
+            return ['id' => $study->id];
+        },
+    ],
     'hospital.telemedicine.index' => ['roles' => ['admin', 'auditor', 'doctor', 'nurse']],
     'hospital.telemedicine.prescriptions.evaluate' => ['roles' => ['admin', 'doctor', 'pharmacist']],
     'hospital.trials.bill' => [

@@ -8,11 +8,15 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Modules\Hospital\Application\Actions\GenerateDailyPolyclinicReportAction;
 use Modules\Hospital\Application\Services\ClinicalTrialAndResearchService;
+use Modules\Hospital\Application\Services\SpecimenCustodyChainService;
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\CodeBlueEvent;
+use Modules\Hospital\Domain\Models\DicomInstance;
 use Modules\Hospital\Domain\Models\EPharmacyOrder;
 use Modules\Hospital\Domain\Models\FolioItem;
+use Modules\Hospital\Domain\Models\LabResult;
+use Modules\Hospital\Domain\Models\LabSpecimen;
 use Modules\Hospital\Domain\Models\MedFridgeBreach;
 use Modules\Hospital\Domain\Models\MedicalWasteManifest;
 use Modules\Hospital\Domain\Models\MedicineCourierDelivery;
@@ -142,9 +146,35 @@ class AuditHospitalCommand extends Command
             $auditNotes[] = "Pelanggaran INV-104-02: Ditemukan {$breachedDeliveries} paket rantai dingin berstatus serah terima padahal mengalami thermal breach!";
             $discrepancies += $breachedDeliveries;
         }
-        if ($invalidCodeBlue > 0) {
-            $auditNotes[] = "Pelanggaran INV-87-04: Ditemukan {$invalidCodeBlue} event Code Blue tanpa proof hash valid.";
-            $discrepancies += $invalidCodeBlue;
+
+        // 9. Audit Invarian Rantai Kustodi Spesimen Laboratorium (INV-105-01)
+        $specimenCustodyService = app(SpecimenCustodyChainService::class);
+        $specimens = LabSpecimen::has('custodyTransfers')->limit(25)->get();
+        foreach ($specimens as $spec) {
+            if (! $specimenCustodyService->verifyChainIntegrity($spec)) {
+                $auditNotes[] = "Pelanggaran INV-105-01: Rantai hash spesimen [{$spec->specimen_barcode}] terputus atau terkorupsi!";
+                $discrepancies++;
+            }
+        }
+
+        // 10. Audit Invarian Karantina Nilai Kritis Laboratorium (INV-105-02)
+        $leakedCritical = LabResult::where('is_critical', true)
+            ->where('status', '!=', 'PATHOLOGIST_VERIFIED')
+            ->where('status', '!=', 'CRITICAL_HOLD')
+            ->count();
+        if ($leakedCritical > 0) {
+            $auditNotes[] = "Pelanggaran INV-105-02: Ditemukan {$leakedCritical} hasil lab kritis dirilis tanpa verifikasi patolog klinik!";
+            $discrepancies += $leakedCritical;
+        }
+
+        // 11. Audit Invarian Keunikan SOP Instance UID DICOM PACS (INV-105-03)
+        $duplicateDicom = DicomInstance::select('sop_instance_uid', DB::raw('count(*) as c'))
+            ->groupBy('sop_instance_uid')
+            ->having('c', '>', 1)
+            ->count();
+        if ($duplicateDicom > 0) {
+            $auditNotes[] = "Pelanggaran INV-105-03: Ditemukan {$duplicateDicom} benturan duplikasi SOP Instance UID pada repositori PACS!";
+            $discrepancies += $duplicateDicom;
         }
 
         // 4. Audit Rekonsiliasi Dua-Sumber Rawat Jalan
