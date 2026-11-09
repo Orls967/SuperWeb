@@ -721,7 +721,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hsp:audit` | `manual` | Audit dua-sumber operasional rumah sakit: kapasitas ranjang, pendaftaran pasien, paspor kesehatan, code blue, dan rekonsiliasi buku besar |
 | `hsp:claim-aging-report` | `manual` | Menghasilkan laporan umur piutang klaim asuransi & estimasi cadangan kerugian penurunan nilai |
 | `hsp:cold-chain-monitor` | `manual` | Pemantauan real-time dan evaluasi Mean Kinetic Temperature (MKT) unit pendingin farmasi |
-| `hsp:festronik-audit` | `manual` | Audit kepatuhan regulasi TPS B3 dan verifikasi integritas rantai segel hash Festronik |
+| `hsp:festronik-scan` | `manual` | Audit kepatuhan regulasi TPS B3 dan verifikasi integritas rantai segel hash Festronik |
 | `hsp:o2c-kpi` | `manual` | Kompilasi KPI Revenue Cycle Management (RCM) dan Order-to-Cash (O2C) RS |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |

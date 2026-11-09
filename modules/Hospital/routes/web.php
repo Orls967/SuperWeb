@@ -193,7 +193,7 @@ Route::prefix('hospital')->middleware(['web', 'auth'])->group(function () {
         ->middleware('role:admin,environmental_officer,rs_admin')
         ->name('hospital.operations.waste.handover');
 
-    Route::get('/operations/medical-waste/{manifestId}/verify-chain', [HospitalBillingController::class, 'verifyWasteCustody'])
+    Route::get('/operations/medical-waste/verify-chain', [HospitalBillingController::class, 'verifyWasteCustody'])
         ->middleware('role:admin,environmental_officer,rs_admin')
         ->name('hospital.operations.waste.verify_chain');
 

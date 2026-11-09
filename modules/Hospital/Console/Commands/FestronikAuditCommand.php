@@ -11,7 +11,7 @@ use Modules\Hospital\Domain\Services\MedicalWasteManifestService;
 
 class FestronikAuditCommand extends Command
 {
-    protected $signature = 'hsp:festronik-audit {--limit=25 : Batas jumlah manifest yang diaudit}';
+    protected $signature = 'hsp:festronik-scan {--limit=25 : Batas jumlah manifest yang dipindai}';
 
     protected $description = 'Audit kepatuhan regulasi TPS B3 dan verifikasi integritas rantai segel hash Festronik';
 
