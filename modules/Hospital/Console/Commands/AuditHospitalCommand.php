@@ -11,9 +11,11 @@ use Modules\Hospital\Application\Services\ClinicalTrialAndResearchService;
 use Modules\Hospital\Domain\Models\Admission;
 use Modules\Hospital\Domain\Models\BillingEpisode;
 use Modules\Hospital\Domain\Models\CodeBlueEvent;
+use Modules\Hospital\Domain\Models\EPharmacyOrder;
 use Modules\Hospital\Domain\Models\FolioItem;
 use Modules\Hospital\Domain\Models\MedFridgeBreach;
 use Modules\Hospital\Domain\Models\MedicalWasteManifest;
+use Modules\Hospital\Domain\Models\MedicineCourierDelivery;
 use Modules\Hospital\Domain\Models\OutpatientEncounter;
 use Modules\Hospital\Domain\Models\Patient;
 use Modules\Hospital\Domain\Models\PharmacyBranchLot;
@@ -117,6 +119,28 @@ class AuditHospitalCommand extends Command
                 $auditNotes[] = "Pelanggaran INV-88-04: Rantai kustodi Festronik manifest limbah {$mnf->manifest_number} terdeteksi rusak atau dimanipulasi!";
                 $discrepancies++;
             }
+        }
+
+        // 7. Audit Invarian E-Pharmacy & Controlled Substances (INV-104-01)
+        $unapprovedControlled = EPharmacyOrder::where('drug_classification', 'NARCOTIC_PSYCHOTROPIC')
+            ->where('status', 'DELIVERED')
+            ->where(function ($q): void {
+                $q->whereNull('second_doctor_approval_hash')->orWhere('second_doctor_approval_hash', '');
+            })
+            ->count();
+        if ($unapprovedControlled > 0) {
+            $auditNotes[] = "Pelanggaran INV-104-01: Ditemukan {$unapprovedControlled} pesanan obat terawasi terkirim tanpa persetujuan dokter kedua!";
+            $discrepancies += $unapprovedControlled;
+        }
+
+        // 8. Audit Invarian Cold-Chain Courier Delivery (INV-104-02)
+        $breachedDeliveries = MedicineCourierDelivery::where('requires_cold_chain', true)
+            ->where('temperature_breached', true)
+            ->where('delivery_status', 'DELIVERED')
+            ->count();
+        if ($breachedDeliveries > 0) {
+            $auditNotes[] = "Pelanggaran INV-104-02: Ditemukan {$breachedDeliveries} paket rantai dingin berstatus serah terima padahal mengalami thermal breach!";
+            $discrepancies += $breachedDeliveries;
         }
         if ($invalidCodeBlue > 0) {
             $auditNotes[] = "Pelanggaran INV-87-04: Ditemukan {$invalidCodeBlue} event Code Blue tanpa proof hash valid.";

@@ -34,4 +34,9 @@ class ChronicSubscription extends Model
     {
         return $this->belongsTo(PharmacyBranch::class, 'pharmacy_branch_id');
     }
+
+    public function pharmacyBranch(): BelongsTo
+    {
+        return $this->belongsTo(PharmacyBranch::class, 'pharmacy_branch_id');
+    }
 }
