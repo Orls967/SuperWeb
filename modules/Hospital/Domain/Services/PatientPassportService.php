@@ -61,6 +61,50 @@ class PatientPassportService
     }
 
     /**
+     * Alias pelengkap untuk kompatibilitas dengan aksi domain.
+     *
+     * @param array<string, mixed> $eventPayload
+     */
+    public function appendEvent(
+        int $patientId,
+        string $eventType,
+        array $eventPayload,
+        ?int $actorId = null
+    ): PatientPassportEvent {
+        $patient = Patient::findOrFail($patientId);
+        return $this->recordEvent($patient, $eventType, $eventPayload, $actorId);
+    }
+
+    /**
+     * Memeriksa apakah terjadi perusakan integritas paspor pasien.
+     */
+    public function detectTampering(int $patientId): bool
+    {
+        $patient = Patient::findOrFail($patientId);
+        return ! $this->verifyChain($patient);
+    }
+
+    /**
+     * Mengambil seluruh linimasa kronologis peristiwa paspor pasien.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getChronologicalTimeline(int $patientId): array
+    {
+        return PatientPassportEvent::where('patient_id', $patientId)
+            ->orderBy('sequence_no', 'asc')
+            ->get()
+            ->map(fn ($e) => [
+                'sequence_no' => $e->sequence_no,
+                'event_type' => $e->event_type,
+                'payload' => $e->encrypted_payload,
+                'current_hash' => $e->current_hash,
+                'recorded_at' => $e->recorded_at?->toIso8601String(),
+            ])
+            ->toArray();
+    }
+
+    /**
      * Memverifikasi keutuhan rantai hash paspor pasien dari genesis.
      */
     public function verifyChain(Patient $patient): bool

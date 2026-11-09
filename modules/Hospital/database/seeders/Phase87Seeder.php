@@ -61,9 +61,7 @@ final class Phase87Seeder extends Seeder
                 $code = sprintf("%s-%s-%03d", $prefix, substr($cls, 0, 3), $i);
 
                 $status = 'AVAILABLE';
-                if ($i % 7 === 0) {
-                    $status = 'OCCUPIED';
-                } elseif ($i % 23 === 0) {
+                if ($i % 23 === 0) {
                     $status = 'CLEANING';
                 } elseif ($i % 47 === 0) {
                     $status = 'MAINTENANCE';
@@ -71,27 +69,36 @@ final class Phase87Seeder extends Seeder
                     $status = 'RESERVED';
                 }
 
+                $rate = match ($cls) {
+                    'ICU', 'NICU', 'PICU' => 2500000,
+                    'ISOLATION' => 1800000,
+                    'VVIP' => 3000000,
+                    'VIP' => 1500000,
+                    'CLASS_1' => 800000,
+                    'CLASS_2' => 500000,
+                    default => 300000,
+                };
+
                 $bedInsertBatch[] = [
                     'bed_code' => $code,
                     'room_number' => "R-{$floor}" . sprintf("%02d", ($i % 20) + 1),
-                    'department' => $dept,
-                    'class' => $cls,
+                    'ward_name' => $dept,
+                    'bed_class' => $cls,
+                    'rate_per_day_idr' => $rate,
                     'status' => $status,
-                    'floor' => $floor,
-                    'wing' => $wing,
                     'created_at' => CarbonImmutable::now()->subDays(30),
                     'updated_at' => CarbonImmutable::now()->subDays(1),
                 ];
 
                 if (count($bedInsertBatch) >= 100) {
-                    HospitalBed::upsert($bedInsertBatch, ['bed_code'], ['room_number', 'department', 'class', 'status', 'floor', 'wing', 'updated_at']);
+                    HospitalBed::upsert($bedInsertBatch, ['bed_code'], ['room_number', 'ward_name', 'bed_class', 'rate_per_day_idr', 'status', 'updated_at']);
                     $bedInsertBatch = [];
                 }
             }
         }
 
         if (count($bedInsertBatch) > 0) {
-            HospitalBed::upsert($bedInsertBatch, ['bed_code'], ['room_number', 'department', 'class', 'status', 'floor', 'wing', 'updated_at']);
+            HospitalBed::upsert($bedInsertBatch, ['bed_code'], ['room_number', 'ward_name', 'bed_class', 'rate_per_day_idr', 'status', 'updated_at']);
         }
 
         // 3. Pasien & Passport
@@ -101,18 +108,17 @@ final class Phase87Seeder extends Seeder
         for ($p = 1; $p <= 60; $p++) {
             $nik = sprintf("317101%02d08%04d", ($p % 28) + 1, $p + 1000);
             $mrn = sprintf("MRN-2026-%05d", $p);
+            $initialHash = hash('sha256', "PASSPORT-GENESIS-{$mrn}");
+
             $patient = Patient::firstOrCreate(
                 ['mrn' => $mrn],
                 [
                     'name' => "Pasien Demonstrasi {$p}",
-                    'nik' => $nik,
-                    'birth_date' => CarbonImmutable::now()->subYears(20 + ($p % 50))->format('Y-m-d'),
-                    'gender' => ($p % 2 === 0) ? 'FEMALE' : 'MALE',
+                    'date_of_birth' => CarbonImmutable::now()->subYears(20 + ($p % 50))->format('Y-m-d'),
                     'blood_type' => ['A+', 'B+', 'AB+', 'O+'][$p % 4],
-                    'metadata' => [
-                        'allergies' => ($p % 5 === 0) ? ['Penicillin'] : [],
-                        'insurance_number' => 'BPJS-' . (8800000000 + $p),
-                    ],
+                    'encrypted_allergies' => ($p % 5 === 0) ? ['Penicillin'] : [],
+                    'encrypted_chronic_diagnoses' => [],
+                    'passport_hash' => $initialHash,
                 ]
             );
 
@@ -132,27 +138,34 @@ final class Phase87Seeder extends Seeder
 
             // Pasien sebagian admisi aktif
             if ($p <= 25) {
-                $occupiedBed = HospitalBed::where('status', 'OCCUPIED')->skip($p - 1)->first();
+                $occupiedBed = HospitalBed::where('status', 'AVAILABLE')->first();
                 if ($occupiedBed) {
+                    $encId = DB::table('hsp_encounters')->insertGetId([
+                        'encounter_code' => sprintf("ENC-%s-%04d", date('Ymd'), $p),
+                        'patient_id' => $patient->id,
+                        'encounter_type' => 'INPATIENT',
+                        'admitted_at' => CarbonImmutable::now()->subDays($p % 7 + 1),
+                        'status' => 'ADMITTED',
+                        'created_at' => CarbonImmutable::now()->subDays($p % 7 + 1),
+                        'updated_at' => CarbonImmutable::now()->subDays($p % 7 + 1),
+                    ]);
+
+                    $occupiedBed->update([
+                        'status' => 'OCCUPIED',
+                        'current_encounter_id' => $encId,
+                    ]);
+
                     Admission::firstOrCreate(
-                        ['patient_id' => $patient->id, 'status' => 'ADMITTED'],
+                        ['patient_id' => $patient->id, 'status' => 'admitted'],
                         [
+                            'admission_no' => sprintf("ADM-%s-%04d", date('Ymd'), $p),
+                            'encounter_id' => $encId,
                             'bed_id' => $occupiedBed->id,
-                            'admission_type' => ($p % 3 === 0) ? 'EMERGENCY' : 'ELECTIVE',
-                            'required_class' => $occupiedBed->class,
-                            'deposit_amount_idr' => 3000000,
-                            'status' => 'ADMITTED',
-                            'admission_time' => CarbonImmutable::now()->subDays($p % 7 + 1),
-                            'diagnosis_icd10' => ($p % 2 === 0) ? 'A91' : 'I21.9',
-                            'metadata' => [
-                                'acuity_level' => ($p % 4 === 0) ? 'CRITICAL' : 'STABLE',
-                                'clinical_diet' => [
-                                    'diet_type' => 'LOW_SALT',
-                                    'calories_kcal' => 2000,
-                                    'protein_grams' => 60,
-                                    'restrictions' => ['NO_EXTRA_SODIUM'],
-                                ],
-                            ],
+                            'entitled_class' => $occupiedBed->bed_class,
+                            'current_class' => $occupiedBed->bed_class,
+                            'deposit_idr' => 3000000,
+                            'status' => 'admitted',
+                            'admitted_at' => CarbonImmutable::now()->subDays($p % 7 + 1),
                         ]
                     );
                 }
