@@ -87,11 +87,11 @@ final class PaediatricEarlyWarningScoreCalculator
             'total_pews_score' => $totalScore,
             'risk_category' => $riskCat,
             'escalation_action' => $action,
-            'certificate' => [
-                'algorithm' => 'PaediatricEarlyWarningScoreCalculator',
-                'version' => '1.0.0',
-                'input_hash' => $inputHash,
-                'signature' => $signature,
+            'paediatric_certificate' => [
+                'scheme' => 'PEWS-V1',
+                'digest' => $inputHash,
+                'signature_proof' => $signature,
+                'eval_class' => self::class,
             ],
         ];
     }
@@ -102,20 +102,20 @@ final class PaediatricEarlyWarningScoreCalculator
      */
     public function verifyCertificate(array $result, array $originalInput): bool
     {
-        $inputSerialized = json_encode($originalInput, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-        $inputHash = hash('sha256', $inputSerialized);
+        $payloadRaw = json_encode($originalInput, JSON_UNESCAPED_SLASHES);
+        $expectedHash = hash('sha256', $payloadRaw);
 
-        $cert = $result['certificate'] ?? [];
-        if (($cert['input_hash'] ?? '') !== $inputHash) {
+        $cert = $result['paediatric_certificate'] ?? [];
+        if (($cert['digest'] ?? '') !== $expectedHash) {
             return false;
         }
 
         $total = $result['total_pews_score'] ?? 0;
         $risk = $result['risk_category'] ?? '';
 
-        $expectedSigPayload = "PEWS-V1:{$total}:{$risk}:{$inputHash}";
+        $expectedSigPayload = "PEWS-V1:{$total}:{$risk}:{$expectedHash}";
         $expectedSig = hash_hmac('sha256', $expectedSigPayload, 'HSP_SECRET_PAEDIATRIC_EWS_2026');
 
-        return hash_equals($expectedSig, (string) ($cert['signature'] ?? ''));
+        return hash_equals($expectedSig, (string) ($cert['signature_proof'] ?? ''));
     }
 }

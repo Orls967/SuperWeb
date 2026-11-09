@@ -30,10 +30,7 @@ final class AssessNutritionRiskAction
         $admission = Admission::findOrFail($admissionId);
         $result = $this->calculator->evaluate($nutritionData);
 
-        $currentMeta = is_array($admission->metadata) ? $admission->metadata : (json_decode($admission->metadata ?? '[]', true) ?: []);
-        $currentMeta['nutrition_risk_screening'] = $result;
-        $admission->metadata = $currentMeta;
-        $admission->save();
+        $admission->recordClinicalAssessment('nutrition_risk_screening', $result);
 
         $this->passportService->appendEvent(
             patientId: $admission->patient_id,

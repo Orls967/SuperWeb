@@ -60,6 +60,18 @@ class Admission extends Model
         return $this->hasMany(AdmissionTransition::class, 'admission_id');
     }
 
+    /**
+     * @param string $assessmentKey
+     * @param array<string, mixed> $assessmentPayload
+     */
+    public function recordClinicalAssessment(string $assessmentKey, array $assessmentPayload): void
+    {
+        $meta = is_array($this->metadata) ? $this->metadata : (json_decode($this->metadata ?? '[]', true) ?: []);
+        $meta[$assessmentKey] = $assessmentPayload;
+        $this->metadata = $meta;
+        $this->save();
+    }
+
     public function codeBlueEvents(): HasMany
     {
         return $this->hasMany(CodeBlueEvent::class, 'admission_id');

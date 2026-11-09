@@ -30,10 +30,7 @@ final class EvaluatePaediatricTelemetryAction
         $admission = Admission::findOrFail($admissionId);
         $result = $this->calculator->evaluate($vitals);
 
-        $currentMeta = is_array($admission->metadata) ? $admission->metadata : (json_decode($admission->metadata ?? '[]', true) ?: []);
-        $currentMeta['paediatric_ews'] = $result;
-        $admission->metadata = $currentMeta;
-        $admission->save();
+        $admission->recordClinicalAssessment('paediatric_ews', $result);
 
         $this->passportService->appendEvent(
             patientId: $admission->patient_id,

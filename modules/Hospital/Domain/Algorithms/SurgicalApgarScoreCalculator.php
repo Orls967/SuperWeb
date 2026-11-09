@@ -89,11 +89,10 @@ final class SurgicalApgarScoreCalculator
             'total_score' => $totalScore,
             'risk_tier' => $riskTier,
             'postop_disposition_recommendation' => $disposition,
-            'certificate' => [
-                'algorithm' => 'SurgicalApgarScoreCalculator',
-                'version' => '1.0.0',
-                'input_hash' => $inputHash,
-                'signature' => $signature,
+            'surgical_audit_certificate' => [
+                'sas_version' => 'SAS-V1',
+                'provenance_hash' => $inputHash,
+                'audit_signature' => $signature,
             ],
         ];
     }
@@ -104,11 +103,11 @@ final class SurgicalApgarScoreCalculator
      */
     public function verifyCertificate(array $result, array $originalInput): bool
     {
-        $inputSerialized = json_encode($originalInput, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-        $inputHash = hash('sha256', $inputSerialized);
+        $rawBytes = json_encode($originalInput, JSON_UNESCAPED_SLASHES);
+        $computedHash = hash('sha256', $rawBytes);
 
-        $cert = $result['certificate'] ?? [];
-        if (($cert['input_hash'] ?? '') !== $inputHash) {
+        $cert = $result['surgical_audit_certificate'] ?? [];
+        if (($cert['provenance_hash'] ?? '') !== $computedHash) {
             return false;
         }
 
@@ -116,9 +115,9 @@ final class SurgicalApgarScoreCalculator
         $tier = $result['risk_tier'] ?? '';
         $disp = $result['postop_disposition_recommendation'] ?? '';
 
-        $expectedSigPayload = "SASC-V1:{$total}:{$tier}:{$disp}:{$inputHash}";
+        $expectedSigPayload = "SASC-V1:{$total}:{$tier}:{$disp}:{$computedHash}";
         $expectedSig = hash_hmac('sha256', $expectedSigPayload, 'HSP_SECRET_SURGICAL_APGAR_2026');
 
-        return hash_equals($expectedSig, (string) ($cert['signature'] ?? ''));
+        return hash_equals($expectedSig, (string) ($cert['audit_signature'] ?? ''));
     }
 }

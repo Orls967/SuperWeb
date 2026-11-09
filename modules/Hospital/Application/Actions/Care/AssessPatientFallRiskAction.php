@@ -30,10 +30,7 @@ final class AssessPatientFallRiskAction
         $admission = Admission::findOrFail($admissionId);
         $result = $this->engine->evaluate($fallRiskProfile);
 
-        $currentMeta = is_array($admission->metadata) ? $admission->metadata : (json_decode($admission->metadata ?? '[]', true) ?: []);
-        $currentMeta['fall_risk_assessment'] = $result;
-        $admission->metadata = $currentMeta;
-        $admission->save();
+        $admission->recordClinicalAssessment('fall_risk_assessment', $result);
 
         $this->passportService->appendEvent(
             patientId: $admission->patient_id,
