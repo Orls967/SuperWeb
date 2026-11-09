@@ -38,4 +38,3 @@ class SandboxLogAggregator
         unset(self::$inMemoryLogs[$sandbox->id]);
     }
 }
-

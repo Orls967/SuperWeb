@@ -35,7 +35,7 @@ class QualityPhaseMetricsCommand extends Command
                 ['Anemic DTO Ratio', sprintf('%.2f%%', $result['anemic_ratio'] * 100), '≤ 20.00%'],
                 ['Orphan Classes', $result['orphan_count'], '0'],
                 ['Status', $result['status'], 'compliant'],
-                ['Certificate SHA-256', substr($result['certificate'], 0, 16) . '...', 'valid'],
+                ['Certificate SHA-256', substr($result['certificate'], 0, 16).'...', 'valid'],
             ]
         );
 
@@ -55,4 +55,3 @@ class QualityPhaseMetricsCommand extends Command
         return 0;
     }
 }
-

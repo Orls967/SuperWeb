@@ -25,4 +25,3 @@ class QualityPipelineStatusCommand extends Command
         return 0;
     }
 }
-

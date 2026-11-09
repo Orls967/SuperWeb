@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Platform\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Modules\Platform\Domain\Enums\SandboxTier;
 
 class CreateSandboxRequest extends FormRequest
 {
@@ -27,4 +26,3 @@ class CreateSandboxRequest extends FormRequest
         ];
     }
 }
-

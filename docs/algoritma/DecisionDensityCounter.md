@@ -43,3 +43,4 @@ Sertifikat `DecisionDensityCertificate` membungkus hasil audit per berkas:
 - Menghitung rasio kelas anemik: kelas yang memiliki LOC signifikan (> 30 baris) namun total decision points adalah 0.
 - Menolak berkas yang melebihi batas anemic threshold pada modul inti domain.
 - `DecisionDensityCertificateVerifier` memverifikasi kesesuaian tanda tangan kriptografis sertifikat dan memastikan tidak ada DTO bervolume besar tanpa justifikasi bisnis.
+

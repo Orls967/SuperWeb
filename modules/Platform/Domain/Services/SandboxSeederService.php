@@ -12,12 +12,11 @@ use Modules\Platform\Domain\Models\SandboxEnvironment;
 class SandboxSeederService
 {
     public function __construct(
-        protected DeterministicDataFactory $factory = new DeterministicDataFactory()
-    ) {
-    }
+        protected DeterministicDataFactory $factory = new DeterministicDataFactory
+    ) {}
 
     /**
-     * @param list<string> $modules Daftar modul yang ingin di-seed (mis. ['banking', 'inventory'])
+     * @param  list<string>  $modules  Daftar modul yang ingin di-seed (mis. ['banking', 'inventory'])
      * @return array<string, int> Jumlah record yang berhasil di-seed per domain
      */
     public function seedDomains(SandboxEnvironment $sandbox, array $modules): array
@@ -37,4 +36,3 @@ class SandboxSeederService
         return $results;
     }
 }
-

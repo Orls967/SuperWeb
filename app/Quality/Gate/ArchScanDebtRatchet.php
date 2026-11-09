@@ -10,8 +10,8 @@ namespace App\Quality\Gate;
 class ArchScanDebtRatchet
 {
     /**
-     * @param array<string, int> $baseline
-     * @param array<string, int> $current
+     * @param  array<string, int>  $baseline
+     * @param  array<string, int>  $current
      * @return array{can_ratchet_down: bool, updated_baseline: array<string, int>}
      */
     public function computeUpdatedBaseline(array $baseline, array $current): array
@@ -34,4 +34,3 @@ class ArchScanDebtRatchet
         ];
     }
 }
-

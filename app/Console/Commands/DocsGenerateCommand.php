@@ -33,4 +33,3 @@ class DocsGenerateCommand extends Command
         return 0;
     }
 }
-

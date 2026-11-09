@@ -20,8 +20,8 @@ namespace App\Quality\Algorithms;
  * Limits: minimum window = 10 lines. Blocks below window are not reported.
  * Consecutive overlapping windows with matching hashes are merged into a single block.
  *
- * @see \App\Quality\Algorithms\DuplicateWindowCertificate
- * @see \App\Quality\Algorithms\DuplicateWindowCertificateVerifier
+ * @see DuplicateWindowCertificate
+ * @see DuplicateWindowCertificateVerifier
  */
 final class DuplicateWindowDetector
 {
@@ -170,7 +170,6 @@ final class DuplicateWindowDetector
 
     /**
      * @param  array<string, list<string>>  $files  map of filename → list of normalized line strings
-     * @return DuplicateWindowResult
      */
     public function detect(array $files, int $modulus = self::DEFAULT_MODULUS): DuplicateWindowResult
     {
@@ -297,7 +296,7 @@ final class DuplicateWindowDetector
      */
     public static function normalizeLine(string $line): string
     {
-        $tokens = @\PhpToken::tokenize('<?php ' . $line);
+        $tokens = @\PhpToken::tokenize('<?php '.$line);
         if ($tokens === false) {
             return $line;
         }
@@ -379,8 +378,8 @@ final class DuplicateWindowDetector
     private function pairKey(array $a, array $b): string
     {
         $items = [
-            $a['file'] . ':' . $a['index'],
-            $b['file'] . ':' . $b['index'],
+            $a['file'].':'.$a['index'],
+            $b['file'].':'.$b['index'],
         ];
         sort($items);
 
@@ -430,4 +429,3 @@ final class DuplicateWindowDetector
         return $merged;
     }
 }
-

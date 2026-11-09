@@ -20,4 +20,3 @@ class DestroySandboxAction
         return $sandbox->fresh();
     }
 }
-

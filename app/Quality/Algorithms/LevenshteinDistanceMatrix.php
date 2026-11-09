@@ -12,8 +12,8 @@ final class LevenshteinDistanceMatrix
     /**
      * Menghitung jarak Levenshtein antara dua barisan token string
      *
-     * @param list<string> $tokensA
-     * @param list<string> $tokensB
+     * @param  list<string>  $tokensA
+     * @param  list<string>  $tokensB
      */
     public function computeTokenDistance(array $tokensA, array $tokensB): int
     {
@@ -45,8 +45,8 @@ final class LevenshteinDistanceMatrix
     /**
      * Rasio kesamaan Levenshtein bernilai [0.0, 1.0]
      *
-     * @param list<string> $tokensA
-     * @param list<string> $tokensB
+     * @param  list<string>  $tokensA
+     * @param  list<string>  $tokensB
      */
     public function computeSimilarity(array $tokensA, array $tokensB): float
     {
@@ -60,4 +60,3 @@ final class LevenshteinDistanceMatrix
         return round(1.0 - ($dist / $maxLen), 4);
     }
 }
-

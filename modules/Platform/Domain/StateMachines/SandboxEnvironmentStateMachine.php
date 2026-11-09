@@ -29,8 +29,7 @@ class SandboxEnvironmentStateMachine
 
     public function __construct(
         protected SandboxEnvironment $sandbox
-    ) {
-    }
+    ) {}
 
     public function getCurrentStatus(): SandboxStatus
     {
@@ -46,7 +45,7 @@ class SandboxEnvironmentStateMachine
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function transitionTo(SandboxStatus $target, string $reason = '', array $context = []): SandboxEnvironment
     {
@@ -78,4 +77,3 @@ class SandboxEnvironmentStateMachine
         });
     }
 }
-

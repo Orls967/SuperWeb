@@ -23,3 +23,4 @@ Renderer ini membaca berkas dokumentasi markdown (`.md`), mengekstrak blok kode 
 ## 3. Ekspor dan Integrasi CI
 
 Perintah CLI `php artisan docs:generate --format=svg` memindai seluruh folder `docs/`, menyusun diagram SVG ke folder `docs/generated/svg/`, dan memastikan tidak ada tautan diagram yang patah (`docs:check`).
+

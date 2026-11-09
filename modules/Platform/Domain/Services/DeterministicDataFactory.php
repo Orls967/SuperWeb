@@ -22,21 +22,21 @@ class DeterministicDataFactory
         return match ($domain) {
             'banking' => [
                 'tx_uuid' => substr($hash, 0, 32),
-                'account_from' => 'ACC-' . substr($hash, 32, 8),
-                'account_to' => 'ACC-' . substr($hash, 40, 8),
+                'account_from' => 'ACC-'.substr($hash, 32, 8),
+                'account_to' => 'ACC-'.substr($hash, 40, 8),
                 'amount' => $amount,
                 'currency' => 'IDR',
                 'type' => 'transfer',
             ],
             'inventory' => [
                 'movement_uuid' => substr($hash, 0, 32),
-                'sku' => 'SKU-' . strtoupper(substr($hash, 32, 6)),
+                'sku' => 'SKU-'.strtoupper(substr($hash, 32, 6)),
                 'quantity' => (hexdec(substr($hash, 38, 2)) % 50) + 1,
-                'location_code' => 'WH-' . strtoupper(substr($hash, 40, 4)),
+                'location_code' => 'WH-'.strtoupper(substr($hash, 40, 4)),
                 'reason' => 'inbound_shipment',
             ],
             'order' => [
-                'order_code' => 'ORD-' . strtoupper(substr($hash, 0, 8)),
+                'order_code' => 'ORD-'.strtoupper(substr($hash, 0, 8)),
                 'total_price' => $amount * 2,
                 'items_count' => (hexdec(substr($hash, 10, 2)) % 5) + 1,
                 'status' => 'confirmed',
@@ -65,4 +65,3 @@ class DeterministicDataFactory
         return $batch;
     }
 }
-

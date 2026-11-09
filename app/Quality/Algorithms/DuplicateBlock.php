@@ -12,8 +12,7 @@ final class DuplicateBlock
         public readonly string $fileB,
         public readonly int $indexB,
         public readonly int $length,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array{fileA: string, indexA: int, fileB: string, indexB: int, length: int}
@@ -29,4 +28,3 @@ final class DuplicateBlock
         ];
     }
 }
-

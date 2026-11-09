@@ -34,3 +34,4 @@ Simulasi lingkungan T1 memuat skenario operasional realistis:
   - Lonjakan galat tiba-tiba pada layanan pembayaran yang menyebabkan konsumsi error budget darurat (burn rate 14.4x) sehingga memicu deployment hold.
   - Kegagalan serentak proses provisioning pada beberapa sandbox yang memicu transisi pemulihan darurat dan pencatatan audit kegagalan.
   - Upaya pembacaan sandbox milik developer lain yang dicegah secara absolut oleh `SandboxEnvironmentPolicy` (Anti-IDOR).
+

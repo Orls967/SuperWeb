@@ -57,3 +57,4 @@ Graf ketergantungan kelas memberikan bobot khusus atau penandaan entrypoint seku
 
 - `ClassReachabilityCertificate`: Merekam seluruh matriks ketergantungan kelas, daftar entry points, persentase ketercapaian, dan daftar kelas yatim yang terdeteksi.
 - `ClassReachabilityCertificateVerifier`: Memastikan tidak ada kelas yatim baru yang masuk ke dalam modul domain tanpa justifikasi entry point yang valid.
+

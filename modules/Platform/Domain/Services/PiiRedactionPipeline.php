@@ -12,15 +12,14 @@ use Modules\Platform\Domain\Actions\MaskPiiAction;
 class PiiRedactionPipeline
 {
     public function __construct(
-        protected MaskPiiAction $masker = new MaskPiiAction(),
-        protected PiiVaultAnonymizer $vault = new PiiVaultAnonymizer()
-    ) {
-    }
+        protected MaskPiiAction $masker = new MaskPiiAction,
+        protected PiiVaultAnonymizer $vault = new PiiVaultAnonymizer
+    ) {}
 
     /**
      * Memproses baris database mentah menjadi baris yang sepenuhnya aman dari bocoran PII
      *
-     * @param array<string, mixed> $rawRow
+     * @param  array<string, mixed>  $rawRow
      * @return array{sanitized: array<string, mixed>, blind_indexes: array<string, string>}
      */
     public function process(array $rawRow): array
@@ -36,7 +35,7 @@ class PiiRedactionPipeline
             $masked = $this->determineMaskedValue($key, $val);
             if ($masked !== null) {
                 $sanitized[$key] = $masked;
-                $blindIndexes[$key . '_bidx'] = $this->vault->generateBlindIndex($val);
+                $blindIndexes[$key.'_bidx'] = $this->vault->generateBlindIndex($val);
             }
         }
 

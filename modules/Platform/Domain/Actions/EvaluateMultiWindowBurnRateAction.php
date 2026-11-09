@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Platform\Domain\Actions;
 
-use Modules\Platform\Domain\Events\SloBurnRateExceededEvent;
 use Modules\Platform\Domain\Models\ServiceSlo;
 use Modules\Platform\Domain\Services\SreAlertRouter;
 
@@ -14,12 +13,11 @@ use Modules\Platform\Domain\Services\SreAlertRouter;
 class EvaluateMultiWindowBurnRateAction
 {
     public function __construct(
-        protected SreAlertRouter $router = new SreAlertRouter()
-    ) {
-    }
+        protected SreAlertRouter $router = new SreAlertRouter
+    ) {}
 
     /**
-     * @param array<string, float> $windowErrorRates Map window -> error_rate
+     * @param  array<string, float>  $windowErrorRates  Map window -> error_rate
      * @return array{service: string, burn_rates: array<string, float>, alert: array<string, string>}
      */
     public function evaluate(ServiceSlo $slo, array $windowErrorRates): array
@@ -49,4 +47,3 @@ class EvaluateMultiWindowBurnRateAction
         ];
     }
 }
-

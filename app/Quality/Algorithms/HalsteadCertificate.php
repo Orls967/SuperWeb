@@ -22,8 +22,7 @@ final class HalsteadCertificate
         public readonly float $estimatedBugs,
         public readonly string $signature,
         public readonly string $issuedAt
-    ) {
-    }
+    ) {}
 
     public static function create(
         string $sourceHash,
@@ -92,4 +91,3 @@ final class HalsteadCertificate
         ];
     }
 }
-

@@ -10,10 +10,10 @@ namespace App\Quality\Algorithms;
 final class ClassReachabilityCertificate
 {
     /**
-     * @param list<string> $roots
-     * @param list<string> $reachable
-     * @param list<string> $orphans
-     * @param list<list<string>> $stronglyConnectedComponents
+     * @param  list<string>  $roots
+     * @param  list<string>  $reachable
+     * @param  list<string>  $orphans
+     * @param  list<list<string>>  $stronglyConnectedComponents
      */
     public function __construct(
         public readonly string $graphHash,
@@ -26,8 +26,7 @@ final class ClassReachabilityCertificate
         public readonly float $orphanRatio,
         public readonly string $signature,
         public readonly string $issuedAt
-    ) {
-    }
+    ) {}
 
     public static function create(
         string $graphHash,
@@ -87,4 +86,3 @@ final class ClassReachabilityCertificate
         ];
     }
 }
-

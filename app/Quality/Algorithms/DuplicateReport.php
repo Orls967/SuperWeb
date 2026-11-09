@@ -7,7 +7,7 @@ namespace App\Quality\Algorithms;
 final class DuplicateReport
 {
     /**
-     * @param list<DuplicateBlock> $blocks
+     * @param  list<DuplicateBlock>  $blocks
      */
     public function __construct(
         public readonly int $duplicateCount,
@@ -15,8 +15,7 @@ final class DuplicateReport
         public readonly array $blocks,
         public readonly int $totalLinesAnalyzed,
         public readonly string $sha256Certificate = '',
-    ) {
-    }
+    ) {}
 
     public function hasDuplicates(): bool
     {
@@ -37,4 +36,3 @@ final class DuplicateReport
         ];
     }
 }
-

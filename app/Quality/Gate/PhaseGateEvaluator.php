@@ -12,8 +12,11 @@ use Modules\Platform\Domain\Models\PhaseMetricSnapshot;
 class PhaseGateEvaluator
 {
     public const MIN_B1_LOC = 7500;
+
     public const MIN_B3_DOC = 1500;
+
     public const MIN_DECISION_DENSITY = 0.0500;
+
     public const MAX_DUPLICATE_RATIO = 0.0100;
 
     /**
@@ -63,4 +66,3 @@ class PhaseGateEvaluator
         ];
     }
 }
-

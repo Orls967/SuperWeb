@@ -39,7 +39,7 @@ class DocumentationVectorCheckTest extends TestCase
             C -->|No| B
         MERMAID;
 
-        $compiler = new MermaidToSvgCompiler();
+        $compiler = new MermaidToSvgCompiler;
         $svg = $compiler->compile($mermaid);
 
         expect($svg)->toContain('<svg');
@@ -57,4 +57,3 @@ class DocumentationVectorCheckTest extends TestCase
         expect($exitCode)->toBe(0);
     }
 }
-

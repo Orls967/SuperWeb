@@ -29,4 +29,3 @@ class PhaseMetricSnapshot extends Model
         'breakdown' => 'array',
     ];
 }
-

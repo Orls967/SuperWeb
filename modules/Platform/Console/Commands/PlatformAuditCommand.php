@@ -67,4 +67,3 @@ class PlatformAuditCommand extends Command
         return 0;
     }
 }
-

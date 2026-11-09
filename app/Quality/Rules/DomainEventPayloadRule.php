@@ -10,7 +10,7 @@ namespace App\Quality\Rules;
 final class DomainEventPayloadRule
 {
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return array{is_compliant: bool, missing_keys: list<string>}
      */
     public function validatePayload(array $payload): array
@@ -30,4 +30,3 @@ final class DomainEventPayloadRule
         ];
     }
 }
-

@@ -71,7 +71,7 @@ final class PlatformUniverseSeeder extends Seeder
                     'tier' => $data['tier'],
                     'expires_at' => $now->addHours($data['ttl']),
                     'metadata' => [
-                        'database_schema' => 'plt_tenant_' . str_replace('-', '_', $data['slug']),
+                        'database_schema' => 'plt_tenant_'.str_replace('-', '_', $data['slug']),
                         'allocated_cpu' => 2.0,
                         'allocated_memory_mb' => 2048,
                     ],

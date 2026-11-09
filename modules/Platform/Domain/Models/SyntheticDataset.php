@@ -22,4 +22,3 @@ class SyntheticDataset extends Model
         'schema_definition' => 'array',
     ];
 }
-

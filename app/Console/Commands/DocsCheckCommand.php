@@ -37,4 +37,3 @@ class DocsCheckCommand extends Command
         return 0;
     }
 }
-

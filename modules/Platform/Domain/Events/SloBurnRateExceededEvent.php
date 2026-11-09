@@ -13,12 +13,10 @@ final class SloBurnRateExceededEvent
         public readonly float $currentBurnRate,
         public readonly string $urgency,
         public readonly string $occurredAt
-    ) {
-    }
+    ) {}
 
     public static function create(ServiceSlo $slo, float $burnRate, string $urgency): self
     {
         return new self($slo, $burnRate, $urgency, date('c'));
     }
 }
-

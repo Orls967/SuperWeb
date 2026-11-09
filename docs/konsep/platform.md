@@ -61,3 +61,4 @@ Tabel basis data yang dikelola modul Platform menggunakan prefiks terisolasi `pl
 - `plt_synth_datasets`: Metadata dataset sintetik yang dihasilkan oleh generator data deterministik.
 - `plt_mask_rules`: Aturan penyaringan kolom sensitif per tabel modul.
 - `plt_audit_runs`: Jejak integritas eksekusi audit otomatis beserta SHA-256 fingerprint dari setiap run.
+

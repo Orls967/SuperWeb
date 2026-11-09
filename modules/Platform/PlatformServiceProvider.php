@@ -4,9 +4,22 @@ declare(strict_types=1);
 
 namespace Modules\Platform;
 
+use App\Console\Commands\DocsCheckCommand;
+use App\Console\Commands\DocsDriftCommand;
+use App\Console\Commands\DocsExportCommand;
+use App\Console\Commands\DocsGenerateCommand;
+use App\Console\Commands\QualityCoverageGapCommand;
+use App\Console\Commands\QualityPhaseMetricsCommand;
+use App\Console\Commands\QualityPipelineStatusCommand;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Platform\Console\Commands\PlatformAnonymizeCommand;
+use Modules\Platform\Console\Commands\PlatformAuditCommand;
+use Modules\Platform\Console\Commands\PlatformErrorBudgetCommand;
+use Modules\Platform\Console\Commands\PlatformMaskVerifyCommand;
+use Modules\Platform\Console\Commands\PlatformSynthDataCommand;
+use Modules\Platform\Console\Commands\SandboxExpireCommand;
 use Modules\Platform\Domain\Actions\AnonymizeDatasetAction;
 use Modules\Platform\Domain\Actions\CalculateErrorBudgetAction;
 use Modules\Platform\Domain\Actions\CalculatePhaseMetricsAction;
@@ -29,14 +42,7 @@ use Modules\Platform\Domain\Chaos\DatabaseTamperSimulator;
 use Modules\Platform\Domain\Chaos\DataLeakageTamperSimulator;
 use Modules\Platform\Domain\Chaos\LatencyInjectionSimulator;
 use Modules\Platform\Domain\Events\PlatformEventDispatcher;
-use Modules\Platform\Domain\Models\MaskRule;
-use Modules\Platform\Domain\Models\PhaseMetricSnapshot;
-use Modules\Platform\Domain\Models\PlatformAuditRun;
-use Modules\Platform\Domain\Models\PostmortemRecord;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
-use Modules\Platform\Domain\Models\SandboxTransition;
-use Modules\Platform\Domain\Models\ServiceSlo;
-use Modules\Platform\Domain\Models\SyntheticDataset;
 use Modules\Platform\Domain\Services\CorrelationTracerService;
 use Modules\Platform\Domain\Services\DeterministicDataFactory;
 use Modules\Platform\Domain\Services\MaskRuleRepository;
@@ -69,7 +75,7 @@ class PlatformServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/platform.php',
+            __DIR__.'/config/platform.php',
             'platform'
         );
 
@@ -126,9 +132,9 @@ class PlatformServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'platform');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'platform');
 
         // Daftarkan Policy
         Gate::policy(SandboxEnvironment::class, SandboxEnvironmentPolicy::class);
@@ -138,19 +144,19 @@ class PlatformServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                \App\Console\Commands\QualityPhaseMetricsCommand::class,
-                \App\Console\Commands\QualityCoverageGapCommand::class,
-                \App\Console\Commands\QualityPipelineStatusCommand::class,
-                \App\Console\Commands\DocsGenerateCommand::class,
-                \App\Console\Commands\DocsCheckCommand::class,
-                \App\Console\Commands\DocsExportCommand::class,
-                \App\Console\Commands\DocsDriftCommand::class,
-                \Modules\Platform\Console\Commands\SandboxExpireCommand::class,
-                \Modules\Platform\Console\Commands\PlatformSynthDataCommand::class,
-                \Modules\Platform\Console\Commands\PlatformMaskVerifyCommand::class,
-                \Modules\Platform\Console\Commands\PlatformAnonymizeCommand::class,
-                \Modules\Platform\Console\Commands\PlatformErrorBudgetCommand::class,
-                \Modules\Platform\Console\Commands\PlatformAuditCommand::class,
+                QualityPhaseMetricsCommand::class,
+                QualityCoverageGapCommand::class,
+                QualityPipelineStatusCommand::class,
+                DocsGenerateCommand::class,
+                DocsCheckCommand::class,
+                DocsExportCommand::class,
+                DocsDriftCommand::class,
+                SandboxExpireCommand::class,
+                PlatformSynthDataCommand::class,
+                PlatformMaskVerifyCommand::class,
+                PlatformAnonymizeCommand::class,
+                PlatformErrorBudgetCommand::class,
+                PlatformAuditCommand::class,
             ]);
         }
     }

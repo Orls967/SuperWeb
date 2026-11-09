@@ -77,3 +77,4 @@ php artisan docs:check
 php artisan docs:generate --format=svg
 ```
 Mermaid diagram dalam berkas markdown akan dikonversi menjadi berkas SVG native di folder `docs/generated/svg/`.
+

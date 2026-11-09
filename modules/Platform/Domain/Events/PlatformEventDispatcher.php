@@ -11,12 +11,8 @@ use Illuminate\Support\Facades\Event;
  */
 class PlatformEventDispatcher
 {
-    /**
-     * @param object $event
-     */
     public function dispatch(object $event): void
     {
         Event::dispatch($event);
     }
 }
-

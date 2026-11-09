@@ -23,7 +23,7 @@ class PlatformMaskVerifyCommand extends Command
 
         $leaks = $action->detectLeaks($sampleRecord);
         if (! empty($leaks)) {
-            $this->error('Kebocoran PII terdeteksi: ' . implode(', ', $leaks));
+            $this->error('Kebocoran PII terdeteksi: '.implode(', ', $leaks));
 
             return 1;
         }
@@ -33,4 +33,3 @@ class PlatformMaskVerifyCommand extends Command
         return 0;
     }
 }
-

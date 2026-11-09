@@ -44,4 +44,3 @@ final class JsonMetricSnapshotExporter
         return json_encode($data, $options);
     }
 }
-

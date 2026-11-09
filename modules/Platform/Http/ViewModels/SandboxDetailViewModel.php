@@ -10,8 +10,7 @@ final class SandboxDetailViewModel
 {
     public function __construct(
         public readonly SandboxEnvironment $sandbox
-    ) {
-    }
+    ) {}
 
     public function isExtendable(): bool
     {
@@ -28,4 +27,3 @@ final class SandboxDetailViewModel
         return $this->sandbox->transitions->count();
     }
 }
-

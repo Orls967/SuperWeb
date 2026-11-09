@@ -8,12 +8,11 @@ use Illuminate\Support\Str;
 use Modules\Platform\Domain\Enums\SandboxStatus;
 use Modules\Platform\Domain\Enums\SandboxTier;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
-use Modules\Platform\Domain\StateMachines\SandboxEnvironmentStateMachine;
 
 class CreateSandboxAction
 {
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function execute(
         string $name,
@@ -31,7 +30,7 @@ class CreateSandboxAction
         }
 
         $ttlHours = $tier->defaultTtlHours();
-        $sandboxSlug = $slug . '-' . substr(hash('sha256', $idemKey), 0, 6);
+        $sandboxSlug = $slug.'-'.substr(hash('sha256', $idemKey), 0, 6);
 
         $sandbox = SandboxEnvironment::create([
             'name' => $name,

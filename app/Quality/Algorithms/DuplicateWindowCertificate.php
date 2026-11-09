@@ -10,7 +10,7 @@ namespace App\Quality\Algorithms;
 final class DuplicateWindowCertificate
 {
     /**
-     * @param list<array{fileA: string, indexA: int, fileB: string, indexB: int, length: int}> $blocks
+     * @param  list<array{fileA: string, indexA: int, fileB: string, indexB: int, length: int}>  $blocks
      */
     public function __construct(
         public readonly string $sourceHash,
@@ -23,8 +23,7 @@ final class DuplicateWindowCertificate
         public readonly array $blocks,
         public readonly string $signature,
         public readonly string $issuedAt
-    ) {
-    }
+    ) {}
 
     public static function create(
         string $sourceHash,
@@ -85,4 +84,3 @@ final class DuplicateWindowCertificate
         ];
     }
 }
-

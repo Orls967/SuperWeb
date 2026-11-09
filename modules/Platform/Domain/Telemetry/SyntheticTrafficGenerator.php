@@ -41,4 +41,3 @@ class SyntheticTrafficGenerator
         return $samples;
     }
 }
-

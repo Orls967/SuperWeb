@@ -9,8 +9,6 @@ use App\Quality\Algorithms\DecisionDensityCounter;
 use App\Quality\Algorithms\DuplicateWindowDetector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Tests\Fixtures\Quality\Padding\DuplicatedAlgorithmBlock;
-use Tests\Fixtures\Quality\Padding\EmptyAnemicDto;
 use Tests\Fixtures\Quality\Padding\OrphanUnreachableService;
 use Tests\TestCase;
 
@@ -34,7 +32,7 @@ class QualityMetricsPaddingDetectionTest extends TestCase
 
     public function test_counter_evaluates_decision_density_and_flags_anemic_classes_m3(): void
     {
-        $counter = new DecisionDensityCounter();
+        $counter = new DecisionDensityCounter;
 
         // 1. DTO anemik tanpa keputusan logika
         $anemicCode = file_get_contents(base_path('tests/Fixtures/Quality/Padding/EmptyAnemicDto.php'));
@@ -51,7 +49,7 @@ class QualityMetricsPaddingDetectionTest extends TestCase
 
     public function test_reachability_graph_catches_orphan_unreachable_class_m5(): void
     {
-        $graph = new ClassReachabilityGraph();
+        $graph = new ClassReachabilityGraph;
         $graph->buildGraph([
             base_path('tests/Fixtures/Quality/Padding'),
         ]);
@@ -79,4 +77,3 @@ class QualityMetricsPaddingDetectionTest extends TestCase
         expect($output)->toContain('M-5');
     }
 }
-

@@ -10,7 +10,7 @@ namespace Modules\Platform\Domain\Actions;
 class VerifyMaskingAction
 {
     /**
-     * @param array<string, mixed> $record
+     * @param  array<string, mixed>  $record
      * @return list<string> Daftar field yang bocor (unmasked)
      */
     public function detectLeaks(array $record): array
@@ -41,4 +41,3 @@ class VerifyMaskingAction
         return $leaks;
     }
 }
-

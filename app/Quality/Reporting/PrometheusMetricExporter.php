@@ -13,8 +13,8 @@ use Modules\Platform\Domain\Models\ServiceSlo;
 final class PrometheusMetricExporter
 {
     /**
-     * @param iterable<PhaseMetricSnapshot> $snapshots
-     * @param iterable<ServiceSlo> $slos
+     * @param  iterable<PhaseMetricSnapshot>  $snapshots
+     * @param  iterable<ServiceSlo>  $slos
      */
     public function exportMetrics(iterable $snapshots, iterable $slos): string
     {
@@ -52,7 +52,6 @@ final class PrometheusMetricExporter
             $lines[] = sprintf('platform_service_error_budget_mins{service="%s"} %d', $slo->service_name, $slo->error_budget_mins);
         }
 
-        return implode("\n", $lines) . "\n";
+        return implode("\n", $lines)."\n";
     }
 }
-

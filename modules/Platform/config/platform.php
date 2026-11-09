@@ -10,4 +10,3 @@ return [
         'max_ttl_hours' => 72,
     ],
 ];
-

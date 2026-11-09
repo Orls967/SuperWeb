@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Platform\Domain\Actions;
 
-use Modules\Platform\Domain\ValueObjects\CorrelationContext;
-
 final class CorrelationContextHolder
 {
     private static ?string $currentCorrelationId = null;
@@ -25,4 +23,3 @@ final class CorrelationContextHolder
         self::$currentCorrelationId = null;
     }
 }
-

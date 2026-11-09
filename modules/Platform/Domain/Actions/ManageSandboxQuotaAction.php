@@ -13,10 +13,9 @@ use Modules\Platform\Domain\Services\SandboxIsolationService;
 class ManageSandboxQuotaAction
 {
     public function __construct(
-        protected SandboxIsolationService $isolation = new SandboxIsolationService(),
-        protected ExpireSandboxAction $expireAction = new ExpireSandboxAction()
-    ) {
-    }
+        protected SandboxIsolationService $isolation = new SandboxIsolationService,
+        protected ExpireSandboxAction $expireAction = new ExpireSandboxAction
+    ) {}
 
     /**
      * @return array{active_count: int, expired_cleaned: int, quota_status: string}
@@ -38,4 +37,3 @@ class ManageSandboxQuotaAction
         ];
     }
 }
-

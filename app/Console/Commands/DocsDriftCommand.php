@@ -20,4 +20,3 @@ class DocsDriftCommand extends Command
         return 0;
     }
 }
-

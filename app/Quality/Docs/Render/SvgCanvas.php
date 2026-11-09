@@ -17,8 +17,7 @@ class SvgCanvas
         public readonly int $width = 800,
         public readonly int $height = 600,
         public readonly string $background = '#ffffff'
-    ) {
-    }
+    ) {}
 
     public function drawRect(
         int $x,
@@ -139,4 +138,3 @@ class SvgCanvas
         return implode("\n", $svg);
     }
 }
-

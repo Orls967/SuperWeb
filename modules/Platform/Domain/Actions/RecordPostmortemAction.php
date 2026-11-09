@@ -11,7 +11,7 @@ use Modules\Platform\Domain\Models\PostmortemRecord;
 class RecordPostmortemAction
 {
     /**
-     * @param list<string> $actionItems
+     * @param  list<string>  $actionItems
      */
     public function execute(
         string $incidentRef,
@@ -35,4 +35,3 @@ class RecordPostmortemAction
         ]);
     }
 }
-

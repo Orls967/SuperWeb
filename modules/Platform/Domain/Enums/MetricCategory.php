@@ -12,4 +12,3 @@ enum MetricCategory: string
     case REACHABILITY = 'reachability';
     case TEST_COVERAGE = 'test_coverage';
 }
-

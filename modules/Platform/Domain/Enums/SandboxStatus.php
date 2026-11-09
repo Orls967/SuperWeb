@@ -24,4 +24,3 @@ enum SandboxStatus: string
         return in_array($this, [self::PROVISIONING, self::SEEDED, self::READY, self::EXPIRING], true);
     }
 }
-

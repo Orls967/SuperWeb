@@ -32,4 +32,3 @@ class SandboxTransition extends Model
         return $this->belongsTo(SandboxEnvironment::class, 'sandbox_id');
     }
 }
-

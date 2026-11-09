@@ -10,9 +10,8 @@ namespace App\Quality\Docs\Render;
 class ArchitectureDiagramRenderer
 {
     public function __construct(
-        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler()
-    ) {
-    }
+        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler
+    ) {}
 
     public function renderModuleTopology(string $moduleName, array $dependencies): string
     {
@@ -26,4 +25,3 @@ class ArchitectureDiagramRenderer
         return $this->compiler->compile($mermaid);
     }
 }
-

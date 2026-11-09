@@ -21,4 +21,3 @@ class MaskRule extends Model
         'is_active' => 'boolean',
     ];
 }
-

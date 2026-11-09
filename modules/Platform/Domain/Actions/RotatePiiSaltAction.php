@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Platform\Domain\Actions;
 
-use Modules\Platform\Domain\Services\PiiVaultAnonymizer;
-
 /**
  * Aksi rotasi salt vault blind-index PII dengan pelacakan versi salt.
  */
@@ -27,4 +25,3 @@ class RotatePiiSaltAction
         ];
     }
 }
-

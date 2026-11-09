@@ -36,4 +36,3 @@ class PiiVaultAnonymizer
         return sprintf('%s-%s-%s', $prefix, substr($hash, 0, 8), substr($hash, 8, 8));
     }
 }
-

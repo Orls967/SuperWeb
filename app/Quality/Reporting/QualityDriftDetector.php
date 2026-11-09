@@ -10,8 +10,8 @@ namespace App\Quality\Reporting;
 final class QualityDriftDetector
 {
     /**
-     * @param array<string, float|int> $baseSnapshot
-     * @param array<string, float|int> $currentSnapshot
+     * @param  array<string, float|int>  $baseSnapshot
+     * @param  array<string, float|int>  $currentSnapshot
      * @return array{has_drift: bool, delta_loc: int, delta_density: float, delta_dup_ratio: float, summary: string}
      */
     public function detectDrift(array $baseSnapshot, array $currentSnapshot): array
@@ -47,4 +47,3 @@ final class QualityDriftDetector
         ];
     }
 }
-

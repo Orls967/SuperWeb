@@ -10,23 +10,22 @@ namespace App\Quality\Algorithms;
 final class CyclomaticComplexityVisualizer
 {
     /**
-     * @param list<array{from: string, to: string, label?: string}> $edges
+     * @param  list<array{from: string, to: string, label?: string}>  $edges
      */
     public function generateDotGraph(string $graphName, array $edges): string
     {
         $dot = [];
         $dot[] = "digraph \"{$graphName}\" {";
-        $dot[] = "    rankdir=TB;";
-        $dot[] = "    node [shape=box, style=filled, fillcolor=\"#f1f5f9\", color=\"#0284c7\"];";
+        $dot[] = '    rankdir=TB;';
+        $dot[] = '    node [shape=box, style=filled, fillcolor="#f1f5f9", color="#0284c7"];';
 
         foreach ($edges as $e) {
             $label = isset($e['label']) ? " [label=\"{$e['label']}\"]" : '';
             $dot[] = "    \"{$e['from']}\" -> \"{$e['to']}\"{$label};";
         }
 
-        $dot[] = "}";
+        $dot[] = '}';
 
         return implode("\n", $dot);
     }
 }
-

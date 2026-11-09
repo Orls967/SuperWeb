@@ -12,16 +12,15 @@ use Modules\Platform\Domain\Models\ServiceSlo;
 final class DevPortalDashboardViewModel
 {
     /**
-     * @param Collection<int, SandboxEnvironment> $sandboxes
-     * @param Collection<int, PhaseMetricSnapshot> $metrics
-     * @param Collection<int, ServiceSlo> $slos
+     * @param  Collection<int, SandboxEnvironment>  $sandboxes
+     * @param  Collection<int, PhaseMetricSnapshot>  $metrics
+     * @param  Collection<int, ServiceSlo>  $slos
      */
     public function __construct(
         public readonly Collection $sandboxes,
         public readonly Collection $metrics,
         public readonly Collection $slos
-    ) {
-    }
+    ) {}
 
     public function activeSandboxCount(): int
     {
@@ -38,4 +37,3 @@ final class DevPortalDashboardViewModel
         return $this->slos->filter(fn (ServiceSlo $s) => $s->status === 'critical')->count();
     }
 }
-

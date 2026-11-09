@@ -33,4 +33,3 @@ class SandboxNetworkingService
         return sprintf('http://%s.sandbox.typeshit.local:%d', $sandbox->slug, $port);
     }
 }
-

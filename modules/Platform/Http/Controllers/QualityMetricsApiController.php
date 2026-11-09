@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Platform\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Quality\Reporting\JsonMetricSnapshotExporter;
 use Illuminate\Http\JsonResponse;
 use Modules\Platform\Domain\Models\PhaseMetricSnapshot;
-use App\Quality\Reporting\JsonMetricSnapshotExporter;
 
 class QualityMetricsApiController extends Controller
 {
@@ -20,4 +20,3 @@ class QualityMetricsApiController extends Controller
         );
     }
 }
-

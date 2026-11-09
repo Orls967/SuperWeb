@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Quality\Algorithms;
 
-use InvalidArgumentException;
-
 /**
  * Verifier Sertifikat Matematika Duplikasi Kode A1 (W8-D02).
  */
@@ -154,4 +152,3 @@ final class DuplicateWindowCertificateVerifier
         return $jaro + ($prefixLen * 0.1 * (1.0 - $jaro));
     }
 }
-

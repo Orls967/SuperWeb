@@ -10,7 +10,7 @@ namespace Modules\Platform\Domain\Telemetry;
 class AuditTrailIntegrityVerifier
 {
     /**
-     * @param list<array{id: int, prev_hash: string, payload: string, hash: string}> $entries
+     * @param  list<array{id: int, prev_hash: string, payload: string, hash: string}>  $entries
      * @return array{is_valid: bool, broken_at_index: ?int, total_verified: int}
      */
     public function verifyHashChain(array $entries): array
@@ -47,4 +47,3 @@ class AuditTrailIntegrityVerifier
         ];
     }
 }
-

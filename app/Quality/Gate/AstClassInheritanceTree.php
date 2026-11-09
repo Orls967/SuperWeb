@@ -46,4 +46,3 @@ class AstClassInheritanceTree
         return count($this->getAncestryChain($class));
     }
 }
-

@@ -11,8 +11,8 @@ namespace App\Quality\Algorithms;
 final class CodeDuplicationPairComparator
 {
     /**
-     * @param list<string> $tokensA
-     * @param list<string> $tokensB
+     * @param  list<string>  $tokensA
+     * @param  list<string>  $tokensB
      * @return array{is_identical: bool, mismatch_indices: list<int>, similarity_percentage: float}
      */
     public function compareTokens(array $tokensA, array $tokensB): array
@@ -51,4 +51,3 @@ final class CodeDuplicationPairComparator
         ];
     }
 }
-

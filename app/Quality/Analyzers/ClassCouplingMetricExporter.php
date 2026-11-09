@@ -10,13 +10,12 @@ namespace App\Quality\Analyzers;
 class ClassCouplingMetricExporter
 {
     public function __construct(
-        protected ClassCouplingAnalyzer $analyzer = new ClassCouplingAnalyzer()
-    ) {
-    }
+        protected ClassCouplingAnalyzer $analyzer = new ClassCouplingAnalyzer
+    ) {}
 
     /**
-     * @param array<string, list<string>> $moduleClasses Map module -> list of classes
-     * @param array<string, list<string>> $dependencyGraph Map class -> dependencies
+     * @param  array<string, list<string>>  $moduleClasses  Map module -> list of classes
+     * @param  array<string, list<string>>  $dependencyGraph  Map class -> dependencies
      * @return array<string, array{average_ca: float, average_ce: float, average_instability: float}>
      */
     public function exportModuleAverages(array $moduleClasses, array $dependencyGraph): array
@@ -46,4 +45,3 @@ class ClassCouplingMetricExporter
         return $report;
     }
 }
-

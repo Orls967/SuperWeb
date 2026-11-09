@@ -39,4 +39,3 @@ class SandboxDatabaseMigrator
         return min($steps, 8);
     }
 }
-

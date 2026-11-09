@@ -12,8 +12,8 @@ class QualityRatchetDebtService
     /**
      * Membandingkan hasil scan terhadap baseline ratchet
      *
-     * @param array<string, int> $baseline
-     * @param array<string, int> $current
+     * @param  array<string, int>  $baseline
+     * @param  array<string, int>  $current
      * @return array{debt_change: int, regressions: list<string>, improvements: list<string>}
      */
     public function evaluateRatchet(array $baseline, array $current): array
@@ -42,4 +42,3 @@ class QualityRatchetDebtService
         ];
     }
 }
-

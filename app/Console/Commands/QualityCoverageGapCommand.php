@@ -29,4 +29,3 @@ class QualityCoverageGapCommand extends Command
         return $res['status'] === 'pass' ? 0 : 1;
     }
 }
-

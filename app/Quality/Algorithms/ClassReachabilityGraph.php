@@ -27,7 +27,7 @@ final class ClassReachabilityGraph
     /**
      * Membangun graf dari satu atau lebih direktori
      *
-     * @param list<string> $directories
+     * @param  list<string>  $directories
      */
     public function buildGraph(array $directories): void
     {
@@ -163,7 +163,7 @@ final class ClassReachabilityGraph
                 foreach ($deps as $dep) {
                     $referenced[$dep] = true;
                     foreach (array_keys($this->knownClasses) as $known) {
-                        if ($dep === $known || str_ends_with($known, '\\' . $dep)) {
+                        if ($dep === $known || str_ends_with($known, '\\'.$dep)) {
                             $referenced[$known] = true;
                         }
                     }
@@ -196,7 +196,7 @@ final class ClassReachabilityGraph
             foreach ($deps as $dep) {
                 // Normalisasi dep jika match dengan known class
                 foreach (array_keys($this->knownClasses) as $known) {
-                    if ($dep === $known || str_ends_with($known, '\\' . $dep)) {
+                    if ($dep === $known || str_ends_with($known, '\\'.$dep)) {
                         if (! isset($visited[$known])) {
                             $visited[$known] = true;
                             $queue[] = $known;

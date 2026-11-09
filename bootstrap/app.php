@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\CorrelationIdMiddleware;
 use App\Http\Middleware\SecurityHeadersMiddleware;
 use App\Http\Middleware\ThrottleAuthAttemptsMiddleware;
 use Illuminate\Auth\Middleware\Authorize;
@@ -46,7 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            \App\Http\Middleware\CorrelationIdMiddleware::class,
+            CorrelationIdMiddleware::class,
             SecurityHeadersMiddleware::class,
             ThrottleAuthAttemptsMiddleware::class,
         ]);

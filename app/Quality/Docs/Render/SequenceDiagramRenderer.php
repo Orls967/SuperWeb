@@ -10,13 +10,12 @@ namespace App\Quality\Docs\Render;
 class SequenceDiagramRenderer
 {
     public function __construct(
-        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler()
-    ) {
-    }
+        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler
+    ) {}
 
     /**
-     * @param list<string> $participants
-     * @param list<array{from: string, to: string, message: string, is_dotted?: bool}> $messages
+     * @param  list<string>  $participants
+     * @param  list<array{from: string, to: string, message: string, is_dotted?: bool}>  $messages
      */
     public function renderSequence(string $title, array $participants, array $messages): string
     {
@@ -61,4 +60,3 @@ class SequenceDiagramRenderer
         return $canvas->render();
     }
 }
-

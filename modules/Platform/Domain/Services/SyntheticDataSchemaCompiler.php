@@ -10,7 +10,7 @@ namespace Modules\Platform\Domain\Services;
 class SyntheticDataSchemaCompiler
 {
     /**
-     * @param array<string, list<string>> $foreignKeyDependencies Map table -> [parent_tables]
+     * @param  array<string, list<string>>  $foreignKeyDependencies  Map table -> [parent_tables]
      * @return list<string> Topological sort urutan insersi tabel bebas deadlock foreign key
      */
     public function determineInsertionOrder(array $foreignKeyDependencies): array
@@ -63,4 +63,3 @@ class SyntheticDataSchemaCompiler
         return $order;
     }
 }
-

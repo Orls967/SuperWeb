@@ -55,4 +55,3 @@ final class CodeDuplicationFingerprintIndex
         return count($this->hashTable);
     }
 }
-

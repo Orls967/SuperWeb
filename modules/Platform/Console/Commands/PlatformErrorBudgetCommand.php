@@ -40,4 +40,3 @@ class PlatformErrorBudgetCommand extends Command
         return 0;
     }
 }
-

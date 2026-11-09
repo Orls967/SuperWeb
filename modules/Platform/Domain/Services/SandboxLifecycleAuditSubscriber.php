@@ -16,9 +16,8 @@ use Modules\Platform\Domain\Events\SandboxProvisionedEvent;
 class SandboxLifecycleAuditSubscriber
 {
     public function __construct(
-        protected SandboxLogAggregator $aggregator = new SandboxLogAggregator()
-    ) {
-    }
+        protected SandboxLogAggregator $aggregator = new SandboxLogAggregator
+    ) {}
 
     /**
      * @return array<class-string, string>

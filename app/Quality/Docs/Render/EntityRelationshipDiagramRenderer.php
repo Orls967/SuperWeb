@@ -10,8 +10,8 @@ namespace App\Quality\Docs\Render;
 class EntityRelationshipDiagramRenderer
 {
     /**
-     * @param array<string, list<string>> $entities Map entityName -> list of column definitions
-     * @param list<array{from: string, to: string, relation: string}> $relations
+     * @param  array<string, list<string>>  $entities  Map entityName -> list of column definitions
+     * @param  list<array{from: string, to: string, relation: string}>  $relations
      */
     public function renderErd(string $title, array $entities, array $relations): string
     {
@@ -69,4 +69,3 @@ class EntityRelationshipDiagramRenderer
         return $canvas->render();
     }
 }
-

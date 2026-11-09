@@ -19,7 +19,7 @@ class PlatformDataPrivacyAndAuditTest extends TestCase
 
     public function test_pii_masking_action_anonymizes_sensitive_fields_deterministically(): void
     {
-        $action = new MaskPiiAction();
+        $action = new MaskPiiAction;
 
         $originalEmail = 'developer.private@typeshit.com';
         $originalPhone = '+6281234567890';
@@ -42,7 +42,7 @@ class PlatformDataPrivacyAndAuditTest extends TestCase
 
     public function test_anonymize_dataset_action_cleanses_database_payloads(): void
     {
-        $anonymizer = new AnonymizeDatasetAction(new MaskPiiAction());
+        $anonymizer = new AnonymizeDatasetAction(new MaskPiiAction);
 
         $payload = [
             'id' => 101,
@@ -108,4 +108,3 @@ class PlatformDataPrivacyAndAuditTest extends TestCase
         expect($corruptExit)->not->toBe(0);
     }
 }
-

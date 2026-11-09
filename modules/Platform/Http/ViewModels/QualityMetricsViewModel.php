@@ -10,12 +10,11 @@ use Modules\Platform\Domain\Models\PhaseMetricSnapshot;
 final class QualityMetricsViewModel
 {
     /**
-     * @param Collection<int, PhaseMetricSnapshot> $snapshots
+     * @param  Collection<int, PhaseMetricSnapshot>  $snapshots
      */
     public function __construct(
         public readonly Collection $snapshots
-    ) {
-    }
+    ) {}
 
     public function averageDensity(): float
     {
@@ -26,4 +25,3 @@ final class QualityMetricsViewModel
         return round((float) $this->snapshots->avg('decision_density'), 4);
     }
 }
-

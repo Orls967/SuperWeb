@@ -32,7 +32,7 @@ class PiiDeterministicTokenVault
             $tag
         );
 
-        return base64_encode($iv . $tag . $ciphertext);
+        return base64_encode($iv.$tag.$ciphertext);
     }
 
     /**
@@ -61,4 +61,3 @@ class PiiDeterministicTokenVault
         return $decrypted !== false ? $decrypted : null;
     }
 }
-

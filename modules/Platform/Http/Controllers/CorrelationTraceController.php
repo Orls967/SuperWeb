@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Platform\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Modules\Platform\Domain\Actions\TraceCorrelationChainAction;
 
@@ -20,4 +19,3 @@ class CorrelationTraceController extends Controller
         ]);
     }
 }
-

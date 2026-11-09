@@ -39,4 +39,3 @@ class DuplicatedAlgorithmBlock
         return $acc;
     }
 }
-

@@ -48,4 +48,3 @@ class W3cTraceContextPropagator
         return sprintf('00-%s-%s-%s', $traceId, $spanId, $flags);
     }
 }
-

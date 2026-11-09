@@ -42,4 +42,3 @@ class SandboxEnvironment extends Model
         return $this->hasMany(SandboxTransition::class, 'sandbox_id');
     }
 }
-

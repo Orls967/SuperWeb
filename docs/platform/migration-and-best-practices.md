@@ -30,3 +30,4 @@ Pengembang diimbau untuk beralih ke komponen modul Platform berikut:
    - Seluruh tabel domain platform wajib menggunakan prefiks `plt_`. Jangan mencampuradukkan tabel platform dengan tabel modul core atau domain bisnis lain tanpa relasi foreign key yang jelas.
 5. **Penanganan PII Ketat**:
    - Kolom yang memuat identitas personal (nama lengkap, NIK, alamat rumah, nomor kartu kredit) harus dilindungi oleh aturan masking pada `plt_mask_rules` dan diverifikasi dengan `php artisan platform:mask-verify`.
+

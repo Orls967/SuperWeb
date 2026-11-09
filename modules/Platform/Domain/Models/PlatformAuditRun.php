@@ -24,4 +24,3 @@ class PlatformAuditRun extends Model
         'completed_at' => 'datetime',
     ];
 }
-

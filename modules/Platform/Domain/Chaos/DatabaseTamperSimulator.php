@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Platform\Domain\Chaos;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
 
 /**
@@ -26,9 +27,8 @@ class DatabaseTamperSimulator
      */
     public function tamperMetricCertificate(string $phaseId): bool
     {
-        return (bool) \Illuminate\Support\Facades\DB::table('plt_phase_metrics')
+        return (bool) DB::table('plt_phase_metrics')
             ->where('phase_id', $phaseId)
             ->update(['certificate_hash' => 'tampered_invalid_sha256_hash_value_000000']);
     }
 }
-

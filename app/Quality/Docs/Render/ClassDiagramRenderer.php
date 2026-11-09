@@ -10,8 +10,8 @@ namespace App\Quality\Docs\Render;
 class ClassDiagramRenderer
 {
     /**
-     * @param array<string, array{methods: list<string>, properties: list<string>}> $classes
-     * @param list<array{from: string, to: string, type: string}> $relationships
+     * @param  array<string, array{methods: list<string>, properties: list<string>}>  $classes
+     * @param  list<array{from: string, to: string, type: string}>  $relationships
      */
     public function renderClasses(string $title, array $classes, array $relationships): string
     {
@@ -45,13 +45,13 @@ class ClassDiagramRenderer
 
             $lineY = $y + 48;
             foreach (array_slice($details['properties'], 0, 4) as $prop) {
-                $canvas->drawText(x: $x + 10, y: $lineY, text: '+ ' . $prop, fontSize: 11, fill: '#0369a1');
+                $canvas->drawText(x: $x + 10, y: $lineY, text: '+ '.$prop, fontSize: 11, fill: '#0369a1');
                 $lineY += 17;
             }
 
             $lineY += 5;
             foreach (array_slice($details['methods'], 0, 4) as $method) {
-                $canvas->drawText(x: $x + 10, y: $lineY, text: '+ ' . $method . '()', fontSize: 11, fill: '#15803d');
+                $canvas->drawText(x: $x + 10, y: $lineY, text: '+ '.$method.'()', fontSize: 11, fill: '#15803d');
                 $lineY += 17;
             }
 
@@ -74,4 +74,3 @@ class ClassDiagramRenderer
         return $canvas->render();
     }
 }
-

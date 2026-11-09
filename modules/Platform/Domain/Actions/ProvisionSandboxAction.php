@@ -29,4 +29,3 @@ class ProvisionSandboxAction
         return $sandbox->fresh();
     }
 }
-

@@ -12,7 +12,7 @@ use InvalidArgumentException;
 final class CorrelationContext
 {
     /**
-     * @param array<string, string> $baggage
+     * @param  array<string, string>  $baggage
      */
     public function __construct(
         public readonly string $traceId,
@@ -72,4 +72,3 @@ final class CorrelationContext
         ];
     }
 }
-

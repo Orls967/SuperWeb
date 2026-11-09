@@ -13,9 +13,9 @@ final class SoftwareMaintainabilityIndex
     /**
      * Menghitung nilai Maintainability Index (skala 0 - 100)
      *
-     * @param float $halsteadVolume Nilai V dari Halstead Metrics
-     * @param int $cyclomaticComplexity Nilai M (McCabe)
-     * @param int $linesOfCode Jumlah baris kode eksekutabel
+     * @param  float  $halsteadVolume  Nilai V dari Halstead Metrics
+     * @param  int  $cyclomaticComplexity  Nilai M (McCabe)
+     * @param  int  $linesOfCode  Jumlah baris kode eksekutabel
      * @return array{maintainability_index: float, rating: string, color: string}
      */
     public function calculate(float $halsteadVolume, int $cyclomaticComplexity, int $linesOfCode): array
@@ -52,4 +52,3 @@ final class SoftwareMaintainabilityIndex
         ];
     }
 }
-

@@ -27,4 +27,3 @@ class RecordPostmortemRequest extends FormRequest
         ];
     }
 }
-

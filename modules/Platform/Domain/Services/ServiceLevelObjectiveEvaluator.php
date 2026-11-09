@@ -12,7 +12,7 @@ use Modules\Platform\Domain\Models\ServiceSlo;
 class ServiceLevelObjectiveEvaluator
 {
     /**
-     * @param list<array{timestamp: int, is_error: bool}> $events
+     * @param  list<array{timestamp: int, is_error: bool}>  $events
      * @return array{sli_bps: int, total_requests: int, error_requests: int, meets_slo: bool}
      */
     public function evaluateWindow(ServiceSlo $slo, array $events): array
@@ -45,4 +45,3 @@ class ServiceLevelObjectiveEvaluator
         ];
     }
 }
-

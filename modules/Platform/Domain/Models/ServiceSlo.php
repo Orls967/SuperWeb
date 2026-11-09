@@ -25,4 +25,3 @@ class ServiceSlo extends Model
         'burn_rate_6h' => 'float',
     ];
 }
-

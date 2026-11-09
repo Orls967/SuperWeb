@@ -19,10 +19,9 @@ class CalculatePhaseMetricsAction
 {
     public function __construct(
         protected DuplicateWindowDetector $duplicateDetector = new DuplicateWindowDetector(windowSize: 35),
-        protected DecisionDensityCounter $densityCounter = new DecisionDensityCounter(),
-        protected ClassReachabilityGraph $reachabilityGraph = new ClassReachabilityGraph()
-    ) {
-    }
+        protected DecisionDensityCounter $densityCounter = new DecisionDensityCounter,
+        protected ClassReachabilityGraph $reachabilityGraph = new ClassReachabilityGraph
+    ) {}
 
     /**
      * @return array{
@@ -153,4 +152,3 @@ class CalculatePhaseMetricsAction
         return $snapshot;
     }
 }
-

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Platform\Domain\Actions;
 
 use Modules\Platform\Domain\Models\ServiceSlo;
-use Modules\Platform\Domain\ValueObjects\ErrorBudgetBalance;
 
 class CalculateErrorBudgetAction
 {
@@ -35,4 +34,3 @@ class CalculateErrorBudgetAction
         ];
     }
 }
-

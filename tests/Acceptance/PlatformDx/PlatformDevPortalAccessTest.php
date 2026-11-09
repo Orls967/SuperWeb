@@ -39,4 +39,3 @@ class PlatformDevPortalAccessTest extends TestCase
         $response->assertSee('Error Budget Burn Rate');
     }
 }
-

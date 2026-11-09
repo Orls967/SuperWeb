@@ -7,9 +7,9 @@ namespace App\Quality\Algorithms;
 final class ReachabilityReport
 {
     /**
-     * @param list<string> $reachableClasses
-     * @param list<string> $orphanClasses
-     * @param array<string, list<string>> $adjacencyList
+     * @param  list<string>  $reachableClasses
+     * @param  list<string>  $orphanClasses
+     * @param  array<string, list<string>>  $adjacencyList
      */
     public function __construct(
         public readonly array $reachableClasses,
@@ -18,8 +18,7 @@ final class ReachabilityReport
         public readonly int $totalNodes,
         public readonly int $totalEdges,
         public readonly string $certificate = '',
-    ) {
-    }
+    ) {}
 
     public function isOrphan(string $className): bool
     {
@@ -41,4 +40,3 @@ final class ReachabilityReport
         ];
     }
 }
-

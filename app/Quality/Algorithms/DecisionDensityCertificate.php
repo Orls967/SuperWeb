@@ -10,7 +10,7 @@ namespace App\Quality\Algorithms;
 final class DecisionDensityCertificate
 {
     /**
-     * @param array<string, int> $branchDistribution
+     * @param  array<string, int>  $branchDistribution
      */
     public function __construct(
         public readonly string $sourceHash,
@@ -23,8 +23,7 @@ final class DecisionDensityCertificate
         public readonly array $branchDistribution,
         public readonly string $signature,
         public readonly string $issuedAt
-    ) {
-    }
+    ) {}
 
     public static function create(
         string $sourceHash,
@@ -88,4 +87,3 @@ final class DecisionDensityCertificate
         ];
     }
 }
-

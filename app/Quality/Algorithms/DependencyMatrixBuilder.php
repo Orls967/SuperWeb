@@ -10,7 +10,7 @@ namespace App\Quality\Algorithms;
 final class DependencyMatrixBuilder
 {
     /**
-     * @param array<string, list<string>> $adjacency
+     * @param  array<string, list<string>>  $adjacency
      * @return array{nodes: list<string>, matrix: array<string, array<string, int>>}
      */
     public function buildDsm(array $adjacency): array
@@ -36,7 +36,7 @@ final class DependencyMatrixBuilder
     /**
      * Menghitung skor keterikatan siklik (cyclic coupling score)
      *
-     * @param array<string, array<string, int>> $matrix
+     * @param  array<string, array<string, int>>  $matrix
      */
     public function calculateCouplingScore(array $matrix): int
     {
@@ -59,4 +59,3 @@ final class DependencyMatrixBuilder
         return $score;
     }
 }
-

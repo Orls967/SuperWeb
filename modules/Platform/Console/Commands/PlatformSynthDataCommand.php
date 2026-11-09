@@ -18,7 +18,7 @@ class PlatformSynthDataCommand extends Command
         $domain = (string) $this->option('domain');
         $records = (int) $this->option('records');
 
-        $checksum = hash('sha256', "domain:{$domain}:records:{$records}:" . date('Y-m-d'));
+        $checksum = hash('sha256', "domain:{$domain}:records:{$records}:".date('Y-m-d'));
 
         SyntheticDataset::create([
             'name' => "Synthetic {$domain} Dataset",
@@ -33,4 +33,3 @@ class PlatformSynthDataCommand extends Command
         return 0;
     }
 }
-

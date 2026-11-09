@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Platform\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Quality\Reporting\PrometheusMetricExporter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Modules\Platform\Domain\Models\ServiceSlo;
-use App\Quality\Reporting\PrometheusMetricExporter;
 use Modules\Platform\Domain\Models\PhaseMetricSnapshot;
+use Modules\Platform\Domain\Models\ServiceSlo;
 
 class SloMonitoringApiController extends Controller
 {
@@ -35,4 +35,3 @@ class SloMonitoringApiController extends Controller
         ]);
     }
 }
-

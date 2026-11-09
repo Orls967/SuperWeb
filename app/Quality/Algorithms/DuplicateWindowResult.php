@@ -7,13 +7,12 @@ namespace App\Quality\Algorithms;
 final class DuplicateWindowResult
 {
     /**
-     * @param list<DuplicateBlock> $blocks
+     * @param  list<DuplicateBlock>  $blocks
      */
     public function __construct(
         public readonly int $candidateCount,
         public readonly array $blocks,
-    ) {
-    }
+    ) {}
 
     public function toReport(int $totalLines): DuplicateReport
     {
@@ -34,4 +33,3 @@ final class DuplicateWindowResult
         );
     }
 }
-

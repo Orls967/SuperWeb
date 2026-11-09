@@ -57,7 +57,7 @@ final class UnusedImportScanner
 
         foreach ($imports as $shortName => $fullNamespace) {
             // Cek apakah short name dipanggil di body
-            if (! preg_match('/\b' . preg_quote($shortName, '/') . '\b/', $bodyText)) {
+            if (! preg_match('/\b'.preg_quote($shortName, '/').'\b/', $bodyText)) {
                 $unused[] = $fullNamespace;
             }
         }
@@ -65,4 +65,3 @@ final class UnusedImportScanner
         return $unused;
     }
 }
-

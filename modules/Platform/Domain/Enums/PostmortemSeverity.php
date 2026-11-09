@@ -10,4 +10,3 @@ enum PostmortemSeverity: string
     case SEV2_MAJOR = 'sev2_major';
     case SEV3_MINOR = 'sev3_minor';
 }
-

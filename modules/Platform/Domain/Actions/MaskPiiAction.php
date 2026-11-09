@@ -21,7 +21,7 @@ class MaskPiiAction
         $domain = $parts[1];
 
         if (strlen($local) <= 2) {
-            return '***@' . $domain;
+            return '***@'.$domain;
         }
 
         $first = $local[0];
@@ -80,6 +80,6 @@ class MaskPiiAction
         $suffix = substr($value, -$suffixLength);
         $maskedLength = max(1, $len - ($prefixLength + $suffixLength));
 
-        return $prefix . str_repeat('*', $maskedLength) . $suffix;
+        return $prefix.str_repeat('*', $maskedLength).$suffix;
     }
 }

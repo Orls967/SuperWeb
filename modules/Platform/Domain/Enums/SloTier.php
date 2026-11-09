@@ -19,4 +19,3 @@ enum SloTier: string
         };
     }
 }
-

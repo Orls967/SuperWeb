@@ -14,3 +14,4 @@ Dokumen ini mencantumkan kode galat, penyebab umum, dan tindakan pemulihan untuk
 | `PLT-ERR-008` | `OrphanClassDetectedException` | Kelas tidak dapat dijangkau dari entry point sistem mana pun (dead code). | Daftarkan entry point jika kelas memang dipanggil via refleksi, atau hapus kelas yang sudah tidak digunakan. |
 | `PLT-ERR-009` | `CorrelationHeaderMissingException` | Request HTTP internal tidak menyertakan header `X-Correlation-Id` atau `traceparent`. | Pastikan `CorrelationIdMiddleware` aktif pada pipeline global middleware aplikasi. |
 | `PLT-ERR-010` | `AuditHashTamperedException` | Verifikasi berkala mendeteksi inkonsistensi hash SHA-256 pada rantai audit trail `plt_audit_runs`. | Lakukan investigasi keamanan mendalam. Periksa apakah ada update manual langsung pada basis data tanpa melalui action service. |
+

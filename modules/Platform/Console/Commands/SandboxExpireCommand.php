@@ -21,4 +21,3 @@ class SandboxExpireCommand extends Command
         return 0;
     }
 }
-

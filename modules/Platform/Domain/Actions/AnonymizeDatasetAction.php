@@ -10,12 +10,11 @@ namespace Modules\Platform\Domain\Actions;
 class AnonymizeDatasetAction
 {
     public function __construct(
-        protected MaskPiiAction $masker = new MaskPiiAction()
-    ) {
-    }
+        protected MaskPiiAction $masker = new MaskPiiAction
+    ) {}
 
     /**
-     * @param array<string, mixed> $record
+     * @param  array<string, mixed>  $record
      * @return array<string, mixed>
      */
     public function anonymizeRecord(string $domain, array $record): array

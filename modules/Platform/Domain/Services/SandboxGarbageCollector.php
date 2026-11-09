@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Platform\Domain\Services;
 
+use Modules\Platform\Domain\Enums\SandboxStatus;
 use Modules\Platform\Domain\Models\SandboxEnvironment;
 use Modules\Platform\Domain\StateMachines\SandboxEnvironmentStateMachine;
 
@@ -28,7 +29,7 @@ class SandboxGarbageCollector
 
         foreach ($expired as $s) {
             $sm = new SandboxEnvironmentStateMachine($s);
-            $sm->transitionTo(\Modules\Platform\Domain\Enums\SandboxStatus::DESTROYED, 'Reclaimed by garbage collector after retention window');
+            $sm->transitionTo(SandboxStatus::DESTROYED, 'Reclaimed by garbage collector after retention window');
             $count++;
             $bytes += 1024 * 1024 * 10; // Est. 10MB per schema
         }
@@ -39,4 +40,3 @@ class SandboxGarbageCollector
         ];
     }
 }
-

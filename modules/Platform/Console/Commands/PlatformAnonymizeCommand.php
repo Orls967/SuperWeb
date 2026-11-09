@@ -22,4 +22,3 @@ class PlatformAnonymizeCommand extends Command
         return 0;
     }
 }
-

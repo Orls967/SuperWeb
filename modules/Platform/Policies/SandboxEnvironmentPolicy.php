@@ -34,4 +34,3 @@ class SandboxEnvironmentPolicy
         return $user->id === $sandbox->owner_id;
     }
 }
-

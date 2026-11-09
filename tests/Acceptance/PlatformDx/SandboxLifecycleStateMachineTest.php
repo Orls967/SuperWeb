@@ -114,4 +114,3 @@ class SandboxLifecycleStateMachineTest extends TestCase
         expect($expiredSandbox->fresh()->status)->toBe(SandboxStatus::EXPIRED->value);
     }
 }
-

@@ -21,4 +21,3 @@ class DocsExportCommand extends Command
         return 0;
     }
 }
-

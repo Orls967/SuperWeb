@@ -42,3 +42,4 @@ Kelas `DuplicateWindowCertificateVerifier` bertindak sebagai verifikator pihak k
 1. Validitas struktur sertifikat (keberadaan semua metadata wajib).
 2. Kesesuaian fingerprint berkas dengan kondisi riil pada disk.
 3. Kepatuhan terhadap ambang batas: rasio duplikasi harus berada di bawah ambang maksimum toleransi yang ditentukan dalam konfigurasi platform (`max_duplicate_ratio <= 0.05` atau 5%).
+

@@ -10,12 +10,11 @@ namespace App\Quality\Docs\Render;
 class StateMachineDiagramRenderer
 {
     public function __construct(
-        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler()
-    ) {
-    }
+        private readonly MermaidToSvgCompiler $compiler = new MermaidToSvgCompiler
+    ) {}
 
     /**
-     * @param array<string, list<string>> $transitions
+     * @param  array<string, list<string>>  $transitions
      */
     public function renderTransitions(string $smName, array $transitions): string
     {
@@ -30,4 +29,3 @@ class StateMachineDiagramRenderer
         return $this->compiler->compile($mermaid);
     }
 }
-

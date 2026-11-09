@@ -26,9 +26,6 @@ class ServiceTelemetryCollector
     }
 
     /**
-     * @param string $serviceName
-     * @param float $latencyMs
-     * @param bool $isError
      * @return array<string, mixed>
      */
     public function recordSample(string $serviceName, float $latencyMs, bool $isError): array
@@ -41,4 +38,3 @@ class ServiceTelemetryCollector
         ];
     }
 }
-

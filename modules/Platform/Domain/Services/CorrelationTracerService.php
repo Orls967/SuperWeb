@@ -10,12 +10,11 @@ namespace Modules\Platform\Domain\Services;
 class CorrelationTracerService
 {
     public function __construct(
-        protected W3cTraceContextPropagator $propagator = new W3cTraceContextPropagator()
-    ) {
-    }
+        protected W3cTraceContextPropagator $propagator = new W3cTraceContextPropagator
+    ) {}
 
     /**
-     * @param list<array{name: string, duration_ms: float, service: string}> $spans
+     * @param  list<array{name: string, duration_ms: float, service: string}>  $spans
      * @return array{trace_id: string, total_duration_ms: float, spans: list<array{name: string, duration_ms: float, service: string}>}
      */
     public function buildTimeline(string $traceId, array $spans): array
@@ -32,4 +31,3 @@ class CorrelationTracerService
         ];
     }
 }
-

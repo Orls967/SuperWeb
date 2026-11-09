@@ -10,8 +10,7 @@ namespace App\Quality\Analyzers;
 final class ClassCouplingAnalyzer
 {
     /**
-     * @param string $className
-     * @param array<string, list<string>> $dependencyGraph Map of class -> dependencies
+     * @param  array<string, list<string>>  $dependencyGraph  Map of class -> dependencies
      * @return array{afferent_ca: int, efferent_ce: int, instability_index: float}
      */
     public function analyzeCoupling(string $className, array $dependencyGraph): array
@@ -39,4 +38,3 @@ final class ClassCouplingAnalyzer
         ];
     }
 }
-

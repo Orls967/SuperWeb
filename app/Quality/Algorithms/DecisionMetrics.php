@@ -13,8 +13,7 @@ final class DecisionMetrics
         public readonly int $methodCount,
         public readonly int $propertyCount,
         public readonly string $certificate = '',
-    ) {
-    }
+    ) {}
 
     /**
      * DTO anemik jika memiliki banyak properti tetapi 0 decision points dan method minim
@@ -40,4 +39,3 @@ final class DecisionMetrics
         ];
     }
 }
-
