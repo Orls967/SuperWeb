@@ -1,92 +1,94 @@
-# Dokumentasi Teknis — Pemantauan Cold-Chain Farmasi & Rantai Kustodi Limbah Medis B3
+# Pemantauan Rantai Dingin Farmasi & Rantai Kustodi Festronik Limbah Medis B3
 
-## 1. Arsitektur Pemantauan Rantai Dingin Farmasi (Cold-Chain Surveillance)
+## 1. Pemantauan Rantai Dingin Farmasi (Cold Chain Telemetry System)
 
-Sebagian besar obat biologis modern, termasuk vaksin, eritropoietin, insulin, antibodi monoklonal, produk darah, dan reagen laboratorium diagnostik, bersifat termolabil (*temperature-sensitive*). Paparan suhu di luar rentang aman dapat memicu denaturasi protein ireversibel, kehilangan potensi imunogenik, atau bahkan pembentukan senyawa agregat toksik.
+Sistem Rantai Dingin (*Cold Chain*) rumah sakit bertugas menjaga temperatur penyimpanan obat biologis, vaksin, insulin, serum antibodi monoklonal, dan produk darah dalam batas yang ditentukan oleh regulasi Badan Pengawas Obat dan Makanan (BPOM) serta pedoman *World Health Organization* (WHO).
 
-Sistem pemantauan cold-chain pada modul Hospital mengintegrasikan telemetri sensor IoT kontinu, evaluasi batas kritis (*threshold evaluation*), deteksi ekskursi termal (*thermal excursion*), kuncian karantina otomatis stok farmasi (*automatic lot quarantine*), serta penahanan hutang suplier (*supplier payable freeze*).
-
-```mermaid
-flowchart TD
-    Sensor[Sensor IoT Nirkabel di Lemari Pendingin] -->|Kirim Telemetri Suhu per Interval| Ingest[RecordColdChainReadingAction]
-    Ingest --> Evaluator[ColdChainMonitoringService::evaluateExcursion]
-    
-    subgraph Zona Suhu Penyimpanan
-        Z1[Chiller: 2°C - 8°C]
-        Z2[Freezer: -20°C]
-        Z3[Ultra-Low: -80°C]
-    end
-    
-    Evaluator -->|Suhu Normal| OkLog[Simpan Log Status: OPTIMAL]
-    Evaluator -->|Suhu di Luar Ambang| Excursion[Deteksi Thermal Excursion: WARNING / CRITICAL]
-    
-    Excursion --> BreachRecord[Buat hsp_med_fridge_breaches Record]
-    BreachRecord --> AutoQuarantine[Kunci Seluruh Lot Obat: is_quarantined = TRUE]
-    BreachRecord --> HoldPayable[Bekukan Pembayaran Supplier Farmasi]
-    
-    AutoQuarantine --> LabTesting[Protokol Uji Stabilitas Klinis / Evaluasi MKT]
-    LabTesting -->|Lulus Uji Stabilitas| Release[ReleaseColdChainLotAction: is_quarantined = FALSE]
-    LabTesting -->|Rusak Permanen| Disposal[Pemusnahan Batch: Status DISPOSED]
-```
+### Klasifikasi Unit Penyimpanan Dingin & Rentang Standar
+| Kategori Peralatan | Rentang Suhu Operasional | Komoditas Medis yang Disimpan | Toleransi Ekskursi Maksimal |
+| :--- | :--- | :--- | :--- |
+| **ULT Freezer** | $-86.0^\circ\text{C} \text{ s/d } -60.0^\circ\text{C}$ | Vaksin mRNA, jaringan sel punca / *stem cell* | 15 menit pada $>-50^\circ\text{C}$ |
+| **Biomedical Deep Freezer** | $-25.0^\circ\text{C} \text{ s/d } -15.0^\circ\text{C}$ | Vaksin polio oral (OPV), plasma beku darah (FFP) | 30 menit pada $>-10^\circ\text{C}$ |
+| **Pharmaceutical Refrigerator** | $+2.0^\circ\text{C} \text{ s/d } +8.0^\circ\text{C}$ | Vaksin DPT-HB-Hib, Campak, BCG, Rabies, Insulin | 45 menit pada $>+8.0^\circ\text{C}$ |
+| **Platelet Incubator & Agitator** | $+20.0^\circ\text{C} \text{ s/d } +24.0^\circ\text{C}$ | Konsentrat trombosit (*Thrombocyte Concentrate*) | 30 menit tanpa agitasi |
+| **Controlled Ambient Room** | $+15.0^\circ\text{C} \text{ s/d } +25.0^\circ\text{C}$ | Larutan infus parenteral, salep steril, reagen lab | 120 menit pada $>+30^\circ\text{C}$ |
 
 ---
 
-## 2. Kalkulasi Mean Kinetic Temperature (MKT) Persamaan Arrhenius
+### Perhitungan Mean Kinetic Temperature (MKT)
+Untuk mengukur dampak kumulatif fluktuasi temperatur terhadap stabilitas molekul protein obat biologi, layanan `VaccineThermalStabilityCalculator` mengimplementasikan persamaan kinetika degradasi Arrhenius sesuai standar *United States Pharmacopeia* (USP Bab <1150>):
 
-Pengukuran rata-rata aritmatika sederhana sering kali menyesatkan karena degradasi kinetik produk biologis meningkat secara non-linear (eksponensial) seiring naiknya suhu. Standar internasional FDA & Pharmacopeia (USP <1150>) mewajibkan penggunaan **Mean Kinetic Temperature (MKT)**:
+$$T_{\text{MKT}} = \frac{\frac{\Delta H}{R}}{-\ln \left( \frac{\sum_{i=1}^{n} e^{-\frac{\Delta H}{R \cdot T_i}}}{n} \right)}$$
 
-$$T_{\text{MKT}} = \frac{\frac{\Delta H}{R}}{-\ln\left( \frac{\sum_{i=1}^{n} e^{-\frac{\Delta H}{R \cdot T_i}}}{n} \right)}$$
+Keterangan Parameter Fisikokimia:
+- $\Delta H$: Energi aktivasi degradasi senyawa biologi (standar farmakope: $83.144 \text{ kJ/mol}$).
+- $R$: Konstanta gas universal ($8.3144 \text{ J/(mol}\cdot\text{K)}$).
+- $T_i$: Temperatur terukur pada interval waktu ke-$i$ dalam skala Kelvin ($T_{\text{K}} = T_{^\circ\text{C}} + 273.15$).
+- $n$: Jumlah titik sampel telemetri suhu selama interval evaluasi.
 
-Di mana:
-- $\Delta H$: Energi aktivasi degradasi ($83.144\text{ kJ/mol}$ untuk standar farmasi biologis).
-- $R$: Konstanta gas universal ($0.008314462\text{ kJ/(mol}\cdot\text{K)}$).
-- $T_i$: Nilai suhu pembacaan ke-$i$ dalam skala Kelvin ($^\circ\text{C} + 273.15$).
-- $n$: Jumlah total pembacaan sampel suhu.
-
-Implementasi dalam `VaccineThermalStabilityCalculator`:
-1. Mengonversi seluruh sampel Celcius ke Kelvin.
-2. Menghitung jumlahan eksponensial Boltzmann.
-3. Menghitung MKT dalam derajat Celcius.
-4. Mengevaluasi apakah lonjakan suhu telah merusak masa simpan obat (*shelf-life impact*).
+Jika nilai $T_{\text{MKT}}$ terhitung melampaui $+8.0^\circ\text{C}$ untuk komoditas vaksin chiller $+2^\circ\text{C} \text{ s/d } +8^\circ\text{C}$, produk dianggap mengalami kerusakan termal kinetik dan wajib ditarik dari peredaran.
 
 ---
 
-## 3. Penatausahaan Limbah Medis B3 & Festronik (Chain of Custody Elektronik)
+### Alur Kerja Karantina Otomatis (Automatic Quarantine Protocol)
+1. **Penerimaan Telemetri**: Data logger atau probe sensor IoT PT100/NTC mengirimkan sinyal suhu setiap 300 detik (5 menit).
+2. **Evaluasi Anomali**: Jika suhu terbaca melampaui batas kritis ($T > 12.0^\circ\text{C}$ atau $T < 1.0^\circ\text{C}$ risiko pembekuan vaksin sensitif beku), `ColdChainMonitoringService` membunyikan alarm insiden.
+3. **Penguncian Lot Inventaris**:
+   - Status lemari pendingin pada tabel `hsp_med_fridge_breaches` diperbarui menjadi `QUARANTINED`.
+   - Kolom `is_quarantined` pada tabel `hsp_branch_inventory_lots` diset bernilai `true` untuk seluruh obat yang berada di unit tersebut.
+   - Farmasis dan kasir otomatis dicegah meresepkan atau mendistribusikan obat dari lot yang dikarantina.
+4. **Prosedur Pembebasan (Clearance)**:
+   - Sampel obat diuji stabilitasnya oleh Laboratorium Pengendalian Mutu.
+   - Farmasis Penanggung Jawab memasukkan kode protokol stabilitas (`PROTOCOL-STABILITY-PASS`) melalui method `releaseFromQuarantine()`.
+   - Karantina dicabut dan status inventaris dipulihkan kembali ke status operasional.
 
-Rumah sakit menghasilkan limbah bahan berbahaya dan beracun (B3) medis dalam jumlah besar: benda tajam, jaringan patologis, limbah sitotoksik kemoterapi, dan limbah infeksius. Regulasi nasional **Permen LHK No. P.56/2015** mewajibkan manifest elektronik (*Festronik*) dengan rantai pengawasan tak terputus (*Chain of Custody*).
+---
 
-### 3.1 Pengelompokan & Standar Kemasan Wadah Limbah
+## 2. Rantai Kustodi Festronik Limbah Medis B3 (Permen LHK No. P.56/2015)
 
-| Kategori Limbah | Kode Warna Kantong / Wadah | Jenis Kontainer | Batas Simpan Suhu Ruang | Metode Pemusnahan Akhir |
-| :--- | :--- | :--- | :--- | :--- |
-| **SHARPS** | Kuning / Safety Box | Kotak Tahan Tusukan (*Puncture-Proof*) | Maks. 48 jam | Autoclave Shredder / Insinerasi |
-| **INFECTIOUS** | Kuning / Kantong Biohazard | Plastik Tebal Min. 70 Mikron | Maks. 48 jam | Insinerator Suhu Tinggi $\ge 1000^\circ\text{C}$ |
-| **PATHOLOGICAL**| Kuning / Kantong Ganda | Wadah Tertutup Rapat Kedap Cairan | Maks. 24 jam | Insinerator Khusus / Kremasi |
-| **PHARMACEUTICAL**| Cokelat | Kantong Plastik Standar Kuat | Maks. 30 hari | Insinerator Suhu Tinggi $\ge 1200^\circ\text{C}$ |
-| **CYTOTOXIC** | Ungu | Drum Khusus Tertutup Segel | Maks. 48 jam | Rotary Kiln Insinerator $\ge 1200^\circ\text{C}$ |
+Pengelolaan limbah medis rumah sakit diatur secara ketat untuk mencegah kontaminasi silang lingkungan, penularan penyakit menular (seperti Hepatitis B, Hepatitis C, HIV), dan penyalahgunaan jarum suntik bekas.
 
-### 3.2 Rantai Kustodi Festronik Kriptografis (SHA-256 Hash Chain)
+### Klasifikasi Warna Wadah & Karakteristik Limbah
+| Kategori Limbah B3 Medis | Kode Warna Kantung / Wadah | Jenis Material & Contoh Nyata |
+| :--- | :--- | :--- |
+| **Limbah Infeksius** | Kantung Plastik Kuning Tebal | Kasa bernoda darah, perban bedah, sarung tangan steril kotor, selang kateter |
+| **Benda Tajam (Sharps)** | Wadah Kuning Tahan Tusuk (*Safety Box*) | Jarum suntik sekali pakai, mata pisau bedah (*scalpel*), pecahan ampul obat |
+| **Limbah Sitotoksik** | Kantung Plastik Ungu | Botol bekas kemoterapi kanker, selang infus onkologi, spuit sitostatika |
+| **Limbah Kimia & Farmasi** | Kantung Plastik Cokelat | Reagen kimia kedokteran kedaluwarsa, sisa formalin patologi anatomi, obat expired |
+| **Limbah Radioaktif** | Kontainer Bertimbal Khusus (*Lead Castle*) | Residu cairan Iodium-131, Technetium-99m dari unit kedokteran nuklir |
 
-Untuk mencegah pembuangan limbah medis secara liar (*illegal dumping*) dan manipulasi selisih timbangan antara rumah sakit, transporter, dan pengolah, setiap tahap perpindahan limbah disegel dengan rantai hash kriptografis:
+---
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Perawat as Perawat Ruangan
-    actor PetugasTPS as Petugas TPS B3 RS
-    actor Transporter as Sopir Transporter KLHK
-    actor Insinerator as Fasilitas Insinerator
-    participant DB as WasteCustodyLog (Hash Chain)
+### Batas Regulasi Waktu Simpan TPS Limbah B3 Internal
+Berdasarkan Pasal 8 Peraturan Menteri LHK No. P.56/Menlhk-Setjen/2015:
+- **Kondisi Suhu Ruang ($T > 0^\circ\text{C}$)**: Limbah medis infeksius dan benda tajam **wajib dimusnahkan dalam waktu paling lama 48 jam**.
+- **Kondisi Suhu Dingin ($T \le 0^\circ\text{C}$)**: Jika TPS B3 memiliki unit pendingin berinsulasi (*cold room* / *freezer* limbah medis), limbah dapat disimpan paling lama **90 hari** sebelum diserahkan ke transporter berizin.
 
-    Perawat->>DB: Catat Limbah Ruangan (Berat: 5.25 kg)<br/>Hash0 = GenesisHash<br/>Hash1 = SHA256(Hash0 | ID | GENERATED | 5.25 | Perawat | Waktu)
-    PetugasTPS->>DB: Timbang Ulang di TPS (Timbangan: 5.30 kg, Beda 0.95% <= 5%)<br/>Hash2 = SHA256(Hash1 | ID | RECEIVED_TPS | 5.30 | PetugasTPS | Waktu)
-    Transporter->>DB: Serah Terima Transporter (No Plat: B 9876 WST)<br/>Hash3 = SHA256(Hash2 | ID | HANDED_TO_TRANSPORTER | 5.30 | Transporter | Waktu)
-    Insinerator->>DB: Pemusnahan Akhir (Suhu 1100°C, Efisiensi 99.99%)<br/>Input: Destruction Certificate Hash<br/>Status: COMPLETED
+---
+
+### Rantai Kustodi Kriptografis SHA-256 (Chain of Custody & Tamper Detection)
+
+Untuk memastikan keutuhan data manifes limbah dari hulu ke hilir, setiap peristiwa logistik dicatat secara berantai:
+
+```
+[Ruang Perawatan (Ward)]
+  |-- Berat: W_ward
+  |-- Hash_0 = SHA-256(ManifestNumber + W_ward + WardStaffName + Timestamp)
+  v
+[Penerimaan TPS Internal RS]
+  |-- Berat Timbang Ulang: W_tps (Toleransi selisih max 5%)
+  |-- Hash_1 = SHA-256(Hash_0 + W_tps + TpsOfficerName + TpsBinCode + Timestamp)
+  v
+[Serah Terima Transporter Berizin]
+  |-- Berat Truk: W_truck
+  |-- Hash_2 = SHA-256(Hash_1 + W_truck + TransporterCompany + DriverName + PlateNo + Timestamp)
+  v
+[Insinerasi Pemusnahan Akhir]
+  |-- Suhu Ruang Bakar 2: >= 1000 °C
+  |-- Hash_3 = SHA-256(Hash_2 + CertificateNo + IncineratorTempC + DestructionTimestamp)
 ```
 
-Rumus perhitungan hash segel:
-$$\text{CurrentHash}_k = \text{SHA-256}\left( \text{PrevHash}_{k-1} \,\|\, \text{ManifestID} \,\|\, \text{EventType} \,\|\, \text{WeightKg} \,\|\, \text{HandlerParty} \,\|\, \text{TimestampIso} \right)$$
-
-### 3.3 Deteksi Manipulasi & Audit Invarian (INV-88-04)
-
-Fungsi `MedicalWasteManifestService::verifyCustodyChainIntegrity()` memverifikasi keutuhan rantai hash secara rekursif dari awal hingga akhir. Jika terjadi perubahan sekecil apa pun pada data berat atau petugas di basis data secara ilegal, perhitungan hash berikutnya akan berbeda secara drastis (*avalanche effect*), dan audit `php artisan hsp:audit` akan langsung menandai pelanggaran keamanan (*discrepancy detected*).
+### Algoritma Pemeriksaan Integritas Hash
+Metode `verifyCustodyChainIntegrity(MedicalWasteManifest $manifest)` melakukan verifikasi rantai dari simpul pertama hingga simpul terakhir:
+- Jika salah satu baris log diubah langsung pada database (misalnya nilai `weight_kg` dimanipulasi oleh oknum petugas TPS), kalkulasi ulang hash akan menghasilkan perbedaan nilai (*hash mismatch*).
+- Sistem segera mengembalikan nilai `false` dan menerbitkan notifikasi audit forensik lingkungan.
