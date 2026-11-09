@@ -2983,3 +2983,33 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   6. **D87-6 (Respons Kepekaan Eksternal - G7-D59)**: Pembacaan faktor risiko lingkungan (DBD, ISPA kabut asap, banjir akses RS) melalui gerbang tunggal `HospitalExternalFactors` pada tabel `hsp_external_factors` untuk memicu alih fungsi kapasitas bangsal darurat dengan persetujuan `rs_admin`.
   7. **D87-7 (Penjurnalan Buku Besar Akuntansi Rawat Inap - G7-D57)**: Pencatatan escrow deposit rawat inap (`hsp:patient_deposit_escrow`), pengakuan pendapatan bed-day harian (`hsp:patient_receivable` vs `hsp:hospital_revenue`), dan pembalik koreksi tarif tanpa nilai negatif.
   8. **D87-8 (Audit Dua Sumber hsp:audit)**: Penguatan perintah `hsp:audit` memvalidasi invarian: alokasi ranjang aktif $\le 1$, saldo ledger bed-day cocok dengan riwayat hari-rawat, hash chain paspor valid, dan nihil teks terbuka data medis.
+
+<a id="2026-11-09-w8-p1-platform-module"></a>
+<a id="w8-d01"></a>
+<a id="w8-d02"></a>
+<a id="w8-d03"></a>
+<a id="w8-d04"></a>
+<a id="w8-d05"></a>
+<a id="w8-d09"></a>
+<a id="w8-d10"></a>
+<a id="w8-d11"></a>
+## 2026-11-09: [W8-P1.1] Modul Platform & Developer Experience — Metrik Kualitas, Deteksi Isian, Sandbox SM, Render SVG Native & Audit Platform (Fase 237, W8-D01..W8-D05, W8-D09..W8-D11)
+- **Anchor:** `2026-11-09-w8-p1-platform-module` / `w8-d01` / `w8-d02` / `w8-d03` / `w8-d04` / `w8-d05` / `w8-d09` / `w8-d10` / `w8-d11`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-237.md`](design/fase-237.md) (Desain Arsitektur & Diagram Fase 237)
+  - [`docs/dor/fase-237.md`](dor/fase-237.md) (Definition of Ready & RAB Fase 237)
+  - [`docs/dor/bukti-l0-fase-237.md`](dor/bukti-l0-fase-237.md) (Bukti Kondisi Awal L.0 Fase 237)
+  - [`docs/decisions/ADR-0237-modul-platform-kualitas-dx.md`](decisions/ADR-0237-modul-platform-kualitas-dx.md)
+- **Konteks:**
+  - Memulai Gelombang 8 (W8-P1) untuk pilar Platform & Developer Experience dengan modul baru `Platform` (prefiks `plt_`) dan engine audit kualitas kode di `app/Quality`.
+  - Membangun tolok ukur resmi kualitas kode bagi seluruh prompt W8-W25 dengan deteksi fixture isian sengaja (M-2 s/d M-5) dan generator dokumen SVG tanpa dependensi Python (IZIN-1, IZIN-2, IZIN-3).
+- **Keputusan:**
+  1. **W8-D01 (Modul Platform & Prefiks plt_)**: Pembentukan modul baru `Modules\Platform` dengan prefiks tabel database `plt_`, didaftarkan di `config/modules.php`, `config-allowlists.json`, `docs/KONSEP.md`, dan `bootstrap/providers.php`.
+  2. **W8-D02 (Algoritma Bersertifikat A1 Rabin-Karp Duplicate Window Detector)**: Implementasi A1 `DuplicateWindowDetector` dengan polynomial rolling hash basis 257 mod P, normalisasi token PHP, window sliding K=25 token, collision-safe bucket verification, dan penerbitan sertifikat matematis anti-duplikasi.
+  3. **W8-D03 (Algoritma Bersertifikat A2 Decision Density Counter)**: Implementasi A2 `DecisionDensityCounter` untuk mengukur rasio percabangan keputusan eksekutabel terhadap LOC, mendeteksi code complexity dan kepadatan logika aplikasi.
+  4. **W8-D04 (Algoritma Bersertifikat A3 Class Reachability Graph & Orphan Detector)**: Implementasi A3 `ClassReachabilityGraph` menggunakan parser AST / imports dan penelusuran directed graph (BFS/Tarjan) dari root set (Controllers, Commands, Listeners, Providers) guna menangkap kelas yatim (M-5).
+  5. **W8-D05 (State Machine SandboxEnvironmentStateMachine 7 Status)**: Pengelolaan siklus hidup sandbox developer dengan 7 status ketat (`requested` -> `provisioning` -> `seeded` -> `ready` -> `expiring` -> `expired` -> `destroyed`) disertai guard alokasi kuota, TTL otomatis, dan idempotensi provisioning.
+  6. **W8-D09 (Dokumentasi Arsitektur SVG Murni Native PHP Tanpa Python)**: Generator dokumen D1 vector SVG mandiri di `app/Quality/Docs/Render/` (`SvgCanvas`, `MermaidToSvgCompiler`, `ArchitectureDiagramRenderer`) yang mem-parse subset diagram Mermaid dan merender visual scalable murni PHP.
+  7. **W8-D10 (Data Synthesizer, PII Masking & Blind Indexing)**: Mekanisme isolasi data pengujian dengan masking PII deterministik berbasis hashing HMAC, verifikasi kepatuhan masking (`platform:mask-verify`), dan anonimisasi dataset sandbox (`platform:anonymize`).
+  8. **W8-D11 (Audit Platform Dua Sumber platform:audit & Service SLO)**: Perintah `platform:audit` memverifikasi konsistensi dua sumber (database record sandbox/metrik vs filesystem/git baseline); evaluasi Error Budget SLO dengan peringatan burn-rate bertingkat.
+

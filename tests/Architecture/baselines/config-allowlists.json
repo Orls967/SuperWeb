@@ -70,6 +70,12 @@
             "key": "table_prefixes",
             "decision": "DECISIONS.md#2026-11-05-modul-forest-lini-23-g6-p52",
             "count": 1
+        },
+        {
+            "date": "2026-11-09",
+            "key": "table_prefixes",
+            "decision": "DECISIONS.md#2026-11-09-w8-p1-platform-module",
+            "count": 1
         }
     ]
 }

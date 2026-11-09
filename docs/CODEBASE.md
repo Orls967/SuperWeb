@@ -521,28 +521,29 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 41 | **Partner** | `ptn_` | 1 |
 | 42 | **Party** | `pty_` | 3 |
 | 43 | **Payment** | `pay_` | 3 |
-| 44 | **Plm** | `plm_` | 1 |
-| 45 | **Port** | `prt_` | 2 |
-| 46 | **Pricing** | `pric_` | 7 |
-| 47 | **ProServices** | `psv_` | 1 |
-| 48 | **Procurement** | `prc_` | 6 |
-| 49 | **Proptech** | `prp_` | 3 |
-| 50 | **Resto** | `resto_` | 10 |
-| 51 | **Ret** | `ret_` | 4 |
-| 52 | **Rwa** | `rwa_` | 3 |
-| 53 | **Shared** | — | 0 |
-| 54 | **Store** | `store_` | 5 |
-| 55 | **Supplier** | `sup_` | 3 |
-| 56 | **Syariah** | `syb_` | 24 |
-| 57 | **Tlx** | `tlx_` | 4 |
-| 58 | **Trade** | `trd_` | 3 |
-| 59 | **TradeFinance** | `tf_` | 4 |
-| 60 | **Treasury** | `trs_` | 1 |
-| 61 | **Vending** | `vnd_` | 3 |
-| 62 | **Venue** | `ven_` | 12 |
-| 63 | **Wealth** | `wm_` | 2 |
-| 64 | **Wms** | `wms_` | 2 |
-| | **Total: 64 Modul** | | **675 Migrasi** |
+| 44 | **Platform** | `plt_` | 8 |
+| 45 | **Plm** | `plm_` | 1 |
+| 46 | **Port** | `prt_` | 2 |
+| 47 | **Pricing** | `pric_` | 7 |
+| 48 | **ProServices** | `psv_` | 1 |
+| 49 | **Procurement** | `prc_` | 6 |
+| 50 | **Proptech** | `prp_` | 3 |
+| 51 | **Resto** | `resto_` | 10 |
+| 52 | **Ret** | `ret_` | 4 |
+| 53 | **Rwa** | `rwa_` | 3 |
+| 54 | **Shared** | — | 0 |
+| 55 | **Store** | `store_` | 5 |
+| 56 | **Supplier** | `sup_` | 3 |
+| 57 | **Syariah** | `syb_` | 24 |
+| 58 | **Tlx** | `tlx_` | 4 |
+| 59 | **Trade** | `trd_` | 3 |
+| 60 | **TradeFinance** | `tf_` | 4 |
+| 61 | **Treasury** | `trs_` | 1 |
+| 62 | **Vending** | `vnd_` | 3 |
+| 63 | **Venue** | `ven_` | 12 |
+| 64 | **Wealth** | `wm_` | 2 |
+| 65 | **Wms** | `wms_` | 2 |
+| | **Total: 65 Modul** | | **683 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -590,6 +591,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Partner** | 7 | `partners`, `partners/{partner}`, `partners/{partner}/transition` ... | web, auth, verified |
 | **Party** | 11 | `party/legal-entities`, `party`, `party/create` ... | web, auth, verified |
 | **Payment** | 2 | `payment/inspector`, `payment/inspector/{uuid}` | web, auth, role:admin,auditor,treasury |
+| **Platform** | 12 | `platform/dev`, `platform/dev/sandboxes`, `platform/dev/sandboxes/{sandbox}` ... | web, auth, role:admin,superadmin |
 | **Plm** | 6 | `plm`, `plm/operations`, `plm/operations/stage-gate/{project}` ... | web, auth, role:admin,rnd_specialist |
 | **Port** | 10 | `port`, `port/berths`, `port/yard` ... | web, auth, verified |
 | **Pricing** | 21 | `pricing/surge`, `pricing/surge/calculate`, `pricing/rejections` ... | web, auth, verified |
@@ -611,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1611 Rute** | | |
+| **Total** | **1623 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -663,6 +665,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `dev:list` | `manual` | List the registered dev processes |
 | `dist:audit` | `manual` | Audit subledger AR distributor terhadap ledger (0 selisih) |
 | `docs` | `manual` | Access the Laravel documentation |
+| `docs:check` | `manual` | Memeriksa kesegaran dokumen desain, broken links, dan integritas diagram |
+| `docs:drift` | `manual` | Mendeteksi pergeseran (drift) antara spesifikasi dokumen dengan implementasi skema database |
+| `docs:export` | `manual` | Mengekspor seluruh bundle dokumentasi arsitektur dan skema |
+| `docs:generate` | `manual` | Menghasilkan artefak diagram SVG secara deterministik dari blok Mermaid murni PHP (IZIN-2) |
 | `docs:inventory` | `manual` | Generate bagian faktual docs/CODEBASE.md (modul, prefiks, migrasi, rute, command & jadwal, akun ledger) (K-03, PROGRESS R5.1) |
 | `down` | `manual` | Put the application into maintenance / demo mode |
 | `dr:audit` | `manual` | Wave 2 & Core: DR drill & data sovereignty audit — 0 discrepancy required |
@@ -806,8 +812,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `party:backfill-links` | `manual` | Backfill party_id links on existing module tables (idempotent) |
 | `party:remind-expiring-docs` | **`dailyAt('08:00')`** | Send reminders for KYC/KYB documents expiring soon |
 | `payment:release-expired-holds` | **`daily()`** | Otomatis melepaskan dana escrow untuk payment intent status held yang telah melewati masa berlaku |
+| `platform:anonymize` | `manual` | Menjalankan anonimisasi PII batch pada database sandbox |
+| `platform:audit` | `manual` | Menjalankan audit rekonsiliasi dua sumber infrastruktur platform (DB vs filesystem/git baseline) |
 | `platform:chaos-verify` | `manual` | Simulasi platform-wide chaos & cryptographic tamper verifier membuktikan 100% deteksi sabotase dan pemulihan audit |
+| `platform:error-budget` | `manual` | Menghitung sisa error budget dan burn rate seluruh layanan pilar |
+| `platform:mask-verify` | `manual` | Memverifikasi bahwa tidak ada kebocoran PII terbuka dalam dataset sandbox |
+| `platform:sandbox-expire` | `manual` | Menonaktifkan dan menandai kadaluarsa sandbox environment yang telah melampaui batas waktu TTL |
 | `platform:stress-concurrency` | `manual` | Stress harness konkurensi deterministik & beban tinggi multi-modul pada 6 titik kritis |
+| `platform:synth-data` | `manual` | Menghasilkan dataset tiruan deterministik bebas PII untuk pengujian sandbox |
 | `plm:audit` | `manual` | Audit Product Lifecycle Management (PLM) ECO hash-chain and EBOM-to-MBOM integrity (0 discrepancies) |
 | `plm:encrypt-legacy` | `manual` | Idempotently re-encrypt legacy base64 encoded formula payloads in lab notebooks |
 | `pq:audit-chains` | `manual` | Audit 8 Merkle hash chains for Post-Quantum readiness — 0 discrepancy required |
@@ -822,6 +834,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `prt:fleet-audit` | `manual` | Audit integritas buku besar armada dan verifikasi keseimbangan double-entry maritim |
 | `psv:audit` | `manual` | Audit modul ProServices terhadap konsistensi jam, pendapatan, dan ledger |
 | `ptn:audit` | `manual` | Audit kemitraan: bagi hasil, due diligence, dan siklus hidup mitra (0 selisih) |
+| `quality:coverage-gap` | `manual` | Mengevaluasi selisih gap cakupan test suite terhadap target |
+| `quality:phase-metrics` | `manual` | Mengukur metrik fase B1-B3, cyclomatic density, serta mendeteksi manipulasi kode M-2 s/d M-5 |
+| `quality:pipeline-status` | `manual` | Menampilkan status integrasi pipeline CI/CD dan trunk git |
 | `reload` | `manual` | Reload running services |
 | `resto:check-stock` | **`dailyAt('07:30')`** | Pantau level stok minimum bahan baku, buat saran PO draft, dan kirim peringatan bahan kedaluwarsa |
 | `resto:close-day` | **`dailyAt('23:59')`** | Tutup harian outlet resto: buang sisa etalase (waste), tutup shift, dan tulis ringkasan harian |
@@ -889,7 +904,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 273 Command** | **37 Terjadwal** | |
+| **Total: 286 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

@@ -17,6 +17,8 @@ use Modules\Shared\Domain\Attributes\NotAControl;
  *  - 237.3 Synthetic test data factory with deterministic masking (zero real PII)
  *  - 237.6 Edge case: Stale sandboxes (> 7 days inactive) auto-reclaimed to conserve resources
  *  - 237.7 Test data masking strictly enforced when importing simulated data to staging
+ *
+ * @deprecated Retired via W8-P1 (Fase 237). Use Modules\Platform instead.
  */
 class DeveloperExperienceQualityService
 {

@@ -96,6 +96,7 @@ use Modules\Mobility\Ev\Domain\Models\EvStation;
 use Modules\Mobility\Fleet\Domain\Models\FleetContract;
 use Modules\Mobility\Telematics\Domain\Models\TelematicsDevice;
 use Modules\Partner\Domain\Models\Partner;
+use Modules\Platform\Domain\Models\SandboxEnvironment;
 use Modules\Proptech\Domain\Models\Bim\BimModel;
 use Modules\Proptech\Domain\Models\BuildingZone;
 use Modules\Proptech\Domain\Models\Flex\FlexBooking;
@@ -4687,4 +4688,85 @@ return [
     ],
     'aviation.loyalty.index' => ['roles' => ['admin', 'customer_care', 'superadmin']],
     'aviation.loyalty.enroll' => ['roles' => ['admin', 'customer_care', 'superadmin']],
+
+    // Fase 237: Platform & DX Tooling
+    'platform.dev.dashboard' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.sandboxes.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.sandboxes.show' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            $owner = User::firstOrCreate(['email' => 'admin@platform-route-test.local'], ['name' => 'Admin User', 'password' => bcrypt('password'), 'role' => 'admin']);
+            $sandbox = SandboxEnvironment::firstOrCreate(
+                ['slug' => 'sbx-arch-test-01'],
+                [
+                    'name' => 'sbx-arch-test-01',
+                    'slug' => 'sbx-arch-test-01',
+                    'tier' => 'standard',
+                    'status' => 'requested',
+                    'owner_id' => $owner->id,
+                    'idempotency_key' => 'idem-arch-01',
+                    'expires_at' => now()->addDays(7),
+                ]
+            );
+
+            return ['sandbox' => $sandbox->id];
+        },
+    ],
+    'platform.dev.slos.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.metrics.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.trace.show' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            return ['correlationId' => 'corr-arch-test-trace-id'];
+        },
+    ],
+    'platform.dev.api.sandboxes.store' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.api.sandboxes.provision' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            $owner = User::firstOrCreate(['email' => 'admin@platform-route-test.local'], ['name' => 'Admin User', 'password' => bcrypt('password'), 'role' => 'admin']);
+            $sandbox = SandboxEnvironment::firstOrCreate(
+                ['slug' => 'sbx-arch-test-02'],
+                [
+                    'name' => 'sbx-arch-test-02',
+                    'slug' => 'sbx-arch-test-02',
+                    'tier' => 'standard',
+                    'status' => 'requested',
+                    'owner_id' => $owner->id,
+                    'idempotency_key' => 'idem-arch-02',
+                    'expires_at' => now()->addDays(7),
+                ]
+            );
+
+            return ['sandbox' => $sandbox->id];
+        },
+    ],
+    'platform.dev.api.sandboxes.destroy' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            $owner = User::firstOrCreate(['email' => 'admin@platform-route-test.local'], ['name' => 'Admin User', 'password' => bcrypt('password'), 'role' => 'admin']);
+            $sandbox = SandboxEnvironment::firstOrCreate(
+                ['slug' => 'sbx-arch-test-03'],
+                [
+                    'name' => 'sbx-arch-test-03',
+                    'slug' => 'sbx-arch-test-03',
+                    'tier' => 'standard',
+                    'status' => 'requested',
+                    'owner_id' => $owner->id,
+                    'idempotency_key' => 'idem-arch-03',
+                    'expires_at' => now()->addDays(7),
+                ]
+            );
+
+            return ['sandbox' => $sandbox->id];
+        },
+    ],
+    'platform.dev.api.slos.index' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.api.metrics.prometheus' => ['roles' => ['admin', 'superadmin']],
+    'platform.dev.api.metrics.phase' => [
+        'roles' => ['admin', 'superadmin'],
+        'params' => function () {
+            return ['phaseId' => 237];
+        },
+    ],
 ];

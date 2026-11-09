@@ -12742,14 +12742,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
 > **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DeveloperExperienceQualityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
-- [ ] 237.2 Quality pipeline otomatis: lint → typecheck → unit → arch test → integration → security scan → performance smoke → deploy gate → setiap PR wajib hijau
-- [ ] 237.3 Test data management: synthetic data generator (ber-seed), data masking untuk staging, referential integrity → test realistis tanpa PII nyata
-- [ ] 237.4 Observability developer: distributed trace lintas modul (correlation id Fase 26.6), error budget per layanan → SLO → alert → postmortem
-- [ ] 237.5 Tests: pipeline menolak merge saat merah, masking efektif (no PII in staging), trace lintas 2 modul utuh, observability coverage terukur
-- [ ] 237.6 Edge case: test butuh data nyata → proses anonymization resmi, dilarang copy mentah
-- [ ] 237.7 Coverage gap lintas modul baru → ditutup sebelum feature complete
-- [ ] 237.8 Quality gate Fase 237
+- [🔵] 237.1 Developer portal: environment provisioning (sandbox/staging), seed data snapshot, docs otomatis dari code (OpenAPI, events), changelog → kontribusi lintas modul mudah
+- [🔵] 237.2 Quality pipeline otomatis: lint → typecheck → unit → arch test → integration → security scan → performance smoke → deploy gate → setiap PR wajib hijau
+- [🔵] 237.3 Test data management: synthetic data generator (ber-seed), data masking untuk staging, referential integrity → test realistis tanpa PII nyata
+- [🔵] 237.4 Observability developer: distributed trace lintas modul (correlation id Fase 26.6), error budget per layanan → SLO → alert → postmortem
+- [🔵] 237.5 Tests: pipeline menolak merge saat merah, masking efektif (no PII in staging), trace lintas 2 modul utuh, observability coverage terukur
+- [🔵] 237.6 Edge case: test butuh data nyata → proses anonymization resmi, dilarang copy mentah
+- [🔵] 237.7 Coverage gap lintas modul baru → ditutup sebelum feature complete
+- [🔵] 237.8 Quality gate Fase 237
 
 ## FASE 238 — PLATFORM: RELEASE TRAIN, CHANGE MANAGEMENT & DEPLOYMENT SAFETY
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `ReleaseTrainDeploymentSafetyService`; 1 migrasi; test `ReleaseTrainDeploymentSafetyTest` — commit `a9fcf8f`, +499 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

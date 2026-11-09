@@ -57,6 +57,7 @@ use App\Quality\Audit\Fixtures\MinAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MiningMetalsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MobAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\MobileAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\PlatformAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PqAuditChainsCorruptionFixture;
 use App\Quality\Audit\Fixtures\PricingAuditCorruptionFixture;
@@ -159,6 +160,7 @@ final class AuditCommandRegistry
             'mining:audit-metals' => new MiningMetalsAuditCorruptionFixture,
             'mob:audit' => new MobAuditCorruptionFixture,
             'mobile:audit' => new MobileAuditCorruptionFixture,
+            'platform:audit' => new PlatformAuditCorruptionFixture,
             'plm:audit' => new PlmAuditCorruptionFixture,
             'pq:audit-chains' => new PqAuditChainsCorruptionFixture,
             'pricing:audit' => new PricingAuditCorruptionFixture,

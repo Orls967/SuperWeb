@@ -46,6 +46,7 @@ use Modules\Mobility\Telematics\TelematicsServiceProvider;
 use Modules\Partner\PartnerServiceProvider;
 use Modules\Party\PartyServiceProvider;
 use Modules\Payment\PaymentServiceProvider;
+use Modules\Platform\PlatformServiceProvider;
 use Modules\Plm\PlmServiceProvider;
 use Modules\Port\PortServiceProvider;
 use Modules\Pricing\PricingServiceProvider;
@@ -136,4 +137,5 @@ return [
     RetServiceProvider::class,
     SyariahServiceProvider::class,
     MarineServiceProvider::class,
+    PlatformServiceProvider::class,
 ];

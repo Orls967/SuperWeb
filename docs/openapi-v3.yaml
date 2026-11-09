@@ -70849,6 +70849,747 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /platform/dev:
+    get:
+      operationId: getPlatformDevDashboard
+      tags:
+        - Platform
+      summary: 'Index (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/platform/dev/api/metrics/phase/{phaseId}':
+    get:
+      operationId: getPlatformDevApiMetricsPhase
+      tags:
+        - Platform
+      summary: 'Show (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          name: phaseId
+          in: path
+          required: true
+          description: 'Identifier parameter phaseId for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /platform/dev/api/metrics/prometheus:
+    get:
+      operationId: getPlatformDevApiMetricsPrometheus
+      tags:
+        - Platform
+      summary: 'Metrics (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /platform/dev/api/sandboxes:
+    post:
+      operationId: postPlatformDevApiSandboxesStore
+      tags:
+        - Platform
+      summary: 'Store (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postPlatformDevApiSandboxesStore'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  '/platform/dev/api/sandboxes/{sandbox}':
+    delete:
+      operationId: deletePlatformDevApiSandboxesDestroy
+      tags:
+        - Platform
+      summary: 'Destroy (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          name: sandbox
+          in: path
+          required: true
+          description: 'Identifier parameter sandbox for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/platform/dev/api/sandboxes/{sandbox}/provision':
+    post:
+      operationId: postPlatformDevApiSandboxesProvision
+      tags:
+        - Platform
+      summary: 'Provision (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          name: sandbox
+          in: path
+          required: true
+          description: 'Identifier parameter sandbox for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postPlatformDevApiSandboxesProvision'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /platform/dev/api/slos:
+    get:
+      operationId: getPlatformDevApiSlosIndex
+      tags:
+        - Platform
+      summary: 'Index (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /platform/dev/metrics:
+    get:
+      operationId: getPlatformDevMetricsIndex
+      tags:
+        - Platform
+      summary: 'Index (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /platform/dev/sandboxes:
+    get:
+      operationId: getPlatformDevSandboxesIndex
+      tags:
+        - Platform
+      summary: 'Index (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/platform/dev/sandboxes/{sandbox}':
+    get:
+      operationId: getPlatformDevSandboxesShow
+      tags:
+        - Platform
+      summary: 'Show (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          name: sandbox
+          in: path
+          required: true
+          description: 'Identifier parameter sandbox for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /platform/dev/slos:
+    get:
+      operationId: getPlatformDevSlosIndex
+      tags:
+        - Platform
+      summary: 'Index (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  '/platform/dev/trace/{correlationId}':
+    get:
+      operationId: getPlatformDevTraceShow
+      tags:
+        - Platform
+      summary: 'Show (Platform)'
+      description: 'Operational endpoint for Platform module. Protected by role matrix: [admin, superadmin].'
+      x-allowed-roles:
+        - admin
+        - superadmin
+      parameters:
+        -
+          name: correlationId
+          in: path
+          required: true
+          description: 'Identifier parameter correlationId for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /plm:
     get:
       operationId: getPlmIndex
