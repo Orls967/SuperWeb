@@ -488,4 +488,58 @@ class Phase87AlgorithmsTest extends TestCase
         $evalValid = $engine->evaluate($validAccess);
         $this->assertTrue($evalValid['is_prescription_allowed']);
     }
+
+    /**
+     * Uji B13: SurgicalApgarScoreCalculator.
+     */
+    public function test_b13_surgical_apgar_score_calculator_and_verifier(): void
+    {
+        $calc = new \Modules\Hospital\Domain\Algorithms\SurgicalApgarScoreCalculator();
+
+        $highRiskInput = [
+            'estimated_blood_loss_ml' => 1200, // 0 poin
+            'lowest_mean_arterial_pressure_mmhg' => 38, // 0 poin
+            'lowest_heart_rate_bpm' => 50, // 0 poin
+        ];
+
+        $res = $calc->evaluate($highRiskInput);
+        $this->assertEquals(0, $res['total_score']);
+        $this->assertEquals('HIGH_RISK', $res['risk_tier']);
+        $this->assertEquals('INTENSIVE_CARE_UNIT_VENTILATOR_MONITORING', $res['postop_disposition_recommendation']);
+        $this->assertTrue($calc->verifyCertificate($res, $highRiskInput));
+
+        $lowRiskInput = [
+            'estimated_blood_loss_ml' => 80, // 3 poin
+            'lowest_mean_arterial_pressure_mmhg' => 75, // 3 poin
+            'lowest_heart_rate_bpm' => 90, // 4 poin
+        ];
+        $resLow = $calc->evaluate($lowRiskInput);
+        $this->assertEquals(10, $resLow['total_score']);
+        $this->assertEquals('LOW_RISK', $resLow['risk_tier']);
+    }
+
+    /**
+     * Uji B14: PaediatricEarlyWarningScoreCalculator.
+     */
+    public function test_b14_paediatric_early_warning_score_calculator_and_verifier(): void
+    {
+        $calc = new \Modules\Hospital\Domain\Algorithms\PaediatricEarlyWarningScoreCalculator();
+
+        $criticalInput = [
+            'behaviour' => 'LETHARGIC_CONFUSED', // 3 poin
+            'cardiovascular' => 'TACHYCARDIA_CRT_GT_4S', // 3 poin
+            'respiratory' => 'SEVERE_GRUNTING_APNEA', // 3 poin
+        ];
+
+        $res = $calc->evaluate($criticalInput);
+        $this->assertEquals(9, $res['total_pews_score']);
+        $this->assertEquals('CRITICAL', $res['risk_category']);
+        $this->assertEquals('IMMEDIATE_PAEDIATRIC_CODE_BLUE_PICU_TRANSFER', $res['escalation_action']);
+        $this->assertTrue($calc->verifyCertificate($res, $criticalInput));
+
+        // Tamper test
+        $tampered = $res;
+        $tampered['total_pews_score'] = 1;
+        $this->assertFalse($calc->verifyCertificate($tampered, $criticalInput));
+    }
 }
