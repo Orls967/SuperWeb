@@ -69,42 +69,24 @@ stateDiagram-v2
     closed --> [*]
 ```
 
-## 2. Sequence Diagram Alur Utama & Saga Kompensasi (D2)
+## 2. Diagram Alur Utama & Saga Kompensasi (D2)
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Reg as Petugas Admisi
-    participant Saga as InpatientAdmissionSaga
-    participant Opt as BedAssignmentOptimizer
-    participant BedRepo as HospitalBedRepository
-    participant Escrow as Payment/EscrowService
-    participant EMR as PatientEmrService
-    participant Ledger as HospitalLedgerService
-
-    Reg->>Saga: execute(patientId, requiredClass, priority)
-    Saga->>Opt: calculateOptimalBed(requestList, availableBeds)
-    Opt-->>Saga: BedAssignmentCertificate(Bed#101, class=K1, upgraded=false)
-    Saga->>BedRepo: lockForUpdate(Bed#101) & reserve()
-    BedRepo-->>Saga: reserved_ok
+flowchart TD
+    A[Petugas Admisi] -->|execute| B[InpatientAdmissionSaga]
+    B -->|calculateOptimalBed| C[BedAssignmentOptimizer]
+    C -->|BedAssignmentCertificate| B
+    B -->|lockForUpdate| D[HospitalBedRepository: Reserve Bed]
+    D -->|reserved_ok| E{Capture Deposit 5.000.000 IDR}
     
-    rect rgb(240, 248, 255)
-        Note over Saga,Escrow: Langkah 2: Tangkap Deposit Rawat Inap
-        Saga->>Escrow: captureDeposit(amount=5.000.000 IDR)
-        alt Deposit Berhasil
-            Escrow-->>Saga: deposit_captured(receiptRef)
-            Saga->>Ledger: postDeposit(cash Clearing -> hsp:patient_deposit_escrow)
-            Saga->>BedRepo: markOccupied(Bed#101)
-            Saga->>EMR: createAdmissionRecord(status=admitted)
-            Saga-->>Reg: AdmissionSuccess(admissionNo)
-        else Deposit Ditolak / Saldo Kurang
-            Escrow-->>Saga: deposit_failed(insufficient_funds)
-            Note over Saga,BedRepo: KOMPENSASI OTOMATIS: Lepas Kuncian Bed
-            Saga->>BedRepo: releaseReservation(Bed#101, status=available)
-            Saga->>EMR: cancelAdmission(reason=deposit_failure)
-            Saga-->>Reg: AdmissionFailedWithCompensation(error)
-        end
-    end
+    E -->|Deposit Sukses| F[Ledger: Post Escrow Deposit]
+    F --> G[Mark Bed OCCUPIED]
+    G --> H[Create Admission ADMITTED]
+    H --> I[AdmissionSuccess]
+    
+    E -->|Deposit Gagal| J[KOMPENSASI: Release Bed to AVAILABLE]
+    J --> K[Cancel Admission Record]
+    K --> L[AdmissionFailedWithCompensation]
 ```
 
 ## 3. Entity-Relationship Diagram (D3)
@@ -240,59 +222,30 @@ flowchart LR
 ```
 
 
-## 6. Sequence Diagram Alur Pertukaran FHIR SatuSehat Kemenkes RI (D6)
+## 6. Diagram Alur Pertukaran FHIR SatuSehat Kemenkes RI (D6)
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Simrs as SIMRS Hospital Module
-    participant Mapper as SatuSehatFHIRMappingService
-    participant Validator as ValidateSatuSehatFHIRComplianceAction
-    participant Dto as FHIRBundlePayloadDTO
-    participant Outbox as HSP FHIR Outbox Queue
-    participant Kemkes as SatuSehat Kemenkes Gateway
-
-    Simrs->>Mapper: mapEncounter(Admission $admission)
-    Mapper->>Mapper: Konversi status, identifier IHS, periode rawat
-    Simrs->>Mapper: mapNews2Observation(Vitals, News2Score)
-    Mapper->>Mapper: Format LOINC 96552-5 & komponen vital
-    Simrs->>Mapper: mapCondition(ICD10Code)
-    Mapper->>Dto: createBundle(bundle_id, [Encounter, Observation, Condition])
-    Dto-->>Validator: Validasi kepatuhan sintaksis R4
-    alt Validasi Berhasil
-        Validator-->>Outbox: Enqueue FHIR Bundle Transaction
-        Outbox->>Kemkes: HTTP POST /fhir-r4/v1/Bundle (OAuth2 Bearer)
-        Kemkes-->>Outbox: HTTP 200 OK (Resource IDs Committed)
-        Outbox-->>Simrs: Update status sinkronisasi SATUSEHAT_SYNCED
-    else Validasi Gagal
-        Validator-->>Simrs: Alert format tidak patuh (HSP-ERR-017)
-    end
+flowchart TD
+    A[SIMRS Hospital Module] -->|mapEncounter| B[SatuSehatFHIRMappingService]
+    B -->|Format LOINC & ICD10| C[FHIRBundlePayloadDTO]
+    C -->|Validasi R4| D{Validate Compliance Action}
+    D -->|Valid| E[HSP FHIR Outbox Queue]
+    E -->|HTTP POST OAuth2| F[SatuSehat Kemenkes Gateway]
+    F -->|HTTP 200 OK| G[Update SATUSEHAT_SYNCED]
+    D -->|Gagal| H[Alert HSP-ERR-017]
 ```
 
-## 7. Sequence Diagram Rekonstruksi Forensik Code Blue Replay (D7)
+## 7. Diagram Rekonstruksi Forensik Code Blue Replay (D7)
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Nurse as Perawat / Sensor Telemetri
-    participant Planner as CodeBlueEscalationPlanner
-    participant Event as CodeBlueEvent Record
-    participant Rrt as Tim Resusitasi / ACLS
-    participant Replay as CriticalIncidentReplayEngine
-    participant Passport as PatientPassportService
-
-    Nurse->>Planner: Input Pemburukan Vital (SpO2 < 85% menit ke-1 & 2)
-    Planner->>Event: Pemicu Alarm Code Blue (Menit 0)
-    Event-->>Nurse: Banner Merah & Sirine Bangsal
-    Note over Nurse, Event: Jika belum di-ack hingga Menit 2
-    Planner->>Event: Eskalasi Panggilan Dokter Jaga (Menit 2)
-    Note over Event, Rrt: Jika belum resolusi hingga Menit 5
-    Planner->>Rrt: Broadcast Sirine Sentral Tim Resusitasi (Menit 5)
-    Rrt->>Event: Resusitasi ACLS Selesai (ROSC Tercapai)
-    Event->>Replay: Eksekusi Timeline Audit Replay
-    Replay->>Replay: Validasi Rantai Hash Merkle H0..Hn
-    Replay->>Passport: Rekam Sertifikat CIRE-V1 ke Paspor Pasien
-    Passport-->>Nurse: Bukti Audit Terkunci Permanen
+flowchart TD
+    I[Sensor Telemetri / Perawat] -->|SpO2 Turun| J[CodeBlueEscalationPlanner]
+    J -->|Menit 0| K[CodeBlueEvent Record]
+    K -->|Menit 2 Tanpa Ack| L[Eskalasi Dokter Jaga]
+    L -->|Menit 5 Tanpa Resolusi| M[Broadcast Tim Resusitasi ACLS]
+    M -->|ROSC Tercapai| N[CriticalIncidentReplayEngine]
+    N -->|Validasi Merkle Chain H0..Hn| O[Sertifikat CIRE-V1]
+    O -->|Rekam ke Paspor| P[PatientPassportService]
 ```
 
 ## 8. Matriks Hak Akses Peran & Kapabilitas Layanan (RBAC Matrix)

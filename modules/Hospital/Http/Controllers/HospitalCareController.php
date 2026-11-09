@@ -174,10 +174,12 @@ class HospitalCareController extends Controller
      */
     public function accrueBedDay(Request $request, int $admissionId, AccrueDailyBedRevenueAction $action): JsonResponse
     {
-        $idempotencyKey = $request->header('Idempotency-Key') ?? "hsp:bedday:{$admissionId}:" . microtime();
+        $serviceDate = (string) ($request->input('service_date', date('Y-m-d')));
+        $idempotencyKey = (string) ($request->header('Idempotency-Key') ?? "hsp:bedday:{$admissionId}:{$serviceDate}");
 
         $validated = $request->validate([
             'days' => 'nullable|integer|min:1',
+            'service_date' => 'nullable|string',
         ]);
 
         $days = (int) ($validated['days'] ?? 1);
@@ -196,7 +198,7 @@ class HospitalCareController extends Controller
      */
     public function discharge(Request $request, int $admissionId, DischargePatientAction $action): JsonResponse
     {
-        $idempotencyKey = $request->header('Idempotency-Key') ?? "hsp:discharge:{$admissionId}:" . microtime();
+        $idempotencyKey = (string) ($request->header('Idempotency-Key') ?? "hsp:discharge:{$admissionId}:final");
 
         $validated = $request->validate([
             'total_billed_idr' => 'nullable|integer|min:0',

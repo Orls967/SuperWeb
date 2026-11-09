@@ -45,6 +45,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('patient_id')->references('id')->on('hsp_patients')->cascadeOnDelete();
+            $table->foreign('actor_id')->references('id')->on('users')->nullOnDelete();
             $table->unique(['patient_id', 'sequence_no']);
         });
 
@@ -67,9 +68,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('patient_id')->references('id')->on('hsp_patients')->cascadeOnDelete();
-            if (Schema::hasTable('hsp_beds')) {
-                $table->foreign('bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
-            }
+            $table->foreign('encounter_id')->references('id')->on('hsp_encounters')->nullOnDelete();
+            $table->foreign('bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
         });
 
         // 4. hsp_admission_transitions (Riwayat Transisi Append-Only)
@@ -85,6 +85,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('admission_id')->references('id')->on('hsp_admissions')->cascadeOnDelete();
+            $table->foreign('actor_id')->references('id')->on('users')->nullOnDelete();
         });
 
         // 5. hsp_bed_transitions (Riwayat Transisi Ranjang 7 Status)
@@ -99,6 +100,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('bed_id')->references('id')->on('hsp_beds')->cascadeOnDelete();
+            $table->foreign('actor_id')->references('id')->on('users')->nullOnDelete();
         });
 
         // 6. hsp_clinical_order_transitions (Riwayat Transisi Order 7 Status)
@@ -114,6 +116,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('hsp_orders')->cascadeOnDelete();
+            $table->foreign('actor_id')->references('id')->on('users')->nullOnDelete();
         });
 
         // 7. hsp_code_blue_events (Critical Care Code Blue 7 Status)
@@ -132,9 +135,9 @@ return new class extends Migration
             $table->string('proof_hash', 64);
             $table->timestamps();
 
-            if (Schema::hasTable('hsp_beds')) {
-                $table->foreign('bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
-            }
+            $table->foreign('admission_id')->references('id')->on('hsp_admissions')->nullOnDelete();
+            $table->foreign('encounter_id')->references('id')->on('hsp_encounters')->nullOnDelete();
+            $table->foreign('bed_id')->references('id')->on('hsp_beds')->nullOnDelete();
         });
 
         // 8. hsp_care_sagas (Orkestrasi Saga Admisi & Kebersihan)
