@@ -72,4 +72,3 @@ final class UxResearchDashboardController extends Controller
         ]);
     }
 }
-

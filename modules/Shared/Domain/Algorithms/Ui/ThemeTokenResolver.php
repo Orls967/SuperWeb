@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Domain\Algorithms\Ui;
 
-use RuntimeException;
-
 /**
  * ThemeTokenResolver (Algoritma A2 — Fase 240)
  *
@@ -19,7 +17,9 @@ use RuntimeException;
 class ThemeTokenResolver
 {
     public const STATUS_RESOLVED = 'RESOLVED';
+
     public const STATUS_CYCLE = 'TOKEN_CYCLE';
+
     public const STATUS_UNDEFINED = 'TOKEN_UNDEFINED';
 
     /**
@@ -38,8 +38,8 @@ class ThemeTokenResolver
     /**
      * Menyelesaikan seluruh token untuk tema tertentu.
      *
-     * @param array<string, array<string, string>> $themeDefinitions [tema => [token_name => value]]
-     * @param string $requestingTheme 'light' | 'dark' | 'hc'
+     * @param  array<string, array<string, string>>  $themeDefinitions  [tema => [token_name => value]]
+     * @param  string  $requestingTheme  'light' | 'dark' | 'hc'
      * @return array{
      *   theme: string,
      *   status: string,
@@ -51,7 +51,7 @@ class ThemeTokenResolver
      */
     public function resolve(array $themeDefinitions, string $requestingTheme): array
     {
-        $calculator = $this->contrastCalculator ?? new WcagContrastCalculator();
+        $calculator = $this->contrastCalculator ?? new WcagContrastCalculator;
         $chain = self::INHERITANCE_CHAINS[$requestingTheme] ?? [$requestingTheme, 'light'];
 
         // Kumpulkan semua nama token yang ada di seluruh rantai
@@ -122,9 +122,9 @@ class ThemeTokenResolver
     /**
      * Menyelesaikan satu token secara rekursif dengan penelusuran rantai dan alias di tema peminta.
      *
-     * @param list<string> $chain
-     * @param array<string, array<string, string>> $themeDefinitions
-     * @param array<string, bool> $visited
+     * @param  list<string>  $chain
+     * @param  array<string, array<string, string>>  $themeDefinitions
+     * @param  array<string, bool>  $visited
      * @return array{status: string, value: string}
      */
     private function resolveSingleToken(
@@ -155,6 +155,7 @@ class ThemeTokenResolver
         // Cek apakah berupa alias {nama}
         if (preg_match('/^\{([a-zA-Z0-9_.-]+)\}$/', trim($rawVal), $matches)) {
             $aliasTarget = $matches[1];
+
             // Alias diselesaikan DI TEMA PEMINTA
             return $this->resolveSingleToken(
                 $aliasTarget,
@@ -168,4 +169,3 @@ class ThemeTokenResolver
         return ['status' => self::STATUS_RESOLVED, 'value' => strtoupper(trim($rawVal))];
     }
 }
-

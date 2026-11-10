@@ -16,7 +16,7 @@ class TokenResolutionCertificateVerifier
     /**
      * Membubuhkan tanda tangan kriptografis SHA-256 pada payload hasil resolusi token.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function sign(array $payload): string
     {
@@ -28,7 +28,7 @@ class TokenResolutionCertificateVerifier
     /**
      * Memverifikasi keabsahan sertifikat resolusi token.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function verify(array $payload, string $certificate): bool
     {
@@ -41,7 +41,7 @@ class TokenResolutionCertificateVerifier
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     private static function canonicalString(array $payload): string
     {
@@ -51,4 +51,3 @@ class TokenResolutionCertificateVerifier
         return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
     }
 }
-

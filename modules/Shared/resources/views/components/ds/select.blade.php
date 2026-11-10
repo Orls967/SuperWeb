@@ -13,8 +13,8 @@
 
 @php
 $selectId = $id ?? 'select-'.str_replace(['[', ']', '_'], '-', $name).'-'.uniqid();
-$hasError = !empty($error) || $errors->has($name);
-$errorMessage = $error ?? $errors->first($name);
+$hasError = !empty($error) || (isset($errors) && $errors->has($name));
+$errorMessage = $error ?? (isset($errors) ? $errors->first($name) : null);
 $errorId = "{$selectId}-error";
 $hintId = "{$selectId}-hint";
 $currentVal = old($name, $selected);

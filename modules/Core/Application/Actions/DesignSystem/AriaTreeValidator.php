@@ -20,9 +20,9 @@ class AriaTreeValidator
      */
     public function validatePattern(string $pattern, string $html): array
     {
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $previousState = libxml_use_internal_errors(true);
-        $wrapped = '<?xml encoding="utf-8" ?><div>' . trim($html) . '</div>';
+        $wrapped = '<?xml encoding="utf-8" ?><div>'.trim($html).'</div>';
         $dom->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
         libxml_use_internal_errors($previousState);
@@ -71,11 +71,12 @@ class AriaTreeValidator
                 'message' => 'Komponen modal dialog wajib menyertakan role="dialog" atau role="alertdialog".',
                 'severity' => 'error',
             ];
+
             return;
         }
 
         foreach ($dialogs as $dialog) {
-            if (!$dialog instanceof DOMElement) {
+            if (! $dialog instanceof DOMElement) {
                 continue;
             }
 
@@ -88,7 +89,7 @@ class AriaTreeValidator
             }
 
             $hasLabel = $dialog->hasAttribute('aria-label') || $dialog->hasAttribute('aria-labelledby');
-            if (!$hasLabel) {
+            if (! $hasLabel) {
                 $issues[] = [
                     'rule' => 'DIALOG_LABEL_MISSING',
                     'message' => 'Elemen dialog wajib memiliki judul aksesibel melalui aria-labelledby atau aria-label.',
@@ -110,6 +111,7 @@ class AriaTreeValidator
                 'message' => 'Komponen Tabs wajib memiliki kontainer dengan role="tablist".',
                 'severity' => 'error',
             ];
+
             return;
         }
 
@@ -132,11 +134,11 @@ class AriaTreeValidator
         }
 
         foreach ($tabs as $tab) {
-            if (!$tab instanceof DOMElement) {
+            if (! $tab instanceof DOMElement) {
                 continue;
             }
 
-            if (!$tab->hasAttribute('aria-selected')) {
+            if (! $tab->hasAttribute('aria-selected')) {
                 $issues[] = [
                     'rule' => 'TAB_ARIA_SELECTED_MISSING',
                     'message' => "Tab [{$tab->textContent}] tidak memiliki atribut status aria-selected=\"true|false\".",
@@ -144,7 +146,7 @@ class AriaTreeValidator
                 ];
             }
 
-            if (!$tab->hasAttribute('aria-controls')) {
+            if (! $tab->hasAttribute('aria-controls')) {
                 $issues[] = [
                     'rule' => 'TAB_ARIA_CONTROLS_MISSING',
                     'message' => "Tab [{$tab->textContent}] tidak memiliki atribut aria-controls yang mengaitkannya ke id tabpanel.",
@@ -166,15 +168,16 @@ class AriaTreeValidator
                 'message' => 'Elemen input combobox wajib memiliki role="combobox".',
                 'severity' => 'error',
             ];
+
             return;
         }
 
         foreach ($comboboxes as $box) {
-            if (!$box instanceof DOMElement) {
+            if (! $box instanceof DOMElement) {
                 continue;
             }
 
-            if (!$box->hasAttribute('aria-expanded')) {
+            if (! $box->hasAttribute('aria-expanded')) {
                 $issues[] = [
                     'rule' => 'COMBOBOX_EXPANDED_MISSING',
                     'message' => 'Elemen combobox wajib memiliki atribut status aria-expanded.',
@@ -182,7 +185,7 @@ class AriaTreeValidator
                 ];
             }
 
-            if (!$box->hasAttribute('aria-controls')) {
+            if (! $box->hasAttribute('aria-controls')) {
                 $issues[] = [
                     'rule' => 'COMBOBOX_CONTROLS_MISSING',
                     'message' => 'Elemen combobox wajib memiliki aria-controls yang mereferensikan listbox hasil.',
@@ -204,11 +207,12 @@ class AriaTreeValidator
                 'message' => 'Accordion membutuhkan tombol pemantik dengan atribut aria-expanded="true|false".',
                 'severity' => 'error',
             ];
+
             return;
         }
 
         foreach ($triggers as $trigger) {
-            if (!$trigger instanceof DOMElement) {
+            if (! $trigger instanceof DOMElement) {
                 continue;
             }
 
@@ -256,7 +260,7 @@ class AriaTreeValidator
         $elementsWithRefs = $xpath->query('//*[@aria-labelledby or @aria-describedby or @aria-controls]');
 
         foreach ($elementsWithRefs as $elem) {
-            if (!$elem instanceof DOMElement) {
+            if (! $elem instanceof DOMElement) {
                 continue;
             }
 
@@ -277,4 +281,3 @@ class AriaTreeValidator
         }
     }
 }
-

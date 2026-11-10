@@ -16,7 +16,7 @@ class A11yHtmlLinterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->linter = new A11yHtmlLinter();
+        $this->linter = new A11yHtmlLinter;
     }
 
     /**
@@ -86,4 +86,3 @@ class A11yHtmlLinterTest extends TestCase
         A11yLintCertificateVerifier::verify($res, 'sertifikat_rusak_xyz');
     }
 }
-

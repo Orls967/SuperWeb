@@ -16,7 +16,7 @@ class ContrastCertificateVerifier
     /**
      * Membubuhkan tanda tangan SHA-256 pada payload hasil kalkulasi kontras.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function sign(array $payload): string
     {
@@ -29,7 +29,7 @@ class ContrastCertificateVerifier
      * Memverifikasi validitas sertifikat kontras.
      * Melempar RuntimeException bila sertifikat rusak atau tidak cocok.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function verify(array $payload, string $certificate): bool
     {
@@ -42,7 +42,7 @@ class ContrastCertificateVerifier
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     private static function canonicalString(array $payload): string
     {
@@ -52,4 +52,3 @@ class ContrastCertificateVerifier
         return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
     }
 }
-

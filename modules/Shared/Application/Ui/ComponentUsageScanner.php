@@ -18,7 +18,7 @@ class ComponentUsageScanner
     /**
      * Memindai direktori yang diberikan dan mengembalikan peta pemakaian komponen.
      *
-     * @param list<string> $targetDirs
+     * @param  list<string>  $targetDirs
      * @return array{total_views: int, components_found: int, occurrences: int, usages: array<string, array<string, int>>}
      */
     public function scan(array $targetDirs = []): array
@@ -30,7 +30,7 @@ class ComponentUsageScanner
             ];
         }
 
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->files()->name('*.blade.php');
 
         foreach ($targetDirs as $dir) {

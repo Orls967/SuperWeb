@@ -19,15 +19,18 @@ use InvalidArgumentException;
 class WcagContrastCalculator
 {
     public const THRESHOLD_AA_NORMAL = 45000;   // 4.5:1
+
     public const THRESHOLD_AA_LARGE = 30000;    // 3.0:1
+
     public const THRESHOLD_UI_COMPONENT = 30000; // 3.0:1
+
     public const THRESHOLD_AAA_NORMAL = 70000;  // 7.0:1
 
     /**
      * Menghitung rasio kontras warna dan menerbitkan sertifikat matematis.
      *
-     * @param string $hexColorA Format #RRGGBB atau RRGGBB
-     * @param string $hexColorB Format #RRGGBB atau RRGGBB
+     * @param  string  $hexColorA  Format #RRGGBB atau RRGGBB
+     * @param  string  $hexColorB  Format #RRGGBB atau RRGGBB
      * @return array{
      *   color_a: string,
      *   color_b: string,
@@ -139,4 +142,3 @@ class WcagContrastCalculator
         return '#'.$clean;
     }
 }
-

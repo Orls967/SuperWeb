@@ -16,7 +16,7 @@ class A11yLintCertificateVerifier
     /**
      * Membubuhkan tanda tangan kriptografis SHA-256 pada payload hasil linter.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function sign(array $payload): string
     {
@@ -28,7 +28,7 @@ class A11yLintCertificateVerifier
     /**
      * Memverifikasi keabsahan sertifikat linter.
      *
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public static function verify(array $payload, string $certificate): bool
     {
@@ -41,7 +41,7 @@ class A11yLintCertificateVerifier
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     private static function canonicalString(array $payload): string
     {
@@ -51,4 +51,3 @@ class A11yLintCertificateVerifier
         return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
     }
 }
-

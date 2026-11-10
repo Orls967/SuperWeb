@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Modules\Core\Domain\Models\DsComponent;
 use Modules\Core\Domain\Models\DsComponentHistory;
-use Modules\Core\Domain\Models\DsComponentUsage;
 use Modules\Core\Domain\Models\DsToken;
 use Modules\Core\Domain\Models\DsUserPref;
 use Modules\Core\Domain\Models\UxFinding;
@@ -292,4 +291,3 @@ final class DesignSystemSeeder extends Seeder
         );
     }
 }
-

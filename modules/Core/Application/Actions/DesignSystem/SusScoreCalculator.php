@@ -30,7 +30,7 @@ class SusScoreCalculator
     /**
      * Hitung skor SUS dari sebuah respons responden (array asosiatif 1..10 atau list 10 integer 1-5).
      *
-     * @param array<int, int> $responses Nilai 1 s/d 5 untuk masing-masing pertanyaan
+     * @param  array<int, int>  $responses  Nilai 1 s/d 5 untuk masing-masing pertanyaan
      * @return array{score: float, contributions: array<int, int>, grade: string, adjective: string, acceptable: string, percentile: float, nps_category: string}
      */
     public function calculateSingleResponse(array $responses): array
@@ -44,7 +44,7 @@ class SusScoreCalculator
 
         for ($i = 1; $i <= 10; $i++) {
             $key = array_key_exists($i, $responses) ? $i : ($i - 1);
-            if (!isset($responses[$key])) {
+            if (! isset($responses[$key])) {
                 throw new InvalidArgumentException("Jawaban untuk item ke-{$i} tidak ditemukan.");
             }
 
@@ -75,7 +75,7 @@ class SusScoreCalculator
     /**
      * Hitung agregat skor SUS dari sekumpulan responden riset UX.
      *
-     * @param array<int, array<int, int>> $allResponses Daftar respon responden
+     * @param  array<int, array<int, int>>  $allResponses  Daftar respon responden
      * @return array{mean_score: float, median_score: float, std_dev: float, respondent_count: int, grade: string, adjective: string, acceptable: string, scores: array<int, float>}
      */
     public function calculateAggregate(array $allResponses): array
@@ -249,4 +249,3 @@ class SusScoreCalculator
         return 'Detractor';
     }
 }
-

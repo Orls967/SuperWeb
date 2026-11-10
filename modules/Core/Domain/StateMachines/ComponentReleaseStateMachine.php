@@ -19,11 +19,17 @@ use Modules\Core\Domain\Models\DsComponentHistory;
 class ComponentReleaseStateMachine
 {
     public const STATUS_PROPOSED = 'proposed';
+
     public const STATUS_IN_DESIGN = 'in_design';
+
     public const STATUS_A11Y_REVIEW = 'a11y_review';
+
     public const STATUS_APPROVED = 'approved';
+
     public const STATUS_RELEASED = 'released';
+
     public const STATUS_DEPRECATED = 'deprecated';
+
     public const STATUS_REMOVED = 'removed';
 
     /**
@@ -58,7 +64,7 @@ class ComponentReleaseStateMachine
      * Memeriksa guard aturan bisnis untuk transisi ke target status.
      * Melempar ComponentTransitionGuardException bila syarat tidak terpenuhi.
      *
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function assertTransitionAllowed(string $targetStatus, array $context = []): void
     {
@@ -159,8 +165,8 @@ class ComponentReleaseStateMachine
     /**
      * Mengeksekusi transisi status dan mencatat riwayat append-only.
      *
-     * @param array<string, mixed> $context
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $context
+     * @param  array<string, mixed>  $metadata
      */
     public function transitionTo(
         string $targetStatus,
@@ -196,4 +202,3 @@ class ComponentReleaseStateMachine
         ]);
     }
 }
-

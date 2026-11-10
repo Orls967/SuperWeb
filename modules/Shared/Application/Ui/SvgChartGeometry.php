@@ -15,7 +15,7 @@ class SvgChartGeometry
     /**
      * Menghitung skala rentang "bagus" (nice ticks) berbasis bilangan bulat.
      *
-     * @param list<int> $values
+     * @param  list<int>  $values
      * @return array{min: int, max: int, step: int, ticks: list<int>}
      */
     public static function calculateNiceScale(array $values, int $targetTickCount = 5): array
@@ -68,7 +68,7 @@ class SvgChartGeometry
     /**
      * Memetakan deret nilai ke koordinat titik garis SVG (x, y).
      *
-     * @param list<int> $values
+     * @param  list<int>  $values
      * @return array{
      *   points: list<array{x: int, y: int, value: int, label: string}>,
      *   path_d: string,
@@ -137,7 +137,7 @@ class SvgChartGeometry
     /**
      * Memetakan deret nilai ke geometri balok diagram batang SVG.
      *
-     * @param list<int> $values
+     * @param  list<int>  $values
      * @return array{
      *   bars: list<array{x: int, y: int, width: int, height: int, value: int, label: string}>,
      *   scale: array{min: int, max: int, step: int, ticks: list<int>}
@@ -188,4 +188,3 @@ class SvgChartGeometry
         ];
     }
 }
-

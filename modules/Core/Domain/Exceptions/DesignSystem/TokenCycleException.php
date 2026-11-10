@@ -15,4 +15,3 @@ class TokenCycleException extends DomainException
         );
     }
 }
-

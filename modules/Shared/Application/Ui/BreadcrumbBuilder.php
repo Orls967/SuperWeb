@@ -35,7 +35,7 @@ class BreadcrumbBuilder
     /**
      * Inisialisasi breadcrumb builder dengan item awal opsional.
      *
-     * @param array<int, array{label: string, url?: string|null, icon?: string|null}> $initial
+     * @param  array<int, array{label: string, url?: string|null, icon?: string|null}>  $initial
      */
     public function __construct(array $initial = [])
     {
@@ -47,7 +47,7 @@ class BreadcrumbBuilder
     /**
      * Tambahkan segmen breadcrumb baru.
      *
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function add(string $label, ?string $url = null, ?string $icon = null, array $metadata = []): self
     {
@@ -95,6 +95,7 @@ class BreadcrumbBuilder
     public function registerSegmentLabel(string $segment, string $label): self
     {
         $this->segmentLabels[strtolower(trim($segment))] = trim($label);
+
         return $this;
     }
 
@@ -113,7 +114,7 @@ class BreadcrumbBuilder
         $accumulated = '';
 
         foreach ($segments as $segment) {
-            $accumulated .= '/' . $segment;
+            $accumulated .= '/'.$segment;
             $normalizedKey = strtolower($segment);
             $label = $this->segmentLabels[$normalizedKey] ?? $this->formatSegmentToLabel($segment);
 
@@ -129,6 +130,7 @@ class BreadcrumbBuilder
     protected function formatSegmentToLabel(string $segment): string
     {
         $clean = str_replace(['-', '_'], ' ', $segment);
+
         return ucwords($clean);
     }
 
@@ -162,7 +164,7 @@ class BreadcrumbBuilder
             if ($item['url'] !== null) {
                 $fullUrl = str_starts_with($item['url'], 'http')
                     ? $item['url']
-                    : rtrim($baseUrl, '/') . '/' . ltrim($item['url'], '/');
+                    : rtrim($baseUrl, '/').'/'.ltrim($item['url'], '/');
                 $entry['item'] = $fullUrl;
             }
 
@@ -190,7 +192,6 @@ class BreadcrumbBuilder
      */
     public function isNotEmpty(): bool
     {
-        return !empty($this->items);
+        return ! empty($this->items);
     }
 }
-

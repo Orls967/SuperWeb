@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Application\Ui;
 
+use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
 
@@ -57,11 +58,11 @@ class IdFormatter
         }
 
         if (is_string($date)) {
-            $parsed = \Carbon\Carbon::parse($date)->setTimezone($timezone);
+            $parsed = Carbon::parse($date)->setTimezone($timezone);
         } elseif ($date instanceof CarbonInterface) {
             $parsed = $date->copy()->setTimezone($timezone);
         } else {
-            $parsed = \Carbon\Carbon::instance($date)->setTimezone($timezone);
+            $parsed = Carbon::instance($date)->setTimezone($timezone);
         }
 
         if ($format === 'human') {
@@ -71,4 +72,3 @@ class IdFormatter
         return $parsed->format($format);
     }
 }
-

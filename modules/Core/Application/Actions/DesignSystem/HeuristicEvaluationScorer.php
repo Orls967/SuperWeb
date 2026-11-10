@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Actions\DesignSystem;
 
-use InvalidArgumentException;
 use Modules\Core\Domain\Models\UxFinding;
 
 /**
@@ -42,7 +41,7 @@ class HeuristicEvaluationScorer
     /**
      * Evaluasi temuan cacat UX dan hitung skor indeks SWDI.
      *
-     * @param array<int, array{heuristic: string, severity: int, frequency?: string, title?: string, component?: string}> $findings
+     * @param  array<int, array{heuristic: string, severity: int, frequency?: string, title?: string, component?: string}>  $findings
      * @return array{total_findings: int, swdi_score: int, health_status: string, distribution_by_severity: array<int, int>, distribution_by_heuristic: array<string, int>, prioritized_issues: array<int, array<string, mixed>>}
      */
     public function scoreFindings(array $findings): array
@@ -58,7 +57,7 @@ class HeuristicEvaluationScorer
 
         foreach ($findings as $finding) {
             $h = strtoupper(trim((string) ($finding['heuristic'] ?? 'H4')));
-            if (!isset(self::HEURISTICS[$h])) {
+            if (! isset(self::HEURISTICS[$h])) {
                 $h = 'H4';
             }
 
@@ -150,4 +149,3 @@ class HeuristicEvaluationScorer
         return 'CRITICAL';
     }
 }
-

@@ -6,7 +6,6 @@ namespace Modules\Core\Application\Actions\DesignSystem;
 
 use Modules\Core\Domain\Models\DsToken;
 use Modules\Shared\Application\Algorithms\Ui\WcagContrastCalculator;
-use RuntimeException;
 
 /**
  * Penguji dan penerbit sertifikat kepatuhan kontras token warna (WCAG 2.1 Level AA & AAA).
@@ -17,13 +16,15 @@ class TokenContrastCertifier
      * Rasio kontras minimum WCAG 2.1 dalam basis points (bps, 1:1 = 100 bps).
      */
     public const WCAG_AA_NORMAL_TEXT_BPS = 450; // 4.5:1
+
     public const WCAG_AA_LARGE_TEXT_BPS = 300;  // 3.0:1
+
     public const WCAG_AAA_NORMAL_TEXT_BPS = 700; // 7.0:1
 
     /**
      * Jalankan sertifikasi batch kontras seluruh token warna terdaftar.
      *
-     * @param string|null $themeFilter Batasi tema tertentu ('light', 'dark', 'high-contrast', atau null untuk semua)
+     * @param  string|null  $themeFilter  Batasi tema tertentu ('light', 'dark', 'high-contrast', atau null untuk semua)
      * @return array{certified: bool, total_pairs_checked: int, passed_pairs: int, failed_pairs: int, failures: array<int, array<string, mixed>>, certificate_seal: string, generated_at: string}
      */
     public function certifyAllTokens(?string $themeFilter = null): array
@@ -112,7 +113,7 @@ class TokenContrastCertifier
     /**
      * Bangun pasangan semantik foreground vs background yang wajib memiliki kontras memadai.
      *
-     * @param array<string, string> $tokens
+     * @param  array<string, string>  $tokens
      * @return array<int, array{fg_name: string, fg_hex: string, bg_name: string, bg_hex: string, required_bps: int}>
      */
     protected function buildSemanticPairsForTheme(array $tokens): array
@@ -189,4 +190,3 @@ class TokenContrastCertifier
         return $pairs;
     }
 }
-

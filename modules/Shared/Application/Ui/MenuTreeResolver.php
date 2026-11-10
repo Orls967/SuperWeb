@@ -17,7 +17,7 @@ class MenuTreeResolver
     protected array $registeredNodes = [];
 
     /**
-     * @param array<string, array<string, mixed>> $initialNodes
+     * @param  array<string, array<string, mixed>>  $initialNodes
      */
     public function __construct(array $initialNodes = [])
     {
@@ -29,15 +29,15 @@ class MenuTreeResolver
     /**
      * Daftarkan simpul menu baru.
      *
-     * @param array<string, mixed> $node
+     * @param  array<string, mixed>  $node
      */
     public function addNode(array $node): self
     {
-        if (empty($node['id']) || !is_string($node['id'])) {
+        if (empty($node['id']) || ! is_string($node['id'])) {
             throw new InvalidArgumentException('Simpul menu wajib memiliki ID berupa string non-kosong.');
         }
 
-        if (empty($node['title']) || !is_string($node['title'])) {
+        if (empty($node['title']) || ! is_string($node['title'])) {
             throw new InvalidArgumentException("Simpul menu [{$node['id']}] wajib memiliki title.");
         }
 
@@ -65,10 +65,8 @@ class MenuTreeResolver
     /**
      * Resolusi pohon menu terurut dan terfilter berdasarkan hak akses pengguna.
      *
-     * @param array<string> $userRoles
-     * @param array<string> $userPermissions
-     * @param string|null $currentRoute
-     * @param string|null $currentUrl
+     * @param  array<string>  $userRoles
+     * @param  array<string>  $userPermissions
      * @return array<int, array<string, mixed>>
      */
     public function resolveTree(
@@ -80,11 +78,11 @@ class MenuTreeResolver
         $allowedNodes = [];
 
         foreach ($this->registeredNodes as $id => $node) {
-            if (!$node['is_visible']) {
+            if (! $node['is_visible']) {
                 continue;
             }
 
-            if (!$this->isAuthorized($node, $userRoles, $userPermissions)) {
+            if (! $this->isAuthorized($node, $userRoles, $userPermissions)) {
                 continue;
             }
 
@@ -102,9 +100,9 @@ class MenuTreeResolver
     /**
      * Periksa apakah pengguna memiliki hak akses ke simpul menu.
      *
-     * @param array<string, mixed> $node
-     * @param array<string> $userRoles
-     * @param array<string> $userPermissions
+     * @param  array<string, mixed>  $node
+     * @param  array<string>  $userRoles
+     * @param  array<string>  $userPermissions
      */
     protected function isAuthorized(array $node, array $userRoles, array $userPermissions): bool
     {
@@ -119,7 +117,7 @@ class MenuTreeResolver
             return true;
         }
 
-        if (!empty($nodeRoles)) {
+        if (! empty($nodeRoles)) {
             $hasRole = false;
             foreach ($nodeRoles as $role) {
                 if (in_array($role, $userRoles, true)) {
@@ -127,12 +125,12 @@ class MenuTreeResolver
                     break;
                 }
             }
-            if (!$hasRole) {
+            if (! $hasRole) {
                 return false;
             }
         }
 
-        if (!empty($nodePermissions)) {
+        if (! empty($nodePermissions)) {
             $hasPermission = false;
             foreach ($nodePermissions as $perm) {
                 if (in_array($perm, $userPermissions, true)) {
@@ -140,7 +138,7 @@ class MenuTreeResolver
                     break;
                 }
             }
-            if (!$hasPermission) {
+            if (! $hasPermission) {
                 return false;
             }
         }
@@ -151,11 +149,11 @@ class MenuTreeResolver
     /**
      * Tentukan apakah simpul sedang aktif berdasarkan rute atau URL saat ini.
      *
-     * @param array<string, mixed> $node
+     * @param  array<string, mixed>  $node
      */
     protected function determineActiveState(array $node, ?string $currentRoute, ?string $currentUrl): bool
     {
-        if ($currentRoute !== null && !empty($node['route'])) {
+        if ($currentRoute !== null && ! empty($node['route'])) {
             if ($node['route'] === $currentRoute) {
                 return true;
             }
@@ -168,7 +166,7 @@ class MenuTreeResolver
             }
         }
 
-        if ($currentUrl !== null && !empty($node['url']) && $node['url'] !== '#') {
+        if ($currentUrl !== null && ! empty($node['url']) && $node['url'] !== '#') {
             $cleanNodeUrl = rtrim($node['url'], '/');
             $cleanCurrentUrl = rtrim($currentUrl, '/');
             if ($cleanNodeUrl === $cleanCurrentUrl) {
@@ -182,7 +180,7 @@ class MenuTreeResolver
     /**
      * Susun daftar flat simpul menjadi struktur pohon bersarang bertingkat.
      *
-     * @param array<string, array<string, mixed>> $flatNodes
+     * @param  array<string, array<string, mixed>>  $flatNodes
      * @return array<int, array<string, mixed>>
      */
     protected function buildHierarchicalTree(array $flatNodes): array
@@ -199,7 +197,7 @@ class MenuTreeResolver
 
         // Susun anak secara rekursif
         $attachChildren = function ($parentId, &$nodes) use (&$attachChildren, $childrenMap) {
-            if (!isset($childrenMap[$parentId])) {
+            if (! isset($childrenMap[$parentId])) {
                 return [];
             }
 
@@ -211,7 +209,7 @@ class MenuTreeResolver
 
                     // Jika salah satu anak aktif, induk juga aktif
                     foreach ($child['children'] as $nested) {
-                        if (!empty($nested['is_active'])) {
+                        if (! empty($nested['is_active'])) {
                             $child['is_active'] = true;
                             break;
                         }
@@ -222,17 +220,18 @@ class MenuTreeResolver
             }
 
             usort($children, fn ($a, $b) => $a['order'] <=> $b['order']);
+
             return $children;
         };
 
         foreach ($flatNodes as $id => $node) {
-            if ($node['parent_id'] === null || !isset($flatNodes[$node['parent_id']])) {
+            if ($node['parent_id'] === null || ! isset($flatNodes[$node['parent_id']])) {
                 $node['children'] = $attachChildren($id, $flatNodes);
 
                 // Induk aktif jika ada anak yang aktif
-                if (!$node['is_active']) {
+                if (! $node['is_active']) {
                     foreach ($node['children'] as $child) {
-                        if (!empty($child['is_active'])) {
+                        if (! empty($child['is_active'])) {
                             $node['is_active'] = true;
                             break;
                         }
@@ -280,4 +279,3 @@ class MenuTreeResolver
         return count($this->registeredNodes);
     }
 }
-

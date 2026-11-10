@@ -7,7 +7,6 @@ namespace Modules\Core\Application\Actions\DesignSystem;
 use Illuminate\Support\Facades\File;
 use Modules\Core\Domain\Models\DsComponent;
 use Modules\Core\Domain\Models\DsComponentHistory;
-use RuntimeException;
 
 /**
  * Rekonsiliator audit dua sumber: Integritas State Machine database vs status file komponen di disk.
@@ -41,10 +40,10 @@ class DsDualSourceReconciler
         foreach ($components as $component) {
             $checkedCount++;
             $componentName = $component->name;
-            $filePath = $this->componentsPath . DIRECTORY_SEPARATOR . $componentName . '.blade.php';
+            $filePath = $this->componentsPath.DIRECTORY_SEPARATOR.$componentName.'.blade.php';
 
             // 1. Periksa keberadaan file fisik di disk
-            if (!File::exists($filePath)) {
+            if (! File::exists($filePath)) {
                 $discrepancies[] = [
                     'component' => $componentName,
                     'type' => 'FILE_MISSING_ON_DISK',
@@ -53,6 +52,7 @@ class DsDualSourceReconciler
                     'file_status' => 'missing',
                     'severity' => 'critical',
                 ];
+
                 continue;
             }
 
@@ -75,6 +75,7 @@ class DsDualSourceReconciler
                     'history_status' => $latestHistory->to_status,
                     'severity' => 'critical',
                 ];
+
                 continue;
             }
 
@@ -89,12 +90,13 @@ class DsDualSourceReconciler
                         'file_size' => $fileSize,
                         'severity' => 'high',
                     ];
+
                     continue;
                 }
             }
 
             // 5. Verifikasi komponen deprecated
-            if ($component->status === 'deprecated' && !str_contains($content, 'deprecated')) {
+            if ($component->status === 'deprecated' && ! str_contains($content, 'deprecated')) {
                 $discrepancies[] = [
                     'component' => $componentName,
                     'type' => 'DEPRECATION_NOTICE_MISSING',
@@ -132,7 +134,7 @@ class DsDualSourceReconciler
      */
     public function detectOrphanBladeFiles(): array
     {
-        if (!File::isDirectory($this->componentsPath)) {
+        if (! File::isDirectory($this->componentsPath)) {
             return [];
         }
 
@@ -142,12 +144,12 @@ class DsDualSourceReconciler
 
         foreach ($files as $file) {
             $filename = $file->getFilename();
-            if (!str_ends_with($filename, '.blade.php')) {
+            if (! str_ends_with($filename, '.blade.php')) {
                 continue;
             }
 
             $componentName = substr($filename, 0, -10);
-            if (!in_array($componentName, $registeredNames, true)) {
+            if (! in_array($componentName, $registeredNames, true)) {
                 $orphans[] = $componentName;
             }
         }
@@ -155,4 +157,3 @@ class DsDualSourceReconciler
         return $orphans;
     }
 }
-

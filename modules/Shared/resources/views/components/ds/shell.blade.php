@@ -70,7 +70,7 @@
                 </div>
             @endif
 
-            @if($errors->any())
+            @if(isset($errors) && $errors->any())
                 <div class="mx-6 mt-4">
                     <x-ds.error title="Validasi Gagal" :message="$errors->first()" />
                 </div>

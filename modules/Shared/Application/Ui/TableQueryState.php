@@ -31,8 +31,8 @@ class TableQueryState
     private array $filters;
 
     /**
-     * @param list<string> $allowedSortColumns
-     * @param array<string, mixed> $allowedFilters
+     * @param  list<string>  $allowedSortColumns
+     * @param  array<string, mixed>  $allowedFilters
      */
     public function __construct(
         Request $request,
@@ -122,7 +122,7 @@ class TableQueryState
     /**
      * Membentuk query parameter string dengan modifikasi satu nilai.
      *
-     * @param array<string, mixed> $overrides
+     * @param  array<string, mixed>  $overrides
      */
     public function buildUrlParams(array $overrides = []): string
     {
@@ -141,4 +141,3 @@ class TableQueryState
         return http_build_query($params);
     }
 }
-

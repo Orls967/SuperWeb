@@ -20,9 +20,9 @@ class KeyboardNavigationMatrix
      */
     public function analyze(string $html): array
     {
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $previousState = libxml_use_internal_errors(true);
-        $wrapped = '<?xml encoding="utf-8" ?><div>' . trim($html) . '</div>';
+        $wrapped = '<?xml encoding="utf-8" ?><div>'.trim($html).'</div>';
         $dom->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
         libxml_use_internal_errors($previousState);
@@ -50,7 +50,7 @@ class KeyboardNavigationMatrix
         foreach ($dialogs as $dialog) {
             if ($dialog instanceof DOMElement) {
                 $hasEscape = $this->hasEscapeHandler($dialog, $html);
-                if (!$hasEscape) {
+                if (! $hasEscape) {
                     $violations[] = [
                         'rule' => 'DIALOG_ESCAPE_HANDLER_MISSING',
                         'message' => 'Elemen dialog harus dapat ditutup dengan tombol Escape (WCAG 2.1.2 No Keyboard Trap).',
@@ -60,7 +60,7 @@ class KeyboardNavigationMatrix
                 }
 
                 $hasTrap = $dialog->hasAttribute('x-trap') || str_contains($html, 'x-trap') || str_contains($html, 'focus-trap');
-                if (!$hasTrap) {
+                if (! $hasTrap) {
                     $violations[] = [
                         'rule' => 'DIALOG_FOCUS_TRAP_MISSING',
                         'message' => 'Elemen modal dialog wajib mengurung fokus keyboard (focus trap) agar fokus tidak bocor ke latar belakang.',
@@ -83,7 +83,7 @@ class KeyboardNavigationMatrix
                 }
             }
 
-            if ($tabs->count() > 1 && !$hasNegativeIndex && !str_contains($html, 'keydown.arrow')) {
+            if ($tabs->count() > 1 && ! $hasNegativeIndex && ! str_contains($html, 'keydown.arrow')) {
                 $violations[] = [
                     'rule' => 'TABLIST_ROVING_TABINDEX_MISSING',
                     'message' => 'Tablist harus mengimplementasikan roving tabindex (tab non-aktif memiliki tabindex="-1") dan navigasi tombol panah.',
@@ -129,9 +129,9 @@ class KeyboardNavigationMatrix
      */
     public function detectAccessKeyCollisions(string $html): array
     {
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $previousState = libxml_use_internal_errors(true);
-        $wrapped = '<?xml encoding="utf-8" ?><div>' . trim($html) . '</div>';
+        $wrapped = '<?xml encoding="utf-8" ?><div>'.trim($html).'</div>';
         $dom->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
         libxml_use_internal_errors($previousState);
@@ -144,7 +144,7 @@ class KeyboardNavigationMatrix
             if ($elem instanceof DOMElement) {
                 $key = strtolower(trim($elem->getAttribute('accesskey')));
                 if ($key !== '') {
-                    $keyMap[$key][] = $elem->nodeName . ($elem->hasAttribute('id') ? '#' . $elem->getAttribute('id') : '');
+                    $keyMap[$key][] = $elem->nodeName.($elem->hasAttribute('id') ? '#'.$elem->getAttribute('id') : '');
                 }
             }
         }
@@ -159,4 +159,3 @@ class KeyboardNavigationMatrix
         return $collisions;
     }
 }
-

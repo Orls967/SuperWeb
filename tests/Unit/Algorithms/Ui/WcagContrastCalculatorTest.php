@@ -16,7 +16,7 @@ class WcagContrastCalculatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->calculator = new WcagContrastCalculator();
+        $this->calculator = new WcagContrastCalculator;
     }
 
     /**
@@ -87,4 +87,3 @@ class WcagContrastCalculatorTest extends TestCase
         ContrastCertificateVerifier::verify($res, 'sertifikat_palsu_123456');
     }
 }
-

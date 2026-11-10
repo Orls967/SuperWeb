@@ -24,9 +24,13 @@ use DOMXPath;
 class A11yHtmlLinter
 {
     public const RULE_IMG_ALT = 'IMG_ALT';
+
     public const RULE_INPUT_LABEL = 'INPUT_LABEL';
+
     public const RULE_BUTTON_NAME = 'BUTTON_NAME';
+
     public const RULE_LINK_NAME = 'LINK_NAME';
+
     public const RULE_TABINDEX_POSITIVE = 'TABINDEX_POSITIVE';
 
     /**
@@ -52,7 +56,7 @@ class A11yHtmlLinter
             return $payload;
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $previousErrors = libxml_use_internal_errors(true);
         // Muat fragmen HTML tanpa doctype wrapper otomatis
         $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -206,4 +210,3 @@ class A11yHtmlLinter
         return $payload;
     }
 }
-

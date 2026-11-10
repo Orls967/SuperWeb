@@ -15,4 +15,3 @@ class UndefinedTokenException extends DomainException
         );
     }
 }
-

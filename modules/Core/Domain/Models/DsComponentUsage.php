@@ -35,4 +35,3 @@ class DsComponentUsage extends Model
         return $query->where('view_path', $viewPath);
     }
 }
-

@@ -15,7 +15,7 @@ class SparklinePath
     /**
      * Membentuk atribut jalur d SVG dari deret angka integer.
      *
-     * @param list<int> $data
+     * @param  list<int>  $data
      */
     public static function generate(array $data, int $width = 120, int $height = 32, int $padding = 2): string
     {
@@ -49,4 +49,3 @@ class SparklinePath
         return implode(' ', $commands);
     }
 }
-

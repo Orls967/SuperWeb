@@ -17,8 +17,8 @@ class CsvExporter
     /**
      * Membentuk respons unduhan CSV streaming dari generator data.
      *
-     * @param list<string> $headers
-     * @param iterable<list<mixed>> $rows
+     * @param  list<string>  $headers
+     * @param  iterable<list<mixed>>  $rows
      */
     public static function streamDownload(string $filename, array $headers, iterable $rows): StreamedResponse
     {
@@ -62,8 +62,8 @@ class CsvExporter
     /**
      * Menghasilkan string mentah CSV untuk pengujian atau penyimpanan berkas.
      *
-     * @param list<string> $headers
-     * @param iterable<list<mixed>> $rows
+     * @param  list<string>  $headers
+     * @param  iterable<list<mixed>>  $rows
      */
     public static function generateString(array $headers, iterable $rows): string
     {
@@ -85,4 +85,3 @@ class CsvExporter
         return $content;
     }
 }
-

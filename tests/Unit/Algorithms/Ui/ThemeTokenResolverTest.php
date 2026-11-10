@@ -16,7 +16,7 @@ class ThemeTokenResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->resolver = new ThemeTokenResolver();
+        $this->resolver = new ThemeTokenResolver;
     }
 
     /**
@@ -136,4 +136,3 @@ class ThemeTokenResolverTest extends TestCase
         TokenResolutionCertificateVerifier::verify($res, 'sertifikat_korup_abc');
     }
 }
-

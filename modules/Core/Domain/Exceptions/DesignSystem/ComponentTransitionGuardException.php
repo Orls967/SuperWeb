@@ -15,4 +15,3 @@ class ComponentTransitionGuardException extends DomainException
         );
     }
 }
-

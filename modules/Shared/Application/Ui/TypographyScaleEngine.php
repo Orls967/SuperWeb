@@ -44,8 +44,8 @@ class TypographyScaleEngine
     /**
      * Hitung seluruh tangga skala tipografi dalam satuan REM dan PX.
      *
-     * @param float $baseFontSizePx Ukuran font dasar dalam pixel (bawaan: 16.0px)
-     * @param string $ratioName Rasio modular yang digunakan (bawaan: 'major_third' = 1.250)
+     * @param  float  $baseFontSizePx  Ukuran font dasar dalam pixel (bawaan: 16.0px)
+     * @param  string  $ratioName  Rasio modular yang digunakan (bawaan: 'major_third' = 1.250)
      * @return array<string, array{rem: float, px: float, line_height: float, letter_spacing: string}>
      */
     public function generateScale(float $baseFontSizePx = 16.0, string $ratioName = 'major_third'): array
@@ -54,7 +54,7 @@ class TypographyScaleEngine
             throw new InvalidArgumentException('Ukuran font dasar harus lebih besar dari 0.');
         }
 
-        if (!isset(self::RATIOS[$ratioName])) {
+        if (! isset(self::RATIOS[$ratioName])) {
             throw new InvalidArgumentException("Rasio modular [{$ratioName}] tidak dikenal.");
         }
 
@@ -104,4 +104,3 @@ class TypographyScaleEngine
         return implode("\n", $lines);
     }
 }
-

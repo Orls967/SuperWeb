@@ -6,7 +6,6 @@ namespace Modules\Shared\Application\Ui;
 
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMXPath;
 
 /**
@@ -39,10 +38,10 @@ class DomA11yTreeCrawler
             ];
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $previousState = libxml_use_internal_errors(true);
         // Bungkus dengan div penampung dan UTF-8 meta
-        $wrapped = '<?xml encoding="utf-8" ?><div>' . $cleanHtml . '</div>';
+        $wrapped = '<?xml encoding="utf-8" ?><div>'.$cleanHtml.'</div>';
         $dom->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
         libxml_use_internal_errors($previousState);
@@ -97,7 +96,7 @@ class DomA11yTreeCrawler
         $previousLevel = 0;
 
         foreach ($headingNodes as $node) {
-            if (!$node instanceof DOMElement) {
+            if (! $node instanceof DOMElement) {
                 continue;
             }
 
@@ -125,11 +124,11 @@ class DomA11yTreeCrawler
         $images = $xpath->query('//img');
 
         foreach ($images as $img) {
-            if (!$img instanceof DOMElement) {
+            if (! $img instanceof DOMElement) {
                 continue;
             }
 
-            if (!$img->hasAttribute('alt')) {
+            if (! $img->hasAttribute('alt')) {
                 $role = $img->getAttribute('role');
                 $ariaHidden = $img->getAttribute('aria-hidden');
 
@@ -153,7 +152,7 @@ class DomA11yTreeCrawler
         $controls = $xpath->query('//input[not(@type="hidden") and not(@type="submit") and not(@type="button") and not(@type="image")] | //select | //textarea');
 
         foreach ($controls as $control) {
-            if (!$control instanceof DOMElement) {
+            if (! $control instanceof DOMElement) {
                 continue;
             }
 
@@ -161,9 +160,9 @@ class DomA11yTreeCrawler
             $ariaLabel = $control->getAttribute('aria-label');
             $ariaLabelledBy = $control->getAttribute('aria-labelledby');
 
-            $hasDirectLabel = !empty($ariaLabel) || !empty($ariaLabelledBy);
+            $hasDirectLabel = ! empty($ariaLabel) || ! empty($ariaLabelledBy);
 
-            if (!$hasDirectLabel && !empty($id)) {
+            if (! $hasDirectLabel && ! empty($id)) {
                 $matchingLabel = $xpath->query("//label[@for='{$id}']");
                 if ($matchingLabel->count() > 0) {
                     $hasDirectLabel = true;
@@ -171,7 +170,7 @@ class DomA11yTreeCrawler
             }
 
             // Periksa juga apakah input berada di dalam <label>...</label>
-            if (!$hasDirectLabel) {
+            if (! $hasDirectLabel) {
                 $parent = $control->parentNode;
                 while ($parent !== null) {
                     if ($parent->nodeName === 'label') {
@@ -182,7 +181,7 @@ class DomA11yTreeCrawler
                 }
             }
 
-            if (!$hasDirectLabel) {
+            if (! $hasDirectLabel) {
                 $errors[] = [
                     'rule' => 'FORM_CONTROL_LABEL_MISSING',
                     'message' => "Elemen input <{$control->nodeName}> [name='{$control->getAttribute('name')}'] tidak memiliki label atau aria-label.",
@@ -201,7 +200,7 @@ class DomA11yTreeCrawler
     {
         $buttons = $xpath->query('//button');
         foreach ($buttons as $btn) {
-            if (!$btn instanceof DOMElement) {
+            if (! $btn instanceof DOMElement) {
                 continue;
             }
 
@@ -221,7 +220,7 @@ class DomA11yTreeCrawler
 
         $links = $xpath->query('//a');
         foreach ($links as $link) {
-            if (!$link instanceof DOMElement) {
+            if (! $link instanceof DOMElement) {
                 continue;
             }
 
@@ -252,7 +251,7 @@ class DomA11yTreeCrawler
         $tables = $xpath->query('//table');
 
         foreach ($tables as $table) {
-            if (!$table instanceof DOMElement) {
+            if (! $table instanceof DOMElement) {
                 continue;
             }
 
@@ -280,7 +279,7 @@ class DomA11yTreeCrawler
         $navs = $xpath->query('//nav');
         if ($navs->count() > 1) {
             foreach ($navs as $nav) {
-                if ($nav instanceof DOMElement && !$nav->hasAttribute('aria-label') && !$nav->hasAttribute('aria-labelledby')) {
+                if ($nav instanceof DOMElement && ! $nav->hasAttribute('aria-label') && ! $nav->hasAttribute('aria-labelledby')) {
                     $warnings[] = [
                         'rule' => 'MULTIPLE_NAV_WITHOUT_LABEL',
                         'message' => 'Terdapat lebih dari satu elemen <nav>; sertakan aria-label pembeda pada masing-masing navigasi.',
@@ -292,4 +291,3 @@ class DomA11yTreeCrawler
         }
     }
 }
-

@@ -32,4 +32,3 @@ final class StoreComponentProposalRequest extends FormRequest
         ];
     }
 }
-

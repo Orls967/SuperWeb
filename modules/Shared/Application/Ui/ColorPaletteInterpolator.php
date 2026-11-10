@@ -20,7 +20,7 @@ class ColorPaletteInterpolator
     /**
      * Interpolasi ramp warna dari sebuah hex 500 dasar.
      *
-     * @param string $baseHex Hex warna dasar (dianggap stop 500)
+     * @param  string  $baseHex  Hex warna dasar (dianggap stop 500)
      * @return array<int, array{stop: int, hex: string, rgb: array{r: int, g: int, b: int}, luminance_ppm: int, contrast_white: float, contrast_black: float, text_color: string}>
      */
     public function generatePalette(string $baseHex): array
@@ -61,7 +61,7 @@ class ColorPaletteInterpolator
     /**
      * Hitung nilai hex untuk tingkat stop tertentu (50 s/d 950) relatif terhadap stop 500.
      *
-     * @param array{r: int, g: int, b: int} $baseRgb
+     * @param  array{r: int, g: int, b: int}  $baseRgb
      */
     protected function calculateStopHex(array $baseRgb, int $stop): string
     {
@@ -136,20 +136,20 @@ class ColorPaletteInterpolator
         $clean = strtolower(ltrim(trim($hex), '#'));
 
         if (strlen($clean) === 3) {
-            $clean = $clean[0] . $clean[0] . $clean[1] . $clean[1] . $clean[2] . $clean[2];
+            $clean = $clean[0].$clean[0].$clean[1].$clean[1].$clean[2].$clean[2];
         }
 
-        if (strlen($clean) !== 6 || !ctype_xdigit($clean)) {
+        if (strlen($clean) !== 6 || ! ctype_xdigit($clean)) {
             throw new InvalidArgumentException("Nilai warna bukan hexadesimal valid: [{$hex}].");
         }
 
-        return '#' . $clean;
+        return '#'.$clean;
     }
 
     /**
      * Ekspor palet ke representasi CSS Custom Properties.
      *
-     * @param string $prefix Nama prefix CSS token (misal: "color-primary")
+     * @param  string  $prefix  Nama prefix CSS token (misal: "color-primary")
      * @return string Blok variabel CSS
      */
     public function toCssVariables(string $prefix, string $baseHex): string
@@ -166,4 +166,3 @@ class ColorPaletteInterpolator
         return implode("\n", $lines);
     }
 }
-

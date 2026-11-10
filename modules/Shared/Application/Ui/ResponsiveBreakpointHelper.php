@@ -27,6 +27,7 @@ class ResponsiveBreakpointHelper
      * Ukuran target sentuh minimum sesuai WCAG 2.5.5 (44px) dan target AA yang direkomendasikan (48px).
      */
     public const MIN_TOUCH_TARGET_PX = 44;
+
     public const RECOMMENDED_TOUCH_TARGET_PX = 48;
 
     /**
@@ -112,10 +113,10 @@ class ResponsiveBreakpointHelper
     /**
      * Hitung ekspresi CSS clamp() fluida antara ukuran minimum dan maksimum berdasarkan viewport.
      *
-     * @param float $minRem Ukuran terkecil pada viewport terkecil (rem)
-     * @param float $maxRem Ukuran terbesar pada viewport terbesar (rem)
-     * @param int $minVwPx Lebar viewport minimum (px), bawaan 375px
-     * @param int $maxVwPx Lebar viewport maksimum (px), bawaan 1280px
+     * @param  float  $minRem  Ukuran terkecil pada viewport terkecil (rem)
+     * @param  float  $maxRem  Ukuran terbesar pada viewport terbesar (rem)
+     * @param  int  $minVwPx  Lebar viewport minimum (px), bawaan 375px
+     * @param  int  $maxVwPx  Lebar viewport maksimum (px), bawaan 1280px
      * @return string Ekspresi CSS clamp(...)
      */
     public function calculateFluidClamp(
@@ -151,7 +152,7 @@ class ResponsiveBreakpointHelper
      */
     public function buildMediaQuery(string $breakpoint, string $direction = 'min'): string
     {
-        if (!isset(self::BREAKPOINTS[$breakpoint])) {
+        if (! isset(self::BREAKPOINTS[$breakpoint])) {
             throw new InvalidArgumentException("Breakpoint [{$breakpoint}] tidak dikenal.");
         }
 
@@ -159,10 +160,10 @@ class ResponsiveBreakpointHelper
 
         if ($direction === 'max') {
             $maxPx = max(0, $px - 1);
+
             return "@media (max-width: {$maxPx}px)";
         }
 
         return "@media (min-width: {$px}px)";
     }
 }
-

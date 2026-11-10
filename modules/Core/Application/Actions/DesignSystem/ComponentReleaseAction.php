@@ -6,7 +6,6 @@ namespace Modules\Core\Application\Actions\DesignSystem;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Modules\Core\Domain\Exceptions\DesignSystem\InvalidComponentReleaseException;
 use Modules\Core\Domain\Models\DsA11yFinding;
 use Modules\Core\Domain\Models\DsComponent;
 use Modules\Core\Domain\Models\DsComponentHistory;
@@ -16,6 +15,7 @@ class ComponentReleaseAction
 {
     /**
      * Cache idempotensi in-memory atau query deterministik.
+     *
      * @var array<string, int>
      */
     private static array $idempotencyCache = [];
@@ -84,7 +84,7 @@ class ComponentReleaseAction
     /**
      * Menjalankan transisi status komponen menggunakan State Machine.
      *
-     * @param array<string, mixed> $context
+     * @param  array<string, mixed>  $context
      */
     public function transition(
         int $componentId,
@@ -150,4 +150,3 @@ class ComponentReleaseAction
         $finding->markRemediated();
     }
 }
-

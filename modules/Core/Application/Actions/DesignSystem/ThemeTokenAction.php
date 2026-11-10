@@ -46,7 +46,7 @@ class ThemeTokenAction
      */
     public function buildCssFile(): array
     {
-        $resolver = $this->resolver ?? new ThemeTokenResolver();
+        $resolver = $this->resolver ?? new ThemeTokenResolver;
         $tokens = DsToken::latestVersion()->get();
 
         $themeDefinitions = [
@@ -154,4 +154,3 @@ class ThemeTokenAction
         ];
     }
 }
-
