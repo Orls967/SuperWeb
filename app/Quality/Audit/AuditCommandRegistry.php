@@ -24,6 +24,7 @@ use App\Quality\Audit\Fixtures\CoreVerifyPassportsCorruptionFixture;
 use App\Quality\Audit\Fixtures\CtrAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\DistAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\DrAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\DsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EcosystemAudit12LinesCorruptionFixture;
 use App\Quality\Audit\Fixtures\EduAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\EgyAuditCorruptionFixture;
@@ -123,6 +124,7 @@ final class AuditCommandRegistry
             'ctr:audit' => new CtrAuditCorruptionFixture,
             'dist:audit' => new DistAuditCorruptionFixture,
             'dr:audit' => new DrAuditCorruptionFixture,
+            'ds:audit' => new DsAuditCorruptionFixture,
             'ecosystem:audit-12-lines' => new EcosystemAudit12LinesCorruptionFixture,
             'edu:audit' => new EduAuditCorruptionFixture,
             'egy:audit' => new EgyAuditCorruptionFixture,

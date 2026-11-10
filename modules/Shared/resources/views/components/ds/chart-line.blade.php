@@ -10,14 +10,14 @@
 @php
 $chart = \Modules\Shared\Application\Ui\SvgChartGeometry::buildLineChart($values, $labels, $width, $height);
 $strokeHex = match($strokeColor) {
-    'success' => '#15803D',
-    'danger' => '#B91C1C',
-    default => '#1D4ED8',
+    'success' => 'var(--ds-color-success, currentColor)',
+    'danger' => 'var(--ds-color-danger, currentColor)',
+    default => 'var(--ds-color-primary, currentColor)',
 };
 $fillHex = match($strokeColor) {
-    'success' => 'rgba(21, 128, 61, 0.1)',
-    'danger' => 'rgba(185, 28, 28, 0.1)',
-    default => 'rgba(29, 78, 216, 0.1)',
+    'success' => 'rgba(21, 128, 61, 0.12)',
+    'danger' => 'rgba(185, 28, 28, 0.12)',
+    default => 'rgba(29, 78, 216, 0.12)',
 };
 @endphp
 
@@ -35,8 +35,8 @@ $fillHex = match($strokeColor) {
                     $normY = ($tick - $chart['scale']['min']) / $range;
                     $yPos = (int) round($height - 30 - ($normY * ($height - 60)));
                 @endphp
-                <line x1="40" y1="{{ $yPos }}" x2="{{ $width - 40 }}" y2="{{ $yPos }}" stroke="#E2E8F0" stroke-dasharray="4 4" class="dark:stroke-slate-700" />
-                <text x="35" y="{{ $yPos + 4 }}" text-anchor="end" font-size="10" fill="#94A3B8" class="tabular-nums font-mono">{{ $tick }}</text>
+                <line x1="40" y1="{{ $yPos }}" x2="{{ $width - 40 }}" y2="{{ $yPos }}" stroke="currentColor" stroke-opacity="0.2" stroke-dasharray="4 4" class="text-slate-300 dark:text-slate-700" />
+                <text x="35" y="{{ $yPos + 4 }}" text-anchor="end" font-size="10" fill="currentColor" class="tabular-nums font-mono text-slate-400">{{ $tick }}</text>
             @endforeach
 
             {{-- Area Fill --}}
@@ -51,8 +51,8 @@ $fillHex = match($strokeColor) {
 
             {{-- Titik Koordinat & Label X --}}
             @foreach($chart['points'] as $pt)
-                <circle cx="{{ $pt['x'] }}" cy="{{ $pt['y'] }}" r="4" fill="{{ $strokeHex }}" stroke="#FFFFFF" stroke-width="2" class="dark:stroke-slate-900" />
-                <text x="{{ $pt['x'] }}" y="{{ $height - 12 }}" text-anchor="middle" font-size="10" fill="#64748B">{{ $pt['label'] }}</text>
+                <circle cx="{{ $pt['x'] }}" cy="{{ $pt['y'] }}" r="4" fill="{{ $strokeHex }}" stroke="currentColor" stroke-width="2" class="text-white dark:text-slate-900" />
+                <text x="{{ $pt['x'] }}" y="{{ $height - 12 }}" text-anchor="middle" font-size="10" fill="currentColor" class="text-slate-500">{{ $pt['label'] }}</text>
             @endforeach
         </svg>
     </div>

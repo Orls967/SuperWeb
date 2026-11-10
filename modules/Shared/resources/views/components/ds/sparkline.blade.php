@@ -8,9 +8,9 @@
 @php
 $pathD = \Modules\Shared\Application\Ui\SparklinePath::generate($data, $width, $height);
 $strokeColor = match($color) {
-    'success' => '#15803D',
-    'danger' => '#B91C1C',
-    default => '#1D4ED8',
+    'success' => 'var(--ds-color-success, currentColor)',
+    'danger' => 'var(--ds-color-danger, currentColor)',
+    default => 'var(--ds-color-primary, currentColor)',
 };
 @endphp
 
