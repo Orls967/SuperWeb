@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\ActivityFeedController;
+use Modules\Core\Http\Controllers\Admin\Spine\SpineConsumerController;
+use Modules\Core\Http\Controllers\Admin\Spine\SpineDashboardController;
+use Modules\Core\Http\Controllers\Admin\Spine\SpineDlqController;
+use Modules\Core\Http\Controllers\Admin\Spine\SpineGapController;
+use Modules\Core\Http\Controllers\Admin\Spine\SpineSchemaController;
 use Modules\Core\Http\Controllers\Ai\AiAnomalyController;
 use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
 use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
@@ -156,6 +161,36 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // API Pencarian Global BM25 — Fase 194
     Route::middleware('role:admin,design_system_owner,manager,operator')->get('/api/global-search-v2', GlobalSearchApiController::class)->name('core.api.global-search');
+
+    // Universal Event Spine & DLQ Console — Fase R8
+    Route::middleware('role:spine_operator,admin,superadmin')->prefix('admin/spine')->group(function () {
+        Route::get('/', SpineDashboardController::class)->name('admin.spine.index');
+
+        // DLQ
+        Route::get('/dlq', [SpineDlqController::class, 'index'])->name('admin.spine.dlq.index');
+        Route::get('/dlq/export', [SpineDlqController::class, 'exportCsv'])->name('admin.spine.dlq.export');
+        Route::post('/dlq/replay', [SpineDlqController::class, 'replay'])->name('admin.spine.dlq.replay');
+        Route::post('/dlq/replay-batch', [SpineDlqController::class, 'replayBatch'])->name('admin.spine.dlq.replay-batch');
+        Route::post('/dlq/discard', [SpineDlqController::class, 'discard'])->name('admin.spine.dlq.discard');
+        Route::post('/dlq/discard-batch', [SpineDlqController::class, 'discardBatch'])->name('admin.spine.dlq.discard-batch');
+
+        // Consumers & Lag
+        Route::get('/consumers', [SpineConsumerController::class, 'index'])->name('admin.spine.consumers.index');
+        Route::post('/consumers/replay', [SpineConsumerController::class, 'replayRange'])->name('admin.spine.consumers.replay');
+        Route::get('/consumers/export', [SpineConsumerController::class, 'exportCsv'])->name('admin.spine.consumers.export');
+
+        // Gaps
+        Route::get('/gaps', [SpineGapController::class, 'index'])->name('admin.spine.gaps.index');
+        Route::post('/gaps/scan', [SpineGapController::class, 'scan'])->name('admin.spine.gaps.scan');
+        Route::post('/gaps/resolve', [SpineGapController::class, 'resolve'])->name('admin.spine.gaps.resolve');
+        Route::get('/gaps/export', [SpineGapController::class, 'exportCsv'])->name('admin.spine.gaps.export');
+    });
+
+    // Schemas Console (Spine Operator + Auditor) — Fase R8
+    Route::middleware('role:spine_operator,auditor,admin,superadmin')->prefix('admin/spine/schemas')->group(function () {
+        Route::get('/', [SpineSchemaController::class, 'index'])->name('admin.spine.schemas.index');
+        Route::get('/export', [SpineSchemaController::class, 'exportCsv'])->name('admin.spine.schemas.export');
+    });
 
     // Simulation Operator Console & Digital Twin Bus — Fase 67 & R8
     Route::middleware('role:sim_operator,admin,superadmin')->prefix('admin/simulation')->group(function () {

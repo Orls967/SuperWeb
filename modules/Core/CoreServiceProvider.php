@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
+use Modules\Core\Application\Actions\EventSpine\ClaimConsumerInboxAction;
 use Modules\Core\Application\Actions\Search\Providers\AgricultureSearchProvider;
 use Modules\Core\Application\Actions\Search\Providers\AssetSearchProvider;
 use Modules\Core\Application\Actions\Search\Providers\AviationSearchProvider;
@@ -41,13 +42,17 @@ use Modules\Core\Application\Services\Ai\TransactionAnomalyDetectorService;
 use Modules\Core\Application\Services\ApprovalEngineService;
 use Modules\Core\Application\Services\AuditTrailService;
 use Modules\Core\Application\Services\CrossModuleSpineHandlers;
+use Modules\Core\Application\Services\DeadLetterQueueService;
 use Modules\Core\Application\Services\DigitalTwinService;
 use Modules\Core\Application\Services\DocumentNumberingService;
 use Modules\Core\Application\Services\DocumentStoreService;
+use Modules\Core\Application\Services\EventSchemaRegistry;
 use Modules\Core\Application\Services\EventSpineService;
 use Modules\Core\Application\Services\IdentityVelocityRiskService;
+use Modules\Core\Application\Services\LegacyListenerAdapterService;
 use Modules\Core\Application\Services\NotificationService;
 use Modules\Core\Application\Services\OutboxBusService;
+use Modules\Core\Application\Services\PoisonMessageQuarantineService;
 use Modules\Core\Application\Services\RbacService;
 use Modules\Core\Application\Services\Resilience\DataSovereigntyComplianceService;
 use Modules\Core\Application\Services\Resilience\DisasterRecoveryDrillService;
@@ -58,12 +63,15 @@ use Modules\Core\Application\Services\SimClockService;
 use Modules\Core\Application\Services\SimStreamRegistryService;
 use Modules\Core\Application\Services\SimTickRegistry;
 use Modules\Core\Application\Services\SimulationRunnerService;
+use Modules\Core\Application\Services\SpineLagMonitorService;
+use Modules\Core\Application\Services\SpineReplayService;
 use Modules\Core\Application\Services\VenueZoneSurveillanceFeedService;
 use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
 use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\AuditMobileCommand;
 use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
+use Modules\Core\Console\Commands\AuditSpineCommand;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\CopilotAskCommand;
@@ -82,6 +90,10 @@ use Modules\Core\Console\Commands\SearchReindexCommand;
 use Modules\Core\Console\Commands\SearchZeroResultReportCommand;
 use Modules\Core\Console\Commands\SimCheckpointPruneCommand;
 use Modules\Core\Console\Commands\SimDiffCommand;
+use Modules\Core\Console\Commands\SpineDlqReplayCommand;
+use Modules\Core\Console\Commands\SpineGapScanCommand;
+use Modules\Core\Console\Commands\SpineLagReportCommand;
+use Modules\Core\Console\Commands\SpineReplayCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TaskSlaAuditCommand;
 use Modules\Core\Console\Commands\TaskSlaEscalateDaemonCommand;
@@ -92,6 +104,7 @@ use Modules\Core\Contracts\AcquiresVehicle;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\AuditTrailInterface;
 use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\ConsumerInbox;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Core\Contracts\DocumentStoreInterface;
@@ -179,6 +192,18 @@ class CoreServiceProvider extends ServiceProvider
             EventSpineInterface::class,
             EventSpineService::class
         );
+
+        $this->app->bind(
+            ConsumerInbox::class,
+            ClaimConsumerInboxAction::class
+        );
+
+        $this->app->singleton(EventSchemaRegistry::class);
+        $this->app->singleton(DeadLetterQueueService::class);
+        $this->app->singleton(PoisonMessageQuarantineService::class);
+        $this->app->singleton(SpineLagMonitorService::class);
+        $this->app->singleton(SpineReplayService::class);
+        $this->app->singleton(LegacyListenerAdapterService::class);
 
         $this->app->bind(
             DigitalTwinInterface::class,
@@ -437,6 +462,11 @@ class CoreServiceProvider extends ServiceProvider
                 SearchHealthCheckCommand::class,
                 TaskSlaAuditCommand::class,
                 TaskSlaEscalateDaemonCommand::class,
+                SpineGapScanCommand::class,
+                SpineReplayCommand::class,
+                SpineDlqReplayCommand::class,
+                SpineLagReportCommand::class,
+                AuditSpineCommand::class,
             ]);
         }
 

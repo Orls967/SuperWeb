@@ -4951,4 +4951,52 @@ return [
             return ['run' => $run->id];
         },
     ],
+    'admin.spine.index' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.index' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.export' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.replay' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.replay-batch' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.discard' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.dlq.discard-batch' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.consumers.index' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.consumers.replay' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.consumers.export' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.gaps.index' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.gaps.scan' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.gaps.resolve' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.gaps.export' => [
+        'roles' => ['spine_operator', 'admin', 'superadmin'],
+    ],
+    'admin.spine.schemas.index' => [
+        'roles' => ['spine_operator', 'auditor', 'admin', 'superadmin'],
+    ],
+    'admin.spine.schemas.export' => [
+        'roles' => ['spine_operator', 'auditor', 'admin', 'superadmin'],
+    ],
 ];
