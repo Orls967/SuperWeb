@@ -19,6 +19,7 @@ use Modules\Shared\Domain\Attributes\NotAControl;
  *  - 240.4 UX research loop: usability test findings, task success rate, remediation backlog
  *  - 240.6 Edge case: Module-specific custom component fork review & approval gate
  *  - 240.7 Multi-theme support: Dark mode & High-contrast token definitions
+ * @deprecated Kerangka lama Fase 240. Digantikan oleh implementasi Shared/Core.
  */
 class DesignSystemAccessibilityService
 {
