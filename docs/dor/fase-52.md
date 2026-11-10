@@ -110,3 +110,4 @@ Setiap transaksi mematuhi konvensi KONSEP §A2.1 (Debit -, Credit +, Σ = 0 per 
 - **ADR-0076**: Translasi Valas Laporan Keuangan Anak & FCTR Konsolidasi.
 - **ADR-0077**: Pengakuan Kepentingan Non-Pengendali (NCI) & Dividen Minoritas.
 - **ADR-0078**: Transfer Aset Tetap & Stok Lintas Batas Kepabeanan Terintegrasi.
+

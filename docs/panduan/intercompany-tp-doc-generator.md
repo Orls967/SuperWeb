@@ -36,3 +36,4 @@ Untuk menghasilkan draf TP Doc dalam format JSON/CSV auditan:
 php artisan ic:generate-tp-doc --entity=SUB_A --fiscal-year=2026 --type=LOCAL_FILE
 ```
 Dokumen yang dihasilkan disimpan dalam tabel `ic_tp_documents` dengan nomor referensi hash unik untuk dilampirkan pada pelaporan SPT Tahunan Badan.
+

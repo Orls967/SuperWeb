@@ -73,3 +73,4 @@ Ketika algoritma mendeteksi anomali:
 3. Selisih kepemilikan saham NCI $\ne 100\%$.
 
 Sistem secara otomatis memanggil `Modules\Core\Application\Actions\TaskInbox\TaskInboxService::createTask()` untuk mendaftarkan tugas peninjauan dengan tingkat prioritas `HIGH` kepada Group Tax Controller dan Treasury Manager.
+

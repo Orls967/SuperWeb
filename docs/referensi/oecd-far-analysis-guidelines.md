@@ -43,3 +43,4 @@ Sistem `ic_tp_documents` mengonversi profil kualitatif menjadi skor kuantitatif 
 - Skor $< 2,0 \implies$ Profil Risiko Rendah (*Contract Entity* / LRD).
 - Skor $2,0 - 3,5 \implies$ Profil Risiko Sedang (*Hybrid Entity*).
 - Skor $> 3,5 \implies$ Profil Risiko Penuh (*Principal / Full-Fledged Entity*).
+

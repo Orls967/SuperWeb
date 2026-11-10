@@ -86,3 +86,4 @@ Sertifikat `BilateralEliminationCertificate` memuat:
 - Matriks rincian eliminasi per pasangan entitas
 - `certificate_hash` = $\text{SHA-256}(\text{JSON canonical terurut})$
 - Diverifikasi oleh `BilateralEliminationVerifier`.
+

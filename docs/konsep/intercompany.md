@@ -94,3 +94,4 @@ Untuk anak perusahaan dengan mata uang fungsional selain IDR (mis. USD di entita
 Pada anak perusahaan yang sahamnya dimiliki bersama pihak ketiga:
 - Porsi laba bersih anak yang menjadi hak pemegang saham minoritas dialokasikan ke akun beban bagi hasil NCI di laporan laba rugi konsolidasi dan penambah ekuitas NCI di neraca.
 - Ketika anak membagikan dividen kas, porsi dividen minoritas dibukukan sebagai pengurang ekuitas NCI dan kas keluar ke pihak ketiga.
+

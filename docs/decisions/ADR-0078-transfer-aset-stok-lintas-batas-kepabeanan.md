@@ -24,3 +24,4 @@ Operasional grup konglomerasi mencakup perpindahan fisik mesin/peralatan antar-p
 - Menjamin kepatuhan administrasi perpajakan dan pabean pada transaksi lintas batas grup.
 - Nilai persediaan di anak penerima mencerminkan total biaya perolehan wajar termasuk bea impor.
 - Pelacakan fisik dan hukum aset tetap antar-entitas terjaga dengan baik.
+

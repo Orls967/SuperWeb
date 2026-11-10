@@ -59,3 +59,4 @@ Sebagai bagian dari pemenuhan draf Local File Transfer Pricing (PMK 172/2023 Bab
    - Risiko Pasar & Fluktuasi Harga: Ditanggung oleh entitas pembeli/distributor.
    - Risiko Kredit: Ditanggung oleh entitas penjual.
    - Risiko Valuta Asing: Dilindung nilai melalui kontrak forward Treasury.
+

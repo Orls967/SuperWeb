@@ -53,3 +53,4 @@ Dalam perlakuan laba antar-perusahaan yang belum terealisasi (*unrealized profit
 1. **Verifikasi Saldo Nol**: Setiap akun resiprokal (`ic:ar` dan `ic:ap`) wajib bersaldo Rp 0 pada neraca konsolidasi final.
 2. **Verifikasi Transaksi Transit**: Jika terdapat saldo transit di akun kliring konsolidasi, auditor wajib memverifikasi dokumen pengiriman fisik (Surat Jalan/POD) dan rekening koran mutasi bank bulan berikutnya.
 3. **Verifikasi Proporsi NCI**: Nilai ekuitas NCI wajib diverifikasi silang terhadap persentase kepemilikan saham resmi pada akta notaris perubahan anggaran dasar terakhir anak perusahaan.
+

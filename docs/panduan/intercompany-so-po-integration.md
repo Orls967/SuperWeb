@@ -25,3 +25,4 @@ Pembayaran hutang piutang intercompany dilakukan secara terjadwal:
    - Pihak pembayar (SUB_B) mentransfer Rp 6.000.000 ke rekening bank pihak penerima (SUB_A).
    - Kedua entitas mencatat kas keluar dan kas masuk dengan referensi kliring unik.
    - Sisa saldo piutang dan hutang saling mengimbangi hingga mencapai saldo nol.
+

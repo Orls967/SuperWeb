@@ -27,3 +27,4 @@
 | `IC-018` | `NCI_TOTAL_OWNERSHIP_MISMATCH` | Penjumlahan kepemilikan saham induk dan non-pengendali tidak sama dengan 100% (100.000 permil). | Koreksi persentase kepemilikan di tabel master anak perusahaan agar total tepat 100%. |
 | `IC-019` | `ASSET_TRANSFER_NBV_MISMATCH` | Nilai buku neto aset tetap tidak sesuai dengan harga perolehan dikurangi akumulasi penyusutan. | Sinkronkan catatan subledger aset tetap sebelum melakukan transfer antar-entitas. |
 | `IC-020` | `CUSTOMS_DECLARATION_INVALID` | Dokumen pabean ekspor-impor (PEB/PIB) tidak lengkap pada pengiriman stok lintas batas. | Lengkapi nomor pendaftaran dokumen kepabeanan dan perincian bea masuk/PPN impor. |
+

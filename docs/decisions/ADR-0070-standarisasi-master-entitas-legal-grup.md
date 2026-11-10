@@ -26,3 +26,4 @@ Sebelumnya, modul `Intercompany` hanya menyimpan nama entitas sebagai string men
 - Memastikan integritas data dan mencegah transaksi antar entitas fiktif.
 - Segmen kode akun buku besar konsisten dan dapat dipetakan secara deterministik.
 - Mendukung pemenuhan audit pajak dan pembuatan master file transfer pricing.
+

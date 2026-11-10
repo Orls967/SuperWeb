@@ -32,3 +32,4 @@ Pada awal tahun buku baru, jurnal pembalik simetris diposting secara otomatis ol
 - Kredit `ic:retained_earnings_adj:{penjual}:IDR` = $+\text{UnrealizedProfit}$
 
 Dengan demikian, ketika persediaan akhirnya terjual kepada pihak ketiga pada tahun $t+1$, laba kotor riil grup akan diakui secara proporsional dan tepat waktu pada laporan laba rugi konsolidasi tahun $t+1$.
+

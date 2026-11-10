@@ -94,3 +94,4 @@ Sertifikat `IntercompanyAmortizationCertificate` memuat:
 - Daftar seluruh baris skedul amortisasi
 - `certificate_hash` = $\text{SHA-256}(\text{JSON canonical terurut})$
 - Diverifikasi oleh `IntercompanyAmortizationVerifier`.
+

@@ -85,3 +85,4 @@ Command memverifikasi 5 invarian keras:
 3. Total kepemilikan saham induk ditambah NCI tepat 100% (100.000 permil).
 4. Seluruh jurnal eliminasi konsolidasi memiliki $\Sigma \text{Debit} = \Sigma \text{Kredit}$.
 5. Tidak ada saldo floating point di seluruh subledger transaksi intercompany.
+

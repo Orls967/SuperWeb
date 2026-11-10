@@ -44,3 +44,4 @@ Markup komparabel dalam bps: $[500, 600, 750, 800, 950, 1050, 1200, 1350, 1500, 
 - Jurnal Penyesuaian Akhir Tahun:
   - Pada Penjual: Debit Piutang Penyesuaian TP Rp 3.000.000.000, Kredit Pendapatan Penyesuaian TP Rp 3.000.000.000.
   - Pada Pembeli: Debit Beban Penyesuaian TP Rp 3.000.000.000, Kredit Hutang Penyesuaian TP Rp 3.000.000.000.
+

@@ -91,3 +91,4 @@ Jika transaksi yang telah terposting ke kedua buku entitas ternyata salah nomina
    - Memposting jurnal pembalik persis di buku penjual (Kredit Piutang, Debit Revenue).
    - Memposting jurnal pembalik persis di buku pembeli (Kredit Expense/Stok, Debit Hutang).
    - Memindahkan status transaksi menjadi `REVERSED` dan mencatat jejak audit operator ke `ic_transaction_histories`.
+

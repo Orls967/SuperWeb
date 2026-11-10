@@ -21,3 +21,4 @@ Sesuai PSAK 65 paragraf B86(c), laba belum terealisasi yang timbul dari transaks
 ## Konsekuensi
 - Nilai persediaan di neraca konsolidasi mencerminkan biaya perolehan riil grup ke pihak luar.
 - Mencegah penggelembungan laba kotor konsolidasi (*overstatement of group earnings*).
+

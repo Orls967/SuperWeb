@@ -29,3 +29,4 @@ Konglomerasi memiliki entitas anak atau perusahaan patungan di luar negeri yang 
 - Neraca konsolidasi tetap seimbang secara absolut tanpa mendistorsi kinerja laba rugi operasional grup.
 - Kepatuhan penuh terhadap PSAK 10 / IAS 21.
 - Mencegah volatilitas semu pada laba bersih konsolidasi akibat fluktuasi kurs mata uang anak asing.
+

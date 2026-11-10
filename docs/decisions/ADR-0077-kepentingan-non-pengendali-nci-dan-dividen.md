@@ -26,3 +26,4 @@ Pada sistem lama, perhitungan NCI hanya dilakukan secara terisolasi tanpa pembag
 ## Konsekuensi
 - Laporan laba rugi konsolidasi secara transparan memisahkan laba yang dapat diatribusikan kepada pemilik entitas induk vs kepentingan non-pengendali.
 - Arus kas dividen keluar kepada investor minoritas tercatat dengan akurat dan tertelusuri.
+

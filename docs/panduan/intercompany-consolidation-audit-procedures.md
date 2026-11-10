@@ -40,3 +40,4 @@ Sebelum jurnal eliminasi dijalankan:
    ```
 2. Pastikan hasil pengujian menyatakan `0 discrepancy` dan status `OK`.
 3. Simpan ringkasan keluaran audit sebagai berkas pendukung (*audit working paper*) sebelum laporan konsolidasi diserahkan kepada Direksi dan Auditor Eksternal.
+

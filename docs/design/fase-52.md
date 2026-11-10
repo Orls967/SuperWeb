@@ -136,3 +136,4 @@ Seluruh posting ke buku besar perbankan mengikuti standar KONSEP §A2.1:
 - **D4: TransferPricingMarkupCalculator**: Menghitung kuartil bawah $Q_1$, median, dan kuartil atas $Q_3$ dari himpunan margin komparabel independen. Menghasilkan sertifikat hash SHA-256 yang memverifikasi kepatuhan margin arm's length sesuai PMK 172/2023.
 - **D5: BilateralEliminationMatcher**: Mengelompokkan dan mencocokkan pasangan transaksi timbal balik secara deterministik dengan mendeteksi diskrepansi tanggal transaksi (*timing difference*) atau selisih kurs valas.
 - **D6: IntercompanyAmortizationScheduler**: Membangun skedul amortisasi pinjaman anuitas atau bunga efektif berdasar suku bunga acuan ditambah spread risiko arm's length, memisahkan porsi pokok, bunga neto, dan pajak potong PPh 23/26 secara gapless.
+

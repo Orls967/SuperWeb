@@ -28,3 +28,4 @@ Sistem lama hanya menguji batas statis menggunakan tipe data float dan pembagian
 - Menghilangkan risiko koreksi fiskal material dan denda perpajakan atas sengketa harga transfer.
 - Menjamin kepatuhan penuh terhadap standar PMK 172/2023 tanpa manipulasi manual.
 - Mengeliminasi penggunaan tipe data float pada perhitungan margin pajak.
+

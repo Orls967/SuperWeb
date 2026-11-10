@@ -27,3 +27,4 @@ Dalam laporan keuangan konsolidasi sesuai PSAK 65 (IFRS 10), seluruh saldo timba
 - Mencegah penggandaan pendapatan (*revenue double-counting*) pada laporan keuangan konsolidasi grup.
 - Menjamin kepatuhan penuh terhadap standar akuntansi keuangan PSAK 65 / IFRS 10.
 - Menghadirkan rekonsiliasi otomatis cepat saat proses *fast close* tutup buku bulanan.
+

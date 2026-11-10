@@ -105,3 +105,4 @@ Sertifikat hasil perhitungan memuat:
 - `q1_bps`, `median_bps`, `q3_bps`, `status`, `adjustment_minor`
 - `certificate_hash` = $\text{SHA-256}(\text{JSON canonical terurut})$
 - `verified_at` dan verifikasi integritas oleh `TransferPricingMarkupVerifier`.
+

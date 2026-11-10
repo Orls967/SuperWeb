@@ -23,3 +23,4 @@ Setiap perpindahan status wajib dicatat ke tabel append-only `ic_transaction_his
 - Tidak ada transaksi yang dapat dibukukan sebelum margin transfer pricing tervalidasi.
 - Transaksi cermin selalu atomik: kegagalan pembukuan di sisi pembeli akan membatalkan atau menahan status sisi penjual.
 - Jejak audit transisi status lengkap untuk keperluan audit eksternal dan otoritas perpajakan.
+

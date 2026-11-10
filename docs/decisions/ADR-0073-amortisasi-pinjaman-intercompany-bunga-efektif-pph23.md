@@ -25,3 +25,4 @@ Pinjaman antar-perusahaan (*intercompany loan*) dalam konglomerasi sering diguna
 - Entitas terhindar dari sanksi administrasi keterlambatan pemotongan dan penyetoran PPh 23/26.
 - Likuiditas kas neto yang berpindah antar-rekening bank tercatat persis sesuai nilai neto setelah pajak.
 - Skedul amortisasi dapat diekspor langsung sebagai lampiran dokumen SPT Masa Pajak.
+

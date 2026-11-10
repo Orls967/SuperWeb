@@ -43,3 +43,4 @@ Pengalihan mesin atau kendaraan operasional dari Entitas A ke Entitas B dilakuka
    - Netto = $-500.000.000 + 200.000.000 + 300.000.000 = 0$.
 4. **Eliminasi Konsolidasi**:
    - Saldo Piutang Pengalihan Aset di A dan Hutang Pengalihan Aset di B saling mengeliminasi pada cut-off konsolidasi bulanan tanpa menimbulkan distorsi nilai tercatat aset tetap grup.
+

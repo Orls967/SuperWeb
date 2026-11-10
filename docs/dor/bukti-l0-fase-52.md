@@ -49,3 +49,4 @@ Tests: 13 passed (47 assertions)
 Duration: 7.48s
 ```
 Semua 13 feature test lama Intercompany hijau. Kompatibilitas signature publik lama dipertahankan dengan membungkus atau memperluas kelas secara backwards-compatible.
+

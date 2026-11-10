@@ -59,3 +59,4 @@ Untuk mencegah deviasi desimal pada perhitungan pajak pemotongan:
 Sistem menerbitkan Bukti Pemotongan Pajak Unifikasi Elektronik (simulasi e-Bupot) dengan format penomoran deterministik:
 $$\text{BUPOT/IC/}\{YYYYMM\}/\{\text{SeqNumber}\}$$
 Nomor ini dikaitkan langsung dengan baris jadwal pinjaman `ic_loan_schedules` dan transaksi ledger `bank_ledger_transactions` untuk menjamin jejak audit tak terbantahkan saat pemeriksaan kantor pelayanan pajak (KPP).
+
