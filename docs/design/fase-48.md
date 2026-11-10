@@ -17,117 +17,59 @@ Sistem ini dirancang dengan prinsip ketat perbendaharaan:
 
 ## 2. Diagram Sequence Alur Utama & Saga (D2)
 
-### A. Sequence Alur Revaluasi Kurs & Pembalik Otomatis
+### A. Alur Revaluasi Kurs & Pembalik Otomatis
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor TreasuryOfficer as "Operator Treasury"
-    participant Scheduler as "Console / Cron"
-    participant RevalAction as "RunFxRevaluationAction"
-    participant Calculator as "FxRevaluationCalculator (D1)"
-    participant FxLots as "trs_fx_lots Subledger"
-    participant LedgerSvc as "LedgerService"
-    participant Outbox as "OutboxBus"
-
-    TreasuryOfficer->>RevalAction: Jalankan Revaluasi Akhir Periode (YYYY-MM)
-    RevalAction->>FxLots: Ambil lot terbuka ber-saldo valas
-    loop Setiap Lot Valas
-        RevalAction->>Calculator: Hitung nilai wajar kurs penutupan rasional
-        Calculator-->>RevalAction: Sertifikat Revaluasi (gain/loss IDR)
-        RevalAction->>LedgerSvc: Post Jurnal Untung/Rugi Belum Terealisasi
-        Note over LedgerSvc: DR/CR trs:fx_reval_asset_adj vs trs:fx_unrealized_gain_loss
-        RevalAction->>FxLots: Catat revaluation snapshot
-    end
-    RevalAction->>Outbox: Pancarkan treasury.revaluation.posted.v1
-    RevalAction-->>TreasuryOfficer: Ringkasan hasil revaluasi & jurnal tercatat
-
-    Note over Scheduler: Hari Pertama Periode Berikutnya
-    Scheduler->>RevalAction: Eksekusi treasury:reverse-revaluations
-    RevalAction->>LedgerSvc: Post Jurnal Pembalik Otomatis (reverse_of)
-    Note over LedgerSvc: Balik arah persis entri sebelumnya
-    RevalAction->>FxLots: Tandai is_reversed = true
+flowchart TD
+    A["Operator Treasury: Input Periode YYYY-MM"] --> B["RunFxRevaluationAction"]
+    B --> C["trs_fx_lots Subledger: Ambil lot terbuka"]
+    C --> D["FxRevaluationCalculator D1: Hitung nilai wajar kurs penutupan"]
+    D --> E["Sertifikat Revaluasi: Gain/Loss IDR & SHA-256"]
+    E --> F["LedgerService: Post Jurnal Untung/Rugi Belum Terealisasi"]
+    F --> G["trs_fx_lots: Catat revaluation snapshot"]
+    G --> H["OutboxBus: Pancarkan treasury.revaluation.posted.v1"]
+    H --> I["Hari Pertama Periode Berikutnya: treasury:reverse-revaluations"]
+    I --> J["LedgerService: Post Jurnal Pembalik Otomatis"]
+    J --> K["trs_fx_lots: Tandai is_reversed = true"]
 ```
 
-### B. Sequence Alur Rekonsiliasi Bank Tiga Tahap
+### B. Alur Rekonsiliasi Bank Tiga Tahap
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Operator as "Operator Rekonsiliasi"
-    participant ReconAction as "ReconcileBankStatementsAction"
-    participant Matcher as "BankReconciliationMatcher (D2)"
-    participant Statements as "trs_bank_statements"
-    participant Ledger as "LedgerService (Bank Entries)"
-    participant TaskInbox as "TaskInboxService"
-
-    Operator->>ReconAction: Impor File Mutasi Bank (CSV/MT940)
-    ReconAction->>Statements: Simpan baris mutasi belum terpadankan
-    Operator->>ReconAction: Jalankan Rekonsiliasi Otomatis
-    ReconAction->>Ledger: Query mutasi kas buku bank belum cocok
-    ReconAction->>Matcher: Cocokkan Tahap 1 (Exact Match: Amount & Ref)
-    Matcher-->>ReconAction: Daftar pasangan exact match
-    ReconAction->>Matcher: Cocokkan Tahap 2 (Toleransi: Delta <= 500 minor, Hari <= 3)
-    Matcher-->>ReconAction: Daftar pasangan toleransi
-    ReconAction->>Matcher: Cocokkan Tahap 3 (Many-to-One: Subset 2..4 baris buku = 1 bank)
-    Matcher-->>ReconAction: Daftar himpunan kombinasi many-to-one
-    ReconAction->>Statements: Update status matched pada baris terpadan
-    ReconAction->>TaskInbox: Kirim sisa mutasi belum terpadankan ke TaskInbox
-    ReconAction-->>Operator: Ringkasan hasil rekonsiliasi & saldo cocok
+flowchart TD
+    A["Operator: Impor Mutasi Bank CSV/MT940"] --> B["ReconcileBankStatementsAction"]
+    B --> C["trs_bank_statements: Simpan mutasi"]
+    B --> D["LedgerService: Query mutasi kas buku bank belum cocok"]
+    D --> E["BankReconciliationMatcher D2"]
+    E --> F["Tahap 1: Exact Match Amount & Ref"]
+    F --> G["Tahap 2: Toleransi Delta <= 500 minor & Hari <= 3"]
+    G --> H["Tahap 3: Many-to-One Subset 2..4 baris buku"]
+    H --> I["Update status MATCHED pada baris terpadan"]
+    I --> J["Kirim sisa mutasi tak cocok ke TaskInbox"]
 ```
 
-### C. Sequence Saga Lindung Nilai Forward Contract & Roll-Over
+### C. Alur Kontrak Lindung Nilai Forward Contract
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dealer as "Treasury Dealer"
-    participant Approval as "ApprovalEngine"
-    participant HedgeSM as "HedgeContractStateMachine"
-    participant MtmAction as "DailyMarkToMarketAction"
-    participant SettleAction as "SettleForwardContractAction"
-    participant Ledger as "LedgerService"
-
-    Dealer->>HedgeSM: Buat Draft Forward Contract
-    HedgeSM->>Approval: Ajukan Persetujuan Lindung Nilai
-    Approval-->>HedgeSM: Disetujui (Approved)
-    Dealer->>HedgeSM: Masukkan Deal Bank & Kurs Kontrak (Booked)
-    HedgeSM->>HedgeSM: Masuk Periode Aktif (Active)
-    
-    loop Harian Hingga Jatuh Tempo
-        MtmAction->>Ledger: Post MTM Aset/Liabilitas Derivatif vs Gain/Loss
-    end
-
-    Note over HedgeSM: Kontrak Jatuh Tempo (Matured)
-    alt Penyelesaian Kas Penuh (Settled)
-        Dealer->>SettleAction: Eksekusi Settlement Realized
-        SettleAction->>Ledger: Post Kas Masuk/Keluar & Tutup Akun Derivatif
-        HedgeSM->>HedgeSM: Transisi ke status Settled
-    else Perpanjangan Lindung Nilai (Rolled)
-        Dealer->>HedgeSM: Roll-over Kontrak
-        HedgeSM->>HedgeSM: Buat Kontrak Anak (Rolled To) & Tutup MTM Induk
-        HedgeSM->>HedgeSM: Kontrak Induk beralih ke status Rolled
-    end
+flowchart TD
+    A["Dealer: Buat Draft Forward Contract"] --> B["ApprovalEngine: Persetujuan Lindung Nilai"]
+    B --> C["Status BOOKED: Input Deal Bank & Kurs Kontrak"]
+    C --> D["Status ACTIVE: Periode Berjalan"]
+    D --> E["Mark-to-Market Harian: Post MTM Aset/Liabilitas Derivatif"]
+    E --> F{"Jatuh Tempo MATURED"}
+    F -->|Penyelesaian Kas| G["Status SETTLED: Post Realized Gain/Loss"]
+    F -->|Perpanjangan Kontrak| H["Status ROLLED: Kaitkan ke Kontrak Baru"]
+    F -->|Default Counterparty| I["Status DEFAULTED: Cadangan Kerugian"]
 ```
 
-### D. Sequence Saga Cash Pooling Sweep & Reverse Sweep
+### D. Alur Cash Pooling Sweep & Reverse Sweep
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Scheduler as "treasury:pool-sweep (Cron)"
-    participant SweepAction as "ExecuteCashPoolSweepAction"
-    participant SubAcc as "trs_bank_accounts (Anak)"
-    participant HeaderAcc as "trs_bank_accounts (Induk)"
-    participant Intercompany as "IntercompanyLoanService"
-    participant Ledger as "LedgerService"
-
-    Scheduler->>SweepAction: Jalankan Sweep Harian
-    SweepAction->>SubAcc: Periksa saldo di atas target balance
-    alt Saldo Surplus (Zero-Balancing Normal)
-        SweepAction->>SubAcc: Kurangi dana surplus
-        SweepAction->>HeaderAcc: Tambah dana ke header account induk
-        SweepAction->>Intercompany: Catat pinjaman antar-perusahaan (ic_loans)
-        SweepAction->>Ledger: Post Debit Piutang Pinjaman IC / Kredit Kas Clearing
-    else Saldo Defisit (Reverse Sweep Likuiditas)
-        SweepAction->>HeaderAcc: Kurangi dana dari rekening induk
-        SweepAction->>SubAcc: Isi kembali rekening operasional anak
+flowchart TD
+    A["Cron: treasury:pool-sweep"] --> B["ExecuteCashPoolSweepAction"]
+    B --> C["Periksa saldo vs target balance"]
+    C -->|Saldo Surplus| D["Sweep Normal: Saldo anak ditransfer ke rekening induk"]
+    D --> E["Catat pinjaman antar-perusahaan ic_loans"]
+    E --> F["LedgerService: Post Debit/Kredit Clearing"]
+    C -->|Saldo Defisit| G["Reverse Sweep: Injeksi likuiditas dari induk ke anak"]
+    G --> H["Catat pengembalian/fasilitas likuiditas"]
+```
         SweepAction->>Intercompany: Kurangi kewajiban / catat pinjaman balik
         SweepAction->>Ledger: Post Pembalik Pinjaman IC / Kas Masuk
     end

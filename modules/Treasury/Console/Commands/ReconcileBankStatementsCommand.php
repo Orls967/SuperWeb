@@ -10,7 +10,7 @@ use Modules\Treasury\Domain\Models\BankAccount;
 
 class ReconcileBankStatementsCommand extends Command
 {
-    protected $signature = 'treasury:reconcile {--account= : Nomor rekening bank}';
+    protected $signature = 'treasury:match-bank-statements {--account= : Nomor rekening bank}';
 
     protected $description = 'Jalankan algoritma rekonsiliasi bank 3-tahap deterministik (D2)';
 

@@ -60,7 +60,31 @@ Perusahaan holding dan konglomerasi menghadapi risiko finansial kompleks:
 
 ---
 
-## 7. Katalog Kasus (Kasus Uji Nyata)
+## 7. Detail Matematis Algoritma Bersertifikat D1, D2, D3
+
+### Algoritma D1: Revaluasi Kurs Valas Berbasis Rasional Murni
+Perhitungan revaluasi kurs untuk setiap lot moneter valas $i$ dengan saldo tersisa $B_i$ dan kurs penutupan rasional $\frac{n_c}{d_c}$:
+$$\text{Revalued IDR}_i = \left\lfloor \frac{B_i \cdot n_c + \lfloor d_c / 2 \rfloor}{d_c} \right\rfloor$$
+$$\Delta_i = \text{Revalued IDR}_i - \text{Carrying IDR}_i$$
+Jika $\sum \Delta_i > 0$, dibukukan jurnal debit pada Aset Valas dan kredit pada Pendapatan Selisih Kurs Belum Terealisasi. Sebaliknya jika $\sum \Delta_i < 0$, dibukukan debit pada Beban Selisih Kurs dan kredit pada Aset Valas. Setiap perhitungan memproduksi hash SHA-256 dari seluruh payload lot untuk menjamin keaslian matematis (*non-repudiation*).
+
+### Algoritma D2: Pencocokan Rekonsiliasi Bank Tiga Tahap
+Himpunan transaksi mutasi bank $\mathcal{B}$ dipadankan terhadap transaksi buku kas $\mathcal{L}$:
+1. **Tahap 1 (Eksak)**: $(b, l)$ dicocokkan jika $\text{date}(b) = \text{date}(l)$, $\text{amount}(b) = \text{amount}(l)$, dan $\text{ref}(b) = \text{ref}(l)$.
+2. **Tahap 2 (Fuzzy Token & Rentang Tanggal)**: Untuk sisa elemen tak terpadankan, $(b, l)$ dicocokkan jika $|\text{date}(b) - \text{date}(l)| \le \delta_{\text{days}}$, $\text{amount}(b) = \text{amount}(l)$, dan kesamaan token referensi $\ge 80\%$.
+3. **Tahap 3 (Subset Jendela Tanggal)**: Pencocokan satu baris bank $b$ terhadap kombinasi transaksi buku kas $\{l_1, \dots, l_k\}$ ($k \le 4$) dalam jendela $\pm 3$ hari sedemikian sehingga $\sum_{j=1}^k \text{amount}(l_j) = \text{amount}(b)$.
+
+### Algoritma D3: Peramalan Arus Kas 13-Minggu Musiman OLS
+Menggunakan estimasi tren kuadrat terkecil biasa (*Ordinary Least Squares*):
+$$\text{Slope } \beta = \frac{N \sum t Y_t - (\sum t)(\sum Y_t)}{N \sum t^2 - (\sum t)^2}$$
+$$\text{Intercept } \alpha = \frac{\sum Y_t - \beta \sum t}{N}$$
+Faktor musiman rasional dihitung per periode musiman $s \in \{1, \dots, P\}$:
+$$S_s = \frac{\text{Rata-rata Musim } s}{\text{Rata-rata Keseluruhan}}$$
+Seluruh operasi menggunakan `bcmath` dengan skala desimal nol untuk menghasilkan angka integer rupiah murni yang tahan terhadap overflow integer 64-bit pada nominal skala korporasi triliunan rupiah.
+
+---
+
+## 8. Katalog Kasus (Kasus Uji Nyata)
 
 1. **`TRS-CASE-01`**: AR USD Naik Kurs (Aset). Saldo 100.000 sen USD, carrying IDR 15.500.000, kurs penutupan 15650/1. Revaluasi menghasilkan laba belum terealisasi Rp 150.000. Jurnal pembalik Rp 150.000 dibuat otomatis pada awal periode berikutnya.
 2. **`TRS-CASE-02`**: AP USD Naik Kurs (Liabilitas). Utang 50.000 sen USD, carrying IDR 7.750.000, kurs 15650/1. Nilai wajar naik menjadi Rp 7.825.000, menghasilkan rugi selisih kurs belum terealisasi Rp 75.000.

@@ -1,6 +1,6 @@
 # Panduan Operasional Peran: Treasury (Fase 48)
 
-Dokumen ini memandu staf dan manajer **Treasury** dalam menjalankan operasional harian, mingguan, dan akhir periode di platform perbendaharaan enterprise.
+Dokumen ini memandu staf, dealer, dan manajer **Treasury** dalam menjalankan operasional harian, mingguan, dan akhir periode di platform perbendaharaan enterprise multi-mata uang dan multi-entitas grup.
 
 ---
 
@@ -14,7 +14,7 @@ Memeriksa likuiditas kas operasional, saldo rekening bank per entitas, saldo val
 2. Gunakan filter dropdown untuk memilih **Entitas**, **Mata Uang**, atau **Nama Bank**.
 3. Periksa ringkasan kartu posisi kas:
    - Total Likuiditas IDR Fungsional
-   - Saldo Valas Terbuka (USD, EUR, SGD, JPY)
+   - Saldo Valas Terbuka (USD, EUR, SGD, JPY, GBP, CNY, AUD, HKD)
    - Rasio Kecukupan Kas Harian
 4. Untuk mengunduh data posisi kas untuk analisis spreadsheet, klik tombol **Ekspor CSV**.
 
@@ -33,107 +33,154 @@ Mendaftarkan atau memperbarui kurs mata uang asing yang berlaku harian dengan in
 2. Periksa feed kurs otomatis Bank Indonesia berlabel `bi_simulated`.
 3. Untuk input kurs manual (misal kurs transaksi khusus atau kurs pajak):
    - Klik **Input Kurs Baru**.
-   - Masukkan Mata Uang Asal (contoh `USD`), Mata Uang Tujuan (`IDR`), Tanggal Berlaku, dan Tipe Kurs (`spot`, `middle`, `tax`).
+   - Masukkan Mata Uang Asal (contoh `USD`), Mata Uang Tujuan (`IDR`), Tanggal Berlaku, dan Tipe Kurs (`SPOT`, `CLOSING`, `TAX`, `HISTORICAL`).
    - Masukkan Pembilang Rasional (contoh `15650`) dan Penyebut (`1`).
    - Klik **Simpan Versi Kurs**.
 
 ### Hasil
-Versi kurs baru tersimpan dengan status tak dapat diubah (*immutable*). Seluruh konversi valas berikutnya menggunakan rate ID berversi ini.
+Versi kurs baru tersimpan dengan status tak dapat diubah (*immutable*). Seluruh konversi valas berikutnya menggunakan rate ID berversi ini tanpa pembagian floating-point.
 
 ---
 
 ## 3. Eksekusi Revaluasi Valas Akhir Periode & Pembalik Otomatis
 
 ### Tugas
-Mengakui laba/rugi selisih kurs belum terealisasi (*unrealized gain/loss*) atas pos moneter valas pada penutupan bulan buku sesuai PSAK 10.
+Mengakui laba/rugi selisih kurs belum terealisasi (*unrealized gain/loss*) atas pos moneter valas pada penutupan bulan buku sesuai PSAK 10 / IAS 21.
 
 ### Langkah
 1. Buka menu **Perbendaharaan** $\rightarrow$ **Revaluasi Kurs** (`/treasury/revaluation`).
 2. Pilih Periode Pelaporan (format `YYYY-MM`) dan pilih Mata Uang atau seluruh valas.
 3. Klik **Hitung Pratinjau Revaluasi** (Langkah 1/2).
-   - Tinjau daftar lot valas yang akan disesuaikan nilainya.
+   - Tinjau daftar lot valas yang akan disesuaikan nilainya dengan metode FIFO.
    - Periksa ringkasan estimasi jurnal: Akun Debit, Akun Kredit, dan Nominal IDR.
+   - Periksa sertifikat SHA-256 yang diterbitkan oleh Algoritma D1.
 4. Klik **Konfirmasi & Posting Ledger** (Langkah 2/2). Sistem menerapkan *Idempotency-Key* otomatis.
-5. Pada hari pertama periode kalender berikutnya, sistem (atau eksekusi perintah terjadwal `php artisan treasury:reverse-revaluations`) akan memposting jurnal pembalik otomatis.
+5. Pada hari pertama periode kalender berikutnya, jalankan perintah terjadwal pembalik:
+   ```bash
+   php artisan treasury:reverse-revaluations --period=YYYY-MM
+   ```
 
 ### Hasil
-Jurnal revaluasi tercatat di buku besar, saldo subledger `trs_fx_lots` terbarukan, dan jurnal pembalik dijadwalkan secara idempoten.
+Jurnal revaluasi tercatat di buku besar, saldo subledger `trs_fx_lots` disesuaikan sementara, dan jurnal pembalik memulihkan kurs perolehan awal subledger secara idempoten.
 
 ---
 
 ## 4. Rekonsiliasi Rekening Koran Bank & Penanganan Antrean Mismatch
 
 ### Tugas
-Memadankan mutasi rekening bank impor dengan buku kas dan menyelesaikan mutasi yang belum cocok.
+Memadankan mutasi rekening bank impor dengan buku kas dan menyelesaikan mutasi yang belum cocok melalui algoritma 3-tahap (D2).
 
 ### Langkah
 1. Buka menu **Perbendaharaan** $\rightarrow$ **Rekonsiliasi Bank** (`/treasury/reconciliation`).
 2. Pilih rekening bank yang akan direkonsiliasi.
 3. Unggah berkas mutasi bank (format CSV atau SWIFT MT940 simulasi).
 4. Klik **Jalankan Rekonsiliasi Otomatis (3-Tahap)**:
-   - Tahap 1: Exact Match (nominal dan referensi sama persis).
-   - Tahap 2: Tolerance Match (toleransi nominal $\le 500$ minor dan tanggal $\le 3$ hari).
-   - Tahap 3: Many-to-One Match (kombinasi 2..4 mutasi buku kas ke 1 mutasi bank).
+   - Tahap 1: *Exact Match* (nominal, tanggal, dan nomor referensi unik cocok 100%).
+   - Tahap 2: *Fuzzy Match* (nominal cocok, tanggal dalam batas toleransi $\pm 3$ hari, kesamaan referensi $\ge 80\%$).
+   - Tahap 3: *Window & Amount Match* (nominal cocok dalam jendela tanggal tanpa referensi).
 5. Buka tab **Antrean Belum Terpadankan** (*Unmatched Queue*):
-   - Untuk mutasi dengan selisih yang dapat diterima (misal biaya admin bank): klik **Setujui Selisih** dan pilih akun pembebanan.
-   - Untuk mutasi yang keliru cocok: klik tombol **Batal Cocok (Unmatch)** dengan memasukkan alasan pembatalan.
+   - Untuk biaya administrasi bank atau bunga jasa giro: catat voucher kas dan sesuaikan.
+   - Untuk setoran dalam perjalanan (*deposit-in-transit*): biarkan sebagai pos penyesuaian rekonsiliasi hingga rekening koran periode berikutnya.
 
 ### Hasil
-Laporan rekonsiliasi bank seimbang, status mutasi bank terbarui, dan selisih rekonsiliasi yang disetujui diposting ke ledger secara akurat.
+Laporan rekonsiliasi bank seimbang, status mutasi bank terbarui (`MATCHED`), pos tak cocok tercatat di `trs_bank_recon_unmatched` dengan sertifikat D2 ber-hash SHA-256.
 
 ---
 
-## 5. Lindung Nilai Forward Contract, MTM Harian & Roll-Over
+## 5. Lindung Nilai Forward Contract, MTM Harian & Penyelesaian
 
 ### Tugas
-Mengamankan eksposur mata uang asing dengan kontrak forward, memantau Mark-to-Market harian, dan mengeksekusi settlement atau roll-over saat jatuh tempo.
+Mengamankan eksposur mata uang asing dengan kontrak forward, memantau Mark-to-Market harian, dan mengeksekusi settlement saat jatuh tempo.
 
-### Langkah
-1. Buka menu **Perbendaharaan** $\rightarrow$ **Lindung Nilai Valas** (`/treasury/hedges`).
-2. Klik **Kontrak Forward Baru**:
-   - Isi Mata Uang, Jumlah Nosional, Kurs Forward Kontrak, dan Tanggal Jatuh Tempo.
-   - Klik **Ajukan Persetujuan (Submit Draft)**.
-3. Setelah disetujui oleh atasan berwenang via ApprovalEngine, dealer memasukkan nomor deal bank dan mengaktifkan kontrak (`booked` $\rightarrow$ `active`).
-4. Pada tanggal jatuh tempo (`matured`):
-   - Jika dilunasi kas: klik **Settle Kontrak**, masukkan kas masuk/keluar aktual, dan posting realized gain/loss.
-   - Jika diperpanjang: klik **Roll-over Kontrak**, masukkan parameter kontrak forward baru yang tertaut.
+### Siklus Hidup Status Kontrak (State Machine):
+1. **DRAFT**: Kontrak baru diinput oleh dealer treasury.
+2. **DESIGNATED**: Kontrak ditautkan dengan underlying exposure resmi (PO impor / faktur valas).
+3. **ACTIVE**: Konfirmasi deal diterima dari bank mitra, kontrak berjalan.
+4. **MATURED**: Tanggal jatuh tempo tercapai, siap untuk penyelesaian.
+5. **SETTLED**: Settlement kas dieksekusi dengan kurs spot aktual; gain/loss terealisasi diposting ke ledger.
+6. **TERMINATED**: Pembatalan dini dengan persetujuan komite risiko.
+7. **DEFAULTED**: Wanprestasi pihak lawan counterparty.
 
-### Hasil
-Nilai pasar derivatif diakui di neraca secara harian, dan penyelesaian kontrak membukukan untung/rugi terealisasi secara sah.
+### Prosedur Penyelesaian (Settlement):
+1. Masukkan kurs spot penutupan pada tanggal jatuh tempo.
+2. Eksekusi `POST /api/treasury/hedges/{id}/transition` dengan aksi `settle`.
+3. Verifikasi pemenuhan single-sign ledger: selisih kurs spot vs forward diposting ke akun realized gain/loss.
 
 ---
 
 ## 6. Pengawasan Fasilitas Kredit & Pengendalian Covenant Bank
 
 ### Tugas
-Mengajukan penarikan fasilitas kredit bank dengan kepatuhan terhadap rasio utang (DER dan ICR).
+Mengajukan penarikan fasilitas kredit bank dengan kepatuhan mutlak terhadap rasio utang (*Debt-to-Equity Ratio* / DER).
 
-### Langkah
+### Langkah & Aturan Kepatuhan:
 1. Buka menu **Perbendaharaan** $\rightarrow$ **Fasilitas Kredit Bank** (`/treasury/facilities`).
-2. Pilih fasilitas bank yang aktif.
+2. Pilih fasilitas bank aktif dan periksa plafon, sisa limit, dan ambang batas `max_der_permil`.
 3. Klik **Ajukan Penarikan Dana (Drawdown)**:
    - Masukkan nominal penarikan IDR.
-   - Sistem secara otomatis menghitung proyeksi rasio Debt-to-Equity (DER) integer permil pasca-penarikan.
-   - Jika rasio melanggar covenant: tombol penarikan terkunci dan muncul peringatan pelanggaran.
-   - Jika ada *Covenant Waiver* resmi dari bank pemberi pinjaman: masukkan nomor izin waiver dan ajukan persetujuan otorisasi ganda.
-
-### Hasil
-Penarikan fasilitas dibukukan ke rekening bank perusahaan dan akun kewajiban fasilitas kredit, atau ditolak demi melindungi kepatuhan hukum grup.
+   - Masukkan rasio DER saat ini dalam satuan permil integer (misal: DER 2,50x diinput sebagai `2500`).
+4. **Guardrail Covenant**:
+   - Jika rasio DER $\ge$ ambang batas maksimal: transaksi **DITOLAK KERAS** (`CovenantBreachException`).
+   - Jika rasio DER $\ge 90\%$ dari ambang batas: sistem otomatis menerbitkan task peringatan prioritas tinggi via `TreasuryTaskInboxNotifier` ke inbox pengawas treasury.
+5. Jika transaksi sah, jurnal single-sign dibukukan:
+   - Bank Operasional: Debit (`-amount`)
+   - Kewajiban Pinjaman Bank: Kredit (`+amount`)
 
 ---
 
 ## 7. Eksekusi Cash Pooling & Zero-Balancing Grup
 
 ### Tugas
-Mengoptimalkan likuiditas kas entitas anak dengan penyapuan saldo surplus ke rekening induk holding pada akhir hari.
+Mengoptimalkan likuiditas kas entitas anak dengan penyapuan saldo surplus ke rekening induk holding pada akhir hari kerja.
 
-### Langkah
+### Prosedur Operasional:
 1. Buka menu **Perbendaharaan** $\rightarrow$ **Cash Pooling** (`/treasury/pools`).
-2. Tinjau posisi saldo seluruh rekening anak vs target balance operasional minimum.
-3. Klik **Eksekusi Sweep Harian**:
-   - Rekening anak dengan saldo di atas target disapu ke rekening induk.
-   - Sistem mencatat penambahan pinjaman antar-perusahaan (*Intercompany Loan*) berbunga arm's length.
-   - Jika rekening anak defisit: sistem mengeksekusi *Reverse Sweep* untuk mengisi kembali likuiditas anak tanpa menghasilkan saldo negatif.
+2. Periksa saldo rekening anak terdaftar vs target balance minimum operasional.
+3. Eksekusi sweep harian:
+   - Rekening anak dengan saldo di atas target disapu ke rekening konsentrasi induk.
+   - Dibuat jurnal berpasangan: mutasi kas bank dan rekening koran pinjaman antar-entitas (Intercompany Loan clearing).
+   - Jika rekening anak defisit: sweep balik dilakukan untuk menyuntik likuiditas operasional.
+4. Netto arus dana pooling dilaporkan dalam laporan berkala penyapuan kas pool.
 
-### Hasil
-Likuiditas terpusat di rekening induk, kas mengendap diminimalkan, dan seluruh arus dana tercatat sebagai pinjaman antar-entitas yang sah.
+---
+
+## 8. Prosedur Ekspor 8 Laporan Resmi Treasury (CSV)
+
+Sistem menyediakan 8 exporter CSV terstandardisasi untuk kebutuhan audit, kepatuhan fiskal, dan pelaporan manajemen:
+
+```bash
+# Mengekspor seluruh laporan sekaligus ke storage/app/treasury_reports:
+php artisan treasury:export-reports --type=all
+
+# Mengekspor laporan spesifik:
+php artisan treasury:export-reports --type=fx-positions --currency=USD
+php artisan treasury:export-reports --type=fx-lots --currency=EUR
+php artisan treasury:export-reports --type=revaluations --period=2026-11
+php artisan treasury:export-reports --type=hedges
+php artisan treasury:export-reports --type=facilities
+php artisan treasury:export-reports --type=cash-pools
+php artisan treasury:export-reports --type=reconciliation
+php artisan treasury:export-reports --type=forecast --currency=IDR
+```
+
+Setiap berkas CSV memuat header kolom resmi, nilai moneter bilangan bulat (minor units), kode mata uang ISO 4217, dan stempel waktu ekspor.
+
+---
+
+## 9. Prosedur Audit Dua Sumber (Dual-Source Audit)
+
+Untuk memastikan tidak terjadi penyimpangan satu sen pun antara buku besar dan subledger:
+
+1. Jalankan audit treasury harian:
+   ```bash
+   php artisan treasury:audit
+   ```
+2. Parameter yang diverifikasi secara matematis:
+   - **Keseimbangan Single-Sign Ledger**: $\sum \text{Debit} + \sum \text{Kredit} = 0$ untuk setiap akun treasury.
+   - **Rekonsiliasi Lot Valas vs Ledger**: $\sum \text{FxLot.remaining\_amount} = \text{Saldo Buku Besar Valas}$.
+   - **Rekonsiliasi Fasilitas Kredit**: $\sum \text{Facility.drawn\_amount} = \text{Saldo Utang Bank di Ledger}$.
+   - **Konsistensi Saldo Rekonsiliasi Bank**: Mutasi matched + unmatched = mutasi impor rekening koran.
+3. Bila ditemukan selisih:
+   - Perintah keluar dengan kode non-nol (`exit 1`).
+   - Sistem mencatat rincian anomali ke tabel audit dan log security.
+   - Dealer dilarang melakukan penutupan buku (*period freeze*) sebelum selisih diselesaikan.

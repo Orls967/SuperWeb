@@ -17,6 +17,7 @@ class CreditFacilityDrawdown extends Model
 
     protected $fillable = [
         'facility_id',
+        'entity_code',
         'entity_id',
         'draw_date',
         'amount_idr',
@@ -47,5 +48,15 @@ class CreditFacilityDrawdown extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function getEntityIdAttribute(): string
+    {
+        return (string) ($this->attributes['entity_code'] ?? $this->attributes['entity_id'] ?? 'HOLDING');
+    }
+
+    public function setEntityIdAttribute($value): void
+    {
+        $this->attributes['entity_code'] = $value;
     }
 }

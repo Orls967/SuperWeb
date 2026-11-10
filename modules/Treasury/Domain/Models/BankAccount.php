@@ -17,6 +17,7 @@ class BankAccount extends Model
 
     protected $fillable = [
         'account_number',
+        'entity_code',
         'entity_id',
         'bank_name',
         'currency',
@@ -46,5 +47,15 @@ class BankAccount extends Model
     public function pettyCashVouchers(): HasMany
     {
         return $this->hasMany(PettyCashVoucher::class, 'bank_account_id');
+    }
+
+    public function getEntityIdAttribute(): string
+    {
+        return (string) ($this->attributes['entity_code'] ?? $this->attributes['entity_id'] ?? 'HOLDING');
+    }
+
+    public function setEntityIdAttribute($value): void
+    {
+        $this->attributes['entity_code'] = $value;
     }
 }

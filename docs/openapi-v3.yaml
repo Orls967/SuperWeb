@@ -8371,6 +8371,208 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  '/api/treasury/facilities/{facility}/draw':
+    post:
+      operationId: postApiTreasuryDrawFacility
+      tags:
+        - Treasury
+      summary: 'Draw Facility (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          name: facility
+          in: path
+          required: true
+          description: 'Identifier parameter facility for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postApiTreasuryDrawFacility'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  /api/treasury/fx-transfers:
+    post:
+      operationId: postApiTreasuryFxTransfer
+      tags:
+        - Treasury
+      summary: 'Post Fx Transfer (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/IdempotencyKeyHeader'
+      responses:
+        201:
+          description: 'Resource successfully created or operation executed'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+      requestBody:
+        description: 'Request payload for postApiTreasuryFxTransfer'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Dynamic payload attributes governed by module domain rules'
+  '/api/treasury/hedges/{contract}':
+    get:
+      operationId: getApiTreasuryGetHedge
+      tags:
+        - Treasury
+      summary: 'Get Hedge (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          name: contract
+          in: path
+          required: true
+          description: 'Identifier parameter contract for this resource'
+          schema:
+            type: string
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /api/v1/edu/certificates/verify:
     get:
       operationId: getEduApiCertificatesVerify
@@ -102184,6 +102386,124 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /treasury/facilities:
+    get:
+      operationId: getTreasuryFacilities
+      tags:
+        - Treasury
+      summary: 'Facilities (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, auditor, treasury].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /treasury/forecast:
+    get:
+      operationId: getTreasuryForecast
+      tags:
+        - Treasury
+      summary: 'Forecast (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, auditor, treasury].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   '/treasury/forward-contracts/{contract}/settle':
     post:
       operationId: postTreasurySettleHedge
@@ -102258,6 +102578,64 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /treasury/fx:
+    get:
+      operationId: getTreasuryFx
+      tags:
+        - Treasury
+      summary: 'Fx (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /treasury/fx-revalue:
     post:
       operationId: postTreasuryFxRevalue
@@ -102325,6 +102703,239 @@ paths:
             schema:
               type: object
               description: 'Dynamic payload attributes governed by module domain rules'
+  /treasury/hedges:
+    get:
+      operationId: getTreasuryHedges
+      tags:
+        - Treasury
+      summary: 'Hedges (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /treasury/pools:
+    get:
+      operationId: getTreasuryPools
+      tags:
+        - Treasury
+      summary: 'Pools (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /treasury/positions:
+    get:
+      operationId: getTreasuryPositions
+      tags:
+        - Treasury
+      summary: 'Positions (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, auditor, treasury].'
+      x-allowed-roles:
+        - admin
+        - auditor
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
+  /treasury/reconciliation:
+    get:
+      operationId: getTreasuryReconciliation
+      tags:
+        - Treasury
+      summary: 'Reconciliation (Treasury)'
+      description: 'Operational endpoint for Treasury module. Protected by role matrix: [admin, treasury].'
+      x-allowed-roles:
+        - admin
+        - treasury
+      parameters:
+        -
+          $ref: '#/components/parameters/CorrelationIdHeader'
+        -
+          $ref: '#/components/parameters/CursorPaginationParam'
+      responses:
+        200:
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Response envelope'
+        401:
+          description: 'Authentication credentials missing, expired, or invalid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        403:
+          description: 'Access forbidden: caller does not possess required roles defined in x-allowed-roles'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        409:
+          description: 'Conflict or idempotent replay detected with mismatching payload or concurrency conflict'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        422:
+          description: 'Validation error or business invariant domain violation'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+        429:
+          description: 'Rate limit exceeded: caller exceeded request quota per time window'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsRfc7807'
+      security:
+        -
+          BearerAuth: {}
+        -
+          SessionCookieAuth: {}
   /up:
     get:
       operationId: getUp

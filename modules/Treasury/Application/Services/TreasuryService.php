@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
-use Modules\Banking\Domain\Models\LedgerEntry;
+use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Banking\Support\Posting;
 use Modules\Core\Contracts\DocumentNumberingInterface;
 use Modules\Finance\Contracts\LoanExposureProvider;

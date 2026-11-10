@@ -58,6 +58,7 @@ class TreasuryServiceProvider extends ServiceProvider
                 TestCreditCovenantCommand::class,
                 CashPoolSweepCommand::class,
                 GenerateCashForecastCommand::class,
+                \Modules\Treasury\Console\Commands\ExportTreasuryReportsCommand::class,
             ]);
         }
 

@@ -17,6 +17,7 @@ class FxLot extends Model
     protected $table = 'trs_fx_lots';
 
     protected $fillable = [
+        'entity_code',
         'entity_id',
         'currency',
         'lot_date',
@@ -65,5 +66,15 @@ class FxLot extends Model
     public function revaluations(): HasMany
     {
         return $this->hasMany(Revaluation::class, 'currency', 'currency');
+    }
+
+    public function getEntityIdAttribute(): string
+    {
+        return (string) ($this->attributes['entity_code'] ?? $this->attributes['entity_id'] ?? 'HOLDING');
+    }
+
+    public function setEntityIdAttribute($value): void
+    {
+        $this->attributes['entity_code'] = $value;
     }
 }

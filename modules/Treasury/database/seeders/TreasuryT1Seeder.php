@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
 use Modules\Treasury\Domain\Enums\HedgeStatus;
 use Modules\Treasury\Domain\Models\BankAccount;
@@ -167,7 +166,7 @@ class TreasuryT1Seeder extends Seeder
 
             $lotRows[] = [
                 'id' => (string) \Illuminate\Support\Str::uuid(),
-                'entity_id' => ($i % 3 === 0) ? 'SUB_A' : 'HOLDING',
+                'entity_code' => ($i % 3 === 0) ? 'SUB_A' : 'HOLDING',
                 'currency' => $curr,
                 'lot_date' => $base->addDays($i % 30)->toDateString(),
                 'original_amount' => $foreignMinor,
@@ -223,7 +222,7 @@ class TreasuryT1Seeder extends Seeder
                 'id' => (string) \Illuminate\Support\Str::uuid(),
                 'contract_number' => "FWD-T1-" . str_pad((string) $h, 4, '0', STR_PAD_LEFT),
                 'currency' => 'USD',
-                'creator_id' => 1,
+                'creator_id' => null,
                 'notional_foreign_amount' => $notional,
                 'forward_rate_scaled' => $forwardRate,
                 'contract_rate_numerator' => 15750,

@@ -13,7 +13,7 @@ return new class extends Migration
         // 1. Lot Valas untuk kalkulasi FIFO/Identifikasi Khusus & Revaluasi PSAK 10
         Schema::create('trs_fx_lots', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('entity_id', 40)->default('HOLDING')->index();
+            $table->string('entity_code', 40)->default('HOLDING')->index();
             $table->string('currency', 3)->index();
             $table->date('lot_date');
             $table->bigInteger('original_amount'); // minor units
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('current_carrying_rate_num');
             $table->unsignedBigInteger('current_carrying_rate_den')->default(1);
             $table->bigInteger('current_carrying_idr');
-            $table->uuid('last_revaluation_id')->nullable();
+            $table->foreignUuid('last_revaluation_id')->nullable()->constrained('trs_revaluations')->nullOnDelete();
             $table->string('status', 20)->default('active')->index(); // active, exhausted
             $table->string('source_ref', 80)->nullable();
             $table->timestamps();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->uuid('forward_contract_id')->index();
             $table->string('from_status', 32);
             $table->string('to_status', 32);
-            $table->unsignedBigInteger('actor_id')->nullable();
+            $table->foreignId('actor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('action', 40);
             $table->text('reason')->nullable();
             $table->json('metadata')->nullable();
@@ -54,7 +54,7 @@ return new class extends Migration
             $table->string('match_type', 32); // exact, fuzzy_tolerance, subset_many_to_one, manual
             $table->bigInteger('matched_amount');
             $table->json('ledger_entry_ids')->nullable();
-            $table->unsignedBigInteger('ledger_tx_id')->nullable();
+            $table->foreignId('ledger_tx_id')->nullable()->constrained('bank_ledger_transactions')->nullOnDelete();
             $table->unsignedBigInteger('matched_by')->nullable();
             $table->string('notes', 255)->nullable();
             $table->json('match_certificate')->nullable();
@@ -80,14 +80,14 @@ return new class extends Migration
         Schema::create('trs_credit_facility_drawdowns', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('facility_id')->index();
-            $table->string('entity_id', 40)->default('HOLDING');
+            $table->string('entity_code', 40)->default('HOLDING');
             $table->date('draw_date');
             $table->bigInteger('amount_idr');
             $table->unsignedInteger('covenant_der_permil');
             $table->unsignedInteger('max_der_permil');
             $table->bigInteger('verified_debt_idr');
             $table->bigInteger('verified_equity_idr');
-            $table0 = $table->unsignedBigInteger('ledger_tx_id')->nullable();
+            $table->foreignId('ledger_tx_id')->nullable()->constrained('bank_ledger_transactions')->nullOnDelete();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
 
@@ -105,8 +105,8 @@ return new class extends Migration
             $table->bigInteger('header_balance_after');
             $table->bigInteger('sub_balance_before');
             $table->bigInteger('sub_balance_after');
-            $table->unsignedBigInteger('ledger_tx_id')->nullable();
-            $table->uuid('intercompany_loan_id')->nullable();
+            $table->foreignId('ledger_tx_id')->nullable()->constrained('bank_ledger_transactions')->nullOnDelete();
+            $table->foreignId('intercompany_loan_id')->nullable()->constrained('ic_loans')->nullOnDelete();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
 
@@ -126,7 +126,7 @@ return new class extends Migration
             $table->string('status', 20)->default('submitted'); // submitted, approved, reimbursed, rejected
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
-            $table->unsignedBigInteger('ledger_tx_id')->nullable();
+            $table->foreignId('ledger_tx_id')->nullable()->constrained('bank_ledger_transactions')->nullOnDelete();
             $table->timestamps();
 
             $table->foreign('bank_account_id')->references('id')->on('trs_bank_accounts')->cascadeOnDelete();
@@ -134,13 +134,13 @@ return new class extends Migration
 
         // 8. Kolom pengayaan pada tabel yang sudah ada
         Schema::table('trs_forward_contracts', function (Blueprint $table) {
-            $table->unsignedBigInteger('creator_id')->nullable()->after('currency');
+            $table->foreignId('creator_id')->nullable()->after('currency')->constrained('users')->nullOnDelete();
             $table->unsignedBigInteger('contract_rate_numerator')->default(1)->after('notional_foreign_amount');
             $table->unsignedBigInteger('contract_rate_denominator')->default(1)->after('contract_rate_numerator');
             $table->unsignedBigInteger('spot_rate_numerator')->nullable()->after('contract_rate_denominator');
             $table->unsignedBigInteger('spot_rate_denominator')->nullable()->after('spot_rate_numerator');
-            $table->uuid('rolled_to_contract_id')->nullable()->after('status');
-            $table->uuid('rolled_from_contract_id')->nullable()->after('rolled_to_contract_id');
+            $table->foreignUuid('rolled_to_contract_id')->nullable()->after('status')->constrained('trs_forward_contracts')->nullOnDelete();
+            $table->foreignUuid('rolled_from_contract_id')->nullable()->after('rolled_to_contract_id')->constrained('trs_forward_contracts')->nullOnDelete();
             $table->bigInteger('settlement_amount_idr')->nullable()->after('rolled_from_contract_id');
             $table->bigInteger('settlement_gain_loss_idr')->nullable()->after('settlement_amount_idr');
             $table->string('cancellation_fee_payer', 40)->nullable()->after('settlement_gain_loss_idr');
@@ -152,7 +152,7 @@ return new class extends Migration
             $table->unsignedInteger('interest_rate_permil')->default(85)->after('drawn_amount_idr');
             $table->unsignedInteger('max_der_permil')->default(2500)->after('interest_rate_permil');
             $table->string('covenant_frequency', 20)->default('monthly')->after('max_der_permil');
-            $table->string('entity_id', 40)->default('HOLDING')->after('facility_code');
+            $table->string('entity_code', 40)->default('HOLDING')->after('facility_code');
         });
 
         Schema::table('trs_bank_statements', function (Blueprint $table) {
@@ -169,7 +169,7 @@ return new class extends Migration
         });
 
         Schema::table('trs_bank_accounts', function (Blueprint $table) {
-            $table->string('entity_id', 40)->default('HOLDING')->after('account_number');
+            $table->string('entity_code', 40)->default('HOLDING')->after('account_number');
             $table->bigInteger('imprest_limit')->default(0)->after('balance');
         });
 
@@ -190,7 +190,7 @@ return new class extends Migration
         });
 
         Schema::table('trs_bank_accounts', function (Blueprint $table) {
-            $table->dropColumn(['entity_id', 'imprest_limit']);
+            $table->dropColumn(['entity_code', 'imprest_limit']);
         });
 
         Schema::table('trs_revaluations', function (Blueprint $table) {
@@ -202,7 +202,7 @@ return new class extends Migration
         });
 
         Schema::table('trs_credit_facilities', function (Blueprint $table) {
-            $table->dropColumn(['interest_rate_permil', 'max_der_permil', 'covenant_frequency', 'entity_id']);
+            $table->dropColumn(['interest_rate_permil', 'max_der_permil', 'covenant_frequency', 'entity_code']);
         });
 
         Schema::table('trs_forward_contracts', function (Blueprint $table) {

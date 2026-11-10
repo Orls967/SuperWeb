@@ -6,7 +6,6 @@ namespace Modules\Treasury\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Models\LedgerAccount;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\CreditFacility;

@@ -6,7 +6,7 @@ namespace Modules\Treasury\Application\Actions;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Domain\Models\LedgerEntry;
+use Modules\Banking\Contracts\LedgerEntry;
 use Modules\Treasury\Domain\Algorithms\BankReconciliationMatcher;
 use Modules\Treasury\Domain\DTOs\BankStatementLineDTO;
 use Modules\Treasury\Domain\DTOs\BookLedgerLineDTO;
