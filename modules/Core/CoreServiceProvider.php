@@ -42,6 +42,9 @@ use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
 use Modules\Core\Console\Commands\BenchmarkRunCommand;
 use Modules\Core\Console\Commands\ConsumeSpineCommand;
 use Modules\Core\Console\Commands\CopilotAskCommand;
+use Modules\Core\Console\Commands\DsAuditCommand;
+use Modules\Core\Console\Commands\DsTokensBuildCommand;
+use Modules\Core\Console\Commands\DsUsageScanCommand;
 use Modules\Core\Console\Commands\PqAuditChainsCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
@@ -341,6 +344,9 @@ class CoreServiceProvider extends ServiceProvider
                 PqAuditChainsCommand::class,
                 CopilotAskCommand::class,
                 TelemetrySnapshotCommand::class,
+                DsAuditCommand::class,
+                DsUsageScanCommand::class,
+                DsTokensBuildCommand::class,
             ]);
         }
 

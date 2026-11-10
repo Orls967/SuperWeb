@@ -12784,14 +12784,14 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core / infrastruktur (CI, config, observability) — sering bukan fitur aplikasi; putuskan di DoR · **Prasyarat:** R0 ✅ · **Acuan:** PROGRESS P4, P11
 > **Jalan pintas terlarang di fase ini:** mensimulasikan proses engineering (release train, SLO, DX) sebagai service+tabel di aplikasi; klaim tanpa artefak nyata (workflow CI, config, dashboard); memperluas `DesignSystemAccessibilityService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
-- [ ] 240.2 Accessibility standard (WCAG simulasi): keyboard navigation, contrast, screen reader labels → automated check CI → audit manual per rilis besar → remediation
-- [ ] 240.3 Responsive & mobile-first governance: semua halaman uji lebar 375px (Fase standar diperluas 30 lini) → gate RouteSmoke responsive
-- [ ] 240.4 UX research loop: usability test simulasi → temuan → backlog perbaikan → metrik task success rate → iterasi
-- [ ] 240.5 Tests: component library dipakai modul baru (arch check), a11y lint hijau, responsive screenshot test pada sampel, research backlog tercatat
-- [ ] 240.6 Edge case: modul butuh komponen khusus → request ke tim design system, review sebelum custom fork
-- [ ] 240.7 Dark mode / high contrast: didukung komponen inti bila dinyatakan sebagai kebutuhan
-- [ ] 240.8 Quality gate Fase 240
+- [🔵] 240.1 Design system lintas 30 lini: komponen, token warna/tipografi/spacing, pola (form, table, flow) → satu library → konsistensi visual & interaksi lintas modul
+- [🔵] 240.2 Accessibility standard (WCAG simulasi): keyboard navigation, contrast, screen reader labels → automated check CI → audit manual per rilis besar → remediation
+- [🔵] 240.3 Responsive & mobile-first governance: semua halaman uji lebar 375px (Fase standar diperluas 30 lini) → gate RouteSmoke responsive
+- [🔵] 240.4 UX research loop: usability test simulasi → temuan → backlog perbaikan → metrik task success rate → iterasi
+- [🔵] 240.5 Tests: component library dipakai modul baru (arch check), a11y lint hijau, responsive screenshot test pada sampel, research backlog tercatat
+- [🔵] 240.6 Edge case: modul butuh komponen khusus → request ke tim design system, review sebelum custom fork
+- [🔵] 240.7 Dark mode / high contrast: didukung komponen inti bila dinyatakan sebagai kebutuhan
+- [🔵] 240.8 Quality gate Fase 240
 
 ## FASE 241 — DATA: DATA GOVERNANCE, QUALITY & LINEAGE 30 LINI
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `DataGovernanceLineageService`; 1 migrasi; test `DataGovernanceLineageTest` — commit `64acb19`, +419 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

@@ -1,10 +1,80 @@
 {
-    "generated_at": "2026-11-03T05:13:42+00:00",
-    "total_get_routes": 423,
-    "total_executions": 1230,
-    "tested_routes_count": 387,
-    "untested_routes_count": 36,
+    "generated_at": "2026-11-10T02:41:28+00:00",
+    "total_get_routes": 750,
+    "total_executions": 2082,
+    "tested_routes_count": 657,
+    "untested_routes_count": 93,
     "untested_routes": [
+        {
+            "uri_pattern": "proservices/timesheets/{id}",
+            "module": "ProServices",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "consultant"
+            ]
+        },
+        {
+            "uri_pattern": "proservices/portal/projects/{id}",
+            "module": "ProServices",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "client"
+            ]
+        },
+        {
+            "uri_pattern": "forest/plots/{id}",
+            "module": "Forest",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "forester",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "passenger/ticket/{ticket}",
+            "module": "Aviation",
+            "reason": "tidak teruji: parameter (ticket)",
+            "roles": [
+                "admin",
+                "passenger",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "design-system/{name}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (name)",
+            "roles": [
+                "admin",
+                "design_system_owner",
+                "operator"
+            ]
+        },
+        {
+            "uri_pattern": "circular/orders/{order}",
+            "module": "Circular",
+            "reason": "tidak teruji: parameter (order)",
+            "roles": [
+                "admin",
+                "circular_admin",
+                "material_buyer",
+                "material_seller"
+            ]
+        },
+        {
+            "uri_pattern": "circular/bids/{bid}",
+            "module": "Circular",
+            "reason": "tidak teruji: parameter (bid)",
+            "roles": [
+                "admin",
+                "circular_admin",
+                "material_buyer",
+                "material_seller"
+            ]
+        },
         {
             "uri_pattern": "resto/pos/session/{session}",
             "module": "Resto",
@@ -202,6 +272,17 @@
             ]
         },
         {
+            "uri_pattern": "trade-finance/clearing/{escrow}",
+            "module": "TradeFinance",
+            "reason": "tidak teruji: parameter (escrow)",
+            "roles": [
+                "admin",
+                "tf_officer",
+                "importer",
+                "exporter"
+            ]
+        },
+        {
             "uri_pattern": "api/oto/sessions/{session}",
             "module": "Mobility",
             "reason": "tidak teruji: parameter (session)",
@@ -210,6 +291,138 @@
                 "driver",
                 "ev_operator",
                 "fleet_manager"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/full/policies/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "underwriter",
+                "actuary",
+                "claims_adjuster",
+                "reinsurance_mgr",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/full/claims/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "underwriter",
+                "actuary",
+                "claims_adjuster",
+                "reinsurance_mgr",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/reinsurance/treaties/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "reinsurance_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/reinsurance/bordereaux/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "reinsurance_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/reinsurance/bordereaux/{id}/export-csv",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "reinsurance_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/reinsurance/account-current/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "reinsurance_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/cat/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "actuary"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/cat-bonds/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "reinsurance_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/siu/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "claims_adjuster",
+                "underwriter"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/life/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "underwriter",
+                "insurance_admin"
+            ]
+        },
+        {
+            "uri_pattern": "insurance/agri/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "underwriter",
+                "insurance_admin"
+            ]
+        },
+        {
+            "uri_pattern": "investor/cat-bonds/{id}",
+            "module": "Insurance",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "superadmin",
+                "investor",
+                "reinsurance_mgr"
             ]
         },
         {
@@ -235,14 +448,152 @@
             ]
         },
         {
+            "uri_pattern": "hospital/radiology/dicom/studies/{id}/metadata",
+            "module": "Hospital",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "auditor",
+                "doctor"
+            ]
+        },
+        {
+            "uri_pattern": "hospital/patients/{patient}/passport",
+            "module": "Hospital",
+            "reason": "tidak teruji: parameter (patient)",
+            "roles": [
+                "admin",
+                "doctor",
+                "hospital_registration"
+            ]
+        },
+        {
+            "uri_pattern": "guest/tickets/{ticket_uuid}",
+            "module": "Venue",
+            "reason": "tidak teruji: parameter (ticket_uuid)",
+            "roles": [
+                "admin",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "venue/events/{event}",
+            "module": "Venue",
+            "reason": "tidak teruji: parameter (event)",
+            "roles": [
+                "admin",
+                "venue_manager"
+            ]
+        },
+        {
+            "uri_pattern": "venue/events/{event}/simulator",
+            "module": "Venue",
+            "reason": "tidak teruji: parameter (event)",
+            "roles": [
+                "admin",
+                "venue_manager"
+            ]
+        },
+        {
+            "uri_pattern": "hotel/folios/{folioId}/split",
+            "module": "Hotel",
+            "reason": "tidak teruji: parameter (folioId)",
+            "roles": [
+                "admin",
+                "hotel_admin",
+                "front_office",
+                "front_desk"
+            ]
+        },
+        {
+            "uri_pattern": "hotel/city-ledger/{accountId}/aging",
+            "module": "Hotel",
+            "reason": "tidak teruji: parameter (accountId)",
+            "roles": [
+                "admin",
+                "hotel_admin",
+                "front_office",
+                "front_desk"
+            ]
+        },
+        {
+            "uri_pattern": "hotel/packages/escrow-audit/{bookingId}",
+            "module": "Hotel",
+            "reason": "tidak teruji: parameter (bookingId)",
+            "roles": [
+                "admin",
+                "hotel_admin",
+                "hotel_gm",
+                "sales_mgr"
+            ]
+        },
+        {
+            "uri_pattern": "hotel/loyalty/passport/{guestId}",
+            "module": "Hotel",
+            "reason": "tidak teruji: parameter (guestId)",
+            "roles": [
+                "admin",
+                "hotel_admin",
+                "guest",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "energy/bills/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "energy_billing"
+            ]
+        },
+        {
             "uri_pattern": "energy/ppa/{id}",
             "module": "Egy",
             "reason": "tidak teruji: parameter (id)",
             "roles": [
                 "admin",
-                "grid_operator",
-                "genco_trader",
+                "genco_trader"
+            ]
+        },
+        {
+            "uri_pattern": "customer/energy/bills/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "energy/consolidated-bills/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "customer",
+                "energy_billing"
+            ]
+        },
+        {
+            "uri_pattern": "energy/esco/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "customer",
+                "energy_auditor"
+            ]
+        },
+        {
+            "uri_pattern": "energy/legacy/ppa/{id}",
+            "module": "Egy",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
                 "energy_auditor",
+                "genco_trader",
+                "grid_operator",
                 "renewable_dev"
             ]
         },
@@ -355,6 +706,234 @@
             ]
         },
         {
+            "uri_pattern": "syariah/portal/{contract}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (contract)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "dps_reviewer",
+                "nasabah"
+            ]
+        },
+        {
+            "uri_pattern": "syariah/sukuk/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syariah/ijarah/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syariah/wealth/portfolios/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "wealth_advisor",
+                "customer"
+            ]
+        },
+        {
+            "uri_pattern": "syariah/zakat/certificates/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "amil",
+                "customer",
+                "nasabah"
+            ]
+        },
+        {
+            "uri_pattern": "syariah/waqf/certificates/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "nazhir"
+            ]
+        },
+        {
+            "uri_pattern": "syb/bmt/cooperatives/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "bmt_manager"
+            ]
+        },
+        {
+            "uri_pattern": "syb/bmt/savings/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "bmt_manager"
+            ]
+        },
+        {
+            "uri_pattern": "syb/micro/groups/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "field_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/micro/gigs/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "field_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/micro/agri/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "field_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/trade/lc/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "trade_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/trade/salam/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "trade_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/trade/scf/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "trade_officer"
+            ]
+        },
+        {
+            "uri_pattern": "syb/ops/npf/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "risk_officer",
+                "dps_board"
+            ]
+        },
+        {
+            "uri_pattern": "syb/ops/restructuring/{id}",
+            "module": "Syariah",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "syariah_officer",
+                "risk_officer",
+                "dps_board"
+            ]
+        },
+        {
+            "uri_pattern": "marine/ponds/{id}",
+            "module": "Marine",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "farmer",
+                "manager",
+                "officer"
+            ]
+        },
+        {
+            "uri_pattern": "marine/aquaculture/batches/{id}/fcr",
+            "module": "Marine",
+            "reason": "tidak teruji: parameter (id)",
+            "roles": [
+                "admin",
+                "farmer",
+                "manager",
+                "officer"
+            ]
+        },
+        {
+            "uri_pattern": "platform/change/{change}",
+            "module": "Platform",
+            "reason": "tidak teruji: parameter (change)",
+            "roles": [
+                "admin",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "platform/release/{train}",
+            "module": "Platform",
+            "reason": "tidak teruji: parameter (train)",
+            "roles": [
+                "admin",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "platform/dev/sandboxes/{sandbox}",
+            "module": "Platform",
+            "reason": "tidak teruji: parameter (sandbox)",
+            "roles": [
+                "admin",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "platform/dev/trace/{correlationId}",
+            "module": "Platform",
+            "reason": "tidak teruji: parameter (correlationId)",
+            "roles": [
+                "admin",
+                "superadmin"
+            ]
+        },
+        {
+            "uri_pattern": "platform/dev/api/metrics/phase/{phaseId}",
+            "module": "Platform",
+            "reason": "tidak teruji: parameter (phaseId)",
+            "roles": [
+                "admin",
+                "superadmin"
+            ]
+        },
+        {
             "uri_pattern": "reset-password/{token}",
             "module": "Core",
             "reason": "tidak teruji: parameter (token)",
@@ -381,12 +960,39 @@
     ],
     "module_stats": {
         "Core": {
-            "total": 32,
-            "tested": 29,
-            "untested": 3,
-            "2xx": 23,
+            "total": 55,
+            "tested": 51,
+            "untested": 4,
+            "2xx": 42,
             "3xx": 5,
             "4xx": 1,
+            "500": 3
+        },
+        "ProServices": {
+            "total": 9,
+            "tested": 7,
+            "untested": 2,
+            "2xx": 7,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Forest": {
+            "total": 19,
+            "tested": 18,
+            "untested": 1,
+            "2xx": 18,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Aviation": {
+            "total": 44,
+            "tested": 43,
+            "untested": 1,
+            "2xx": 43,
+            "3xx": 0,
+            "4xx": 0,
             "500": 0
         },
         "AutoServe": {
@@ -416,11 +1022,29 @@
             "4xx": 0,
             "500": 0
         },
+        "Circular": {
+            "total": 8,
+            "tested": 6,
+            "untested": 2,
+            "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
         "Payment": {
             "total": 6,
             "tested": 6,
             "untested": 0,
             "2xx": 6,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Port": {
+            "total": 24,
+            "tested": 24,
+            "untested": 0,
+            "2xx": 24,
             "3xx": 0,
             "4xx": 0,
             "500": 0
@@ -435,10 +1059,10 @@
             "500": 0
         },
         "Store": {
-            "total": 27,
-            "tested": 27,
+            "total": 29,
+            "tested": 29,
             "untested": 0,
-            "2xx": 16,
+            "2xx": 18,
             "3xx": 3,
             "4xx": 8,
             "500": 0
@@ -461,6 +1085,24 @@
             "4xx": 8,
             "500": 0
         },
+        "Food": {
+            "total": 2,
+            "tested": 2,
+            "untested": 0,
+            "2xx": 2,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Fashion": {
+            "total": 3,
+            "tested": 3,
+            "untested": 0,
+            "2xx": 3,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
         "Resto": {
             "total": 79,
             "tested": 70,
@@ -480,13 +1122,13 @@
             "500": 0
         },
         "Logistics": {
-            "total": 144,
-            "tested": 143,
+            "total": 168,
+            "tested": 167,
             "untested": 1,
-            "2xx": 127,
+            "2xx": 146,
             "3xx": 0,
             "4xx": 16,
-            "500": 0
+            "500": 5
         },
         "Party": {
             "total": 12,
@@ -501,10 +1143,10 @@
             "total": 12,
             "tested": 12,
             "untested": 0,
-            "2xx": 12,
+            "2xx": 10,
             "3xx": 0,
             "4xx": 0,
-            "500": 0
+            "500": 2
         },
         "Contract": {
             "total": 39,
@@ -525,22 +1167,22 @@
             "500": 0
         },
         "Procurement": {
-            "total": 9,
-            "tested": 6,
+            "total": 14,
+            "tested": 11,
             "untested": 3,
-            "2xx": 5,
+            "2xx": 10,
             "3xx": 0,
             "4xx": 1,
             "500": 0
         },
         "Manufacturing": {
-            "total": 28,
-            "tested": 27,
+            "total": 38,
+            "tested": 37,
             "untested": 1,
-            "2xx": 27,
+            "2xx": 32,
             "3xx": 0,
             "4xx": 0,
-            "500": 0
+            "500": 5
         },
         "Agency": {
             "total": 5,
@@ -570,10 +1212,10 @@
             "500": 0
         },
         "Pricing": {
-            "total": 6,
-            "tested": 6,
+            "total": 8,
+            "tested": 8,
             "untested": 0,
-            "2xx": 6,
+            "2xx": 8,
             "3xx": 0,
             "4xx": 0,
             "500": 0
@@ -606,10 +1248,10 @@
             "500": 0
         },
         "TradeFinance": {
-            "total": 16,
-            "tested": 16,
-            "untested": 0,
-            "2xx": 16,
+            "total": 23,
+            "tested": 22,
+            "untested": 1,
+            "2xx": 22,
             "3xx": 0,
             "4xx": 0,
             "500": 0
@@ -713,6 +1355,15 @@
             "4xx": 0,
             "500": 0
         },
+        "Governance": {
+            "total": 3,
+            "tested": 3,
+            "untested": 0,
+            "2xx": 3,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
         "Mobility": {
             "total": 59,
             "tested": 58,
@@ -732,13 +1383,13 @@
             "500": 0
         },
         "Insurance": {
-            "total": 24,
-            "tested": 24,
-            "untested": 0,
-            "2xx": 24,
+            "total": 200,
+            "tested": 188,
+            "untested": 12,
+            "2xx": 185,
             "3xx": 0,
             "4xx": 0,
-            "500": 0
+            "500": 3
         },
         "Wealth": {
             "total": 35,
@@ -777,49 +1428,49 @@
             "500": 0
         },
         "Hospital": {
-            "total": 40,
-            "tested": 38,
-            "untested": 2,
-            "2xx": 38,
+            "total": 61,
+            "tested": 57,
+            "untested": 4,
+            "2xx": 54,
             "3xx": 0,
             "4xx": 0,
-            "500": 0
+            "500": 3
         },
         "Venue": {
-            "total": 25,
-            "tested": 25,
-            "untested": 0,
-            "2xx": 25,
+            "total": 108,
+            "tested": 105,
+            "untested": 3,
+            "2xx": 105,
             "3xx": 0,
             "4xx": 0,
             "500": 0
         },
         "Hotel": {
-            "total": 45,
-            "tested": 45,
-            "untested": 0,
-            "2xx": 35,
+            "total": 160,
+            "tested": 156,
+            "untested": 4,
+            "2xx": 136,
             "3xx": 0,
             "4xx": 10,
-            "500": 0
+            "500": 10
         },
         "Mining": {
-            "total": 49,
-            "tested": 49,
+            "total": 129,
+            "tested": 129,
             "untested": 0,
-            "2xx": 49,
+            "2xx": 126,
             "3xx": 0,
-            "4xx": 0,
+            "4xx": 3,
             "500": 0
         },
         "Egy": {
-            "total": 42,
-            "tested": 40,
-            "untested": 2,
-            "2xx": 40,
+            "total": 104,
+            "tested": 97,
+            "untested": 7,
+            "2xx": 92,
             "3xx": 0,
             "4xx": 0,
-            "500": 0
+            "500": 5
         },
         "Tlx": {
             "total": 45,
@@ -840,10 +1491,10 @@
             "500": 0
         },
         "Edu": {
-            "total": 35,
-            "tested": 31,
+            "total": 62,
+            "tested": 58,
             "untested": 4,
-            "2xx": 29,
+            "2xx": 56,
             "3xx": 0,
             "4xx": 2,
             "500": 0
@@ -853,6 +1504,33 @@
             "tested": 30,
             "untested": 1,
             "2xx": 30,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Syariah": {
+            "total": 115,
+            "tested": 99,
+            "untested": 16,
+            "2xx": 99,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Marine": {
+            "total": 22,
+            "tested": 20,
+            "untested": 2,
+            "2xx": 20,
+            "3xx": 0,
+            "4xx": 0,
+            "500": 0
+        },
+        "Platform": {
+            "total": 23,
+            "tested": 18,
+            "untested": 5,
+            "2xx": 18,
             "3xx": 0,
             "4xx": 0,
             "500": 0
@@ -867,15 +1545,526 @@
             "500": 0
         }
     },
-    "errors_500_count": 0,
-    "errors_500_first_30": [],
+    "errors_500_count": 36,
+    "errors_500_first_30": [
+        {
+            "uri_pattern": "admin/design-system/research/export-csv",
+            "uri_tested": "/admin/design-system/research/export-csv",
+            "module": "Core",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 11.93,
+            "query_count": 3,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "line": 67
+            }
+        },
+        {
+            "uri_pattern": "design-system/research/export-csv",
+            "uri_tested": "/design-system/research/export-csv",
+            "module": "Core",
+            "role": "design_system_owner",
+            "status": 500,
+            "duration_ms": 1.91,
+            "query_count": 3,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "line": 67
+            }
+        },
+        {
+            "uri_pattern": "design-system/research/export-csv",
+            "uri_tested": "/design-system/research/export-csv",
+            "module": "Core",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.7,
+            "query_count": 3,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "line": 67
+            }
+        },
+        {
+            "uri_pattern": "logistics/reverse/shipments/{shipment}",
+            "uri_tested": "/logistics/reverse/shipments/1",
+            "module": "Logistics",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.27,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [reverse.show] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "logistics/reverse/shipments/{shipment}",
+            "uri_tested": "/logistics/reverse/shipments/1",
+            "module": "Logistics",
+            "role": "auditor",
+            "status": 500,
+            "duration_ms": 1.15,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [reverse.show] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "logistics/reverse/shipments/{shipment}",
+            "uri_tested": "/logistics/reverse/shipments/1",
+            "module": "Logistics",
+            "role": "dispatcher",
+            "status": 500,
+            "duration_ms": 1.11,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [reverse.show] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "logistics/reverse/shipments/{shipment}",
+            "uri_tested": "/logistics/reverse/shipments/1",
+            "module": "Logistics",
+            "role": "hub_operator",
+            "status": 500,
+            "duration_ms": 1.09,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [reverse.show] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "logistics/reverse/shipments/{shipment}",
+            "uri_tested": "/logistics/reverse/shipments/1",
+            "module": "Logistics",
+            "role": "logistics_admin",
+            "status": 500,
+            "duration_ms": 1.08,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [reverse.show] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "assets",
+            "uri_tested": "/assets",
+            "module": "Asset",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 8.24,
+            "query_count": 13,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Call to undefined function is_assoc() (View: /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Shared/resources/views/components/ds/select.blade.php) (View: /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Shared/resources/views/components/ds/select.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/storage/framework/views/test_9/8ac513dcee0581c4a960b3dfb09c961e.php",
+                "line": 96
+            }
+        },
+        {
+            "uri_pattern": "assets",
+            "uri_tested": "/assets",
+            "module": "Asset",
+            "role": "asset_manager",
+            "status": 500,
+            "duration_ms": 4.86,
+            "query_count": 13,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Illuminate\\View\\ViewException: Call to undefined function is_assoc() (View: /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Shared/resources/views/components/ds/select.blade.php) (View: /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Shared/resources/views/components/ds/select.blade.php)",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/storage/framework/views/test_9/8ac513dcee0581c4a960b3dfb09c961e.php",
+                "line": 96
+            }
+        },
+        {
+            "uri_pattern": "manufacturing/recycled-materials",
+            "uri_tested": "/manufacturing/recycled-materials",
+            "module": "Manufacturing",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 2.19,
+            "query_count": 7,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "manufacturing/recycled-materials",
+            "uri_tested": "/manufacturing/recycled-materials",
+            "module": "Manufacturing",
+            "role": "auditor",
+            "status": 500,
+            "duration_ms": 1.36,
+            "query_count": 7,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "manufacturing/recycled-materials",
+            "uri_tested": "/manufacturing/recycled-materials",
+            "module": "Manufacturing",
+            "role": "planner",
+            "status": 500,
+            "duration_ms": 1.34,
+            "query_count": 7,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "manufacturing/recycled-materials",
+            "uri_tested": "/manufacturing/recycled-materials",
+            "module": "Manufacturing",
+            "role": "plant_receiver",
+            "status": 500,
+            "duration_ms": 1.35,
+            "query_count": 7,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "manufacturing/recycled-materials",
+            "uri_tested": "/manufacturing/recycled-materials",
+            "module": "Manufacturing",
+            "role": "operator",
+            "status": 500,
+            "duration_ms": 1.33,
+            "query_count": 7,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "line": 138
+            }
+        },
+        {
+            "uri_pattern": "insurance/command",
+            "uri_tested": "/insurance/command",
+            "module": "Insurance",
+            "role": "superadmin",
+            "status": 500,
+            "duration_ms": 2.32,
+            "query_count": 9,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 02:41:25, 2026-11-10 02:41:25))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "line": 857
+            }
+        },
+        {
+            "uri_pattern": "insurance/command",
+            "uri_tested": "/insurance/command",
+            "module": "Insurance",
+            "role": "underwriter",
+            "status": 500,
+            "duration_ms": 1.69,
+            "query_count": 9,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 02:41:25, 2026-11-10 02:41:25))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "line": 857
+            }
+        },
+        {
+            "uri_pattern": "insurance/command",
+            "uri_tested": "/insurance/command",
+            "module": "Insurance",
+            "role": "insurance_admin",
+            "status": 500,
+            "duration_ms": 1.62,
+            "query_count": 9,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 02:41:25, 2026-11-10 02:41:25))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "line": 857
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.44,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "environmental_officer",
+            "status": 500,
+            "duration_ms": 1.09,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "rs_admin",
+            "status": 500,
+            "duration_ms": 1.07,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hotel/city-ledger",
+            "uri_tested": "/hotel/city-ledger",
+            "module": "Hotel",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.19,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Class \"Modules\\Hotel\\Domain\\Models\\CityLedgerAccount\" not found",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Hotel/Http/Controllers/HotelCityLedgerBillingController.php",
+                "line": 20
+            }
+        },
+        {
+            "uri_pattern": "hotel/city-ledger",
+            "uri_tested": "/hotel/city-ledger",
+            "module": "Hotel",
+            "role": "hotel_admin",
+            "status": 500,
+            "duration_ms": 1.1,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Class \"Modules\\Hotel\\Domain\\Models\\CityLedgerAccount\" not found",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Hotel/Http/Controllers/HotelCityLedgerBillingController.php",
+                "line": 20
+            }
+        },
+        {
+            "uri_pattern": "hotel/city-ledger",
+            "uri_tested": "/hotel/city-ledger",
+            "module": "Hotel",
+            "role": "front_office",
+            "status": 500,
+            "duration_ms": 1.04,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Class \"Modules\\Hotel\\Domain\\Models\\CityLedgerAccount\" not found",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Hotel/Http/Controllers/HotelCityLedgerBillingController.php",
+                "line": 20
+            }
+        },
+        {
+            "uri_pattern": "hotel/city-ledger",
+            "uri_tested": "/hotel/city-ledger",
+            "module": "Hotel",
+            "role": "front_desk",
+            "status": 500,
+            "duration_ms": 1.07,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Class \"Modules\\Hotel\\Domain\\Models\\CityLedgerAccount\" not found",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Hotel/Http/Controllers/HotelCityLedgerBillingController.php",
+                "line": 20
+            }
+        },
+        {
+            "uri_pattern": "hotel/co-brand-cards",
+            "uri_tested": "/hotel/co-brand-cards",
+            "module": "Hotel",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.55,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [hotel::hotel_layout].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "hotel/co-brand-cards",
+            "uri_tested": "/hotel/co-brand-cards",
+            "module": "Hotel",
+            "role": "hotel_admin",
+            "status": 500,
+            "duration_ms": 1.25,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [hotel::hotel_layout].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "hotel/co-brand-cards",
+            "uri_tested": "/hotel/co-brand-cards",
+            "module": "Hotel",
+            "role": "finance",
+            "status": 500,
+            "duration_ms": 1.23,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [hotel::hotel_layout].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "hotel/esg-carbon",
+            "uri_tested": "/hotel/esg-carbon",
+            "module": "Hotel",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.38,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [hotel::hotel_layout].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "hotel/esg-carbon",
+            "uri_tested": "/hotel/esg-carbon",
+            "module": "Hotel",
+            "role": "hotel_admin",
+            "status": 500,
+            "duration_ms": 1.2,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [hotel::hotel_layout].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        }
+    ],
     "top_20_query_heavy": [
         {
             "uri": "/admin/health",
             "module": "Core",
             "role": "admin",
-            "query_count": 249,
-            "duration_ms": 73.12,
+            "query_count": 248,
+            "duration_ms": 61.48,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"bank_ledger_accounts\"",
@@ -893,8 +2082,8 @@
             "uri": "/resto/analytics",
             "module": "Resto",
             "role": "admin",
-            "query_count": 97,
-            "duration_ms": 21.91,
+            "query_count": 96,
+            "duration_ms": 19.72,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -912,8 +2101,8 @@
             "uri": "/resto/analytics",
             "module": "Resto",
             "role": "auditor",
-            "query_count": 97,
-            "duration_ms": 19.1,
+            "query_count": 96,
+            "duration_ms": 17.52,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -932,7 +2121,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 96,
-            "duration_ms": 18.69,
+            "duration_ms": 17.46,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -949,9 +2138,28 @@
         {
             "uri": "/crypto/portfolio",
             "module": "Crypto",
-            "role": "customer",
+            "role": "treasury",
             "query_count": 42,
-            "duration_ms": 12.02,
+            "duration_ms": 10.98,
+            "queries": [
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
+                "select * from \"crypto_assets\" where \"is_active\" = ?",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
+                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
+                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
+                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
+                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1"
+            ]
+        },
+        {
+            "uri": "/crypto/portfolio",
+            "module": "Crypto",
+            "role": "admin",
+            "query_count": 41,
+            "duration_ms": 12.52,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -969,8 +2177,8 @@
             "uri": "/crypto/portfolio",
             "module": "Crypto",
             "role": "auditor",
-            "query_count": 42,
-            "duration_ms": 12.25,
+            "query_count": 41,
+            "duration_ms": 10.31,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -987,9 +2195,9 @@
         {
             "uri": "/crypto/portfolio",
             "module": "Crypto",
-            "role": "admin",
-            "query_count": 41,
-            "duration_ms": 13.04,
+            "role": "customer",
+            "query_count": 40,
+            "duration_ms": 10.5,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -1004,30 +2212,11 @@
             ]
         },
         {
-            "uri": "/crypto/portfolio",
-            "module": "Crypto",
-            "role": "treasury",
-            "query_count": 41,
-            "duration_ms": 11.17,
-            "queries": [
-                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
-                "select * from \"crypto_assets\" where \"is_active\" = ?",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1",
-                "insert into \"bank_ledger_accounts\" (\"code\", \"uuid\", \"owner_type\", \"owner_id\", \"asset_code\", \"kind\", \"name\", \"allow_negative\", \"cached_balance\", \"is_frozen\", \"updated_at\", \"created_at\") values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
-                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
-                "select * from \"crypto_trades\" where \"user_id\" = ? and \"asset_id\" = ? and \"side\" = ? and \"status\" = ?",
-                "select \"crypto_price_ticks\".* from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"id\") as \"id_aggregate\", min(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" inner join (select MAX(\"crypto_price_ticks\".\"recorded_at\") as \"recorded_at_aggregate\", \"crypto_price_ticks\".\"asset_id\" from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" group by \"crypto_price_ticks\".\"asset_id\") as \"latestOfMany\" on \"latestOfMany\".\"id_aggregate\" = \"crypto_price_ticks\".\"id\" and \"latestOfMany\".\"recorded_at_aggregate\" = \"crypto_price_ticks\".\"recorded_at\" and \"latestOfMany\".\"asset_id\" = \"crypto_price_ticks\".\"asset_id\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null limit 1",
-                "select * from \"crypto_price_ticks\" where \"crypto_price_ticks\".\"asset_id\" = ? and \"crypto_price_ticks\".\"asset_id\" is not null and \"recorded_at\" <= ? order by \"recorded_at\" desc limit 1",
-                "select * from \"bank_ledger_accounts\" where (\"code\" = ?) limit 1"
-            ]
-        },
-        {
             "uri": "/resto/menu",
             "module": "Resto",
             "role": "admin",
-            "query_count": 37,
-            "duration_ms": 13.57,
+            "query_count": 36,
+            "duration_ms": 10.3,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -1045,8 +2234,8 @@
             "uri": "/resto/menu",
             "module": "Resto",
             "role": "auditor",
-            "query_count": 37,
-            "duration_ms": 11.94,
+            "query_count": 36,
+            "duration_ms": 8.68,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -1065,7 +2254,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 36,
-            "duration_ms": 9.34,
+            "duration_ms": 8.45,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -1083,8 +2272,8 @@
             "uri": "/resto/stock-counts/create",
             "module": "Resto",
             "role": "admin",
-            "query_count": 34,
-            "duration_ms": 7.47,
+            "query_count": 33,
+            "duration_ms": 6.38,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -1103,7 +2292,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 33,
-            "duration_ms": 5.9,
+            "duration_ms": 4.76,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -1118,11 +2307,11 @@
             ]
         },
         {
-            "uri": "/assets/01a19fd3-bd6a-72a9-b23e-8f83f1cd8d08",
+            "uri": "/assets/01a1c354-d843-739e-a050-f4618cb0886f",
             "module": "Asset",
             "role": "admin",
-            "query_count": 29,
-            "duration_ms": 8.79,
+            "query_count": 28,
+            "duration_ms": 9.23,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -1137,11 +2326,11 @@
             ]
         },
         {
-            "uri": "/assets/01a19fd3-bd6a-72a9-b23e-8f83f1cd8d08",
+            "uri": "/assets/01a1c354-d843-739e-a050-f4618cb0886f",
             "module": "Asset",
             "role": "asset_manager",
             "query_count": 28,
-            "duration_ms": 6.58,
+            "duration_ms": 7.43,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -1159,8 +2348,8 @@
             "uri": "/crypto",
             "module": "Crypto",
             "role": "guest",
-            "query_count": 24,
-            "duration_ms": 12.08,
+            "query_count": 23,
+            "duration_ms": 9.26,
             "queries": [
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
                 "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
@@ -1178,8 +2367,8 @@
             "uri": "/dashboard",
             "module": "Core",
             "role": "admin",
-            "query_count": 24,
-            "duration_ms": 8.53,
+            "query_count": 23,
+            "duration_ms": 7.83,
             "queries": [
                 "select count(*) as \"aggregate\" from \"store_orders\"",
                 "select count(*) as \"aggregate\" from \"store_orders\" where \"status\" = ?",
@@ -1197,8 +2386,8 @@
             "uri": "/resto/menu/1",
             "module": "Resto",
             "role": "admin",
-            "query_count": 23,
-            "duration_ms": 8.21,
+            "query_count": 22,
+            "duration_ms": 6.7,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -1216,8 +2405,8 @@
             "uri": "/resto/menu/1",
             "module": "Resto",
             "role": "auditor",
-            "query_count": 23,
-            "duration_ms": 6.16,
+            "query_count": 22,
+            "duration_ms": 5.01,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -1232,22 +2421,22 @@
             ]
         },
         {
-            "uri": "/logistics/fleet",
-            "module": "Logistics",
-            "role": "admin",
-            "query_count": 23,
-            "duration_ms": 10.56,
+            "uri": "/resto/menu/1",
+            "module": "Resto",
+            "role": "outlet_manager",
+            "query_count": 22,
+            "duration_ms": 5.01,
             "queries": [
-                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
-                "select count(*) as \"aggregate\" from \"lgx_trucks\"",
-                "select * from \"lgx_trucks\" limit 15 offset 0",
-                "select * from \"core_vehicles\" where \"core_vehicles\".\"id\" in (31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45) and \"core_vehicles\".\"deleted_at\" is null",
-                "select * from \"dex_cars\" where \"dex_cars\".\"id\" in (82, 83, 84)",
-                "select * from \"dex_brands\" where \"dex_brands\".\"id\" in (27)",
-                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (16, 17, 19, 20)",
-                "select count(*) as \"aggregate\" from \"lgx_trailers\"",
-                "select * from \"lgx_trailers\" limit 15 offset 0",
-                "select * from \"lgx_locations\" where \"lgx_locations\".\"id\" in (1, 2, 3)"
+                "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
+                "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
+                "select * from \"resto_menu_categories\" where \"resto_menu_categories\".\"id\" in (1)",
+                "select * from \"resto_recipes\" where \"is_active\" = ? and \"resto_recipes\".\"menu_item_id\" in (1)",
+                "select * from \"resto_recipe_lines\" where \"resto_recipe_lines\".\"recipe_id\" in (3)",
+                "select * from \"resto_ingredients\" where \"resto_ingredients\".\"id\" in (1, 20)",
+                "select * from \"resto_recipes\" where \"resto_recipes\".\"id\" in (1)",
+                "select * from \"resto_menu_item_outlet\" where \"resto_menu_item_outlet\".\"menu_item_id\" in (1)",
+                "select * from \"resto_outlets\" where \"resto_outlets\".\"id\" in (3)",
+                "select * from \"resto_ingredient_costs\" where \"ingredient_id\" = ? and \"moving_avg_cost_per_base_unit\" > ? limit 1"
             ]
         }
     ]

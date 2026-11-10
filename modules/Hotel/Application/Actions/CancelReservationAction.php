@@ -86,7 +86,9 @@ class CancelReservationAction extends BaseAction
                 || $ratePlan->free_cancellation_hours === 0
             );
 
-            $businessDate = $this->businessDateService->getCurrentBusinessDate($reservation->property_id);
+            $businessDate = $cancellationTime
+                ? Carbon::parse($cancellationTime)->toDateString()
+                : $this->businessDateService->getCurrentBusinessDate($reservation->property_id);
             $checkInDate = Carbon::parse($reservation->check_in_date)->toDateString();
 
             if ($isNonRefundable) {

@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "description": "Baseline pelanggaran UI Lint untuk ratchet regression check",
+  "violations": []
+}
+

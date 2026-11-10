@@ -3031,4 +3031,29 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   2. **W8-D07 (Algoritma Bersertifikat A5 Database Migration Safety Linter)**: Linter statis migrasi skema basis data `MigrationSafetyLinter` untuk memvalidasi kompatibilitas MySQL 8.4: menangkap penguncian tabel eksklusif (exclusive table lock), penambahan kolom NOT NULL tanpa default, drop kolom/tabel tanpa deprecation, dan perubahan kunci asing berisiko. Enforced pra-deploy via `platform:migration-lint` (exit code 1 bila ada pelanggaran).
   3. **W8-D08 (Algoritma Bersertifikat A6 Canary Error Evaluator & Automated Rollback)**: Evaluasi deviasi statistik rasio galat (Z-Score Hypothesis Test) antara canary traffic dan baseline traffic via A6 `CanaryErrorEvaluator`. Deviasi $Z \ge 3.0$ atau rasio error canary $\ge 3.0\times$ baseline memicu status rekomendasi `rollback` dan eksekusi rencana rollback otomatis (`plt_rollback_plans`).
 
+<a id="2026-11-10-w8-p2-fase-240-design-system-accessibility"></a>
+<a id="w8-d21"></a>
+<a id="w8-d22"></a>
+<a id="w8-d23"></a>
+<a id="w8-d24"></a>
+<a id="w8-d25"></a>
+## 2026-11-10: [W8-P2.1] Design System & Navigasi Global — Experience Design System & Aksesibilitas (Fase 240, W8-D21..W8-D25)
+- **Anchor:** `2026-11-10-w8-p2-fase-240-design-system-accessibility` / `w8-d21` / `w8-d22` / `w8-d23` / `w8-d24` / `w8-d25`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-240.md`](design/fase-240.md) (Desain Arsitektur & Diagram Fase 240)
+  - [`docs/dor/fase-240.md`](dor/fase-240.md) (Definition of Ready & RAB Fase 240)
+  - [`docs/dor/bukti-l0-fase-240.md`](dor/bukti-l0-fase-240.md) (Bukti Kondisi Awal L.0 Fase 240)
+  - [`docs/decisions/ADR-0240-design-system-accessibility.md`](decisions/ADR-0240-design-system-accessibility.md)
+  - [`docs/konsep/design-system.md`](konsep/design-system.md)
+  - [`docs/design/design-system-pemakaian.md`](design/design-system-pemakaian.md)
+- **Konteks:**
+  - Standardisasi desain antarmuka lintas 30 lini SuperWeb (Fase 240) dengan pustaka komponen kanonikal `x-ds.*`, kepatuhan WCAG 2.1 Level AA/AAA, arsitektur tema tri-state (`light`, `dark`, `hc`), pemindaian aksesibilitas statis `ui:lint`, pemecahan monolit `app.blade.php`, dan siklus riset UX terukur.
+- **Keputusan:**
+  1. **W8-D21 (Token Desain Tri-State & Pewarisan Tema)**: Token tema disimpan di tabel `core_ds_tokens` dengan pewarisan `hc` <- `dark` <- `light`. Alias `{token_name}` diselesaikan di tema peminta. Generator `ds:tokens-build` menghasilkan `resources/css/ds-tokens.css`. Preferensi pengguna disimpan di `core_ds_user_prefs`.
+  2. **W8-D22 (Algoritma Bersertifikat A1 WcagContrastCalculator)**: Linearisasi sRGB dan perhitungan luminansi relatif integer parts-per-million (ppm) serta rasio kontras basis points (bps). Ambang: AA teks normal >= 45.000 bps, AA teks besar >= 30.000 bps, AAA >= 70.000 bps, komponen UI >= 30.000 bps.
+  3. **W8-D23 (Komponen Kanonikal x-ds.* & Arsitektur ViewModel PHP)**: Pendaftaran namespace anonim `ds` di `SharedServiceProvider`. Logika pemrosesan tabel, filter query string, pembentukan SVG native, pemformatan lokalisasi Indonesia, dan pemetaan badge status dipusatkan di kelas-kelas PHP `Modules\Shared\Application\Ui\*`.
+  4. **W8-D24 (State Machine ComponentReleaseStateMachine 7 Status)**: Siklus rilis komponen kanonikal (`proposed` -> `in_design` -> `a11y_review` -> `approved` -> `released` -> `deprecated` -> `removed`) dengan guard sertifikat kontras A1, linter A3 0 error, dan approval owner lewat `ApprovalEngine`.
+  5. **W8-D25 (Linter Aksesibilitas ui:lint & Ratchet Baseline)**: Perintah `ui:lint` memvalidasi warna hex hard-code, label form input, alt gambar, nama tombol/link, dan tabindex positif. Menegakkan baseline ratchet di `tests/Architecture/baselines/ui-lint.json`. Audit dua sumber via `ds:audit` terdaftar di `AuditCommandRegistry`.
+
+
 
