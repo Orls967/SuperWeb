@@ -94,3 +94,4 @@ Untuk mencari nilai token $k$ pada tema peminta $T_{req}$:
 - **Kompleksitas Waktu:** $\mathcal{O}(K \times D)$ di mana $K$ adalah total token dan $D \le 3$ kedalaman rantai tema. Karena himpunan kunci finite ($< 200$), runtime eksekusi $< 5$ ms.
 - **Siklus Dependensi:** Deteksi $a \rightarrow b \rightarrow a$ menggunakan set penelusuran rekursif `visited`. Jika siklus terjadi, resolver mengembalikan flag `TOKEN_CYCLE` tanpa memicu stack overflow.
 - **Token Tak Terdefinisi:** Alias merujuk nama tidak dikenal mengembalikan `TOKEN_UNDEFINED`.
+

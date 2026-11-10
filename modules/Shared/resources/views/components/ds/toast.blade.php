@@ -75,3 +75,4 @@ $iconColor = match($type) {
         </div>
     </div>
 </div>
+

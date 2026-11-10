@@ -36,3 +36,4 @@
         <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded w-full"></div>
     </div>
 @endif
+

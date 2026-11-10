@@ -104,3 +104,4 @@ class TypographyScaleEngine
         return implode("\n", $lines);
     }
 }
+

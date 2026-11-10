@@ -136,3 +136,4 @@ class ThemeTokenResolverTest extends TestCase
         TokenResolutionCertificateVerifier::verify($res, 'sertifikat_korup_abc');
     }
 }
+

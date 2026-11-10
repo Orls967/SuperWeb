@@ -49,3 +49,4 @@ class SparklinePath
         return implode(' ', $commands);
     }
 }
+

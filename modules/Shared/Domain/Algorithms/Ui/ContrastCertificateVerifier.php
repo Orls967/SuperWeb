@@ -52,3 +52,4 @@ class ContrastCertificateVerifier
         return json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
     }
 }
+

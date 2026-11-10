@@ -249,3 +249,4 @@ class SusScoreCalculator
         return 'Detractor';
     }
 }
+

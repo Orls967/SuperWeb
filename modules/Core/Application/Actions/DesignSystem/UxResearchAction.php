@@ -58,3 +58,4 @@ class UxResearchAction
         return $finding;
     }
 }
+

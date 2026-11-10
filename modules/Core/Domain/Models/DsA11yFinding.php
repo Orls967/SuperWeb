@@ -44,3 +44,4 @@ class DsA11yFinding extends Model
         ]);
     }
 }
+

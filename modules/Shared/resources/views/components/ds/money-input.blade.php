@@ -65,3 +65,4 @@ $initialAmount = is_numeric($rawVal) ? (int)$rawVal : 0;
         <p class="text-xs text-slate-500 dark:text-slate-400">{{ $hint }}</p>
     @endif
 </div>
+

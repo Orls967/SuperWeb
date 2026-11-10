@@ -107,3 +107,4 @@ Setiap eksekusi kalkulasi kontras mengembalikan objek sertifikat:
 }
 ```
 Kelas `ContrastCertificateVerifier` melakukan verifikasi integritas tanda tangan kriptografis sertifikat di lingkungan produksi.
+

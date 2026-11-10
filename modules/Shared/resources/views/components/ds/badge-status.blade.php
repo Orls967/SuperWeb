@@ -28,3 +28,4 @@ $variantClasses = match($variant) {
     <span class="mr-1.5 h-1.5 w-1.5 rounded-full {{ str_replace('text-', 'bg-', explode(' ', $variantClasses)[1]) }}" aria-hidden="true"></span>
     {{ $displayLabel }}
 </span>
+

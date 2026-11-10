@@ -150,3 +150,4 @@ class ComponentReleaseAction
         $finding->markRemediated();
     }
 }
+

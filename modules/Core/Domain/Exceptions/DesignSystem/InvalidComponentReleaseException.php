@@ -13,3 +13,4 @@ class InvalidComponentReleaseException extends DomainException
         parent::__construct($message);
     }
 }
+

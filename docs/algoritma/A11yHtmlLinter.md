@@ -93,3 +93,4 @@ Dokumen yang bersih dari seluruh pelanggaran mengembalikan array kosong `[]`.
 - **Kompleksitas Waktu:** $\mathcal{O}(N)$ terhadap jumlah karakter dan node elemen dokumen HTML. Pemindaian DOM menggunakan `DOMDocument` standar PHP.
 - **Kompleksitas Ruang:** $\mathcal{O}(N)$ untuk representasi pohon DOM dalam memori.
 - **Determinisme:** Pelanggaran diurutkan berdasarkan nomor baris awal elemen secara menaik, lalu berdasarkan nama aturan.
+

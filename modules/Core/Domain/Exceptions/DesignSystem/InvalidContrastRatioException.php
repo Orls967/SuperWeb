@@ -15,3 +15,4 @@ class InvalidContrastRatioException extends DomainException
         );
     }
 }
+

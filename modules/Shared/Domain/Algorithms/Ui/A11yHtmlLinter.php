@@ -206,3 +206,4 @@ class A11yHtmlLinter
         return $payload;
     }
 }
+

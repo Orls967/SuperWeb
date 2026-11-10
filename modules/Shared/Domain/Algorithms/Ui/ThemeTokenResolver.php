@@ -168,3 +168,4 @@ class ThemeTokenResolver
         return ['status' => self::STATUS_RESOLVED, 'value' => strtoupper(trim($rawVal))];
     }
 }
+

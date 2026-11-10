@@ -39,3 +39,4 @@
   - Definisi Luminansi Relatif ($L$): $L = 0.2126 \times R + 0.7152 \times G + 0.0722 \times B$ di mana kanal warna disesuaikan dengan kurva gamma sRGB $c \le 0.04045 \implies c/12.92$ atau $((c+0.055)/1.055)^{2.4}$.
 - **Tanggal Akses Verifikasi Sumber:** 2026-11-10.
 - **Implementasi Matematis:** Semua perhitungan rasio ditransformasikan ke aritmetika integer presisi parts-per-million (ppm) dan basis-points (bps) untuk menjamin determinisme penuh di seluruh platform komputasi.
+

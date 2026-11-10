@@ -166,3 +166,4 @@ class ColorPaletteInterpolator
         return implode("\n", $lines);
     }
 }
+

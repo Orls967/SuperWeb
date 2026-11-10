@@ -87,3 +87,4 @@ class WcagContrastCalculatorTest extends TestCase
         ContrastCertificateVerifier::verify($res, 'sertifikat_palsu_123456');
     }
 }
+

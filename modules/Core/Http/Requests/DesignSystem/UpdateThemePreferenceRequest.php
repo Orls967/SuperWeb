@@ -27,3 +27,4 @@ final class UpdateThemePreferenceRequest extends FormRequest
         ];
     }
 }
+

@@ -139,3 +139,4 @@ class WcagContrastCalculator
         return '#'.$clean;
     }
 }
+

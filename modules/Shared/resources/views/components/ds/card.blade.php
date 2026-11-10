@@ -40,3 +40,4 @@ $cardClasses .= match($variant) {
         </div>
     @endif
 </div>
+

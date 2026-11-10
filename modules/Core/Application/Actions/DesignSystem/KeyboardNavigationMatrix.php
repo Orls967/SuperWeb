@@ -159,3 +159,4 @@ class KeyboardNavigationMatrix
         return $collisions;
     }
 }
+

@@ -45,3 +45,4 @@ final class ThemePreferenceController extends Controller
         return back()->with('status', 'Preferensi tema berhasil diperbarui.');
     }
 }
+

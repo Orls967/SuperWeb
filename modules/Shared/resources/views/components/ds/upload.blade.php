@@ -43,3 +43,4 @@ $uploadId = $id ?? 'upload-'.str_replace(['[', ']', '_'], '-', $name).'-'.uniqid
         </div>
     </div>
 </div>
+

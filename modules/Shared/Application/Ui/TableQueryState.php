@@ -141,3 +141,4 @@ class TableQueryState
         return http_build_query($params);
     }
 }
+

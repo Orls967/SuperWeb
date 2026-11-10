@@ -193,3 +193,4 @@ class BreadcrumbBuilder
         return !empty($this->items);
     }
 }
+

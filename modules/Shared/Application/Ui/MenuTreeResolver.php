@@ -280,3 +280,4 @@ class MenuTreeResolver
         return count($this->registeredNodes);
     }
 }
+

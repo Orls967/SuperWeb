@@ -112,7 +112,11 @@ class ThemeTokenAction
         }
 
         foreach ($resolvedLight['tokens'] as $name => $val) {
-            $cssBlocks[] = "    --color-{$name}: {$val};";
+            $cssVarName = str_replace(['.', '_'], '-', $name);
+            if (str_starts_with($cssVarName, 'color-')) {
+                $cssVarName = substr($cssVarName, 6);
+            }
+            $cssBlocks[] = "    --color-{$cssVarName}: {$val};";
         }
         $cssBlocks[] = '}';
         $cssBlocks[] = '';
@@ -128,7 +132,11 @@ class ThemeTokenAction
 
             $cssBlocks[] = "[data-theme=\"{$theme}\"] {";
             foreach ($resolved['tokens'] as $name => $val) {
-                $cssBlocks[] = "    --color-{$name}: {$val};";
+                $cssVarName = str_replace(['.', '_'], '-', $name);
+                if (str_starts_with($cssVarName, 'color-')) {
+                    $cssVarName = substr($cssVarName, 6);
+                }
+                $cssBlocks[] = "    --color-{$cssVarName}: {$val};";
             }
             $cssBlocks[] = '}';
             $cssBlocks[] = '';
@@ -146,3 +154,4 @@ class ThemeTokenAction
         ];
     }
 }
+

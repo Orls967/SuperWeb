@@ -86,3 +86,4 @@ class A11yHtmlLinterTest extends TestCase
         A11yLintCertificateVerifier::verify($res, 'sertifikat_rusak_xyz');
     }
 }
+

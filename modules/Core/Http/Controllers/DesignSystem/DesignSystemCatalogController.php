@@ -76,3 +76,4 @@ final class DesignSystemCatalogController extends Controller
         ]);
     }
 }
+

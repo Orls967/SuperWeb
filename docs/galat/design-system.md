@@ -54,3 +54,4 @@
   Percobaan mendaftarkan komponen baru dengan nama duplikat yang melanggar batasan keunikan sistem.
 - **Tindakan Pemulihan:**  
   Gunakan nama komponen kanonikal baru atau gunakan komponen yang sudah ada.
+

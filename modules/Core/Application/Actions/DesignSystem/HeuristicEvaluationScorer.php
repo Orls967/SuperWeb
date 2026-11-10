@@ -150,3 +150,4 @@ class HeuristicEvaluationScorer
         return 'CRITICAL';
     }
 }
+

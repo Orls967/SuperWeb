@@ -71,3 +71,4 @@ class IdFormatter
         return $parsed->format($format);
     }
 }
+
