@@ -52,7 +52,7 @@ if ($hasError) {
 
         @foreach($options as $val => $text)
             @php
-                $optVal = is_int($val) && !is_assoc($options) ? $text : $val;
+                $optVal = is_int($val) && array_is_list($options) ? $text : $val;
                 $optText = $text;
             @endphp
             <option value="{{ $optVal }}" @selected((string)$currentVal === (string)$optVal)>
