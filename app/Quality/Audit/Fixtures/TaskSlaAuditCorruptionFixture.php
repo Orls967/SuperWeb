@@ -17,17 +17,20 @@ final class TaskSlaAuditCorruptionFixture implements CorruptionFixture
 
     public function corrupt(): string
     {
-        // Suntikkan serangkaian tugas tertunggak (breached) untuk merusak kepatuhan SLA di bawah 80%
+        // Suntikkan 15 tugas kedaluwarsa untuk merusak rasio kepatuhan SLA di bawah ambang batas 80%
         for ($i = 0; $i < 15; $i++) {
             CoreTask::create([
-                'module_code' => 'AUDIT_CORRUPTION',
+                'id' => 'CORRUPT-SLA-'.uniqid().'-'.$i,
+                'module' => 'Core',
                 'title' => 'Tugas Tertunggak Buatan Uji Audit '.$i,
+                'source_entity_type' => 'audit_test',
+                'source_entity_id' => (string) $i,
                 'status' => 'pending',
                 'priority' => 'critical',
-                'due_date' => Carbon::now()->subDays(10),
+                'due_at' => Carbon::now()->subDays(10),
             ]);
         }
 
-        return '15 tugas kedaluwarsa disuntikkan menurunkan rasio kepatuhan SLA';
+        return 'Pelanggaran SLA terdeteksi';
     }
 }

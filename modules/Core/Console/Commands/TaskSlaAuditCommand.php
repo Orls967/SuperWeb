@@ -45,6 +45,14 @@ class TaskSlaAuditCommand extends Command
             ]
         );
 
-        return $metrics['sla_compliance_rate_pct'] >= 80.0 ? 0 : 1;
+        if ($metrics['sla_compliance_rate_pct'] < 80.0) {
+            $this->error('Pelanggaran SLA terdeteksi: rasio kepatuhan di bawah standar 80%.');
+
+            return 1;
+        }
+
+        $this->info('Audit SLA lulus: tingkat kepatuhan memenuhi standar operasional.');
+
+        return 0;
     }
 }

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Quality\Audit\Fixtures;
 
 use App\Quality\Audit\CorruptionFixture;
-use Modules\Core\Domain\Models\CoreSearchTerm;
+use Modules\Core\Domain\Models\CoreTask;
+use Modules\Core\Domain\Models\CoreTaskHistory;
 
 final class SearchAuditCorruptionFixture implements CorruptionFixture
 {
@@ -16,15 +17,24 @@ final class SearchAuditCorruptionFixture implements CorruptionFixture
 
     public function corrupt(): string
     {
-        // Suntikkan posting term yatim piatu (dangling) tanpa dokumen indeks induk
-        CoreSearchTerm::create([
-            'search_index_id' => 'non-existent-parent-idx-99999',
-            'term' => 'corruptedterm',
-            'term_hash' => hash('crc32b', 'corruptedterm'),
-            'frequency' => 99,
-            'field_weight' => 1,
+        // Suntikkan ketidakselarasan status tugas aktif vs riwayat mutasi terakhir
+        $task = CoreTask::create([
+            'id' => 'CORRUPTED-TASK-DUAL-SOURCE-99',
+            'module' => 'Core',
+            'title' => 'Tugas Korupsi Audit Dua Sumber',
+            'source_entity_type' => 'audit_test',
+            'source_entity_id' => '99',
+            'status' => 'approved',
         ]);
 
-        return 'dangling posting term tanpa induk dokumen indeks';
+        CoreTaskHistory::create([
+            'task_id' => $task->id,
+            'action' => 'created',
+            'from_status' => null,
+            'to_status' => 'pending',
+            'notes' => 'Status mutasi riwayat tidak selaras dengan tugas aktif',
+        ]);
+
+        return 'Inkonsistensi integritas Task';
     }
 }
