@@ -139,4 +139,16 @@ class TreasuryBusinessRulesAndFailureTest extends TestCase
         $this->expectException(HedgeMakerCheckerViolationException::class);
         $hedgeSM->transition($contract, HedgeStatus::APPROVED, $creatorUser->id, 'Self-approval attempt');
     }
+
+    public function test_money_integrity_blocks_unbalanced_ledger_posting_sabotage(): void
+    {
+        $this->expectException(\Modules\Banking\Domain\Exceptions\UnbalancedTransactionException::class);
+
+        $lines = \Modules\Banking\Support\Posting::lines();
+        // Sabotase: kredit di kedua sisi sehingga total != 0 (sum != 0)
+        $lines->credit('trs:fx_reval_asset_adj:IDR', 100_000, 'IDR')
+            ->credit('trs:fx_unrealized_gain_loss:IDR', 100_000, 'IDR');
+
+        $lines->toEntries('IDR');
+    }
 }
