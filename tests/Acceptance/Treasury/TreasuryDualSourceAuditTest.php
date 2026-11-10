@@ -41,4 +41,18 @@ class TreasuryDualSourceAuditTest extends TestCase
         $exitCorrupt = $this->artisan('treasury:audit')->run();
         $this->assertSame(1, $exitCorrupt);
     }
+
+    public function test_treasury_t1_dataset_normal_and_shock_injection_maintains_zero_discrepancy(): void
+    {
+        $seeder = new \Modules\Treasury\database\seeders\TreasuryT1Seeder;
+        $seeder->run();
+
+        $exitNormal = $this->artisan('treasury:audit')->run();
+        $this->assertSame(0, $exitNormal);
+
+        $seeder->injectShock();
+
+        $exitShock = $this->artisan('treasury:audit')->run();
+        $this->assertSame(0, $exitShock);
+    }
 }
