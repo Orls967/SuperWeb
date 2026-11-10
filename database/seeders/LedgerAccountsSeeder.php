@@ -24,6 +24,7 @@ use Modules\Hcm\Ledger\HcmAccounts;
 use Modules\Hospital\Ledger\HospitalAccounts;
 use Modules\Hotel\Ledger\HotelAccounts;
 use Modules\Insurance\Ledger\InsuranceAccounts;
+use Modules\Intercompany\Ledger\IntercompanyAccounts;
 use Modules\Logistics\Ledger\LogisticsAccounts;
 use Modules\Mall\Ledger\MallAccounts;
 use Modules\Manufacturing\Ledger\ManufacturingAccounts;
@@ -74,6 +75,7 @@ class LedgerAccountsSeeder extends Seeder
         HospitalAccounts::class,
         HotelAccounts::class,
         InsuranceAccounts::class,
+        IntercompanyAccounts::class,
         LogisticsAccounts::class,
         MallAccounts::class,
         ManufacturingAccounts::class,

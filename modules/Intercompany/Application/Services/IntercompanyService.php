@@ -4,17 +4,68 @@ declare(strict_types=1);
 
 namespace Modules\Intercompany\Application\Services;
 
-use Carbon\Carbon;
-use Illuminate\Support\Str;
+use Carbon\CarbonImmutable;
 use InvalidArgumentException;
+use Modules\Intercompany\Application\Actions\AccrueAndPayIntercompanyInterestAction;
+use Modules\Intercompany\Application\Actions\AllocateCostSharingAction;
+use Modules\Intercompany\Application\Actions\CalculateNciShareAction;
+use Modules\Intercompany\Application\Actions\CreateMirroredIntercompanyTransactionAction;
+use Modules\Intercompany\Application\Actions\DistributeNciDividendAction;
+use Modules\Intercompany\Application\Actions\EliminateUnrealizedInventoryProfitAction;
+use Modules\Intercompany\Application\Actions\ExecuteTpTrueUpAdjustmentAction;
+use Modules\Intercompany\Application\Actions\GenerateBilateralEliminationJournalAction;
+use Modules\Intercompany\Application\Actions\GenerateConsolidatedSegmentReportAction;
+use Modules\Intercompany\Application\Actions\GenerateTpDocumentationAction;
+use Modules\Intercompany\Application\Actions\IssueIntercompanyLoanAction;
+use Modules\Intercompany\Application\Actions\TransferIntercompanyAssetAction;
+use Modules\Intercompany\Application\Actions\TransferIntercompanyStockAction;
+use Modules\Intercompany\Application\Actions\TranslateSubsidiaryFinancialsAction;
+use Modules\Intercompany\Domain\Algorithms\TransferPricingMarkupCalculator;
+use Modules\Intercompany\Domain\Models\CostSharingAllocation;
 use Modules\Intercompany\Domain\Models\EliminationEntry;
+use Modules\Intercompany\Domain\Models\IntercompanyAssetTransfer;
 use Modules\Intercompany\Domain\Models\IntercompanyLoan;
+use Modules\Intercompany\Domain\Models\IntercompanyLoanSchedule;
+use Modules\Intercompany\Domain\Models\IntercompanyStockTransfer;
 use Modules\Intercompany\Domain\Models\IntercompanyTransaction;
+use Modules\Intercompany\Domain\Models\NciDividend;
 use Modules\Intercompany\Domain\Models\SubsidiaryNci;
+use Modules\Intercompany\Domain\Models\TransferPricingDocument;
 use Modules\Intercompany\Domain\Models\TransferPricingRule;
+use Modules\Intercompany\Domain\Models\TransferPricingTrueUp;
+use Modules\Intercompany\Domain\Models\UnrealizedInventoryProfit;
+use Psr\Clock\ClockInterface;
 
 class IntercompanyService
 {
+    public function __construct(
+        protected readonly CreateMirroredIntercompanyTransactionAction $createMirrorAction,
+        protected readonly IssueIntercompanyLoanAction $issueLoanAction,
+        protected readonly AccrueAndPayIntercompanyInterestAction $accrueInterestAction,
+        protected readonly AllocateCostSharingAction $allocateCostAction,
+        protected readonly GenerateBilateralEliminationJournalAction $eliminationAction,
+        protected readonly EliminateUnrealizedInventoryProfitAction $unrealizedProfitAction,
+        protected readonly CalculateNciShareAction $nciShareAction,
+        protected readonly DistributeNciDividendAction $nciDividendAction,
+        protected readonly TranslateSubsidiaryFinancialsAction $translationAction,
+        protected readonly GenerateConsolidatedSegmentReportAction $segmentReportAction,
+        protected readonly GenerateTpDocumentationAction $tpDocAction,
+        protected readonly ExecuteTpTrueUpAdjustmentAction $trueUpAction,
+        protected readonly TransferIntercompanyAssetAction $assetTransferAction,
+        protected readonly TransferIntercompanyStockAction $stockTransferAction,
+        protected readonly TransferPricingMarkupCalculator $tpCalculator,
+        protected readonly ?ClockInterface $clock = null
+    ) {}
+
+    protected function now(): CarbonImmutable
+    {
+        if ($this->clock !== null) {
+            return CarbonImmutable::instance($this->clock->now());
+        }
+
+        return CarbonImmutable::now();
+    }
+
     /**
      * 52.1 Transaksi Antar-Entitas Grup (Mirror Transaction SO/PO)
      */
@@ -26,21 +77,15 @@ class IntercompanyService
         string $currency = 'IDR'
     ): IntercompanyTransaction {
         if ($sellingEntity === $buyingEntity) {
-            throw new InvalidArgumentException('Transaksi intercompany tidak boleh antara entitas yang sama.');
+            throw new InvalidArgumentException('Transaksi intercompany tidak boleh antara entitas yang sama: Selling entity and buying entity cannot be the same entity.');
         }
 
-        $code = 'IC-TX-'.strtoupper(Str::random(8));
-
-        return IntercompanyTransaction::create([
-            'transaction_code' => $code,
+        return $this->createMirrorAction->execute([
             'selling_entity' => $sellingEntity,
             'buying_entity' => $buyingEntity,
             'description' => $description,
-            'currency' => strtoupper($currency),
             'amount_idr' => $amountIdr,
-            'sales_invoice_ref' => 'INV-'.$code,
-            'purchase_bill_ref' => 'BILL-'.$code,
-            'status' => 'matched',
+            'currency' => $currency,
         ]);
     }
 
@@ -55,16 +100,17 @@ class IntercompanyService
             throw new InvalidArgumentException('Pinjaman intercompany memerlukan entitas peminjam dan pemberi pinjaman berbeda.');
         }
 
-        return IntercompanyLoan::create([
-            'loan_agreement_number' => 'ICL-'.strtoupper(Str::random(8)),
+        $baseRateBps = (int) round($armsLengthRate * 100);
+
+        return $this->issueLoanAction->execute([
             'lender_entity' => $lender,
             'borrower_entity' => $borrower,
             'principal_idr' => $principalIdr,
-            'arms_length_interest_rate' => $armsLengthRate,
-            'start_date' => Carbon::today()->toDateString(),
+            'base_rate_bps' => $baseRateBps,
+            'spread_bps' => 0,
             'due_date' => $dueDate,
-            'repaid_principal_idr' => 0,
-            'status' => 'active',
+            'start_date' => $this->now()->toDateString(),
+            'periods' => 12,
         ]);
     }
 
@@ -78,12 +124,18 @@ class IntercompanyService
         float $maxMargin,
         string $benchmarkSource = 'OECD_STAT_2026'
     ): TransferPricingRule {
+        $now = $this->now();
+        $code = 'TPR-'.$now->format('Ym').'-'.strtoupper(substr(hash('sha256', "{$category}:{$tpMethod}"), 0, 6));
+
         return TransferPricingRule::create([
-            'rule_code' => 'TPR-'.strtoupper(Str::random(6)),
+            'rule_code' => $code,
             'product_category' => $category,
             'tp_method' => strtoupper($tpMethod),
             'min_arms_length_margin_percent' => $minMargin,
             'max_arms_length_margin_percent' => $maxMargin,
+            'min_margin_bps' => (int) round($minMargin * 100),
+            'max_margin_bps' => (int) round($maxMargin * 100),
+            'median_margin_bps' => (int) round((($minMargin + $maxMargin) / 2) * 100),
             'benchmark_industry_source' => $benchmarkSource,
             'is_active' => true,
         ]);
@@ -105,13 +157,15 @@ class IntercompanyService
         }
 
         $marginPercent = (($intercompanyPriceIdr - $costIdr) / $costIdr) * 100.0;
-        $isCompliant = ($marginPercent >= $rule->min_arms_length_margin_percent && $marginPercent <= $rule->max_arms_length_margin_percent);
+        $min = (float) $rule->min_arms_length_margin_percent;
+        $max = (float) $rule->max_arms_length_margin_percent;
+        $isCompliant = ($marginPercent >= $min && $marginPercent <= $max);
 
         return [
             'status' => $isCompliant ? 'COMPLIANT' : 'OUT_OF_RANGE',
             'is_compliant' => $isCompliant,
             'actual_margin_percent' => round($marginPercent, 2),
-            'benchmark_range' => "{$rule->min_arms_length_margin_percent}% - {$rule->max_arms_length_margin_percent}%",
+            'benchmark_range' => "{$min}% - {$max}%",
             'tp_method' => $rule->tp_method,
         ];
     }
@@ -126,8 +180,11 @@ class IntercompanyService
         string $creditAccount,
         int $amountIdr
     ): EliminationEntry {
+        $now = $this->now();
+        $code = 'ELIM-'.str_replace('-', '', $period).'-'.strtoupper(substr(hash('sha256', "{$debitAccount}:{$creditAccount}:{$amountIdr}"), 0, 8));
+
         return EliminationEntry::create([
-            'elimination_code' => 'ELIM-'.strtoupper(Str::random(8)),
+            'elimination_code' => $code,
             'period' => $period,
             'elimination_type' => $eliminationType,
             'debit_account' => $debitAccount,
@@ -145,22 +202,127 @@ class IntercompanyService
         float $parentSharePercent,
         int $subsidiaryNetIncomeIdr
     ): SubsidiaryNci {
-        $nciSharePercent = 100.0 - $parentSharePercent;
-        $nciIncome = (int) floor(($subsidiaryNetIncomeIdr * $nciSharePercent) / 100);
-
-        return SubsidiaryNci::updateOrCreate(
-            ['subsidiary_name' => $subsidiaryName],
-            [
-                'parent_ownership_percent' => $parentSharePercent,
-                'nci_ownership_percent' => $nciSharePercent,
-                'net_income_idr' => $subsidiaryNetIncomeIdr,
-                'nci_share_net_income_idr' => $nciIncome,
-            ]
+        return $this->nciShareAction->execute(
+            subsidiaryName: $subsidiaryName,
+            parentSharePercent: $parentSharePercent,
+            netIncomeIdr: $subsidiaryNetIncomeIdr,
+            period: $this->now()->format('Y-m')
         );
     }
 
     /**
-     * 52.7 Audit Grup & Eliminasi
+     * Perluasan 52.4: Eliminasi Bilateral Otomatis D5
+     */
+    public function generateBilateralElimination(string $period, ?int $operatorId = null): object
+    {
+        return $this->eliminationAction->execute([
+            'period' => $period,
+            'operator_id' => $operatorId,
+        ]);
+    }
+
+    /**
+     * Perluasan 52.1: Akrual Bunga Pinjaman D6
+     */
+    public function accrueLoanInterest(string $loanNumber, int $installmentNumber, ?int $operatorId = null): IntercompanyLoanSchedule
+    {
+        $loan = IntercompanyLoan::where('loan_agreement_number', $loanNumber)->firstOrFail();
+
+        return $this->accrueInterestAction->execute($loan, $installmentNumber, $operatorId);
+    }
+
+    /**
+     * Perluasan 52.1: Alokasi Biaya Bersama
+     */
+    public function allocateCostSharing(
+        string $agreementCode,
+        string $period,
+        string $beneficiaryEntity,
+        int $allocationRatioPermille,
+        int $baseCostIdr,
+        ?int $operatorId = null
+    ): CostSharingAllocation {
+        return $this->allocateCostAction->execute([
+            'agreement_code' => $agreementCode,
+            'period' => $period,
+            'beneficiary_entity' => $beneficiaryEntity,
+            'allocation_ratio_permille' => $allocationRatioPermille,
+            'base_cost_idr' => $baseCostIdr,
+            'operator_id' => $operatorId,
+        ]);
+    }
+
+    /**
+     * Perluasan 52.3: Mutasi Aset Tetap
+     */
+    public function transferAsset(array $data): IntercompanyAssetTransfer
+    {
+        return $this->assetTransferAction->execute($data);
+    }
+
+    /**
+     * Perluasan 52.3: Pengiriman Stok Lintas Batas
+     */
+    public function transferStock(array $data): IntercompanyStockTransfer
+    {
+        return $this->stockTransferAction->execute($data);
+    }
+
+    /**
+     * Perluasan 52.4: Eliminasi Laba Persediaan Belum Terealisasi
+     */
+    public function eliminateUnrealizedProfit(array $data): UnrealizedInventoryProfit
+    {
+        return $this->unrealizedProfitAction->execute($data);
+    }
+
+    /**
+     * Perluasan 52.4: Translasi Valas Anak FCTR
+     */
+    public function translateSubsidiary(
+        string $subsidiary,
+        string $currency,
+        int $netAssetsMinor,
+        int $netIncomeMinor,
+        string $period
+    ): array {
+        return $this->translationAction->execute($subsidiary, $currency, $netAssetsMinor, $netIncomeMinor, $period);
+    }
+
+    /**
+     * Perluasan 52.6: Pelaporan Segmen Konsolidasi
+     */
+    public function generateSegmentReport(string $period): array
+    {
+        return $this->segmentReportAction->execute($period);
+    }
+
+    /**
+     * Perluasan 52.2: Generator Dokumentasi TP Local/Master File
+     */
+    public function generateTpDoc(string $entityCode, string $fiscalYear, string $documentType = 'LOCAL_FILE'): TransferPricingDocument
+    {
+        return $this->tpDocAction->execute($entityCode, $fiscalYear, $documentType);
+    }
+
+    /**
+     * Perluasan 52.2: Penyesuaian TP Akhir Tahun
+     */
+    public function adjustTpTrueUp(string $fiscalYear, string $entityCode, string $category, int $costIdr, int $revenueIdr): TransferPricingTrueUp
+    {
+        return $this->trueUpAction->execute($fiscalYear, $entityCode, $category, $costIdr, $revenueIdr);
+    }
+
+    /**
+     * Perluasan 52.5: Pembagian Dividen NCI
+     */
+    public function distributeNciDividend(string $subsidiary, int $totalDividendIdr, string $declarationDate): NciDividend
+    {
+        return $this->nciDividendAction->execute($subsidiary, $totalDividendIdr, $declarationDate);
+    }
+
+    /**
+     * 52.7 Audit Grup & Eliminasi (Dual-Source Audit)
      */
     public function auditIntercompany(): array
     {
@@ -169,13 +331,13 @@ class IntercompanyService
         $rules = TransferPricingRule::count();
         $eliminations = EliminationEntry::count();
 
-        // Invariant: tidak boleh transaksi dengan entitas yang sama
+        // Invariant 1: tidak boleh transaksi dengan entitas yang sama
         $invalidTx = IntercompanyTransaction::whereColumn('selling_entity', 'buying_entity')->count();
 
-        // Invariant: pinjaman repaid <= principal
+        // Invariant 2: pinjaman repaid <= principal
         $invalidLoans = IntercompanyLoan::whereColumn('repaid_principal_idr', '>', 'principal_idr')->count();
 
-        // Invariant: NCI total ownership = 100%
+        // Invariant 3: NCI total ownership = 100%
         $invalidNci = SubsidiaryNci::whereRaw('ABS(parent_ownership_percent + nci_ownership_percent - 100) > 0.01')->count();
 
         $discrepancyCount = $invalidTx + $invalidLoans + $invalidNci;
