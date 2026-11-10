@@ -3057,3 +3057,29 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
 
 
 
+
+<a id="w8-d26"></a>
+<a id="w8-d27"></a>
+<a id="w8-d28"></a>
+<a id="w8-d29"></a>
+<a id="w8-d30"></a>
+## 2026-11-10: [W8-P2.2] Design System & Navigasi Global — Pencarian Global, Navigasi Enterprise & Kotak Masuk "Tugas Saya" (Fase 194, W8-D26..W8-D30)
+- **Anchor:** `2026-11-10-w8-p2-fase-194-search-navigation-inbox` / `w8-d26` / `w8-d27` / `w8-d28` / `w8-d29` / `w8-d30`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-194.md`](design/fase-194.md) (Desain Arsitektur & Diagram Fase 194)
+  - [`docs/dor/fase-194.md`](dor/fase-194.md) (Definition of Ready & RAB Fase 194)
+  - [`docs/dor/bukti-l0-fase-194.md`](dor/bukti-l0-fase-194.md) (Bukti Kondisi Awal L.0 Fase 194)
+  - [`docs/decisions/ADR-0194-global-search-navigation-inbox.md`](decisions/ADR-0194-global-search-navigation-inbox.md)
+  - [`docs/decisions/ADR-0195-task-inbox-architecture.md`](decisions/ADR-0195-task-inbox-architecture.md)
+  - [`docs/decisions/ADR-0196-bm25-ranking-engine.md`](decisions/ADR-0196-bm25-ranking-engine.md)
+  - [`docs/decisions/ADR-0197-policy-first-search-filtering.md`](decisions/ADR-0197-policy-first-search-filtering.md)
+  - [`docs/konsep/kotak-masuk-tugas-saya.md`](konsep/kotak-masuk-tugas-saya.md)
+  - [`docs/konsep/pencarian-dan-navigasi-enterprise.md`](konsep/pencarian-dan-navigasi-enterprise.md)
+- **Konteks:**
+  - Pembangunan mesin pencarian terbalik global mandiri tanpa dependensi pihak ketiga (Elasticsearch/Algolia/Meilisearch), pemeringkatan relevansi BM25, toleransi saltik n-gram Jaccard, penegakan isolasi hak akses Policy-First anti-bocor, command palette enterprise (Ctrl+K), dan Kotak Masuk terpadu "Tugas Saya" (§19.1) dengan jembatan Approval Engine serta otomatisasi eskalasi multi-tingkat.
+- **Keputusan:**
+  1. **W8-D26 (Inverted Index Murni Database & State Machine Indeksasi 8 Status)**: Inverted index disimpan di tabel `core_search_indices` dan `core_search_terms`. Siklus hidup rekaman dikelola melalui `IndexJobStateMachine` (`pending` -> `queued` -> `processing` -> `indexed` -> `reindexing` -> `degraded` -> `failed` -> `archived`) yang deterministik dan idempoten.
+  2. **W8-D27 (Algoritma Bersertifikat A4 Bm25Scorer & A5 TrigramJaccardMatcher)**: Perhitungan skor relevansi teks penuh BM25 Okapi ($k_1=1.2, b=0.75$) berkecepatan tinggi dengan sertifikat hash SHA-256. Koreksi saltik cerdas berbasis n-gram token Jaccard dengan padding batas kata untuk menangani salah ketik hingga edit distance 2.
+  3. **W8-D28 (Pemberlakuan Hak Akses Kebijakan Pertama / Policy-First Zero-Leak Ranker A6)**: Saringan otorisasi dieksekusi secara ketat di tingkat model dan kueri sebelum perakitan hasil pencarian. Akses dokumen, kontrak, invoice, dan rekam medis diisolasi menurut scope peran pengguna sehingga data rahasia tidak pernah merembes ke pengguna tanpa izin.
+  4. **W8-D29 (Kotak Masuk "Tugas Saya" §19.1 & Approval Engine Bridge)**: Integrasi antarmuka kerja tunggal untuk persetujuan lintas modul yang terhubung ke `core_tasks`, `core_task_histories`, dan `core_task_comments`. Aksi batch approve, reject, dan delegate dilindungi otorisasi ganda dan pencatatan jejak audit permanen.
+  5. **W8-D30 (Audit Dua Sumber search:audit & task:sla-audit)**: Integritas basis data pencarian dan tugas diaudit melalui fixture dua sumber `SearchAuditCorruptionFixture` dan `TaskSlaAuditCorruptionFixture` yang terdaftar resmi pada `AuditCommandRegistry`.

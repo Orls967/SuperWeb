@@ -40,3 +40,11 @@ Glosarium istilah baku arsitektur dan bisnis yang digunakan lintas modul SuperWe
 - **ComponentReleaseGuard:** Logika penjaga yang mengaudit kondisi prasyarat sebelum mengizinkan transisi status mesin rilis komponen.
 - **DsAuditCorruptionFixture:** Data tiruan yang disengaja dirusak untuk menguji keandalan deteksi audit dua sumber `ds:audit`.
 - **A11yFindingSeverity:** Klasifikasi tingkat urgensi perbaikan aksesibilitas mulai dari `low`, `medium`, `high`, hingga `critical`.
+- **Inverted Index (Indeks Terbalik):** Struktur data pemetaan kata/istilah (terms) ke daftar identitas dokumen beserta bobot posisi dan frekuensi pemunculan untuk mempercepat operasi pencarian teks penuh di lapisan basis data relasional.
+- **Okapi BM25:** Fungsi pembobotan peringkat dokumen pencarian berbasis probabilitas informasi yang mempertimbangkan saturasi frekuensi istilah ($k_1$) dan normalisasi panjang dokumen ($b$).
+- **Trigram Jaccard Similarity:** Koefisien kesamaan statistik antara himpunan fragmen sub-kata 3 karakter (trigram) dari kueri pencarian terhadap istilah dalam indeks, digunakan untuk koreksi otomatis saltik (typo tolerance).
+- **Policy-First Search Filtering:** Pola desain keamanan pencarian di mana filter hak akses pengguna dan batasan lingkup organisasi (RBAC/ABAC) diterapkan sebelum proses perankingan hasil, menjamin nihilnya kebocoran informasi sensitif.
+- **Kotak Masuk Tugas Saya (§19.1):** Dasbor terpadu yang menggabungkan seluruh antrean penugasan, persetujuan transaksi finansial, tiket operasional, dan eskalasi wewenang lintas modul dalam satu antarmuka kerja tunggal.
+- **Search Diversity Ranker:** Algoritma perankingan sekunder yang menerapkan diskon relevansi marginal pada dokumen dari modul atau kategori yang sama untuk menghindari monopoli satu jenis entitas pada halaman pertama hasil pencarian.
+- **SLA Breach Threshold:** Batas waktu maksimum yang diizinkan untuk pemrosesan sebuah tugas sebelum mekanisme eskalasi berjenjang (Level 1 $\to$ Level 4) terpicu secara otomatis.
+- **Search Pinning:** Kemampuan personalisasi yang memungkinkan pengguna menyematkan dokumen atau hasil pencarian penting ke posisi teratas kueri rujukan mereka.
