@@ -19,6 +19,10 @@ class EnterpriseBudget extends Model
         'encumbered_amount_idr',
         'spent_amount_idr',
         'control_type',
+        'status',
+        'created_by',
+        'approved_by',
+        'ledger_transaction_id',
     ];
 
     protected $casts = [
