@@ -10369,9 +10369,12 @@
                     "Core"
                 ],
                 "summary": "GET Global Search V2 in Core",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [auth].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
                 "x-allowed-roles": [
-                    "auth"
+                    "admin",
+                    "design_system_owner",
+                    "manager",
+                    "operator"
                 ],
                 "parameters": [
                     {
@@ -61989,14 +61992,12 @@
                     "Core"
                 ],
                 "summary": "Index (Core)",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, mechanic, operator, supervisor].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
                 "x-allowed-roles": [
                     "admin",
                     "design_system_owner",
                     "manager",
-                    "mechanic",
-                    "operator",
-                    "supervisor"
+                    "operator"
                 ],
                 "parameters": [
                     {
@@ -62086,14 +62087,12 @@
                     "Core"
                 ],
                 "summary": "Analytics (Core)",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, mechanic, operator, supervisor].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
                 "x-allowed-roles": [
                     "admin",
                     "design_system_owner",
                     "manager",
-                    "mechanic",
-                    "operator",
-                    "supervisor"
+                    "operator"
                 ],
                 "parameters": [
                     {
@@ -62176,6 +62175,113 @@
                 ]
             }
         },
+        "/inbox/batch": {
+            "post": {
+                "operationId": "postCoreTaskInboxBatch",
+                "tags": [
+                    "Core"
+                ],
+                "summary": "Batch (Core)",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
+                "x-allowed-roles": [
+                    "admin",
+                    "design_system_owner",
+                    "manager",
+                    "operator"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CorrelationIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/IdempotencyKeyHeader"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource successfully created or operation executed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Response envelope"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication credentials missing, expired, or invalid",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access forbidden: caller does not possess required roles defined in x-allowed-roles",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or idempotent replay detected with mismatching payload or concurrency conflict",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or business invariant domain violation",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded: caller exceeded request quota per time window",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetailsRfc7807"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "SessionCookieAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Request payload for postCoreTaskInboxBatch",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Dynamic payload attributes governed by module domain rules"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/inbox/{id}": {
             "get": {
                 "operationId": "getCoreTaskInboxShow",
@@ -62183,14 +62289,12 @@
                     "Core"
                 ],
                 "summary": "Show (Core)",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, mechanic, operator, supervisor].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
                 "x-allowed-roles": [
                     "admin",
                     "design_system_owner",
                     "manager",
-                    "mechanic",
-                    "operator",
-                    "supervisor"
+                    "operator"
                 ],
                 "parameters": [
                     {
@@ -62286,14 +62390,12 @@
                     "Core"
                 ],
                 "summary": "Action (Core)",
-                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, mechanic, operator, supervisor].",
+                "description": "Operational endpoint for Core module. Protected by role matrix: [admin, design_system_owner, manager, operator].",
                 "x-allowed-roles": [
                     "admin",
                     "design_system_owner",
                     "manager",
-                    "mechanic",
-                    "operator",
-                    "supervisor"
+                    "operator"
                 ],
                 "parameters": [
                     {
