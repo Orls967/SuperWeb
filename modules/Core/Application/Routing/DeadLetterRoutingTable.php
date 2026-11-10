@@ -19,8 +19,11 @@ use Modules\Core\Domain\Models\CoreEventDelivery;
 class DeadLetterRoutingTable
 {
     public const ACTION_QUARANTINE = 'QUARANTINE';
+
     public const ACTION_TASK_INBOX = 'TASK_INBOX';
+
     public const ACTION_AUTO_DISCARD = 'AUTO_DISCARD';
+
     public const ACTION_DELAYED_RETRY = 'DELAYED_RETRY';
 
     /**

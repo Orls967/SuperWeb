@@ -55,6 +55,7 @@ class SchemaDiffViewer
         foreach ($oldProps as $propName => $propDef) {
             if (! array_key_exists($propName, $newProps)) {
                 $removedProps[$propName] = $propDef;
+
                 continue;
             }
 
@@ -156,48 +157,48 @@ class SchemaDiffViewer
     ): string {
         $lines = [];
         $lines[] = '=== RINGKASAN SELISIH SKEMA EVENT ===';
-        $lines[] = 'Status: ' . ($isBreaking ? '[BREAKING / INKOMPATIBEL]' : '[ADITIF / KOMPATIBEL]');
+        $lines[] = 'Status: '.($isBreaking ? '[BREAKING / INKOMPATIBEL]' : '[ADITIF / KOMPATIBEL]');
 
         if (! empty($addedProps)) {
-            $lines[] = 'Properti Ditambahkan (' . count($addedProps) . '):';
+            $lines[] = 'Properti Ditambahkan ('.count($addedProps).'):';
             foreach (array_keys($addedProps) as $prop) {
                 $lines[] = "  + {$prop}";
             }
         }
 
         if (! empty($removedProps)) {
-            $lines[] = 'PERINGATAN: Properti Dihapus (' . count($removedProps) . '):';
+            $lines[] = 'PERINGATAN: Properti Dihapus ('.count($removedProps).'):';
             foreach (array_keys($removedProps) as $prop) {
                 $lines[] = "  - {$prop}";
             }
         }
 
         if (! empty($addedRequired)) {
-            $lines[] = 'PERINGATAN: Required Fields Baru (' . count($addedRequired) . '):';
+            $lines[] = 'PERINGATAN: Required Fields Baru ('.count($addedRequired).'):';
             foreach ($addedRequired as $prop) {
                 $lines[] = "  ! {$prop} (wajib)";
             }
         }
 
         if (! empty($removedRequired)) {
-            $lines[] = 'Required Fields Dilonggarkan (' . count($removedRequired) . '):';
+            $lines[] = 'Required Fields Dilonggarkan ('.count($removedRequired).'):';
             foreach ($removedRequired as $prop) {
                 $lines[] = "  ~ {$prop} (menjadi opsional)";
             }
         }
 
         if (! empty($typeChanges)) {
-            $lines[] = 'PERINGATAN: Perubahan Tipe Data (' . count($typeChanges) . '):';
+            $lines[] = 'PERINGATAN: Perubahan Tipe Data ('.count($typeChanges).'):';
             foreach ($typeChanges as $prop => $types) {
                 $lines[] = "  * {$prop}: {$types['old']} -> {$types['new']}";
             }
         }
 
         if (! empty($enumChanges)) {
-            $lines[] = 'Perubahan Enum (' . count($enumChanges) . '):';
+            $lines[] = 'Perubahan Enum ('.count($enumChanges).'):';
             foreach ($enumChanges as $prop => $ch) {
-                $addStr = empty($ch['added']) ? '' : ' +[' . implode(', ', $ch['added']) . ']';
-                $remStr = empty($ch['removed']) ? '' : ' -[' . implode(', ', $ch['removed']) . ']';
+                $addStr = empty($ch['added']) ? '' : ' +['.implode(', ', $ch['added']).']';
+                $remStr = empty($ch['removed']) ? '' : ' -['.implode(', ', $ch['removed']).']';
                 $lines[] = "  # {$prop}:{$addStr}{$remStr}";
             }
         }

@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 class EventTracingContext
 {
     protected ?string $correlationId = null;
+
     protected ?string $causationId = null;
 
     /**

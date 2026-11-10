@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Routing;
 
-use SplPriorityQueue;
 use Modules\Core\Domain\Models\SimEventSpine;
+use SplPriorityQueue;
 
 /**
  * Antrean Dispatcher Berbasis Prioritas (EventPriorityQueueDispatcher)
@@ -16,8 +16,11 @@ use Modules\Core\Domain\Models\SimEventSpine;
 class EventPriorityQueueDispatcher
 {
     public const PRIORITY_CRITICAL = 100;
+
     public const PRIORITY_HIGH = 75;
+
     public const PRIORITY_NORMAL = 50;
+
     public const PRIORITY_LOW = 25;
 
     /**
@@ -28,7 +31,8 @@ class EventPriorityQueueDispatcher
      */
     public function prioritize(iterable $events): array
     {
-        $pq = new class extends SplPriorityQueue {
+        $pq = new class extends SplPriorityQueue
+        {
             /**
              * @param  array{priority: int, seq: int}  $priority1
              * @param  array{priority: int, seq: int}  $priority2
@@ -70,6 +74,7 @@ class EventPriorityQueueDispatcher
 
         if (isset($payload['priority'])) {
             $p = strtolower((string) $payload['priority']);
+
             return match ($p) {
                 'critical', 'emergency', 'urgent' => self::PRIORITY_CRITICAL,
                 'high' => self::PRIORITY_HIGH,

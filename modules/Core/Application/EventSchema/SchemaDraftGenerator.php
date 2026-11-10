@@ -44,7 +44,6 @@ class SchemaDraftGenerator
     }
 
     /**
-     * @param  mixed  $value
      * @return array<string, mixed>
      */
     protected function inferPropertySchema(mixed $value): array

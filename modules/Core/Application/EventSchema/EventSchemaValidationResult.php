@@ -13,7 +13,6 @@ namespace Modules\Core\Application\EventSchema;
 class EventSchemaValidationResult
 {
     /**
-     * @param  bool  $isValid
      * @param  array<int, array{path: string, message: string, rule: string}>  $errors
      * @param  array<int, array{path: string, message: string}>  $warnings
      * @param  array<int, string>  $deprecatedFields

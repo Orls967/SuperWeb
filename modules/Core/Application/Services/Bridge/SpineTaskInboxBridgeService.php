@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Services\Bridge;
 
-use Modules\Core\Domain\Models\CoreTask;
-use Modules\Core\Domain\Models\CoreSpineGap;
+use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
 use Modules\Core\Domain\Models\CoreEventDelivery;
 use Modules\Core\Domain\Models\CorePoisonMessage;
-use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
+use Modules\Core\Domain\Models\CoreSpineGap;
+use Modules\Core\Domain\Models\CoreTask;
 
 /**
  * Jembatan Integrasi Event Spine ke Task Inbox (SpineTaskInboxBridgeService)

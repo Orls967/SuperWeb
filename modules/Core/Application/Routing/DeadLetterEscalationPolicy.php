@@ -15,8 +15,11 @@ use Modules\Core\Domain\Models\CoreEventDelivery;
 class DeadLetterEscalationPolicy
 {
     public const ESCALATION_LEVEL_0 = 0; // Info / self-healing
+
     public const ESCALATION_LEVEL_1 = 1; // SRE Operational Review (SLA 4 jam)
+
     public const ESCALATION_LEVEL_2 = 2; // Domain Lead Escalation (SLA 1 jam)
+
     public const ESCALATION_LEVEL_3 = 3; // Emergency War Room (SLA 15 menit)
 
     /**

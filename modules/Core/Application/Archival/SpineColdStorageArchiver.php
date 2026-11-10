@@ -68,7 +68,7 @@ class SpineColdStorageArchiver
                 'created_at' => $event->created_at?->toIso8601String(),
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-            fwrite($handle, $line . "\n");
+            fwrite($handle, $line."\n");
         }
 
         fclose($handle);

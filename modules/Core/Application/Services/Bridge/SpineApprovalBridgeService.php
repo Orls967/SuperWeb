@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Services\Bridge;
 
 use App\Models\User;
-use Modules\Core\Domain\Models\ApprovalRequest;
 use Modules\Core\Application\Services\ApprovalEngineService;
+use Modules\Core\Domain\Models\ApprovalRequest;
 
 /**
  * Jembatan Persetujuan Khusus Operasi Event Spine (SpineApprovalBridgeService)
@@ -19,7 +19,9 @@ use Modules\Core\Application\Services\ApprovalEngineService;
 class SpineApprovalBridgeService
 {
     public const TYPE_DLQ_BATCH_DISCARD = 'SPINE_DLQ_BATCH_DISCARD';
+
     public const TYPE_SCHEMA_BREAKING_OVERRIDE = 'SPINE_SCHEMA_BREAKING_OVERRIDE';
+
     public const TYPE_HIGH_VOLUME_REPLAY = 'SPINE_HIGH_VOLUME_REPLAY';
 
     public function __construct(

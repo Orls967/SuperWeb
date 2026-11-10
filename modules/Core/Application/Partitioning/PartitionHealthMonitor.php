@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Partitioning;
 
 use Modules\Core\Domain\Models\SimEventSpine;
-use Modules\Core\Domain\Models\CoreEventDelivery;
 
 /**
  * Pemantau Kesehatan Partisi Stream (PartitionHealthMonitor)
@@ -18,7 +17,6 @@ class PartitionHealthMonitor
     /**
      * Menganalisis metrik distribusi beban pada partisi virtual.
      *
-     * @param  int  $totalPartitions
      * @return array{
      *     total_partitions: int,
      *     total_events: int,
@@ -127,7 +125,7 @@ class PartitionHealthMonitor
     protected function calculatePartitionIndex(string $aggregateType, string $aggregateId, int $totalPartitions): int
     {
         $key = "{$aggregateType}:{$aggregateId}";
-        $hash = 0x811c9dc5;
+        $hash = 0x811C9DC5;
 
         $len = strlen($key);
         for ($i = 0; $i < $len; $i++) {

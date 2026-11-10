@@ -43,7 +43,7 @@ class SpineConsistencyCheckCommand extends Command
                 ['Total Event Spine', number_format($report['total_spine_events'])],
                 ['Total Rekaman Inbox', number_format($report['total_inbox_records'])],
                 ['Total Deliveries', number_format($report['total_deliveries'])],
-                ['Tingkat Rekonsiliasi (%)', $report['reconciliation_rate_percent'] . '%'],
+                ['Tingkat Rekonsiliasi (%)', $report['reconciliation_rate_percent'].'%'],
                 ['Event Tanpa Konsumen (Orphan)', number_format($report['orphan_event_count'])],
                 ['Status Konsistensi', $report['is_consistent'] ? 'KONSISTEN' : 'INKONSISTEN'],
             ]
@@ -61,7 +61,7 @@ class SpineConsistencyCheckCommand extends Command
                     number_format($stats['delivered']),
                     number_format($stats['dead_lettered']),
                     number_format($stats['pending']),
-                    $stats['loss_rate_percent'] . '%',
+                    $stats['loss_rate_percent'].'%',
                 ];
             }
 
@@ -73,9 +73,9 @@ class SpineConsistencyCheckCommand extends Command
 
         if (! empty($report['anomalies'])) {
             $this->newLine();
-            $this->error('Ditemukan ' . count($report['anomalies']) . ' Anomali:');
+            $this->error('Ditemukan '.count($report['anomalies']).' Anomali:');
             foreach ($report['anomalies'] as $idx => $anomaly) {
-                $this->warn('  [' . ($idx + 1) . '] ' . $anomaly);
+                $this->warn('  ['.($idx + 1).'] '.$anomaly);
             }
         }
 

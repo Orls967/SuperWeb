@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Services\Audit;
 
 use Illuminate\Support\Facades\DB;
-use Modules\Core\Domain\Models\SimEventSpine;
 use Modules\Core\Domain\Models\CoreConsumerInbox;
 use Modules\Core\Domain\Models\CoreEventDelivery;
+use Modules\Core\Domain\Models\SimEventSpine;
 
 /**
  * Pemeriksa Konsistensi Aliran Event Lintas Modul (CrossModuleEventConsistencyChecker)

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Archival;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\SimEventSpine;
 
 /**
@@ -35,7 +36,7 @@ class SpineArchiveRestorer
         if ($expectedChecksum !== null) {
             $actualChecksum = hash_file('sha256', $archiveFilePath);
             if (! hash_equals($expectedChecksum, $actualChecksum)) {
-                throw new \RuntimeException("Checksum integritas tidak cocok! Arsip berpotensi korup.");
+                throw new \RuntimeException('Checksum integritas tidak cocok! Arsip berpotensi korup.');
             }
         }
 
@@ -71,11 +72,12 @@ class SpineArchiveRestorer
 
                 if ($exists) {
                     $skipped++;
+
                     continue;
                 }
 
                 SimEventSpine::create([
-                    'event_id' => $data['event_id'] ?? (string) \Illuminate\Support\Str::uuid(),
+                    'event_id' => $data['event_id'] ?? (string) Str::uuid(),
                     'topic' => $data['topic'] ?? 'restored.archive.event',
                     'aggregate_type' => $data['aggregate_type'] ?? null,
                     'aggregate_id' => $data['aggregate_id'] ?? null,

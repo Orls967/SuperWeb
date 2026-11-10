@@ -24,9 +24,7 @@ class EventSchemaEvolutionSimulator
     /**
      * Menjalankan simulasi evolusi skema untuk topik tertentu.
      *
-     * @param  string  $topic
      * @param  array<string, mixed>  $proposedSchema
-     * @param  int  $sampleSize
      * @return array{
      *     status: 'SAFE'|'WARNING_DEPRECATION'|'BREAKING_BLOCKED',
      *     compatibility_check: array{compatible: bool, violations: array<string>},
@@ -153,13 +151,13 @@ class EventSchemaEvolutionSimulator
             $actualValue = $payload[$field];
 
             if ($expectedType === 'string' && ! is_string($actualValue)) {
-                $errors[] = ['path' => $field, 'message' => "Harus string, ditemukan " . gettype($actualValue), 'rule' => 'type'];
+                $errors[] = ['path' => $field, 'message' => 'Harus string, ditemukan '.gettype($actualValue), 'rule' => 'type'];
             } elseif (($expectedType === 'integer' || $expectedType === 'number') && ! is_numeric($actualValue)) {
-                $errors[] = ['path' => $field, 'message' => "Harus numerik, ditemukan " . gettype($actualValue), 'rule' => 'type'];
+                $errors[] = ['path' => $field, 'message' => 'Harus numerik, ditemukan '.gettype($actualValue), 'rule' => 'type'];
             } elseif ($expectedType === 'boolean' && ! is_bool($actualValue)) {
-                $errors[] = ['path' => $field, 'message' => "Harus boolean, ditemukan " . gettype($actualValue), 'rule' => 'type'];
+                $errors[] = ['path' => $field, 'message' => 'Harus boolean, ditemukan '.gettype($actualValue), 'rule' => 'type'];
             } elseif ($expectedType === 'array' && ! is_array($actualValue)) {
-                $errors[] = ['path' => $field, 'message' => "Harus array, ditemukan " . gettype($actualValue), 'rule' => 'type'];
+                $errors[] = ['path' => $field, 'message' => 'Harus array, ditemukan '.gettype($actualValue), 'rule' => 'type'];
             }
         }
 

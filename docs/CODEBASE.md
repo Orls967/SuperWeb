@@ -875,12 +875,17 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `sim:checkpoint-prune` | `manual` | Memangkas checkpoint simulasi lama yang tidak berada pada kelipatan interval retensi |
 | `sim:diff` | `manual` | Membandingkan dua sesi simulasi deterministik dan mendeteksi hari simpangan pertama serta selisih per handler |
 | `sim:run` | `manual` | Menjalankan atau melanjutkan virtual clock Simulation Kernel secara deterministik dengan tick handlers dan checkpoint kriptografis harian |
+| `spine:archive` | `manual` | Mengarsipkan rentang event spine historis ke berkas NDJSON cold storage |
 | `spine:audit` | `manual` | Perform dual-source audit across outbox, event spine log, consumer inbox and deliveries |
+| `spine:consistency-check` | `manual` | Menjalankan audit konsistensi aliran event spine vs inbox lintas modul |
 | `spine:dlq-replay` | `manual` | Replay dead-lettered messages in batches with operational audit reason |
 | `spine:gap-scan` | `manual` | Scan outbox stream for aggregate sequence gaps and record them idempotently (every 15 mins) |
 | `spine:lag-report` | `manual` | Report current consumer lag metrics and overall nearest-rank p95 lag |
 | `spine:parity-verify` | `manual` | Verify runtime parity and class existence of all legacy event listeners adapted to event spine |
+| `spine:partition-status` | `manual` | Menampilkan metrik distribusi beban dan kesehatan partisi virtual event spine |
 | `spine:replay` | `manual` | Replay event spine stream deterministically without side effects and verify projection hash |
+| `spine:scale-recommend` | `manual` | Menganalisis lag antrean dan merekomendasikan penskalaan worker per consumer group |
+| `spine:schema-evolve` | `manual` | Menyimulasikan dampak perubahan skema terhadap data historis dan konsumen terdaftar |
 | `spine:seed-t1` | `manual` | Seed T1 scale dataset for Event Spine (20,000 outbox messages, 7 SM statuses, DLQ, poison messages) |
 | `spine:snapshot` | `manual` | Create a deterministic projection snapshot for a consumer group and verify canonical hash |
 | `store:auto-capture-c2c` | **`hourly()`** | Cairkan dana escrow C2C ke penjual bila pembeli tidak konfirmasi dalam 3 hari |
@@ -935,7 +940,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 317 Command** | **37 Terjadwal** | |
+| **Total: 322 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

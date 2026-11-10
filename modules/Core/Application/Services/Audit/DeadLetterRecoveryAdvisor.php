@@ -15,9 +15,13 @@ use Modules\Core\Domain\Models\CoreEventDelivery;
 class DeadLetterRecoveryAdvisor
 {
     public const CATEGORY_TRANSIENT_INFRA = 'TRANSIENT_INFRA';
+
     public const CATEGORY_SCHEMA_MISMATCH = 'SCHEMA_MISMATCH';
+
     public const CATEGORY_INTEGRITY_CONSTRAINT = 'INTEGRITY_CONSTRAINT';
+
     public const CATEGORY_BUSINESS_LOGIC_BUG = 'BUSINESS_LOGIC_BUG';
+
     public const CATEGORY_CORRUPTED_PAYLOAD = 'CORRUPTED_PAYLOAD';
 
     /**
