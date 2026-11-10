@@ -9,6 +9,7 @@ use Modules\Hospital\Application\Services\HospitalEmrAndBedService;
 use Modules\Hospital\Application\Services\HospitalEncounterBillReaderService;
 use Modules\Hospital\Application\Services\MedicalEmergencyResponseDispatcherService;
 use Modules\Hospital\Application\Services\PatientReferralBookerService;
+use Modules\Hospital\Application\TickHandlers\HospitalDischargeTickHandler;
 use Modules\Hospital\Console\Commands\AuditHospitalCommand;
 use Modules\Hospital\Console\Commands\BedSweepCommand;
 use Modules\Hospital\Console\Commands\BillingO2cKpiCommand;
@@ -32,6 +33,7 @@ class HospitalServiceProvider extends ServiceProvider
         $this->app->bind(EncounterBillReader::class, HospitalEncounterBillReaderService::class);
         $this->app->bind(MedicalEmergencyResponseDispatcher::class, MedicalEmergencyResponseDispatcherService::class);
         $this->app->bind(PatientReferralBooker::class, PatientReferralBookerService::class);
+        $this->app->tag(HospitalDischargeTickHandler::class, 'sim.tick_handler');
     }
 
     public function boot(): void

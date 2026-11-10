@@ -101,4 +101,14 @@ class SimClockService implements SimClockInterface
     {
         return $this->activeRun;
     }
+
+    public function setActiveRun(SimRun $run): void
+    {
+        $this->activeRun = $run;
+        if ($run->virtual_now) {
+            $this->currentVirtualNow = Carbon::parse($run->virtual_now);
+        } else {
+            $this->currentVirtualNow = $run->sim_start_at ? Carbon::parse($run->sim_start_at) : Carbon::now();
+        }
+    }
 }

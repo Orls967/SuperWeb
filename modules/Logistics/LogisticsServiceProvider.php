@@ -16,6 +16,7 @@ use Modules\Logistics\Application\Services\EventShuttleFleetService;
 use Modules\Logistics\Application\Services\LogisticsDemurrageDetentionQuote;
 use Modules\Logistics\Application\Services\LogisticsUsageReaderService;
 use Modules\Logistics\Application\Services\LogisticsVesselRegistry;
+use Modules\Logistics\Application\TickHandlers\LogisticsDemurrageTickHandler;
 use Modules\Logistics\Console\Commands\AccrueDemurrageCommand;
 use Modules\Logistics\Console\Commands\AuditBillingCommand;
 use Modules\Logistics\Console\Commands\AuditCircularLogisticsCommand;
@@ -56,6 +57,7 @@ class LogisticsServiceProvider extends ServiceProvider
             LogisticsDemurrageDetentionQuote::class
         );
         $this->app->bind(CustodyVerifier::class, CustodyVerifierService::class);
+        $this->app->tag(LogisticsDemurrageTickHandler::class, 'sim.tick_handler');
         $this->app->bind(EventShuttleFleetScheduler::class, EventShuttleFleetService::class);
     }
 

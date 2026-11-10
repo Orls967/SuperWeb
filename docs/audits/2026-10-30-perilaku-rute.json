@@ -1,9 +1,9 @@
 {
-    "generated_at": "2026-11-10T04:12:45+00:00",
-    "total_get_routes": 756,
-    "total_executions": 2097,
-    "tested_routes_count": 662,
-    "untested_routes_count": 94,
+    "generated_at": "2026-11-10T16:17:35+00:00",
+    "total_get_routes": 762,
+    "total_executions": 2102,
+    "tested_routes_count": 665,
+    "untested_routes_count": 97,
     "untested_routes": [
         {
             "uri_pattern": "proservices/timesheets/{id}",
@@ -59,11 +59,36 @@
             "reason": "tidak teruji: parameter (id)",
             "roles": [
                 "admin",
+                "design_system_owner",
                 "manager",
-                "supervisor",
-                "mechanic",
-                "operator",
-                "design_system_owner"
+                "operator"
+            ]
+        },
+        {
+            "uri_pattern": "admin/simulation/twins/{type}/{id}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (type)",
+            "roles": [
+                "sim_operator",
+                "admin"
+            ]
+        },
+        {
+            "uri_pattern": "admin/simulation/export/{type}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (type)",
+            "roles": [
+                "sim_operator",
+                "admin"
+            ]
+        },
+        {
+            "uri_pattern": "admin/simulation/{run}",
+            "module": "Core",
+            "reason": "tidak teruji: parameter (run)",
+            "roles": [
+                "sim_operator",
+                "admin"
             ]
         },
         {
@@ -973,13 +998,13 @@
     ],
     "module_stats": {
         "Core": {
-            "total": 71,
-            "tested": 66,
-            "untested": 5,
-            "2xx": 43,
+            "total": 79,
+            "tested": 71,
+            "untested": 8,
+            "2xx": 52,
             "3xx": 5,
             "4xx": 1,
-            "500": 17
+            "500": 13
         },
         "ProServices": {
             "total": 9,
@@ -1558,7 +1583,7 @@
             "500": 0
         }
     },
-    "errors_500_count": 48,
+    "errors_500_count": 44,
     "errors_500_first_30": [
         {
             "uri_pattern": "admin/design-system/research/export-csv",
@@ -1566,14 +1591,14 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 24.53,
+            "duration_ms": 7.45,
             "query_count": 3,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
                 "line": 67
             }
         },
@@ -1583,14 +1608,14 @@
             "module": "Core",
             "role": "design_system_owner",
             "status": 500,
-            "duration_ms": 4.16,
+            "duration_ms": 2.15,
             "query_count": 3,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
                 "line": 67
             }
         },
@@ -1600,14 +1625,14 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 2.3,
+            "duration_ms": 1.77,
             "query_count": 3,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "Error: Call to undefined method Modules\\Shared\\Application\\Ui\\CsvExporter::export()",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/DesignSystem/UxResearchDashboardController.php",
                 "line": 67
             }
         },
@@ -1617,15 +1642,32 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 4.61,
+            "duration_ms": 2.91,
             "query_count": 4,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
                 "line": 315
+            }
+        },
+        {
+            "uri_pattern": "inbox",
+            "uri_tested": "/inbox",
+            "module": "Core",
+            "role": "design_system_owner",
+            "status": 500,
+            "duration_ms": 1.37,
+            "query_count": 2,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
+                "line": 25
             }
         },
         {
@@ -1634,48 +1676,14 @@
             "module": "Core",
             "role": "manager",
             "status": 500,
-            "duration_ms": 27.41,
+            "duration_ms": 1.08,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
-                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
-                "line": 25
-            }
-        },
-        {
-            "uri_pattern": "inbox",
-            "uri_tested": "/inbox",
-            "module": "Core",
-            "role": "supervisor",
-            "status": 500,
-            "duration_ms": 2.44,
-            "query_count": 2,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
-                "line": 25
-            }
-        },
-        {
-            "uri_pattern": "inbox",
-            "uri_tested": "/inbox",
-            "module": "Core",
-            "role": "mechanic",
-            "status": 500,
-            "duration_ms": 2.08,
-            "query_count": 2,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
+                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
                 "line": 25
             }
         },
@@ -1685,31 +1693,14 @@
             "module": "Core",
             "role": "operator",
             "status": 500,
-            "duration_ms": 1.55,
+            "duration_ms": 1.03,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
-                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
-                "line": 25
-            }
-        },
-        {
-            "uri_pattern": "inbox",
-            "uri_tested": "/inbox",
-            "module": "Core",
-            "role": "design_system_owner",
-            "status": 500,
-            "duration_ms": 1.71,
-            "query_count": 2,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
+                "message": "TypeError: Modules\\Core\\Application\\Actions\\TaskInbox\\TaskDigestService::generateDigestSummary(): Argument #1 ($userId) must be of type ?string, int given, called in /Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Http/Controllers/TaskInboxController.php on line 34",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Core/Application/Actions/TaskInbox/TaskDigestService.php",
                 "line": 25
             }
         },
@@ -1719,82 +1710,14 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 3.28,
+            "duration_ms": 1.5,
             "query_count": 1,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
-                "line": 315
-            }
-        },
-        {
-            "uri_pattern": "inbox/analytics",
-            "uri_tested": "/inbox/analytics",
-            "module": "Core",
-            "role": "manager",
-            "status": 500,
-            "duration_ms": 1.62,
-            "query_count": 1,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
-                "line": 315
-            }
-        },
-        {
-            "uri_pattern": "inbox/analytics",
-            "uri_tested": "/inbox/analytics",
-            "module": "Core",
-            "role": "supervisor",
-            "status": 500,
-            "duration_ms": 1.33,
-            "query_count": 1,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
-                "line": 315
-            }
-        },
-        {
-            "uri_pattern": "inbox/analytics",
-            "uri_tested": "/inbox/analytics",
-            "module": "Core",
-            "role": "mechanic",
-            "status": 500,
-            "duration_ms": 2.82,
-            "query_count": 1,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
-                "line": 315
-            }
-        },
-        {
-            "uri_pattern": "inbox/analytics",
-            "uri_tested": "/inbox/analytics",
-            "module": "Core",
-            "role": "operator",
-            "status": 500,
-            "duration_ms": 2.89,
-            "query_count": 1,
-            "body_size": 6592,
-            "has_error_text": false,
-            "page_title": "Server Error",
-            "exception": {
-                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
                 "line": 315
             }
         },
@@ -1804,14 +1727,48 @@
             "module": "Core",
             "role": "design_system_owner",
             "status": 500,
-            "duration_ms": 1.51,
+            "duration_ms": 1.28,
             "query_count": 1,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "inbox/analytics",
+            "uri_tested": "/inbox/analytics",
+            "module": "Core",
+            "role": "manager",
+            "status": 500,
+            "duration_ms": 1.18,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "line": 315
+            }
+        },
+        {
+            "uri_pattern": "inbox/analytics",
+            "uri_tested": "/inbox/analytics",
+            "module": "Core",
+            "role": "operator",
+            "status": 500,
+            "duration_ms": 1.21,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
                 "line": 315
             }
         },
@@ -1821,14 +1778,14 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 2.89,
+            "duration_ms": 2.84,
             "query_count": 9,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
                 "line": 315
             }
         },
@@ -1838,14 +1795,14 @@
             "module": "Core",
             "role": "admin",
             "status": 500,
-            "duration_ms": 1.42,
+            "duration_ms": 1.68,
             "query_count": 1,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: Unable to locate a class or view for component [ds.badge].",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/Compilers/ComponentTagCompiler.php",
                 "line": 315
             }
         },
@@ -1855,14 +1812,14 @@
             "module": "Logistics",
             "role": "admin",
             "status": 500,
-            "duration_ms": 12.5,
+            "duration_ms": 1.31,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [reverse.show] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1872,14 +1829,14 @@
             "module": "Logistics",
             "role": "auditor",
             "status": 500,
-            "duration_ms": 14.99,
+            "duration_ms": 1.13,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [reverse.show] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1889,14 +1846,14 @@
             "module": "Logistics",
             "role": "dispatcher",
             "status": 500,
-            "duration_ms": 3.36,
+            "duration_ms": 1.1,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [reverse.show] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1906,14 +1863,14 @@
             "module": "Logistics",
             "role": "hub_operator",
             "status": 500,
-            "duration_ms": 2.6,
+            "duration_ms": 1.11,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [reverse.show] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1923,14 +1880,14 @@
             "module": "Logistics",
             "role": "logistics_admin",
             "status": 500,
-            "duration_ms": 5.73,
+            "duration_ms": 1.12,
             "query_count": 2,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [reverse.show] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1940,14 +1897,14 @@
             "module": "Manufacturing",
             "role": "admin",
             "status": 500,
-            "duration_ms": 4.74,
+            "duration_ms": 2.2,
             "query_count": 7,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1957,14 +1914,14 @@
             "module": "Manufacturing",
             "role": "auditor",
             "status": 500,
-            "duration_ms": 2.41,
+            "duration_ms": 1.35,
             "query_count": 7,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1974,14 +1931,14 @@
             "module": "Manufacturing",
             "role": "planner",
             "status": 500,
-            "duration_ms": 1.53,
+            "duration_ms": 1.36,
             "query_count": 7,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -1991,14 +1948,14 @@
             "module": "Manufacturing",
             "role": "plant_receiver",
             "status": 500,
-            "duration_ms": 1.54,
+            "duration_ms": 1.41,
             "query_count": 7,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -2008,14 +1965,14 @@
             "module": "Manufacturing",
             "role": "operator",
             "status": 500,
-            "duration_ms": 1.5,
+            "duration_ms": 1.43,
             "query_count": 7,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
                 "message": "InvalidArgumentException: View [recycled_materials.index] not found.",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php",
                 "line": 138
             }
         },
@@ -2025,14 +1982,14 @@
             "module": "Insurance",
             "role": "superadmin",
             "status": 500,
-            "duration_ms": 4.27,
+            "duration_ms": 2.57,
             "query_count": 9,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
-                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 04:12:36, 2026-11-10 04:12:36))",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 16:17:32, 2026-11-10 16:17:32))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
                 "line": 857
             }
         },
@@ -2042,14 +1999,14 @@
             "module": "Insurance",
             "role": "underwriter",
             "status": 500,
-            "duration_ms": 3.07,
+            "duration_ms": 1.72,
             "query_count": 9,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
-                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 04:12:36, 2026-11-10 04:12:36))",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 16:17:32, 2026-11-10 16:17:32))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
                 "line": 857
             }
         },
@@ -2059,15 +2016,83 @@
             "module": "Insurance",
             "role": "insurance_admin",
             "status": 500,
-            "duration_ms": 2.63,
+            "duration_ms": 1.67,
             "query_count": 9,
             "body_size": 6592,
             "has_error_text": false,
             "page_title": "Server Error",
             "exception": {
-                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 04:12:36, 2026-11-10 04:12:36))",
-                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p2/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
+                "message": "Illuminate\\Database\\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: ins_command_snapshots.snapshot_date (Connection: sqlite, Database: :memory:, SQL: insert into \"ins_command_snapshots\" (\"snapshot_date\", \"gross_written_premium_idr\", \"net_earned_premium_idr\", \"claims_incurred_idr\", \"loss_ratio_bps\", \"solvency_rbc_bps\", \"total_technical_reserve_idr\", \"reinsurance_recoverable_idr\", \"updated_at\", \"created_at\") values (2026-11-10 00:00:00, 0, 0, 0, 5500, 24500, 0, 0, 2026-11-10 16:17:32, 2026-11-10 16:17:32))",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Database/Connection.php",
                 "line": 857
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.54,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "environmental_officer",
+            "status": 500,
+            "duration_ms": 1.22,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hospital/operations/medical-waste/verify-chain",
+            "uri_tested": "/hospital/operations/medical-waste/verify-chain",
+            "module": "Hospital",
+            "role": "rs_admin",
+            "status": 500,
+            "duration_ms": 1.1,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "ReflectionException: Class \"Modules\\Hospital\\Http\\Controllers\\Request\" does not exist",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/vendor/laravel/framework/src/Illuminate/Routing/ResolvesRouteDependencies.php",
+                "line": 88
+            }
+        },
+        {
+            "uri_pattern": "hotel/city-ledger",
+            "uri_tested": "/hotel/city-ledger",
+            "module": "Hotel",
+            "role": "admin",
+            "status": 500,
+            "duration_ms": 1.17,
+            "query_count": 1,
+            "body_size": 6592,
+            "has_error_text": false,
+            "page_title": "Server Error",
+            "exception": {
+                "message": "Error: Class \"Modules\\Hotel\\Domain\\Models\\CityLedgerAccount\" not found",
+                "file": "/Users/orl123456/Documents/typeshit/sw-w8-p3/modules/Hotel/Http/Controllers/HotelCityLedgerBillingController.php",
+                "line": 20
             }
         }
     ],
@@ -2077,7 +2102,7 @@
             "module": "Core",
             "role": "admin",
             "query_count": 248,
-            "duration_ms": 192.79,
+            "duration_ms": 95.34,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"bank_ledger_accounts\"",
@@ -2096,7 +2121,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 97,
-            "duration_ms": 34.21,
+            "duration_ms": 20.88,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -2115,7 +2140,7 @@
             "module": "Resto",
             "role": "auditor",
             "query_count": 97,
-            "duration_ms": 22.21,
+            "duration_ms": 18.07,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -2134,7 +2159,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 96,
-            "duration_ms": 78.73,
+            "duration_ms": 18.26,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ?",
@@ -2153,7 +2178,7 @@
             "module": "Crypto",
             "role": "admin",
             "query_count": 42,
-            "duration_ms": 29.79,
+            "duration_ms": 13.35,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -2172,7 +2197,7 @@
             "module": "Crypto",
             "role": "auditor",
             "query_count": 42,
-            "duration_ms": 30.47,
+            "duration_ms": 11.67,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -2191,7 +2216,7 @@
             "module": "Crypto",
             "role": "customer",
             "query_count": 41,
-            "duration_ms": 76.41,
+            "duration_ms": 10.78,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -2210,7 +2235,7 @@
             "module": "Crypto",
             "role": "treasury",
             "query_count": 41,
-            "duration_ms": 61.32,
+            "duration_ms": 11.42,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?)) as \"exists\"",
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
@@ -2229,7 +2254,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 37,
-            "duration_ms": 22.22,
+            "duration_ms": 10.7,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -2248,7 +2273,7 @@
             "module": "Resto",
             "role": "auditor",
             "query_count": 37,
-            "duration_ms": 13.6,
+            "duration_ms": 9.07,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -2267,7 +2292,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 36,
-            "duration_ms": 17.04,
+            "duration_ms": 8.96,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"resto_menu_items\"",
@@ -2286,7 +2311,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 34,
-            "duration_ms": 14.04,
+            "duration_ms": 6.59,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -2305,7 +2330,7 @@
             "module": "Resto",
             "role": "outlet_manager",
             "query_count": 33,
-            "duration_ms": 48.33,
+            "duration_ms": 4.94,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"resto_outlets\" where \"is_active\" = ? limit 1",
@@ -2320,11 +2345,11 @@
             ]
         },
         {
-            "uri": "/assets/01a1c3a8-31cf-7227-98d5-e05f585bad53",
+            "uri": "/assets/01a1c640-050c-7199-b58c-fbcbd0698780",
             "module": "Asset",
             "role": "admin",
             "query_count": 29,
-            "duration_ms": 19.17,
+            "duration_ms": 8.76,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -2339,11 +2364,11 @@
             ]
         },
         {
-            "uri": "/assets/01a1c3a8-31cf-7227-98d5-e05f585bad53",
+            "uri": "/assets/01a1c640-050c-7199-b58c-fbcbd0698780",
             "module": "Asset",
             "role": "asset_manager",
             "query_count": 28,
-            "duration_ms": 8.64,
+            "duration_ms": 6.28,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?)) as \"exists\"",
                 "select * from \"ast_assets\" where \"id\" = ? limit 1",
@@ -2362,7 +2387,7 @@
             "module": "Crypto",
             "role": "guest",
             "query_count": 24,
-            "duration_ms": 21.46,
+            "duration_ms": 9.65,
             "queries": [
                 "select * from \"crypto_assets\" where \"is_active\" = ?",
                 "select * from \"crypto_assets\" where \"symbol\" = ? limit 1",
@@ -2381,7 +2406,7 @@
             "module": "Core",
             "role": "admin",
             "query_count": 24,
-            "duration_ms": 9.38,
+            "duration_ms": 8.08,
             "queries": [
                 "select count(*) as \"aggregate\" from \"store_orders\"",
                 "select count(*) as \"aggregate\" from \"store_orders\" where \"status\" = ?",
@@ -2400,7 +2425,7 @@
             "module": "Resto",
             "role": "admin",
             "query_count": 23,
-            "duration_ms": 17.29,
+            "duration_ms": 7.7,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -2419,7 +2444,7 @@
             "module": "Resto",
             "role": "auditor",
             "query_count": 23,
-            "duration_ms": 11.29,
+            "duration_ms": 5.42,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?)) as \"exists\"",
                 "select * from \"resto_menu_items\" where \"id\" = ? limit 1",
@@ -2438,7 +2463,7 @@
             "module": "Logistics",
             "role": "admin",
             "query_count": 23,
-            "duration_ms": 11.63,
+            "duration_ms": 8.83,
             "queries": [
                 "select exists(select * from \"roles\" inner join \"user_role\" on \"roles\".\"id\" = \"user_role\".\"role_id\" where \"user_role\".\"user_id\" = ? and \"roles\".\"name\" in (?, ?, ?, ?, ?)) as \"exists\"",
                 "select count(*) as \"aggregate\" from \"lgx_trucks\"",

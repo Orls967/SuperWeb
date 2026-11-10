@@ -21,7 +21,11 @@ use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
 use Modules\Core\Http\Controllers\ResilienceGovernanceController;
 use Modules\Core\Http\Controllers\SearchAnalyticsController;
+use Modules\Core\Http\Controllers\SimulationDiffController;
+use Modules\Core\Http\Controllers\SimulationExportController;
 use Modules\Core\Http\Controllers\SimulationGovernanceController;
+use Modules\Core\Http\Controllers\SimulationRunController;
+use Modules\Core\Http\Controllers\SimulationTwinController;
 use Modules\Core\Http\Controllers\TaskInboxController;
 
 Route::middleware(['web'])->group(function () {
@@ -152,4 +156,17 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // API Pencarian Global BM25 — Fase 194
     Route::middleware('role:admin,design_system_owner,manager,operator')->get('/api/global-search-v2', GlobalSearchApiController::class)->name('core.api.global-search');
+
+    // Simulation Operator Console & Digital Twin Bus — Fase 67 & R8
+    Route::middleware('role:sim_operator,admin,superadmin')->prefix('admin/simulation')->group(function () {
+        Route::get('/', [SimulationRunController::class, 'index'])->name('admin.simulation.runs.index');
+        Route::post('/', [SimulationRunController::class, 'store'])->name('admin.simulation.runs.store');
+        Route::get('/diff', [SimulationDiffController::class, 'index'])->name('admin.simulation.diff');
+        Route::get('/twins', [SimulationTwinController::class, 'index'])->name('admin.simulation.twins.index');
+        Route::get('/twins/{type}/{id}', [SimulationTwinController::class, 'show'])->name('admin.simulation.twins.show');
+        Route::get('/export/{type}', [SimulationExportController::class, 'export'])->name('admin.simulation.export');
+        Route::get('/{run}', [SimulationRunController::class, 'show'])->name('admin.simulation.runs.show');
+        Route::post('/{run}/pause', [SimulationRunController::class, 'pause'])->name('admin.simulation.runs.pause');
+        Route::post('/{run}/resume', [SimulationRunController::class, 'resume'])->name('admin.simulation.runs.resume');
+    });
 });

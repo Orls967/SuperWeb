@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 35 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 39 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **693 Migrasi** |
+| | **Total: 65 Modul** | | **697 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 76 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 85 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1652 Rute** | | |
+| **Total** | **1661 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -871,8 +871,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `security:audit` | `manual` | Wave 2: Security & Compliance audit — Zero Trust, Privacy Vault, Regulatory, SOC & Pentest |
 | `serve` | `manual` | Serve the application on the PHP development server |
 | `session:table` | `manual` | Create a migration for the session database table |
-| `sim:audit` | `manual` | Audit deterministic Simulation Kernel state hashes, Event Spine idempotency, and Digital Twin hash chains (Fase 67) |
-| `sim:run` | `manual` | Run or advance the deterministic Simulation Kernel virtual clock with daily tick handlers and state checkpoints |
+| `sim:audit` | `manual` | Audit dua sumber determinisme kernel simulasi, transisi status, rantai fingerprint, checkpoint, twin hash chain, dan keseimbangan ledger (Fase 67) |
+| `sim:checkpoint-prune` | `manual` | Memangkas checkpoint simulasi lama yang tidak berada pada kelipatan interval retensi |
+| `sim:diff` | `manual` | Membandingkan dua sesi simulasi deterministik dan mendeteksi hari simpangan pertama serta selisih per handler |
+| `sim:run` | `manual` | Menjalankan atau melanjutkan virtual clock Simulation Kernel secara deterministik dengan tick handlers dan checkpoint kriptografis harian |
 | `store:auto-capture-c2c` | **`hourly()`** | Cairkan dana escrow C2C ke penjual bila pembeli tidak konfirmasi dalam 3 hari |
 | `store:cancel-stale-orders` | **`everyTenMinutes()`** | Batalkan pesanan pending payment yang melewati batas waktu dan lepaskan reservasi stok |
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
@@ -925,7 +927,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 307 Command** | **37 Terjadwal** | |
+| **Total: 309 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
