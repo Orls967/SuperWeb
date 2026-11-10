@@ -40,6 +40,9 @@ use Modules\Crypto\Domain\Models\CryptoPriceTick;
 use Modules\Distribution\Domain\Models\Distributor;
 use Modules\Egy\Domain\Models\PpaContract;
 use Modules\Egy\Domain\Models\UtilityConsolidatedInvoice;
+use Modules\EnterpriseFinance\Domain\Models\EfCapexProposal;
+use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
+use Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Hcm\Domain\Models\Gig\GovBounty;
 use Modules\Hcm\Domain\Models\Gig\GovBountyClaim;
@@ -3480,15 +3483,15 @@ return [
     'api.intercompany.nci' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'api.enterprise_finance.budgets.spend' => [
         'roles' => ['admin', 'treasury'],
-        'params' => fn () => ['budget' => \Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget::firstOrCreate(['budget_code' => 'BGT-TEST-ROLES'], ['fiscal_year' => '2026', 'cost_center_code' => 'TEST', 'account_code' => 'TEST', 'allocated_amount_idr' => 1000000, 'control_type' => 'HARD_STOP'])->id],
+        'params' => fn () => ['budget' => EnterpriseBudget::firstOrCreate(['budget_code' => 'BGT-TEST-ROLES'], ['fiscal_year' => '2026', 'cost_center_code' => 'TEST', 'account_code' => 'TEST', 'allocated_amount_idr' => 1000000, 'control_type' => 'HARD_STOP'])->id],
     ],
     'api.enterprise_finance.capex.approve' => [
         'roles' => ['admin', 'treasury'],
-        'params' => fn () => ['code' => \Modules\EnterpriseFinance\Domain\Models\EfCapexProposal::firstOrCreate(['proposal_code' => 'CPX-TEST-ROLES'], ['id' => (string) \Illuminate\Support\Str::uuid(), 'line_code' => 'LINE_TEST', 'project_title' => 'Test', 'requested_budget_minor' => 1000000, 'status' => 'SUBMITTED'])->proposal_code],
+        'params' => fn () => ['code' => EfCapexProposal::firstOrCreate(['proposal_code' => 'CPX-TEST-ROLES'], ['id' => (string) Str::uuid(), 'line_code' => 'LINE_TEST', 'project_title' => 'Test', 'requested_budget_minor' => 1000000, 'status' => 'SUBMITTED'])->proposal_code],
     ],
     'api.enterprise_finance.covenants.evaluate' => [
         'roles' => ['admin', 'treasury'],
-        'params' => fn () => ['facility' => \Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility::firstOrCreate(['facility_code' => 'FAC-TEST-ROLES'], ['facility_name' => 'Test', 'facility_type' => 'TERM_LOAN', 'lead_arranger' => 'Test', 'currency' => 'IDR', 'total_commitment_minor' => 1000000, 'start_date' => '2026-01-01', 'maturity_date' => '2029-01-01'])->id],
+        'params' => fn () => ['facility' => SyndicatedFacility::firstOrCreate(['facility_code' => 'FAC-TEST-ROLES'], ['facility_name' => 'Test', 'facility_type' => 'TERM_LOAN', 'lead_arranger' => 'Test', 'currency' => 'IDR', 'total_commitment_minor' => 1000000, 'start_date' => '2026-01-01', 'maturity_date' => '2029-01-01'])->id],
     ],
     'api.enterprise_finance.trial_balance.consolidate' => ['roles' => ['admin', 'treasury']],
     'api.enterprise_finance.sod.check' => ['roles' => ['admin', 'treasury']],
