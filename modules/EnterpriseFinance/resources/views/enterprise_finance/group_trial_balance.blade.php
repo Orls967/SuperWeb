@@ -16,8 +16,8 @@
                 @csrf
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">Periode Kuartal (YYYY-QX)</label>
-                        <input type="text" name="period_quarter" class="form-control" placeholder="2026-Q3" required>
+                        <label class="form-label" for="period_quarter">Periode Kuartal (YYYY-QX)</label>
+                        <input type="text" id="period_quarter" name="period_quarter" class="form-control" placeholder="2026-Q3" required aria-label="Periode Kuartal (YYYY-QX)">
                     </div>
                 </div>
                 <div class="mt-4">

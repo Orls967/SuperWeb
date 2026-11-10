@@ -6,7 +6,15 @@ namespace Modules\EnterpriseFinance;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\EnterpriseFinance\Application\Services\EnterpriseFinanceService;
+use Modules\EnterpriseFinance\Console\Commands\AggregateTrialBalanceCommand;
 use Modules\EnterpriseFinance\Console\Commands\AuditEnterpriseFinanceCommand;
+use Modules\EnterpriseFinance\Console\Commands\AuditSodConflictsCommand;
+use Modules\EnterpriseFinance\Console\Commands\CalculateWorkingCapitalCommand;
+use Modules\EnterpriseFinance\Console\Commands\CheckComplianceDeadlinesCommand;
+use Modules\EnterpriseFinance\Console\Commands\EvaluateCovenantsCommand;
+use Modules\EnterpriseFinance\Console\Commands\ExportEnterpriseReportsCommand;
+use Modules\EnterpriseFinance\Console\Commands\FreezeOverdueBudgetsCommand;
+use Modules\EnterpriseFinance\Console\Commands\ReconcileTaxPeriodCommand;
 use Modules\Shared\Application\MenuRegistry;
 
 class EnterpriseFinanceServiceProvider extends ServiceProvider
@@ -24,12 +32,26 @@ class EnterpriseFinanceServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
 
+        if (file_exists(__DIR__.'/routes/api.php')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        }
+
         if (is_dir(__DIR__.'/resources/views/enterprise_finance')) {
             $this->loadViewsFrom(__DIR__.'/resources/views/enterprise_finance', 'enterprise_finance');
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditEnterpriseFinanceCommand::class]);
+            $this->commands([
+                AuditEnterpriseFinanceCommand::class,
+                EvaluateCovenantsCommand::class,
+                AggregateTrialBalanceCommand::class,
+                FreezeOverdueBudgetsCommand::class,
+                CalculateWorkingCapitalCommand::class,
+                ReconcileTaxPeriodCommand::class,
+                ExportEnterpriseReportsCommand::class,
+                AuditSodConflictsCommand::class,
+                CheckComplianceDeadlinesCommand::class,
+            ]);
         }
 
         $this->registerMenu();
