@@ -102,4 +102,14 @@ class EventDeliverySlaWatchdog
 
         return $this->slaThresholds['default'];
     }
+
+    /**
+     * Memperbarui batas waktu toleransi SLA untuk prefix topik tertentu secara dinamis.
+     */
+    public function setCustomSlaThreshold(string $topicPrefix, int $thresholdSeconds): self
+    {
+        $this->slaThresholds[$topicPrefix] = max(1, $thresholdSeconds);
+
+        return $this;
+    }
 }
