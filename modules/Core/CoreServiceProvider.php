@@ -35,6 +35,12 @@ use Modules\Core\Application\Actions\Search\Providers\RetailStoreSearchProvider;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
 use Modules\Core\Application\Copilot\ExecutiveCopilotEngine;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
+use Modules\Core\Application\Projections\Reducers\BanquetEventOrderProjectionReducer;
+use Modules\Core\Application\Projections\Reducers\HospitalEmergencyProjectionReducer;
+use Modules\Core\Application\Projections\Reducers\LogisticsShipmentProjectionReducer;
+use Modules\Core\Application\Projections\Reducers\OrderFulfillmentProjectionReducer;
+use Modules\Core\Application\Projections\Reducers\TelematicsTelemetryProjectionReducer;
+use Modules\Core\Application\Projections\SpineProjectionManager;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\Ai\DynamicPricingEngineService;
 use Modules\Core\Application\Services\Ai\StockPrescriptionEngineService;
@@ -78,6 +84,7 @@ use Modules\Core\Console\Commands\CopilotAskCommand;
 use Modules\Core\Console\Commands\DsAuditCommand;
 use Modules\Core\Console\Commands\DsTokensBuildCommand;
 use Modules\Core\Console\Commands\DsUsageScanCommand;
+use Modules\Core\Console\Commands\EventSpineT1SeedCommand;
 use Modules\Core\Console\Commands\InboxDigestCommand;
 use Modules\Core\Console\Commands\InboxEscalateCommand;
 use Modules\Core\Console\Commands\PqAuditChainsCommand;
@@ -93,7 +100,9 @@ use Modules\Core\Console\Commands\SimDiffCommand;
 use Modules\Core\Console\Commands\SpineDlqReplayCommand;
 use Modules\Core\Console\Commands\SpineGapScanCommand;
 use Modules\Core\Console\Commands\SpineLagReportCommand;
+use Modules\Core\Console\Commands\SpineParityVerifyCommand;
 use Modules\Core\Console\Commands\SpineReplayCommand;
+use Modules\Core\Console\Commands\SpineSnapshotCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TaskSlaAuditCommand;
 use Modules\Core\Console\Commands\TaskSlaEscalateDaemonCommand;
@@ -121,6 +130,7 @@ use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Contracts\VenueZoneSurveillanceFeedGateway;
+use Modules\Core\Domain\Algorithms\Events\ProjectionHashCalculator;
 use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
 use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
 use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
@@ -204,6 +214,18 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(SpineLagMonitorService::class);
         $this->app->singleton(SpineReplayService::class);
         $this->app->singleton(LegacyListenerAdapterService::class);
+        $this->app->singleton(SpineProjectionManager::class, function ($app) {
+            $manager = new SpineProjectionManager(
+                $app->make(ProjectionHashCalculator::class)
+            );
+            $manager->registerReducer(new OrderFulfillmentProjectionReducer);
+            $manager->registerReducer(new LogisticsShipmentProjectionReducer);
+            $manager->registerReducer(new TelematicsTelemetryProjectionReducer);
+            $manager->registerReducer(new BanquetEventOrderProjectionReducer);
+            $manager->registerReducer(new HospitalEmergencyProjectionReducer);
+
+            return $manager;
+        });
 
         $this->app->bind(
             DigitalTwinInterface::class,
@@ -467,6 +489,9 @@ class CoreServiceProvider extends ServiceProvider
                 SpineDlqReplayCommand::class,
                 SpineLagReportCommand::class,
                 AuditSpineCommand::class,
+                EventSpineT1SeedCommand::class,
+                SpineSnapshotCommand::class,
+                SpineParityVerifyCommand::class,
             ]);
         }
 

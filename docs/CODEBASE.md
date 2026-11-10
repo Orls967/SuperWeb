@@ -879,7 +879,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `spine:dlq-replay` | `manual` | Replay dead-lettered messages in batches with operational audit reason |
 | `spine:gap-scan` | `manual` | Scan outbox stream for aggregate sequence gaps and record them idempotently (every 15 mins) |
 | `spine:lag-report` | `manual` | Report current consumer lag metrics and overall nearest-rank p95 lag |
+| `spine:parity-verify` | `manual` | Verify runtime parity and class existence of all legacy event listeners adapted to event spine |
 | `spine:replay` | `manual` | Replay event spine stream deterministically without side effects and verify projection hash |
+| `spine:seed-t1` | `manual` | Seed T1 scale dataset for Event Spine (20,000 outbox messages, 7 SM statuses, DLQ, poison messages) |
+| `spine:snapshot` | `manual` | Create a deterministic projection snapshot for a consumer group and verify canonical hash |
 | `store:auto-capture-c2c` | **`hourly()`** | Cairkan dana escrow C2C ke penjual bila pembeli tidak konfirmasi dalam 3 hari |
 | `store:cancel-stale-orders` | **`everyTenMinutes()`** | Batalkan pesanan pending payment yang melewati batas waktu dan lepaskan reservasi stok |
 | `sup:remind-certifications` | **`dailyAt('07:10')`** | Peringatkan sertifikasi pemasok yang akan kedaluwarsa atau sudah kedaluwarsa |
@@ -932,7 +935,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 314 Command** | **37 Terjadwal** | |
+| **Total: 317 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

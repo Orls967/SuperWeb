@@ -35,7 +35,7 @@ class ScanAggregateGapsAction
         $query = DB::table('core_outbox')
             ->whereNotNull('aggregate_type')
             ->whereNotNull('aggregate_id')
-            ->select('aggregate_type', 'aggregate_id', 'id as seq');
+            ->select('id', 'aggregate_type', 'aggregate_id', 'payload');
 
         if ($aggregateType !== null) {
             $query->where('aggregate_type', $aggregateType);
@@ -49,7 +49,9 @@ class ScanAggregateGapsAction
 
         foreach ($records as $rec) {
             $key = "{$rec->aggregate_type}:{$rec->aggregate_id}";
-            $grouped[$key][] = (int) $rec->seq;
+            $payload = is_array($rec->payload) ? $rec->payload : json_decode((string) $rec->payload, true) ?? [];
+            $seq = isset($payload['sequence']) ? (int) $payload['sequence'] : (isset($payload['seq']) ? (int) $payload['seq'] : (int) $rec->id);
+            $grouped[$key][] = $seq;
         }
 
         foreach ($grouped as $key => $seqs) {
