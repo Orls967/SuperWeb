@@ -41,4 +41,3 @@ class BanquetEventOrderProjectionReducer implements ProjectionReducerInterface
         return $currentState;
     }
 }
-

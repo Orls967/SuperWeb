@@ -95,4 +95,3 @@ class DeterministicEventSorter
         return 0;
     }
 }
-

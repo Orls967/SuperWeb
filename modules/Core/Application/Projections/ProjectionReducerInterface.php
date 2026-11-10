@@ -27,4 +27,3 @@ interface ProjectionReducerInterface
      */
     public function reduce(array $currentState, SimEventSpine $event): array;
 }
-

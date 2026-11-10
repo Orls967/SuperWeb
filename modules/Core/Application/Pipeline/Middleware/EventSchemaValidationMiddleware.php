@@ -32,4 +32,3 @@ class EventSchemaValidationMiddleware implements SpineMiddlewareInterface
         return $next($event, $consumerGroup);
     }
 }
-

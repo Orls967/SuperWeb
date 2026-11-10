@@ -75,4 +75,3 @@ class SpinePartitionStatusCommand extends Command
         return self::SUCCESS;
     }
 }
-

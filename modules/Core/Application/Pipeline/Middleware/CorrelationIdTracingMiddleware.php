@@ -34,4 +34,3 @@ class CorrelationIdTracingMiddleware implements SpineMiddlewareInterface
         return $next($event, $consumerGroup);
     }
 }
-

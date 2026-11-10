@@ -53,4 +53,3 @@ class EventStreamPartitionManager
         return $this->totalPartitions;
     }
 }
-

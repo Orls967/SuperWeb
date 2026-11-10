@@ -57,4 +57,3 @@ class EventSchemaPolicy
         return false;
     }
 }
-

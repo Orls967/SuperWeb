@@ -55,4 +55,3 @@ class SpineArchiveCommand extends Command
         return self::SUCCESS;
     }
 }
-

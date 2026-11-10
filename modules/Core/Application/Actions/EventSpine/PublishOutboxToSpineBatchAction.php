@@ -20,4 +20,3 @@ class PublishOutboxToSpineBatchAction
         return $this->bridgeService->syncPendingOutboxToSpine($batchSize);
     }
 }
-

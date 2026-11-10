@@ -88,4 +88,3 @@ class SpineDeduplicationCache
         return count($this->cache);
     }
 }
-

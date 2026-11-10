@@ -44,4 +44,3 @@ class SpineReplayStreamRequest extends FormRequest
         ];
     }
 }
-

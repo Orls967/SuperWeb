@@ -35,4 +35,3 @@ class SpineParityVerifyCommand extends Command
         return self::SUCCESS;
     }
 }
-

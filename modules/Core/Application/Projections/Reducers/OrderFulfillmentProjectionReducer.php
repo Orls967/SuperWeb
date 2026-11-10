@@ -43,4 +43,3 @@ class OrderFulfillmentProjectionReducer implements ProjectionReducerInterface
         return $currentState;
     }
 }
-

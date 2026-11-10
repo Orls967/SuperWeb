@@ -101,4 +101,3 @@ class SpineSchemaEvolutionCommand extends Command
         return self::SUCCESS;
     }
 }
-

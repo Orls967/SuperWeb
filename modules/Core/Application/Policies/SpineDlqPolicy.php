@@ -66,4 +66,3 @@ class SpineDlqPolicy
         return false;
     }
 }
-

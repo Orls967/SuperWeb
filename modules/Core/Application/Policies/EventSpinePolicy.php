@@ -68,4 +68,3 @@ class EventSpinePolicy
         return false;
     }
 }
-

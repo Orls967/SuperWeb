@@ -19,4 +19,3 @@ interface SpineMiddlewareInterface
      */
     public function handle(SimEventSpine $event, string $consumerGroup, Closure $next): mixed;
 }
-

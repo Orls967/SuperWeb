@@ -20,4 +20,3 @@ class CreateProjectionSnapshotAction
         return $this->snapshotService->takeSnapshot($group, $upToOffset);
     }
 }
-

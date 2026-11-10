@@ -117,4 +117,3 @@ class MetricsCollectorMiddleware implements SpineMiddlewareInterface
         }
     }
 }
-

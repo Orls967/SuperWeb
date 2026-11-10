@@ -40,4 +40,3 @@ class HospitalEmergencyProjectionReducer implements ProjectionReducerInterface
         return $currentState;
     }
 }
-

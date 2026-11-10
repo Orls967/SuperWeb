@@ -51,4 +51,3 @@ class SpineDlqBatchRequest extends FormRequest
         ];
     }
 }
-

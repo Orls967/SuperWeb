@@ -149,4 +149,3 @@ class EventFilterExpressionParser
         return $raw;
     }
 }
-

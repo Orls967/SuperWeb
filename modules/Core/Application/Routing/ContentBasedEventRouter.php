@@ -72,4 +72,3 @@ class ContentBasedEventRouter
         $this->routes = [];
     }
 }
-

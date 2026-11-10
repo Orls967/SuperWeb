@@ -43,4 +43,3 @@ class ExecutionTimerMiddleware implements SpineMiddlewareInterface
         self::$lastExecutionDurations = [];
     }
 }
-

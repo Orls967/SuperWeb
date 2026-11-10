@@ -76,4 +76,3 @@ class DynamicConsumerGroupScaler
         return $recommendations;
     }
 }
-
