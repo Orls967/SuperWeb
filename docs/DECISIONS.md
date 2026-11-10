@@ -3134,3 +3134,30 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   3. **W8-D38 (Pusat Registrasi Skema & Penegakan Kompatibilitas Aditif A6)**: Pendaftaran skema event berversi dengan penolakan breaking change otomatis (`PROPERTY_REMOVED`, `TYPE_CHANGED`, `REQUIRED_ADDED`, `ENUM_VALUE_REMOVED`, `RANGE_NARROWED`).
   4. **W8-D39 (Replay Deterministik Stream & Verifikasi Hash Proyeksi Kanonikal)**: Replay per grup konsumen dan rentang offset tanpa mengirim efek keluar ganda; verifikasi konsistensi proyeksi dengan hash SHA-256 keadaan kanonikal yang identik ($h_1 == h_2$).
   5. **W8-D40 (Dead-Letter Queue & Karantina Poison Non-Blocking)**: Karantina poison message ke `core_poison_messages` agar offset tidak terhambat (*head-of-line blocking avoidance*); pembuangan batch $> 20$ pesan mewajibkan persetujuan Approval Engine via Kotak Masuk "Tugas Saya".
+
+<a id="w8-d61"></a>
+<a id="w8-d62"></a>
+<a id="w8-d63"></a>
+<a id="w8-d64"></a>
+<a id="w8-d65"></a>
+<a id="w8-d66"></a>
+<a id="w8-d67"></a>
+<a id="w8-d68"></a>
+<a id="w8-d69"></a>
+## 2026-11-11: [W8-P5.1] Treasury — Multi-Currency & Treasury Korporat (Fase 48, W8-D61..W8-D69)
+- **Anchor:** `2026-11-11-w8-p5-fase-48-multi-currency-treasury` / `w8-d61` / `w8-d62` / `w8-d63` / `w8-d64` / `w8-d65` / `w8-d66` / `w8-d67` / `w8-d68` / `w8-d69`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-48.md`](design/fase-48.md)
+  - [`docs/dor/fase-48.md`](dor/fase-48.md)
+  - [`docs/dor/bukti-l0-fase-48.md`](dor/bukti-l0-fase-48.md)
+  - [`docs/konsep/treasury-grup.md`](konsep/treasury-grup.md)
+  - [`docs/decisions/ADR-0061-multi-entitas-ledger-segmen.md`](decisions/ADR-0061-multi-entitas-ledger-segmen.md)
+  - [`docs/decisions/ADR-0062-kurs-rasional-berversi.md`](decisions/ADR-0062-kurs-rasional-berversi.md)
+  - [`docs/decisions/ADR-0063-ledger-multi-currency-dua-kaki.md`](decisions/ADR-0063-ledger-multi-currency-dua-kaki.md)
+  - [`docs/decisions/ADR-0064-revaluasi-valas-dan-pembalik-otomatis.md`](decisions/ADR-0064-revaluasi-valas-dan-pembalik-otomatis.md)
+  - [`docs/decisions/ADR-0065-rekonsiliasi-bank-tiga-tahap.md`](decisions/ADR-0065-rekonsiliasi-bank-tiga-tahap.md)
+  - [`docs/decisions/ADR-0066-forecast-kas-13-minggu-musiman.md`](decisions/ADR-0066-forecast-kas-13-minggu-musiman.md)
+  - [`docs/decisions/ADR-0067-lindung-nilai-forward-contract-mtm.md`](decisions/ADR-0067-lindung-nilai-forward-contract-mtm.md)
+  - [`docs/decisions/ADR-0068-covenant-fasilitas-kredit-rasio-bulat.md`](decisions/ADR-0068-covenant-fasilitas-kredit-rasio-bulat.md)
+  - [`docs/decisions/ADR-0069-cash-pooling-zero-balancing-pinjaman-ic.md`](decisions/ADR-0069-cash-pooling-zero-balancing-pinjaman-ic.md)
+- **Keputusan:** W8-D61 (Multi-entitas via segmen kode akun), W8-D62 (Kurs rasional berversi tak dapat diubah), W8-D63 (Ledger multi-currency dua kaki berimbang & subledger lot valas), W8-D64 (Revaluasi pos moneter valas D1 & pembalik otomatis awal periode), W8-D65 (Rekonsiliasi bank 3-tahap D2 & antrean mismatch), W8-D66 (Forecast kas 13 minggu musiman D3), W8-D67 (Lindung nilai forward contract SM 8 status & MTM harian), W8-D68 (Covenant fasilitas kredit berbasis rasio permil bulat tanpa float), W8-D69 (Cash pooling zero-balancing via pinjaman intercompany).
