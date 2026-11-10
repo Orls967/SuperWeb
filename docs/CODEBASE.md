@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 26 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 27 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **684 Migrasi** |
+| | **Total: 65 Modul** | | **685 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 52 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 67 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1628 Rute** | | |
+| **Total** | **1643 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -672,6 +672,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `docs:inventory` | `manual` | Generate bagian faktual docs/CODEBASE.md (modul, prefiks, migrasi, rute, command & jadwal, akun ledger) (K-03, PROGRESS R5.1) |
 | `down` | `manual` | Put the application into maintenance / demo mode |
 | `dr:audit` | `manual` | Wave 2 & Core: DR drill & data sovereignty audit — 0 discrepancy required |
+| `ds:audit` | `manual` | Audit integritas dua sumber Design System: status riwayat komponen, pemakaian komponen rilis, dan kontras token WCAG |
+| `ds:tokens:build` | `manual` | Kompilasi token tema Design System (light, dark, high-contrast) ke file CSS terstandar |
+| `ds:usage:scan` | `manual` | Pemindai frekuensi pemakaian komponen x-ds.* di seluruh template Blade aplikasi |
 | `ecosystem:audit-12-lines` | `manual` | Run comprehensive audit across all 12 conglomerate business lines |
 | `edu:audit` | `manual` | Audit modul Edu: kapasitas cohort, keabsahan hash sertifikat, penomoran gapless, kuota korporat, dan rekonsiliasi escrow |
 | `egy:audit` | `manual` | Audit jaringan energi: beban trafo, telemetri smart meter, kontrak PPA, faktur konsolidasi, eliminasi intercompany, dan rekonsiliasi ledger dua sumber |
@@ -894,6 +897,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `tower:audit` | `manual` | Audit supply chain control tower (multi-echelon stock, ATP/CTP invariant, and forecasts) |
 | `trade:audit` | `manual` | Audit cross-border trade operations, orders, duties, and hash-chain tracking |
 | `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
+| `ui:lint` | `manual` | Linter aksesibilitas, tokenisasi warna, responsivitas, dan kepatuhan Design System untuk template Blade |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
 | `ven:audit-crowd` | `manual` | Audit mandiri keselamatan kerumunan, prediksi lonjakan massa 15 menit, verifikasi biometrik satu arah, dan skor pengalaman tamu WPS |
@@ -913,7 +917,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 295 Command** | **37 Terjadwal** | |
+| **Total: 299 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
