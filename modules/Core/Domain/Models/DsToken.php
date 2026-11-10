@@ -14,48 +14,50 @@ class DsToken extends Model
     protected $fillable = [
         'theme',
         'token_name',
+        'token_key',
+        'token_type',
         'token_value',
+        'raw_value',
+        'resolved_value',
+        'is_semantic',
+        'description',
         'version',
         'label',
     ];
 
     protected $casts = [
+        'is_semantic' => 'boolean',
         'version' => 'integer',
     ];
 
-    /**
-     * Scope token berdasarkan tema.
-     */
-    public function scopeForTheme(Builder $query, string $theme): Builder
+    protected static function booted(): void
+    {
+        static::saving(function (DsToken $t) {
+            if (empty($t->token_key) && ! empty($t->token_name)) {
+                $t->token_key = $t->token_name;
+            }
+            if (empty($t->token_name) && ! empty($t->token_key)) {
+                $t->token_name = $t->token_key;
+            }
+            if (empty($t->raw_value) && ! empty($t->token_value)) {
+                $t->raw_value = $t->token_value;
+            }
+            if (empty($t->token_value) && ! empty($t->raw_value)) {
+                $t->token_value = $t->raw_value;
+            }
+            if (empty($t->resolved_value)) {
+                $t->resolved_value = $t->raw_value;
+            }
+        });
+    }
+
+    public function scopeTheme(Builder $query, string $theme): Builder
     {
         return $query->where('theme', $theme);
     }
 
-    /**
-     * Scope token versi aktif/terbaru.
-     */
     public function scopeLatestVersion(Builder $query): Builder
     {
         return $query->orderBy('version', 'desc');
-    }
-
-    /**
-     * Cek apakah nilai token merupakan alias sintaks {token_name}.
-     */
-    public function isAlias(): bool
-    {
-        return str_starts_with(trim($this->token_value), '{') && str_ends_with(trim($this->token_value), '}');
-    }
-
-    /**
-     * Ambil nama target alias bila token ini merupakan alias.
-     */
-    public function getAliasTarget(): ?string
-    {
-        if ($this->isAlias()) {
-            return trim($this->token_value, '{} ');
-        }
-
-        return null;
     }
 }

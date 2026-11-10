@@ -60,14 +60,15 @@
                     </div>
                     <input type="text"
                            name="q"
+                           id="tracking_query_input"
+                           aria-label="Nomor resi atau kode tracking kargo"
                            required
                            autofocus
                            placeholder="Masukkan Nomor Resi (misal: SRX1234567890)"
                            class="w-full bg-transparent border-none text-white text-base sm:text-lg focus:outline-none placeholder-slate-500 px-2 py-2 font-mono uppercase">
-                    <button type="submit"
-                            class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm sm:text-base hover:from-blue-500 hover:to-indigo-500 transition-all shadow-md shadow-blue-600/30 shrink-0">
+                    <x-ds.button type="submit" variant="primary" size="lg">
                         Lacak Kargo
-                    </button>
+                    </x-ds.button>
                 </div>
             </form>
 
@@ -98,6 +99,5 @@
     <footer class="border-t border-slate-800/80 bg-slate-900/30 py-6 text-center text-xs text-slate-500">
         <p>&copy; {{ date('Y') }} AutoServe Logistics. Multimodal Freight & Supply Chain Management.</p>
     </footer>
-
 </body>
 </html>

@@ -152,6 +152,7 @@ class DatabaseSeeder extends Seeder
             DistributionSeeder::class,
             WmsSeeder::class,
             RbacSeeder::class,
+            DesignSystemSeeder::class,
         ]);
     }
 }

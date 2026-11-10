@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Application\Ui;
 
-use Modules\Core\Domain\StateMachines\ComponentReleaseStateMachine;
-
 /**
  * StatusBadgeRegistry
  *
@@ -19,13 +17,13 @@ class StatusBadgeRegistry
      */
     private static array $statusMap = [
         // ComponentRelease State Machine (Fase 240)
-        ComponentReleaseStateMachine::STATUS_PROPOSED => ['variant' => 'neutral', 'label' => 'Diusulkan'],
-        ComponentReleaseStateMachine::STATUS_IN_DESIGN => ['variant' => 'info', 'label' => 'Dalam Desain'],
-        ComponentReleaseStateMachine::STATUS_A11Y_REVIEW => ['variant' => 'warning', 'label' => 'Review Aksesibilitas'],
-        ComponentReleaseStateMachine::STATUS_APPROVED => ['variant' => 'info', 'label' => 'Disetujui'],
-        ComponentReleaseStateMachine::STATUS_RELEASED => ['variant' => 'success', 'label' => 'Dirilis'],
-        ComponentReleaseStateMachine::STATUS_DEPRECATED => ['variant' => 'warning', 'label' => 'Deprecated'],
-        ComponentReleaseStateMachine::STATUS_REMOVED => ['variant' => 'danger', 'label' => 'Dihapus'],
+        'proposed' => ['variant' => 'neutral', 'label' => 'Diusulkan'],
+        'in_design' => ['variant' => 'info', 'label' => 'Dalam Desain'],
+        'a11y_review' => ['variant' => 'warning', 'label' => 'Review Aksesibilitas'],
+        'approved' => ['variant' => 'info', 'label' => 'Disetujui'],
+        'released' => ['variant' => 'success', 'label' => 'Dirilis'],
+        'deprecated' => ['variant' => 'warning', 'label' => 'Deprecated'],
+        'removed' => ['variant' => 'danger', 'label' => 'Dihapus'],
 
         // Status Umum Aplikasi
         'active' => ['variant' => 'success', 'label' => 'Aktif'],
@@ -35,6 +33,9 @@ class StatusBadgeRegistry
         'failed' => ['variant' => 'danger', 'label' => 'Gagal'],
         'cancelled' => ['variant' => 'danger', 'label' => 'Dibatalkan'],
         'draft' => ['variant' => 'neutral', 'label' => 'Draf'],
+        'in_review' => ['variant' => 'warning', 'label' => 'Ditinjau'],
+        'retired' => ['variant' => 'danger', 'label' => 'Dipensiunkan'],
+        'archived' => ['variant' => 'neutral', 'label' => 'Diarsipkan'],
         'open' => ['variant' => 'info', 'label' => 'Terbuka'],
         'closed' => ['variant' => 'neutral', 'label' => 'Ditutup'],
 
@@ -51,17 +52,15 @@ class StatusBadgeRegistry
      */
     public static function get(string $status): array
     {
-        if (isset(self::$statusMap[$status])) {
-            return self::$statusMap[$status];
-        }
+        $normalized = strtolower(trim($status));
 
-        $fallbackLabel = ucwords(str_replace(['_', '-'], ' ', $status));
-
-        return ['variant' => 'neutral', 'label' => $fallbackLabel];
+        return self::$statusMap[$status]
+            ?? self::$statusMap[$normalized]
+            ?? ['variant' => 'neutral', 'label' => ucwords(str_replace('_', ' ', $status))];
     }
 
     /**
-     * Mendaftarkan pemetaan status kustom dari modul lain.
+     * Mendaftarkan atau menimpa pemetaan badge untuk status kustom.
      */
     public static function register(string $status, string $variant, string $label): void
     {

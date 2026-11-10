@@ -28,7 +28,7 @@ final class DsAuditCorruptionFixture implements CorruptionFixture
             'props_schema' => [],
             'slots_schema' => [],
             'events_schema' => [],
-            'owner_id' => 1,
+            'owner_id' => null,
             'idempotency_key' => 'ds:corrupt:audit:fixture:01',
         ]);
 

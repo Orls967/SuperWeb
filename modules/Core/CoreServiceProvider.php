@@ -341,6 +341,9 @@ class CoreServiceProvider extends ServiceProvider
                 PqAuditChainsCommand::class,
                 CopilotAskCommand::class,
                 TelemetrySnapshotCommand::class,
+                \Modules\Core\Console\Commands\DsAuditCommand::class,
+                \Modules\Core\Console\Commands\DsUsageScanCommand::class,
+                \Modules\Core\Console\Commands\DsTokensBuildCommand::class,
             ]);
         }
 

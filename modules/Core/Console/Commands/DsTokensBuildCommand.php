@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Console\Commands;
+namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Application\Actions\DesignSystem\ThemeTokenAction;

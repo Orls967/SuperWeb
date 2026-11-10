@@ -13,13 +13,37 @@ class UxFinding extends Model
     protected $table = 'core_ux_findings';
 
     protected $fillable = [
+        'iteration_id',
+        'component_id',
         'finding_code',
         'module_code',
+        'category',
         'severity',
         'description',
+        'recommendation',
+        'is_resolved',
+        'resolved_at',
         'status',
-        'component_id',
     ];
+
+    protected $casts = [
+        'is_resolved' => 'boolean',
+        'resolved_at' => 'datetime',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (UxFinding $f) {
+            if (empty($f->finding_code)) {
+                $f->finding_code = 'UX-FIND-'.strtoupper(substr(md5($f->description ?? (string) time()), 0, 8));
+            }
+        });
+    }
+
+    public function iteration(): BelongsTo
+    {
+        return $this->belongsTo(UxIteration::class, 'iteration_id');
+    }
 
     public function component(): BelongsTo
     {
@@ -28,21 +52,6 @@ class UxFinding extends Model
 
     public function scopeOpen(Builder $query): Builder
     {
-        return $query->where('status', 'OPEN');
-    }
-
-    public function scopeBacklog(Builder $query): Builder
-    {
-        return $query->where('status', 'BACKLOG');
-    }
-
-    public function moveToBacklog(): void
-    {
-        $this->update(['status' => 'BACKLOG']);
-    }
-
-    public function markRemediated(): void
-    {
-        $this->update(['status' => 'REMEDIATED']);
+        return $query->where('is_resolved', false);
     }
 }

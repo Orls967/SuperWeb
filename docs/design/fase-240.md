@@ -29,36 +29,23 @@ stateDiagram-v2
 ## 2. Diagram Sekuens Alur Rilis Komponen (D2: Sequence Diagram)
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Developer Modul
-    participant Cat as Katalog UI (/design-system)
-    participant Act as ComponentReleaseAction
-    participant SM as ComponentReleaseStateMachine
-    participant Lint as UiLint & WcagContrastCalculator
-    actor Owner as Design System Owner
-    participant Appr as ApprovalEngine (Core)
-    participant DB as Basis Data (core_ds_*)
+flowchart TD
+    Dev["Developer Modul"] -->|"1. Ajukan usulan"| Cat["Katalog UI (/design-system)"]
+    Cat -->|"2. submitProposal()"| Act["ComponentReleaseAction"]
+    Act -->|"3. transition()"| SM["ComponentReleaseStateMachine"]
+    SM -->|"4. Simpan status: proposed"| DB[("Basis Data core_ds_*")]
 
-    Dev->>Cat: Ajukan usulan komponen (nama, modul, alasan)
-    Cat->>Act: submitProposal(name, module, reason)
-    Act->>SM: transition(proposed)
-    SM->>DB: Simpan record komponen (status: proposed)
-    
-    Dev->>Act: submitDesign(name, bladeView, tokens)
-    Act->>Lint: scanComponent(bladeView, tokens)
-    Lint-->>Act: Hasil verifikasi (0 lint errors, contrast pass)
-    Act->>SM: transition(in_design -> a11y_review)
-    SM->>DB: Update status (a11y_review)
-    
-    Owner->>Appr: Evaluasi kelayakan aksesibilitas
-    Appr->>Act: approveRelease(componentId)
-    Act->>SM: transition(a11y_review -> approved)
-    SM->>DB: Update status (approved)
-    
-    Act->>SM: transition(approved -> released)
-    SM->>DB: Terbitkan ke katalog publik (released)
-    DB-->>Cat: Komponen aktif tersedia untuk seluruh 30 lini
+    Dev -->|"5. Kirim Blade & tokens"| Act
+    Act -->|"6. Validasi"| Lint["UiLint & WcagContrastCalculator"]
+    Lint -->|"7. Lulus lint & kontras"| Act
+    Act -->|"8. Update status: a11y_review"| SM
+    SM -->|"9. Catat riwayat"| DB
+
+    Owner["Design System Owner"] -->|"10. Evaluasi kelayakan"| Appr["ApprovalEngine (Core)"]
+    Appr -->|"11. Setujui rilis"| Act
+    Act -->|"12. Update status: approved"| SM
+    SM -->|"13. Update status: released"| DB
+    DB -->|"14. Tersedia untuk 30 lini"| Cat
 ```
 
 ---

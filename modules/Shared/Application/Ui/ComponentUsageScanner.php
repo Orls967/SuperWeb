@@ -5,22 +5,21 @@ declare(strict_types=1);
 namespace Modules\Shared\Application\Ui;
 
 use Illuminate\Support\Facades\File;
-use Modules\Core\Domain\Models\DsComponentUsage;
 use Symfony\Component\Finder\Finder;
 
 /**
  * ComponentUsageScanner
  *
  * Memindai seluruh template Blade aplikasi untuk memetakan pemanggilan
- * komponen kanonikal x-ds.* dan mencatat frekuensinya ke core_ds_component_usage.
+ * komponen kanonikal x-ds.*.
  */
 class ComponentUsageScanner
 {
     /**
-     * Memindai direktori yang diberikan dan menyinkronkan hasil ke basis data.
+     * Memindai direktori yang diberikan dan mengembalikan peta pemakaian komponen.
      *
      * @param list<string> $targetDirs
-     * @return array{total_views: int, components_found: int, occurrences: int}
+     * @return array{total_views: int, components_found: int, occurrences: int, usages: array<string, array<string, int>>}
      */
     public function scan(array $targetDirs = []): array
     {
@@ -60,34 +59,11 @@ class ComponentUsageScanner
             }
         }
 
-        // Tulis idempoten ke basis data
-        foreach ($usageMap as $compName => $views) {
-            foreach ($views as $viewPath => $count) {
-                DsComponentUsage::updateOrCreate(
-                    [
-                        'component_name' => $compName,
-                        'view_path' => $viewPath,
-                    ],
-                    [
-                        'usage_count' => $count,
-                        'last_scanned_at' => now(),
-                    ]
-                );
-            }
-        }
-
         return [
             'total_views' => $totalViews,
             'components_found' => count($usageMap),
             'occurrences' => $totalOccurrences,
+            'usages' => $usageMap,
         ];
-    }
-
-    /**
-     * Mengambil pemakaian aktif untuk komponen tertentu.
-     */
-    public function getUsageFor(string $componentName): int
-    {
-        return (int) DsComponentUsage::where('component_name', strtolower($componentName))->sum('usage_count');
     }
 }

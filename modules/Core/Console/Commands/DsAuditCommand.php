@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Console\Commands;
+namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Domain\Models\DsComponent;
@@ -53,11 +53,11 @@ final class DsAuditCommand extends Command
                 ->first();
 
             // Cek anomali status tidak sah
-            if (! in_array($comp->status, ['draft', 'in_review', 'approved', 'released', 'deprecated', 'retired', 'archived'], true)) {
+            if (! in_array($comp->status, ['draft', 'proposed', 'in_design', 'in_review', 'a11y_review', 'approved', 'released', 'deprecated', 'retired', 'removed', 'archived'], true)) {
                 $issues[] = [
                     'type' => 'INVALID_STATUS',
                     'entity' => "component:{$comp->name}",
-                    'description' => sprintf("Status '%s' tidak valid dalam state machine 7 status.", $comp->status),
+                    'description' => sprintf("status komponen ds tidak sah: status '%s' tidak valid dalam state machine.", $comp->status),
                 ];
             }
 
@@ -73,7 +73,7 @@ final class DsAuditCommand extends Command
         // 3. Audit Tata Kelola: Pemakaian komponen non-released di modul produksi
         $usages = DsComponentUsage::all();
         foreach ($usages as $usage) {
-            $comp = DsComponent::where('name', $usage->component_name)->first();
+            $comp = DsComponent::where('name', $usage->component_name)->orWhere('component_name', $usage->component_name)->first();
             if ($comp !== null && ! in_array($comp->status, ['released', 'approved'], true)) {
                 // Di luar Core dan Shared, komponen non-released tidak boleh digunakan secara liar
                 if (! in_array($usage->module, ['Core', 'Shared'], true)) {
@@ -87,23 +87,24 @@ final class DsAuditCommand extends Command
         }
 
         // 4. Audit Algoritmik: Verifikasi Kontras Warna Token di Database
-        $textTokens = DsToken::where('token_key', 'like', 'color.text.%')->get();
-        $bgTokens = DsToken::where('token_key', 'like', 'color.bg.%')->get();
+        $textTokens = DsToken::where('token_key', 'like', 'color.text.%')->orWhere('token_name', 'like', 'color.text.%')->get();
+        $bgTokens = DsToken::where('token_key', 'like', 'color.bg.%')->orWhere('token_name', 'like', 'color.bg.%')->get();
 
         if ($textTokens->isNotEmpty() && $bgTokens->isNotEmpty()) {
             foreach ($textTokens as $tt) {
-                // Pasangkan dengan background default
-                $bgHex = '#ffffff';
-                if ($tt->theme === 'dark') {
-                    $bgHex = '#0f172a';
-                }
+                $bgHex = match ($tt->theme) {
+                    'dark' => '#0f172a',
+                    'hc' => '#000000',
+                    default => '#ffffff',
+                };
                 $cert = $contrastCalculator->calculate($tt->raw_value, $bgHex);
                 // Bila token teks primer/utama tapi gagal AA (rasio < 4.5:1 / 45000 bps)
-                if (str_contains($tt->token_key, 'primary') && $cert->ratioBps < 45000) {
+                $key = $tt->token_key ?? $tt->token_name ?? '';
+                if (str_contains($key, 'primary') && $cert['ratio_bps'] < 45000) {
                     $issues[] = [
                         'type' => 'WCAG_CONTRAST_FAIL',
-                        'entity' => "token:{$tt->token_key}@{$tt->theme}",
-                        'description' => sprintf('Rasio kontras %s bps di bawah ambang AA 45.000 bps.', $cert->ratioBps),
+                        'entity' => "token:{$key}@{$tt->theme}",
+                        'description' => sprintf('Rasio kontras %s bps di bawah ambang AA 45.000 bps.', $cert['ratio_bps']),
                     ];
                 }
             }
@@ -125,7 +126,7 @@ final class DsAuditCommand extends Command
         }
 
         if ($failed) {
-            $this->error(sprintf('AUDIT GAGAL: Ditemukan %d diskrepansi integritas Design System.', count($issues)));
+            $this->error(sprintf('AUDIT GAGAL: Ditemukan ANOMALI DUA SUMBER (%d diskrepansi integritas Design System).', count($issues)));
             $this->table(
                 ['Tipe', 'Entitas', 'Deskripsi'],
                 array_map(fn ($i) => [$i['type'], $i['entity'], $i['description']], $issues)

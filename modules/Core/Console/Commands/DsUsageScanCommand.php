@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Console\Commands;
+namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Domain\Models\DsComponentUsage;
@@ -30,6 +30,31 @@ final class DsUsageScanCommand extends Command
         $asJson = (bool) $this->option('json');
 
         $result = $scanner->scan();
+
+        // Simpan hasil pemindaian ke tabel core_ds_component_usage
+        foreach ($result['usages'] as $compName => $views) {
+            foreach ($views as $viewPath => $count) {
+                $module = 'Core';
+                if (preg_match('#modules/([^/]+)/#', $viewPath, $modMatch)) {
+                    $module = $modMatch[1];
+                }
+
+                DsComponentUsage::updateOrCreate(
+                    [
+                        'component_name' => $compName,
+                        'view_path' => $viewPath,
+                    ],
+                    [
+                        'module' => $module,
+                        'usage_count' => $count,
+                        'has_deprecated_props' => false,
+                        'last_scanned_at' => now(),
+                        'last_detected_at' => now(),
+                    ]
+                );
+            }
+        }
+
         $usages = DsComponentUsage::all();
 
         if ($asJson) {
@@ -53,7 +78,7 @@ final class DsUsageScanCommand extends Command
         if ($usages->isNotEmpty()) {
             $this->table(
                 ['Komponen', 'View Path', 'Jumlah Pemakaian', 'Terakhir Dipindai'],
-                $usages->map(fn ($u) => [
+                $usages->take(30)->map(fn ($u) => [
                     $u->component_name,
                     $u->view_path,
                     $u->usage_count,

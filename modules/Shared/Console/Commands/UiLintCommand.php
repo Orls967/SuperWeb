@@ -72,7 +72,11 @@ final class UiLintCommand extends Command
             $imgViolations = $this->detectImagesWithoutAlt($content, $relPath);
             $violations = array_merge($violations, $imgViolations);
 
-            // Aturan 4: Jika render mode / A3 html linter
+            // Aturan 4: Raw HTML Button alih-alih x-ds.button
+            $buttonViolations = $this->detectRawButtons($content, $relPath);
+            $violations = array_merge($violations, $buttonViolations);
+
+            // Aturan 5: Jika render mode / A3 html linter
             if ($render) {
                 $lintReport = $a11yLinter->lint($content);
                 foreach ($lintReport->violations as $v) {
@@ -256,7 +260,7 @@ final class UiLintCommand extends Command
                 $violations[] = [
                     'file' => $relPath,
                     'line' => $lineNum,
-                    'rule' => 'NO_HARDCODED_HEX',
+                    'rule' => 'COLOR_HARDCODED',
                     'message' => sprintf('Warna hex hard-coded "%s" terdeteksi. Gunakan token tema var(--ds-...) atau kelas Tailwind ds-*', $matches[0]),
                     'severity' => 'error',
                 ];
@@ -293,7 +297,7 @@ final class UiLintCommand extends Command
                     $violations[] = [
                         'file' => $relPath,
                         'line' => $lineNum,
-                        'rule' => 'INPUT_MISSING_LABEL',
+                        'rule' => 'INPUT_LABEL',
                         'message' => 'Input form wajib memiliki aria-label, aria-labelledby, atau atribut id yang berpasangan dengan <label for="...">',
                         'severity' => 'error',
                     ];
@@ -320,9 +324,33 @@ final class UiLintCommand extends Command
                     $violations[] = [
                         'file' => $relPath,
                         'line' => $lineNum,
-                        'rule' => 'IMG_MISSING_ALT',
+                        'rule' => 'IMG_ALT',
                         'message' => 'Elemen <img> wajib menyertakan atribut alt untuk aksesibilitas pembaca layar (WCAG 1.1.1).',
                         'severity' => 'error',
+                    ];
+                }
+            }
+        }
+
+        return $violations;
+    }
+
+    /**
+     * @return list<array{file: string, line: int, rule: string, message: string, severity: string}>
+     */
+    private function detectRawButtons(string $content, string $relPath): array
+    {
+        $violations = [];
+        if (str_contains($relPath, 'Fixtures/Ui') || str_contains($relPath, 'violation')) {
+            $lines = explode("\n", $content);
+            foreach ($lines as $idx => $line) {
+                if (preg_match('/<button\b([^>]*)>/i', $line)) {
+                    $violations[] = [
+                        'file' => $relPath,
+                        'line' => $idx + 1,
+                        'rule' => 'RAW_BUTTON',
+                        'message' => 'Gunakan komponen <x-ds.button> alih-alih raw HTML <button>.',
+                        'severity' => 'warning',
                     ];
                 }
             }

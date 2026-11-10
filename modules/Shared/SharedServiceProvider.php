@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
-use Modules\Shared\Console\Commands\DsAuditCommand;
-use Modules\Shared\Console\Commands\DsTokensBuildCommand;
-use Modules\Shared\Console\Commands\DsUsageScanCommand;
 use Modules\Shared\Console\Commands\UiLintCommand;
 
 class SharedServiceProvider extends ServiceProvider
@@ -33,9 +30,6 @@ class SharedServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 UiLintCommand::class,
-                DsTokensBuildCommand::class,
-                DsUsageScanCommand::class,
-                DsAuditCommand::class,
             ]);
         }
     }

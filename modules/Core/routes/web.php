@@ -114,8 +114,20 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         });
     });
 
-    // Design System Catalog & Theme Preference (Semua authenticated users)
-    Route::get('/design-system', [DesignSystemCatalogController::class, 'index'])->name('design-system.index');
-    Route::get('/design-system/{name}', [DesignSystemCatalogController::class, 'show'])->name('design-system.show');
-    Route::post('/user/theme-preference', [ThemePreferenceController::class, 'update'])->name('user.theme-preference.update');
+    // Design System Management untuk Role design_system_owner & admin
+    Route::middleware('role:design_system_owner,admin')->prefix('design-system')->group(function () {
+        Route::get('/releases', [DesignSystemReleaseController::class, 'index'])->name('design-system.releases.index');
+        Route::get('/releases/create', [DesignSystemReleaseController::class, 'create'])->name('design-system.releases.create');
+        Route::post('/releases', [DesignSystemReleaseController::class, 'store'])->name('design-system.releases.store');
+        Route::post('/releases/{name}/transition', [DesignSystemReleaseController::class, 'transition'])->name('design-system.releases.transition');
+        Route::get('/research', [UxResearchDashboardController::class, 'index'])->name('design-system.research.index');
+        Route::get('/research/export-csv', [UxResearchDashboardController::class, 'exportCsv'])->name('design-system.research.export-csv');
+    });
+
+    // Design System Catalog & Theme Preference (Dapat diakses admin, owner, dan operator)
+    Route::middleware('role:admin,design_system_owner,operator')->group(function () {
+        Route::get('/design-system', [DesignSystemCatalogController::class, 'index'])->name('design-system.index');
+        Route::get('/design-system/{name}', [DesignSystemCatalogController::class, 'show'])->name('design-system.show');
+        Route::post('/user/theme-preference', [ThemePreferenceController::class, 'update'])->name('user.theme-preference.update');
+    });
 });

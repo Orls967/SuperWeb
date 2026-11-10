@@ -101,7 +101,7 @@ final class DesignSystemReleaseController extends Controller
             'new_version' => $validated['new_version'] ?? null,
             'breaking_changes' => (bool) ($validated['breaking_changes'] ?? false),
             'a11y_checklist_passed' => (bool) ($validated['a11y_checklist_passed'] ?? true),
-            'idempotency_key' => $validated['idempotency_key'] ?? ('trans:'.$name.':'.$validated['to_status'].':'.time()),
+            'idempotency_key' => $validated['idempotency_key'] ?? ('trans:'.$name.':'.$validated['to_status']),
         ];
 
         $releaseAction->execute($component, $validated['to_status'], $actorId, $context);

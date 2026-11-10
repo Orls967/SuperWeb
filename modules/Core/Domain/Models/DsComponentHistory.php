@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DsComponentHistory extends Model
 {
-    public $timestamps = false;
-
     protected $table = 'core_ds_component_history';
 
     protected $fillable = [
@@ -22,12 +20,13 @@ class DsComponentHistory extends Model
         'actor_role',
         'reason',
         'metadata',
-        'created_at',
+        'ip_address',
+        'transitioned_at',
     ];
 
     protected $casts = [
         'metadata' => 'array',
-        'created_at' => 'datetime',
+        'transitioned_at' => 'datetime',
     ];
 
     public function component(): BelongsTo

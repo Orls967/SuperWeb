@@ -5,135 +5,154 @@
 @section('content')
     <x-enterprise.module-dashboard module="Party" />
 
-<div class="max-w-7xl mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-white">Party Directory</h1>
-            <p class="text-slate-400 text-sm mt-1">Satu sumber kebenaran untuk semua pihak bisnis</p>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Party Directory</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Satu sumber kebenaran untuk seluruh entitas dan mitra bisnis</p>
         </div>
-        <div class="flex gap-3">
-            <a href="{{ route('party.legal-entities') }}"
-               class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition">
-                🏢 Legal Entities
+        <div class="flex gap-2">
+            <a href="{{ route('party.legal-entities') }}">
+                <x-ds.button variant="secondary" size="sm">🏢 Legal Entities</x-ds.button>
             </a>
-            <a href="{{ route('party.create') }}"
-               id="btn-create-party"
-               class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition">
-                + Tambah Party
+            <a href="{{ route('party.create') }}" id="btn-create-party">
+                <x-ds.button variant="primary" size="sm">+ Tambah Party</x-ds.button>
             </a>
         </div>
     </div>
 
-    {{-- Flash --}}
+    {{-- Flash Toast --}}
     @if(session('success'))
-        <div class="mb-4 p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-lg text-emerald-300 text-sm">
-            {{ session('success') }}
-        </div>
+        <x-ds.toast type="success" :message="session('success')" />
     @endif
 
     {{-- Filters --}}
-    <form method="GET" class="flex flex-wrap gap-3 mb-6">
-        <input id="search-party" name="q" value="{{ request('q') }}"
-               placeholder="Cari nama / NIB..."
-               class="px-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg text-sm w-60 focus:outline-none focus:border-indigo-500">
-        <select id="filter-status" name="status" class="px-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg text-sm">
-            <option value="">Semua Status</option>
-            @foreach(['pending','verified','suspended','blacklisted'] as $s)
-                <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>
-            @endforeach
-        </select>
-        <select id="filter-role" name="role" class="px-3 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg text-sm">
-            <option value="">Semua Role</option>
-            @foreach(['supplier','carrier','tenant','customer','distributor','agent','partner','franchisee'] as $r)
-                <option value="{{ $r }}" @selected(request('role') === $r)>{{ ucfirst($r) }}</option>
-            @endforeach
-        </select>
-        <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm transition">Filter</button>
-        <a href="{{ route('party.index') }}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition">Reset</a>
+    <form method="GET" class="flex flex-wrap gap-3 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+        <div class="flex-1 min-w-48">
+            <x-ds.input
+                id="search-party"
+                name="q"
+                :value="request('q')"
+                placeholder="Cari nama / NIB..."
+                aria-label="Cari nama atau NIB party"
+            />
+        </div>
+        <div class="w-48">
+            <x-ds.select
+                id="filter-status"
+                name="status"
+                :value="request('status')"
+                :options="[
+                    '' => 'Semua Status',
+                    'pending' => 'Pending',
+                    'verified' => 'Verified',
+                    'suspended' => 'Suspended',
+                    'blacklisted' => 'Blacklisted',
+                ]"
+                aria-label="Filter status party"
+            />
+        </div>
+        <div class="w-48">
+            <x-ds.select
+                id="filter-role"
+                name="role"
+                :value="request('role')"
+                :options="[
+                    '' => 'Semua Role',
+                    'supplier' => 'Supplier',
+                    'carrier' => 'Carrier',
+                    'tenant' => 'Tenant',
+                    'customer' => 'Customer',
+                    'distributor' => 'Distributor',
+                    'agent' => 'Agent',
+                    'partner' => 'Partner',
+                    'franchisee' => 'Franchisee',
+                ]"
+                aria-label="Filter role party"
+            />
+        </div>
+        <div class="flex items-center gap-2">
+            <x-ds.button type="submit" variant="primary" size="md">Filter</x-ds.button>
+            <a href="{{ route('party.index') }}" class="px-3 py-2 text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition">Reset</a>
+        </div>
     </form>
 
-    {{-- Table --}}
-    <div class="bg-slate-800/60 backdrop-blur border border-slate-700/50 rounded-xl overflow-hidden">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-slate-700 text-slate-400 text-xs uppercase">
-                    <th class="px-4 py-3 text-left">Nama</th>
-                    <th class="px-4 py-3 text-left">Tipe</th>
-                    <th class="px-4 py-3 text-left">Role(s)</th>
-                    <th class="px-4 py-3 text-left">Status KYB</th>
-                    <th class="px-4 py-3 text-left">Status</th>
-                    <th class="px-4 py-3 text-right">Credit Score</th>
-                    <th class="px-4 py-3 text-right">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700/50">
-                @forelse($parties as $party)
-                <tr class="hover:bg-slate-700/30 transition">
-                    <td class="px-4 py-3">
-                        <div class="font-medium text-white">{{ $party->name }}</div>
-                        @if($party->nib)
-                            <div class="text-xs text-slate-500">NIB: {{ $party->nib }}</div>
-                        @endif
-                    </td>
-                    <td class="px-4 py-3 text-slate-300">{{ ucfirst($party->type->value) }}</td>
-                    <td class="px-4 py-3">
-                        <div class="flex flex-wrap gap-1">
-                            @foreach($party->roles->where('is_active', true)->take(3) as $role)
-                                <span class="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded text-xs">
-                                    {{ ucfirst($role->role->value) }}
-                                </span>
-                            @endforeach
-                        </div>
-                    </td>
-                    <td class="px-4 py-3">
-                        @php
-                            $kybColors = ['pending'=>'amber','in_review'=>'blue','verified'=>'emerald','rejected'=>'red'];
-                            $kyb = $party->kyb_status->value;
-                            $c = $kybColors[$kyb] ?? 'slate';
-                        @endphp
-                        <span class="px-2 py-0.5 bg-{{ $c }}-500/20 text-{{ $c }}-300 rounded-full text-xs">
-                            {{ ucfirst(str_replace('_',' ',$kyb)) }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3">
-                        @php
-                            $stColors = ['pending'=>'amber','verified'=>'emerald','suspended'=>'orange','blacklisted'=>'red'];
-                            $st = $party->status->value;
-                            $sc = $stColors[$st] ?? 'slate';
-                        @endphp
-                        <span class="px-2 py-0.5 bg-{{ $sc }}-500/20 text-{{ $sc }}-300 rounded-full text-xs font-medium">
-                            {{ ucfirst($st) }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-right">
-                        @if($party->creditProfile)
-                            <span class="font-mono font-bold text-white">{{ $party->creditProfile->internal_score }}</span>
-                            <span class="text-slate-500 text-xs">/100</span>
-                        @else
-                            <span class="text-slate-600">—</span>
-                        @endif
-                    </td>
-                    <td class="px-4 py-3 text-right">
-                        <a href="{{ route('party.show', $party) }}"
-                           class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded text-xs transition">
-                            Detail →
-                        </a>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-4 py-10 text-center text-slate-500">
-                        Tidak ada party ditemukan.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    {{-- Table Container --}}
+    <x-ds.card>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-xs uppercase">
+                    <tr>
+                        <th class="px-4 py-3">Nama</th>
+                        <th class="px-4 py-3">Tipe</th>
+                        <th class="px-4 py-3">Role(s)</th>
+                        <th class="px-4 py-3">Status KYB</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3 text-right">Credit Score</th>
+                        <th class="px-4 py-3 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    @forelse($parties as $party)
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="px-4 py-3">
+                            <div class="font-medium text-slate-900 dark:text-white">{{ $party->name }}</div>
+                            @if($party->nib)
+                                <div class="text-xs text-slate-500 font-mono">NIB: {{ $party->nib }}</div>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 capitalize">{{ $party->type->value }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex flex-wrap gap-1">
+                                @foreach($party->roles->where('is_active', true)->take(3) as $role)
+                                    <span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 rounded text-xs font-medium border border-blue-200 dark:border-blue-800">
+                                        {{ ucfirst($role->role->value) }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <x-ds.badge-status :status="$party->kyb_status->value" />
+                        </td>
+                        <td class="px-4 py-3">
+                            <x-ds.badge-status :status="$party->status->value" />
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            @if($party->creditProfile)
+                                <span class="font-mono font-bold text-slate-900 dark:text-white">{{ $party->creditProfile->internal_score }}</span>
+                                <span class="text-slate-500 text-xs">/100</span>
+                            @else
+                                <span class="text-slate-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{{ route('party.show', $party) }}" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                                Detail &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="p-8">
+                            <x-ds.empty
+                                title="Tidak Ada Party Ditemukan"
+                                description="Belum ada data entitas atau mitra bisnis yang sesuai dengan kriteria pencarian."
+                                action-label="Tambah Party Baru"
+                                :action-url="route('party.create')"
+                            />
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-    <div class="mt-4">
-        {{ $parties->links() }}
-    </div>
+        @if($parties->hasPages())
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                {{ $parties->links() }}
+            </div>
+        @endif
+    </x-ds.card>
 </div>
 @endsection

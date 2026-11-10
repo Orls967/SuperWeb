@@ -4,5 +4,6 @@
     <img src="/img/sample.png">
     <form>
         <input type="text" name="bad_input">
+        <button type="submit" class="raw-btn">Simpan Data</button>
     </form>
 </div>

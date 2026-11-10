@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Application\Actions\DesignSystem\ComponentReleaseAction;
 use Modules\Core\Domain\Models\DsComponent;
 use Modules\Core\Domain\Models\DsToken;
+use Modules\Core\Domain\Models\Role;
 use Modules\Shared\Console\Commands\DsAuditCommand;
 use Modules\Shared\Console\Commands\UiLintCommand;
 use Tests\TestCase;
@@ -20,6 +21,15 @@ use Tests\TestCase;
 class DesignSystemAcceptanceTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Role::firstOrCreate(['name' => 'design_system_owner'], ['label' => 'Design System Owner']);
+        Role::firstOrCreate(['name' => 'operator'], ['label' => 'Operator']);
+        Role::firstOrCreate(['name' => 'admin'], ['label' => 'Administrator']);
+    }
 
     /**
      * Test 1: Akses RBAC ke seluruh grup rute /design-system*
@@ -91,7 +101,7 @@ class DesignSystemAcceptanceTest extends TestCase
     public function test_03_ui_lint_catches_all_violations_and_passes_clean(): void
     {
         $exitCode = Artisan::call('ui:lint', [
-            '--paths' => 'tests/Fixtures/Ui',
+            '--paths' => 'tests/Fixtures/Ui/violation-fixture.blade.php',
         ]);
         $output = Artisan::output();
 

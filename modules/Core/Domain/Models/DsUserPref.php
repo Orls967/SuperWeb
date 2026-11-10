@@ -15,6 +15,16 @@ class DsUserPref extends Model
     protected $fillable = [
         'user_id',
         'theme',
+        'density',
+        'font_scale',
+        'reduced_motion',
+        'high_contrast',
+    ];
+
+    protected $casts = [
+        'font_scale' => 'integer',
+        'reduced_motion' => 'boolean',
+        'high_contrast' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -22,18 +32,12 @@ class DsUserPref extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public static function getThemeForUser(int $userId): string
+    public static function getThemeForUser(?int $userId): string
     {
-        $pref = static::where('user_id', $userId)->first();
+        if (! $userId) {
+            return (string) session('ds_theme', 'light');
+        }
 
-        return $pref?->theme ?? 'light';
-    }
-
-    public static function setThemeForUser(int $userId, string $theme): static
-    {
-        return static::updateOrCreate(
-            ['user_id' => $userId],
-            ['theme' => in_array($theme, ['light', 'dark', 'hc'], true) ? $theme : 'light']
-        );
+        return (string) (self::where('user_id', $userId)->value('theme') ?: session('ds_theme', 'light'));
     }
 }
