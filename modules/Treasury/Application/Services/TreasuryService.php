@@ -671,13 +671,13 @@ class TreasuryService implements ExchangeRateLookup, FxMonetaryItemFeed
             return null;
         }
 
-        return new \Modules\Treasury\Domain\Algorithms\RationalRate(
+        return new RationalRate(
             (int) $rate->rate_numerator,
             (int) $rate->rate_denominator
         );
     }
 
-    public function getHistoricalRate(string $fromCurrency, string $toCurrency, string $date, string $rateType = 'spot'): ?\Modules\Treasury\Domain\Algorithms\RationalRate
+    public function getHistoricalRate(string $fromCurrency, string $toCurrency, string $date, string $rateType = 'spot'): ?RationalRate
     {
         $rate = ExchangeRate::where('from_currency', strtoupper($fromCurrency))
             ->where('to_currency', strtoupper($toCurrency))
@@ -690,7 +690,7 @@ class TreasuryService implements ExchangeRateLookup, FxMonetaryItemFeed
             return null;
         }
 
-        return new \Modules\Treasury\Domain\Algorithms\RationalRate(
+        return new RationalRate(
             (int) $rate->rate_numerator,
             (int) $rate->rate_denominator
         );
@@ -698,14 +698,14 @@ class TreasuryService implements ExchangeRateLookup, FxMonetaryItemFeed
 
     public function getMonetaryItems(string $entityId, string $period): array
     {
-        return \Modules\Treasury\Domain\Models\FxLot::where('entity_id', $entityId)
+        return FxLot::where('entity_id', $entityId)
             ->where('status', 'active')
             ->get()
             ->map(fn ($lot) => [
                 'id' => $lot->id,
                 'currency' => $lot->currency,
                 'amount' => $lot->remaining_amount,
-                'carrying_rate' => new \Modules\Treasury\Domain\Algorithms\RationalRate(
+                'carrying_rate' => new RationalRate(
                     $lot->current_carrying_rate_num,
                     $lot->current_carrying_rate_den
                 ),

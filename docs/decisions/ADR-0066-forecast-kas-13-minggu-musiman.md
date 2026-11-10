@@ -14,3 +14,4 @@ Peramalan likuiditas arus kas jangka pendek (1 kuartal / 13 minggu) merupakan in
 
 ## Konsekuensi
 - Manajemen perbendaharaan memperoleh visibilitas arus kas 13 minggu yang akurat dan berbasis statistik tanpa bias komputasi float.
+

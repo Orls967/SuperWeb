@@ -49,7 +49,7 @@ class DailyMarkToMarketCommand extends Command
             $this->line(" [FWD] {$fwd->contract_number}: MTM = Rp ".number_format($mtm));
         }
 
-        $this->info("Total Nilai Wajar Posisi Derivatif MTM: Rp ".number_format($totalMtm));
+        $this->info('Total Nilai Wajar Posisi Derivatif MTM: Rp '.number_format($totalMtm));
 
         return self::SUCCESS;
     }

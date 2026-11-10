@@ -8,7 +8,6 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Domain\Models\LedgerEntry;
 use Modules\Treasury\Application\Actions\DrawFacilityAction;
 use Modules\Treasury\Application\Actions\ExecuteCashPoolSweepAction;
 use Modules\Treasury\Application\Actions\GenerateSeasonalCashForecastAction;
@@ -19,11 +18,7 @@ use Modules\Treasury\Application\Actions\SettleForwardContractAction;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
 use Modules\Treasury\Domain\Enums\HedgeStatus;
-use Modules\Treasury\Domain\Models\BankAccount;
-use Modules\Treasury\Domain\Models\CashPool;
-use Modules\Treasury\Domain\Models\CreditFacility;
 use Modules\Treasury\Domain\Models\Currency;
-use Modules\Treasury\Domain\Models\ForwardContract;
 use Modules\Treasury\Domain\StateMachines\HedgeContractStateMachine;
 use Tests\TestCase;
 
@@ -32,6 +27,7 @@ class TreasuryEndToEndLifecycleTest extends TestCase
     use RefreshDatabase;
 
     protected TreasuryService $service;
+
     protected LedgerService $ledgerService;
 
     protected function setUp(): void

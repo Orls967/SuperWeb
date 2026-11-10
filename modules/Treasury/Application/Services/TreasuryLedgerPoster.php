@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Treasury\Application\Services;
 
-use Brick\Math\BigDecimal;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\LedgerAccountsSeeder;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Banking\Contracts\LedgerTransaction;
 use Modules\Banking\Support\Posting;
 use Modules\Treasury\Domain\Exceptions\TreasuryException;
-use Modules\Treasury\Ledger\TreasuryAccounts;
 use Modules\Treasury\Ledger\TreasuryTransactionTypes;
 use Psr\Clock\ClockInterface;
 
@@ -39,7 +37,7 @@ class TreasuryLedgerPoster
     protected function ensureAccountsSeeded(): void
     {
         if ($this->ledgerService->findAccountByCode('trs:fx_reval_asset_adj:IDR') === null) {
-            (new \Database\Seeders\LedgerAccountsSeeder)->run();
+            (new LedgerAccountsSeeder)->run();
         }
     }
 

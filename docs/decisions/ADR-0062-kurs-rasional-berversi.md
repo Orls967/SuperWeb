@@ -15,3 +15,4 @@ Operasi valuta asing sering mengalami distorsi kepresisian biner bila menggunaka
 ## Konsekuensi
 - Mencegah inkonsistensi matematis selisih desimal float pada seluruh transaksi valuta asing.
 - Seluruh histori kurs dapat diaudit secara forensik dan deterministik.
+

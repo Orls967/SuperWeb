@@ -8,6 +8,7 @@ use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Treasury\Application\Services\TreasuryService;
+use Modules\Treasury\database\seeders\TreasuryT1Seeder;
 use Tests\TestCase;
 
 class TreasuryDualSourceAuditTest extends TestCase
@@ -44,7 +45,7 @@ class TreasuryDualSourceAuditTest extends TestCase
 
     public function test_treasury_t1_dataset_normal_and_shock_injection_maintains_zero_discrepancy(): void
     {
-        $seeder = new \Modules\Treasury\database\seeders\TreasuryT1Seeder;
+        $seeder = new TreasuryT1Seeder;
         $seeder->run();
 
         $exitNormal = $this->artisan('treasury:audit')->run();

@@ -7,8 +7,11 @@ namespace Modules\Treasury\Domain\DTOs;
 final class ToleranceMatchDTO
 {
     public string $bankLineId;
+
     public string $bookLineId;
+
     public int $deltaAmount;
+
     public int $deltaDays;
 
     public function __construct(

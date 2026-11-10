@@ -21,7 +21,7 @@ class UnmatchBankStatementAction
             throw new InvalidArgumentException("Mutasi bank {$statement->reference_no} belum pernah direkonsiliasi.");
         }
 
-        return DB::transaction(function () use ($statement, $reason, $userId) {
+        return DB::transaction(function () use ($statement) {
             // Hapus match record jika ada
             BankReconciliationMatch::where('statement_id', $statement->id)->delete();
 

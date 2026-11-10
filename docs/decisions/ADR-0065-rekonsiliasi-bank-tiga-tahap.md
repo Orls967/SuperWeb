@@ -17,3 +17,4 @@ Rekonsiliasi rekening koran perbankan (*bank statement*) dengan buku kas interna
 
 ## Konsekuensi
 - Menghasilkan tingkat otomatisasi rekonsiliasi tinggi tanpa mengorbankan integritas dan kepastian audit matematis.
+

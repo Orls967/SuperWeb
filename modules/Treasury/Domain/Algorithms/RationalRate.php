@@ -14,6 +14,7 @@ use JsonSerializable;
 final class RationalRate implements JsonSerializable
 {
     public int $numerator;
+
     public int $denominator;
 
     public function __construct(int $numerator, int $denominator = 1)

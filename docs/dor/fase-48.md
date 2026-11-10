@@ -106,3 +106,4 @@ Setiap transaksi mematuhi konvensi KONSEP §A2.1 (Debit -, Credit +, Σ = 0 per 
 - **W8-D67**: Lindung nilai forward contract & MTM daily.
 - **W8-D68**: Covenant fasilitas bank berbasis permil integer tanpa float.
 - **W8-D69**: Cash pooling zero-balancing via pinjaman intercompany arm's length.
+

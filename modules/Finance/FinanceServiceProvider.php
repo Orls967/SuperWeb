@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Crypto\Domain\Events\PricesTicked;
+use Modules\Finance\Application\Services\DefaultLoanExposureProvider;
 use Modules\Finance\Console\Commands\ChargeDueInstallmentsCommand;
+use Modules\Finance\Contracts\LoanExposureProvider;
 use Modules\Finance\Domain\Models\Loan;
 use Modules\Finance\Listeners\MonitorLoanRisk;
 use Modules\Shared\Application\MenuRegistry;
@@ -17,7 +19,7 @@ class FinanceServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(\Modules\Finance\Contracts\LoanExposureProvider::class, \Modules\Finance\Application\Services\DefaultLoanExposureProvider::class);
+        $this->app->singleton(LoanExposureProvider::class, DefaultLoanExposureProvider::class);
     }
 
     public function boot(): void

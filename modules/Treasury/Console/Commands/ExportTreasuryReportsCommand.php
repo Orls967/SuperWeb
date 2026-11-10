@@ -14,6 +14,7 @@ use Modules\Treasury\Application\Reports\FxLotSubledgerReportExporter;
 use Modules\Treasury\Application\Reports\FxPositionReportExporter;
 use Modules\Treasury\Application\Reports\FxRevaluationReportExporter;
 use Modules\Treasury\Application\Reports\HedgePortfolioReportExporter;
+use Modules\Treasury\Domain\Models\BankAccount;
 
 /**
  * Command untuk mengekspor 8 jenis laporan resmi Treasury dalam format CSV.
@@ -53,7 +54,7 @@ final class ExportTreasuryReportsCommand extends Command
 
         $todayStr = $clock->now()->toDateString();
         $currPeriod = $period ?: $clock->now()->format('Y-m');
-        $defaultBankId = \Modules\Treasury\Domain\Models\BankAccount::first()?->id ?? '';
+        $defaultBankId = BankAccount::first()?->id ?? '';
 
         $reports = [
             'fx-positions' => [
@@ -103,6 +104,7 @@ final class ExportTreasuryReportsCommand extends Command
         foreach ($targets as $key) {
             if (! isset($reports[$key])) {
                 $this->error("Tipe laporan '{$key}' tidak dikenal.");
+
                 continue;
             }
 

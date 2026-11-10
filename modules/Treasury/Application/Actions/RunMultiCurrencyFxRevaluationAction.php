@@ -12,7 +12,6 @@ use Modules\Treasury\Contracts\ExchangeRateLookup;
 use Modules\Treasury\Contracts\FxMonetaryItemFeed;
 use Modules\Treasury\Domain\Algorithms\FxRevaluationCalculator;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
-use Modules\Treasury\Domain\Exceptions\TreasuryException;
 use Modules\Treasury\Domain\Models\FxLot;
 use Modules\Treasury\Domain\Models\Revaluation;
 use Psr\Clock\ClockInterface;

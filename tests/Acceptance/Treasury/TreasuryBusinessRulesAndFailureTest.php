@@ -8,16 +8,16 @@ use App\Models\User;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use InvalidArgumentException;
+use Modules\Banking\Domain\Exceptions\UnbalancedTransactionException;
+use Modules\Banking\Support\Posting;
 use Modules\Treasury\Application\Actions\DrawFacilityAction;
 use Modules\Treasury\Application\Actions\ExecuteCashPoolSweepAction;
-use Modules\Treasury\Application\Actions\ReverseRevaluationsAction;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
 use Modules\Treasury\Domain\Enums\HedgeStatus;
 use Modules\Treasury\Domain\Exceptions\CovenantBreachException;
 use Modules\Treasury\Domain\Exceptions\HedgeInvalidTransitionException;
 use Modules\Treasury\Domain\Exceptions\HedgeMakerCheckerViolationException;
-use Modules\Treasury\Domain\Exceptions\PoolSweepNegativeBalanceException;
 use Modules\Treasury\Domain\StateMachines\HedgeContractStateMachine;
 use Tests\TestCase;
 
@@ -142,9 +142,9 @@ class TreasuryBusinessRulesAndFailureTest extends TestCase
 
     public function test_money_integrity_blocks_unbalanced_ledger_posting_sabotage(): void
     {
-        $this->expectException(\Modules\Banking\Domain\Exceptions\UnbalancedTransactionException::class);
+        $this->expectException(UnbalancedTransactionException::class);
 
-        $lines = \Modules\Banking\Support\Posting::lines();
+        $lines = Posting::lines();
         // Sabotase: kredit di kedua sisi sehingga total != 0 (sum != 0)
         $lines->credit('trs:fx_reval_asset_adj:IDR', 100_000, 'IDR')
             ->credit('trs:fx_unrealized_gain_loss:IDR', 100_000, 'IDR');

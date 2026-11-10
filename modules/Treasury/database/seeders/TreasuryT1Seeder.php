@@ -8,10 +8,7 @@ use Carbon\CarbonImmutable;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Modules\Banking\Application\DTOs\PostingDTO;
-use Modules\Banking\Application\DTOs\PostingEntryDTO;
-use Modules\Banking\Application\Services\LedgerService;
-use Modules\Treasury\Domain\Algorithms\RationalRate;
+use Illuminate\Support\Str;
 use Modules\Treasury\Domain\Enums\HedgeStatus;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\BankStatement;
@@ -21,11 +18,6 @@ use Modules\Treasury\Domain\Models\CreditFacility;
 use Modules\Treasury\Domain\Models\CreditFacilityDrawdown;
 use Modules\Treasury\Domain\Models\Currency;
 use Modules\Treasury\Domain\Models\ExchangeRate;
-use Modules\Treasury\Domain\Models\ForwardContract;
-use Modules\Treasury\Domain\Models\ForwardContractHistory;
-use Modules\Treasury\Domain\Models\FxLot;
-use Modules\Treasury\Domain\Models\PettyCashVoucher;
-use Modules\Treasury\Domain\Models\Revaluation;
 
 /**
  * Seeder T1 Modul Treasury (W8-P5 / Fase 48)
@@ -112,15 +104,15 @@ class TreasuryT1Seeder extends Seeder
                 $effectiveDen = 1;
 
                 $rateRows[] = [
-                    'id' => (string) \Illuminate\Support\Str::uuid(),
+                    'id' => (string) Str::uuid(),
                     'from_currency' => $ccy,
                     'to_currency' => 'IDR',
                     'rate_date' => $date,
                     'rate_numerator' => $effectiveNum,
                     'rate_denominator' => $effectiveDen,
                     'rate_type' => ($day % 15 === 0) ? 'closing' : 'spot',
-                    'created_at' => $date . ' 00:00:00',
-                    'updated_at' => $date . ' 00:00:00',
+                    'created_at' => $date.' 00:00:00',
+                    'updated_at' => $date.' 00:00:00',
                 ];
             }
         }
@@ -165,7 +157,7 @@ class TreasuryT1Seeder extends Seeder
             $remaining = $isExhausted ? 0 : $foreignMinor;
 
             $lotRows[] = [
-                'id' => (string) \Illuminate\Support\Str::uuid(),
+                'id' => (string) Str::uuid(),
                 'entity_code' => ($i % 3 === 0) ? 'SUB_A' : 'HOLDING',
                 'currency' => $curr,
                 'lot_date' => $base->addDays($i % 30)->toDateString(),
@@ -178,9 +170,9 @@ class TreasuryT1Seeder extends Seeder
                 'current_carrying_rate_den' => 1,
                 'current_carrying_idr' => $isExhausted ? 0 : $costIdr,
                 'status' => $isExhausted ? 'exhausted' : 'active',
-                'source_ref' => "PO-TRADE-{$curr}-" . str_pad((string) $i, 4, '0', STR_PAD_LEFT),
-                'created_at' => $base->toDateString() . ' 00:00:00',
-                'updated_at' => $base->toDateString() . ' 00:00:00',
+                'source_ref' => "PO-TRADE-{$curr}-".str_pad((string) $i, 4, '0', STR_PAD_LEFT),
+                'created_at' => $base->toDateString().' 00:00:00',
+                'updated_at' => $base->toDateString().' 00:00:00',
             ];
         }
         DB::table('trs_fx_lots')->insert($lotRows);
@@ -192,10 +184,10 @@ class TreasuryT1Seeder extends Seeder
             $isReconciled = ($s <= 450); // 450 matched, 150 unmatched
             $date = $base->addDays($s % 45)->toDateString();
             $amount = ($s * 50_000) + 1_000_000;
-            $ref = "REF-MT940-" . str_pad((string) $s, 5, '0', STR_PAD_LEFT);
+            $ref = 'REF-MT940-'.str_pad((string) $s, 5, '0', STR_PAD_LEFT);
 
             $stmtRows[] = [
-                'id' => (string) \Illuminate\Support\Str::uuid(),
+                'id' => (string) Str::uuid(),
                 'bank_account_id' => $mainAccount->id,
                 'transaction_date' => $date,
                 'reference_no' => $ref,
@@ -204,8 +196,8 @@ class TreasuryT1Seeder extends Seeder
                 'is_reconciled' => $isReconciled,
                 'reconciliation_status' => $isReconciled ? 'matched' : 'unmatched',
                 'matched_ledger_tx_id' => $isReconciled ? (1000 + $s) : null,
-                'created_at' => $date . ' 00:00:00',
-                'updated_at' => $date . ' 00:00:00',
+                'created_at' => $date.' 00:00:00',
+                'updated_at' => $date.' 00:00:00',
             ];
         }
         DB::table('trs_bank_statements')->insert($stmtRows);
@@ -219,8 +211,8 @@ class TreasuryT1Seeder extends Seeder
             $forwardRate = 15750 * 10000;
 
             $hedgeRows[] = [
-                'id' => (string) \Illuminate\Support\Str::uuid(),
-                'contract_number' => "FWD-T1-" . str_pad((string) $h, 4, '0', STR_PAD_LEFT),
+                'id' => (string) Str::uuid(),
+                'contract_number' => 'FWD-T1-'.str_pad((string) $h, 4, '0', STR_PAD_LEFT),
                 'currency' => 'USD',
                 'creator_id' => null,
                 'notional_foreign_amount' => $notional,
@@ -230,8 +222,8 @@ class TreasuryT1Seeder extends Seeder
                 'maturity_date' => $base->addDays(30 + $h)->toDateString(),
                 'mtm_value_idr' => 0,
                 'status' => $status,
-                'created_at' => $base->toDateString() . ' 00:00:00',
-                'updated_at' => $base->toDateString() . ' 00:00:00',
+                'created_at' => $base->toDateString().' 00:00:00',
+                'updated_at' => $base->toDateString().' 00:00:00',
             ];
         }
         DB::table('trs_forward_contracts')->insert($hedgeRows);

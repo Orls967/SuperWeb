@@ -7,7 +7,9 @@ namespace Modules\Treasury\Domain\DTOs;
 final class BankStatementLineDTO
 {
     public int $day;
+
     public string $reference;
+
     public string $date;
 
     public function __construct(

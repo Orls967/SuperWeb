@@ -65,3 +65,4 @@ Dokumen ini mendokumentasikan seluruh pengecualian (*exceptions*), kode galat, p
 - **Pesan Galat**: `"Revaluasi untuk lot valas {lot_id} pada periode {period} telah dibalik sebelumnya."`
 - **Penyebab**: Percobaan membalik revaluasi yang status `is_reversed` nya sudah bernilai `true`.
 - **Tindakan Perbaikan**: Tidak ada tindakan diperlukan (perilaku idempoten). Sistem mengabaikan proses pembalik berulang.
+

@@ -97,3 +97,4 @@ $$y = [100, 80, 60, 140, 110, 90, 70, 150, 120, 100, 80, 160]$$
   - `modules/Treasury/Domain/Algorithms/SeasonalCashForecaster.php`
   - `modules/Treasury/Domain/Algorithms/Certificates/SeasonalCashForecastCertificate.php`
   - `modules/Treasury/Domain/Algorithms/Certificates/SeasonalCashForecastCertificateVerifier.php`
+

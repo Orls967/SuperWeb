@@ -32,8 +32,8 @@ class TestCreditCovenantCommand extends Command
         $totalDebt = $provider ? $provider->getGroupTotalDebtIdr() : 0;
         $totalEquity = max(1, $provider ? $provider->getGroupTotalEquityIdr() : 1_000_000_000_000);
 
-        $this->info("Total Utang Grup: Rp ".number_format($totalDebt));
-        $this->info("Total Ekuitas Grup: Rp ".number_format($totalEquity));
+        $this->info('Total Utang Grup: Rp '.number_format($totalDebt));
+        $this->info('Total Ekuitas Grup: Rp '.number_format($totalEquity));
 
         $hasBreach = false;
         foreach ($facilities as $fac) {

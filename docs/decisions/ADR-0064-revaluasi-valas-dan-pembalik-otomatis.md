@@ -18,3 +18,4 @@ Sesuai PSAK 10, pos moneter valuta asing (piutang, utang, kas bank valas, pinjam
 
 ## Konsekuensi
 - Menghilangkan distorsi laba rugi antar periode dan menjamin kebenaran pencatatan realized gain/loss saat pelunasan riil.
+

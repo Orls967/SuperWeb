@@ -15,3 +15,4 @@ Perjanjian kredit perbankan korporat mewajibkan peminjam mematuhi batasan rasio 
 
 ## Konsekuensi
 - Memastikan eliminasi total tipe float pada penegakan batas kredit dan melindungi korporasi dari wanprestasi pinjaman sindikasi bank.
+

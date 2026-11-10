@@ -6,7 +6,6 @@ namespace Modules\Treasury\Application\Actions;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 use Modules\Treasury\Domain\Algorithms\SeasonalCashForecaster;
 use Modules\Treasury\Domain\DTOs\ForecastResultDTO;
 use Modules\Treasury\Domain\Models\CashForecast;

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Modules\Treasury\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Modules\Banking\Application\Services\LedgerService;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\CreditFacility;
 use Modules\Treasury\Domain\Models\CreditFacilityDrawdown;
 use Modules\Treasury\Domain\Models\ForwardContract;
-use Modules\Treasury\Domain\Models\PettyCashVoucher;
 
 class AuditTreasuryCommand extends Command
 {
@@ -71,10 +71,10 @@ class AuditTreasuryCommand extends Command
         $discrepancyCount = count($discrepancies);
 
         if ($discrepancyCount > 0) {
-            \Illuminate\Support\Facades\Log::error("Treasury audit failed with discrepancies: " . json_encode($discrepancies));
+            Log::error('Treasury audit failed with discrepancies: '.json_encode($discrepancies));
             $this->error('Treasury audit FAILED: Discrepancy detected in credit facilities / balances!');
             foreach ($discrepancies as $idx => $err) {
-                $this->line(" [!] ".($idx + 1).". {$err}");
+                $this->line(' [!] '.($idx + 1).". {$err}");
             }
 
             return self::FAILURE;

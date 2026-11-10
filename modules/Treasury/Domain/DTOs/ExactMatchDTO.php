@@ -7,6 +7,7 @@ namespace Modules\Treasury\Domain\DTOs;
 final class ExactMatchDTO
 {
     public string $bankLineId;
+
     public string $bookLineId;
 
     public function __construct(

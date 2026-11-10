@@ -33,7 +33,7 @@ class CashPoolSweepCommand extends Command
             $this->info("Menjalankan sweep untuk pool: {$p->pool_name}...");
             $res = $action->execute($p);
 
-            $this->line(" Nominal disapu: Rp ".number_format($res['swept_amount_idr']));
+            $this->line(' Nominal disapu: Rp '.number_format($res['swept_amount_idr']));
             $this->line(" Arah          : {$res['sweep_direction']}");
         }
 

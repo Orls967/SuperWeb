@@ -20,3 +20,4 @@ Tabel buku besar (`ledger_transactions` dan `ledger_entries`) pada modul `Bankin
 ## Konsekuensi
 - Memungkinkan pembukuan per entitas independen dan konsolidasi grup tanpa mengubah fondasi ledger modul `Banking`.
 - Memerlukan helper kode akun idempoten saat posting dan agregasi pelaporan saldo per entitas.
+

@@ -11,6 +11,7 @@ use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Console\Commands\AuditTreasuryCommand;
 use Modules\Treasury\Console\Commands\CashPoolSweepCommand;
 use Modules\Treasury\Console\Commands\DailyMarkToMarketCommand;
+use Modules\Treasury\Console\Commands\ExportTreasuryReportsCommand;
 use Modules\Treasury\Console\Commands\GenerateCashForecastCommand;
 use Modules\Treasury\Console\Commands\ImportBankStatementCommand;
 use Modules\Treasury\Console\Commands\ReconcileBankStatementsCommand;
@@ -58,7 +59,7 @@ class TreasuryServiceProvider extends ServiceProvider
                 TestCreditCovenantCommand::class,
                 CashPoolSweepCommand::class,
                 GenerateCashForecastCommand::class,
-                \Modules\Treasury\Console\Commands\ExportTreasuryReportsCommand::class,
+                ExportTreasuryReportsCommand::class,
             ]);
         }
 

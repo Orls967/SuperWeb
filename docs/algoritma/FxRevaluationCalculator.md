@@ -103,3 +103,4 @@ $$\text{RealizedGainLoss} = \text{SettlementValue} - \text{CarryingAllocated} \q
   - `modules/Treasury/Domain/Algorithms/FxRevaluationCalculator.php`
   - `modules/Treasury/Domain/Algorithms/Certificates/FxRevaluationCertificate.php`
   - `modules/Treasury/Domain/Algorithms/Certificates/FxRevaluationCertificateVerifier.php`
+

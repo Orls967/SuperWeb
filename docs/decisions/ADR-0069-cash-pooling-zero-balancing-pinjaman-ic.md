@@ -16,3 +16,4 @@ Penyapuan dana (*cash sweep*) dari rekening bank anak perusahaan ke rekening ind
 
 ## Konsekuensi
 - Memastikan struktur pooling kas grup memenuhi kepatuhan perpajakan dan akuntansi intercompany, sekaligus menjamin ketersediaan likuiditas operasional seluruh entitas anak.
+

@@ -16,3 +16,4 @@ Komitmen pembelian impor atau pelunasan pinjaman valas di masa depan menghadapka
 
 ## Konsekuensi
 - Menjamin kepatuhan terhadap standar akuntansi derivatif PSAK 71 dan mencegah manipulasi otorisasi instrumen keuangan berisiko tinggi.
+

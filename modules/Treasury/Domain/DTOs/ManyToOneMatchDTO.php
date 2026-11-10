@@ -7,6 +7,7 @@ namespace Modules\Treasury\Domain\DTOs;
 final class ManyToOneMatchDTO
 {
     public string $bankLineId;
+
     public array $bookLineIds;
 
     /**

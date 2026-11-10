@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Treasury\Domain\Algorithms\Certificates;
 
 use JsonSerializable;
-use Modules\Treasury\Domain\Exceptions\InvalidCertificateException;
 
 final class FxRevaluationCertificate implements JsonSerializable
 {

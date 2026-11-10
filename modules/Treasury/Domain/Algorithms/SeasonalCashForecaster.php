@@ -25,7 +25,7 @@ final class SeasonalCashForecaster
         $n = count($historyWeeks);
 
         if ($n < (2 * $seasonPeriod)) {
-            throw new InvalidArgumentException("INSUFFICIENT_HISTORY: Riwayat arus kas ({$n} minggu) kurang dari 2 siklus musiman minimum (" .(2 * $seasonPeriod). ' minggu).');
+            throw new InvalidArgumentException("INSUFFICIENT_HISTORY: Riwayat arus kas ({$n} minggu) kurang dari 2 siklus musiman minimum (".(2 * $seasonPeriod).' minggu).');
         }
 
         if (($n % $seasonPeriod) !== 0) {

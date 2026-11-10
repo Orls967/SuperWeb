@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Treasury\Application\Reports;
 
-use Modules\Treasury\Domain\Models\CashPool;
 use Modules\Treasury\Domain\Models\CashPoolSweep;
 
 /**

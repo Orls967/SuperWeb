@@ -17,3 +17,4 @@ Pencatatan multi-currency dalam standar akuntansi ganda mewajibkan setiap jurnal
 ## Konsekuensi
 - Menjamin integritas neraca multi-mata uang tanpa selisih cross-currency.
 - Memungkinkan perhitungan realized gain/loss proporsional saat pelunasan parsial berdasarkan lot historis.
+

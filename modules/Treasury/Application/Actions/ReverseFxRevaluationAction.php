@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Treasury\Application\Services\TreasuryLedgerPoster;
-use Modules\Treasury\Domain\Exceptions\TreasuryException;
 use Modules\Treasury\Domain\Models\Revaluation;
 use Psr\Clock\ClockInterface;
 

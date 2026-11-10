@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Treasury\Application\Reports;
 
 use Modules\Treasury\Domain\Models\CreditFacility;
-use Modules\Treasury\Domain\Models\CreditFacilityDrawdown;
 
 /**
  * Exporter Laporan Fasilitas Kredit Sindikasi & Pemantauan Covenant Rasional (CSV).
