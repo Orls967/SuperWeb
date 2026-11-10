@@ -15,7 +15,8 @@ use Modules\Core\Domain\Models\SimEventSpine;
 class EventSpineService implements EventSpineInterface
 {
     public function __construct(
-        protected SimClockInterface $simClock
+        protected SimClockInterface $simClock,
+        protected ?EventSchemaRegistry $schemaRegistry = null
     ) {}
 
     public function publish(
@@ -25,6 +26,11 @@ class EventSpineService implements EventSpineInterface
         string $idempotencyKey,
         int $version = 1
     ): SimEventSpine {
+        // Validasi payload terhadap schema registry aktif bila tersedia
+        if ($this->schemaRegistry) {
+            $this->schemaRegistry->validate($eventName, $version, $payload);
+        }
+
         return DB::transaction(function () use ($topic, $eventName, $payload, $idempotencyKey, $version) {
             $existing = SimEventSpine::where('idempotency_key', $idempotencyKey)->first();
             if ($existing) {

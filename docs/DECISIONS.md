@@ -3083,3 +3083,54 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   3. **W8-D28 (Pemberlakuan Hak Akses Kebijakan Pertama / Policy-First Zero-Leak Ranker A6)**: Saringan otorisasi dieksekusi secara ketat di tingkat model dan kueri sebelum perakitan hasil pencarian. Akses dokumen, kontrak, invoice, dan rekam medis diisolasi menurut scope peran pengguna sehingga data rahasia tidak pernah merembes ke pengguna tanpa izin.
   4. **W8-D29 (Kotak Masuk "Tugas Saya" §19.1 & Approval Engine Bridge)**: Integrasi antarmuka kerja tunggal untuk persetujuan lintas modul yang terhubung ke `core_tasks`, `core_task_histories`, dan `core_task_comments`. Aksi batch approve, reject, dan delegate dilindungi otorisasi ganda dan pencatatan jejak audit permanen.
   5. **W8-D30 (Audit Dua Sumber search:audit & task:sla-audit)**: Integritas basis data pencarian dan tugas diaudit melalui fixture dua sumber `SearchAuditCorruptionFixture` dan `TaskSlaAuditCorruptionFixture` yang terdaftar resmi pada `AuditCommandRegistry`.
+
+<a id="w8-d31"></a>
+<a id="w8-d32"></a>
+<a id="w8-d33"></a>
+<a id="w8-d34"></a>
+<a id="w8-d35"></a>
+## 2026-11-10: [W8-P3.1] Core — Kernel Simulasi, Bus State Kembar Digital & Penjadwal Event Diskrit (Fase 67, W8-D31..W8-D35)
+- **Anchor:** `2026-11-10-w8-p3-fase-67-simulation-kernel-digital-twin` / `w8-d31` / `w8-d32` / `w8-d33` / `w8-d34` / `w8-d35`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-67.md`](design/fase-67.md) (Desain Arsitektur & Diagram Fase 67)
+  - [`docs/dor/fase-67.md`](dor/fase-67.md) (Definition of Ready & RAB Fase 67)
+  - [`docs/decisions/ADR-0031-virtual-clock-contract.md`](decisions/ADR-0031-virtual-clock-contract.md)
+  - [`docs/decisions/ADR-0032-discrete-event-minheap-scheduler.md`](decisions/ADR-0032-discrete-event-minheap-scheduler.md)
+  - [`docs/decisions/ADR-0033-minstd-rng-stream-splitting.md`](decisions/ADR-0033-minstd-rng-stream-splitting.md)
+  - [`docs/decisions/ADR-0034-sha256-hash-chain-fingerprint.md`](decisions/ADR-0034-sha256-hash-chain-fingerprint.md)
+  - [`docs/decisions/ADR-0035-sandbox-transaction-rollback.md`](decisions/ADR-0035-sandbox-transaction-rollback.md)
+- **Konteks:**
+  - Pembangunan kernel simulasi enterprise deterministik multi-hari, pengurutan antrean kejadian diskrit dengan min-heap, pembangkit bilangan acak MINSTD reproducible, rantai hash SHA-256 state fingerprint, dan isolasi sandbox transaksi rollback.
+- **Keputusan:**
+  1. **W8-D31 (Kontrak Waktu Virtual SimClockInterface)**: Seluruh pemrosesan waktu simulasi memakai jam terinjeksi tanpa manipulasi global `Carbon::setTestNow()`.
+  2. **W8-D32 (Penjadwal Kejadian Diskrit Min-Heap A1)**: Pengurutan antrean kejadian $O(\log n)$ berbasis binary min-heap dengan kunci `(virtual_second, priority, seq)`.
+  3. **W8-D33 (Generator Bilangan Acak Deterministik MINSTD A2)**: Multiplier $48.271$, modulus $2^{31}-1$, dan pemisahan sub-stream mandiri per domain.
+  4. **W8-D34 (Fingerprint Rantai Hash Kanonikal SHA-256 A3)**: Rantai hash kanonikal $h_i = \text{SHA-256}(h_{i-1} \parallel \text{day} \parallel \text{summary})$ untuk audit determinisme mutlak.
+  5. **W8-D35 (Isolasi Simulasi Sandbox Transaksi Rollback)**: Eksekusi simulasi dibungkus transaksi database dengan auto-rollback dan probe kesetimbangan ledger $\sum\text{debit} = \sum\text{credit}$.
+
+<a id="w8-d36"></a>
+<a id="w8-d37"></a>
+<a id="w8-d38"></a>
+<a id="w8-d39"></a>
+<a id="w8-d40"></a>
+## 2026-11-11: [W8-P3.2] Core — Universal Event Spine, Idempotent Consumer Inbox, Outbox Migration, DLQ & Dual-Source Audit (Fase R8, W8-D36..W8-D40)
+- **Anchor:** `2026-11-11-w8-p3-fase-r8-event-spine-idempotent-inbox` / `w8-d36` / `w8-d37` / `w8-d38` / `w8-d39` / `w8-d40`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-r8.md`](design/fase-r8.md) (Desain Arsitektur & Diagram Fase R8)
+  - [`docs/dor/fase-r8.md`](dor/fase-r8.md) (Definition of Ready & RAB Fase R8)
+  - [`docs/dor/bukti-l0-fase-r8.md`](dor/bukti-l0-fase-r8.md) (Bukti Kondisi Awal L.0 Fase R8)
+  - [`docs/decisions/ADR-0036-event-delivery-state-machine-backoff.md`](decisions/ADR-0036-event-delivery-state-machine-backoff.md)
+  - [`docs/decisions/ADR-0037-persistent-consumer-inbox-idempotency.md`](decisions/ADR-0037-persistent-consumer-inbox-idempotency.md)
+  - [`docs/decisions/ADR-0038-event-schema-registry-additive-compatibility.md`](decisions/ADR-0038-event-schema-registry-additive-compatibility.md)
+  - [`docs/decisions/ADR-0039-deterministic-replay-projection-hash.md`](decisions/ADR-0039-deterministic-replay-projection-hash.md)
+  - [`docs/decisions/ADR-0040-dead-letter-queue-poison-quarantine.md`](decisions/ADR-0040-dead-letter-queue-poison-quarantine.md)
+  - [`docs/diagrams/event-spine.md`](diagrams/event-spine.md)
+  - [`docs/galat/event-spine-error-catalog.md`](galat/event-spine-error-catalog.md)
+- **Konteks:**
+  - Pembangunan Universal Event Spine terdistribusi, State Machine EventDelivery 7 status, deduplikasi inbox konsumen persisten tahan-restart di basis data (`core_consumer_inbox`), karantina poison message, deteksi celah urutan agregat A4, backoff eksponensial deterministik A5, validator kompatibilitas aditif skema event A6, replay stream kanonikal, dan audit dua sumber `spine:audit`.
+- **Keputusan:**
+  1. **W8-D36 (State Machine EventDelivery 7 Status & Backoff Deterministik A5)**: Siklus pengiriman event (`pending` -> `dispatched` -> `delivered` / `retrying` -> `dead_lettered` -> `replayed` / `discarded`) dengan jeda berbasis MINSTD LCG integer arithmetic tanpa panggilan `sleep()`.
+  2. **W8-D37 (Persistent Consumer Inbox & Idempotensi Tahan-Restart)**: Penggantian cache statis in-memory `SpineConsumerRegistry` dengan tabel persisten `core_consumer_inbox` melalui `claim()` atomik dalam transaksi bersama efek samping domain.
+  3. **W8-D38 (Pusat Registrasi Skema & Penegakan Kompatibilitas Aditif A6)**: Pendaftaran skema event berversi dengan penolakan breaking change otomatis (`PROPERTY_REMOVED`, `TYPE_CHANGED`, `REQUIRED_ADDED`, `ENUM_VALUE_REMOVED`, `RANGE_NARROWED`).
+  4. **W8-D39 (Replay Deterministik Stream & Verifikasi Hash Proyeksi Kanonikal)**: Replay per grup konsumen dan rentang offset tanpa mengirim efek keluar ganda; verifikasi konsistensi proyeksi dengan hash SHA-256 keadaan kanonikal yang identik ($h_1 == h_2$).
+  5. **W8-D40 (Dead-Letter Queue & Karantina Poison Non-Blocking)**: Karantina poison message ke `core_poison_messages` agar offset tidak terhambat (*head-of-line blocking avoidance*); pembuangan batch $> 20$ pesan mewajibkan persetujuan Approval Engine via Kotak Masuk "Tugas Saya".

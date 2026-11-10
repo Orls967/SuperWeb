@@ -77,6 +77,7 @@ use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SearchAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\SpineAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SybAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TakafulAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TaskSlaAuditCorruptionFixture;
@@ -185,6 +186,7 @@ final class AuditCommandRegistry
             'task:sla-audit' => new TaskSlaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
             'sim:audit' => new SimAuditCorruptionFixture,
+            'spine:audit' => new SpineAuditCorruptionFixture,
             'syb:audit' => new SybAuditCorruptionFixture,
             'tf:audit' => new TfAuditCorruptionFixture,
             'tlm:audit' => new TlmAuditCorruptionFixture,
