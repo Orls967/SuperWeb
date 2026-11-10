@@ -578,7 +578,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hotel** | 93 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 97 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
-| **Intercompany** | 6 | `intercompany`, `intercompany/transactions`, `intercompany/consolidation` ... | web, auth, role:admin,auditor,legal,treasury |
+| **Intercompany** | 28 | `intercompany`, `intercompany/transactions`, `intercompany/loans` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1687 Rute** | | |
+| **Total** | **1709 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -705,7 +705,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `gate:report` | `manual` | Hasilkan laporan resmi quality gate docs/gates/fase-{N}.md dari output asli test suite |
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
 | `governance:audit` | `manual` | Audit DAO governance proposals, voter weights, and hash-chained vote receipts |
-| `group:audit` | `manual` | Audit intercompany transactions, elimination entries, loans, and transfer pricing margins |
+| `group:audit` | `manual` | Audit intercompany transactions, elimination entries, loans, transfer pricing margins, and dual-source ledger reconciliation |
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
 | `hcm:run-payroll` | `manual` | Menjalankan kalkulasi penggajian bulanan enterprise secara idempoten |
@@ -735,6 +735,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hsp:o2c-kpi` | `manual` | Kompilasi KPI Revenue Cycle Management (RCM) dan Order-to-Cash (O2C) RS |
 | `hsp:telemedicine-scan` | `manual` | Memindai integritas operasional telemedicine, pemenuhan e-resep, pengantaran cold-chain, dan langganan obat kronis |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
+| `ic:accrue-interest` | `manual` | Menghitung akrual bunga pinjaman intercompany, memotong PPh 23/26, dan memosting jurnal buku besar |
+| `ic:allocate-costs` | `manual` | Mengeksekusi alokasi biaya bersama (Cost Sharing Agreement) dan memosting tagihan jasa manajemen |
+| `ic:eliminate-period` | `manual` | Menjalankan pencocokan bilateral AR/AP antar entitas dan menerbitkan jurnal eliminasi konsolidasi |
+| `ic:export-reports` | `manual` | Mengekspor 8 jenis laporan audit intercompany, transfer pricing, dan konsolidasi dalam format CSV berintegritas SHA-256 |
+| `ic:fctr-translate` | `manual` | Translasi laporan keuangan mata uang asing ke mata uang pelaporan IDR dan mencatat FCTR (PSAK 65 / IAS 21) |
+| `ic:generate-tp-doc` | `manual` | Menghasilkan dokumen kepatuhan Transfer Pricing (Master File / Local File / CbCR) sesuai PMK-172 |
+| `ic:matrix-reconcile` | `manual` | Melakukan audit dan rekonsiliasi matriks bilateral AR/AP antar entitas dengan deteksi toleransi dan eskalasi sengketa |
+| `ic:tp-trueup` | `manual` | Menghitung dan memosting penyesuaian akhir tahun (True-Up Adjustment) agar margin sesuai rentang arm's length |
 | `inbox:digest` | `manual` | Menghasilkan ringkasan beban kerja tugas aktif di Kotak Masuk |
 | `inbox:escalate` | `manual` | Mengecek dan mengeksekusi eskalasi terhadap tugas yang melewati tenggat waktu |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
@@ -949,7 +957,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 331 Command** | **37 Terjadwal** | |
+| **Total: 339 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -970,6 +978,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hospital** | `HospitalAccounts` | 35 | `hsp:cash:IDR`, `hsp:doctor_fee_revenue:IDR` ... |
 | **Hotel** | `HotelAccounts` | 49 | `air:flight_partner_payable:IDR`, `escrow:destination_package:IDR` ... |
 | **Insurance** | `InsuranceAccounts` | 16 | `ins:premium_reserve:IDR`, `ins:reserve_pool:IDR` ... |
+| **Intercompany** | `IntercompanyAccounts` | 870 | `ic:sales:HOLDING:IDR`, `ic:withholding_tax_payable:HOLDING:IDR` ... |
 | **Logistics** | `LogisticsAccounts` | 7 | `lgx:carrier_cost:IDR`, `lgx:carrier_payable:IDR` ... |
 | **Mall** | `MallAccounts` | 28 | `expense:mall:points_issued:PTS`, `revenue:mall:points_redeemed:PTS` ... |
 | **Manufacturing** | `ManufacturingAccounts` | 2 | `mfg:vmi_budget_encumbrance:IDR`, `mfg:vmi_commitment:IDR` |
@@ -992,6 +1001,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 38 Registry** | | **553 Akun** | |
+| **Total: 39 Registry** | | **1423 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->

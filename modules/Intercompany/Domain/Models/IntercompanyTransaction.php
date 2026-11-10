@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Modules\Intercompany\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Intercompany\Domain\Enums\IntercompanyTransactionStatus;
 
 class IntercompanyTransaction extends Model
 {
@@ -14,15 +17,56 @@ class IntercompanyTransaction extends Model
         'transaction_code',
         'selling_entity',
         'buying_entity',
+        'selling_entity_id',
+        'buying_entity_id',
         'description',
         'currency',
         'amount_idr',
+        'amount_minor',
+        'amount_functional_idr',
         'sales_invoice_ref',
         'purchase_bill_ref',
+        'tp_rule_id',
         'status',
+        'reconciled_at',
+        'eliminated_at',
+        'created_by',
+        'approved_by',
+        'ledger_transaction_id',
     ];
 
     protected $casts = [
         'amount_idr' => 'integer',
+        'amount_minor' => 'integer',
+        'amount_functional_idr' => 'integer',
+        'reconciled_at' => 'datetime',
+        'eliminated_at' => 'datetime',
+        'created_by' => 'integer',
+        'approved_by' => 'integer',
     ];
+
+    public function statusEnum(): IntercompanyTransactionStatus
+    {
+        return IntercompanyTransactionStatus::tryFrom($this->status) ?? IntercompanyTransactionStatus::DRAFT;
+    }
+
+    public function sellingEntity(): BelongsTo
+    {
+        return $this->belongsTo(IntercompanyEntity::class, 'selling_entity_id');
+    }
+
+    public function buyingEntity(): BelongsTo
+    {
+        return $this->belongsTo(IntercompanyEntity::class, 'buying_entity_id');
+    }
+
+    public function transferPricingRule(): BelongsTo
+    {
+        return $this->belongsTo(TransferPricingRule::class, 'tp_rule_id');
+    }
+
+    public function histories(): HasMany
+    {
+        return $this->hasMany(IntercompanyTransactionHistory::class, 'transaction_id');
+    }
 }
