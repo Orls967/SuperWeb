@@ -538,12 +538,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 58 | **Tlx** | `tlx_` | 4 |
 | 59 | **Trade** | `trd_` | 3 |
 | 60 | **TradeFinance** | `tf_` | 4 |
-| 61 | **Treasury** | `trs_` | 1 |
+| 61 | **Treasury** | `trs_` | 2 |
 | 62 | **Vending** | `vnd_` | 3 |
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **698 Migrasi** |
+| | **Total: 65 Modul** | | **699 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -608,12 +608,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Tlx** | 17 | `telecom/noc/alarms`, `telecom/datacenter/colocation`, `telecom/billing/connectivity` ... | web, auth, role:admin,noc_engineer,tlx_admin |
 | **Trade** | 11 | `trade`, `trade/bidding`, `trade/bidding/agents` ... | web, auth, role:admin,auditor,procurement,treasury |
 | **TradeFinance** | 18 | `trade-finance`, `trade-finance/lcs`, `trade-finance/operations` ... | web, auth, role:admin,auditor,procurement,treasury |
-| **Treasury** | 4 | `treasury`, `treasury/fx-revalue`, `treasury/cash-pools/{cashPool}/sweep` ... | web, auth, role:admin,auditor,treasury |
+| **Treasury** | 14 | `treasury`, `treasury/positions`, `treasury/forecast` ... | web, auth, role:admin,auditor,treasury |
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1677 Rute** | | |
+| **Total** | **1687 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -919,7 +919,16 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `tlx:rate-cdr` | `manual` | Rating dan agregasi pemakaian CDR data perangkat IoT Lini 14 |
 | `tower:audit` | `manual` | Audit supply chain control tower (multi-echelon stock, ATP/CTP invariant, and forecasts) |
 | `trade:audit` | `manual` | Audit cross-border trade operations, orders, duties, and hash-chain tracking |
-| `treasury:audit` | `manual` | Audit multi-currency, bank reconciliation, credit facilities, and treasury balances |
+| `treasury:audit` | `manual` | Dual-source audit for Treasury: DB lokal vs Ledger & Subledger, Facility Limits vs Drawdowns, Cash Pool invariants |
+| `treasury:covenant-test` | `manual` | Uji pemenuhan covenant Debt-to-Equity Ratio (DER) pada seluruh fasilitas kredit bank |
+| `treasury:export-reports` | `manual` | Mengekspor laporan resmi perbendaharaan (Treasury) ke berkas CSV |
+| `treasury:forecast` | `manual` | Kalkulasi forecast arus kas 13 minggu dengan dekomposisi musiman D3 |
+| `treasury:fx-revalue` | `manual` | Jalankan kalkulasi revaluasi kurs valas akhir periode PSAK 10 dan posting ke ledger |
+| `treasury:import-statement` | `manual` | Impor mutasi rekening bank format CSV atau MT940 (fixture simulasi) |
+| `treasury:match-bank-statements` | `manual` | Jalankan algoritma rekonsiliasi bank 3-tahap deterministik (D2) |
+| `treasury:mtm` | `manual` | Kalkulasi harian nilai wajar pasar (Mark-to-Market) seluruh kontrak lindung nilai aktif |
+| `treasury:pool-sweep` | `manual` | Jalankan penyapuan zero-balancing/target-balance cash pool holding & entitas anak |
+| `treasury:reverse-revaluations` | `manual` | Pembalik otomatis revaluasi kurs awal periode baru |
 | `ui:lint` | `manual` | Linter aksesibilitas, tokenisasi warna, responsivitas, dan kepatuhan Design System untuk template Blade |
 | `up` | `manual` | Bring the application out of maintenance mode |
 | `ven:audit` | `manual` | Audit layanan operasional venue: kapasitas zona, tiket masuk, reservasi meja VIP dan integritas crowd safety |
@@ -940,7 +949,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 322 Command** | **37 Terjadwal** | |
+| **Total: 331 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -979,10 +988,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Tlx** | `TlxAccounts` | 14 | `tlx:cloud_chargeback_receivable:IDR`, `tlx:cloud_infrastructure_revenue:IDR` ... |
 | **Trade** | `TradeAccounts` | 2 | `trd:tender_contract_ar:IDR`, `trd:tender_revenue_unearned:IDR` |
 | **TradeFinance** | `TradeFinanceAccounts` | 5 | `tf:crossborder_escrow:IDR`, `tf:exporter_settlement:IDR` ... |
-| **Treasury** | `TreasuryAccounts` | 5 | `TRS_USD_SRC`, `TRS_USD_DEST` ... |
+| **Treasury** | `TreasuryAccounts` | 41 | `TRS_USD_SRC`, `TRS_USD_DEST` ... |
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 38 Registry** | | **517 Akun** | |
+| **Total: 38 Registry** | | **553 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
