@@ -64,14 +64,13 @@ class CrossModuleEventConsistencyChecker
             ->toArray();
 
         $deliveryStats = DB::table('core_event_deliveries')
-            ->join('sim_event_spine', 'core_event_deliveries.event_id', '=', 'sim_event_spine.id')
-            ->when(! empty($targetTopics), fn ($q) => $q->whereIn('sim_event_spine.topic', $targetTopics))
+            ->when(! empty($targetTopics), fn ($q) => $q->whereIn('topic', $targetTopics))
             ->select(
-                'sim_event_spine.topic',
-                'core_event_deliveries.status',
+                'topic',
+                'status',
                 DB::raw('count(*) as count')
             )
-            ->groupBy('sim_event_spine.topic', 'core_event_deliveries.status')
+            ->groupBy('topic', 'status')
             ->get();
 
         $breakdown = [];

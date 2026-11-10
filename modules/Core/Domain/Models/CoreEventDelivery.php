@@ -45,4 +45,14 @@ class CoreEventDelivery extends Model
         'dispatched_at' => 'datetime',
         'delivered_at' => 'datetime',
     ];
+
+    public function event()
+    {
+        return $this->belongsTo(SimEventSpine::class, 'message_id', 'event_id');
+    }
+
+    public function getRetryCountAttribute(): int
+    {
+        return (int) $this->attempts;
+    }
 }

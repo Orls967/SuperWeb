@@ -98,3 +98,4 @@ Bila terjadi kerusakan data lokal atau kebutuhan verifikasi forensik:
 php artisan spine:replay logistics_worker --topic="lgx.shipment.*" --from=0 --to=500
 ```
 Command ini akan menghitung akumulasi status proyeksi melalui reducer deterministik dan menampilkan hash kanonikal SHA-256. Dua kali eksekusi dengan rentang yang sama **wajib menghasilkan nilai hash yang identik**.
+

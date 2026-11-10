@@ -29,3 +29,4 @@ class SpineSnapshotCommand extends Command
         return self::SUCCESS;
     }
 }
+

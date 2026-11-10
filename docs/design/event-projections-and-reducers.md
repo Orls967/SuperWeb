@@ -67,3 +67,4 @@ $$h_2 = \text{SHA256}(\text{canonicalJson}(\text{project}(\text{stream})))$$
 $$h_1 \equiv h_2$$
 
 Jika ditemukan perbedaan antara $h_1$ dan $h_2$, sistem segera membunyikan alarm audit integritas karena terdapat faktor non-deterministik (seperti ketergantungan pada jam lokal sistem non-injeksi, fungsi acak, atau mutasi state global).
+

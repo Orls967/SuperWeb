@@ -380,3 +380,4 @@ Setiap penambahan event atau perubahan properti wajib melalui tahapan verifikasi
 1. **Aturan Backward Compatibility**: Dilarang menghapus field existing, dilarang menambahkan required field baru pada versi skema yang sama, dilarang mengubah tipe data kolom menjadi tipe yang lebih sempit.
 2. **Pendaftaran Skema**: Dilakukan melalui perintah konsol `php artisan spine:schema-register --topic=<topic> --version=<v>` atau `EventSchemaRegistry::register()`.
 3. **Penyimpanan Skema**: Skema kanonikal disimpan di tabel `core_event_schemas` dengan SHA-256 hash untuk memastikan integritas tamper-evident.
+

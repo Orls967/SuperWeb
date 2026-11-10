@@ -108,3 +108,4 @@ class SpineProjectionManager
         return $this->reducers;
     }
 }
+

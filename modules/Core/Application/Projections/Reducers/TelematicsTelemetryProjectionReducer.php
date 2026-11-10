@@ -42,3 +42,4 @@ class TelematicsTelemetryProjectionReducer implements ProjectionReducerInterface
         return $currentState;
     }
 }
+

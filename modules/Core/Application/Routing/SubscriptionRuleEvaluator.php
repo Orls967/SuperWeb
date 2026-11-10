@@ -118,3 +118,4 @@ class SubscriptionRuleEvaluator
         return data_get($payload, $path);
     }
 }
+

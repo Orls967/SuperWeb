@@ -47,3 +47,4 @@ class LogisticsShipmentProjectionReducer implements ProjectionReducerInterface
         return $currentState;
     }
 }
+

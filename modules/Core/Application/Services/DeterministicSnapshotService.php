@@ -72,3 +72,4 @@ class DeterministicSnapshotService
         return hash_equals($expectedHash, $computed);
     }
 }
+

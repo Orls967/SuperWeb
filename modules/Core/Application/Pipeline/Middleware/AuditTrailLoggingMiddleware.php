@@ -41,3 +41,4 @@ class AuditTrailLoggingMiddleware implements SpineMiddlewareInterface
         return $result;
     }
 }
+

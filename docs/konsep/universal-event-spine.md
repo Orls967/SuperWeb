@@ -111,3 +111,4 @@ Menegakkan aturan evolusi skema berbasis backward-compatibility:
 Cache statis in-memory `SpineConsumerRegistry::$processedEvents` diubah fungsinya menjadi cache L1 berkecepatan tinggi, sementara jaminan idempotensi absolut dipegang oleh tabel basis data `core_consumer_inbox`.
 
 Operasi `claim(consumer_group, message_id)` dijalankan secara atomik. Jika record sudah ada, claim mengembalikan `false` dan eksekusi handler dilewati. Hal ini menjamin bahwa pengulangan dispatch dari outbox maupun replay stream tidak akan pernah menghasilkan efek samping bisnis ganda, bahkan jika server di-restart di tengah proses.
+

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\EventSchema;
 
-use Modules\Core\Domain\Algorithms\SchemaAdditiveCompatibilityChecker;
+use Modules\Core\Application\Services\EventSchemaRegistry;
+use Modules\Core\Domain\Algorithms\Events\SchemaAdditiveCompatibilityChecker;
+use Modules\Core\Domain\Models\CoreEventSchema;
 use Modules\Core\Domain\Models\SimEventSpine;
 
 /**
@@ -42,16 +44,19 @@ class EventSchemaEvolutionSimulator
     public function simulate(string $topic, array $proposedSchema, int $sampleSize = 50): array
     {
         // 1. Ambil skema aktif saat ini
-        $currentSchemaRecord = $this->schemaRegistry->getActiveSchema($topic);
-        $currentSchema = $currentSchemaRecord ? (array) $currentSchemaRecord->schema_definition : [];
+        $latestRecord = CoreEventSchema::where('event_name', $topic)->latest('version')->first();
+        $currentSchema = $latestRecord ? (array) $latestRecord->payload_schema : [];
 
         // 2. Periksa kompatibilitas aditif A6 jika skema sebelumnya ada
         $compatibilityViolations = [];
         $isCompatible = true;
 
         if (! empty($currentSchema)) {
-            $compatibilityViolations = $this->compatibilityChecker->check($currentSchema, $proposedSchema);
-            $isCompatible = empty($compatibilityViolations);
+            $rawViolations = $this->compatibilityChecker->checkCompatibility($currentSchema, $proposedSchema);
+            $isCompatible = empty($rawViolations);
+            foreach ($rawViolations as $v) {
+                $compatibilityViolations[] = "[{$v['code']}] pada path '{$v['path']}'";
+            }
         }
 
         // 3. Hitung selisih struktural (diff)

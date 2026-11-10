@@ -72,3 +72,4 @@ class EventPipelineManager
         return $this->middleware;
     }
 }
+

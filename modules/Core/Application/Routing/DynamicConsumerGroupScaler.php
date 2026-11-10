@@ -33,13 +33,13 @@ class DynamicConsumerGroupScaler
      */
     public function evaluateScaling(array $currentWorkers = []): array
     {
-        $lagReport = $this->lagMonitorService->report();
-        $groupMetrics = $lagReport['groups'] ?? [];
+        $groupMetrics = $this->lagMonitorService->getConsumerGroupMetrics();
 
         $recommendations = [];
 
-        foreach ($groupMetrics as $group => $metrics) {
-            $lag = (int) ($metrics['lag'] ?? 0);
+        foreach ($groupMetrics as $metrics) {
+            $group = (string) ($metrics['consumer_group'] ?? $metrics['group'] ?? 'unknown');
+            $lag = (int) ($metrics['current_lag'] ?? $metrics['lag'] ?? 0);
             $workers = max(1, (int) ($currentWorkers[$group] ?? 1));
 
             $recommendedWorkers = $workers;
@@ -76,3 +76,4 @@ class DynamicConsumerGroupScaler
         return $recommendations;
     }
 }
+

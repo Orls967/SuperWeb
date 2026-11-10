@@ -53,3 +53,4 @@ class SpineScaleRecommendCommand extends Command
         return self::SUCCESS;
     }
 }
+

@@ -48,3 +48,4 @@ class SpineSchemaRegisterRequest extends FormRequest
         ];
     }
 }
+
