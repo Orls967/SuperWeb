@@ -17,7 +17,7 @@ return new class extends Migration
             Schema::create('core_task_histories', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('task_id')->index();
-                $table->string('actor_id')->nullable()->index();
+                $table->foreignId('actor_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->string('action', 64)->index();
                 $table->string('from_status', 32)->nullable();
                 $table->string('to_status', 32)->index();

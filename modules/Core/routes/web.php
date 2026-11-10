@@ -135,9 +135,10 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     });
 
     // Kotak Masuk "Tugas Saya" (§19.1) — Fase 194
-    Route::middleware('role:admin,manager,supervisor,mechanic,operator,design_system_owner')->prefix('inbox')->group(function () {
+    Route::middleware('role:admin,design_system_owner,manager,operator')->prefix('inbox')->group(function () {
         Route::get('/', [TaskInboxController::class, 'index'])->name('core.task-inbox.index');
         Route::get('/analytics', [TaskInboxController::class, 'analytics'])->name('core.task-inbox.analytics');
+        Route::post('/batch', [TaskInboxController::class, 'batch'])->name('core.task-inbox.batch');
         Route::get('/{id}', [TaskInboxController::class, 'show'])->name('core.task-inbox.show');
         Route::post('/{id}/action', [TaskInboxController::class, 'action'])->name('core.task-inbox.action');
     });
@@ -150,5 +151,5 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     });
 
     // API Pencarian Global BM25 — Fase 194
-    Route::get('/api/global-search-v2', GlobalSearchApiController::class)->name('core.api.global-search');
+    Route::middleware('role:admin,design_system_owner,manager,operator')->get('/api/global-search-v2', GlobalSearchApiController::class)->name('core.api.global-search');
 });

@@ -16,13 +16,13 @@ return new class extends Migration
         if (! Schema::hasTable('core_search_query_logs')) {
             Schema::create('core_search_query_logs', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('user_id')->nullable()->index();
+                $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->string('user_role', 64)->default('guest')->index();
                 $table->string('raw_query_hash', 64)->index();
                 $table->string('redacted_query');
                 $table->unsignedInteger('results_count')->default(0);
                 $table->decimal('execution_time_ms', 8, 2)->default(0.00);
-                $table->string('clicked_result_id')->nullable()->index();
+                $table->string('clicked_result_ref', 100)->nullable()->index();
                 $table->timestamps();
             });
         }

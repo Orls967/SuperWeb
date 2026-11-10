@@ -53,9 +53,15 @@ class TaskInboxController extends Controller
         $task = CoreTask::query()->with('histories')->findOrFail($id);
         $user = $request->user();
 
-        // Otorisasi: hanya pemilik tugas atau admin yang boleh melihat
-        if ($user->role !== 'admin' && $task->assignee_user_id !== $user->id && $task->assignee_role !== $user->role) {
-            abort(403, 'Anda tidak memiliki hak akses terhadap tugas ini.');
+        // Otorisasi: hanya pemilik tugas, peran penugasan, antrean umum tak bertuan, atau admin yang boleh melihat
+        if ($user->role !== 'admin') {
+            $isAssignedToUser = $task->assignee_user_id !== null && (string) $task->assignee_user_id === (string) $user->id;
+            $isAssignedToRole = $task->assignee_role !== null && $task->assignee_role === $user->role;
+            $isUnassigned = $task->assignee_user_id === null && $task->assignee_role === null;
+
+            if (! $isAssignedToUser && ! $isAssignedToRole && ! $isUnassigned) {
+                abort(403, 'Anda tidak memiliki hak akses terhadap tugas ini.');
+            }
         }
 
         $delegatableUsers = User::query()->select(['id', 'name', 'email', 'role'])->limit(50)->get();
@@ -71,8 +77,14 @@ class TaskInboxController extends Controller
         $task = CoreTask::query()->findOrFail($id);
         $user = $request->user();
 
-        if ($user->role !== 'admin' && $task->assignee_user_id !== $user->id && $task->assignee_role !== $user->role) {
-            abort(403, 'Anda tidak memiliki hak akses untuk memutasi tugas ini.');
+        if ($user->role !== 'admin') {
+            $isAssignedToUser = $task->assignee_user_id !== null && (string) $task->assignee_user_id === (string) $user->id;
+            $isAssignedToRole = $task->assignee_role !== null && $task->assignee_role === $user->role;
+            $isUnassigned = $task->assignee_user_id === null && $task->assignee_role === null;
+
+            if (! $isAssignedToUser && ! $isAssignedToRole && ! $isUnassigned) {
+                abort(403, 'Anda tidak memiliki hak akses untuk memutasi tugas ini.');
+            }
         }
 
         $act = $request->input('action');

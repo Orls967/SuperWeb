@@ -17,7 +17,7 @@ return new class extends Migration
             Schema::create('core_task_comments', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('task_id')->index();
-                $table->string('user_id')->nullable()->index();
+                $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->string('author_name', 128);
                 $table->text('comment');
                 $table->json('attachments')->nullable();

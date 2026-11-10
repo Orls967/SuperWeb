@@ -21,7 +21,7 @@ return new class extends Migration
                 $table->string('module', 64)->index();
                 $table->string('source_entity_type', 64)->index();
                 $table->string('source_entity_id', 128)->index();
-                $table->string('assignee_user_id')->nullable()->index();
+                $table->foreignId('assignee_user_id')->nullable()->constrained('users')->nullOnDelete();
                 $table->string('assignee_role', 64)->nullable()->index();
                 $table->string('status', 32)->default('pending')->index();
                 $table->string('priority', 32)->default('normal')->index();
