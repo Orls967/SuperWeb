@@ -17,7 +17,7 @@ class FinanceServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(\Modules\Finance\Contracts\LoanExposureProvider::class, \Modules\Finance\Application\Services\DefaultLoanExposureProvider::class);
     }
 
     public function boot(): void

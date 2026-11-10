@@ -31,14 +31,14 @@ class TreasuryDualSourceAuditTest extends TestCase
         $this->service->createBankAccount('ACC-AUDIT-CLEAN', 'Bank Mandiri', 'IDR', 100_000_000);
         $this->service->createCreditFacility('FAC-AUDIT-CLEAN', 'BCA', 1_000_000_000);
 
-        $exitClean = $this->artisan('treasury:audit');
-        $exitClean->assertExitCode(0);
+        $exitClean = $this->artisan('treasury:audit')->run();
+        $this->assertSame(0, $exitClean);
 
         // 2. Corrupt Data via Fixture -> Exit Code != 0 (exit 1)
         $fixture = new TreasuryAuditCorruptionFixture;
         $expectedErrorFragment = $fixture->corrupt();
 
-        $exitCorrupt = $this->artisan('treasury:audit');
-        $exitCorrupt->assertExitCode(1);
+        $exitCorrupt = $this->artisan('treasury:audit')->run();
+        $this->assertSame(1, $exitCorrupt);
     }
 }

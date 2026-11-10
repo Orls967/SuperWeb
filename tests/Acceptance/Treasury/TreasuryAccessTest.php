@@ -24,6 +24,7 @@ class TreasuryAccessTest extends TestCase
      *
      * @dataProvider treasuryRoutesProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('treasuryRoutesProvider')]
     public function test_treasury_routes_access_control(string $route, string $method, array $allowedRoles, array $forbiddenRoles): void
     {
         // 1. Unauthenticated -> Redirect to login

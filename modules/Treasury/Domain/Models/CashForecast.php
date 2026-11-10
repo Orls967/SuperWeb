@@ -15,6 +15,12 @@ class CashForecast extends Model
 
     protected $fillable = [
         'scenario',
+        'history_cycles',
+        'ols_intercept',
+        'ols_slope',
+        'seasonal_indices',
+        'forecast_values',
+        'certificate',
         'week_number',
         'start_date',
         'projected_inflow_idr',
@@ -24,6 +30,12 @@ class CashForecast extends Model
     ];
 
     protected $casts = [
+        'history_cycles' => 'integer',
+        'ols_intercept' => 'integer',
+        'ols_slope' => 'integer',
+        'seasonal_indices' => 'array',
+        'forecast_values' => 'array',
+        'certificate' => 'array',
         'week_number' => 'integer',
         'start_date' => 'date',
         'projected_inflow_idr' => 'integer',

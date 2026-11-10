@@ -7,6 +7,7 @@ namespace Modules\Treasury\Domain\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CashPool extends Model
 {
@@ -37,5 +38,10 @@ class CashPool extends Model
     public function subAccount(): BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'sub_account_id');
+    }
+
+    public function sweeps(): HasMany
+    {
+        return $this->hasMany(CashPoolSweep::class, 'pool_id')->orderBy('sweep_date', 'desc');
     }
 }

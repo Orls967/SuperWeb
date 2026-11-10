@@ -132,14 +132,16 @@ class TreasuryEndToEndLifecycleTest extends TestCase
         $this->assertSame(15_650_000, $reval->revalued_carrying_idr);
         $this->assertSame(150_000, $reval->gain_loss_idr);
 
+        $formatAmount = fn (int $amount) => sprintf('%.18f', $amount);
+
         // Verifikasi Posting Ledger Revaluasi: Debit trs:fx_reval_asset_adj:IDR / Kredit trs:fx_unrealized_gain_loss:IDR
-        $this->assertDatabaseHas('ledger_entries', [
+        $this->assertDatabaseHas('bank_ledger_entries', [
             'account_id' => $this->ledgerService->findAccountByCode('trs:fx_reval_asset_adj:IDR')->id,
-            'amount' => -150_000, // Debit dalam konvensi single-sign
+            'amount' => $formatAmount(-150_000), // Debit dalam konvensi single-sign
         ]);
-        $this->assertDatabaseHas('ledger_entries', [
+        $this->assertDatabaseHas('bank_ledger_entries', [
             'account_id' => $this->ledgerService->findAccountByCode('trs:fx_unrealized_gain_loss:IDR')->id,
-            'amount' => 150_000, // Kredit
+            'amount' => $formatAmount(150_000), // Kredit
         ]);
 
         // 4. Jurnal Pembalik Otomatis Awal Periode (Auto-Reversal)
@@ -149,13 +151,13 @@ class TreasuryEndToEndLifecycleTest extends TestCase
         $this->assertTrue($reval->fresh()->is_reversed);
 
         // Verifikasi Posting Pembalik Persis Arah Berlawanan
-        $this->assertDatabaseHas('ledger_entries', [
+        $this->assertDatabaseHas('bank_ledger_entries', [
             'account_id' => $this->ledgerService->findAccountByCode('trs:fx_reval_asset_adj:IDR')->id,
-            'amount' => 150_000, // Kredit pembalik
+            'amount' => $formatAmount(150_000), // Kredit pembalik
         ]);
-        $this->assertDatabaseHas('ledger_entries', [
+        $this->assertDatabaseHas('bank_ledger_entries', [
             'account_id' => $this->ledgerService->findAccountByCode('trs:fx_unrealized_gain_loss:IDR')->id,
-            'amount' => -150_000, // Debit pembalik
+            'amount' => $formatAmount(-150_000), // Debit pembalik
         ]);
 
         // 5. Pelunasan Realized Saat Settlement (Parsial & Penuh)
@@ -167,9 +169,9 @@ class TreasuryEndToEndLifecycleTest extends TestCase
         );
         // Realized gain diakui 80.000
         $this->assertSame(80_000, $settleRes['realized_gain_loss_idr']);
-        $this->assertDatabaseHas('ledger_entries', [
+        $this->assertDatabaseHas('bank_ledger_entries', [
             'account_id' => $this->ledgerService->findAccountByCode('trs:fx_realized_gain_loss:IDR')->id,
-            'amount' => 80_000,
+            'amount' => $formatAmount(80_000),
         ]);
 
         // 6. Rekonsiliasi Bank 3-Tahap (D2)
@@ -194,22 +196,22 @@ class TreasuryEndToEndLifecycleTest extends TestCase
             forwardRateScaled: 15600 * 1_000_000,
             maturityDate: '2026-12-31'
         );
-        $this->assertSame(HedgeStatus::DRAFT->value, $contract->status);
+        $this->assertSame(HedgeStatus::DRAFT, $contract->status);
 
         // Draft -> Approved (Maker-Checker: pembuat != penyetuju)
         $hedgeSM->transition($contract, HedgeStatus::APPROVED, $managerUser->id, 'Disetujui komite perbendaharaan');
-        $this->assertSame(HedgeStatus::APPROVED->value, $contract->fresh()->status);
+        $this->assertSame(HedgeStatus::APPROVED, $contract->fresh()->status);
 
         // Approved -> Booked -> Active
         $hedgeSM->transition($contract, HedgeStatus::BOOKED, $treasuryUser->id, 'Konfirmasi deal bank BBCA-FWD-009');
         $hedgeSM->transition($contract, HedgeStatus::ACTIVE, $treasuryUser->id, 'Mulai periode aktif lindung nilai');
-        $this->assertSame(HedgeStatus::ACTIVE->value, $contract->fresh()->status);
+        $this->assertSame(HedgeStatus::ACTIVE, $contract->fresh()->status);
 
         // Active -> Matured -> Settled
         $hedgeSM->transition($contract, HedgeStatus::MATURED, $treasuryUser->id, 'Jatuh tempo');
         $settleHedgeAction = app(SettleForwardContractAction::class);
         $settleHedgeAction->execute($contract, actualSpotRateScaled: 15700 * 1_000_000);
-        $this->assertSame(HedgeStatus::SETTLED->value, $contract->fresh()->status);
+        $this->assertSame(HedgeStatus::SETTLED, $contract->fresh()->status);
 
         // 9. Fasilitas Kredit & Penarikan Berizin
         $facility = $this->service->createCreditFacility(

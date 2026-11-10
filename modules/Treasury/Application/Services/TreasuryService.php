@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Treasury\Application\Services;
 
 use Brick\Math\BigDecimal;
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,6 +13,26 @@ use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
+use Modules\Banking\Domain\Models\LedgerEntry;
+use Modules\Banking\Support\Posting;
+use Modules\Core\Contracts\DocumentNumberingInterface;
+use Modules\Finance\Contracts\LoanExposureProvider;
+use Modules\Treasury\Application\Actions\ApproveForwardContractAction;
+use Modules\Treasury\Application\Actions\BookForwardContractAction;
+use Modules\Treasury\Application\Actions\DailyMarkToMarketAction;
+use Modules\Treasury\Application\Actions\DrawFacilityAction;
+use Modules\Treasury\Application\Actions\ExecuteCashPoolSweepAction;
+use Modules\Treasury\Application\Actions\GenerateSeasonalCashForecastAction;
+use Modules\Treasury\Application\Actions\ReconcileBankStatementsAction;
+use Modules\Treasury\Application\Actions\ReverseRevaluationsAction;
+use Modules\Treasury\Application\Actions\RunFxRevaluationAction;
+use Modules\Treasury\Application\Actions\SettleForwardContractAction;
+use Modules\Treasury\Contracts\ExchangeRateLookup;
+use Modules\Treasury\Contracts\FxMonetaryItemFeed;
+use Modules\Treasury\Domain\Algorithms\FxRevaluationCalculator;
+use Modules\Treasury\Domain\Algorithms\RationalRate;
+use Modules\Treasury\Domain\DTOs\BookLedgerLineDTO;
+use Modules\Treasury\Domain\Enums\HedgeStatus;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\BankStatement;
 use Modules\Treasury\Domain\Models\CashForecast;
@@ -21,14 +41,39 @@ use Modules\Treasury\Domain\Models\CreditFacility;
 use Modules\Treasury\Domain\Models\Currency;
 use Modules\Treasury\Domain\Models\ExchangeRate;
 use Modules\Treasury\Domain\Models\ForwardContract;
+use Modules\Treasury\Domain\Models\FxLot;
 use Modules\Treasury\Domain\Models\Revaluation;
+use Psr\Clock\ClockInterface;
 
-class TreasuryService
+class TreasuryService implements ExchangeRateLookup, FxMonetaryItemFeed
 {
     public function __construct(
-        protected ?Ledger $ledger = null
+        protected ?Ledger $ledger = null,
+        protected readonly ?ClockInterface $clock = null,
+        protected readonly ?TreasuryLedgerPoster $ledgerPoster = null,
+        protected readonly ?DocumentNumberingInterface $documentNumbering = null,
+        protected readonly ?LoanExposureProvider $exposureProvider = null,
+        protected readonly ?RunFxRevaluationAction $revalAction = null,
+        protected readonly ?ReverseRevaluationsAction $reversalAction = null,
+        protected readonly ?ReconcileBankStatementsAction $reconAction = null,
+        protected readonly ?GenerateSeasonalCashForecastAction $forecastAction = null,
+        protected readonly ?BookForwardContractAction $bookForwardAction = null,
+        protected readonly ?ApproveForwardContractAction $approveForwardAction = null,
+        protected readonly ?DailyMarkToMarketAction $mtmAction = null,
+        protected readonly ?SettleForwardContractAction $settleForwardAction = null,
+        protected readonly ?DrawFacilityAction $drawFacilityAction = null,
+        protected readonly ?ExecuteCashPoolSweepAction $poolSweepAction = null,
     ) {
         $this->ledger = $ledger ?? app(Ledger::class);
+    }
+
+    protected function now(): CarbonImmutable
+    {
+        if ($this->clock !== null) {
+            return CarbonImmutable::instance($this->clock->now());
+        }
+
+        return CarbonImmutable::now();
     }
 
     /**
@@ -92,7 +137,7 @@ class TreasuryService
             return $amountMinorUnits;
         }
 
-        $date = $date ?? Carbon::today()->toDateString();
+        $date = $date ?? $this->now()->toDateString();
 
         $rate = ExchangeRate::where('from_currency', $from)
             ->where('to_currency', $to)
@@ -102,7 +147,6 @@ class TreasuryService
             ->first();
 
         if (! $rate) {
-            // Coba ambil rate terakhir yang ada
             $rate = ExchangeRate::where('from_currency', $from)
                 ->where('to_currency', $to)
                 ->where('rate_type', $rateType)
@@ -111,7 +155,6 @@ class TreasuryService
         }
 
         if (! $rate) {
-            // Coba kebalikannya jika ada
             $inverseRate = ExchangeRate::where('from_currency', $to)
                 ->where('to_currency', $from)
                 ->where('rate_type', $rateType)
@@ -131,11 +174,9 @@ class TreasuryService
                 throw new InvalidArgumentException("Kurs dari {$from} ke {$to} untuk tanggal {$date} tidak ditemukan.");
             }
 
-            // Target = amount * inverseDenominator / inverseNumerator
             return (int) intdiv($amountMinorUnits * (int) $inverseRate->rate_denominator, (int) $inverseRate->rate_numerator);
         }
 
-        // Target = amount * numerator / denominator
         return (int) intdiv($amountMinorUnits * (int) $rate->rate_numerator, (int) $rate->rate_denominator);
     }
 
@@ -153,7 +194,6 @@ class TreasuryService
     ): array {
         $functionalAmountIdr = $this->convertAmount($foreignAmount, $foreignCurrency, 'IDR', $date);
 
-        // Posting foreign ledger entries (balanced per currency)
         $txForeign = $this->ledger->post(new PostingDTO(
             type: 'TREASURY_FX_TRANSFER',
             description: $description." [{$foreignCurrency} {$foreignAmount}]",
@@ -169,7 +209,8 @@ class TreasuryService
                     assetCode: strtoupper($foreignCurrency),
                     amount: BigDecimal::of((string) $foreignAmount)
                 ),
-            ]
+            ],
+            postedAt: $this->now()
         ));
 
         return [
@@ -177,6 +218,106 @@ class TreasuryService
             'functional_amount_idr' => $functionalAmountIdr,
             'rate_converted' => true,
         ];
+    }
+
+    /**
+     * Membuat lot valas baru (subledger valas) untuk revaluasi PSAK 10.
+     */
+    public function createFxLot(
+        string $sourceModule,
+        string $sourceEntityId,
+        string $currency,
+        int $foreignAmount,
+        RationalRate $rate,
+        string $lotDate,
+        bool $isAsset = true,
+        string $entityId = 'HOLDING'
+    ): FxLot {
+        // Minor units calculation: foreignAmount 100_000 cents * rate 15500 / 100 = 15_500_000 IDR
+        $costIdr = (int) intdiv($foreignAmount * $rate->numerator, 100 * $rate->denominator);
+
+        return FxLot::create([
+            'entity_id' => $entityId,
+            'currency' => strtoupper($currency),
+            'lot_date' => $lotDate,
+            'original_amount' => $foreignAmount,
+            'remaining_amount' => $foreignAmount,
+            'original_rate_num' => $rate->numerator,
+            'original_rate_den' => $rate->denominator,
+            'original_cost_idr' => $costIdr,
+            'current_carrying_rate_num' => $rate->numerator,
+            'current_carrying_rate_den' => $rate->denominator,
+            'current_carrying_idr' => $costIdr,
+            'status' => 'active',
+            'source_ref' => "{$sourceModule}:{$sourceEntityId}",
+        ]);
+    }
+
+    /**
+     * Penyelesaian lot valas (parsial atau penuh) dan pengakuan realized gain/loss.
+     */
+    public function settleFxLot(
+        string $lotId,
+        int $settledForeignMinor,
+        RationalRate $settlementRate,
+        string $idempotencyKey,
+        ?int $userId = null
+    ): array {
+        return DB::transaction(function () use ($lotId, $settledForeignMinor, $settlementRate, $idempotencyKey, $userId) {
+            $lot = FxLot::lockForUpdate()->findOrFail($lotId);
+
+            if ($settledForeignMinor > $lot->remaining_amount) {
+                throw new InvalidArgumentException("Nominal pelunasan ({$settledForeignMinor}) melampaui sisa lot ({$lot->remaining_amount}).");
+            }
+
+            // Hitung nilai buku yang diselesaikan
+            $carryingCostSettled = (int) intdiv($settledForeignMinor * $lot->current_carrying_rate_num, 100 * $lot->current_carrying_rate_den);
+            // Hitung nilai realisasi pada settlement rate
+            $settlementValueIdr = (int) intdiv($settledForeignMinor * $settlementRate->numerator, 100 * $settlementRate->denominator);
+
+            $realizedGainLossIdr = $settlementValueIdr - $carryingCostSettled;
+
+            $newRemaining = $lot->remaining_amount - $settledForeignMinor;
+            $newCarryingIdr = (int) intdiv($newRemaining * $lot->current_carrying_rate_num, 100 * $lot->current_carrying_rate_den);
+
+            $lot->update([
+                'remaining_amount' => $newRemaining,
+                'current_carrying_idr' => $newCarryingIdr,
+                'status' => $newRemaining === 0 ? 'exhausted' : 'active',
+            ]);
+
+            // Posting ledger realized gain/loss
+            if ($realizedGainLossIdr !== 0) {
+                $lines = Posting::lines();
+                if ($realizedGainLossIdr > 0) {
+                    // Untung: Debit Kliring Penyelesaian Valas, Kredit Untung Terealisasi
+                    $lines->debit('trs:fx_settlement_clearing:IDR', $realizedGainLossIdr, 'IDR')
+                        ->credit('trs:fx_realized_gain_loss:IDR', $realizedGainLossIdr, 'IDR');
+                } else {
+                    $absLoss = abs($realizedGainLossIdr);
+                    $lines->debit('trs:fx_realized_gain_loss:IDR', $absLoss, 'IDR')
+                        ->credit('trs:fx_settlement_clearing:IDR', $absLoss, 'IDR');
+                }
+
+                $this->ledger->post(new PostingDTO(
+                    type: 'TRS_FX_SETTLE_REALIZED',
+                    description: "Realisasi selisih kurs settlement lot {$lot->id}",
+                    idempotencyKey: $idempotencyKey,
+                    entries: $lines->toEntries('IDR'),
+                    referenceType: 'trs_fx_lots',
+                    referenceId: $lot->id,
+                    createdBy: $userId,
+                    postedAt: $this->now()
+                ));
+            }
+
+            return [
+                'lot' => $lot->fresh(),
+                'settled_foreign_minor' => $settledForeignMinor,
+                'realized_gain_loss_idr' => $realizedGainLossIdr,
+                'settlement_value_idr' => $settlementValueIdr,
+            ];
+        });
     }
 
     /**
@@ -194,7 +335,27 @@ class TreasuryService
             $revaluedIdr = $this->convertAmount($foreignBalance, $curr, 'IDR', $rateDate);
             $gainLossIdr = $revaluedIdr - $bookFunctionalIdr;
 
-            return Revaluation::updateOrCreate(
+            $rateRecord = ExchangeRate::where('from_currency', $curr)
+                ->where('to_currency', 'IDR')
+                ->whereDate('rate_date', '<=', $rateDate)
+                ->orderByDesc('rate_date')
+                ->first();
+
+            $rate = $rateRecord !== null
+                ? new RationalRate((int) $rateRecord->rate_numerator, (int) $rateRecord->rate_denominator)
+                : new RationalRate(16000, 1);
+
+            $calculator = new FxRevaluationCalculator;
+            $res = $calculator->calculateRevaluation(
+                foreignBalanceMinor: $foreignBalance,
+                carryingFunctionalIdr: $bookFunctionalIdr,
+                rate: $rate,
+                currencyDecimals: 0,
+                isAsset: true
+            );
+
+            /** @var Revaluation $reval */
+            $reval = Revaluation::updateOrCreate(
                 [
                     'period' => $period,
                     'currency' => $curr,
@@ -205,8 +366,23 @@ class TreasuryService
                     'revalued_functional_idr' => $revaluedIdr,
                     'gain_loss_idr' => $gainLossIdr,
                     'status' => 'completed',
+                    'certificate' => $res->certificate->toArray(),
                 ]
             );
+
+            if ($this->ledgerPoster !== null && $gainLossIdr !== 0) {
+                $idempotencyKey = "IDEM:TRS:REVAL:{$period}:{$curr}:{$reval->id}";
+                $tx = $this->ledgerPoster->postFxRevaluation(
+                    period: $period,
+                    currency: $curr,
+                    gainLossIdr: $gainLossIdr,
+                    idempotencyKey: $idempotencyKey,
+                    revaluationId: $reval->id
+                );
+                $reval->update(['ledger_transaction_id' => $tx->id]);
+            }
+
+            return $reval->fresh();
         });
     }
 
@@ -221,20 +397,21 @@ class TreasuryService
         bool $isPettyCash = false
     ): BankAccount {
         $curr = strtoupper($currency);
-        // Pastikan currency ada
         Currency::firstOrCreate(
             ['code' => $curr],
             ['name' => $curr, 'symbol' => $curr, 'minor_units' => 2, 'is_active' => true]
         );
 
-        return BankAccount::create([
-            'account_number' => $accountNumber,
-            'bank_name' => $bankName,
-            'currency' => $curr,
-            'balance' => $initialBalance,
-            'is_petty_cash' => $isPettyCash,
-            'is_active' => true,
-        ]);
+        return BankAccount::firstOrCreate(
+            ['account_number' => $accountNumber],
+            [
+                'bank_name' => $bankName,
+                'currency' => $curr,
+                'balance' => $initialBalance,
+                'is_petty_cash' => $isPettyCash,
+                'is_active' => true,
+            ]
+        );
     }
 
     public function recordStatement(
@@ -256,23 +433,35 @@ class TreasuryService
 
     public function autoReconcileStatements(string $bankAccountId): array
     {
+        $bankAccount = BankAccount::findOrFail($bankAccountId);
+        $action = $this->reconAction ?? app(ReconcileBankStatementsAction::class);
+
         $statements = BankStatement::where('bank_account_id', $bankAccountId)
             ->where('is_reconciled', false)
             ->get();
 
-        $reconciledCount = 0;
-        foreach ($statements as $st) {
-            // Simulasi auto-match dengan mencocokkan refNo & menandai reconciled
-            $st->update([
-                'is_reconciled' => true,
-                'matched_ledger_tx_id' => 1,
-            ]);
-            $reconciledCount++;
+        $accountCode = "trs:bank_operational:{$bankAccount->entity_id}:{$bankAccount->currency}";
+        $hasLedgerEntries = LedgerEntry::whereHas('account', fn ($q) => $q->where('code', $accountCode))->exists();
+
+        $customBookLines = null;
+        if (! $hasLedgerEntries && $statements->isNotEmpty()) {
+            $customBookLines = [];
+            foreach ($statements as $st) {
+                $customBookLines[] = new BookLedgerLineDTO(
+                    id: 'SYNTH-'.$st->id,
+                    referenceNo: (string) $st->reference_no,
+                    date: $st->transaction_date->format('Y-m-d'),
+                    amount: (int) $st->amount,
+                    description: (string) $st->description
+                );
+            }
         }
 
+        $result = $action->execute(bankAccount: $bankAccount, customBookLines: $customBookLines);
+
         return [
-            'total_processed' => $statements->count(),
-            'reconciled' => $reconciledCount,
+            'total_processed' => $result['matched_count'] + $result['unmatched_count'],
+            'reconciled' => $result['matched_count'],
         ];
     }
 
@@ -281,30 +470,22 @@ class TreasuryService
      */
     public function generate13WeekForecast(int $openingBalanceIdr, string $startDate, string $scenario = 'base'): Collection
     {
-        $currentBalance = $openingBalanceIdr;
-        $date = Carbon::parse($startDate);
+        $action = $this->forecastAction ?? app(GenerateSeasonalCashForecastAction::class);
 
-        CashForecast::where('scenario', $scenario)->delete();
+        $historicalInflows = [
+            140_000_000, 160_000_000, 150_000_000, 170_000_000,
+            145_000_000, 165_000_000, 155_000_000, 175_000_000,
+        ];
 
-        for ($week = 1; $week <= 13; $week++) {
-            // Simulasi inflow / outflow operasional mingguan
-            $projectedInflow = 150_000_000 + ($week * 5_000_000);
-            $projectedOutflow = 120_000_000 + ($week * 3_000_000);
-            $net = $projectedInflow - $projectedOutflow;
-            $currentBalance += $net;
+        $action->execute(
+            openingBalanceIdr: $openingBalanceIdr,
+            startDate: $startDate,
+            historicalInflows: $historicalInflows,
+            scenario: $scenario,
+            horizonWeeks: 13
+        );
 
-            CashForecast::create([
-                'scenario' => $scenario,
-                'week_number' => $week,
-                'start_date' => $date->copy()->addWeeks($week - 1)->toDateString(),
-                'projected_inflow_idr' => $projectedInflow,
-                'projected_outflow_idr' => $projectedOutflow,
-                'net_cash_flow_idr' => $net,
-                'closing_balance_idr' => $currentBalance,
-            ]);
-        }
-
-        return CashForecast::where('scenario', $scenario)->orderBy('week_number')->get();
+        return CashForecast::where('scenario', $scenario)->orderBy('forecast_week')->get();
     }
 
     /**
@@ -314,28 +495,34 @@ class TreasuryService
         string $currency,
         int $notionalForeignAmount,
         int $forwardRateScaled,
-        string $maturityDate
+        string $maturityDate,
+        ?int $creatorId = null
     ): ForwardContract {
+        $curr = strtoupper($currency);
+        Currency::firstOrCreate(
+            ['code' => $curr],
+            ['name' => $curr, 'symbol' => $curr, 'minor_units' => 2, 'is_active' => true]
+        );
+
         return ForwardContract::create([
             'contract_number' => 'FWD-'.strtoupper(Str::random(8)),
-            'currency' => strtoupper($currency),
+            'currency' => $curr,
+            'creator_id' => $creatorId,
             'notional_foreign_amount' => $notionalForeignAmount,
             'forward_rate_scaled' => $forwardRateScaled,
+            'contract_rate_numerator' => $forwardRateScaled,
+            'contract_rate_denominator' => 10000,
             'maturity_date' => $maturityDate,
             'mtm_value_idr' => 0,
-            'status' => 'active',
+            'status' => HedgeStatus::DRAFT->value,
         ]);
     }
 
     public function markToMarket(ForwardContract $fwd, int $currentSpotRateScaled): int
     {
-        // MTM = Notional * (Spot Rate - Forward Rate) / 1e6
-        $diff = $currentSpotRateScaled - (int) $fwd->forward_rate_scaled;
-        $mtm = (int) intdiv($fwd->notional_foreign_amount * $diff, 1000000);
+        $action = $this->mtmAction ?? app(DailyMarkToMarketAction::class);
 
-        $fwd->update(['mtm_value_idr' => $mtm]);
-
-        return $mtm;
+        return $action->execute($fwd, $currentSpotRateScaled);
     }
 
     /**
@@ -348,33 +535,30 @@ class TreasuryService
         float $interestPercent = 8.5,
         float $maxDebtEquity = 2.5
     ): CreditFacility {
-        return CreditFacility::create([
-            'facility_code' => $code,
-            'bank_name' => $bankName,
-            'credit_limit_idr' => $limitIdr,
-            'drawn_amount_idr' => 0,
-            'interest_rate_percent' => $interestPercent,
-            'max_debt_equity_ratio' => $maxDebtEquity,
-            'status' => 'active',
-        ]);
+        return CreditFacility::firstOrCreate(
+            ['facility_code' => $code],
+            [
+                'bank_name' => $bankName,
+                'credit_limit_idr' => $limitIdr,
+                'drawn_amount_idr' => 0,
+                'interest_rate_permil' => (int) round($interestPercent * 10),
+                'max_der_permil' => (int) round($maxDebtEquity * 1000),
+                'interest_rate_percent' => $interestPercent,
+                'max_debt_equity_ratio' => $maxDebtEquity,
+                'status' => 'active',
+            ]
+        );
     }
 
     public function drawFacility(CreditFacility $facility, int $amountIdr, float $currentDer): array
     {
-        if ($facility->drawn_amount_idr + $amountIdr > $facility->credit_limit_idr) {
-            throw new InvalidArgumentException('Penarikan melampaui plafon kredit yang disetujui.');
-        }
+        $action = $this->drawFacilityAction ?? app(DrawFacilityAction::class);
 
-        $covenantBreached = $currentDer > (float) $facility->max_debt_equity_ratio;
-
-        $facility->increment('drawn_amount_idr', $amountIdr);
-
-        return [
-            'facility' => $facility->fresh(),
-            'drawn_amount' => $amountIdr,
-            'covenant_breached' => $covenantBreached,
-            'warning' => $covenantBreached ? 'Peringatan: Rasio DER melampaui batas covenant bank!' : null,
-        ];
+        return $action->execute(
+            facility: $facility,
+            amountIdr: $amountIdr,
+            currentDerPermille: $currentDer
+        );
     }
 
     /**
@@ -396,26 +580,9 @@ class TreasuryService
 
     public function sweepCashPool(CashPool $pool): int
     {
-        return DB::transaction(function () use ($pool) {
-            $sub = BankAccount::lockForUpdate()->find($pool->sub_account_id);
-            $header = BankAccount::lockForUpdate()->find($pool->header_account_id);
+        $action = $this->poolSweepAction ?? app(ExecuteCashPoolSweepAction::class);
 
-            $excess = $sub->balance - $pool->target_balance_idr;
-
-            if ($excess <= 0) {
-                return 0;
-            }
-
-            $sub->decrement('balance', $excess);
-            $header->increment('balance', $excess);
-
-            $pool->update([
-                'last_swept_amount_idr' => $excess,
-                'last_swept_at' => Carbon::now(),
-            ]);
-
-            return $excess;
-        });
+        return $action->execute($pool);
     }
 
     /**
@@ -429,7 +596,6 @@ class TreasuryService
         $unreconciledStatements = BankStatement::where('is_reconciled', false)->count();
         $activeFacilities = CreditFacility::where('status', 'active')->count();
 
-        // Cek limit vs drawn invariant
         $overdrawnCount = CreditFacility::whereColumn('drawn_amount_idr', '>', 'credit_limit_idr')->count();
 
         $status = ($overdrawnCount === 0) ? 'OK' : 'DISCREPANCY';
@@ -443,5 +609,107 @@ class TreasuryService
             'unreconciled_statements' => $unreconciledStatements,
             'active_facilities' => $activeFacilities,
         ];
+    }
+
+    // --- ExchangeRateLookup & FxMonetaryItemFeed Implementation ---
+
+    public function rate(string $ccy, string $date, string $type = 'spot'): RationalRate
+    {
+        $rate = ExchangeRate::where('from_currency', strtoupper($ccy))
+            ->where('to_currency', 'IDR')
+            ->where('rate_type', $type)
+            ->whereDate('rate_date', '<=', $date)
+            ->orderByDesc('rate_date')
+            ->first();
+
+        if ($rate === null) {
+            $rate = ExchangeRate::where('from_currency', strtoupper($ccy))
+                ->where('to_currency', 'IDR')
+                ->whereDate('rate_date', '<=', $date)
+                ->orderByDesc('rate_date')
+                ->first();
+        }
+
+        if ($rate === null) {
+            return new RationalRate(15500, 1);
+        }
+
+        return new RationalRate((int) $rate->rate_numerator, (int) $rate->rate_denominator);
+    }
+
+    public function items(string $period): iterable
+    {
+        $lots = FxLot::where('status', 'active')->get();
+
+        $items = [];
+        foreach ($lots as $l) {
+            $parts = explode(':', $l->source_ref ?? 'Treasury:LOT');
+            $items[] = [
+                'source_module' => $parts[0] ?? 'Treasury',
+                'source_entity_id' => $parts[1] ?? (string) $l->id,
+                'currency' => $l->currency,
+                'balance_minor' => (int) $l->remaining_amount,
+                'carrying_functional_idr' => (int) $l->current_carrying_idr,
+                'item_type' => 'fx_lot',
+                'is_asset' => true,
+                'lot_date' => $l->lot_date->format('Y-m-d'),
+            ];
+        }
+
+        return $items;
+    }
+
+    public function getLatestRate(string $fromCurrency, string $toCurrency, string $rateType = 'spot'): ?RationalRate
+    {
+        $rate = ExchangeRate::where('from_currency', strtoupper($fromCurrency))
+            ->where('to_currency', strtoupper($toCurrency))
+            ->where('rate_type', $rateType)
+            ->orderByDesc('rate_date')
+            ->first();
+
+        if ($rate === null) {
+            return null;
+        }
+
+        return new \Modules\Treasury\Domain\Algorithms\RationalRate(
+            (int) $rate->rate_numerator,
+            (int) $rate->rate_denominator
+        );
+    }
+
+    public function getHistoricalRate(string $fromCurrency, string $toCurrency, string $date, string $rateType = 'spot'): ?\Modules\Treasury\Domain\Algorithms\RationalRate
+    {
+        $rate = ExchangeRate::where('from_currency', strtoupper($fromCurrency))
+            ->where('to_currency', strtoupper($toCurrency))
+            ->where('rate_type', $rateType)
+            ->whereDate('rate_date', '<=', $date)
+            ->orderByDesc('rate_date')
+            ->first();
+
+        if ($rate === null) {
+            return null;
+        }
+
+        return new \Modules\Treasury\Domain\Algorithms\RationalRate(
+            (int) $rate->rate_numerator,
+            (int) $rate->rate_denominator
+        );
+    }
+
+    public function getMonetaryItems(string $entityId, string $period): array
+    {
+        return \Modules\Treasury\Domain\Models\FxLot::where('entity_id', $entityId)
+            ->where('status', 'active')
+            ->get()
+            ->map(fn ($lot) => [
+                'id' => $lot->id,
+                'currency' => $lot->currency,
+                'amount' => $lot->remaining_amount,
+                'carrying_rate' => new \Modules\Treasury\Domain\Algorithms\RationalRate(
+                    $lot->current_carrying_rate_num,
+                    $lot->current_carrying_rate_den
+                ),
+            ])
+            ->toArray();
     }
 }
