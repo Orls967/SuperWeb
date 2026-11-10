@@ -97,11 +97,14 @@ use Modules\Core\Console\Commands\SearchReindexCommand;
 use Modules\Core\Console\Commands\SearchZeroResultReportCommand;
 use Modules\Core\Console\Commands\SimCheckpointPruneCommand;
 use Modules\Core\Console\Commands\SimDiffCommand;
+use Modules\Core\Console\Commands\SpineConsistencyCheckCommand;
 use Modules\Core\Console\Commands\SpineDlqReplayCommand;
 use Modules\Core\Console\Commands\SpineGapScanCommand;
 use Modules\Core\Console\Commands\SpineLagReportCommand;
 use Modules\Core\Console\Commands\SpineParityVerifyCommand;
+use Modules\Core\Console\Commands\SpinePartitionStatusCommand;
 use Modules\Core\Console\Commands\SpineReplayCommand;
+use Modules\Core\Console\Commands\SpineSchemaEvolutionCommand;
 use Modules\Core\Console\Commands\SpineSnapshotCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TaskSlaAuditCommand;
@@ -134,7 +137,11 @@ use Modules\Core\Domain\Algorithms\Events\ProjectionHashCalculator;
 use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
 use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
 use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
+use Modules\Core\Application\Policies\EventSpinePolicy;
+use Modules\Core\Application\Policies\SpineDlqPolicy;
 use Modules\Core\Domain\Events\VehicleAcquired;
+use Modules\Core\Domain\Models\CoreEventDelivery;
+use Modules\Core\Domain\Models\SimEventSpine;
 use Modules\Core\Domain\Models\SimRun;
 use Modules\Core\Domain\Models\SimTwinState;
 use Modules\Core\Domain\Models\Vehicle;
@@ -362,6 +369,8 @@ class CoreServiceProvider extends ServiceProvider
         // Register policies
         Gate::policy(SimRun::class, SimulationRunPolicy::class);
         Gate::policy(SimTwinState::class, SimTwinStatePolicy::class);
+        Gate::policy(SimEventSpine::class, EventSpinePolicy::class);
+        Gate::policy(CoreEventDelivery::class, SpineDlqPolicy::class);
 
         // Register menu items
         $registry = $this->app->make(MenuRegistry::class);
@@ -492,6 +501,9 @@ class CoreServiceProvider extends ServiceProvider
                 EventSpineT1SeedCommand::class,
                 SpineSnapshotCommand::class,
                 SpineParityVerifyCommand::class,
+                SpineConsistencyCheckCommand::class,
+                SpinePartitionStatusCommand::class,
+                SpineSchemaEvolutionCommand::class,
             ]);
         }
 
