@@ -7497,17 +7497,15 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (`core_`, `sim_`) · **Prasyarat:** R2.5, R4 ✅ · **Acuan:** KONSEP §A10
 > **Jalan pintas terlarang di fase ini:** jam virtual tanpa menjalankan tick handler; `Carbon::setTestNow()` di produksi; event spine tanpa konsumen nyata — ditambah seluruh X1–X25.
-- [ ] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
+- [🔵] 67.1 **Simulation Kernel**: lapisan orkestrasi waktu `sim:run --days=N` menjalankan seluruh modul maju N hari kompresi (event time, bukan wall clock); clock virtual terpusat disuntikkan ke scheduler/scheduler-idempoten sehingga penyusutan aset, jatuh tempo kontrak, siklus S&OP, expiry poin, dan tenure berjalan bertahun-tahun dalam hitungan menit; deterministik (seed sama → hasil sama)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 02bb65e
-    - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
+    - file: modules/Core/Application/Services/SimulationRunnerService.php
     - file: modules/Core/Console/Commands/RunSimulationCommand.php
-    - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_advance_simulation_clock_via_post_endpoint
+    - test: tests/Acceptance/SimKernel/SimKernelAcceptanceTest.php::test_02_deterministic_run_and_resumption_and_idempotency
     - akses: command sim:run
-    - akses: route POST /admin/simulation-governance/advance [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-67.md
+    - akses: route GET /admin/simulation [role: sim_operator, admin]
 - [ ] 67.2 **Universal Event Spine**: generalisasi `core_outbox` menjadi tulang punggung event ber-topik per pilar (`auto.*`, `fintech.*`, `resto.*`, `proptech.*`, `lgx.*`, `mfg.*`, `trade.*`, `gov.*`, `hsp.*`, `ven.*`, `htl.*`, `min.*`), schema registry ber-versi, consumer group idempoten, dan replay dari offset tertentu — setiap pilar dapat "menyaksikan" kejadian pilar lain tanpa coupling
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   (dibatalkan) Bukti:
@@ -7519,56 +7517,47 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - akses: command core:consume-spine
     - akses: route POST /admin/simulation-governance/publish-spine [role: admin]
     - (dibatalkan) gate: docs/gates/fase-67.md
-- [ ] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
+- [🔵] 67.3 **Digital Twin Bus**: kontrak `TwinState` generik (entity_type, entity_id, state JSON, valid_from, hash prev) untuk entitas bernilai tinggi (kendaraan, gedung, kontainer, pabrik, petak lahan, kamar hotel, alat berat, pasien-episode, venue zone); update twin idempoten & teraudit, simulasi what-if berjalan di sandbox tanpa menyentuh ledger riil
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 02bb65e
-    - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
+    - file: modules/Core/Application/Services/DigitalTwinService.php
     - file: modules/Core/Domain/Models/SimTwinState.php
-    - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_record_digital_twin_state_via_post_endpoint
-    - akses: route POST /admin/simulation-governance/record-twin [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-67.md
-- [ ] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
+    - file: modules/Core/Domain/Models/SimTwinSnapshot.php
+    - test: tests/Acceptance/SimKernel/SimKernelAcceptanceTest.php::test_03_domain_pillars_and_topological_order_and_sandbox
+    - akses: route GET /admin/simulation/twins [role: sim_operator, admin]
+- [🔵] 67.4 **Fictional Scale Provisioner**: kerangka seeder deterministik per pilar (memperluas pola `EnterpriseUniverseSeeder`) dengan checkpoint/resume, chunk streaming bulk-insert, benchmark per etape, dan target volume raksasa (jutaan baris) yang tetap idempoten
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 02bb65e
-    - file: modules/Core/Http/Controllers/SimulationGovernanceController.php
-    - file: modules/Core/Domain/Models/SimSeederCheckpoint.php
-    - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_update_scale_seeder_checkpoint_via_post_endpoint
+    - file: modules/Core/Application/Services/Scale/ScaleTierPlan.php
+    - file: modules/Core/Console/Commands/ScaleProvisionCommand.php
+    - file: modules/Core/database/seeders/SimulationUniverseSeeder.php
     - akses: command scale:provision
-    - akses: route POST /admin/simulation-governance/scale-provision [role: admin]
-    - (dibatalkan) gate: docs/gates/fase-67.md
-- [ ] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
+- [🔵] 67.5 Arch test untuk kerangka baru: modul manapun hanya boleh subscribe event spine via Contract; twin state tidak boleh menjadi sumber kebenaran uang/stok; kernel waktu tidak diakses langsung dari controller
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 02bb65e
     - file: tests/Architecture/SimulationKernelArchitectureTest.php
     - test: tests/Architecture/SimulationKernelArchitectureTest.php::sim_twin_states does not have balance or stock columns as source of truth
-    - (dibatalkan) gate: docs/gates/fase-67.md
-- [ ] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
+- [🔵] 67.6 Tests: (a) simulasi 365 hari identik dua kali berjalan (deterministik) (b) replay event spine dari offset N idempoten (c) twin update ganda tidak duplikat (d) ledger tetap Σ=0 selama simulasi (e) checkpoint resume seeder tanpa duplikasi
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 02bb65e
-    - file: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php
-    - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_view_simulation_governance_dashboard_with_200_status
-    - (dibatalkan) gate: docs/gates/fase-67.md
-- [ ] 67.7 Quality gate Fase 67
+    - file: tests/Acceptance/SimKernel/SimKernelAcceptanceTest.php
+    - file: tests/Acceptance/SimKernel/SimKernelAlgorithmsTest.php
+    - test: tests/Acceptance/SimKernel/SimKernelAcceptanceTest.php
+- [🔵] 67.7 Quality gate Fase 67
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: dokumen
-    - commit: 02bb65e
-    - file: docs/gates/fase-67.md
+    - file: docs/dor/fase-67.md
+    - file: docs/design/fase-67.md
     - file: modules/Core/Console/Commands/AuditSimulationKernelCommand.php
-    - file: app/Quality/Audit/Fixtures/SimAuditCorruptionFixture.php
-    - test: modules/Core/tests/Feature/SimulationVerticalSliceHttpTest.php::test_admin_can_view_simulation_governance_dashboard_with_200_status
+    - test: tests/Acceptance/SimKernel/SimKernelAcceptanceTest.php::test_05_audit_two_source_clean_vs_corruption
     - akses: command sim:audit
-    - akses: route GET /admin/simulation-governance [role: admin]
+    - akses: route GET /admin/simulation [role: sim_operator, admin]
     - audit: sim:audit
-    - (dibatalkan) gate: docs/gates/fase-67.md
 
 ### Register Minus Fase 67
 | ID | Item | Minus | Dampak | Prioritas | Rencana Penyelesaian |

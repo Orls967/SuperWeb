@@ -7,6 +7,7 @@ namespace Modules\Core\Application\Services;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\DigitalTwinInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Core\Domain\Models\SimTwinSnapshot;
 use Modules\Core\Domain\Models\SimTwinState;
 
 class DigitalTwinService implements DigitalTwinInterface
@@ -15,6 +16,25 @@ class DigitalTwinService implements DigitalTwinInterface
         protected SimClockInterface $simClock
     ) {}
 
+    /**
+     * Alias untuk recordState agar kompatibel dengan pemanggilan fleksibel.
+     *
+     * @param  array<string, mixed>  $state
+     */
+    public function record(
+        string $entityType,
+        string $entityId,
+        array $state,
+        bool $isSandbox = false
+    ): SimTwinState {
+        return $this->recordState($entityType, $entityId, $state, $isSandbox);
+    }
+
+    /**
+     * Record a new state for a digital twin with hash-chaining.
+     *
+     * @param  array<string, mixed>  $state
+     */
     public function recordState(
         string $entityType,
         string $entityId,
@@ -94,5 +114,36 @@ class DigitalTwinService implements DigitalTwinInterface
         }
 
         return true;
+    }
+
+    /**
+     * Mengambil snapshot seluruh digital twin aktif pada hari tertentu untuk sesi simulasi.
+     */
+    public function takeSnapshot(string $runId, int $dayNumber, bool $isSandbox = false): int
+    {
+        $latestStates = SimTwinState::where('is_sandbox', $isSandbox)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique(fn ($item) => "{$item->entity_type}:{$item->entity_id}");
+
+        $count = 0;
+        foreach ($latestStates as $state) {
+            SimTwinSnapshot::updateOrCreate(
+                [
+                    'run_id' => $runId,
+                    'day_number' => $dayNumber,
+                    'entity_type' => $state->entity_type,
+                    'entity_id' => $state->entity_id,
+                ],
+                [
+                    'state_hash' => $state->state_hash,
+                    'state_payload' => $state->state,
+                    'created_at' => now(),
+                ]
+            );
+            $count++;
+        }
+
+        return $count;
     }
 }

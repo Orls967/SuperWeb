@@ -121,7 +121,26 @@ trait HasRbacRoles
         }
 
         // Fallback: legacy column
-        return in_array($this->role, $roleNames);
+        return in_array($this->role, $roleNames, true);
+    }
+
+    /**
+     * Alias for hasAnyRbacRole.
+     *
+     * @param  array<string>|string  ...$roleNames
+     */
+    public function hasAnyRole(...$roleNames): bool
+    {
+        $flattened = [];
+        foreach ($roleNames as $r) {
+            if (is_array($r)) {
+                $flattened = array_merge($flattened, $r);
+            } else {
+                $flattened[] = $r;
+            }
+        }
+
+        return $this->hasAnyRbacRole($flattened);
     }
 
     /**

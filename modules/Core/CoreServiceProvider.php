@@ -55,6 +55,9 @@ use Modules\Core\Application\Services\Resilience\MultiRegionResilienceEngineServ
 use Modules\Core\Application\Services\Scale\OutboxScaleProvisioner;
 use Modules\Core\Application\Services\Scale\PassportScaleProvisioner;
 use Modules\Core\Application\Services\SimClockService;
+use Modules\Core\Application\Services\SimStreamRegistryService;
+use Modules\Core\Application\Services\SimTickRegistry;
+use Modules\Core\Application\Services\SimulationRunnerService;
 use Modules\Core\Application\Services\VenueZoneSurveillanceFeedService;
 use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
@@ -77,6 +80,8 @@ use Modules\Core\Console\Commands\SearchAuditCommand;
 use Modules\Core\Console\Commands\SearchHealthCheckCommand;
 use Modules\Core\Console\Commands\SearchReindexCommand;
 use Modules\Core\Console\Commands\SearchZeroResultReportCommand;
+use Modules\Core\Console\Commands\SimCheckpointPruneCommand;
+use Modules\Core\Console\Commands\SimDiffCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
 use Modules\Core\Console\Commands\TaskSlaAuditCommand;
 use Modules\Core\Console\Commands\TaskSlaEscalateDaemonCommand;
@@ -96,7 +101,9 @@ use Modules\Core\Contracts\IdentityVelocityRiskScorer;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Contracts\ScaleProvisionerInterface;
 use Modules\Core\Contracts\SimClockInterface;
+use Modules\Core\Contracts\SimStreamRegistry;
 use Modules\Core\Contracts\SimTickHandlerInterface;
+use Modules\Core\Contracts\SimulationRunner;
 use Modules\Core\Contracts\StockPrescriptionEngineInterface;
 use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
@@ -105,7 +112,17 @@ use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
 use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
 use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
 use Modules\Core\Domain\Events\VehicleAcquired;
+use Modules\Core\Domain\Models\SimRun;
+use Modules\Core\Domain\Models\SimTwinState;
 use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Domain\Repositories\SimCheckpointRepositoryInterface;
+use Modules\Core\Domain\Repositories\SimRunRepositoryInterface;
+use Modules\Core\Domain\Repositories\SimTwinSnapshotRepositoryInterface;
+use Modules\Core\Http\Policies\SimTwinStatePolicy;
+use Modules\Core\Http\Policies\SimulationRunPolicy;
+use Modules\Core\Infrastructure\Repositories\SimCheckpointEloquentRepository;
+use Modules\Core\Infrastructure\Repositories\SimRunEloquentRepository;
+use Modules\Core\Infrastructure\Repositories\SimTwinSnapshotEloquentRepository;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
 
@@ -242,6 +259,24 @@ class CoreServiceProvider extends ServiceProvider
             VenueZoneSurveillanceFeedGateway::class,
             VenueZoneSurveillanceFeedService::class
         );
+
+        $this->app->singleton(SimulationRunner::class, SimulationRunnerService::class);
+        $this->app->singleton(SimStreamRegistry::class, SimStreamRegistryService::class);
+        $this->app->singleton(SimTickRegistry::class);
+
+        // Simulation Domain Repositories
+        $this->app->bind(
+            SimRunRepositoryInterface::class,
+            SimRunEloquentRepository::class
+        );
+        $this->app->bind(
+            SimCheckpointRepositoryInterface::class,
+            SimCheckpointEloquentRepository::class
+        );
+        $this->app->bind(
+            SimTwinSnapshotRepositoryInterface::class,
+            SimTwinSnapshotEloquentRepository::class
+        );
     }
 
     public function boot(): void
@@ -276,6 +311,10 @@ class CoreServiceProvider extends ServiceProvider
             // Return null to let the policy/gate decide
             return null;
         });
+
+        // Register policies
+        Gate::policy(SimRun::class, SimulationRunPolicy::class);
+        Gate::policy(SimTwinState::class, SimTwinStatePolicy::class);
 
         // Register menu items
         $registry = $this->app->make(MenuRegistry::class);
@@ -376,6 +415,8 @@ class CoreServiceProvider extends ServiceProvider
                 ProcessOutboxCommand::class,
                 ConsumeSpineCommand::class,
                 RunSimulationCommand::class,
+                SimDiffCommand::class,
+                SimCheckpointPruneCommand::class,
                 TwelveLinesComprehensiveAuditCommand::class,
                 ScaleProvisionCommand::class,
                 BenchmarkRunCommand::class,

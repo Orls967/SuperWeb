@@ -30,6 +30,7 @@ use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\CoreTask;
 use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\Role;
+use Modules\Core\Domain\Models\SimRun;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Core\Domain\Models\WebhookDelivery;
 use Modules\Crypto\Domain\Enums\AlertCondition;
@@ -4890,4 +4891,64 @@ return [
         },
     ],
     'platform.backfills.index' => ['roles' => ['admin', 'superadmin']],
+    'admin.simulation.runs.index' => ['roles' => ['sim_operator', 'admin', 'superadmin']],
+    'admin.simulation.runs.store' => ['roles' => ['sim_operator', 'admin', 'superadmin']],
+    'admin.simulation.diff' => ['roles' => ['sim_operator', 'admin', 'superadmin']],
+    'admin.simulation.twins.index' => ['roles' => ['sim_operator', 'admin', 'superadmin']],
+    'admin.simulation.twins.show' => [
+        'roles' => ['sim_operator', 'admin', 'superadmin'],
+        'params' => fn () => ['type' => 'vehicle', 'id' => 'VH-001'],
+    ],
+    'admin.simulation.export' => [
+        'roles' => ['sim_operator', 'admin', 'superadmin'],
+        'params' => fn () => ['type' => 'runs'],
+    ],
+    'admin.simulation.runs.show' => [
+        'roles' => ['sim_operator', 'admin', 'superadmin'],
+        'params' => function () {
+            $run = SimRun::firstOrCreate(
+                ['name' => 'route-role-test-run'],
+                [
+                    'virtual_now' => now(),
+                    'sim_start_at' => now(),
+                    'status' => 'draft',
+                    'seed' => 42,
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
+    'admin.simulation.runs.pause' => [
+        'roles' => ['sim_operator', 'admin', 'superadmin'],
+        'params' => function () {
+            $run = SimRun::firstOrCreate(
+                ['name' => 'route-role-test-run'],
+                [
+                    'virtual_now' => now(),
+                    'sim_start_at' => now(),
+                    'status' => 'draft',
+                    'seed' => 42,
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
+    'admin.simulation.runs.resume' => [
+        'roles' => ['sim_operator', 'admin', 'superadmin'],
+        'params' => function () {
+            $run = SimRun::firstOrCreate(
+                ['name' => 'route-role-test-run'],
+                [
+                    'virtual_now' => now(),
+                    'sim_start_at' => now(),
+                    'status' => 'draft',
+                    'seed' => 42,
+                ]
+            );
+
+            return ['run' => $run->id];
+        },
+    ],
 ];

@@ -10,6 +10,7 @@ use Modules\Hotel\Application\Services\HotelFolioAdapter;
 use Modules\Hotel\Application\Services\HotelOperationsService;
 use Modules\Hotel\Application\Services\HotelPackageAvailabilityService;
 use Modules\Hotel\Application\Services\RoomBlockReserverService;
+use Modules\Hotel\Application\TickHandlers\HotelNightAuditTickHandler;
 use Modules\Hotel\Console\Commands\AuditHotelCommand;
 use Modules\Hotel\Console\Commands\HotelApoaSubmitCommand;
 use Modules\Hotel\Console\Commands\HotelAuditMiceAttritionCommand;
@@ -40,6 +41,7 @@ class HotelServiceProvider extends ServiceProvider
         $this->app->bind(RoomBlockReserver::class, RoomBlockReserverService::class);
         $this->app->bind(HotelPackageAvailabilityValidator::class, HotelPackageAvailabilityService::class);
         $this->app->singleton(HotelOperationsService::class);
+        $this->app->tag(HotelNightAuditTickHandler::class, 'sim.tick_handler');
     }
 
     public function boot(): void
