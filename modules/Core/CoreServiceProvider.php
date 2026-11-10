@@ -97,6 +97,7 @@ use Modules\Core\Console\Commands\SearchReindexCommand;
 use Modules\Core\Console\Commands\SearchZeroResultReportCommand;
 use Modules\Core\Console\Commands\SimCheckpointPruneCommand;
 use Modules\Core\Console\Commands\SimDiffCommand;
+use Modules\Core\Console\Commands\SpineArchiveCommand;
 use Modules\Core\Console\Commands\SpineConsistencyCheckCommand;
 use Modules\Core\Console\Commands\SpineDlqReplayCommand;
 use Modules\Core\Console\Commands\SpineGapScanCommand;
@@ -104,6 +105,7 @@ use Modules\Core\Console\Commands\SpineLagReportCommand;
 use Modules\Core\Console\Commands\SpineParityVerifyCommand;
 use Modules\Core\Console\Commands\SpinePartitionStatusCommand;
 use Modules\Core\Console\Commands\SpineReplayCommand;
+use Modules\Core\Console\Commands\SpineScaleRecommendCommand;
 use Modules\Core\Console\Commands\SpineSchemaEvolutionCommand;
 use Modules\Core\Console\Commands\SpineSnapshotCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
@@ -504,6 +506,8 @@ class CoreServiceProvider extends ServiceProvider
                 SpineConsistencyCheckCommand::class,
                 SpinePartitionStatusCommand::class,
                 SpineSchemaEvolutionCommand::class,
+                SpineArchiveCommand::class,
+                SpineScaleRecommendCommand::class,
             ]);
         }
 
