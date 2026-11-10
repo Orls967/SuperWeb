@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 27 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 35 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **685 Migrasi** |
+| | **Total: 65 Modul** | | **693 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 67 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 76 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1643 Rute** | | |
+| **Total** | **1652 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -735,6 +735,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `hsp:o2c-kpi` | `manual` | Kompilasi KPI Revenue Cycle Management (RCM) dan Order-to-Cash (O2C) RS |
 | `hsp:telemedicine-scan` | `manual` | Memindai integritas operasional telemedicine, pemenuhan e-resep, pengantaran cold-chain, dan langganan obat kronis |
 | `htl:audit` | `manual` | Audit operasional hotel terpadu: okupansi, inventaris kamar per malam, dan rekonsiliasi folio terhadap ledger |
+| `inbox:digest` | `manual` | Menghasilkan ringkasan beban kerja tugas aktif di Kotak Masuk |
+| `inbox:escalate` | `manual` | Mengecek dan mengeksekusi eskalasi terhadap tugas yang melewati tenggat waktu |
 | `ins:audit` | `manual` | Perform two-source verification of InsurTech products, policies, full insurance actuarial reserves, and claim payouts |
 | `ins:cat-run` | `manual` | Jalankan simulasi pemodelan bencana katastrofe deterministik berseed (Fase 157) |
 | `ins:cede-period` | `manual` | Proses evaluasi stop loss dan penutupan cession berkala (Fase 157) |
@@ -862,6 +864,10 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `sanctum:prune-expired` | `manual` | Prune tokens expired for more than specified number of hours |
 | `scale:provision` | `manual` | Jalankan Fictional Scale Provisioner deterministik dengan chunking dan checkpoint (PROGRESS R9.1) |
 | `schema:dump` | `manual` | Dump the given database schema |
+| `search:audit` | `manual` | Melakukan audit integritas dua sumber pada indeks pencarian dan kotak masuk tugas |
+| `search:health-check` | `manual` | Memeriksa skor kesehatan dan mendiagnosa status indeks pencarian global |
+| `search:reindex` | `manual` | Membangun ulang (reindex) inverted index dokumen pencarian global |
+| `search:zero-result-report` | `manual` | Menghasilkan laporan kueri pencarian tanpa hasil (0 results) untuk evaluasi konten |
 | `security:audit` | `manual` | Wave 2: Security & Compliance audit — Zero Trust, Privacy Vault, Regulatory, SOC & Pentest |
 | `serve` | `manual` | Serve the application on the PHP development server |
 | `session:table` | `manual` | Create a migration for the session database table |
@@ -883,6 +889,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `syb:scf-invoice-due-sweep` | `manual` | Pemeriksaan harian jatuh tempo tagihan SCF Murabahah dan monitoring keterlambatan |
 | `syb:sukuk-distribute` | `manual` | Proses terjadwal idempoten distribusi kupon/ujrah sukuk ke pemegang token |
 | `syb:zakat-haul-assess` | `manual` | Proses terjadwal idempoten evaluasi haul dan kewajiban zakat mal muzakki |
+| `task:escalate-daemon` | `manual` | Menjalankan daemon pemindaian eskalasi SLA dan pengiriman reminder tugas mendekati tenggat |
+| `task:sla-audit` | `manual` | Menjalankan audit performa dan rasio kepatuhan SLA Kotak Masuk Tugas Saya |
 | `telemetry:snapshot` | `manual` | Generate real-time live telemetry snapshot across 6 enterprise command centers in JSON or SSE format |
 | `test` | `manual` | Run the application tests |
 | `test:mutate` | `manual` | Jalankan mutation testing Pest (--mutate) dengan ambang skor minimum 60% |
@@ -917,7 +925,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 299 Command** | **37 Terjadwal** | |
+| **Total: 307 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

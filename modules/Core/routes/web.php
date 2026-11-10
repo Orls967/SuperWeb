@@ -13,13 +13,16 @@ use Modules\Core\Http\Controllers\DesignSystem\DesignSystemCatalogController;
 use Modules\Core\Http\Controllers\DesignSystem\DesignSystemReleaseController;
 use Modules\Core\Http\Controllers\DesignSystem\ThemePreferenceController;
 use Modules\Core\Http\Controllers\DesignSystem\UxResearchDashboardController;
+use Modules\Core\Http\Controllers\GlobalSearchApiController;
 use Modules\Core\Http\Controllers\HealthCheckController;
 use Modules\Core\Http\Controllers\MobileGovernanceController;
 use Modules\Core\Http\Controllers\NotificationController;
 use Modules\Core\Http\Controllers\PassportController;
 use Modules\Core\Http\Controllers\RbacController;
 use Modules\Core\Http\Controllers\ResilienceGovernanceController;
+use Modules\Core\Http\Controllers\SearchAnalyticsController;
 use Modules\Core\Http\Controllers\SimulationGovernanceController;
+use Modules\Core\Http\Controllers\TaskInboxController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/passport/{uuid}', [PassportController::class, 'show'])->name('passport.show');
@@ -130,4 +133,23 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::get('/design-system/{name}', [DesignSystemCatalogController::class, 'show'])->name('design-system.show');
         Route::post('/user/theme-preference', [ThemePreferenceController::class, 'update'])->name('user.theme-preference.update');
     });
+
+    // Kotak Masuk "Tugas Saya" (§19.1) — Fase 194
+    Route::middleware('role:admin,design_system_owner,manager,operator')->prefix('inbox')->group(function () {
+        Route::get('/', [TaskInboxController::class, 'index'])->name('core.task-inbox.index');
+        Route::get('/analytics', [TaskInboxController::class, 'analytics'])->name('core.task-inbox.analytics');
+        Route::post('/batch', [TaskInboxController::class, 'batch'])->name('core.task-inbox.batch');
+        Route::get('/{id}', [TaskInboxController::class, 'show'])->name('core.task-inbox.show');
+        Route::post('/{id}/action', [TaskInboxController::class, 'action'])->name('core.task-inbox.action');
+    });
+
+    // Analitik Pencarian & Reindexing — Fase 194 (Admin Only)
+    Route::middleware('role:admin')->prefix('admin/search')->group(function () {
+        Route::get('/analytics', [SearchAnalyticsController::class, 'analytics'])->name('core.search.analytics');
+        Route::get('/diagnostics', [SearchAnalyticsController::class, 'diagnostics'])->name('core.search.diagnostics');
+        Route::post('/reindex', [SearchAnalyticsController::class, 'triggerReindex'])->name('core.search.reindex');
+    });
+
+    // API Pencarian Global BM25 — Fase 194
+    Route::middleware('role:admin,design_system_owner,manager,operator')->get('/api/global-search-v2', GlobalSearchApiController::class)->name('core.api.global-search');
 });

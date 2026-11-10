@@ -12142,11 +12142,11 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** Core (Scale Provisioner) + seeder per lini yang ✅ · **Prasyarat:** R9 ✅ + lini terkait ✅ · **Acuan:** KONSEP §A9, §A10.4
 > **Jalan pintas terlarang di fase ini:** seeder 1 baris per entitas; klaim partisi/kapasitas di SQLite; angka benchmark tanpa output `gate:report`; memperluas `GlobalSearchService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 194.1 Indeks pencarian global (produk, dokumen, pelanggan berizin, resi, kamar, program, kelas, aset, kontrak) → parsial, scope-aware (hanya hasil yang boleh dilihat pengguna)
-- [ ] 194.2 Search-as-you-type & global command palette diperluas (Ctrl+K Fase 16.6) → lintas 30 lini, peran menentukan hasil
-- [ ] 194.3 Full-text dokumen (kontrak, PO, invoice, sertifikat) dengan highlight → link ke sumber asli → akses policy dokumen ditegakkan saat preview
-- [ ] 194.4 Tests: hasil tak pernah menembus scope (uji IDOR massal pada search), indeks sinkron ≤ SLA, highlight tak mengekspos PII yang disensor, relevansi deterministik
-- [ ] 194.5 Quality gate Fase 194
+- [🔵] 194.1 Indeks pencarian global (produk, dokumen, pelanggan berizin, resi, kamar, program, kelas, aset, kontrak) → parsial, scope-aware (hanya hasil yang boleh dilihat pengguna)
+- [🔵] 194.2 Search-as-you-type & global command palette diperluas (Ctrl+K Fase 16.6) → lintas 30 lini, peran menentukan hasil
+- [🔵] 194.3 Full-text dokumen (kontrak, PO, invoice, sertifikat) dengan highlight → link ke sumber asli → akses policy dokumen ditegakkan saat preview
+- [🔵] 194.4 Tests: hasil tak pernah menembus scope (uji IDOR massal pada search), indeks sinkron ≤ SLA, highlight tak mengekspos PII yang disensor, relevansi deterministik
+- [🔵] 194.5 Quality gate Fase 194
 
 ## FASE 195 — AI GELOMBANG 3: MODEL REGISTRY, EVALUATION & GUARDRAILS
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `AiModelGuardrailService`; 1 migrasi; test `AiModelGuardrailTest` — commit `8c4567f`, +302 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

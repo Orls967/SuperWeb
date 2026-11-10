@@ -71,6 +71,8 @@
         ['cmd' => 'arch:scan', 'title' => 'Arsitektur Scan Hexagonal (0 Pelanggaran)', 'desc' => 'Pemeriksaan kepatuhan A1 - A13 dan baseline aturan mutlak', 'category' => 'Integritas Kode'],
         ['cmd' => 'clean:cache', 'title' => 'Purge & Optimasi Cache Konglomerasi', 'desc' => 'Bersihkan redis pool, view compiled dan metadata route', 'category' => 'Pemeliharaan'],
         ['cmd' => 'auth:session-check', 'title' => 'Audit Token Sesi & Idempotency Key', 'desc' => 'Verifikasi guard anti-abuse dan duplikasi payload transaksi', 'category' => 'Keamanan Sistem'],
+        ['cmd' => 'search:audit', 'title' => 'Audit Integritas Dua Sumber Search & Inbox', 'desc' => 'Verifikasi konsistensi posting index & siklus tugas', 'category' => 'Audit Enterprise'],
+        ['cmd' => 'search:reindex', 'title' => 'Membangun Ulang Inverted Index Global', 'desc' => 'Rekonstruksi token BM25 lintas modul ekosistem', 'category' => 'Operasional Search'],
     ];
 
     // Read Conglomerate Roles from RbacConglomerateSeeder
@@ -132,20 +134,61 @@
         ['name' => 'vending_operator', 'label' => 'Autonomous Vending Restock Operator', 'cat' => 'Mobility, EV & Retail'],
         ['name' => 'customer', 'label' => 'End Customer / Patient / Guest', 'cat' => 'Mobility, EV & Retail'],
     ];
+
+    // Core Tasks Shortcuts
+    $coreShortcuts = [
+        ['title' => 'Kotak Masuk Tugas Saya (§19.1)', 'desc' => 'Daftar tindakan kerja, otorisasi persetujuan & eskalasi SLA', 'url' => route('core.task-inbox.index'), 'badge' => 'INBOX', 'color' => 'blue'],
+        ['title' => 'Analitik & Reindex Pencarian', 'desc' => 'Telemetri kueri anti-IDOR, zero-result detector & BM25 pipeline', 'url' => route('core.search.analytics'), 'badge' => 'ADMIN', 'color' => 'indigo'],
+    ];
 @endphp
 
 <div class="enterprise-command-palette-wrapper"
      x-data="{
         isOpen: false,
         searchQuery: '',
-        activeFilter: 'all', // all, modules, roles, commands
+        activeFilter: 'all', // all, modules, roles, commands, live
         selectedIndex: 0,
         modules: {{ json_encode($modulesIndex) }},
         roles: {{ json_encode($rolesIndex) }},
         commands: {{ json_encode($auditCommands) }},
+        shortcuts: {{ json_encode($coreShortcuts) }},
+        liveResults: [],
+        isSearchingLive: false,
         copilotQuery: '',
         copilotLoading: false,
         copilotResponse: null,
+
+        init() {
+            this.$watch('searchQuery', (q) => {
+                if (q && q.trim().length >= 2) {
+                    this.fetchLiveSearch(q.trim());
+                } else {
+                    this.liveResults = [];
+                }
+            });
+        },
+
+        fetchLiveSearch(query) {
+            this.isSearchingLive = true;
+            fetch(`/api/global-search-v2?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(res => {
+                    this.liveResults = (res.data || []).map(item => ({
+                        type: 'live',
+                        title: item.title,
+                        subtitle: (item.module || 'Doc') + ' • ' + (item.content || ''),
+                        url: item.metadata?.url || '#',
+                        badge: item.metadata?.badge || item.module || 'SEARCH',
+                        color: 'blue',
+                        action: () => window.location.href = (item.metadata?.url || '#')
+                    }));
+                    this.isSearchingLive = false;
+                })
+                .catch(() => {
+                    this.isSearchingLive = false;
+                });
+        },
+
         askCopilot(customPrompt) {
             const query = customPrompt || this.copilotQuery;
             if (!query) return;
@@ -183,6 +226,21 @@
             const q = this.searchQuery.toLowerCase().trim();
             let items = [];
 
+            // 0. Live Search BM25 Results from API
+            if ((this.activeFilter === 'all' || this.activeFilter === 'live') && this.liveResults.length > 0) {
+                this.liveResults.forEach(lr => items.push(lr));
+            }
+
+            // 1. Core Navigation Shortcuts
+            if (this.activeFilter === 'all') {
+                this.shortcuts.forEach(s => {
+                    if (!q || s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q)) {
+                        items.push({ type: 'shortcut', title: s.title, subtitle: s.desc, url: s.url, badge: s.badge, color: s.color, action: () => window.location.href = s.url });
+                    }
+                });
+            }
+
+            // 2. Enterprise Modules
             if (this.activeFilter === 'all' || this.activeFilter === 'modules') {
                 this.modules.forEach(m => {
                     if (!q || m.name.toLowerCase().includes(q) || m.sbu.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q)) {
@@ -191,6 +249,7 @@
                 });
             }
 
+            // 3. RBAC Roles
             if (this.activeFilter === 'all' || this.activeFilter === 'roles') {
                 this.roles.forEach(r => {
                     if (!q || r.label.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || r.cat.toLowerCase().includes(q)) {
@@ -211,6 +270,7 @@
                 });
             }
 
+            // 4. Audit & Quality Commands
             if (this.activeFilter === 'all' || this.activeFilter === 'commands') {
                 this.commands.forEach(c => {
                     if (!q || c.cmd.toLowerCase().includes(q) || c.title.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q)) {
@@ -301,7 +361,7 @@
              x-transition:leave-end="opacity-0 scale-95"
              class="mx-auto max-w-4xl transform rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl overflow-hidden relative z-10 flex flex-col max-h-[88vh]">
             
-            {{-- Integrated Live Telemetry Ticker 6 Command Center (SSE Stream) --}}
+            {{-- Integrated Live Telemetry Ticker --}}
             <x-enterprise.live-telemetry-ticker />
 
             {{-- Top Input Bar --}}
@@ -313,10 +373,11 @@
                        @keydown.down.prevent="selectNext()"
                        @keydown.up.prevent="selectPrev()"
                        @keydown.enter.prevent="executeSelected()"
-                       placeholder="Cari 46+ modul konglomerasi, 60 peran RBAC, atau ketik perintah audit..."
+                       placeholder="Cari kontrak, aset, manifest, 46+ modul, peran RBAC, atau ketik perintah audit..."
                        class="h-12 w-full border-0 bg-transparent text-white placeholder-slate-400 focus:ring-0 text-sm outline-none font-medium">
                 
                 <div class="flex items-center gap-1.5 ml-2">
+                    <span x-show="isSearchingLive" class="text-xs text-blue-400 animate-pulse font-mono mr-2">BM25...</span>
                     <kbd class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-mono text-indigo-400 border border-slate-700">⌘K</kbd>
                     <kbd class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-mono text-slate-400 border border-slate-700">ESC</kbd>
                 </div>
@@ -382,6 +443,11 @@
                         :class="activeFilter === 'all' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'">
                     Semua
                 </button>
+                <button type="button" @click="activeFilter = 'live'; selectedIndex = 0"
+                        class="px-3 py-1 rounded-lg transition-all font-semibold"
+                        :class="activeFilter === 'live' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'">
+                    Dokumen &amp; Kontrak
+                </button>
                 <button type="button" @click="activeFilter = 'modules'; selectedIndex = 0"
                         class="px-3 py-1 rounded-lg transition-all font-semibold"
                         :class="activeFilter === 'modules' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'">
@@ -404,7 +470,7 @@
                 <template x-if="filteredItems.length === 0">
                     <div class="py-12 text-center text-sm text-slate-400">
                         <svg class="mx-auto h-8 w-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p>Tidak ada modul, peran, atau perintah yang cocok dengan "<span x-text="searchQuery"></span>".</p>
+                        <p>Tidak ada modul, dokumen, peran, atau perintah yang cocok dengan "<span x-text="searchQuery"></span>".</p>
                     </div>
                 </template>
 
@@ -418,7 +484,10 @@
                         <div class="flex items-center gap-3 min-w-0">
                             {{-- Type Icon --}}
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                                 :class="item.type === 'module' ? 'bg-indigo-500/20 text-indigo-400' : (item.type === 'role' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400')">
+                                 :class="item.type === 'live' ? 'bg-blue-500/20 text-blue-400' : (item.type === 'module' ? 'bg-indigo-500/20 text-indigo-400' : (item.type === 'role' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'))">
+                                <template x-if="item.type === 'live'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                </template>
                                 <template x-if="item.type === 'module'">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                                 </template>
@@ -428,13 +497,16 @@
                                 <template x-if="item.type === 'command'">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 </template>
+                                <template x-if="item.type === 'shortcut'">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                                </template>
                             </div>
 
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
                                     <p class="text-xs font-bold truncate" :class="selectedIndex === index ? 'text-white' : 'text-slate-200'" x-text="item.title"></p>
                                     <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded font-bold"
-                                          :class="item.type === 'module' ? 'bg-indigo-500/10 text-indigo-300' : (item.type === 'role' ? 'bg-purple-500/10 text-purple-300' : 'bg-emerald-500/10 text-emerald-300')"
+                                          :class="item.type === 'live' ? 'bg-blue-500/10 text-blue-300' : (item.type === 'module' ? 'bg-indigo-500/10 text-indigo-300' : (item.type === 'role' ? 'bg-purple-500/10 text-purple-300' : 'bg-emerald-500/10 text-emerald-300'))"
                                           x-text="item.type"></span>
                                 </div>
                                 <p class="text-[11px] text-slate-400 truncate mt-0.5" x-text="item.subtitle"></p>

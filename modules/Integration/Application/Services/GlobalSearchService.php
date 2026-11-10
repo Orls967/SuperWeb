@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 /**
  * GlobalSearchService (Fase 194)
  *
+ * @deprecated Kerangka lama fase 194 di modul Integration. Kode produksi modern berada di modules/Core dan modules/Shared.
+ *
  * Implements:
  *  - 194.1 Scope-aware global search index across 30 lines (IDOR protection: strictly filters by tenant & role)
  *  - 194.3 Document full-text preview with automated PII masking

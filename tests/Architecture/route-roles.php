@@ -27,6 +27,7 @@ use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreAiStockRecommendation;
 use Modules\Core\Domain\Models\CoreMobileDevice;
+use Modules\Core\Domain\Models\CoreTask;
 use Modules\Core\Domain\Models\PartnerWebhook;
 use Modules\Core\Domain\Models\Role;
 use Modules\Core\Domain\Models\Vehicle;
@@ -4161,6 +4162,57 @@ return [
             );
 
             return ['recommendation' => $rec->id];
+        },
+    ],
+    'core.api.global-search' => ['roles' => ['admin', 'design_system_owner', 'manager', 'operator']],
+    'core.search.analytics' => ['roles' => ['admin']],
+    'core.search.diagnostics' => ['roles' => ['admin']],
+    'core.search.reindex' => ['roles' => ['admin']],
+    'core.task-inbox.action' => [
+        'roles' => ['admin', 'design_system_owner', 'manager', 'operator'],
+        'params' => function () {
+            $task = CoreTask::firstOrCreate(
+                ['id' => 'TASK-ARCH-ROUTE-001'],
+                [
+                    'module' => 'Core',
+                    'title' => 'Task Test Route',
+                    'source_entity_type' => 'test',
+                    'source_entity_id' => '1',
+                    'status' => 'pending',
+                ]
+            );
+
+            return ['id' => $task->id];
+        },
+        'setup' => function ($user) {
+            DB::table('core_tasks')
+                ->where('id', 'TASK-ARCH-ROUTE-001')
+                ->update(['assignee_user_id' => $user->id]);
+        },
+    ],
+    'core.task-inbox.analytics' => ['roles' => ['admin', 'design_system_owner', 'manager', 'operator']],
+    'core.task-inbox.batch' => ['roles' => ['admin', 'design_system_owner', 'manager', 'operator']],
+    'core.task-inbox.index' => ['roles' => ['admin', 'design_system_owner', 'manager', 'operator']],
+    'core.task-inbox.show' => [
+        'roles' => ['admin', 'design_system_owner', 'manager', 'operator'],
+        'params' => function () {
+            $task = CoreTask::firstOrCreate(
+                ['id' => 'TASK-ARCH-ROUTE-001'],
+                [
+                    'module' => 'Core',
+                    'title' => 'Task Test Route',
+                    'source_entity_type' => 'test',
+                    'source_entity_id' => '1',
+                    'status' => 'pending',
+                ]
+            );
+
+            return ['id' => $task->id];
+        },
+        'setup' => function ($user) {
+            DB::table('core_tasks')
+                ->where('id', 'TASK-ARCH-ROUTE-001')
+                ->update(['assignee_user_id' => $user->id]);
         },
     ],
     'trade_finance.clearing.index' => ['roles' => ['admin', 'tf_officer', 'importer', 'exporter']],

@@ -1,0 +1,193 @@
+{
+    "generated_at": "2026-11-10T04:12:31+00:00",
+    "total_tested_links": 777,
+    "total_broken_links": 2,
+    "broken_links": [
+        {
+            "role": "admin",
+            "source": "/dashboard",
+            "target": "/inbox",
+            "status": 500,
+            "error": "Server Error (500)"
+        },
+        {
+            "role": "operator",
+            "source": "/dashboard",
+            "target": "/inbox",
+            "status": 500,
+            "error": "Server Error (500)"
+        }
+    ],
+    "role_summary": {
+        "admin": {
+            "links_found": 105,
+            "links_tested": 105,
+            "links_broken": 1
+        },
+        "agent": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "asset_manager": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "auditor": {
+            "links_found": 30,
+            "links_tested": 30,
+            "links_broken": 0
+        },
+        "b2b_buyer": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "cashier": {
+            "links_found": 21,
+            "links_tested": 21,
+            "links_broken": 0
+        },
+        "contract_manager": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "customer": {
+            "links_found": 21,
+            "links_tested": 21,
+            "links_broken": 0
+        },
+        "dispatcher": {
+            "links_found": 29,
+            "links_tested": 29,
+            "links_broken": 0
+        },
+        "distributor": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "driver": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "epc_manager": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "esg_officer": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "farmer": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "hcm_manager": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "hub_operator": {
+            "links_found": 23,
+            "links_tested": 23,
+            "links_broken": 0
+        },
+        "kitchen": {
+            "links_found": 21,
+            "links_tested": 21,
+            "links_broken": 0
+        },
+        "legal": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "logistics_admin": {
+            "links_found": 33,
+            "links_tested": 33,
+            "links_broken": 0
+        },
+        "mall_admin": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "mekanik": {
+            "links_found": 21,
+            "links_tested": 21,
+            "links_broken": 0
+        },
+        "operator": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 1
+        },
+        "outlet_manager": {
+            "links_found": 29,
+            "links_tested": 29,
+            "links_broken": 0
+        },
+        "partner": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "party_manager": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "planner": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "procurement": {
+            "links_found": 26,
+            "links_tested": 26,
+            "links_broken": 0
+        },
+        "qc_inspector": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "rnd_specialist": {
+            "links_found": 17,
+            "links_tested": 17,
+            "links_broken": 0
+        },
+        "shipper": {
+            "links_found": 20,
+            "links_tested": 20,
+            "links_broken": 0
+        },
+        "supplier": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "technician": {
+            "links_found": 19,
+            "links_tested": 19,
+            "links_broken": 0
+        },
+        "tenant": {
+            "links_found": 18,
+            "links_tested": 18,
+            "links_broken": 0
+        },
+        "treasury": {
+            "links_found": 21,
+            "links_tested": 21,
+            "links_broken": 0
+        }
+    }
+}
