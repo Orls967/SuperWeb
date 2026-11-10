@@ -249,12 +249,26 @@ class EnterpriseFinanceLedgerPoster
             ->debit($taxAccount, $payableMinor, $currency)
             ->credit($cashClearing, $payableMinor, $currency);
 
-        $txType = ($taxType === 'PPN')
-            ? EnterpriseFinanceTransactionTypes::TAX_PPN_SETTLEMENT->value
-            : EnterpriseFinanceTransactionTypes::TAX_PPH_SETTLEMENT->value;
+        if ($taxType === 'PPN') {
+            return $this->ledgerService->post(new PostingDTO(
+                type: EnterpriseFinanceTransactionTypes::TAX_PPN_SETTLEMENT->value,
+                description: "Penyetoran Pajak {$taxType} Periode {$taxSummary->period}",
+                idempotencyKey: $idempotencyKey,
+                entries: $lines->toEntries($currency),
+                referenceType: 'ef_tax_summaries',
+                referenceId: (string) ($referenceNo ?? $taxSummary->id),
+                meta: [
+                    'period' => $taxSummary->period,
+                    'tax_type' => $taxType,
+                    'payable_minor' => $payableMinor,
+                ],
+                createdBy: $userId,
+                postedAt: $this->now(),
+            ));
+        }
 
         return $this->ledgerService->post(new PostingDTO(
-            type: $txType,
+            type: EnterpriseFinanceTransactionTypes::TAX_PPH_SETTLEMENT->value,
             description: "Penyetoran Pajak {$taxType} Periode {$taxSummary->period}",
             idempotencyKey: $idempotencyKey,
             entries: $lines->toEntries($currency),

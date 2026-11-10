@@ -33,11 +33,14 @@ class EnterpriseFinanceApiController extends Controller
 
         $budget = $this->service->realizeSpend($budget, $amountIdr);
 
+        $idempotencyKey = (string) ($request->header('Idempotency-Key')
+            ?: ('SPEND:'.$budget->id.':'.($validated['reference_no'] ?? $budget->budget_code)));
+
         // Posting transaksi ke ledger perbankan
         $tx = $this->ledgerPoster->postBudgetSpendRealization(
             budget: $budget,
             amountMinor: $amountIdr,
-            idempotencyKey: 'SPEND:'.$budget->id.':'.bin2hex(random_bytes(6)),
+            idempotencyKey: $idempotencyKey,
             referenceNo: $validated['reference_no'] ?? null,
             userId: $request->user()?->id
         );

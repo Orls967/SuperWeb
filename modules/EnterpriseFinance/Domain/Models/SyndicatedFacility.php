@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Modules\EnterpriseFinance\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Banking\Domain\Models\BankLedgerTransaction;
 
 class SyndicatedFacility extends Model
 {
@@ -44,11 +42,6 @@ class SyndicatedFacility extends Model
     public function covenantEvaluations(): HasMany
     {
         return $this->hasMany(DebtCovenantEvaluation::class, 'facility_id');
-    }
-
-    public function ledgerTransaction(): BelongsTo
-    {
-        return $this->belongsTo(BankLedgerTransaction::class, 'ledger_transaction_id');
     }
 
     public function availableCommitmentMinor(): int
