@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('legal_name', 128);
             $table->string('country_code', 2)->default('ID');
             $table->string('functional_currency', 3)->default('IDR');
-            $table->string('tax_id_npwp', 32);
+            $table->text('tax_id_npwp');
             $table->unsignedInteger('ownership_percent_permille')->default(100000);
             $table->boolean('is_parent')->default(false);
             $table->boolean('is_active')->default(true);

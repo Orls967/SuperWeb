@@ -27,6 +27,7 @@ class IntercompanyEntity extends Model
         'ownership_percent_permille' => 'integer',
         'is_parent' => 'boolean',
         'is_active' => 'boolean',
+        'tax_id_npwp' => 'encrypted',
     ];
 
     public function getTaxIdAttribute(): ?string
