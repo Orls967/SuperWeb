@@ -9,6 +9,10 @@ use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
 use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
+use Modules\Core\Http\Controllers\DesignSystem\DesignSystemCatalogController;
+use Modules\Core\Http\Controllers\DesignSystem\DesignSystemReleaseController;
+use Modules\Core\Http\Controllers\DesignSystem\ThemePreferenceController;
+use Modules\Core\Http\Controllers\DesignSystem\UxResearchDashboardController;
 use Modules\Core\Http\Controllers\HealthCheckController;
 use Modules\Core\Http\Controllers\MobileGovernanceController;
 use Modules\Core\Http\Controllers\NotificationController;
@@ -98,5 +102,20 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/simulation-governance/publish-spine', [SimulationGovernanceController::class, 'publishSpine'])->name('admin.simulation.publish-spine');
         Route::post('/simulation-governance/record-twin', [SimulationGovernanceController::class, 'recordTwin'])->name('admin.simulation.record-twin');
         Route::post('/simulation-governance/scale-provision', [SimulationGovernanceController::class, 'scaleProvision'])->name('admin.simulation.scale-provision');
+
+        // Design System & UX Governance (Fase 240)
+        Route::prefix('design-system')->group(function () {
+            Route::get('/releases', [DesignSystemReleaseController::class, 'index'])->name('admin.design-system.releases.index');
+            Route::get('/releases/create', [DesignSystemReleaseController::class, 'create'])->name('admin.design-system.releases.create');
+            Route::post('/releases', [DesignSystemReleaseController::class, 'store'])->name('admin.design-system.releases.store');
+            Route::post('/releases/{name}/transition', [DesignSystemReleaseController::class, 'transition'])->name('admin.design-system.releases.transition');
+            Route::get('/research', [UxResearchDashboardController::class, 'index'])->name('admin.design-system.research.index');
+            Route::get('/research/export-csv', [UxResearchDashboardController::class, 'exportCsv'])->name('admin.design-system.research.export-csv');
+        });
     });
+
+    // Design System Catalog & Theme Preference (Semua authenticated users)
+    Route::get('/design-system', [DesignSystemCatalogController::class, 'index'])->name('design-system.index');
+    Route::get('/design-system/{name}', [DesignSystemCatalogController::class, 'show'])->name('design-system.show');
+    Route::post('/user/theme-preference', [ThemePreferenceController::class, 'update'])->name('user.theme-preference.update');
 });
