@@ -24,5 +24,6 @@ class SharedServiceProvider extends ServiceProvider
         // Allow components to be accessed via <x-card>, <x-stat>, etc. and <x-shared::card>
         Blade::anonymousComponentPath(__DIR__.'/resources/views/components', '');
         Blade::anonymousComponentPath(__DIR__.'/resources/views/components', 'shared');
+        Blade::anonymousComponentPath(__DIR__.'/resources/views/components/ds', 'ds');
     }
 }
