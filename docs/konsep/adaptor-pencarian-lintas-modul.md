@@ -113,3 +113,4 @@ public function boot(SearchRegistry $registry): void
 }
 ```
 Ketika kueri masuk ke `GlobalSearchQuery`, registry mengeksekusi penelusuran secara terisolasi dan menggabungkan hasil melalui algoritma `PolicyFirstRanker`.
+

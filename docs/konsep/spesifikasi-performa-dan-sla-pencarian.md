@@ -33,3 +33,4 @@ Bila latensi kueri rata-rata melampaui 100 ms selama 5 menit berturut-turut:
 - Sistem secara otomatis mengaktifkan mode degradasi anggun (*graceful degradation mode*).
 - Pada mode ini, kalkulasi toleransi saltik Trigram Jaccard dinonaktifkan sementara untuk memprioritaskan pencocokan leksikal langsung BM25.
 - Log peringatan didelegasikan ke monitoring SRE melalui event `SearchPerformanceDegradedEvent`.
+

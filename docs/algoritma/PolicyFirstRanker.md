@@ -68,3 +68,4 @@ Hasil peringkat dienkapsulasi dengan segel kriptografis `PolicyRankingCertificat
   "certificate_seal": "8a71ef99..."
 }
 ```
+

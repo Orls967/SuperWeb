@@ -73,3 +73,4 @@ Keamanan data adalah prinsip mutlak yang tidak dapat dikompromikan. Algoritma A6
   $$\text{IsTenantMatch} = (\text{DocumentTenant} = \text{UserTenant}) \lor (\text{DocumentTenant} = \text{'GLOBAL'})$$
 - Dokumen yang gagal pada salah satu dari dua kondisi di atas secara instan dieliminasi dari memori sebelum kalkulasi BM25 dijalankan.
 - Tidak ada kebocoran metadata berupa jumlah hasil pencarian atau judul dokumen yang tidak diizinkan.
+

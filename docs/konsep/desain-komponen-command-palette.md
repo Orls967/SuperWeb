@@ -57,3 +57,4 @@ Komponen Command Palette sepenuhnya menggunakan token CSS kanonikal `x-ds.*`:
 - **Mode Terang (Light):** Latar belakang modal menggunakan `--color-bg-surface: #FFFFFF` dengan bayangan elevasi tinggi `shadow-2xl` dan border `--color-border-default: #E2E8F0`.
 - **Mode Gelap (Dark):** Latar belakang menggunakan `--color-bg-surface: #0F172A` dengan border halus `--color-border-default: #1E293B`.
 - **Mode Kontras Tinggi (High Contrast):** Latar belakang murni hitam `#000000` dengan garis batas tebal 2px solid putih `#FFFFFF` dan seleksi item berwarna kuning kontras `#FFFF00`.
+

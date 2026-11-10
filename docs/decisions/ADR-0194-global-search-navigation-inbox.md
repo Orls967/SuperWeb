@@ -46,3 +46,4 @@ SuperWeb berkembang mengelola puluhan modul bisnis (logistik, bengkel, showroom,
 
 - **Positif:** Pencarian enterprise instan (Ctrl+K) tersedia secara seragam di seluruh aplikasi; penelusuran leksikal kebal terhadap kesalahan saltik; jaminan zero information leak berkat evaluasi policy-first; efisiensi kerja approver meningkat drastis dengan adanya kotak masuk "Tugas Saya" satu pintu.
 - **Batasan:** Indeks teks penuh tersimpan di basis data relasional lokal `core_search_indices` sehingga pembaruan data wajib disinkronkan via `SearchProviderInterface` masing-masing modul.
+

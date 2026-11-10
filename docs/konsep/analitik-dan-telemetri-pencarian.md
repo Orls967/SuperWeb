@@ -56,3 +56,4 @@ Dasbor Analitik Pencarian (`/admin/search/analytics`) menampilkan indikator kine
 Untuk mencegah pembengkakan ukuran basis data:
 - Log kueri mentah disimpan selama 90 hari.
 - Perintah terjadwal `search:audit` melakukan agregasi statistik mingguan ke dalam tabel ringkasan dan mengarsipkan log kueri yang berusia $> 90$ hari.
+

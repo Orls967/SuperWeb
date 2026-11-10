@@ -31,3 +31,4 @@ Kueri pencarian multi-kata pada database relasional sering menghasilkan urutan h
 
 - **Positif:** Urutan hasil pencarian akurat dan intuitif; determinisme 100% pada semua lingkungan komputasi; kepatuhan tanpa ketergantungan paket eksternal (IZIN-2).
 - **Batasan:** Membutuhkan penyimpanan statistik korpus ($N, \text{avgdl}, n(q)$) yang perlu diperbarui saat indeksasi massal dijalankan.
+

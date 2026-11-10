@@ -53,3 +53,4 @@
 2. **IZIN-2 (Tanpa Dependensi Baru):** Seluruh algoritma tokenisasi leksikal, BM25, Trigram, dan Jaccard diimplementasikan murni PHP 8.4 native tanpa Elasticsearch, Algolia, Meilisearch, atau paket Composer pihak ketiga.
 3. **IZIN-3 (Integritas Kode Lama):** Kelas `GlobalSearchService` di modul `Integration` dibiarkan utuh dengan tag `@deprecated`.
 4. **Maksimal 5 Acceptance Test:** Acceptance test bertempat di `tests/Acceptance/SearchNav/SearchNavAcceptanceTest.php`.
+

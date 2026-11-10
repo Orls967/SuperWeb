@@ -31,3 +31,4 @@ Pada aplikasi multi-divisi dan multi-tenant, kebocoran data (*data leakage*) mel
 
 - **Positif:** Jaminan mutlak perlindungan IDOR (zero information leak); kepatuhan terhadap regulasi privasi data korporat (UU PDP / GDPR); deteksi dini percobaan eksfiltrasi data.
 - **Batasan:** Memerlukan sinkronisasi hak akses per entitas pada saat entitas diindeks ke dalam tabel `core_search_indices`.
+

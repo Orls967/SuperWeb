@@ -14,8 +14,7 @@ use Modules\Core\Domain\Models\CoreSearchIndexJob;
 use Modules\Core\Domain\Models\CoreTask;
 use Modules\Core\Domain\Models\CoreTaskHistory;
 use Modules\Core\Domain\StateMachines\IndexJobStateMachine;
-use Modules\Shared\Domain\Algorithms\Ui\Bm25Scorer;
-use Modules\Shared\Domain\Algorithms\Ui\PolicyFirstRanker;
+use Modules\Shared\Domain\Algorithms\Ui\JaccardCertificateVerifier;
 use Modules\Shared\Domain\Algorithms\Ui\TrigramJaccardMatcher;
 use Tests\TestCase;
 
@@ -86,7 +85,7 @@ class SearchNavAcceptanceTest extends TestCase
         $this->assertGreaterThanOrEqual(0.6, $suggestion['similarity']);
 
         // Verifikasi sertifikat deterministik
-        $verifier = app(\Modules\Shared\Domain\Algorithms\Ui\JaccardCertificateVerifier::class);
+        $verifier = app(JaccardCertificateVerifier::class);
         $this->assertTrue($verifier->verify($suggestion['certificate']));
     }
 

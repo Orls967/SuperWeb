@@ -45,3 +45,4 @@ Untuk mencegah keputusan ganda atau inkonsistensi status antara tabel `approval_
 1. **Transaksi Atomik Database:** Mutasi status tugas di `core_tasks` dan pencatatan keputusan di `approval_requests` dibungkus dalam blok `DB::transaction`.
 2. **Kunci Idempotensi Sinkron:** Kunci idempotensi ditransmisikan dari antarmuka web dan digunakan bersama oleh kedua layanan untuk mendeteksi penekanan tombol ganda (*double-click prevention*).
 3. **Penyelarasan Riwayat:** Setiap transisi di `core_tasks` mencatat ID keputusan approval terkait di kolom metadata JSON.
+

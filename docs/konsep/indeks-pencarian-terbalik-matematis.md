@@ -24,3 +24,4 @@ Sebelum term dimasukkan ke dalam tabel posting `core_search_terms`, teks mentah 
 - **Pengindeksan**: $\mathcal{O}(L)$ di mana $L$ adalah panjang karakter teks dokumen.
 - **Pencarian Posting List**: $\mathcal{O}(1)$ melalui B-Tree index pada kolom `term_hash`.
 - **Penggabungan Posting (Intersection/Union)**: $\mathcal{O}(k \log k)$ untuk $k$ entitas teratas.
+

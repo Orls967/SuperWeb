@@ -78,3 +78,4 @@ Contoh:
 - `idx-job:550e8400-e29b-41d4-a716-446655440000:indexed`
 
 Apabila perintah transisi dengan kunci yang sama dieksekusi berulang kali, State Machine mengembalikan status saat ini secara idempoten tanpa melakukan mutasi ganda pada basis data.
+

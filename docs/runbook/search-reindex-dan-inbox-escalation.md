@@ -54,3 +54,4 @@ Perintah ini mengirimkan ringkasan tugas aktif ke email/notifikasi pengguna seti
 ```cron
 0 8 * * * cd /path/to/superweb && php artisan inbox:digest --dry-run=false >> /var/log/superweb-digest.log 2>&1
 ```
+

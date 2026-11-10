@@ -74,10 +74,12 @@ use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ReinsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\SearchAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SimAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SybAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TakafulAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\TaskSlaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TfAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlmAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TlxAuditCorruptionFixture;
@@ -179,6 +181,8 @@ final class AuditCommandRegistry
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'ret:audit' => new RetAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
+            'search:audit' => new SearchAuditCorruptionFixture,
+            'task:sla-audit' => new TaskSlaAuditCorruptionFixture,
             'security:audit' => new SecurityAuditCorruptionFixture,
             'sim:audit' => new SimAuditCorruptionFixture,
             'syb:audit' => new SybAuditCorruptionFixture,

@@ -67,3 +67,4 @@ Hasil kalkulasi dienkapsulasi dengan sertifikat digital HMAC-SHA256:
 }
 ```
 Kelas `Bm25CertificateVerifier` memvalidasi integritas segel sebelum skor diproses ke tahap perankingan akhir.
+

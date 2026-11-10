@@ -64,3 +64,4 @@ Hasil pencocokan disegel dengan `JaccardCertificateVerifier`:
   "certificate_seal": "3c89ab41..."
 }
 ```
+

@@ -42,3 +42,4 @@ Pada setiap baris tugas di tab Menunggu Tindakan, Anda dapat langsung mengklik t
 2. **Tolak (Reject):** Menolak permohonan dengan kewajiban mengisi alasan penolakan.
 3. **Delegasikan (Delegate):** Mengalihkan kepemilikan tugas kepada pengguna atau peran lain yang relevan.
 4. **Buka Dokumen (Inspect):** Membuka halaman detail dokumen sumber pada modul pemilik.
+

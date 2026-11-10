@@ -158,3 +158,4 @@ erDiagram
 3. **A6: `PolicyFirstRanker`**  
    - Memastikan pengguna tanpa role yang sah mendapatkan skor 0 secara instan sebelum pemrosesan peringkat lanjutan (zero information leak).
    - Memadukan faktor BM25, faktor saltik Jaccard, penyesuaian resensi waktu (decay fungsi eksponensial), dan bobot prioritas tipe entitas bisnis.
+

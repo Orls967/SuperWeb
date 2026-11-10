@@ -40,3 +40,4 @@ Dokumen ini mencatat seluruh kode kesalahan spesifik domain pencarian global dan
 - **Penyebab:** Percobaan melakukan eskalasi manual pada tugas yang belum melewati batas waktu tenggat (*due date*).
 - **Tindakan Pemulihan:**  
   Pastikan eskalasi hanya dijalankan oleh daemon sistem terjadwal `inbox:escalate` atau pengguna dengan hak akses `admin`.
+

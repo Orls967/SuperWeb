@@ -9,6 +9,28 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
+use Modules\Core\Application\Actions\Search\Providers\AgricultureSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\AssetSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\AviationSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\B2bTradeSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\ContractSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\EducationSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\EnergyGridSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\EsgComplianceSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\FinanceSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\FlightSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\ForestrySearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\HealthcareSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\HotelSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\LogisticsSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\MallTenancySearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\ManufactureSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\MarineSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\MiningMetalsSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\PartySearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\ProcurementSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\RestoDiningSearchProvider;
+use Modules\Core\Application\Actions\Search\Providers\RetailStoreSearchProvider;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
 use Modules\Core\Application\Copilot\ExecutiveCopilotEngine;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
@@ -45,11 +67,19 @@ use Modules\Core\Console\Commands\CopilotAskCommand;
 use Modules\Core\Console\Commands\DsAuditCommand;
 use Modules\Core\Console\Commands\DsTokensBuildCommand;
 use Modules\Core\Console\Commands\DsUsageScanCommand;
+use Modules\Core\Console\Commands\InboxDigestCommand;
+use Modules\Core\Console\Commands\InboxEscalateCommand;
 use Modules\Core\Console\Commands\PqAuditChainsCommand;
 use Modules\Core\Console\Commands\ProcessOutboxCommand;
 use Modules\Core\Console\Commands\RunSimulationCommand;
 use Modules\Core\Console\Commands\ScaleProvisionCommand;
+use Modules\Core\Console\Commands\SearchAuditCommand;
+use Modules\Core\Console\Commands\SearchHealthCheckCommand;
+use Modules\Core\Console\Commands\SearchReindexCommand;
+use Modules\Core\Console\Commands\SearchZeroResultReportCommand;
 use Modules\Core\Console\Commands\SuperHealthCheckCommand;
+use Modules\Core\Console\Commands\TaskSlaAuditCommand;
+use Modules\Core\Console\Commands\TaskSlaEscalateDaemonCommand;
 use Modules\Core\Console\Commands\TelemetrySnapshotCommand;
 use Modules\Core\Console\Commands\TwelveLinesComprehensiveAuditCommand;
 use Modules\Core\Console\Commands\VerifyPassportsCommand;
@@ -77,6 +107,7 @@ use Modules\Core\Domain\Contracts\MultiRegionResilienceInterface;
 use Modules\Core\Domain\Events\VehicleAcquired;
 use Modules\Core\Domain\Models\Vehicle;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Shared\Application\SearchRegistry;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -249,6 +280,16 @@ class CoreServiceProvider extends ServiceProvider
         // Register menu items
         $registry = $this->app->make(MenuRegistry::class);
         $registry->addItem(
+            label: 'Tugas Saya',
+            route: 'core.task-inbox.index',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>',
+            roles: [],
+            order: 2,
+            group: 'Core',
+            activePattern: 'inbox*',
+        );
+
+        $registry->addItem(
             label: 'Dashboard',
             route: 'dashboard',
             icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>',
@@ -347,7 +388,43 @@ class CoreServiceProvider extends ServiceProvider
                 DsAuditCommand::class,
                 DsUsageScanCommand::class,
                 DsTokensBuildCommand::class,
+                SearchReindexCommand::class,
+                SearchAuditCommand::class,
+                SearchZeroResultReportCommand::class,
+                InboxDigestCommand::class,
+                InboxEscalateCommand::class,
+                SearchHealthCheckCommand::class,
+                TaskSlaAuditCommand::class,
+                TaskSlaEscalateDaemonCommand::class,
             ]);
+        }
+
+        // Register search providers to SearchRegistry
+        try {
+            $searchRegistry = $this->app->make(SearchRegistry::class);
+            $searchRegistry->registerProvider($this->app->make(ContractSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(AssetSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(MarineSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(PartySearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(LogisticsSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(HotelSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(FlightSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(FinanceSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(ProcurementSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(ManufactureSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(HealthcareSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(EducationSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(RetailStoreSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(RestoDiningSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(MallTenancySearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(B2bTradeSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(EnergyGridSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(MiningMetalsSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(AgricultureSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(ForestrySearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(AviationSearchProvider::class));
+            $searchRegistry->registerProvider($this->app->make(EsgComplianceSearchProvider::class));
+        } catch (\Throwable) {
         }
 
         // === Event Listeners ===

@@ -91,3 +91,4 @@ class HandleTaskInboxDecisionListener
 | Tinggi | `HIGH` | 24 Jam | Oranye | Persetujuan pesanan bernilai tinggi, penawaran kontrak legal |
 | Sedang | `MEDIUM` | 72 Jam | Biru | Verifikasi berkas mitra baru, penjadwalan pemeliharaan preventif |
 | Rendah | `LOW` | 7 Hari | Abu-abu | Tinjauan kepatuhan rutin tahunan, survei kepuasan pelanggan |
+

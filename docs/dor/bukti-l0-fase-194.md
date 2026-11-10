@@ -65,3 +65,4 @@ Kotak Masuk "Tugas Saya" (`/tugas-saya` atau `/tasks`) berfungsi sebagai agregat
 - **Tugas Tinjauan/Verifikasi:** Tinjauan kepatuhan kontrak, pemeriksaan klaim asuransi, dan review hasil evaluasi heuristik UX.
 - **Tugas Tenggat/Eskalasi:** Tugas tertunda yang mendekati jatuh tempo mendapatkan lencana eskalasi otomatis berbasis cron scheduler (`php artisan inbox:escalate`).
 - **Aksi Cepat Inline:** Pengguna dapat menyetujui (`Approve`), menolak (`Reject`), atau mendelegasikan tugas langsung dari daftar tanpa harus membuka modul satu per satu.
+
