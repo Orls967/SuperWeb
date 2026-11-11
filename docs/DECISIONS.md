@@ -3184,3 +3184,28 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   - [`docs/decisions/ADR-0068-covenant-fasilitas-kredit-rasio-bulat.md`](decisions/ADR-0068-covenant-fasilitas-kredit-rasio-bulat.md)
   - [`docs/decisions/ADR-0069-cash-pooling-zero-balancing-pinjaman-ic.md`](decisions/ADR-0069-cash-pooling-zero-balancing-pinjaman-ic.md)
 - **Keputusan:** W8-D61 (Multi-entitas via segmen kode akun), W8-D62 (Kurs rasional berversi tak dapat diubah), W8-D63 (Ledger multi-currency dua kaki berimbang & subledger lot valas), W8-D64 (Revaluasi pos moneter valas D1 & pembalik otomatis awal periode), W8-D65 (Rekonsiliasi bank 3-tahap D2 & antrean mismatch), W8-D66 (Forecast kas 13 minggu musiman D3), W8-D67 (Lindung nilai forward contract SM 8 status & MTM harian), W8-D68 (Covenant fasilitas kredit berbasis rasio permil bulat tanpa float), W8-D69 (Cash pooling zero-balancing via pinjaman intercompany).
+
+<a id="w8-d45"></a>
+<a id="w8-d46"></a>
+<a id="w8-d47"></a>
+<a id="w8-d48"></a>
+<a id="w8-d49"></a>
+<a id="w8-d50"></a>
+<a id="w8-d51"></a>
+<a id="w8-d52"></a>
+## 2026-11-12: [W8-P4.2] Core — Enterprise API v2, EDI, Webhook & Multi-Tenancy (Fase 55, W8-D45..W8-D52)
+- **Anchor:** `2026-11-12-w8-p4-fase-55-api-v2-edi-tenancy` / `w8-d45` / `w8-d46` / `w8-d47` / `w8-d48` / `w8-d49` / `w8-d50` / `w8-d51` / `w8-d52`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-55.md`](design/fase-55.md) (Desain Arsitektur, D2 & RAB Fase 55)
+  - [`docs/dor/fase-55.md`](dor/fase-55.md) (Definition of Ready & RAB Fase 55)
+  - [`docs/dor/bukti-l0-fase-55.md`](dor/bukti-l0-fase-55.md) (Bukti Kondisi Awal L.0 Fase 55)
+  - [`docs/konsep/batas-api-tenancy.md`](konsep/batas-api-tenancy.md) (Kartu Konsep API v2, Webhook, EDI & Tenancy)
+  - [`docs/decisions/ADR-0045-api-v2-envelope-cursor-rfc7807.md`](decisions/ADR-0045-api-v2-envelope-cursor-rfc7807.md)
+  - [`docs/decisions/ADR-0046-idempotensi-api-v2-persisten.md`](decisions/ADR-0046-idempotensi-api-v2-persisten.md)
+  - [`docs/decisions/ADR-0047-integer-token-bucket-rate-limit.md`](decisions/ADR-0047-integer-token-bucket-rate-limit.md)
+  - [`docs/decisions/ADR-0048-webhook-hmac-rotasi-event-spine-cb.md`](decisions/ADR-0048-webhook-hmac-rotasi-event-spine-cb.md)
+  - [`docs/decisions/ADR-0049-edi-codec-sm-handler-tanpa-ledger.md`](decisions/ADR-0049-edi-codec-sm-handler-tanpa-ledger.md)
+  - [`docs/decisions/ADR-0050-impor-streaming-batch-dan-ekspor-zip.md`](decisions/ADR-0050-impor-streaming-batch-dan-ekspor-zip.md)
+  - [`docs/decisions/ADR-0051-multi-tenancy-scope-registry.md`](decisions/ADR-0051-multi-tenancy-scope-registry.md)
+  - [`docs/decisions/ADR-0052-retensi-cold-archive-dan-audit-api.md`](decisions/ADR-0052-retensi-cold-archive-dan-audit-api.md)
+- **Keputusan:** W8-D45 (API v2 envelope, keyset cursor, RFC 7807 & header Deprecation v1), W8-D46 (`Idempotency-Key` persisten 24 jam + 409 konflik), W8-D47 (`IntegerTokenBucket` B1 milli-token per tier Silver/Gold/Platinum), W8-D48 (Webhook HMAC B2 + rotasi 7 hari + `EventDelivery`/DLQ W8-P3 + circuit breaker), W8-D49 (EDI `EdiInterchangeCodec` B3 + SM 8 status + `EdiDocumentHandler` 3 modul tanpa posting ledger), W8-D50 (Impor CSV/XLSX streaming batch 500 + Approval >10k + ekspor ZIP bertanda tangan), W8-D51 (`TenantContext` & `TenantScopeRegistry` fail-closed tanpa edit model), W8-D52 (Retensi arsip dingin >5 tahun & perluasan dual-source `api:audit`).
