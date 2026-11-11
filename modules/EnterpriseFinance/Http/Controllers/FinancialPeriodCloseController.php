@@ -49,4 +49,3 @@ class FinancialPeriodCloseController extends Controller
             ->with('status', "Periode fiskal {$validated['period']} berhasil ditutup dan dikunci.");
     }
 }
-

@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Core\Contracts\OutboxBusInterface;
-use Modules\EnterpriseFinance\Domain\Algorithms\Reconciliation\SubledgerReconciler;
 use Modules\EnterpriseFinance\Domain\Events\EnterprisePeriodClosed;
 use Modules\EnterpriseFinance\Domain\Exceptions\PeriodAlreadyLockedException;
 use Modules\EnterpriseFinance\Domain\Exceptions\SubledgerReconciliationMismatchException;
@@ -19,7 +18,7 @@ use Psr\Clock\ClockInterface;
 class FinancialPeriodClosingService
 {
     /**
-     * @param iterable<SubledgerTotalProvider> $subledgerProviders
+     * @param  iterable<SubledgerTotalProvider>  $subledgerProviders
      */
     public function __construct(
         protected readonly EnterpriseFinanceLedgerPoster $ledgerPoster,

@@ -37,4 +37,3 @@ class ControlTestRun extends Model
         return $this->belongsTo(ControlPoint::class, 'control_id');
     }
 }
-

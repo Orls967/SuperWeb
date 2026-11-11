@@ -15,4 +15,3 @@ final class InvalidAuditEvidenceManifestException extends RuntimeException
         );
     }
 }
-

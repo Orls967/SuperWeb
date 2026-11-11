@@ -45,4 +45,3 @@ class CorporateTaxController extends Controller
             ->with('status', "Setoran PPN Masa {$validated['period']} berhasil dibukukan.");
     }
 }
-

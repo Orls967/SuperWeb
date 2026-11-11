@@ -36,4 +36,3 @@ class CloseChecklistCommand extends Command
         return Command::SUCCESS;
     }
 }
-

@@ -29,7 +29,7 @@ class TaxComplianceDeadlineSource implements ComplianceDeadlineSource
                 'code' => 'TAX-PPH21-MONTHLY',
                 'title' => 'Penyetoran PPh Pasal 21 Masa',
                 'category' => 'TAXATION',
-                'due_date' => date('Y-m-10', strtotime($asOfDate . ' +1 month')),
+                'due_date' => date('Y-m-10', strtotime($asOfDate.' +1 month')),
                 'responsible_role' => 'finance_controller',
                 'entity_code' => 'CORP-HOLDING',
                 'penalty_estimate_minor' => 25000000,
@@ -37,4 +37,3 @@ class TaxComplianceDeadlineSource implements ComplianceDeadlineSource
         ];
     }
 }
-

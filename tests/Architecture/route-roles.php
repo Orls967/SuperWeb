@@ -913,7 +913,8 @@ return [
     'distribution.transition' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
     'enterprise_finance.budgets' => ['roles' => ['admin', 'budget_owner', 'finance_controller', 'auditor', 'treasury']],
     'enterprise_finance.budgets.commitments' => ['roles' => ['admin', 'budget_owner', 'finance_controller', 'auditor', 'treasury'], 'params' => function () {
-        $budget = \Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget::firstOrCreate(['budget_code' => 'BDG-TEST-ROUTE'], ['fiscal_year' => '2026', 'cost_center_code' => 'CC-01', 'account_code' => 'AC-01', 'allocated_amount_idr' => 1000000]);
+        $budget = EnterpriseBudget::firstOrCreate(['budget_code' => 'BDG-TEST-ROUTE'], ['fiscal_year' => '2026', 'cost_center_code' => 'CC-01', 'account_code' => 'AC-01', 'allocated_amount_idr' => 1000000]);
+
         return ['id' => $budget->id];
     }],
     'enterprise_finance.budget_lifecycle' => ['roles' => ['admin', 'auditor', 'treasury']],

@@ -15,9 +15,9 @@ final class BudgetVarianceAnalyzer
     /**
      * Menghitung status utilisasi anggaran empat dimensi.
      *
-     * @param int $allocatedMinor Plafon pagu disetujui dalam minor IDR.
-     * @param int $encumberedMinor Pagu yang sedang dicadangkan (reserved) untuk PO terbuka.
-     * @param int $spentMinor Realisasi belanja aktual yang telah difakturkan.
+     * @param  int  $allocatedMinor  Plafon pagu disetujui dalam minor IDR.
+     * @param  int  $encumberedMinor  Pagu yang sedang dicadangkan (reserved) untuk PO terbuka.
+     * @param  int  $spentMinor  Realisasi belanja aktual yang telah difakturkan.
      * @return array{
      *     allocated_minor: int,
      *     encumbered_minor: int,
@@ -65,10 +65,10 @@ final class BudgetVarianceAnalyzer
     /**
      * Memprediksi laju penyerapan anggaran hingga akhir tahun fiskal (Linear Burn-rate Runout).
      *
-     * @param int $allocatedMinor Alokasi pagu tahunan.
-     * @param int $spentMinor Belanja aktual hingga hari ini.
-     * @param int $elapsedDays Jumlah hari yang telah berlalu dalam tahun fiskal (1 s.d. 365).
-     * @param int $totalYearDays Total hari dalam tahun fiskal (365 atau 366).
+     * @param  int  $allocatedMinor  Alokasi pagu tahunan.
+     * @param  int  $spentMinor  Belanja aktual hingga hari ini.
+     * @param  int  $elapsedDays  Jumlah hari yang telah berlalu dalam tahun fiskal (1 s.d. 365).
+     * @param  int  $totalYearDays  Total hari dalam tahun fiskal (365 atau 366).
      * @return array{
      *     daily_burn_rate_minor: int,
      *     projected_annual_spend_minor: int,
@@ -113,9 +113,6 @@ final class BudgetVarianceAnalyzer
     /**
      * Menilai kelayakan pergeseran pagu (reallokasi anggaran) dari mata anggaran donor ke penerima.
      *
-     * @param int $donorAllocatedMinor
-     * @param int $donorCommittedMinor
-     * @param int $transferAmountMinor
      * @return array{
      *     is_transfer_feasible: bool,
      *     donor_available_after_minor: int,
@@ -164,4 +161,3 @@ final class BudgetVarianceAnalyzer
         ];
     }
 }
-

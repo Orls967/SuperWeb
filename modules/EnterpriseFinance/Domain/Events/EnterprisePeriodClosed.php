@@ -9,7 +9,7 @@ final class EnterprisePeriodClosed
     public const EVENT_NAME = 'enterprise.period.closed.v1';
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function __construct(
         public readonly string $entityCode,
@@ -33,4 +33,3 @@ final class EnterprisePeriodClosed
         ];
     }
 }
-

@@ -119,9 +119,9 @@ class CorporateTaxReconciliationService
     /**
      * Menghitung PPh Pasal 21 Karyawan Menggunakan Metode TER PP 58/2023.
      *
-     * @param int $grossSalaryMinor Gaji kotor bulanan dalam minor IDR.
-     * @param string $ptkpCode Kode status keluarga (TK/0, K/1, dll).
-     * @param bool $hasNpwp Apakah memiliki NPWP valid.
+     * @param  int  $grossSalaryMinor  Gaji kotor bulanan dalam minor IDR.
+     * @param  string  $ptkpCode  Kode status keluarga (TK/0, K/1, dll).
+     * @param  bool  $hasNpwp  Apakah memiliki NPWP valid.
      * @return array{
      *     gross_salary_minor: int,
      *     ptkp_code: string,
@@ -163,9 +163,8 @@ class CorporateTaxReconciliationService
     /**
      * Menghitung Pemotongan PPh Pasal 23 atas Pengadaan Jasa dan Sewa Peralatan.
      *
-     * @param int $dppMinor Dasar Pengenaan Pajak dalam minor IDR.
-     * @param string $serviceType Jenis jasa ('MANAGEMENT', 'TECHNICAL', 'CONSULTING', 'EQUIPMENT_RENTAL', 'ROYALTY')
-     * @param bool $hasNpwp
+     * @param  int  $dppMinor  Dasar Pengenaan Pajak dalam minor IDR.
+     * @param  string  $serviceType  Jenis jasa ('MANAGEMENT', 'TECHNICAL', 'CONSULTING', 'EQUIPMENT_RENTAL', 'ROYALTY')
      * @return array{
      *     dpp_minor: int,
      *     service_type: string,
@@ -205,7 +204,7 @@ class CorporateTaxReconciliationService
     /**
      * Menghitung PPh Pasal 4 ayat (2) Final atas Sewa Properti, Tanah, dan Bangunan.
      *
-     * @param int $dppMinor Nilai sewa bruto.
+     * @param  int  $dppMinor  Nilai sewa bruto.
      * @return array{
      *     dpp_minor: int,
      *     rate_bps: int,
@@ -234,8 +233,7 @@ class CorporateTaxReconciliationService
     /**
      * Memvalidasi ketiadaan celah (*gapless sequence*) pada sekumpulan nomor faktur pajak elektronik.
      *
-     * @param list<string> $invoiceNumbers
-     * @param string $expectedPrefix
+     * @param  list<string>  $invoiceNumbers
      * @return array{
      *     is_valid_gapless: bool,
      *     details: array<string, mixed>

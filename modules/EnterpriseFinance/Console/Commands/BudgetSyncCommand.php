@@ -33,4 +33,3 @@ class BudgetSyncCommand extends Command
         return Command::SUCCESS;
     }
 }
-

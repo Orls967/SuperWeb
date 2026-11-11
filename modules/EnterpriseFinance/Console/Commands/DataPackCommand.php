@@ -39,4 +39,3 @@ class DataPackCommand extends Command
         return Command::SUCCESS;
     }
 }
-

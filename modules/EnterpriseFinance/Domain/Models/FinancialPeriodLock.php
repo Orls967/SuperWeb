@@ -32,4 +32,3 @@ class FinancialPeriodLock extends Model
         'net_income_loss_minor' => 'integer',
     ];
 }
-

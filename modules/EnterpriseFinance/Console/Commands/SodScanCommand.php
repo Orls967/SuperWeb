@@ -18,7 +18,7 @@ class SodScanCommand extends Command
         $this->info('Memulai pemindaian matriks Segregation of Duties (SoD)...');
 
         $rules = $service->getRules();
-        $this->line("Memuat " . count($rules) . " aturan baku pemisahan tugas korporat.");
+        $this->line('Memuat '.count($rules).' aturan baku pemisahan tugas korporat.');
 
         $tableData = [];
         foreach ($rules as $r) {
@@ -37,4 +37,3 @@ class SodScanCommand extends Command
         return Command::SUCCESS;
     }
 }
-

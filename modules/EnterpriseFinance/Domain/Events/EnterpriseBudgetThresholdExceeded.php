@@ -9,7 +9,7 @@ final class EnterpriseBudgetThresholdExceeded
     public const EVENT_NAME = 'enterprise.budget.threshold_exceeded.v1';
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function __construct(
         public readonly int $budgetId,
@@ -37,4 +37,3 @@ final class EnterpriseBudgetThresholdExceeded
         ];
     }
 }
-

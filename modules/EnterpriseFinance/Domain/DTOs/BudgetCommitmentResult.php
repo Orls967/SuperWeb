@@ -36,7 +36,8 @@ final class BudgetCommitmentResult
         );
     }
 
-    public static function failed(string $commitmentCode, string $errorMessage): self {
+    public static function failed(string $commitmentCode, string $errorMessage): self
+    {
         return new self(
             success: false,
             commitmentCode: $commitmentCode,
@@ -47,4 +48,3 @@ final class BudgetCommitmentResult
         );
     }
 }
-

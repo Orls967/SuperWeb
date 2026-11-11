@@ -37,4 +37,3 @@ class ControlTestsCommand extends Command
         return Command::SUCCESS;
     }
 }
-

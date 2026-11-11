@@ -20,8 +20,10 @@ use Modules\EnterpriseFinance\Domain\Models\ConsolidationRun;
 use Modules\EnterpriseFinance\Domain\Models\DebtCovenantEvaluation;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseTaxSummary;
+use Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock;
 use Modules\EnterpriseFinance\Domain\Models\SodRule;
 use Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility;
+use Modules\EnterpriseFinance\Domain\Models\TaxReconSummary;
 use Modules\EnterpriseFinance\Domain\Models\WorkingCapitalMetric;
 use Modules\EnterpriseFinance\Domain\Services\ConsolidatedFinancialRatioAnalyzer;
 
@@ -415,7 +417,7 @@ class EnterpriseFinanceService
             ->count();
 
         // Invarian 6: FinancialPeriodLock wajib memiliki closing voucher valid dan bukan voucher rusak
-        $invalidLocks = \Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock::query()
+        $invalidLocks = FinancialPeriodLock::query()
             ->where('is_locked', true)
             ->where(function ($q) {
                 $q->whereNull('closing_voucher_id')
@@ -424,7 +426,7 @@ class EnterpriseFinanceService
             ->count();
 
         // Invarian 7: TaxReconSummary net payable wajib sama dengan vat_output - vat_input
-        $invalidTaxRecons = \Modules\EnterpriseFinance\Domain\Models\TaxReconSummary::query()
+        $invalidTaxRecons = TaxReconSummary::query()
             ->whereRaw('vat_output_minor >= vat_input_minor AND net_payable_minor != (vat_output_minor - vat_input_minor)')
             ->count();
 

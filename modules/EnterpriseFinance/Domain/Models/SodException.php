@@ -28,4 +28,3 @@ class SodException extends Model
         'is_active' => 'boolean',
     ];
 }
-

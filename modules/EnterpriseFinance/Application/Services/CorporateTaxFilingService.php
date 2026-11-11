@@ -15,13 +15,12 @@ class CorporateTaxFilingService
     /**
      * Membentuk Struktur Draf Lengkap SPT Masa PPN 1111.
      *
-     * @param string $entityCode
-     * @param string $period YYYY-MM
-     * @param int $exportTaxBaseMinor Dasar Pengenaan Pajak Ekspor BKP/JKP (Tarif 0%).
-     * @param int $domesticTaxBaseMinor Penyerahan BKP/JKP Dalam Negeri Terutang PPN (11%).
-     * @param int $exemptTaxBaseMinor Penyerahan yang PPN-nya Tidak Dipungut / Dibebaskan.
-     * @param int $domesticInputTaxMinor PPN Masukan yang Dapat Dikreditkan.
-     * @param int $importedGoodsInputTaxMinor PPN Masukan atas Impor BKP.
+     * @param  string  $period  YYYY-MM
+     * @param  int  $exportTaxBaseMinor  Dasar Pengenaan Pajak Ekspor BKP/JKP (Tarif 0%).
+     * @param  int  $domesticTaxBaseMinor  Penyerahan BKP/JKP Dalam Negeri Terutang PPN (11%).
+     * @param  int  $exemptTaxBaseMinor  Penyerahan yang PPN-nya Tidak Dipungut / Dibebaskan.
+     * @param  int  $domesticInputTaxMinor  PPN Masukan yang Dapat Dikreditkan.
+     * @param  int  $importedGoodsInputTaxMinor  PPN Masukan atas Impor BKP.
      * @return array{
      *     header: array<string, string>,
      *     form_1111_induk: array<string, int>,
@@ -92,12 +91,12 @@ class CorporateTaxFilingService
     /**
      * Menghasilkan Struktur Dokumen XML Bukti Potong Elektronik (e-Bupot Unifikasi DJP).
      *
-     * @param string $bupotNumber Nomor bukti potong unik.
-     * @param string $entityNpwp NPWP pemotong pajak.
-     * @param string $counterpartyNpwp NPWP rekanan / wajib pajak dipotong.
-     * @param string $taxArticle Pasal pajak ('21', '22', '23', '4_2').
-     * @param int $dppMinor Nilai DPP transaksi.
-     * @param int $taxWithheldMinor Nilai pajak dipotong.
+     * @param  string  $bupotNumber  Nomor bukti potong unik.
+     * @param  string  $entityNpwp  NPWP pemotong pajak.
+     * @param  string  $counterpartyNpwp  NPWP rekanan / wajib pajak dipotong.
+     * @param  string  $taxArticle  Pasal pajak ('21', '22', '23', '4_2').
+     * @param  int  $dppMinor  Nilai DPP transaksi.
+     * @param  int  $taxWithheldMinor  Nilai pajak dipotong.
      * @return string Dokumen XML siap unggah ke portal e-Bupot DJP.
      */
     public function generateEBupotXmlDocument(
@@ -113,20 +112,19 @@ class CorporateTaxFilingService
         $dppRupiah = intdiv($dppMinor, 100);
         $taxRupiah = intdiv($taxWithheldMinor, 100);
 
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" .
-            "<EBupotUnifikasiDocument xmlns=\"http://djp.pajak.go.id/ebupot\">\n" .
-            "  <Header>\n" .
-            "    <NoBupot>{$bupotNumber}</NoBupot>\n" .
-            "    <NpwpPemotong>{$cleanEntityNpwp}</NpwpPemotong>\n" .
-            "    <NpwpWpDipungut>{$cleanCounterpartyNpwp}</NpwpWpDipungut>\n" .
-            "    <PasalPajak>PASAL_{$taxArticle}</PasalPajak>\n" .
-            "  </Header>\n" .
-            "  <Detail>\n" .
-            "    <JumlahDpp>{$dppRupiah}</JumlahDpp>\n" .
-            "    <JumlahPphDipungut>{$taxRupiah}</JumlahPphDipungut>\n" .
-            "    <StatusOtorisasi>AUTHORIZED</StatusOtorisasi>\n" .
-            "  </Detail>\n" .
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
+            "<EBupotUnifikasiDocument xmlns=\"http://djp.pajak.go.id/ebupot\">\n".
+            "  <Header>\n".
+            "    <NoBupot>{$bupotNumber}</NoBupot>\n".
+            "    <NpwpPemotong>{$cleanEntityNpwp}</NpwpPemotong>\n".
+            "    <NpwpWpDipungut>{$cleanCounterpartyNpwp}</NpwpWpDipungut>\n".
+            "    <PasalPajak>PASAL_{$taxArticle}</PasalPajak>\n".
+            "  </Header>\n".
+            "  <Detail>\n".
+            "    <JumlahDpp>{$dppRupiah}</JumlahDpp>\n".
+            "    <JumlahPphDipungut>{$taxRupiah}</JumlahPphDipungut>\n".
+            "    <StatusOtorisasi>AUTHORIZED</StatusOtorisasi>\n".
+            "  </Detail>\n".
             "</EBupotUnifikasiDocument>\n";
     }
 }
-

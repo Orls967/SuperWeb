@@ -28,10 +28,10 @@ class CorporateDividendDistributionService
     /**
      * Memvalidasi Kepatuhan Cadangan Wajib Statuter (UU PT No. 40/2007 Pasal 70) dan Solvabilitas Sebelum Pembagian Dividen.
      *
-     * @param int $paidInCapitalMinor Modal disetor dalam minor IDR.
-     * @param int $currentStatutoryReserveMinor Saldo cadangan wajib saat ini.
-     * @param int $netIncomeMinor Laba bersih tahun berjalan yang tersedia untuk dividen.
-     * @param int $proposedDividendMinor Nilai usulan dividen yang akan dibagikan.
+     * @param  int  $paidInCapitalMinor  Modal disetor dalam minor IDR.
+     * @param  int  $currentStatutoryReserveMinor  Saldo cadangan wajib saat ini.
+     * @param  int  $netIncomeMinor  Laba bersih tahun berjalan yang tersedia untuk dividen.
+     * @param  int  $proposedDividendMinor  Nilai usulan dividen yang akan dibagikan.
      * @return array{
      *     is_eligible_for_distribution: bool,
      *     statutory_reserve_target_minor: int,
@@ -73,7 +73,7 @@ class CorporateDividendDistributionService
                 'statutory_reserve_target_minor' => $targetReserve,
                 'required_reserve_allocation_minor' => $annualMandatoryReserveAllocation,
                 'max_distributable_dividend_minor' => $maxDistributable,
-                'rejection_reason' => "Usulan dividen (Rp " . number_format($proposedDividendMinor / 100, 2) . ") melebihi batas laba bersih pasca alokasi cadangan wajib (Rp " . number_format($maxDistributable / 100, 2) . ").",
+                'rejection_reason' => 'Usulan dividen (Rp '.number_format($proposedDividendMinor / 100, 2).') melebihi batas laba bersih pasca alokasi cadangan wajib (Rp '.number_format($maxDistributable / 100, 2).').',
             ];
         }
 
@@ -89,10 +89,6 @@ class CorporateDividendDistributionService
     /**
      * Mengeksekusi Deklarasi Pembagian Dividen Resmi Melalui RUPS dan Memposting Jurnal Utang Dividen.
      *
-     * @param string $entityCode
-     * @param int $amountMinor
-     * @param string $rupsResolutionNumber
-     * @param int $operatorId
      * @return array{
      *     success: bool,
      *     entity: string,
@@ -115,7 +111,7 @@ class CorporateDividendDistributionService
             $voucher = $this->ledgerPoster->postSubholdingDividendDeclaration(
                 entity: $entityCode,
                 amountMinor: $amountMinor,
-                idempotencyKey: "IDEM:EF:DIV:{$entityCode}:" . md5($rupsResolutionNumber),
+                idempotencyKey: "IDEM:EF:DIV:{$entityCode}:".md5($rupsResolutionNumber),
                 userId: $operatorId
             );
 
@@ -129,4 +125,3 @@ class CorporateDividendDistributionService
         });
     }
 }
-

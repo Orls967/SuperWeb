@@ -39,4 +39,3 @@ class EnterpriseBudgetController extends Controller
         ]);
     }
 }
-

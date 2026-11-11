@@ -22,4 +22,3 @@ class EnterpriseFinancialStatementController extends Controller
         ]);
     }
 }
-

@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ControlPoint extends Model
 {
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $table = 'ef_control_points';
 
     protected $fillable = [
@@ -30,4 +32,3 @@ class ControlPoint extends Model
         return $this->hasMany(ControlTestRun::class, 'control_id');
     }
 }
-

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\EnterpriseFinance\Application\Services;
 
-use InvalidArgumentException;
 use Modules\Banking\Application\Services\LedgerService;
 
 /**
@@ -20,8 +19,8 @@ class CorporateFinancialReportGeneratorService
     /**
      * Menyusun Laporan Neraca (Balance Sheet / Statement of Financial Position).
      *
-     * @param string $entityCode Kode entitas pelapor.
-     * @param string $asOfDate Tanggal cut-off (YYYY-MM-DD).
+     * @param  string  $entityCode  Kode entitas pelapor.
+     * @param  string  $asOfDate  Tanggal cut-off (YYYY-MM-DD).
      * @return array{
      *     entity: string,
      *     as_of_date: string,
@@ -127,8 +126,7 @@ class CorporateFinancialReportGeneratorService
     /**
      * Menyusun Laporan Laba Rugi Komprehensif Berjenjang (Multi-Step Income Statement).
      *
-     * @param string $entityCode
-     * @param string $period YYYY-MM atau YYYY
+     * @param  string  $period  YYYY-MM atau YYYY
      * @return array{
      *     entity: string,
      *     period: string,
@@ -187,8 +185,6 @@ class CorporateFinancialReportGeneratorService
     /**
      * Menyusun Laporan Arus Kas Metode Langsung (Direct Cash Flow Statement).
      *
-     * @param string $entityCode
-     * @param string $period
      * @return array{
      *     operating_cash_flow_minor: int,
      *     investing_cash_flow_minor: int,
@@ -230,14 +226,10 @@ class CorporateFinancialReportGeneratorService
             'ending_cash_minor' => $endingCash,
         ];
     }
-}
-
 
     /**
      * Menyusun Laporan Perubahan Ekuitas (Statement of Changes in Equity).
      *
-     * @param string $entityCode
-     * @param string $fiscalYear
      * @return array{
      *     entity: string,
      *     fiscal_year: string,
@@ -273,3 +265,4 @@ class CorporateFinancialReportGeneratorService
             'ending_equity_minor' => $endingEquity,
         ];
     }
+}

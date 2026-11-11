@@ -10,4 +10,3 @@ enum ControlTestStatus: string
     case DEFICIENT = 'DEFICIENT';
     case FAILED = 'FAILED';
 }
-

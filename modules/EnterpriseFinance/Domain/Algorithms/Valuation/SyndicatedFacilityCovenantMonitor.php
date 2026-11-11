@@ -15,11 +15,8 @@ final class SyndicatedFacilityCovenantMonitor
     /**
      * Menguji Ketahanan Rasio Kovenan ICR dan DSCR di Bawah Skenario Lonjakan Suku Bunga Pinjaman.
      *
-     * @param int $principalOutstandingMinor Sisa saldo pokok pinjaman sindikasi.
-     * @param int $baselineAnnualRateBps Suku bunga acuan tahunan (basis points).
-     * @param int $ebitdaMinor
-     * @param int $ebitMinor
-     * @param int $annualPrincipalDueMinor
+     * @param  int  $principalOutstandingMinor  Sisa saldo pokok pinjaman sindikasi.
+     * @param  int  $baselineAnnualRateBps  Suku bunga acuan tahunan (basis points).
      * @return array{
      *     baseline_icr_bps: int,
      *     icr_shock_plus_100bps: int,
@@ -85,4 +82,3 @@ final class SyndicatedFacilityCovenantMonitor
         ];
     }
 }
-

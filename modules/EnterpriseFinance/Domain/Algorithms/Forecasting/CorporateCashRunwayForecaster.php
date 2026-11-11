@@ -20,11 +20,11 @@ final class CorporateCashRunwayForecaster
      * 3. DPO (Days Payable Outstanding) = (Utang Usaha / Pembelian HPP) * 365
      * 4. CCC (Cash Conversion Cycle) = DIO + DSO - DPO
      *
-     * @param int $receivablesMinor Saldo piutang usaha rata-rata.
-     * @param int $inventoryMinor Saldo persediaan barang rata-rata.
-     * @param int $payablesMinor Saldo utang usaha rata-rata.
-     * @param int $annualRevenueMinor Total pendapatan tahunan.
-     * @param int $annualCogsMinor Total beban pokok penjualan tahunan.
+     * @param  int  $receivablesMinor  Saldo piutang usaha rata-rata.
+     * @param  int  $inventoryMinor  Saldo persediaan barang rata-rata.
+     * @param  int  $payablesMinor  Saldo utang usaha rata-rata.
+     * @param  int  $annualRevenueMinor  Total pendapatan tahunan.
+     * @param  int  $annualCogsMinor  Total beban pokok penjualan tahunan.
      * @return array{
      *     dso_days: int,
      *     dio_days: int,
@@ -68,9 +68,9 @@ final class CorporateCashRunwayForecaster
     /**
      * Mensimulasikan Ketahanan Kas Korporat (Cash Runway) di Bawah 3 Skenario Stres Makroekonomi.
      *
-     * @param int $currentCashMinor Saldo kas dan setara kas saat ini.
-     * @param int $monthlyBaselineOpexMinor Rata-rata beban operasional bulanan (OPEX).
-     * @param int $monthlyBaselineRevenueMinor Rata-rata pendapatan operasional bulanan.
+     * @param  int  $currentCashMinor  Saldo kas dan setara kas saat ini.
+     * @param  int  $monthlyBaselineOpexMinor  Rata-rata beban operasional bulanan (OPEX).
+     * @param  int  $monthlyBaselineRevenueMinor  Rata-rata pendapatan operasional bulanan.
      * @return array{
      *     base_case_runway_months: int,
      *     mild_stress_runway_months: int,
@@ -117,4 +117,3 @@ final class CorporateCashRunwayForecaster
         ];
     }
 }
-

@@ -26,4 +26,3 @@ interface ComplianceDeadlineSource
      */
     public function getDeadlines(string $asOfDate): array;
 }
-

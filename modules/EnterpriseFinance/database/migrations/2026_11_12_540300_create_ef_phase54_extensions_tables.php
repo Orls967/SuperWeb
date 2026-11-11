@@ -124,4 +124,3 @@ return new class extends Migration
         Schema::dropIfExists('ef_budget_encumbrances');
     }
 };
-

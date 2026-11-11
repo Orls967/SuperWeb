@@ -14,7 +14,7 @@ class ProcurementPurchaseOrderCommitmentListener
     ) {}
 
     /**
-     * @param array<string, mixed>|object $event
+     * @param  array<string, mixed>|object  $event
      */
     public function handle(array|object $event): void
     {
@@ -37,4 +37,3 @@ class ProcurementPurchaseOrderCommitmentListener
         }
     }
 }
-

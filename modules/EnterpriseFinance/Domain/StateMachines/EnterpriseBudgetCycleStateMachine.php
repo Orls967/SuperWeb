@@ -9,7 +9,6 @@ use Modules\EnterpriseFinance\Domain\Exceptions\BudgetInvalidTransitionException
 use Modules\EnterpriseFinance\Domain\Exceptions\BudgetMakerCheckerViolationException;
 use Modules\EnterpriseFinance\Domain\Models\BudgetHistory;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
-use Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock;
 
 /**
  * State Machine Siklus Hidup Anggaran Korporat (D54-1: 8 Status).
@@ -157,7 +156,7 @@ class EnterpriseBudgetCycleStateMachine
     {
         if (empty($budget->budget_code) || empty($budget->fiscal_year)) {
             throw new BudgetGuardrailBreachException(
-                "Pengajuan anggaran ditolak: Kode anggaran dan tahun fiskal wajib terdefinisi lengkap."
+                'Pengajuan anggaran ditolak: Kode anggaran dan tahun fiskal wajib terdefinisi lengkap.'
             );
         }
 
@@ -187,7 +186,7 @@ class EnterpriseBudgetCycleStateMachine
     {
         if ($budget->approved_by === null && $budget->status !== self::STATUS_FROZEN) {
             throw new BudgetGuardrailBreachException(
-                "Aktivasi anggaran ditolak: Anggaran belum memperoleh persetujuan resmi (approved_by kosong)."
+                'Aktivasi anggaran ditolak: Anggaran belum memperoleh persetujuan resmi (approved_by kosong).'
             );
         }
     }
@@ -199,7 +198,7 @@ class EnterpriseBudgetCycleStateMachine
     {
         if (empty($reason)) {
             throw new BudgetGuardrailBreachException(
-                "Pembekuan anggaran ditolak: Alasan pembekuan anggaran wajib disertakan secara eksplisit."
+                'Pembekuan anggaran ditolak: Alasan pembekuan anggaran wajib disertakan secara eksplisit.'
             );
         }
     }

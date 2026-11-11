@@ -32,9 +32,9 @@ class TaxReconCommand extends Command
             [
                 ['Entitas', $recon['entity']],
                 ['Masa Pajak', $recon['period']],
-                ['PPN Keluaran', 'Rp ' . number_format($recon['vat_output_minor'] / 100, 2)],
-                ['PPN Masukan', 'Rp ' . number_format($recon['vat_input_minor'] / 100, 2)],
-                ['Kurang Bayar Bersih', 'Rp ' . number_format($recon['net_payable_minor'] / 100, 2)],
+                ['PPN Keluaran', 'Rp '.number_format($recon['vat_output_minor'] / 100, 2)],
+                ['PPN Masukan', 'Rp '.number_format($recon['vat_input_minor'] / 100, 2)],
+                ['Kurang Bayar Bersih', 'Rp '.number_format($recon['net_payable_minor'] / 100, 2)],
                 ['Nomor Draf SPT (Gapless)', $recon['spt_draft_number']],
                 ['Status Rekonsiliasi', $recon['status']],
             ]
@@ -45,4 +45,3 @@ class TaxReconCommand extends Command
         return Command::SUCCESS;
     }
 }
-

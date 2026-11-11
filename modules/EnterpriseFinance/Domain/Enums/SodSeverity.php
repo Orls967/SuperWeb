@@ -11,4 +11,3 @@ enum SodSeverity: string
     case MEDIUM = 'MEDIUM';
     case LOW = 'LOW';
 }
-

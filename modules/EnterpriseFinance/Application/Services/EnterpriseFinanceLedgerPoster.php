@@ -228,7 +228,7 @@ class EnterpriseFinanceLedgerPoster
             ->debit($declaredAccount, $amountMinor, $currency)
             ->credit($payableAccount, $amountMinor, $currency);
 
-        $idemKey = $idempotencyKey ?? "IDEM:EF:DIV_DEC:{$entity}:" . time();
+        $idemKey = $idempotencyKey ?? "IDEM:EF:DIV_DEC:{$entity}:".time();
 
         return $this->ledgerService->post(new PostingDTO(
             type: EnterpriseFinanceTransactionTypes::SUBHOLDING_DIVIDEND_DECLARATION->value,

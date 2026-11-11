@@ -15,9 +15,9 @@ final class ConsolidationEliminationEngine
     /**
      * Mengeliminasi Penjualan Antar-Perusahaan dan Laba Belum Terealisasi pada Persediaan Akhir.
      *
-     * @param int $intercompanySalesMinor Total nilai transaksi penjualan antar entitas grup.
-     * @param int $endingInventoryMinor Nilai persediaan akhir pembeli yang berasal dari pembelian antar entitas.
-     * @param int $sellerGrossMarginBps Persentase margin kotor penjual dalam basis points (misal: 2500 untuk 25.00%).
+     * @param  int  $intercompanySalesMinor  Total nilai transaksi penjualan antar entitas grup.
+     * @param  int  $endingInventoryMinor  Nilai persediaan akhir pembeli yang berasal dari pembelian antar entitas.
+     * @param  int  $sellerGrossMarginBps  Persentase margin kotor penjual dalam basis points (misal: 2500 untuk 25.00%).
      * @return array{
      *     sales_elimination_minor: int,
      *     cogs_reduction_minor: int,
@@ -52,8 +52,8 @@ final class ConsolidationEliminationEngine
     /**
      * Mengeliminasi Saldo Timbal Balik Piutang-Utang Antar-Perusahaan (Intercompany Balance Netting).
      *
-     * @param int $receivableBalanceMinor Saldo piutang entitas A kepada entitas B.
-     * @param int $payableBalanceMinor Saldo utang entitas B kepada entitas A.
+     * @param  int  $receivableBalanceMinor  Saldo piutang entitas A kepada entitas B.
+     * @param  int  $payableBalanceMinor  Saldo utang entitas B kepada entitas A.
      * @return array{
      *     eliminated_amount_minor: int,
      *     discrepancy_minor: int,
@@ -77,8 +77,8 @@ final class ConsolidationEliminationEngine
     /**
      * Membagi Laba Bersih Konsolidasi antara Pemilik Entitas Induk dan Kepentingan Non-Pengendali (NCI).
      *
-     * @param int $subsidiaryNetIncomeMinor Laba bersih anak perusahaan dalam minor IDR.
-     * @param int $parentOwnershipBps Persentase kepemilikan induk dalam basis points (misal: 8000 untuk 80.00%).
+     * @param  int  $subsidiaryNetIncomeMinor  Laba bersih anak perusahaan dalam minor IDR.
+     * @param  int  $parentOwnershipBps  Persentase kepemilikan induk dalam basis points (misal: 8000 untuk 80.00%).
      * @return array{
      *     parent_share_minor: int,
      *     nci_share_minor: int,
@@ -109,9 +109,9 @@ final class ConsolidationEliminationEngine
     /**
      * Mengkalkulasi Selisih Kurs Translasi Laporan Keuangan Luar Negeri (Cumulative Translation Adjustment - CTA).
      *
-     * @param int $foreignCurrencyEquityMinor Ekuitas anak perusahaan dalam valuta asing.
-     * @param int $historicalRateBps Kurs historis modal (IDR per FX unit dalam basis points, misal: 1550000 untuk 15.500 IDR/USD).
-     * @param int $closingRateBps Kurs penutupan pada tanggal neraca (IDR per FX unit dalam basis points).
+     * @param  int  $foreignCurrencyEquityMinor  Ekuitas anak perusahaan dalam valuta asing.
+     * @param  int  $historicalRateBps  Kurs historis modal (IDR per FX unit dalam basis points, misal: 1550000 untuk 15.500 IDR/USD).
+     * @param  int  $closingRateBps  Kurs penutupan pada tanggal neraca (IDR per FX unit dalam basis points).
      * @return array{
      *     equity_at_historical_minor: int,
      *     equity_at_closing_minor: int,
@@ -141,4 +141,3 @@ final class ConsolidationEliminationEngine
         ];
     }
 }
-

@@ -63,7 +63,7 @@ class AuditDataPackGeneratorService
             $manifestLines[] = "{$hash}  {$name}";
         }
 
-        $manifestContent = implode("\n", $manifestLines) . "\n";
+        $manifestContent = implode("\n", $manifestLines)."\n";
         $files['manifest.sha256'] = $manifestContent;
 
         $zip = new ZipArchive;
@@ -192,7 +192,7 @@ class AuditDataPackGeneratorService
     }
 
     /**
-     * @param list<list<string>> $rows
+     * @param  list<list<string>>  $rows
      */
     protected function arrayToCsv(array $rows): string
     {
@@ -207,4 +207,3 @@ class AuditDataPackGeneratorService
         return (string) $csv;
     }
 }
-

@@ -42,4 +42,3 @@ class InternalControlController extends Controller
             ->with('status', 'Pengujian kontrol internal (RCM ICFR) harian berhasil dijalankan.');
     }
 }
-

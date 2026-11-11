@@ -30,4 +30,3 @@ class TaxReconSummary extends Model
         'net_payable_minor' => 'integer',
     ];
 }
-

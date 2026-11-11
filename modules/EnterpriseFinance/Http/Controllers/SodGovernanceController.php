@@ -49,7 +49,6 @@ class SodGovernanceController extends Controller
         );
 
         return redirect()->route('enterprise_finance.sod')
-            ->with('status', "Dispensasi pemisahan tugas berhasil diterbitkan.");
+            ->with('status', 'Dispensasi pemisahan tugas berhasil diterbitkan.');
     }
 }
-

@@ -12,7 +12,7 @@ use Psr\Clock\ClockInterface;
 class ComplianceEscalationService
 {
     /**
-     * @param iterable<ComplianceDeadlineSource> $sources
+     * @param  iterable<ComplianceDeadlineSource>  $sources
      */
     public function __construct(
         protected readonly iterable $sources = [],
@@ -105,4 +105,3 @@ class ComplianceEscalationService
         ];
     }
 }
-

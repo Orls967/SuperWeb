@@ -15,10 +15,10 @@ final class CorporateSyndicationCalculator
     /**
      * Menghitung Jadwal Amortisasi Pinjaman Pokok dan Beban Bunga (Anuitas Bilangan Bulat / Equal Installment).
      *
-     * @param int $principalMinor Pokok pinjaman dalam minor IDR.
-     * @param int $annualInterestRateBps Suku bunga tahunan dalam basis points (misal: 850 untuk 8.50%).
-     * @param int $tenorMonths Jangka waktu pinjaman dalam bulan (misal: 60 bulan).
-     * @param int $gracePeriodMonths Masa tenggang pokok (grace period) dalam bulan.
+     * @param  int  $principalMinor  Pokok pinjaman dalam minor IDR.
+     * @param  int  $annualInterestRateBps  Suku bunga tahunan dalam basis points (misal: 850 untuk 8.50%).
+     * @param  int  $tenorMonths  Jangka waktu pinjaman dalam bulan (misal: 60 bulan).
+     * @param  int  $gracePeriodMonths  Masa tenggang pokok (grace period) dalam bulan.
      * @return list<array{
      *     month: int,
      *     beginning_balance_minor: int,
@@ -91,15 +91,6 @@ final class CorporateSyndicationCalculator
      * 3. ICR (Interest Coverage Ratio) = EBIT / Beban Bunga [Target >= 2.00x = 20000 bps]
      * 4. Current Ratio = Aset Lancar / Kewajiban Lancar [Target >= 1.10x = 11000 bps]
      *
-     * @param int $ebitdaMinor
-     * @param int $ebitMinor
-     * @param int $interestExpenseMinor
-     * @param int $principalDueMinor
-     * @param int $taxPaidMinor
-     * @param int $totalDebtMinor
-     * @param int $totalEquityMinor
-     * @param int $currentAssetsMinor
-     * @param int $currentLiabilitiesMinor
      * @return array{
      *     is_compliant: bool,
      *     dscr_bps: int,
@@ -132,28 +123,28 @@ final class CorporateSyndicationCalculator
         $dscrBps = ($debtService > 0) ? intdiv($operatingCash * 10000, $debtService) : 99999;
         $dscrStatus = ($dscrBps >= 12500) ? 'COMPLIANT' : 'BREACH';
         if ($dscrStatus === 'BREACH') {
-            $breaches[] = "DSCR berada di bawah batas minimum 1.25x (aktual: " . number_format($dscrBps / 10000, 2) . "x)";
+            $breaches[] = 'DSCR berada di bawah batas minimum 1.25x (aktual: '.number_format($dscrBps / 10000, 2).'x)';
         }
 
         // 2. DER
         $derBps = ($totalEquityMinor > 0) ? intdiv($totalDebtMinor * 10000, $totalEquityMinor) : 99999;
         $derStatus = ($derBps <= 25000) ? 'COMPLIANT' : 'BREACH';
         if ($derStatus === 'BREACH') {
-            $breaches[] = "DER melampaui batas maksimum 2.50x (aktual: " . number_format($derBps / 10000, 2) . "x)";
+            $breaches[] = 'DER melampaui batas maksimum 2.50x (aktual: '.number_format($derBps / 10000, 2).'x)';
         }
 
         // 3. ICR
         $icrBps = ($interestExpenseMinor > 0) ? intdiv($ebitMinor * 10000, $interestExpenseMinor) : 99999;
         $icrStatus = ($icrBps >= 20000) ? 'COMPLIANT' : 'BREACH';
         if ($icrStatus === 'BREACH') {
-            $breaches[] = "ICR berada di bawah batas minimum 2.00x (aktual: " . number_format($icrBps / 10000, 2) . "x)";
+            $breaches[] = 'ICR berada di bawah batas minimum 2.00x (aktual: '.number_format($icrBps / 10000, 2).'x)';
         }
 
         // 4. Current Ratio
         $crBps = ($currentLiabilitiesMinor > 0) ? intdiv($currentAssetsMinor * 10000, $currentLiabilitiesMinor) : 99999;
         $crStatus = ($crBps >= 11000) ? 'COMPLIANT' : 'BREACH';
         if ($crStatus === 'BREACH') {
-            $breaches[] = "Current Ratio berada di bawah batas likuiditas 1.10x (aktual: " . number_format($crBps / 10000, 2) . "x)";
+            $breaches[] = 'Current Ratio berada di bawah batas likuiditas 1.10x (aktual: '.number_format($crBps / 10000, 2).'x)';
         }
 
         return [
@@ -170,4 +161,3 @@ final class CorporateSyndicationCalculator
         ];
     }
 }
-

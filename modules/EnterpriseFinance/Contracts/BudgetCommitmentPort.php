@@ -24,4 +24,3 @@ interface BudgetCommitmentPort
      */
     public function release(string $commitmentCode, string $reason): BudgetCommitmentResult;
 }
-

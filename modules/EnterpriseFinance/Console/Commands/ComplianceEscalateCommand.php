@@ -38,4 +38,3 @@ class ComplianceEscalateCommand extends Command
         return Command::SUCCESS;
     }
 }
-

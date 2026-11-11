@@ -53,4 +53,3 @@ class ArSubledgerTotalAdapter implements SubledgerTotalProvider
         ];
     }
 }
-

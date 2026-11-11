@@ -71,8 +71,8 @@ class BudgetCommitmentService implements BudgetCommitmentPort
 
             if ($request->amountMinor > $available && strtoupper((string) $budget->control_type) !== 'SOFT_STOP') {
                 throw new BudgetGuardrailBreachException(
-                    "Pelanggaran Hard-Stop: Permintaan reservasi Rp " . number_format($request->amountMinor / 100, 2) .
-                    " melebihi sisa pagu bebas Rp " . number_format($available / 100, 2) . " pada anggaran [{$budget->budget_code}]."
+                    'Pelanggaran Hard-Stop: Permintaan reservasi Rp '.number_format($request->amountMinor / 100, 2).
+                    ' melebihi sisa pagu bebas Rp '.number_format($available / 100, 2)." pada anggaran [{$budget->budget_code}]."
                 );
             }
 
@@ -132,7 +132,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
     public function liquidate(string $commitmentCode, int $liquidatedAmountMinor): BudgetCommitmentResult
     {
         if ($liquidatedAmountMinor <= 0) {
-            throw new BudgetGuardrailBreachException("Nominal likuidasi komitmen harus lebih besar dari nol.");
+            throw new BudgetGuardrailBreachException('Nominal likuidasi komitmen harus lebih besar dari nol.');
         }
 
         return DB::transaction(function () use ($commitmentCode, $liquidatedAmountMinor): BudgetCommitmentResult {
@@ -157,7 +157,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
                 ->first();
 
             if ($budget === null) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Anggaran induk tidak ditemukan.");
+                return BudgetCommitmentResult::failed($commitmentCode, 'Anggaran induk tidak ditemukan.');
             }
 
             $currentEncumbered = (int) $budget->encumbered_amount_idr;
@@ -205,7 +205,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
             }
 
             if ($enc->status !== EncumbranceStatus::RESERVED->value) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Hanya komitmen RESERVED yang dapat dilepaskan.");
+                return BudgetCommitmentResult::failed($commitmentCode, 'Hanya komitmen RESERVED yang dapat dilepaskan.');
             }
 
             /** @var EnterpriseBudget|null $budget */
@@ -215,7 +215,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
                 ->first();
 
             if ($budget === null) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Anggaran induk tidak ditemukan.");
+                return BudgetCommitmentResult::failed($commitmentCode, 'Anggaran induk tidak ditemukan.');
             }
 
             $currentEncumbered = (int) $budget->encumbered_amount_idr;
@@ -300,7 +300,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
             throw new InvalidArgumentException('Mata anggaran donor dan penerima tidak boleh sama.');
         }
 
-        return DB::transaction(function () use ($sourceBudgetId, $targetBudgetId, $amountMinor, $operatorId, $justification): array {
+        return DB::transaction(function () use ($sourceBudgetId, $targetBudgetId, $amountMinor): array {
             /** @var EnterpriseBudget|null $source */
             $source = EnterpriseBudget::query()->where('id', $sourceBudgetId)->lockForUpdate()->firstOrFail();
             /** @var EnterpriseBudget|null $target */
@@ -317,7 +317,7 @@ class BudgetCommitmentService implements BudgetCommitmentPort
 
             if (! $feasibility['is_transfer_feasible']) {
                 throw new BudgetGuardrailBreachException(
-                    "Pergeseran pagu ditolak: " . ($feasibility['rejection_reason'] ?? 'Saldo pagu donor tidak mencukupi.')
+                    'Pergeseran pagu ditolak: '.($feasibility['rejection_reason'] ?? 'Saldo pagu donor tidak mencukupi.')
                 );
             }
 

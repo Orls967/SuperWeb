@@ -53,4 +53,3 @@ class ApSubledgerTotalAdapter implements SubledgerTotalProvider
         ];
     }
 }
-

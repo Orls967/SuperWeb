@@ -7,7 +7,7 @@ namespace Modules\EnterpriseFinance\Domain\DTOs;
 final class BudgetCommitmentRequest
 {
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      */
     public function __construct(
         public readonly int $budgetId,
@@ -19,4 +19,3 @@ final class BudgetCommitmentRequest
         public readonly array $payload = []
     ) {}
 }
-

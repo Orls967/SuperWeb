@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace Tests\Acceptance\EnterpriseGovernance;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Modules\Banking\Application\Services\LedgerService;
-use Modules\Core\Contracts\OutboxBusInterface;
-use App\Models\User;
+use Modules\Core\Domain\Models\Role;
+use Modules\EnterpriseFinance\Application\Services\FinancialPeriodClosingService;
 use Modules\EnterpriseFinance\Contracts\BudgetCommitmentPort;
 use Modules\EnterpriseFinance\Domain\DTOs\BudgetCommitmentRequest;
 use Modules\EnterpriseFinance\Domain\Enums\EncumbranceStatus;
-use Modules\EnterpriseFinance\Domain\Models\BudgetEncumbrance;
+use Modules\EnterpriseFinance\Domain\Exceptions\BudgetMakerCheckerViolationException;
+use Modules\EnterpriseFinance\Domain\Exceptions\PeriodAlreadyLockedException;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
 use Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock;
 use Modules\EnterpriseFinance\Domain\StateMachines\EnterpriseBudgetCycleStateMachine;
-use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceAccounts;
 use Tests\TestCase;
 
 class EnterpriseGovernancePhase54Test extends TestCase
@@ -32,7 +31,7 @@ class EnterpriseGovernancePhase54Test extends TestCase
 
         // Seed roles yang dibutuhkan untuk pengujian
         foreach (['finance_controller', 'auditor', 'budget_owner', 'guest', 'admin'] as $roleName) {
-            \Modules\Core\Domain\Models\Role::firstOrCreate(
+            Role::firstOrCreate(
                 ['name' => $roleName],
                 ['label' => ucwords(str_replace('_', ' ', $roleName)), 'description' => $roleName]
             );
@@ -91,7 +90,7 @@ class EnterpriseGovernancePhase54Test extends TestCase
         $period = '2026-10';
 
         // 1. Eksekusi Tutup Buku
-        $closingService = app(\Modules\EnterpriseFinance\Application\Services\FinancialPeriodClosingService::class);
+        $closingService = app(FinancialPeriodClosingService::class);
         $closingResult = $closingService->closePeriod(
             entityCode: $entity,
             period: $period,
@@ -108,7 +107,7 @@ class EnterpriseGovernancePhase54Test extends TestCase
         ]);
 
         // Verifikasi Idempotensi penutupan periode (percobaan kedua menolak duplikasi)
-        $this->expectException(\Modules\EnterpriseFinance\Domain\Exceptions\PeriodAlreadyLockedException::class);
+        $this->expectException(PeriodAlreadyLockedException::class);
         $closingService->closePeriod(
             entityCode: $entity,
             period: $period,
@@ -146,7 +145,7 @@ class EnterpriseGovernancePhase54Test extends TestCase
         $this->assertEquals(EnterpriseBudgetCycleStateMachine::STATUS_REVIEWED, $budget->status);
 
         // Pelanggaran Maker-Checker: Pembuat dilarang menyetujui anggaran sendiri
-        $this->expectException(\Modules\EnterpriseFinance\Domain\Exceptions\BudgetMakerCheckerViolationException::class);
+        $this->expectException(BudgetMakerCheckerViolationException::class);
         $stateMachine->transition($budget, EnterpriseBudgetCycleStateMachine::STATUS_APPROVED, $maker->id, 'Mencoba menyetujui sendiri');
     }
 

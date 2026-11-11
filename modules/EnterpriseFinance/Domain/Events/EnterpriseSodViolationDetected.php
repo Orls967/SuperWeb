@@ -9,7 +9,7 @@ final class EnterpriseSodViolationDetected
     public const EVENT_NAME = 'enterprise.sod.violation_detected.v1';
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     public function __construct(
         public readonly int $userId,
@@ -35,4 +35,3 @@ final class EnterpriseSodViolationDetected
         ];
     }
 }
-

@@ -10,4 +10,3 @@ enum EncumbranceStatus: string
     case LIQUIDATED = 'LIQUIDATED';
     case RELEASED = 'RELEASED';
 }
-

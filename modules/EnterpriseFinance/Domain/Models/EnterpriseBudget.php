@@ -103,7 +103,7 @@ class EnterpriseBudget extends Model
                 $fy = $model->fiscal_year ?? date('Y');
                 $cc = $model->cost_center_code ?? 'GEN';
                 $ac = $model->account_code ?? 'OPS';
-                $model->budget_code = "BDG-{$fy}-{$cc}-{$ac}-" . substr(bin2hex(random_bytes(3)), 0, 6);
+                $model->budget_code = "BDG-{$fy}-{$cc}-{$ac}-".substr(bin2hex(random_bytes(3)), 0, 6);
             }
             if (empty($model->cost_center_code)) {
                 $model->cost_center_code = 'CORP-HOLDING';

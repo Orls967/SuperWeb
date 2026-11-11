@@ -44,4 +44,3 @@ class BudgetEncumbrance extends Model
         return $this->belongsTo(EnterpriseBudget::class, 'budget_id');
     }
 }
-

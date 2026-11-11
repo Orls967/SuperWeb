@@ -39,4 +39,3 @@ class AuditDataPackController extends Controller
             ->with('status', "Paket data bukti audit berhasil dibuat: {$pack['zip_path']}");
     }
 }
-

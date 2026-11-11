@@ -15,7 +15,7 @@ final class SubledgerReconciler
     /**
      * Memverifikasi keseimbangan mutasi debit dan kredit pada kumpulan baris jurnal.
      *
-     * @param list<array{debit_minor: int, credit_minor: int, account: string}> $entries
+     * @param  list<array{debit_minor: int, credit_minor: int, account: string}>  $entries
      * @return array{
      *     is_balanced: bool,
      *     total_debit_minor: int,
@@ -53,10 +53,10 @@ final class SubledgerReconciler
     /**
      * Menandingkan total saldo akun buku besar terhadap total agregasi subledger operasional.
      *
-     * @param int $generalLedgerBalanceMinor Saldo menurut buku besar (minor IDR).
-     * @param int $subledgerTotalMinor Saldo menurut subledger operasional (minor IDR).
-     * @param string $subledgerName Nama domain subledger (misal: 'AR', 'AP', 'INVENTORY', 'ASSETS').
-     * @param int $toleranceMinor Batas toleransi selisih dalam minor unit (default 0).
+     * @param  int  $generalLedgerBalanceMinor  Saldo menurut buku besar (minor IDR).
+     * @param  int  $subledgerTotalMinor  Saldo menurut subledger operasional (minor IDR).
+     * @param  string  $subledgerName  Nama domain subledger (misal: 'AR', 'AP', 'INVENTORY', 'ASSETS').
+     * @param  int  $toleranceMinor  Batas toleransi selisih dalam minor unit (default 0).
      * @return array{
      *     is_reconciled: bool,
      *     gl_balance_minor: int,
@@ -104,8 +104,8 @@ final class SubledgerReconciler
     /**
      * Memindai daftar faktur/transaksi subledger individual dan mendeteksi pos gantung yang belum tercatat di GL.
      *
-     * @param list<array{reference: string, amount_minor: int}> $subledgerItems
-     * @param list<string> $recordedGlReferences
+     * @param  list<array{reference: string, amount_minor: int}>  $subledgerItems
+     * @param  list<string>  $recordedGlReferences
      * @return array{
      *     unposted_count: int,
      *     unposted_total_minor: int,
@@ -140,8 +140,8 @@ final class SubledgerReconciler
     /**
      * Memverifikasi nomor seri transaksi gapless (ketiadaan nomor yang terlewat).
      *
-     * @param list<string> $sequenceStrings Nomor seri format terstruktur, misal '010.001-26.00000001'
-     * @param string $prefixPrefix Bagian prefiks yang diharapkan (misal '010.001-26.')
+     * @param  list<string>  $sequenceStrings  Nomor seri format terstruktur, misal '010.001-26.00000001'
+     * @param  string  $prefixPrefix  Bagian prefiks yang diharapkan (misal '010.001-26.')
      * @return array{
      *     is_gapless: bool,
      *     expected_count: int,
@@ -203,4 +203,3 @@ final class SubledgerReconciler
         ];
     }
 }
-

@@ -168,4 +168,3 @@ class EnterpriseFinanceAlgorithmsComprehensiveTest extends TestCase
         $this->assertFalse($shock['is_vulnerable_to_rate_hike']);
     }
 }
-

@@ -17,11 +17,11 @@ final class MergerAcquisitionValuationEngine
      *
      * Goodwill = Harga Beli - Nilai Wajar Aset Bersih Teridentifikasi
      *
-     * @param int $purchaseConsiderationMinor Nilai imbalan pengalihan (harga beli akuisisi).
-     * @param int $bookValueNetAssetsMinor Nilai buku aset bersih entitas target pada tanggal akuisisi.
-     * @param int $tangibleFairValueAdjustmentMinor Penyesuaian nilai wajar aset berwujud (properti, pabrik, persediaan).
-     * @param int $identifiableIntangiblesMinor Nilai wajar aset tak berwujud teridentifikasi (merek dagang, lisensi, paten).
-     * @param int $deferredTaxLiabilityMinor Liabilitas pajak tangguhan yang timbul dari selisih nilai wajar (22%).
+     * @param  int  $purchaseConsiderationMinor  Nilai imbalan pengalihan (harga beli akuisisi).
+     * @param  int  $bookValueNetAssetsMinor  Nilai buku aset bersih entitas target pada tanggal akuisisi.
+     * @param  int  $tangibleFairValueAdjustmentMinor  Penyesuaian nilai wajar aset berwujud (properti, pabrik, persediaan).
+     * @param  int  $identifiableIntangiblesMinor  Nilai wajar aset tak berwujud teridentifikasi (merek dagang, lisensi, paten).
+     * @param  int  $deferredTaxLiabilityMinor  Liabilitas pajak tangguhan yang timbul dari selisih nilai wajar (22%).
      * @return array{
      *     purchase_consideration_minor: int,
      *     book_value_net_assets_minor: int,
@@ -68,12 +68,12 @@ final class MergerAcquisitionValuationEngine
     /**
      * Menjalankan Uji Penurunan Nilai Goodwill Tahunan (Goodwill Impairment Test - PSAK 48 / IAS 36).
      *
-     * @param int $carryingAmountCguMinor Nilai tercatat Unit Penghasil Kas (CGU) termasuk goodwill.
-     * @param int $projectedCashFlowYear1Minor Arus kas proyeksi tahun ke-1.
-     * @param int $projectedCashFlowYear2Minor Arus kas proyeksi tahun ke-2.
-     * @param int $projectedCashFlowYear3Minor Arus kas proyeksi tahun ke-3.
-     * @param int $terminalValueMinor Nilai terminal pada akhir tahun proyeksi.
-     * @param int $discountRateBps Tingkat diskonto WACC dalam basis points (misal: 1050 untuk 10.50%).
+     * @param  int  $carryingAmountCguMinor  Nilai tercatat Unit Penghasil Kas (CGU) termasuk goodwill.
+     * @param  int  $projectedCashFlowYear1Minor  Arus kas proyeksi tahun ke-1.
+     * @param  int  $projectedCashFlowYear2Minor  Arus kas proyeksi tahun ke-2.
+     * @param  int  $projectedCashFlowYear3Minor  Arus kas proyeksi tahun ke-3.
+     * @param  int  $terminalValueMinor  Nilai terminal pada akhir tahun proyeksi.
+     * @param  int  $discountRateBps  Tingkat diskonto WACC dalam basis points (misal: 1050 untuk 10.50%).
      * @return array{
      *     carrying_amount_minor: int,
      *     recoverable_amount_minor: int,
@@ -120,4 +120,3 @@ final class MergerAcquisitionValuationEngine
         ];
     }
 }
-

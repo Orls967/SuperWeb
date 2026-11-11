@@ -53,4 +53,3 @@ class InventorySubledgerTotalAdapter implements SubledgerTotalProvider
         ];
     }
 }
-

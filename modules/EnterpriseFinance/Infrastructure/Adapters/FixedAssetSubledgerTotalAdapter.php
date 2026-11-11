@@ -53,4 +53,3 @@ class FixedAssetSubledgerTotalAdapter implements SubledgerTotalProvider
         ];
     }
 }
-

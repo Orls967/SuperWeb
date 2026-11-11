@@ -293,7 +293,7 @@ class SodGovernanceService
         }
 
         if ($expiresDays < 1 || $expiresDays > 90) {
-            throw new InvalidArgumentException("Masa berlaku dispensasi harus antara 1 s.d. 90 hari.");
+            throw new InvalidArgumentException('Masa berlaku dispensasi harus antara 1 s.d. 90 hari.');
         }
 
         $now = $this->now();
