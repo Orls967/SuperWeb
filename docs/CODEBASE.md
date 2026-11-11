@@ -678,13 +678,13 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ecosystem:audit-12-lines` | `manual` | Run comprehensive audit across all 12 conglomerate business lines |
 | `edu:audit` | `manual` | Audit modul Edu: kapasitas cohort, keabsahan hash sertifikat, penomoran gapless, kuota korporat, dan rekonsiliasi escrow |
 | `ef:aggregate-trial-balance` | `manual` | Agregasi dan konsolidasi neraca saldo multi-entitas anak ke neraca grup (D8) |
-| `ef:audit-sod-conflicts` | `manual` | Memindai seluruh otorisasi peran pengguna terhadap matriks Segregation of Duties (54.4) |
 | `ef:calculate-working-capital` | `manual` | Menghitung siklus konversi kas (CCC), DSO, DIO, dan DPO per entitas anak (54.5) |
 | `ef:check-deadlines` | `manual` | Memeriksa agenda kepatuhan regulasi yang mendekati atau melampaui batas waktu (54.6) |
 | `ef:evaluate-covenants` | `manual` | Evaluasi kepatuhan covenant pinjaman sindikasi dan obligasi korporat (D7) |
 | `ef:export-reports` | `manual` | Mengekspor seluruh 8 laporan keuangan korporat ke format CSV bersertifikat SHA-256 |
 | `ef:freeze-overdue-budgets` | `manual` | Membekukan otomatis departemen anggaran yang telah menyerap 100% pagu alokasi |
-| `ef:reconcile-tax-period` | `manual` | Rekonsiliasi kepatuhan pajak pertambahan nilai (PPN) dan pajak penghasilan (PPh) (54.3) |
+| `ef:process-tax-period` | `manual` | Rekonsiliasi kepatuhan pajak pertambahan nilai (PPN) dan pajak penghasilan (PPh) (54.3) |
+| `ef:scan-sod-conflicts` | `manual` | Memindai seluruh otorisasi peran pengguna terhadap matriks Segregation of Duties (54.4) |
 | `egy:audit` | `manual` | Audit jaringan energi: beban trafo, telemetri smart meter, kontrak PPA, faktur konsolidasi, eliminasi intercompany, dan rekonsiliasi ledger dua sumber |
 | `egy:bill-properties` | `manual` | Generates consolidated monthly utility invoices for all consumer properties |
 | `egy:carbon-match` | `manual` | Jalankan pencocokan orderbook kredit karbon internal konglomerasi berbasis Price-Time Priority |

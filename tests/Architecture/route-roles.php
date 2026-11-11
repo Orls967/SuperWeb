@@ -3487,7 +3487,7 @@ return [
     ],
     'api.enterprise_finance.capex.approve' => [
         'roles' => ['admin', 'treasury'],
-        'params' => fn () => ['code' => EfCapexProposal::firstOrCreate(['proposal_code' => 'CPX-TEST-ROLES'], ['id' => (string) Str::uuid(), 'line_code' => 'LINE_TEST', 'project_title' => 'Test', 'requested_budget_minor' => 1000000, 'status' => 'SUBMITTED'])->proposal_code],
+        'params' => fn () => ['code' => EfCapexProposal::firstOrCreate(['proposal_code' => 'CPX-TEST-ROLES'], ['id' => (string) Str::uuid(), 'line_code' => 'LINE_TEST', 'project_title' => 'Test', 'requested_budget_minor' => 1000000, 'irr_pct' => 15.0, 'npv_minor' => 500000, 'esg_score' => 85.0, 'status' => 'SUBMITTED'])->proposal_code],
     ],
     'api.enterprise_finance.covenants.evaluate' => [
         'roles' => ['admin', 'treasury'],

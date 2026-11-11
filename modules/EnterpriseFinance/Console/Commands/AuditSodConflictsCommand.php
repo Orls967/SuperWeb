@@ -10,7 +10,7 @@ use Modules\EnterpriseFinance\Application\Services\EnterpriseFinanceService;
 
 class AuditSodConflictsCommand extends Command
 {
-    protected $signature = 'ef:audit-sod-conflicts';
+    protected $signature = 'ef:scan-sod-conflicts';
 
     protected $description = 'Memindai seluruh otorisasi peran pengguna terhadap matriks Segregation of Duties (54.4)';
 

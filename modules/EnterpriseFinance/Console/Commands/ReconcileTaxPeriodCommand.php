@@ -10,7 +10,7 @@ use Modules\EnterpriseFinance\Domain\Models\EnterpriseTaxSummary;
 
 class ReconcileTaxPeriodCommand extends Command
 {
-    protected $signature = 'ef:reconcile-tax-period {--period= : Periode masa pajak (YYYY-MM)}';
+    protected $signature = 'ef:process-tax-period {--period= : Periode masa pajak (YYYY-MM)}';
 
     protected $description = 'Rekonsiliasi kepatuhan pajak pertambahan nilai (PPN) dan pajak penghasilan (PPh) (54.3)';
 
