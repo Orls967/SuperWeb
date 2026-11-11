@@ -495,7 +495,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
 | 17 | **Egy** | `egy_` | 10 |
-| 18 | **EnterpriseFinance** | `ef_` | 2 |
+| 18 | **EnterpriseFinance** | `ef_` | 3 |
 | 19 | **Epc** | `epc_` | 1 |
 | 20 | **Esg** | `esg_` | 6 |
 | 21 | **Fashion** | `fsh_` | 1 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **699 Migrasi** |
+| | **Total: 65 Modul** | | **700 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -566,7 +566,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
 | **Egy** | 68 | `energy/grid`, `energy/dispatch`, `energy/dispatch/run` ... | web, auth, role:admin,grid_operator |
-| **EnterpriseFinance** | 6 | `enterprise-finance`, `enterprise-finance/budgets`, `enterprise-finance/governance` ... | web, auth, role:admin,auditor,treasury |
+| **EnterpriseFinance** | 18 | `enterprise-finance`, `enterprise-finance/budgets`, `enterprise-finance/budget-lifecycle` ... | web, auth, role:admin,auditor,treasury |
 | **Epc** | 8 | `epc`, `epc/dashboard`, `epc/claims` ... | web, auth, role:admin,epc_manager,asset_manager |
 | **Esg** | 6 | `esg`, `esg/operations`, `esg/operations/emissions` ... | web, auth, role:admin,esg_officer,auditor |
 | **Fashion** | 3 | `fashion/collections`, `fashion/orders/allocate` ... | web, auth, role:fashion_buyer,merchandiser,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1709 Rute** | | |
+| **Total** | **1721 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -677,6 +677,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ds:usage:scan` | `manual` | Pemindai frekuensi pemakaian komponen x-ds.* di seluruh template Blade aplikasi |
 | `ecosystem:audit-12-lines` | `manual` | Run comprehensive audit across all 12 conglomerate business lines |
 | `edu:audit` | `manual` | Audit modul Edu: kapasitas cohort, keabsahan hash sertifikat, penomoran gapless, kuota korporat, dan rekonsiliasi escrow |
+| `ef:aggregate-trial-balance` | `manual` | Agregasi dan konsolidasi neraca saldo multi-entitas anak ke neraca grup (D8) |
+| `ef:audit-sod-conflicts` | `manual` | Memindai seluruh otorisasi peran pengguna terhadap matriks Segregation of Duties (54.4) |
+| `ef:calculate-working-capital` | `manual` | Menghitung siklus konversi kas (CCC), DSO, DIO, dan DPO per entitas anak (54.5) |
+| `ef:check-deadlines` | `manual` | Memeriksa agenda kepatuhan regulasi yang mendekati atau melampaui batas waktu (54.6) |
+| `ef:evaluate-covenants` | `manual` | Evaluasi kepatuhan covenant pinjaman sindikasi dan obligasi korporat (D7) |
+| `ef:export-reports` | `manual` | Mengekspor seluruh 8 laporan keuangan korporat ke format CSV bersertifikat SHA-256 |
+| `ef:freeze-overdue-budgets` | `manual` | Membekukan otomatis departemen anggaran yang telah menyerap 100% pagu alokasi |
+| `ef:reconcile-tax-period` | `manual` | Rekonsiliasi kepatuhan pajak pertambahan nilai (PPN) dan pajak penghasilan (PPh) (54.3) |
 | `egy:audit` | `manual` | Audit jaringan energi: beban trafo, telemetri smart meter, kontrak PPA, faktur konsolidasi, eliminasi intercompany, dan rekonsiliasi ledger dua sumber |
 | `egy:bill-properties` | `manual` | Generates consolidated monthly utility invoices for all consumer properties |
 | `egy:carbon-match` | `manual` | Jalankan pencocokan orderbook kredit karbon internal konglomerasi berbasis Price-Time Priority |
@@ -957,7 +965,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 339 Command** | **37 Terjadwal** | |
+| **Total: 347 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -970,7 +978,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Core** | `CoreAccounts` | 22 | `clearing:external:IDR`, `clearing:golden_scenario:IDR` ... |
 | **Edu** | `EduAccounts` | 10 | `edu:headhunter_expense:IDR`, `edu:headhunter_payable:IDR` ... |
 | **Egy** | `EgyAccounts` | 36 | `egy:bess_arbitrage_revenue:IDR`, `egy:bess_energy_cost:IDR` ... |
-| **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 2 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` |
+| **EnterpriseFinance** | `EnterpriseFinanceAccounts` | 9 | `ef:holding_dividend_income:IDR`, `ef:holding_dividend_receivable:IDR` ... |
 | **Epc** | `EpcAccounts` | 8 | `asset:epc:construction_in_progress:IDR`, `ast:cip:default:IDR` ... |
 | **Esg** | `EsgAccounts` | 5 | `inventory:esg:carbon_credit:IDR`, `expense:esg:carbon_offset:IDR` ... |
 | **Forest** | `ForestAccounts` | 3 | `ar:for:timber:IDR`, `for:revenue:IDR` ... |
@@ -1001,6 +1009,6 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 39 Registry** | | **1423 Akun** | |
+| **Total: 39 Registry** | | **1430 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
