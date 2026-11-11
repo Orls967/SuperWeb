@@ -414,7 +414,21 @@ class EnterpriseFinanceService
         $invalidFacilityDates = SyndicatedFacility::whereRaw('maturity_date < start_date')
             ->count();
 
-        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates;
+        // Invarian 6: FinancialPeriodLock wajib memiliki closing voucher valid dan bukan voucher rusak
+        $invalidLocks = \Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock::query()
+            ->where('is_locked', true)
+            ->where(function ($q) {
+                $q->whereNull('closing_voucher_id')
+                    ->orWhere('closing_voucher_id', 'like', 'INVALID%');
+            })
+            ->count();
+
+        // Invarian 7: TaxReconSummary net payable wajib sama dengan vat_output - vat_input
+        $invalidTaxRecons = \Modules\EnterpriseFinance\Domain\Models\TaxReconSummary::query()
+            ->whereRaw('vat_output_minor >= vat_input_minor AND net_payable_minor != (vat_output_minor - vat_input_minor)')
+            ->count();
+
+        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates + $invalidLocks + $invalidTaxRecons;
 
         return [
             'status' => ($discrepancyCount === 0) ? 'OK' : 'DISCREPANCY',
@@ -429,6 +443,8 @@ class EnterpriseFinanceService
             'invalid_taxes' => $invalidTaxes,
             'invalid_consolidations' => $invalidConsolidations,
             'invalid_facilities' => $invalidFacilities,
+            'invalid_locks' => $invalidLocks,
+            'invalid_tax_recons' => $invalidTaxRecons,
         ];
     }
 }
