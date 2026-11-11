@@ -6,8 +6,10 @@ namespace Modules\EnterpriseFinance\Application\Services;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\EnterpriseFinance\Contracts\BudgetCommitmentPort;
+use Modules\EnterpriseFinance\Domain\Algorithms\Encumbrance\BudgetVarianceAnalyzer;
 use Modules\EnterpriseFinance\Domain\DTOs\BudgetCommitmentRequest;
 use Modules\EnterpriseFinance\Domain\DTOs\BudgetCommitmentResult;
 use Modules\EnterpriseFinance\Domain\Enums\EncumbranceStatus;
@@ -58,11 +60,10 @@ class BudgetCommitmentService implements BudgetCommitmentPort
 
             if ($budget->status !== EnterpriseBudgetCycleStateMachine::STATUS_ACTIVE) {
                 throw new BudgetGuardrailBreachException(
-                    "Pagu anggaran [{$budget->budget_code}] tidak aktif (status: {$budget->status}). Reservasi ditolak."
+                    "Mata anggaran [{$budget->budget_code}] tidak dalam status ACTIVE (status saat ini: {$budget->status})."
                 );
             }
 
-            // Hitung sisa pagu bebas
             $allocated = (int) $budget->allocated_amount_idr;
             $encumbered = (int) $budget->encumbered_amount_idr;
             $spent = (int) $budget->spent_amount_idr;
@@ -75,8 +76,8 @@ class BudgetCommitmentService implements BudgetCommitmentPort
                 );
             }
 
-            // Catat encumbrance
-            $encumbrance = BudgetEncumbrance::create([
+            // Catat reservasi ke ef_budget_encumbrances
+            BudgetEncumbrance::create([
                 'budget_id' => $budget->id,
                 'commitment_code' => $request->commitmentCode,
                 'source_module' => $request->sourceModule,
@@ -89,19 +90,19 @@ class BudgetCommitmentService implements BudgetCommitmentPort
                 'payload' => $request->payload,
             ]);
 
-            // Perbarui akumulasi komitmen di pagu anggaran
-            $budget->encumbered_amount_idr = $encumbered + $request->amountMinor;
+            // Mutasikan saldo encumbrance
+            $newEncumbered = $encumbered + $request->amountMinor;
+            $budget->encumbered_amount_idr = $newEncumbered;
             $budget->save();
 
-            $newAvailable = $allocated - ($budget->encumbered_amount_idr + $spent);
+            $newAvailable = $allocated - ($newEncumbered + $spent);
 
-            // Periksa threshold alert (bila sisa bebas < 10% dari alokasi awal)
-            if ($allocated > 0 && ($newAvailable / $allocated) < 0.10) {
-                $thresholdPct = (int) round(($newAvailable / $allocated) * 100);
+            // Deteksi ambang batas sisa pagu < 10%
+            $thresholdPct = $allocated > 0 ? (int) floor(($newAvailable / $allocated) * 100) : 0;
+            if ($thresholdPct <= 10) {
                 $event = new EnterpriseBudgetThresholdExceeded(
-                    budgetId: (int) $budget->id,
-                    budgetCode: (string) $budget->budget_code,
-                    entityCode: (string) $budget->cost_center_code,
+                    budgetId: $budget->id,
+                    budgetCode: $budget->budget_code,
                     allocatedAmountMinor: $allocated,
                     remainingAvailableMinor: $newAvailable,
                     thresholdPercent: $thresholdPct
@@ -126,108 +127,214 @@ class BudgetCommitmentService implements BudgetCommitmentPort
     }
 
     /**
-     * Melikuidasi komitmen yang telah terealisasi menjadi beban aktual.
+     * Melikuidasi komitmen terbuka saat invoice / tagihan diterima.
      */
-    public function liquidate(string $commitmentCode, int $actualAmountMinor): BudgetCommitmentResult
+    public function liquidate(string $commitmentCode, int $liquidatedAmountMinor): BudgetCommitmentResult
     {
-        if ($actualAmountMinor <= 0) {
-            throw new BudgetGuardrailBreachException(
-                "Nominal likuidasi komitmen harus lebih besar dari nol ({$actualAmountMinor})."
-            );
+        if ($liquidatedAmountMinor <= 0) {
+            throw new BudgetGuardrailBreachException("Nominal likuidasi komitmen harus lebih besar dari nol.");
         }
 
-        return DB::transaction(function () use ($commitmentCode, $actualAmountMinor): BudgetCommitmentResult {
-            /** @var BudgetEncumbrance|null $encumbrance */
-            $encumbrance = BudgetEncumbrance::query()
+        return DB::transaction(function () use ($commitmentCode, $liquidatedAmountMinor): BudgetCommitmentResult {
+            /** @var BudgetEncumbrance|null $enc */
+            $enc = BudgetEncumbrance::query()
                 ->where('commitment_code', $commitmentCode)
                 ->lockForUpdate()
                 ->first();
 
-            if ($encumbrance === null) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen anggaran '{$commitmentCode}' tidak ditemukan.");
+            if ($enc === null) {
+                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen [{$commitmentCode}] tidak ditemukan.");
             }
 
-            if ($encumbrance->status !== EncumbranceStatus::RESERVED->value) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen '{$commitmentCode}' tidak berstatus RESERVED (status: {$encumbrance->status}).");
+            if ($enc->status !== EncumbranceStatus::RESERVED->value) {
+                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen [{$commitmentCode}] bukan dalam status RESERVED.");
             }
 
-            /** @var EnterpriseBudget $budget */
+            /** @var EnterpriseBudget|null $budget */
             $budget = EnterpriseBudget::query()
-                ->where('id', $encumbrance->budget_id)
+                ->where('id', $enc->budget_id)
                 ->lockForUpdate()
-                ->firstOrFail();
+                ->first();
 
-            $reservedAmount = (int) $encumbrance->amount_minor;
+            if ($budget === null) {
+                return BudgetCommitmentResult::failed($commitmentCode, "Anggaran induk tidak ditemukan.");
+            }
 
-            // Kurangi komitmen tertahan, tambahkan ke realisasi belanja
-            $budget->encumbered_amount_idr = max(0, ((int) $budget->encumbered_amount_idr) - $reservedAmount);
-            $budget->spent_amount_idr = ((int) $budget->spent_amount_idr) + $actualAmountMinor;
+            $currentEncumbered = (int) $budget->encumbered_amount_idr;
+            $currentSpent = (int) $budget->spent_amount_idr;
+
+            // Kurangi encumbered sebesar nilai awal reservasi (atau sebagian jika parsial)
+            $releaseEnc = (int) $enc->amount_minor;
+            $newEncumbered = max(0, $currentEncumbered - $releaseEnc);
+            $newSpent = $currentSpent + $liquidatedAmountMinor;
+
+            $budget->encumbered_amount_idr = $newEncumbered;
+            $budget->spent_amount_idr = $newSpent;
             $budget->save();
 
-            $encumbrance->status = EncumbranceStatus::LIQUIDATED->value;
-            $encumbrance->liquidated_amount_minor = $actualAmountMinor;
-            $encumbrance->liquidated_at = $this->now();
-            $encumbrance->save();
+            $enc->liquidated_amount_minor = $liquidatedAmountMinor;
+            $enc->status = EncumbranceStatus::LIQUIDATED->value;
+            $enc->liquidated_at = $this->now();
+            $enc->save();
 
-            $allocated = (int) $budget->allocated_amount_idr;
-            $newAvailable = $allocated - (((int) $budget->encumbered_amount_idr) + ((int) $budget->spent_amount_idr));
+            $remainingAvailable = (int) $budget->allocated_amount_idr - ($newEncumbered + $newSpent);
 
             return BudgetCommitmentResult::successful(
                 commitmentCode: $commitmentCode,
-                amountMinor: $actualAmountMinor,
+                amountMinor: $liquidatedAmountMinor,
                 status: EncumbranceStatus::LIQUIDATED->value,
-                remainingAvailableMinor: $newAvailable
+                remainingAvailableMinor: $remainingAvailable
             );
         });
     }
 
     /**
-     * Melepaskan komitmen terbuka yang dibatalkan atau ditutup sebelum realisasi penuh.
+     * Melepaskan reservasi komitmen terbuka (misal akibat pembatalan PO).
      */
-    public function release(string $commitmentCode, string $reason): BudgetCommitmentResult
+    public function release(string $commitmentCode, string $reason = ''): BudgetCommitmentResult
     {
         return DB::transaction(function () use ($commitmentCode, $reason): BudgetCommitmentResult {
-            /** @var BudgetEncumbrance|null $encumbrance */
-            $encumbrance = BudgetEncumbrance::query()
+            /** @var BudgetEncumbrance|null $enc */
+            $enc = BudgetEncumbrance::query()
                 ->where('commitment_code', $commitmentCode)
                 ->lockForUpdate()
                 ->first();
 
-            if ($encumbrance === null) {
-                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen anggaran '{$commitmentCode}' tidak ditemukan.");
+            if ($enc === null) {
+                return BudgetCommitmentResult::failed($commitmentCode, "Komitmen [{$commitmentCode}] tidak ditemukan.");
             }
 
-            if ($encumbrance->status !== EncumbranceStatus::RESERVED->value) {
+            if ($enc->status !== EncumbranceStatus::RESERVED->value) {
                 return BudgetCommitmentResult::failed($commitmentCode, "Hanya komitmen RESERVED yang dapat dilepaskan.");
             }
 
-            /** @var EnterpriseBudget $budget */
+            /** @var EnterpriseBudget|null $budget */
             $budget = EnterpriseBudget::query()
-                ->where('id', $encumbrance->budget_id)
+                ->where('id', $enc->budget_id)
                 ->lockForUpdate()
-                ->firstOrFail();
+                ->first();
 
-            $reservedAmount = (int) $encumbrance->amount_minor;
+            if ($budget === null) {
+                return BudgetCommitmentResult::failed($commitmentCode, "Anggaran induk tidak ditemukan.");
+            }
 
-            // Pulihkan pagu tertahan
-            $budget->encumbered_amount_idr = max(0, ((int) $budget->encumbered_amount_idr) - $reservedAmount);
+            $currentEncumbered = (int) $budget->encumbered_amount_idr;
+            $releaseAmount = (int) $enc->amount_minor;
+            $newEncumbered = max(0, $currentEncumbered - $releaseAmount);
+
+            $budget->encumbered_amount_idr = $newEncumbered;
             $budget->save();
 
-            $encumbrance->status = EncumbranceStatus::RELEASED->value;
-            $encumbrance->released_at = $this->now();
-            $encumbrance->reason = $reason;
-            $encumbrance->save();
+            $enc->status = EncumbranceStatus::RELEASED->value;
+            $enc->released_at = $this->now();
+            $enc->reason = $reason;
+            $enc->save();
 
-            $allocated = (int) $budget->allocated_amount_idr;
-            $newAvailable = $allocated - (((int) $budget->encumbered_amount_idr) + ((int) $budget->spent_amount_idr));
+            $remainingAvailable = (int) $budget->allocated_amount_idr - ($newEncumbered + (int) $budget->spent_amount_idr);
 
             return BudgetCommitmentResult::successful(
                 commitmentCode: $commitmentCode,
-                amountMinor: $reservedAmount,
+                amountMinor: $releaseAmount,
                 status: EncumbranceStatus::RELEASED->value,
-                remainingAvailableMinor: $newAvailable
+                remainingAvailableMinor: $remainingAvailable
             );
         });
     }
-}
 
+    /**
+     * Menghitung agregasi hierarkis alokasi anggaran per entitas dan departemen.
+     *
+     * @return array<string, array{
+     *     total_allocated_minor: int,
+     *     total_encumbered_minor: int,
+     *     total_spent_minor: int,
+     *     total_available_minor: int,
+     *     budget_count: int
+     * }>
+     */
+    public function calculateDepartmentRollup(string $entityCode, int $fiscalYear): array
+    {
+        $budgets = EnterpriseBudget::query()
+            ->where('fiscal_year', (string) $fiscalYear)
+            ->get();
+
+        $rollup = [];
+        foreach ($budgets as $bgt) {
+            $cc = (string) $bgt->cost_center_code;
+            if (! isset($rollup[$cc])) {
+                $rollup[$cc] = [
+                    'total_allocated_minor' => 0,
+                    'total_encumbered_minor' => 0,
+                    'total_spent_minor' => 0,
+                    'total_available_minor' => 0,
+                    'budget_count' => 0,
+                ];
+            }
+
+            $alloc = (int) $bgt->allocated_amount_idr;
+            $enc = (int) $bgt->encumbered_amount_idr;
+            $spent = (int) $bgt->spent_amount_idr;
+            $avail = $alloc - ($enc + $spent);
+
+            $rollup[$cc]['total_allocated_minor'] += $alloc;
+            $rollup[$cc]['total_encumbered_minor'] += $enc;
+            $rollup[$cc]['total_spent_minor'] += $spent;
+            $rollup[$cc]['total_available_minor'] += $avail;
+            $rollup[$cc]['budget_count']++;
+        }
+
+        return $rollup;
+    }
+
+    /**
+     * Mengeksekusi pergeseran pagu anggaran antar mata anggaran (Budget Line Reallocation).
+     */
+    public function reallocateBudgetLine(
+        int $sourceBudgetId,
+        int $targetBudgetId,
+        int $amountMinor,
+        int $operatorId,
+        string $justification
+    ): array {
+        if ($sourceBudgetId === $targetBudgetId) {
+            throw new InvalidArgumentException('Mata anggaran donor dan penerima tidak boleh sama.');
+        }
+
+        return DB::transaction(function () use ($sourceBudgetId, $targetBudgetId, $amountMinor, $operatorId, $justification): array {
+            /** @var EnterpriseBudget|null $source */
+            $source = EnterpriseBudget::query()->where('id', $sourceBudgetId)->lockForUpdate()->firstOrFail();
+            /** @var EnterpriseBudget|null $target */
+            $target = EnterpriseBudget::query()->where('id', $targetBudgetId)->lockForUpdate()->firstOrFail();
+
+            $sourceAlloc = (int) $source->allocated_amount_idr;
+            $sourceCommitted = (int) $source->encumbered_amount_idr + (int) $source->spent_amount_idr;
+
+            $feasibility = BudgetVarianceAnalyzer::evaluateReallocationFeasibility(
+                $sourceAlloc,
+                $sourceCommitted,
+                $amountMinor
+            );
+
+            if (! $feasibility['is_transfer_feasible']) {
+                throw new BudgetGuardrailBreachException(
+                    "Pergeseran pagu ditolak: " . ($feasibility['rejection_reason'] ?? 'Saldo pagu donor tidak mencukupi.')
+                );
+            }
+
+            $source->allocated_amount_idr = $sourceAlloc - $amountMinor;
+            $source->save();
+
+            $target->allocated_amount_idr = (int) $target->allocated_amount_idr + $amountMinor;
+            $target->save();
+
+            return [
+                'success' => true,
+                'source_budget_id' => $sourceBudgetId,
+                'target_budget_id' => $targetBudgetId,
+                'transferred_amount_minor' => $amountMinor,
+                'source_available_after_minor' => $feasibility['donor_available_after_minor'],
+                'target_allocated_after_minor' => (int) $target->allocated_amount_idr,
+            ];
+        });
+    }
+}

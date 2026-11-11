@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\EnterpriseFinance\Application\Services;
 
 use Carbon\CarbonImmutable;
+use InvalidArgumentException;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\EnterpriseFinance\Domain\Enums\SodSeverity;
 use Modules\EnterpriseFinance\Domain\Events\EnterpriseSodViolationDetected;
@@ -15,7 +16,7 @@ use Psr\Clock\ClockInterface;
 class SodGovernanceService
 {
     /**
-     * Matriks 12 Aturan Konflik Pemisahan Tugas (Segregation of Duties).
+     * Matriks 20 Aturan Konflik Pemisahan Tugas (Segregation of Duties).
      *
      * @var array<string, array{
      *     id: string,
@@ -121,7 +122,71 @@ class SodGovernanceService
             'first_role' => 'internal_auditor',
             'second_role' => 'system_security_admin',
             'severity' => SodSeverity::CRITICAL,
-            'description' => 'Auditor internal wajib independen dan dilarang memegang hak akses operasional produksi.',
+            'description' => 'Auditor kepatuhan dilarang memiliki hak administratif pengubahan konfigurasi sistem.',
+        ],
+        'SOD-13' => [
+            'id' => 'SOD-13',
+            'title' => 'Petugas Timbangan Tambang vs Dispatcher Angkut',
+            'first_role' => 'weighbridge_operator',
+            'second_role' => 'dispatcher_mine',
+            'severity' => SodSeverity::HIGH,
+            'description' => 'Operator jembatan timbang tambang dilarang mengatur rute dan penugasan armada angkut.',
+        ],
+        'SOD-14' => [
+            'id' => 'SOD-14',
+            'title' => 'Penginput Rekam Medis vs Penagih Klaim Asuransi',
+            'first_role' => 'clinical_coder',
+            'second_role' => 'insurance_billing_officer',
+            'severity' => SodSeverity::HIGH,
+            'description' => 'Koder diagnosis medis RS dilarang menyetujui klaim penggantian biaya asuransi.',
+        ],
+        'SOD-15' => [
+            'id' => 'SOD-15',
+            'title' => 'Petugas Front Office Hotel vs Pembuat Tarif Diskon',
+            'first_role' => 'front_desk',
+            'second_role' => 'revenue_manager',
+            'severity' => SodSeverity::MEDIUM,
+            'description' => 'Resepsionis hotel dilarang mengubah matriks tarif kamar tanpa persetujuan revenue manager.',
+        ],
+        'SOD-16' => [
+            'id' => 'SOD-16',
+            'title' => 'Operator Ticketing Venue vs Pintu Masuk Gate',
+            'first_role' => 'box_office_cashier',
+            'second_role' => 'turnstile_gate_scanner',
+            'severity' => SodSeverity::HIGH,
+            'description' => 'Penjual tiket konser/venue dilarang mengoperasikan pemindai tiket di pintu masuk.',
+        ],
+        'SOD-17' => [
+            'id' => 'SOD-17',
+            'title' => 'Pengusul Penghapusan Aset vs Pengelola Register Aset',
+            'first_role' => 'asset_disposal_sponsor',
+            'second_role' => 'fixed_asset_accountant',
+            'severity' => SodSeverity::HIGH,
+            'description' => 'Pengusul lelang aset dilarang mencatat nilai sisa buku pelepasan aset.',
+        ],
+        'SOD-18' => [
+            'id' => 'SOD-18',
+            'title' => 'Penyusun Formula Pakan/Resep vs Pembeli Bahan Baku',
+            'first_role' => 'quality_formulator',
+            'second_role' => 'raw_material_buyer',
+            'severity' => SodSeverity::MEDIUM,
+            'description' => 'Formulator resep F&B dilarang menentukan vendor rekanan penyedia bahan.',
+        ],
+        'SOD-19' => [
+            'id' => 'SOD-19',
+            'title' => 'Petugas Kliring Valas vs Trader Pasar Uang',
+            'first_role' => 'treasury_settlement_officer',
+            'second_role' => 'fx_trader',
+            'severity' => SodSeverity::CRITICAL,
+            'description' => 'Dealer valas dilarang mengonfirmasi dan mengeksekusi instruksi settlement transaksi valuta asing.',
+        ],
+        'SOD-20' => [
+            'id' => 'SOD-20',
+            'title' => 'Pengelola Log Audit Keamanan vs Pengembang Aplikasi',
+            'first_role' => 'security_audit_officer',
+            'second_role' => 'application_developer',
+            'severity' => SodSeverity::CRITICAL,
+            'description' => 'Pengembang dilarang memiliki wewenang memodifikasi atau menghapus jejak log audit forensik.',
         ],
     ];
 
@@ -140,86 +205,125 @@ class SodGovernanceService
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * Mengambil daftar aturan konflik pemisahan tugas yang terdaftar.
      */
     public function getRules(): array
     {
-        return $this->rules;
+        return array_values($this->rules);
     }
 
     /**
-     * Memeriksa potensi konflik SoD saat penugasan peran baru ke pengguna.
-     *
-     * @param list<string> $currentRoles
-     * @throws SodViolationException
+     * Memeriksa apakah penugasan peran baru pada pengguna memicu benturan wewenang SoD.
      */
-    public function checkRoleAssignment(int $userId, string $newRole, array $currentRoles): void
+    public function checkAssignmentViolation(int $userId, array $currentRoles, string $newRole): ?array
     {
         foreach ($this->rules as $rule) {
-            $isConflicting = false;
-            $conflictingRole = null;
+            $r1 = $rule['first_role'];
+            $r2 = $rule['second_role'];
 
-            if ($newRole === $rule['first_role'] && in_array($rule['second_role'], $currentRoles, true)) {
-                $isConflicting = true;
-                $conflictingRole = $rule['second_role'];
-            } elseif ($newRole === $rule['second_role'] && in_array($rule['first_role'], $currentRoles, true)) {
-                $isConflicting = true;
-                $conflictingRole = $rule['first_role'];
-            }
+            $isDirectConflict = ($newRole === $r1 && in_array($r2, $currentRoles, true));
+            $isReverseConflict = ($newRole === $r2 && in_array($r1, $currentRoles, true));
 
-            if ($isConflicting) {
-                // Periksa apakah terdapat dispensasi/pengecualian aktif
+            if ($isDirectConflict || $isReverseConflict) {
+                // Periksa apakah ada pengecualian aktif yang sah
                 $hasActiveException = SodException::query()
-                    ->where('user_id', $userId)
                     ->where('sod_rule_id', $rule['id'])
-                    ->where('is_active', true)
+                    ->where('user_id', $userId)
+                    ->where('status', 'ACTIVE')
                     ->where('expires_at', '>', $this->now())
                     ->exists();
 
                 if (! $hasActiveException) {
-                    // Pancarkan event deteksi konflik SoD
-                    $event = new EnterpriseSodViolationDetected(
-                        userId: $userId,
-                        sodRuleId: $rule['id'],
-                        firstRole: $newRole,
-                        secondRole: (string) $conflictingRole,
-                        severity: $rule['severity']->value
-                    );
-
-                    if ($this->outboxBus !== null) {
-                        $this->outboxBus->record(
-                            EnterpriseSodViolationDetected::EVENT_NAME,
-                            $event->toPayload(),
-                            "SOD:VIOLATION:{$userId}:{$newRole}"
-                        );
-                    }
-
-                    throw new SodViolationException(
-                        "Pelanggaran Pemisahan Tugas ({$rule['id']} - {$rule['title']}): Pengguna #{$userId} telah memiliki peran '{$conflictingRole}' dan dilarang ditugaskan peran berkonflik '{$newRole}' tanpa otorisasi pengecualian aktif."
-                    );
+                    return [
+                        'rule' => $rule,
+                        'conflicting_role' => $isDirectConflict ? $r2 : $r1,
+                    ];
                 }
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Mencegah penetapan peran jika terdapat pelanggaran SoD tanpa dispensasi aktif.
+     */
+    public function assertCanAssignRole(int $userId, array $currentRoles, string $newRole): void
+    {
+        $violation = $this->checkAssignmentViolation($userId, $currentRoles, $newRole);
+
+        if ($violation !== null) {
+            $rule = $violation['rule'];
+            $conflictingRole = $violation['conflicting_role'];
+
+            $event = new EnterpriseSodViolationDetected(
+                userId: $userId,
+                ruleId: $rule['id'],
+                firstRole: (string) $newRole,
+                secondRole: (string) $conflictingRole,
+                severity: $rule['severity']->value
+            );
+
+            if ($this->outboxBus !== null) {
+                $this->outboxBus->record(
+                    EnterpriseSodViolationDetected::EVENT_NAME,
+                    $event->toPayload(),
+                    "SOD:VIOLATION:{$userId}:{$newRole}"
+                );
+            }
+
+            throw new SodViolationException(
+                "Pelanggaran Pemisahan Tugas ({$rule['id']} - {$rule['title']}): Pengguna #{$userId} telah memiliki peran '{$conflictingRole}' dan dilarang ditugaskan peran berkonflik '{$newRole}' tanpa otorisasi pengecualian aktif."
+            );
         }
     }
 
     /**
-     * Menerbitkan pengecualian/dispensasi SoD berbatas waktu dengan persetujuan manajemen.
+     * Menerbitkan dispensasi pengecualian berbatas waktu untuk skenario darurat operasional.
      */
     public function grantException(
-        string $ruleId,
+        string $sodRuleId,
         int $userId,
         int $grantedBy,
         string $justification,
-        CarbonImmutable $expiresAt
+        int $expiresDays = 14
     ): SodException {
+        if (! isset($this->rules[$sodRuleId])) {
+            throw new InvalidArgumentException("Aturan SoD [{$sodRuleId}] tidak terdaftar.");
+        }
+
+        if ($expiresDays < 1 || $expiresDays > 90) {
+            throw new InvalidArgumentException("Masa berlaku dispensasi harus antara 1 s.d. 90 hari.");
+        }
+
+        $now = $this->now();
+        $expiresAt = $now->addDays($expiresDays);
+
         return SodException::create([
-            'sod_rule_id' => $ruleId,
+            'sod_rule_id' => $sodRuleId,
             'user_id' => $userId,
             'granted_by' => $grantedBy,
             'justification' => $justification,
+            'status' => 'ACTIVE',
+            'granted_at' => $now,
             'expires_at' => $expiresAt,
-            'is_active' => true,
         ]);
     }
-}
 
+    /**
+     * Memindai dan menandai seluruh dispensasi yang telah melewati batas waktu kedaluwarsa.
+     */
+    public function auditExceptionExpirations(): array
+    {
+        $now = $this->now();
+        $expiredCount = SodException::query()
+            ->where('status', 'ACTIVE')
+            ->where('expires_at', '<=', $now)
+            ->update(['status' => 'EXPIRED']);
+
+        return [
+            'audited_at' => $now->toIso8601String(),
+            'expired_exceptions_revoked' => $expiredCount,
+        ];
+    }
+}

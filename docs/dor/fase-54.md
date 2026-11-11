@@ -208,3 +208,31 @@ Audit dua sumber `enterprise:audit` diperluas untuk menguji 10 dimensi integrita
 8. Deteksi kewajiban kepatuhan regulasi yang jatuh tempo tanpa penerbitan eskalasi.
 9. Verifikasi paket data audit: Memastikan manifest checksum SHA-256 cocok dengan isi berkas arsip.
 10. Validasi zero-sum ledger posting: Memastikan setiap transaksi `ef:*` memiliki $\Sigma \text{Debit} = \Sigma \text{Kredit}$.
+
+
+---
+
+## 9. Matriks Pengujian & Verifikasi Akseptansi (Test Coverage Plan)
+
+Rencana pengujian menyeluruh Fase 54 disusun untuk mengamankan 100% jalur kritis tata kelola:
+
+| Kasus Uji | Berkas Test | Skenario Pengujian | Hasil Diharapkan |
+| :--- | :--- | :--- | :--- |
+| **TC-01** | `EnterpriseGovernancePhase54Test::test_enterprise_governance_access_control` | Akses controller berhak (`finance_controller`, `auditor`) vs tidak berhak (`guest`). | 200 OK untuk user berhak, 403 Forbidden untuk unauthorized. |
+| **TC-02** | `EnterpriseGovernancePhase54Test::test_financial_period_closing_and_vat_settlement_ledger_posting` | Eksekusi penutupan periode fiskal, transfer pendapatan/beban, dan idempotensi kunci periode. | Periode berstatus locked, jurnal buku besar balance, percobaan kedua melempar `PeriodAlreadyLockedException`. |
+| **TC-03** | `EnterpriseGovernancePhase54Test::test_enterprise_budget_cycle_state_machine_with_versioning` | Transisi status anggaran 8 level, larangan persetujuan mandiri (Maker-Checker). | Pelanggaran Maker-Checker melempar `BudgetMakerCheckerViolationException`. |
+| **TC-04** | `EnterpriseGovernancePhase54Test::test_cross_module_budget_commitment_and_procurement_encumbrance` | Reservasi dana belanja, likuidasi tagihan, dan peringatan ambang batas sisa pagu $< 10\%$. | Status encumbrance bergeser `RESERVED -> LIQUIDATED`, sisa pagu terpotong akurat. |
+| **TC-05** | `EnterpriseGovernancePhase54Test::test_dual_source_audit_and_corruption_fixture` | Uji coba audit dua sumber pada kondisi data bersih vs korupsi terinjeksi. | Kondisi bersih mengembalikan exit 0, kondisi anomali buatan menghasilkan exit non-0. |
+| **TC-06** | `EnterpriseFinanceMoneyIntegritySabotageTest::test_sabotase_4_unbalanced_ledger_posting_is_strictly_rejected` | Upaya posting ayat jurnal debit $\neq$ kredit ke buku besar. | Ditolak seketika oleh `LedgerService` dengan pengecualian ketidakseimbangan jurnal. |
+| **TC-07** | `EnterpriseFinanceMoneyIntegritySabotageTest::test_sabotase_5_zero_or_negative_nominal_ledger_posting_is_rejected` | Upaya posting nominal 0 atau negatif ke akun buku besar `ef:*`. | Ditolak dengan `InvalidArgumentException`. |
+
+---
+
+## 10. Rubrik Penilaian & Verifikasi Gerbang Mutu (Quality Gate Rubrics)
+
+Setiap kriteria penilaian dalam gerbang mutu W8-P5-b.1 dievaluasi secara independen:
+1. **B1 Logika Aplikasi & Domain**: Menghitung penambahan baris kode PHP fungsional (di luar komentar dan baris kosong). Seluruh kelas mengimplementasikan penanganan galat eksplisit, tipe data ketat `declare(strict_types=1)`, serta bebas dari pemakaian tipe data `float` untuk merepresentasikan mata uang.
+2. **B2 Antarmuka Pengguna (UI) Design System**: Memastikan 100% view Blade di bawah `modules/EnterpriseFinance/resources/views/` mengadopsi komponen `x-ds.*` resmi (shell, card, breadcrumb, button, toast, stat, table) dan lulus validasi `php artisan ui:lint` dengan 0 peringatan maupun kesalahan.
+3. **B3 Dokumentasi Operasional & Teknis**: Meliputi dokumen DoR, Desain Teknis Arsitektur, Keputusan ADR-0088, Runbook Pemulihan Sistem, Panduan Pengguna Finance Controller, Auditor, Tax Manager, dan Budget Owner.
+4. **Zero Arch Scan Debt**: Mempertahankan kepatuhan mutlak terhadap aturan arsitektur platform tanpa menambah pelanggaran aturan A1 s.d. A12 pada `ZeroArchScanDebtTest`.
+5. **Progress Ratchet Integrity**: Memastikan teks item lama pada `docs/PROGRESS.md` tidak dimodifikasi tanpa penanda penurunan resmi dan seluruh blok bukti memuat jejak commit yang dapat diaudit.

@@ -31,3 +31,30 @@ Untuk menjamin kepatuhan tata kelola keuangan konglomerasi sesuai prinsip KONSEP
 - Penutupan periode mengunci mutasi baru ke periode terkait (`ef_financial_period_locks`).
 - Integritas buku besar terverifikasi secara dual-source melalui `enterprise:audit`.
 
+
+
+## Alternatif Solusi yang Dipertimbangkan & Ditolak
+1. **Pencatatan Encumbrance Langsung ke Buku Besar (Direct GL Encumbrance Accounting)**:
+   - *Alasan Penolakan*: Merekam encumbrance langsung ke tabel `bank_ledger_entries` akan menggelembungkan neraca saldo (*trial balance*) dan menimbulkan distorsi laporan posisi keuangan resmi yang disajikan kepada pihak eksternal/perbankan. Pendekatan buku memo terpisah (`ef_budget_encumbrances`) jauh lebih bersih dan sesuai standar akuntansi internasional (PSAK / IFRS).
+2. **Penguncian Periode Berbasis Tanggal Transaksi Saja (Soft Period Locking)**:
+   - *Alasan Penolakan*: Pendekatan soft-locking yang hanya memeriksa tanggal masukan formulir rentan terhadap manipulasi waktu (*backdating*) oleh operator dengan hak akses istimewa. Keputusan mengunci periode secara terpusat pada tabel `ef_financial_period_locks` dengan validasi pada middleware dan service layer memberikan jaminan integritas anti-tamper yang mutlak.
+3. **Penyimpanan Berkas Audit dalam Format Binary Proprietary**:
+   - *Alasan Penolakan*: Format biner tertutup menyulitkan verifikasi independen oleh tim auditor eksternal KAP. Standarisasi berkas dalam bentuk bundel ZIP berisi CSV terbuka dan `manifest.json` ber-hash SHA-256 menjamin transparansi penuh, kepatuhan ISA 500, dan kemudahan pengolahan data menggunakan perkakas analitik audit umum (ACL, IDEA, Python).
+
+## Kepatuhan Regulasi & Standar Industri
+Keputusan arsitektur ini secara langsung memenuhi:
+- **UU Nomor 7 Tahun 2021 tentang Harmonisasi Peraturan Perpajakan (UU HPP)** terkait rekonsiliasi PPN faktur pajak gapless dan pemotongan PPh.
+- **Standar Pengendalian Internal COSO (Internal Control - Integrated Framework)** untuk penegakan pemisahan tugas (*Segregation of Duties*) dan pengujian kendali transaksi (RCM).
+- **Sarbanes-Oxley Act (SOX) Section 404** mengenai efektivitas pengendalian internal atas pelaporan keuangan korporasi.
+- **Standar Akuntansi Keuangan (SAK) Entitas Privat / IFRS** mengenai konsolidasi, eliminasi transaksi antar entitas anak, dan pengakuan laba rugi komprehensif.
+
+
+## Rencana Pemantauan & Evaluasi Efektivitas
+- **Evaluasi 30 Hari**: Memantau volume eskalasi komitmen anggaran tertahan di modul Procurement untuk memastikan alur reservasi tidak menghambat kecepatan pengadaan rutin.
+- **Audit Pasca Tutup Buku Pertama**: Memverifikasi ketiadaan anomali diskrepansi subledger pada akhir bulan pertama implementasi dan memastikan berkas data pack dapat diverifikasi secara sukses oleh auditor independen.
+
+- **Pembaruan Matriks RCM Tahunan**: Melakukan kalibrasi parameter ambang deviasi timbangan logistik dan batas toleransi margin penjualan berdasarkan realisasi data operasional tahun fiskal sebelumnya.
+
+- **Sertifikasi Kepatuhan Tahunan**: Memastikan seluruh sistem pendukung akuntansi lulus uji penetrasi keamanan dan audit kepatuhan ISO 27001 secara periodik.
+
+- **Verifikasi Skalabilitas**: Menguji kemampuan pemrosesan ribuan baris komitmen serentak tanpa latensi transaksi.

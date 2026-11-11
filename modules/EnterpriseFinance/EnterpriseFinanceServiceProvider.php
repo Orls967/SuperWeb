@@ -114,6 +114,10 @@ class EnterpriseFinanceServiceProvider extends ServiceProvider
 
         $this->app->singleton(AuditDataPackGeneratorService::class);
         $this->app->singleton(GroupFinanceHealthService::class);
+        $this->app->singleton(CorporateFinancialReportGeneratorService::class);
+        $this->app->singleton(CorporateFinancialPeriodAuditService::class);
+        $this->app->singleton(CorporateTaxFilingService::class);
+        $this->app->singleton(CorporateDividendDistributionService::class);
     }
 
     public function boot(): void
