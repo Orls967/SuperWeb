@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -386,8 +387,8 @@ final class PlatformStressConcurrencyCommand extends Command
             ['name' => 'Stress Guest', 'password' => bcrypt('secret'), 'role' => 'customer']
         );
 
-        $checkIn = '2026-11-10';
-        $checkOut = '2026-11-14';
+        $checkIn = Carbon::now()->addDays(5)->toDateString();
+        $checkOut = Carbon::now()->addDays(9)->toDateString();
         $successfulBookings = 0;
         $blockedDoubleBookings = 0;
         $firstReservation = null;
