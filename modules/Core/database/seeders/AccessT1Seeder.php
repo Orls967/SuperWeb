@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Core\database\seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\CoreAccessGrant;
@@ -109,11 +110,15 @@ class AccessT1Seeder extends Seeder
 
         $now = now();
         $grantNum = 1;
+        $existingUserIds = User::pluck('id')->all();
+        if (empty($existingUserIds)) {
+            $existingUserIds = [1];
+        }
 
         foreach ($statuses as $targetStatus => $targetCount) {
             for ($k = 0; $k < $targetCount; $k++) {
                 $code = sprintf('GRN-%04d-%s', $grantNum, strtoupper(Str::random(6)));
-                $userId = ($grantNum % 20) + 1;
+                $userId = $existingUserIds[$grantNum % count($existingUserIds)];
                 $role = match ($grantNum % 5) {
                     0 => 'role:finance_approver',
                     1 => 'role:secops_engineer',
@@ -156,7 +161,7 @@ class AccessT1Seeder extends Seeder
                         'to_status' => 'approved',
                         'trigger_action' => 'APPROVE',
                         'reason' => 'Access request approved by manager',
-                        'actor_id' => 1,
+                        'actor_id' => $existingUserIds[0],
                         'transitioned_at' => $now->copy()->subDays(2),
                     ]);
                     CoreAccessGrantTransition::create([
@@ -165,7 +170,7 @@ class AccessT1Seeder extends Seeder
                         'to_status' => 'active',
                         'trigger_action' => 'ACTIVATE',
                         'reason' => 'Grant activated in directory',
-                        'actor_id' => 1,
+                        'actor_id' => $existingUserIds[0],
                         'transitioned_at' => $now->copy()->subDays(1),
                     ]);
                 } elseif ($targetStatus !== 'requested') {
@@ -175,7 +180,7 @@ class AccessT1Seeder extends Seeder
                         'to_status' => $targetStatus,
                         'trigger_action' => 'TRANSITION_'.strtoupper($targetStatus),
                         'reason' => "Status transitioned to {$targetStatus} by workflow coordinator",
-                        'actor_id' => 1,
+                        'actor_id' => $existingUserIds[0],
                         'transitioned_at' => $now->copy()->subDays(1),
                     ]);
                 }
@@ -293,7 +298,7 @@ class AccessT1Seeder extends Seeder
                     'grant_id' => $grant->id,
                     'response' => $decision,
                     'responded_at' => $decision !== 'PENDING' ? $startedAt->copy()->addDays(2) : null,
-                    'reviewer_id' => 1,
+                    'reviewer_id' => User::value('id') ?? 1,
                 ]);
             }
         }

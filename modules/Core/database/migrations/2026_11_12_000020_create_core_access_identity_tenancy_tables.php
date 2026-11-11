@@ -25,7 +25,8 @@ return new class extends Migration
         Schema::create('core_access_grants', function (Blueprint $table) {
             $table->id();
             $table->string('grant_code', 64)->unique();
-            $table->foreignUuid('tenant_id')->constrained('core_tenants')->cascadeOnDelete();
+            $table->string('tenant_id', 64);
+            $table->foreign('tenant_id')->references('id')->on('core_tenants')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('resource', 128);
             $table->string('action', 64);
@@ -56,7 +57,8 @@ return new class extends Migration
         Schema::create('core_identity_links', function (Blueprint $table) {
             $table->id();
             $table->string('link_code', 64)->unique();
-            $table->foreignUuid('tenant_id')->nullable()->constrained('core_tenants')->nullOnDelete();
+            $table->string('tenant_id', 64)->nullable();
+            $table->foreign('tenant_id')->references('id')->on('core_tenants')->nullOnDelete();
             $table->string('subject_type', 32)->default('CUSTOMER'); // CUSTOMER / VENDOR
             $table->unsignedBigInteger('source_entity_id');
             $table->unsignedBigInteger('target_entity_id');
