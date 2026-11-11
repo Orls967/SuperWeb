@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 43 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 44 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **705 Migrasi** |
+| | **Total: 65 Modul** | | **706 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 136 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 140 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,11 +613,15 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1756 Rute** | | |
+| **Total** | **1760 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
 |---|---|---|
+| `access:audit` | `manual` | Menjalankan audit dua-sumber atas integritas tata kelola akses dan riwayat transisi imutabel (W8-D60) |
+| `access:expire-grants` | `manual` | Menyapu seluruh hak akses yang telah melewati jendela waktu valid_to (W8-D55) |
+| `access:recert-campaign` | `manual` | Manajemen kampanye re-sertifikasi akses berkala dan auto-revocation (W8-D59) |
+| `access:tenant-probe` | `manual` | Menjalankan probe harian isolasi multi-tenant otomatis atas seluruh model bisnis (W8-D58) |
 | `agri:audit` | `manual` | Audit contract farming collections, grading payouts, and advance deductions |
 | `agy:audit` | `manual` | Audit akrual komisi & payout agen terhadap ledger (0 selisih) |
 | `ai:audit` | `manual` | Audit deterministic AI decision snapshots, pricing guardrails, and anomaly quarantines (Fase 64.4) |
@@ -982,7 +986,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 364 Command** | **37 Terjadwal** | |
+| **Total: 368 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

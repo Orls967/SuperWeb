@@ -5223,4 +5223,16 @@ return [
         'protection' => 'public',
         'params' => fn () => ['resource' => 'purchase-orders', 'action' => 'cancel'],
     ],
+    'admin.access.grants' => [
+        'roles' => ['admin', 'api_admin', 'security_officer', 'superadmin'],
+    ],
+    'admin.access.policies' => [
+        'roles' => ['admin', 'api_admin', 'security_officer', 'superadmin'],
+    ],
+    'admin.access.identity' => [
+        'roles' => ['admin', 'api_admin', 'security_officer', 'superadmin'],
+    ],
+    'admin.access.campaigns' => [
+        'roles' => ['admin', 'api_admin', 'security_officer', 'superadmin'],
+    ],
 ];

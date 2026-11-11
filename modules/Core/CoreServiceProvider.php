@@ -18,6 +18,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Application\Access\AccessGovernanceExportService;
+use Modules\Core\Application\Access\BreakGlassService;
+use Modules\Core\Application\Access\ExposureGovernanceService;
+use Modules\Core\Application\Access\MultiDimensionalScopingService;
+use Modules\Core\Application\Access\TenantBoundaryAssuranceService;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Actions\EventSpine\ClaimConsumerInboxAction;
 use Modules\Core\Application\Actions\Search\Providers\AgricultureSearchProvider;
@@ -98,6 +103,10 @@ use Modules\Core\Application\Services\VenueZoneSurveillanceFeedService;
 use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
 use Modules\Core\Application\Tenancy\TenantScopeRegistry;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
+use Modules\Core\Console\Commands\AccessAuditCommand;
+use Modules\Core\Console\Commands\AccessExpireGrantsCommand;
+use Modules\Core\Console\Commands\AccessRecertCampaignCommand;
+use Modules\Core\Console\Commands\AccessTenantProbeCommand;
 use Modules\Core\Console\Commands\ApiArchiveDrillCommand;
 use Modules\Core\Console\Commands\ApiArchiveRunCommand;
 use Modules\Core\Console\Commands\ApiExportPurgeCommand;
@@ -167,6 +176,20 @@ use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Contracts\VehicleDirectory;
 use Modules\Core\Contracts\VenueZoneSurveillanceFeedGateway;
+use Modules\Core\Domain\Access\Audit\AccessStateReconciler;
+use Modules\Core\Domain\Access\Cache\AbacMemoryCache;
+use Modules\Core\Domain\Access\Cache\SubSecondEvictionManager;
+use Modules\Core\Domain\Access\Identity\IdentityConflictResolver;
+use Modules\Core\Domain\Access\Identity\IdentityGraphTraversal;
+use Modules\Core\Domain\Access\Lifecycle\BreakGlassEmergencyCoordinator;
+use Modules\Core\Domain\Access\Lifecycle\GrantExpirationWatcher;
+use Modules\Core\Domain\Access\Recertification\RecertificationCampaignOrchestrator;
+use Modules\Core\Domain\Access\Resolvers\ConditionExpressionEvaluator;
+use Modules\Core\Domain\Access\Resolvers\EnvironmentAttributeResolver;
+use Modules\Core\Domain\Access\Resolvers\ResourceAttributeResolver;
+use Modules\Core\Domain\Access\Resolvers\SubjectAttributeResolver;
+use Modules\Core\Domain\Access\Tenancy\TenantIsolationGuard;
+use Modules\Core\Domain\Access\Vendor\ExposureBreachEnforcer;
 use Modules\Core\Domain\Algorithms\Api\WebhookSignatureVerifier;
 use Modules\Core\Domain\Algorithms\Edi\EdiInterchangeCodec;
 use Modules\Core\Domain\Algorithms\Events\ProjectionHashCalculator;
@@ -391,6 +414,27 @@ class CoreServiceProvider extends ServiceProvider
             VehicleDirectory::class,
             EloquentVehicleDirectory::class
         );
+
+        // Phase 188: Access, ABAC, Identity & Tenancy
+        $this->app->singleton(AbacMemoryCache::class);
+        $this->app->singleton(SubSecondEvictionManager::class);
+        $this->app->singleton(ConditionExpressionEvaluator::class);
+        $this->app->singleton(SubjectAttributeResolver::class);
+        $this->app->singleton(ResourceAttributeResolver::class);
+        $this->app->singleton(EnvironmentAttributeResolver::class);
+        $this->app->singleton(BreakGlassEmergencyCoordinator::class);
+        $this->app->singleton(GrantExpirationWatcher::class);
+        $this->app->singleton(IdentityGraphTraversal::class);
+        $this->app->singleton(IdentityConflictResolver::class);
+        $this->app->singleton(ExposureBreachEnforcer::class);
+        $this->app->singleton(TenantIsolationGuard::class);
+        $this->app->singleton(RecertificationCampaignOrchestrator::class);
+        $this->app->singleton(AccessStateReconciler::class);
+        $this->app->singleton(BreakGlassService::class);
+        $this->app->singleton(MultiDimensionalScopingService::class);
+        $this->app->singleton(TenantBoundaryAssuranceService::class);
+        $this->app->singleton(ExposureGovernanceService::class);
+        $this->app->singleton(AccessGovernanceExportService::class);
     }
 
     public function boot(): void
@@ -613,6 +657,10 @@ class CoreServiceProvider extends ServiceProvider
                 ApiArchiveRunCommand::class,
                 ApiArchiveDrillCommand::class,
                 ApiTenancyCoverageCommand::class,
+                AccessTenantProbeCommand::class,
+                AccessExpireGrantsCommand::class,
+                AccessRecertCampaignCommand::class,
+                AccessAuditCommand::class,
             ]);
         }
 

@@ -107,3 +107,4 @@ final class IntegerTokenBucket
         return [...$result, 'certificate' => $certificate];
     }
 }
+
