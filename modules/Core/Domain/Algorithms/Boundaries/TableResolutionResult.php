@@ -17,3 +17,4 @@ final class TableResolutionResult
         public readonly ?string $reason = null,
     ) {}
 }
+

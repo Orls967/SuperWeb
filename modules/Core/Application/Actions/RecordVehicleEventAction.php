@@ -6,8 +6,8 @@ namespace Modules\Core\Application\Actions;
 
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Core\Domain\Enums\VehicleEventType;
-use Modules\Core\Domain\Models\Vehicle;
 use Modules\Core\Domain\Models\VehicleEvent;
 
 class RecordVehicleEventAction

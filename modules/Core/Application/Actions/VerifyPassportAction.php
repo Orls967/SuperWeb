@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Actions;
 
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Core\Domain\Models\VehicleEvent;
 
 class VerifyPassportAction
