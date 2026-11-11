@@ -115,13 +115,16 @@ class ReserveRoomAntiOverlapRegressionTest extends TestCase
     public function test_single_night_booking_folio_and_checked_in_overlap_invariants(): void
     {
         $action = app(ReserveRoomWithInventoryNightLockAction::class);
+        $bizDate = app(HotelBusinessDateService::class)->getCurrentBusinessDate($this->property->id);
+        $dIn = Carbon::parse($bizDate)->toDateString();
+        $dOut = Carbon::parse($bizDate)->addDays(1)->toDateString();
 
         $res = $action->handle(
             propertyId: $this->property->id,
             roomId: $this->room->id,
             guestUserId: (string) $this->guest->id,
-            checkInDate: '2026-11-10',
-            checkOutDate: '2026-11-11',
+            checkInDate: $dIn,
+            checkOutDate: $dOut,
             dailyRateIdr: 1500000
         );
 
@@ -147,8 +150,8 @@ class ReserveRoomAntiOverlapRegressionTest extends TestCase
             propertyId: $this->property->id,
             roomId: $this->room->id,
             guestUserId: (string) $this->guest->id,
-            checkInDate: '2026-11-10',
-            checkOutDate: '2026-11-11',
+            checkInDate: $dIn,
+            checkOutDate: $dOut,
             dailyRateIdr: 1500000
         );
     }
