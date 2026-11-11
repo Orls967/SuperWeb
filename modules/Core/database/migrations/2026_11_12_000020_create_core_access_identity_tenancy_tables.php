@@ -86,7 +86,7 @@ return new class extends Migration
             $table->string('integrity_sha256', 64);
             $table->timestamp('calculated_at');
             $table->timestamps();
-            $table->index(['vendor_cluster_code', 'calculated_at']);
+            $table->index(['vendor_cluster_code', 'calculated_at'], 'cves_cluster_calc_idx');
         });
 
         Schema::create('core_access_recertification_campaigns', function (Blueprint $table) {

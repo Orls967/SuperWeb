@@ -217,6 +217,7 @@ use Modules\Core\Infrastructure\Retention\CoreAuditLogRetentionProvider;
 use Modules\Core\Infrastructure\Tenancy\CoreTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
+use Modules\Shared\Contracts\VendorExposureProviderInterface;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -435,6 +436,25 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(TenantBoundaryAssuranceService::class);
         $this->app->singleton(ExposureGovernanceService::class);
         $this->app->singleton(AccessGovernanceExportService::class);
+
+        $this->app->bind(VendorExposureProviderInterface::class, function ($app) {
+            foreach ($app->tagged('core.vendor_exposure_provider') as $provider) {
+                return $provider;
+            }
+
+            return new class implements VendorExposureProviderInterface
+            {
+                public function getModuleIdentifier(): string
+                {
+                    return 'core_null';
+                }
+
+                public function collectExposureTranches(string $vendorClusterCode, ?string $tenantId = null): array
+                {
+                    return [];
+                }
+            };
+        });
     }
 
     public function boot(): void
