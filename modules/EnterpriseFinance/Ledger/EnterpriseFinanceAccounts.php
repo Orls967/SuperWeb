@@ -32,6 +32,55 @@ final class EnterpriseFinanceAccounts
                 'asset_code' => 'IDR',
                 'allow_negative' => true,
             ],
+            [
+                'code' => 'ef:syndicated_facility_commitment:IDR',
+                'name' => 'Syndicated Facility Commitment',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ef:syndicated_loan_liability:IDR',
+                'name' => 'Syndicated Loan Liability',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ef:syndicated_interest_expense:IDR',
+                'name' => 'Syndicated Interest Expense',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => false,
+            ],
+            [
+                'code' => 'ef:operating_budget_clearing:IDR',
+                'name' => 'Operating Budget Clearing',
+                'kind' => AccountKind::EXPENSE,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ef:cash_disbursement_clearing:IDR',
+                'name' => 'Cash Disbursement Clearing',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ef:tax_payable_ppn:IDR',
+                'name' => 'PPN Output Payable',
+                'kind' => AccountKind::LIABILITY,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
+            [
+                'code' => 'ef:tax_prepaid_clearing:IDR',
+                'name' => 'Prepaid Tax Input Clearing',
+                'kind' => AccountKind::ASSET,
+                'asset_code' => 'IDR',
+                'allow_negative' => true,
+            ],
         ];
     }
 }

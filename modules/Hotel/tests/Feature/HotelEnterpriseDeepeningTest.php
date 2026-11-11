@@ -16,6 +16,7 @@ use Modules\Hotel\Application\Actions\ReserveRoomWithInventoryNightLockAction;
 use Modules\Hotel\Application\Actions\RunIdempotentHotelNightAuditAction;
 use Modules\Hotel\Application\Actions\SettleMultiVendorDestinationPackageAction;
 use Modules\Hotel\Application\Actions\SettleSplitGuestFolioCorporatePersonalAction;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\Domain\Models\HotelFolio;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelReservation;
@@ -46,6 +47,8 @@ class HotelEnterpriseDeepeningTest extends TestCase
             'city' => 'Badung',
             'total_rooms' => 120,
         ]);
+
+        app(HotelBusinessDateService::class)->initializeBusinessDate($this->property->id, '2026-11-01');
 
         $this->room = HotelRoom::create([
             'id' => (string) Str::uuid(),
