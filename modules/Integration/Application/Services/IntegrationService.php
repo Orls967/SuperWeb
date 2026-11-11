@@ -6,12 +6,16 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Modules\Core\Application\Api\CoreApiAuditor;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Integration\Domain\Models\ApiClient;
 use Modules\Integration\Domain\Models\EdiMessage;
 use Modules\Integration\Domain\Models\WebhookDelivery;
 use Modules\Integration\Domain\Models\WebhookSubscription;
 
+/**
+ * @deprecated Legacy integration service; new integrations must use Core API v2 gateway, WebhookSubscriptionService, and EdiProcessingService (W8-P4 / Fase 55).
+ */
 class IntegrationService
 {
     /**
@@ -189,6 +193,17 @@ class IntegrationService
                     $invalidDeliveries++;
                     $invalidRecords[] = "WebhookDelivery ID {$del->id} (event: {$del->event_id})";
                 }
+            }
+        }
+
+        if (class_exists(CoreApiAuditor::class)) {
+            try {
+                $coreAudit = app(CoreApiAuditor::class)->audit();
+                $invalidDeliveries += $coreAudit['discrepancies'];
+                foreach ($coreAudit['invalid_records'] as $record) {
+                    $invalidRecords[] = $record;
+                }
+            } catch (\Throwable) {
             }
         }
 

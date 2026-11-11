@@ -15,6 +15,7 @@ use Modules\Esg\Contracts\CarbonCreditIssuer;
 use Modules\Esg\Contracts\CarbonCreditRetirementRecorder;
 use Modules\Esg\Contracts\EmissionBenefitRecorder;
 use Modules\Esg\Contracts\VerifiedEmissionReader;
+use Modules\Esg\Infrastructure\Tenancy\EsgTenantScopedModelProvider;
 
 class EsgServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,8 @@ class EsgServiceProvider extends ServiceProvider
         $this->commands([
             AuditEsgCommand::class,
         ]);
+
+        $this->app->tag(EsgTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

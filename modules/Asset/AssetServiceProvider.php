@@ -21,6 +21,7 @@ use Modules\Asset\Console\Commands\DepreciateAssetsCommand;
 use Modules\Asset\Console\Commands\VerifyAssetChainsCommand;
 use Modules\Asset\Contracts\AssetRegistryLookupInterface;
 use Modules\Asset\Contracts\MaintenanceWorkOrderRequester;
+use Modules\Asset\Infrastructure\Tenancy\AssetTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 
 class AssetServiceProvider extends ServiceProvider
@@ -42,6 +43,8 @@ class AssetServiceProvider extends ServiceProvider
             MaintenanceWorkOrderRequester::class,
             MaintenanceWorkOrderRequesterService::class
         );
+
+        $this->app->tag(AssetTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

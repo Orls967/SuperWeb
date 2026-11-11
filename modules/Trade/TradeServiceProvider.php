@@ -12,6 +12,8 @@ use Modules\Trade\Application\Services\TradeService;
 use Modules\Trade\Console\Commands\AuditBiddingCommand;
 use Modules\Trade\Console\Commands\AuditTradeCommand;
 use Modules\Trade\Contracts\ImportLandedCostQuoter;
+use Modules\Trade\Infrastructure\Api\ImportOrderResourceProvider;
+use Modules\Trade\Infrastructure\Bulk\HsCodeBulkImportTarget;
 
 class TradeServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,9 @@ class TradeServiceProvider extends ServiceProvider
         $this->app->singleton(TradeService::class);
         $this->app->singleton(AiBiddingAgentService::class);
         $this->app->bind(ImportLandedCostQuoter::class, ImportLandedCostQuoterService::class);
+
+        $this->app->tag(ImportOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(HsCodeBulkImportTarget::class, 'core.bulk_import_target');
     }
 
     public function boot(): void

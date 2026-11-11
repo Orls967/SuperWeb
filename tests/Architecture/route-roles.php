@@ -5164,4 +5164,63 @@ return [
             return ['id' => $v->id];
         },
     ],
+    'admin.api.clients' => [
+        'roles' => ['admin', 'api_admin', 'superadmin'],
+    ],
+    'admin.api.usage' => [
+        'roles' => ['admin', 'api_admin', 'auditor', 'superadmin'],
+    ],
+    'admin.api.edi' => [
+        'roles' => ['admin', 'api_admin', 'superadmin'],
+    ],
+    'admin.api.imports' => [
+        'roles' => ['admin', 'api_admin', 'superadmin'],
+    ],
+    'admin.api.webhooks' => [
+        'roles' => ['admin', 'api_admin', 'superadmin'],
+    ],
+    'admin.api.retention' => [
+        'roles' => ['admin', 'api_admin', 'auditor', 'platform_architect', 'superadmin'],
+    ],
+    'admin.tenancy.index' => [
+        'roles' => ['admin', 'api_admin', 'platform_architect', 'superadmin'],
+    ],
+    'admin.tenancy.coverage' => [
+        'roles' => ['admin', 'api_admin', 'security_officer', 'platform_architect', 'superadmin'],
+    ],
+    'developer.index' => [
+        'roles' => ['admin', 'developer', 'api_admin', 'superadmin'],
+    ],
+    'admin.developer.index' => [
+        'roles' => ['admin', 'developer', 'api_admin', 'superadmin'],
+    ],
+    'admin.api.exports.download' => [
+        'roles' => ['admin', 'api_admin', 'superadmin'],
+        'params' => fn () => ['export' => 1],
+    ],
+    'api.v2.bulk.export.download' => [
+        'protection' => 'public',
+        'params' => fn () => ['job' => 1],
+    ],
+    'api.v2.webhooks.index' => 'public',
+    'api.v2.webhooks.store' => 'public',
+    'api.v2.webhooks.rotate-secret' => [
+        'protection' => 'public',
+        'params' => fn () => ['id' => 1],
+    ],
+    'api.v2.edi.interchange' => 'public',
+    'api.v2.bulk.import' => 'public',
+    'api.v2.bulk.export' => 'public',
+    'api.v2.resource.index' => [
+        'protection' => 'public',
+        'params' => fn () => ['resource' => 'purchase-orders'],
+    ],
+    'api.v2.resource.show' => [
+        'protection' => 'public',
+        'params' => fn () => ['resource' => 'purchase-orders', 'id' => '1'],
+    ],
+    'api.v2.resource.action' => [
+        'protection' => 'public',
+        'params' => fn () => ['resource' => 'purchase-orders', 'action' => 'cancel'],
+    ],
 ];

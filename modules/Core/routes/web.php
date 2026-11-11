@@ -13,6 +13,8 @@ use Modules\Core\Http\Controllers\Ai\AiAnomalyController;
 use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
 use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
+use Modules\Core\Http\Controllers\ApiAdminDashboardController;
+use Modules\Core\Http\Controllers\ApiV2BulkController;
 use Modules\Core\Http\Controllers\AuditLogController;
 use Modules\Core\Http\Controllers\Boundaries\ModuleMapController;
 use Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController;
@@ -237,5 +239,35 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::middleware('role:admin,superadmin,platform_architect,auditor')->prefix('admin/architecture')->group(function () {
         Route::get('/waivers', [WaiverController::class, 'index'])->name('admin.architecture.waivers');
         Route::post('/waivers/{id}/extend', [WaiverController::class, 'extend'])->name('admin.architecture.waivers.extend');
+    });
+
+    // API v2 & Multi-Tenancy Management (Fase 55)
+    Route::middleware('role:admin,api_admin,superadmin')->group(function () {
+        Route::get('/admin/api/clients', [ApiAdminDashboardController::class, 'clients'])->name('admin.api.clients');
+        Route::get('/admin/api/edi', [ApiAdminDashboardController::class, 'edi'])->name('admin.api.edi');
+        Route::get('/admin/api/imports', [ApiAdminDashboardController::class, 'imports'])->name('admin.api.imports');
+        Route::get('/admin/api/webhooks', [ApiAdminDashboardController::class, 'webhooks'])->name('admin.api.webhooks');
+        Route::get('/admin/api/exports/download', [ApiV2BulkController::class, 'downloadExport'])->name('admin.api.exports.download');
+    });
+
+    Route::middleware('role:admin,api_admin,auditor,superadmin')->group(function () {
+        Route::get('/admin/api/usage', [ApiAdminDashboardController::class, 'usage'])->name('admin.api.usage');
+    });
+
+    Route::middleware('role:admin,api_admin,auditor,platform_architect,superadmin')->group(function () {
+        Route::get('/admin/api/retention', [ApiAdminDashboardController::class, 'retention'])->name('admin.api.retention');
+    });
+
+    Route::middleware('role:admin,api_admin,platform_architect,superadmin')->group(function () {
+        Route::get('/admin/tenancy', [ApiAdminDashboardController::class, 'tenancy'])->name('admin.tenancy.index');
+    });
+
+    Route::middleware('role:admin,api_admin,platform_architect,security_officer,superadmin')->group(function () {
+        Route::get('/admin/tenancy/coverage', [ApiAdminDashboardController::class, 'tenancy'])->name('admin.tenancy.coverage');
+    });
+
+    Route::middleware('role:admin,api_admin,developer,superadmin')->group(function () {
+        Route::get('/developer', [ApiAdminDashboardController::class, 'developer'])->name('developer.index');
+        Route::get('/admin/developer', [ApiAdminDashboardController::class, 'developer'])->name('admin.developer.index');
     });
 });

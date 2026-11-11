@@ -12,6 +12,7 @@ use Modules\Finance\Application\Services\DefaultLoanExposureProvider;
 use Modules\Finance\Console\Commands\ChargeDueInstallmentsCommand;
 use Modules\Finance\Contracts\LoanExposureProvider;
 use Modules\Finance\Domain\Models\Loan;
+use Modules\Finance\Infrastructure\Api\LoanResourceProvider;
 use Modules\Finance\Listeners\MonitorLoanRisk;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -20,6 +21,8 @@ class FinanceServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LoanExposureProvider::class, DefaultLoanExposureProvider::class);
+
+        $this->app->tag(LoanResourceProvider::class, 'core.api_resource_provider');
     }
 
     public function boot(): void
