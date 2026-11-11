@@ -20,6 +20,8 @@ class FinanceServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LoanExposureProvider::class, DefaultLoanExposureProvider::class);
+
+        $this->app->tag(\Modules\Finance\Infrastructure\Api\LoanResourceProvider::class, 'core.api_resource_provider');
     }
 
     public function boot(): void

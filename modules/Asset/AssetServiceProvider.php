@@ -42,6 +42,8 @@ class AssetServiceProvider extends ServiceProvider
             MaintenanceWorkOrderRequester::class,
             MaintenanceWorkOrderRequesterService::class
         );
+
+        $this->app->tag(\Modules\Asset\Infrastructure\Tenancy\AssetTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

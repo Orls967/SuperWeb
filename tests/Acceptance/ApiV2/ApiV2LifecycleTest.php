@@ -29,7 +29,7 @@ use Modules\Core\Domain\Models\CoreWebhook;
 use Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine;
 use Modules\Procurement\Domain\Models\PurchaseOrder;
 
-uses(RefreshDatabase::class);
+uses(Tests\TestCase::class, RefreshDatabase::class);
 
 it('test_55_1_access_and_sanctum_token_abilities', function (): void {
     $this->seed(DatabaseSeeder::class);
@@ -116,6 +116,18 @@ it('test_55_2_api_v2_envelope_cursor_rfc7807_idempotency_and_b1_rate_limit', fun
         ->assertJsonStructure(['type', 'title', 'status', 'detail', 'instance']);
 
     // Cursor stability while inserting a new record between page 1 and page 2
+    $supId = DB::table('sup_suppliers')->value('id');
+    for ($p = 1; $p <= 4; $p++) {
+        PurchaseOrder::create([
+            'number' => sprintf('PO-%04d', $p),
+            'supplier_id' => $supId,
+            'title' => "Initial PO {$p}",
+            'kind' => 'standard',
+            'status' => 'approved',
+            'total_amount' => 50000 * $p,
+        ]);
+    }
+
     $poListPage1 = $this->withHeaders(['Authorization' => 'Bearer '.$token])
         ->getJson('/api/v2/purchase-orders?limit=2&sort=number');
     $poListPage1->assertOk();
@@ -137,6 +149,9 @@ it('test_55_2_api_v2_envelope_cursor_rfc7807_idempotency_and_b1_rate_limit', fun
     $poListPage2->assertOk();
     $secondIds = array_column($poListPage2->json('data'), 'id');
     expect(array_intersect($firstIds, $secondIds))->toBe([]);
+
+    // Advance clock to refill bucket before idempotency tests
+    $mutableClock->current = $mutableClock->current->addSeconds(10);
 
     // Idempotency enforcement (missing 422 -> replay same -> conflict 409)
     $po = PurchaseOrder::firstOrFail();
@@ -166,7 +181,10 @@ it('test_55_2_api_v2_envelope_cursor_rfc7807_idempotency_and_b1_rate_limit', fun
         ->assertHeader('Content-Type', 'application/problem+json');
 
     // Exact B1 Token Bucket HTTP 429 behavior: reset bucket full=5000 at t=0, rate=2
-    $client->forceFill(['bucket_milli_tokens' => 5000, 'bucket_last_ms' => $mutableClock->current->getTimestampMs()])->save();
+    CoreApiClient::where('id', $client->id)->update([
+        'bucket_milli_tokens' => 5000,
+        'bucket_last_ms' => $mutableClock->current->getTimestampMs(),
+    ]);
     for ($i = 0; $i < 5; $i++) {
         $this->withHeaders(['Authorization' => 'Bearer '.$token])
             ->getJson('/api/v2/warehouses?limit=1')
@@ -237,14 +255,14 @@ it('test_55_3_webhooks_hmac_rotation_event_delivery_dlq_cb_and_edi_sm', function
 
     // EDI end-to-end across EDIFACT ORDERS, INVOIC (DRAFT without ledger), DESADV + rejection & immutable transition
     $ediService = app(EdiProcessingService::class);
-    $ordersRaw = "UNB+UNOC:3+SENDER01:ZZ+RECEIVER01:ZZ+261108:1030+IC9001'UNH+1+ORDERS:D:96A:UN'BGM+220+PO99001+9'DTM+137:20261108:102'NAD+BY+BUYER?+01::9'LIN+1++ITEM-A:SRV'QTY+21:10'UNT+8+1'UNZ+1+IC9001'";
+    $ordersRaw = "UNB+UNOC:3+SENDER01:ZZ+RECEIVER01:ZZ+261108:1030+IC9001'UNH+1+ORDERS:D:96A:UN'BGM+220+PO99001+9'DTM+137:20261108:102'NAD+BY+BUYER?+01::9'LIN+1++ITEM-A:SRV'QTY+21:10'UNS+S'UNT+8+1'UNZ+1+IC9001'";
     $interchange = $ediService->processInbound($tenant->id, $ordersRaw, 'edi:orders:IC9001');
     expect($interchange->status)->toBe(EdiInterchangeStateMachine::STATUS_POSTED)
         ->and($interchange->contrl_payload)->toContain('UCI')
         ->and($interchange->handler_module)->toBe('Distribution');
 
     $ledgerBefore = DB::table('bank_ledger_entries')->count();
-    $invoicRaw = "UNB+UNOC:3+SUP01:ZZ+RECEIVER01:ZZ+261108:1040+IC9002'UNH+1+INVOIC:D:96A:UN'BGM+380+INV99002+9'DTM+137:20261108:102'LIN+1++ITEM-A:SRV'QTY+47:5'UNT+7+1'UNZ+1+IC9002'";
+    $invoicRaw = "UNB+UNOC:3+SUP01:ZZ+RECEIVER01:ZZ+261108:1040+IC9002'UNH+1+INVOIC:D:96A:UN'BGM+380+INV99002+9'DTM+137:20261108:102'LIN+1++ITEM-A:SRV'QTY+47:5'UNS+S'UNT+7+1'UNZ+1+IC9002'";
     $invoic = $ediService->processInbound($tenant->id, $invoicRaw, 'edi:invoic:IC9002');
     expect($invoic->status)->toBe(EdiInterchangeStateMachine::STATUS_POSTED)
         ->and($invoic->handler_module)->toBe('Procurement')
@@ -304,6 +322,33 @@ it('test_55_4_bulk_import_20k_resume_export_zip_and_tenant_isolation', function 
     $scopeRegistry = app(TenantScopeRegistry::class);
     expect(count($scopeRegistry->registeredModels()))->toBeGreaterThanOrEqual(6);
 
+    CoreApiClient::create([
+        'tenant_id' => $tenantA->id,
+        'code' => 'CLI-TENANT-A-TEST',
+        'name' => 'Tenant A Client',
+        'legal_entity_name' => 'PT Tenant A',
+        'tier' => 'SILVER',
+        'capacity' => 10,
+        'refill_per_sec' => 2,
+        'daily_quota' => 1000,
+        'bucket_milli_tokens' => 10000,
+        'bucket_last_ms' => 0,
+        'is_active' => true,
+    ]);
+    CoreApiClient::create([
+        'tenant_id' => $tenantB->id,
+        'code' => 'CLI-TENANT-B-TEST',
+        'name' => 'Tenant B Client',
+        'legal_entity_name' => 'PT Tenant B',
+        'tier' => 'SILVER',
+        'capacity' => 10,
+        'refill_per_sec' => 2,
+        'daily_quota' => 1000,
+        'bucket_milli_tokens' => 10000,
+        'bucket_last_ms' => 0,
+        'is_active' => true,
+    ]);
+
     $scopeRegistry->withStrictEnforcement(function () use ($scopeRegistry, $tenantA): void {
         expect(fn () => app(RetentionArchiveService::class)->runBatchForCurrentTenant())
             ->toThrow(TenantContextMissingException::class);
@@ -344,3 +389,4 @@ it('test_55_5_api_audit_clean_and_corruption_fixtures', function (): void {
         }
     }
 });
+

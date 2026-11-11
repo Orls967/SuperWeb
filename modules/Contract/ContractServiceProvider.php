@@ -47,6 +47,8 @@ class ContractServiceProvider extends ServiceProvider
             ClauseTemplateReader::class,
             ClauseTemplateReaderService::class
         );
+
+        $this->app->tag(\Modules\Contract\Infrastructure\Tenancy\ContractTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

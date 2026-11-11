@@ -15,6 +15,9 @@ class B2bServiceProvider extends ServiceProvider
         $this->commands([
             AuditB2bCommand::class,
         ]);
+
+        $this->app->tag(\Modules\B2b\Infrastructure\Api\WholesaleCatalogResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(\Modules\B2b\Infrastructure\Bulk\B2bCatalogBulkImportTarget::class, 'core.bulk_import_target');
     }
 
     public function boot(): void

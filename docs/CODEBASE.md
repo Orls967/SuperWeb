@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 41 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 43 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -511,7 +511,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 31 | **Intercompany** | `ic_` | 1 |
 | 32 | **International** | `intl_` | 1 |
 | 33 | **Inventory** | `inv_` | 2 |
-| 34 | **Logistics** | `lgx_` | 31 |
+| 34 | **Logistics** | `lgx_` | 32 |
 | 35 | **Mall** | `mall_` | 7 |
 | 36 | **Manufacturing** | `mfg_` | 14 |
 | 37 | **Marine** | `mar_` | 2 |
@@ -526,7 +526,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 46 | **Port** | `prt_` | 2 |
 | 47 | **Pricing** | `pric_` | 7 |
 | 48 | **ProServices** | `psv_` | 1 |
-| 49 | **Procurement** | `prc_` | 6 |
+| 49 | **Procurement** | `prc_` | 7 |
 | 50 | **Proptech** | `prp_` | 3 |
 | 51 | **Resto** | `resto_` | 10 |
 | 52 | **Ret** | `ret_` | 4 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **701 Migrasi** |
+| | **Total: 65 Modul** | | **705 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 115 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 136 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1735 Rute** | | |
+| **Total** | **1756 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -621,7 +621,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `agri:audit` | `manual` | Audit contract farming collections, grading payouts, and advance deductions |
 | `agy:audit` | `manual` | Audit akrual komisi & payout agen terhadap ledger (0 selisih) |
 | `ai:audit` | `manual` | Audit deterministic AI decision snapshots, pricing guardrails, and anomaly quarantines (Fase 64.4) |
+| `api:archive-drill` | `manual` | Execute cold archive restoration audit drill to verify chunk SHA-256 parity (W8-D52). |
+| `api:archive-run` | `manual` | Archive historical data (> 5 years) to cold tables with SHA-256 chunk verification (W8-D52). |
 | `api:audit` | `manual` | Audit API: tanda tangan HMAC webhook & EDI (Fase 55) + platform economy — billing API developer, embedded finance, isolasi white label (Fase 147) |
+| `api:export-purge` | `manual` | Purge expired bulk export ZIP archives (> 7 days) from storage (W8-D50). |
+| `api:import` | `manual` | Ingest and process bulk CSV dataset in 500-row chunks using streaming I/O (W8-D50). |
+| `api:keys-rotate` | `manual` | Rotate API client keys maintaining ≤ 2 active keys during grace period and revoking expired keys (W8-D48). |
+| `api:tenancy-coverage` | `manual` | Audit multi-tenancy model isolation coverage across modules (W8-D51). |
+| `api:usage-rollup` | `manual` | Idempotently aggregate raw API usage events into hourly rollups (W8-D47). |
 | `app:rotate-blind-index` | `manual` | Rotasi pepper blind index HMAC untuk seluruh record PII terenkripsi secara idempoten |
 | `arch:boundaries` | `manual` | Pindai peta dependensi modul, siklus SCC, kepemilikan data, dan skor cakupan kontrak |
 | `arch:scan` | `manual` | Pindai pola jalan pintas A1–A13 (KONSEP §A14.1) dan bandingkan dengan baseline ratchet |
@@ -975,7 +982,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 357 Command** | **37 Terjadwal** | |
+| **Total: 364 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

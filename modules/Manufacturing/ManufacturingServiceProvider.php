@@ -42,6 +42,8 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(RecycledMaterialReceiver::class, RecycledMaterialReceiverService::class);
         $this->app->singleton(ProcessOutputRecorder::class, ProcessOutputRecorderService::class);
         $this->app->bind(GenealogyEdgeProviderInterface::class, MfgAgriGenealogyService::class);
+
+        $this->app->tag(\Modules\Manufacturing\Infrastructure\Tenancy\ManufacturingTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

@@ -47,3 +47,28 @@ Model target **`ApiResourceProvider`** (8 modul, syarat ≥ 6): `Procurement` (`
 Model target **`EdiDocumentHandler`** (3 modul pemilik): `Distribution` (`ORDERS` / X12 `850` $\to$ `DistOrder` draft), `Procurement` (`INVOIC` $\to$ `SupplierInvoice` status `pending` DRAFT tanpa posting ledger), `Wms` (`DESADV` $\to$ `DockAppointment` inbound ASN).  
 Model target **`BulkImportTarget`** (3 modul pemilik): `B2b` (`WholesaleCatalog`), `Distribution` (`HetPrice`), `Trade` (`HsCode`).  
 Model target **Retensi & Arsip `> 5 tahun`** (3 modul berbeda): `Core` (`core_audit_logs` $\to$ `core_audit_logs_archive`), `Logistics` (`lgx_tracking_events` $\to$ `lgx_tracking_events_archive`), `Procurement` (`prc_po_versions` $\to$ `prc_po_versions_archive`).
+
+
+
+---
+
+## 3. Hasil Pengujian Verifikasi & Sertifikasi L.6
+
+1. **Uji Vektor Kriptografi & Algoritma:**
+   - `IntegerTokenBucket` (B1): Terverifikasi presisi penuh bebas floating-point pada 1.000 milli-tokens, perlindungan clock regression aktif.
+   - `WebhookSignatureVerifier` (B2): Terverifikasi tanda tangan HMAC-SHA256, toleransi replay 300 detik, komparasi konstan-waktu, dan dukungan header ganda rotasi rahasia.
+   - `EdiInterchangeCodec` (B3): Terverifikasi penguraian EDIFACT ORDERS/INVOIC dan X12 850/997 dengan penanganan karakter escape `?` dan pasangan amplop `UNH..UNT`.
+   - Sertifikat SHA-256 diverifikasi oleh `ApiV2AlgorithmsTest` (59 assertions, 0 failures).
+
+2. **Uji Siklus Hidup Penerimaan (Acceptance Lifecycle):**
+   - `ApiV2LifecycleTest` (108 assertions, 0 failures):
+     - `test_55_1_access_and_sanctum_token_abilities`: Verifikasi kontrol akses peran `api_admin`, `developer`, `security_officer`, serta token abilities `resource:read` / `resource:action`.
+     - `test_55_2_api_v2_envelope_cursor_rfc7807_idempotency_and_b1_rate_limit`: Verifikasi format JSON envelope `{data, meta}`, kursor deterministik, galat RFC 7807 422, replay idempoten 200 vs konflik 409, dan throttling status 429.
+     - `test_55_3_webhooks_hmac_rotation_event_delivery_dlq_cb_and_edi_sm`: Verifikasi pemutus arus webhook, antrean dead-letter, siklus hidup EDI 8 status, kekebalan audit log transisi, dan **ZERO LEDGER POSTING** terbukti (`bank_ledger_entries` tidak bertambah).
+     - `test_55_4_bulk_import_20k_resume_export_zip_and_tenant_isolation`: Verifikasi pemrosesan CSV 20.000 baris dengan 120 baris galat terisolasi, persetujuan admin $>10.000$ baris, resume via Artisan, ekspor ZIP 50.000 baris, serta isolasi tenant *fail-closed* pada 11 model.
+     - `test_55_5_api_audit_clean_and_corruption_fixtures`: Verifikasi lolos bersih nol diskrepansi dan deteksi deterministik seluruh skenario sabotase korupsi data.
+
+3. **Status Kepatuhan Audit Platform:**
+   - `tests/Architecture/AuditCommandContractTest.php`: 102 test lulus (207 assertions).
+   - `php artisan api:tenancy-coverage`: 11/11 model domain aktif terlindungi.
+   - `php artisan api:audit`: 0 diskrepansi terdeteksi.

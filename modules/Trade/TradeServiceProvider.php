@@ -20,6 +20,9 @@ class TradeServiceProvider extends ServiceProvider
         $this->app->singleton(TradeService::class);
         $this->app->singleton(AiBiddingAgentService::class);
         $this->app->bind(ImportLandedCostQuoter::class, ImportLandedCostQuoterService::class);
+
+        $this->app->tag(\Modules\Trade\Infrastructure\Api\ImportOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(\Modules\Trade\Infrastructure\Bulk\HsCodeBulkImportTarget::class, 'core.bulk_import_target');
     }
 
     public function boot(): void

@@ -28,6 +28,8 @@ class EsgServiceProvider extends ServiceProvider
         $this->commands([
             AuditEsgCommand::class,
         ]);
+
+        $this->app->tag(\Modules\Esg\Infrastructure\Tenancy\EsgTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

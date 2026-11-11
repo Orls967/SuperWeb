@@ -84,3 +84,4 @@ Seluruh kolom `*_id` memakai foreign key nyata (A12 = 0) kecuali kolom pengenal 
 6. **W8-D50** (`ADR-0050`): Pipeline impor CSV streaming per-baris (`BulkImportTarget`, batch 500, approval >10k, resume idempoten) dan ekspor ZIP bertanda tangan (+ XLSX `ext-zip`).
 7. **W8-D51** (`ADR-0051`): Isolasi data multi-tenant tanpa mengedit kelas model melalui `TenantContext` + `TenantScopeRegistry` fail-closed.
 8. **W8-D52** (`ADR-0052`): Kebijakan retensi data transaksional > 5 tahun ke tabel `{tabel}_archive`, drill pemulihan non-destruktif, dan perluasan `api:audit`.
+

@@ -73,6 +73,8 @@ class MallServiceProvider extends ServiceProvider
             MallUsageReaderInterface::class,
             MallUsageReaderService::class
         );
+
+        $this->app->tag(\Modules\Mall\Infrastructure\Tenancy\MallTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

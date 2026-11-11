@@ -19,6 +19,11 @@ class DistributionServiceProvider extends ServiceProvider
     {
         $this->app->singleton(DistributionService::class);
         $this->app->singleton(DistributionFulfilmentService::class);
+
+        $this->app->tag(\Modules\Distribution\Infrastructure\Api\DistOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(\Modules\Distribution\Infrastructure\Edi\DistributionEdiOrderHandler::class, 'core.edi_document_handler');
+        $this->app->tag(\Modules\Distribution\Infrastructure\Bulk\HetPriceBulkImportTarget::class, 'core.bulk_import_target');
+        $this->app->tag(\Modules\Distribution\Infrastructure\Tenancy\DistributionTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

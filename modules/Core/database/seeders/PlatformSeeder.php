@@ -28,6 +28,22 @@ class PlatformSeeder extends Seeder
 
         $this->seedGarageVehicles($customer);
 
+        // === Seed CoreTenants for API v2 & Multi-Tenancy (Fase 55) ===
+        if (class_exists(\Modules\Core\Domain\Models\CoreTenant::class)) {
+            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+                ['code' => 'TENANT-A'],
+                ['id' => 'TENANT-A', 'name' => 'Tenant Alpha Corp', 'is_active' => true]
+            );
+            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+                ['code' => 'TENANT-B'],
+                ['id' => 'TENANT-B', 'name' => 'Tenant Beta Logistics', 'is_active' => true]
+            );
+            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+                ['code' => 'DEFAULT'],
+                ['id' => 'tenant-default', 'name' => 'Default Platform Tenant', 'is_active' => true]
+            );
+        }
+
         // === Sample Notifications for Customer ===
         $notif->send(
             userId: $customer->id,

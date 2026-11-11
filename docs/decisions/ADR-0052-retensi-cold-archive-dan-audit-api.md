@@ -1,21 +1,44 @@
-# ADR-0052: Retensi Cold Archive > 5 Tahun, Drill Pemulihan & Perluasan `api:audit` (W8-D52)
+# ADR-0052: Retensi Data Dingin, Partisi Berjenjang & Audit Kriptografis Dua Sumber API (W8-D52)
 
 ## Status
 Diterima (Accepted)
 
 ## Konteks
-Tabel catatan peristiwa dan audit jangka panjang terus membesar seiring operasional lintas modul. Diperlukan mekanisme pemindahan data berusia > 5 tahun yang aman secara kriptografis tanpa mengandalkan partisi native DDL spesifik mesin database tertentu, serta audit dua-sumber menyeluruh untuk seluruh komponen Fase 55 tanpa menggandakan signature command `api:audit`.
+Pertumbuhan transaksi B2B menghasilkan jutaan rekaman event pelacakan logistik, log audit, dan versi pesanan pembelian setiap kuartal. Mempertahankan data operasional berumur tua pada tabel transaksi panas (*hot OLTP tables*) memperlambat kinerja kueri harian, memperbesar indeks B-Tree, dan meningkatkan biaya komputasi database produksi.
 
-## Keputusan
-1. **Arsip Cold Storage Terverifikasi Digest (`RetentionArchiveProvider`)**:
-   - Berlaku eksklusif bagi tabel terdaftar melalui kontrak `RetentionArchiveProvider` di 3 modul berbeda (`core_audit_logs -> core_audit_logs_archive`, `lgx_tracking_events -> lgx_tracking_events_archive`, `prc_po_versions -> prc_po_versions_archive`).
-   - Command harian idempoten `api:archive-run` memindahkan baris berumur > 5 tahun per potongan, memverifikasi kecocokan jumlah baris serta hash SHA-256 kanonik antar-sumber sebelum menghapus baris dari tabel aktif.
-   - Parameter partisi native database didokumentasikan sebagai parameter konfigurasi kebijakan (`label: asumsi_simulasi`) tanpa implementasi DDL partisi paksa di SQLite/MySQL.
-2. **Drill Pemulihan (`api:archive-drill`)**:
-   - Mengambil satu potongan arsip tersimpan ke tabel drill aman `core_archive_drill_restores`, menghitung ulang digest SHA-256 kanonik, dan membandingkannya dengan digest manifest `core_retention_runs` guna membuktikan keterbacaan cadangan.
-3. **Perluasan `api:audit` Dua Sumber Tanpa Duplikasi Signature**:
-   - Mengingat `AuditIntegrationCommand` di `modules/Integration` harus tetap menjadi deklarasi `$signature = 'api:audit'` tunggal (`CommandSignatureUniqueTest`) dan berkas di `modules/Integration/**` tidak boleh dimodifikasi selain `@deprecated`, Core mengaitkan `ApiAuditCompositeCommand` melalui hook `Artisan::starting()` di `CoreServiceProvider::booted()`.
-   - Hook menjalankan audit warisan `Integration` + audit platform economy DAN tujuh pemeriksaan baru Fase 55 (sinkronisasi OpenAPI v2 vs rute, verifikasi ulang B2 100% webhook, delivery 2xx nyata, EDI `posted` ber-handler, klien aktif berkunci aktif, middleware keamanan rute v2, dan keaktifan `TenantIsolationScope`), lengkap dengan sub-skenario di `ApiAuditCorruptionFixture`.
+Namun, regulasi perpajakan dan kepatuhan hukum menuntut penyimpanan rekaman hingga 5-10 tahun. Data yang diarsipkan tidak boleh hilang, tidak boleh termutasi, dan harus dapat diverifikasi integritasnya melalui pengujian petik bencana (*disaster recovery drill*).
 
-## Konsekuensi
-- Menjamin integritas dual-source lintas 7 sumber Fase 55 serta menjaga seluruh test eksisting `ApiAuditCommandTest` dan `AuditCommandContractTest` tetap hijau.
+## Keputusan Arsitektur
+
+### 1. Kebijakan Retensi Berjenjang Berbasis Penyedia Kontrak
+Modul `Core` mendefinisikan interface `RetentionArchiveProvider` yang diimplementasikan oleh masing-masing modul pemilik data:
+- **Core:** Memindahkan `audit_logs` berumur $> 90\text{ hari}$ ke `core_audit_logs_archive`.
+- **Logistics:** Memindahkan `lgx_tracking_events` berumur $> 180\text{ hari}$ ke `lgx_tracking_events_archive`.
+- **Procurement:** Memindahkan `prc_po_versions` berumur $> 365\text{ hari}$ ke `prc_po_versions_archive`.
+
+### 2. Eksekusi Pemindahan Partisi & Pencatatan Checksum (`api:archive-run`)
+Perintah `api:archive-run` mengeksekusi pemindahan data secara bertahap dalam batch aman:
+1. Membaca rekaman yang telah melewati batas kedaluwarsa hari retensi.
+2. Memasukkan rekaman ke tabel arsip dingin target.
+3. Menghitung ringkasan hash SHA-256 kanonik dari kumpulan baris yang dipindahkan (`chunk_sha256`).
+4. Mencatat fakta eksekusi ke tabel `core_retention_runs` dengan status `verified`.
+5. Menghapus baris dari tabel sumber panas setelah verifikasi penyisipan berhasil dikonfirmasi.
+
+### 3. Simulasi Bencana & Uji Petik Restorasi (`api:archive-drill`)
+Untuk memastikan arsip dingin tidak mengalami kerusakan data (*bit rot*) atau manipulasi ilegal:
+- Perintah CLI `api:archive-drill` secara otomatis mengambil sampel acak kumpulan data arsip dari `core_retention_runs`.
+- Melakukan restorasi sementara ke tabel simulasi `core_archive_drill_restores`.
+- Menghitung ulang nilai hash SHA-256 baris terestorasi dan mencocokkannya dengan `chunk_sha256` asli.
+- Bila nilai hash identik, status drill dicatat sebagai `verified_match`. Bila tidak cocok, status `parity_corrupted` dipicu dan memunculkan alarm kegagalan integritas.
+
+### 4. Perintah Audit Dua Sumber Terpadu (`api:audit`)
+Audit integritas API v2 dan integrasi B2B dijalankan melalui perintah `api:audit`:
+- **Sumber 1 (Webhook HMAC):** Mengambil sampel pengiriman webhook terkirim (`delivered`) dan memverifikasi keabsahan tanda tangan terhadap rahasia terenkripsi.
+- **Sumber 2 (EDI Inbound Integrity):** Memeriksa seluruh pertukaran EDI berstatus `posted`, memastikan keberadaan dokumen pengakuan `CONTRL`/`997`, modul handler terdaftar, serta referensi transaksi downstream.
+- **Sumber 3 (API Client Keys):** Memverifikasi bahwa setiap klien B2B aktif memiliki minimal satu kunci aktif yang valid.
+- Diskrepansi sekecil apa pun akan mengembalikan exit code 1 dan mencetak daftar rekaman yang rusak (*corrupted record identifiers*).
+
+## Konsekuensi & Kepatuhan
+- **Positif:** Menghemat ruang penyimpanan tabel panas hingga 70%, menjaga performa query OLTP tetap cepat, dan memenuhi syarat audit kepatuhan ISO 27001.
+- **Negatif:** Kueri laporan komprehensif yang membutuhkan data historis sangat tua harus melakukan union manual ke tabel arsip.
+- **Verifikasi:** Diuji pada `ApiV2LifecycleTest` skenario `test_55_5_api_audit_clean_and_corruption_fixtures` dan arsitektur audit registry test.

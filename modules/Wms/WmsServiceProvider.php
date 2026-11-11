@@ -14,6 +14,9 @@ class WmsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(WmsService::class);
+
+        $this->app->tag(\Modules\Wms\Infrastructure\Api\WarehouseResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(\Modules\Wms\Infrastructure\Edi\WmsEdiDesadvHandler::class, 'core.edi_document_handler');
     }
 
     public function boot(): void

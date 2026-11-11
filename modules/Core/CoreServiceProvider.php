@@ -309,6 +309,22 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(ExecutiveCopilotEngine::class);
         $this->app->singleton(LiveTelemetryStreamService::class);
 
+        // Fase 55: API v2, Webhook, EDI, Multi-tenancy, Bulk I/O & Retention
+        $this->app->singleton(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
+        $this->app->singleton(\Modules\Core\Application\Api\StreamingBulkImportService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\AsyncZipExportService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\RetentionArchiveService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\EdiProcessingService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\WebhookSubscriptionService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\WebhookDeliveryOrchestrator::class);
+        $this->app->singleton(\Modules\Core\Application\Api\ApiClientLifecycleService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\IdempotencyStoreService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\CursorPaginationService::class);
+        $this->app->singleton(\Modules\Core\Application\Api\CoreApiAuditor::class);
+        $this->app->singleton(\Modules\Core\Domain\Algorithms\Api\WebhookSignatureVerifier::class);
+        $this->app->singleton(\Modules\Core\Domain\Algorithms\Edi\EdiInterchangeCodec::class);
+        $this->app->singleton(\Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine::class);
+
         $this->app->tag([
             PassportScaleProvisioner::class,
             OutboxScaleProvisioner::class,
@@ -566,6 +582,13 @@ class CoreServiceProvider extends ServiceProvider
                 BoundaryPathCommand::class,
                 BoundaryRemediateCommand::class,
                 BoundaryTriageCommand::class,
+                \Modules\Core\Console\Commands\ApiKeysRotateCommand::class,
+                \Modules\Core\Console\Commands\ApiUsageRollupCommand::class,
+                \Modules\Core\Console\Commands\ApiImportCommand::class,
+                \Modules\Core\Console\Commands\ApiExportPurgeCommand::class,
+                \Modules\Core\Console\Commands\ApiArchiveRunCommand::class,
+                \Modules\Core\Console\Commands\ApiArchiveDrillCommand::class,
+                \Modules\Core\Console\Commands\ApiTenancyCoverageCommand::class,
             ]);
         }
 
@@ -603,5 +626,38 @@ class CoreServiceProvider extends ServiceProvider
 
         // === Event Spine Cross-Module Consumers ===
         CrossModuleSpineHandlers::registerAll();
+
+        // === API v2 Gateway Providers (Fase 55 / W8-D45..D52) ===
+        try {
+            $tenancyRegistry = $this->app->make(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
+            $tenancyRegistry->registerProvider(new \Modules\Core\Infrastructure\Tenancy\CoreTenantScopedModelProvider());
+            $retentionService = $this->app->make(\Modules\Core\Application\Api\RetentionArchiveService::class);
+            $retentionService->registerProvider(new \Modules\Core\Infrastructure\Retention\CoreAuditLogRetentionProvider());
+        } catch (\Throwable) {
+        }
+
+        // Dynamically resolve tagged providers from owner business modules
+        try {
+            foreach ($this->app->tagged('core.api_resource_provider') as $provider) {
+                \Modules\Core\Http\Controllers\ApiV2ResourceController::registerProvider($provider);
+            }
+            $ediService = $this->app->make(\Modules\Core\Application\Api\EdiProcessingService::class);
+            foreach ($this->app->tagged('core.edi_document_handler') as $handler) {
+                $ediService->registerHandler($handler);
+            }
+            $bulkService = $this->app->make(\Modules\Core\Application\Api\StreamingBulkImportService::class);
+            foreach ($this->app->tagged('core.bulk_import_target') as $target) {
+                $bulkService->registerTarget($target);
+            }
+            $tenancyRegistry = $this->app->make(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
+            foreach ($this->app->tagged('core.tenant_scoped_model_provider') as $provider) {
+                $tenancyRegistry->registerProvider($provider);
+            }
+            $retentionService = $this->app->make(\Modules\Core\Application\Api\RetentionArchiveService::class);
+            foreach ($this->app->tagged('core.retention_archive_provider') as $provider) {
+                $retentionService->registerProvider($provider);
+            }
+        } catch (\Throwable) {
+        }
     }
 }

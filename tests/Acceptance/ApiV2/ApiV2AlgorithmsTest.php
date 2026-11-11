@@ -168,3 +168,4 @@ it('rejects tampered SHA-256 certificates for B1, B2, and B3 algorithms', functi
     $doc->certificate['sha256'] = str_repeat('a', 64);
     expect(fn () => $ediVerifier->verify($doc))->toThrow(DomainException::class);
 });
+

@@ -20,6 +20,11 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->app->singleton(ProcurementService::class);
         $this->app->singleton(ReceivingService::class);
         $this->app->bind(MrpRequisitionProposerContract::class, MrpRequisitionProposer::class);
+
+        $this->app->tag(\Modules\Procurement\Infrastructure\Api\PurchaseOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(\Modules\Procurement\Infrastructure\Edi\ProcurementEdiInvoiceHandler::class, 'core.edi_document_handler');
+        $this->app->tag(\Modules\Procurement\Infrastructure\Tenancy\ProcurementTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(\Modules\Procurement\Infrastructure\Retention\ProcurementPoVersionRetentionProvider::class, 'core.retention_archive_provider');
     }
 
     public function boot(): void
