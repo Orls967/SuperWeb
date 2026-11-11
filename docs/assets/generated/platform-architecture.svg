@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" width="700" height="400">
+<defs>
+<marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+<polygon points="0 0, 10 3.5, 0 7" fill="#0284c7" />
+</marker>
+</defs>
+<rect width="700" height="400" fill="#ffffff" />
+<rect x="100" y="35" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#0284c7" stroke-width="2" />
+<text x="210" y="65" font-size="13" text-anchor="middle" fill="#0f172a" font-family="system-ui, -apple-system, sans-serif">Platform Portal</text>
+<rect x="100" y="120" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#0284c7" stroke-width="2" />
+<text x="210" y="150" font-size="13" text-anchor="middle" fill="#0f172a" font-family="system-ui, -apple-system, sans-serif">Quality Engine</text>
+<rect x="100" y="205" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#0284c7" stroke-width="2" />
+<text x="210" y="235" font-size="13" text-anchor="middle" fill="#0f172a" font-family="system-ui, -apple-system, sans-serif">Vector Output</text>
+<line x1="210" y1="85" x2="210" y2="120" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+<line x1="210" y1="170" x2="210" y2="205" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowhead)" />
+</svg>

@@ -9,6 +9,14 @@ Dokumen ini mendefinisikan prinsip konseptual, landasan teoritis, dan invarian a
 
 ## 1. Bagian 1: Batas Modul & Kepemilikan Data (Fase R4)
 
+### 1.0 Masalah Bisnis, Aktor/Role, Alur Nilai & Batas Simulasi (Fase R4)
+- **Masalah Bisnis**: Dalam monolit modular dengan 60+ modul, ketergantungan lintas domain secara langsung (`use Modules\X\Domain\...`) dan pembuatan tabel berprefiks milik modul lain menyebabkan efek riak tak terkendali, inkonsistensi kepemilikan data, dan pelanggaran isolasi transaksi. Fase R4 mengubah aturan arsitektur dari dokumentasi pasif menjadi penegakan aktif berbasis AST, state machine lifecycle, kontrak lintasan nyata (`VehicleDirectory`, `VehicleSnapshot`, `VehicleModelResolver`), serta audit rekonsiliasi dua sumber (`boundary:audit`).
+- **Aktor & Role**:
+  - `platform_architect` (`admin`/`superadmin`): Memetakan dependensi modul (`/admin/architecture/modules`), melakukan triase pelanggaran (`/admin/architecture/violations`), menyetujui/memperpanjang waiver (`/admin/architecture/waivers`), dan mengekspor laporan CSV.
+  - `auditor`: Membaca daftar waiver aktif serta hasil audit dua sumber (`boundary:audit`) tanpa hak mengubah state mutasi terlarang (`403` pada `/admin/architecture/modules`).
+- **Alur Nilai**: Pindai AST (`arch:boundaries`) $\to$ Deteksi pelanggaran A1/A2/A3 (`boundary:triage`) $\to$ Rancangan kontrak di modul pemilik atau waiver ber-anchor $\le 90$ hari (`WaiveViolationAction`) $\to$ Refaktor pemanggil ke kontrak $\to$ Verifikasi turun baseline & test hijau (`VerifyViolationAction`) $\to$ Tutup (`closed`) & sweep kedaluwarsa (`boundary:expire-waivers`).
+- **Batas Simulasi (Tier T1 & Tingkat Simulasi S2)**: Penganalisis membaca kode statis aktual di `modules/*` dan memvalidasi kontrak/graf menggunakan `BoundariesT1Seeder` deterministik (38 rekaman pelanggaran mencakup seluruh 7 status SM, $\ge 5$ waiver ber-anchor DECISIONS termasuk 2 skenario kedaluwarsa serentak, tanpa menyentuh data produksi eksternal).
+
 ### 1.1 Prinsip Ketergantungan Asiklik (*Acyclic Dependencies Principle / ADP*)
 Menurut Robert C. Martin (1996), graf dependensi antar paket atau modul dalam suatu sistem tidak boleh memuat siklus:
 $$\forall v \in V, \quad v \notin \text{Reach}(v, G \setminus \{ (v, v) \})$$
@@ -152,11 +160,37 @@ Pemisahan multi-tenancy dijamin pada tingkat ORM Eloquent:
 
 ---
 
-## 4. Invarian Sistem & Verifikasi Dual-Source
-Setiap komponen dalam W8-P4 diverifikasi oleh perintah audit dua sumber (`boundary:audit`, `api:audit`, `access:audit`):
-1. **Integritas Graf vs Basis Data**: Setiap node dan edge pada graf dependensi wajib memiliki representasi yang sinkron pada basis data relasional.
-2. **Kesesuaian Baseline Ratchet**: Jumlah pelanggaran yang dilaporkan oleh pemindai tidak boleh melebihi ambang batas ratchet `tests/Architecture/baselines/arch-scan.json`.
-3. **Determinisme Output**: Perintah CLI menghasilkan byte keluaran yang identik secara mutlak pada dua kali pengeksekusian berturut-turut terhadap kondisi data yang sama.
-4. **Konservasi Busur Kopling**: Total kopling aferen wajib setara dengan total kopling eferen pada seluruh modul ($\sum C_a = \sum C_e$).
-5. **Kekebalan Invarian Siklus**: Komponen Tarjan SCC berukuran $|SCC| > 1$ dilarang keras berada di cabang produksi (`hasCycles = false`).
-6. **Batas Kedaluwarsa Waiver Terjamin**: Seluruh dispensasi teknis memiliki tanggal jatuh tempo $\le 90$ hari dengan pengawasan audit berkelanjutan.
+## 4. Invarian Sistem, Katalog Kasus & Sumber Rujukan
+
+### 4.1 Invarian Fase R4 (Bertautan Kode Nyata)
+1. **Integritas Graf vs Basis Data**: Setiap pelanggaran A1/A2/A3 dari pemindaian `BoundariesScanner` wajib memiliki rekaman pada `core_boundary_violations`, diverifikasi di [`BoundaryAuditCommand::handle`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/app/Console/Commands/BoundaryAuditCommand.php#L21-L125).
+2. **Kesesuaian Baseline Ratchet**: Baseline [`arch-scan.json`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/tests/Architecture/baselines/arch-scan.json) hanya boleh turun (`A1+A2: 39 -> 15`, turun 61,5%). Pelanggaran baru ditolak di [`BoundaryAuditCommand`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/app/Console/Commands/BoundaryAuditCommand.php#L42-L60) dan `ArchScanBaselineTest`.
+3. **Guard Transisi SM 7 Status & Verifikasi Baseline**: Status `verified` menolak transisi bila fingerprint masih ada di baseline [`BoundaryViolationStateMachine::evaluateGuards`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Domain/StateMachines/BoundaryViolationStateMachine.php#L165-L265), dan riwayat [`CoreBoundaryViolationTransition::booted`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Domain/Models/CoreBoundaryViolationTransition.php#L35-L45) menolak update/delete (`append-only`).
+4. **Determinisme Output & Aritmetika Bulat Permil**: `arch:boundaries --format=json|md|svg` bersifat deterministik byte-identik; [`ContractCoverageScorer::calculate`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Domain/Algorithms/Boundaries/ContractCoverageScorer.php#L22-L100) murni memakai integer `intdiv`.
+5. **Kekebalan Invarian Siklus & Self-Loop**: [`StronglyConnectedComponents::compute`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Domain/Algorithms/Boundaries/StronglyConnectedComponents.php#L38-L90) melaporkan hanya komponen dengan $|SCC| > 1$; self-loop $(A \to A)$ diabaikan sesuai W8-D41.
+6. **Batas Kedaluwarsa Waiver & Anchor DECISIONS**: [`WaiveViolationAction`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Application/Boundaries/WaiveViolationAction.php#L17-L70) mewajibkan anchor sah di `docs/DECISIONS.md` dengan masa berlaku $\le 90$ hari; [`ExpireWaiversAction`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Application/Boundaries/ExpireWaiversAction.php#L14-L82) otomatis mengembalikan waiver kedaluwarsa ke `triaged`.
+7. **Longest Prefix Ownership & Bebas Konflik**: [`TablePrefixOwnershipResolver::resolve`](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/modules/Core/Domain/Algorithms/Boundaries/TablePrefixOwnershipResolver.php#L36-L102) memenangkan prefiks terpanjang terurut menurun dan menolak duplikasi prefiks lintas modul.
+
+### 4.2 Katalog Kasus Fase R4 (16 Kasus Unik Bernama)
+1. **R4-K01 Siklus Terlarang 3-Simpul (`A->B->C->A`)**: Vektor Tarjan SCC mendeteksi `[['A','B','C'], ['D','E','F']]` (`BoundaryAlgorithmsTest`).
+2. **R4-K02 Graf Asiklik & Self-Loop Diabaikan (`A->A`)**: Graf `A->B->C` dan self-loop `A->A` menghasilkan `cycles = []` (`StronglyConnectedComponents`).
+3. **R4-K03 Sertifikat SCC Dirusak**: Manipulasi payload sertifikat Tarjan melempar `InvalidArgumentException` (`SccCertificateVerifier::verifyCertificate`).
+4. **R4-K04 Longest Prefix Match Bertumpuk (`hcm_pay_runs` vs `hcm_payroll`)**: `hcm_pay_runs` dimiliki `Payroll`, sedangkan `hcm_payroll` jatuh ke `Hcm` (`TablePrefixOwnershipResolver`).
+5. **R4-K05 Konflik Prefiks Identik (`PREFIX_CONFLICT`)**: Registrasi ganda `ins_` untuk `Insurance` dan `Health` mengembalikan `['ins_']` (`detectConflicts`).
+6. **R4-K06 Tabel Tidak Terdaftar (`foo_bar` -> `UNOWNED`)**: Tabel tanpa prefiks terdaftar dilaporkan `UNOWNED` (`TablePrefixOwnershipResolver`).
+7. **R4-K07 Skor Cakupan Kontrak Permil (`Z(0,0)->1000`, `V(5,0)->1000`)**: Pemeringkatan deterministik Y(333), W(500), X(750), V(1000), Z(1000) (`ContractCoverageScorer`).
+8. **R4-K08 Penolakan `verified` Sebelum Baseline Turun**: Transisi `migrating->verified` untuk entri A2 `gov_proposals` yang masih di baseline ditolak `DomainException`.
+9. **R4-K09 Penolakan Waiver Tanpa Anchor DECISIONS**: `WaiveViolationAction` dengan anchor kosong atau tidak ada di `docs/DECISIONS.md` ditolak `DomainException`.
+10. **R4-K10 Sweep Waiver Kedaluwarsa Serentak (Kejutan L.4)**: `boundary:expire-waivers` mengembalikan 2+ waiver kedaluwarsa ke `triaged`, memicu tugas inbox & event outbox `core.boundary.waiver_expired.v1`.
+11. **R4-K11 Imutabilitas Riwayat Transisi Append-Only**: `update()` / `delete()` pada `CoreBoundaryViolationTransition` melempar `DomainException`.
+12. **R4-K12 Idempotensi Perpanjangan Waiver**: `POST /admin/architecture/waivers/{id}/extend` mengembalikan `422` tanpa header/field `Idempotency-Key`, `200` satu efek dengan key sama, dan `409` dengan payload berbeda.
+13. **R4-K13 Interoperabilitas Kontrak Vehicle A1 (AutoServe/Logistics/Mall/Store)**: Seluruh 14 import langsung `Vehicle` digantikan `VehicleDirectory`, `VehicleSnapshot`, `VehicleModelResolver` (`A1: 14 -> 0`).
+14. **R4-K14 Audit Dual-Source Bersih vs Fixture Korupsi**: `boundary:audit` keluar kode `0` pada data sinkron dan kode `1` (`[AUDIT_FAIL]`) ketika `BoundaryAuditCorruptionFixture` menyuntikkan waiver korup.
+15. **R4-K15 Kontrol Akses Rute Arsitektur (`platform_architect` vs `auditor` vs `customer`)**: `auditor` diizinkan `GET /admin/architecture/waivers` (`200`) namun ditolak (`403`) pada `/modules` dan `/violations`.
+16. **R4-K16 Determinisme Byte-Identik CLI**: Dua eksekusi berurutan `php artisan arch:boundaries --format=json` menghasilkan keluaran identik bit-demi-bit.
+
+### 4.3 Sumber Rujukan Konsep (T-8)
+- **Algoritma Tarjan (1972)**: Robert Tarjan, *"Depth-First Search and Linear Graph Algorithms"*, SIAM Journal on Computing, Vol. 1, No. 2, pp. 146–160 (1972). Tautan: https://epubs.siam.org/doi/10.1137/0201010 (diakses 2026-11-11; label: `regulasi_teori_standar`).
+- **Acyclic Dependencies Principle (ADP)**: Robert C. Martin, *"Granularity / Acyclic Dependencies Principle"* dalam *Agile Software Development, Principles, Patterns, and Practices*. Tautan: https://web.archive.org/web/2026/https://fi.ort.edu.uy/innovaportal/file/2032/1/design_principles.pdf (diakses 2026-11-11; label: `asumsi_simulasi`).
+- **Batas Kedaluwarsa Waiver 90 Hari & Penurunan Baseline A1+A2 >= 50%**: Ketetapan arsitektur internal SuperWeb ([ADR-0043](file:///Users/orl123456/Documents/typeshit/sw-w8-p4/docs/decisions/ADR-0043-tata-kelola-waiver-arsitektur.md); diakses 2026-11-11; label: `asumsi_simulasi`).
+

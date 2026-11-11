@@ -1436,8 +1436,10 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 #### Register Minus Fase R4
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
-| - | - | Tidak ada minus terbuka (seluruh deliverable R4.1 s/d R4.7 tuntas 100%) | - | - | - |
 | M-R4-1 | R4.1 / R4.3 | Temuan F-06: config/modules.php dimanipulasi dengan 5.777 pengecualian palsu | Pelanggaran arsitektur tersembunyi | P0 | Diperbaiki di III.5 (K-2): 304 kolom dan 34 tabel palsu dihapus, baseline nyata dipulihkan |
+| M-R4-2 | R4.2 / R4.5 | Sisa 15 entri A2 pada migrasi lama Agri (3), CloudKitchen (3), dan Hcm (9) belum direlokasi karena IZIN-4 melarang edit migrasi lama | Utang prefiks tabel A2 tersisa 15 (turun 61,5% dari total A1+A2 awal 39) | P2 | Dijadwalkan lewat migrasi relokasi skema bertahap + masa kedaluwarsa waiver ≤ 90 hari |
+| M-R4-3 | R4.6 | Utang A12 (`*_id` tanpa FK) masih terkunci di plafon 300 sesuai target R4 (tidak bertambah, belum diturunkan) | Integritas referensial relasi lama | P3 | Penurunan inkremental pada gelombang konsolidasi skema pasca-W8 |
+| M-R4-4 | R4.1 / R4.4 | Generator `docs/catalog/dependensi-modul.md` masih ditulis langsung oleh `arch:boundaries --format=md` (belum dikaitkan sebagai sub-source terpisah di `docs:generate`) | Pembaruan manual saat katalog berubah | P3 | Konsolidasikan hook generator pada pemeliharaan alat `docs:generate` |
 
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR
