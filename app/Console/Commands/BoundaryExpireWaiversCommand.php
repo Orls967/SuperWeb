@@ -27,4 +27,3 @@ class BoundaryExpireWaiversCommand extends Command
         return self::SUCCESS;
     }
 }
-

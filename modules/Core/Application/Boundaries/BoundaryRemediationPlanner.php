@@ -21,7 +21,6 @@ final class BoundaryRemediationPlanner
     /**
      * Generate a complete remediation plan for a boundary violation.
      *
-     * @param  CoreBoundaryViolation  $violation
      * @return array{
      *     violationId: int,
      *     ruleId: string,
@@ -118,4 +117,3 @@ PHP;
         ];
     }
 }
-

@@ -88,4 +88,3 @@ final class SccCertificateVerifier
         return $visitedCount === $numSccs;
     }
 }
-

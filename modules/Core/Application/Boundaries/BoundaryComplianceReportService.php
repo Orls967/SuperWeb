@@ -25,7 +25,6 @@ final class BoundaryComplianceReportService
     /**
      * Generate full compliance scorecard report.
      *
-     * @param  string  $basePath
      * @return array{
      *     platformModularityIndex: int,
      *     executiveRating: string,
@@ -144,4 +143,3 @@ final class BoundaryComplianceReportService
         ];
     }
 }
-

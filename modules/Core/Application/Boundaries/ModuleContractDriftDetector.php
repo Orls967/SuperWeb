@@ -6,7 +6,6 @@ namespace Modules\Core\Application\Boundaries;
 
 use App\Quality\Support\NameReferences;
 use App\Quality\Support\SourceFinder;
-use ReflectionClass;
 
 /**
  * Service to detect contract drift, orphaned interfaces, and binding health (DR4-4, DR4-6).
@@ -19,7 +18,6 @@ final class ModuleContractDriftDetector
     /**
      * Run contract drift detection across all modules.
      *
-     * @param  string  $basePath
      * @param  list<string>  $paths
      * @return array{
      *     totalContracts: int,
@@ -131,4 +129,3 @@ final class ModuleContractDriftDetector
         ];
     }
 }
-

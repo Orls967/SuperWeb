@@ -26,6 +26,7 @@ use Modules\CloudKitchen\Domain\Models\CloudKitchen;
 use Modules\Core\Domain\Models\AuditLog;
 use Modules\Core\Domain\Models\CoreAiAnomalyQuarantine;
 use Modules\Core\Domain\Models\CoreAiStockRecommendation;
+use Modules\Core\Domain\Models\CoreBoundaryViolation;
 use Modules\Core\Domain\Models\CoreMobileDevice;
 use Modules\Core\Domain\Models\CoreTask;
 use Modules\Core\Domain\Models\PartnerWebhook;
@@ -5070,7 +5071,7 @@ return [
     'admin.boundaries.violations.show' => [
         'roles' => ['admin', 'superadmin', 'platform_architect'],
         'params' => function () {
-            $v = \Modules\Core\Domain\Models\CoreBoundaryViolation::firstOrCreate(
+            $v = CoreBoundaryViolation::firstOrCreate(
                 ['rule_id' => 'A1', 'file_path' => 'tests/sample.php', 'signature' => 'route-roles-sample'],
                 [
                     'category' => 'domain_import',
@@ -5080,6 +5081,7 @@ return [
                     'status' => 'detected',
                 ]
             );
+
             return ['id' => $v->id];
         },
     ],
@@ -5089,7 +5091,7 @@ return [
     'admin.boundaries.waivers.extend' => [
         'roles' => ['admin', 'superadmin', 'platform_architect'],
         'params' => function () {
-            $v = \Modules\Core\Domain\Models\CoreBoundaryViolation::firstOrCreate(
+            $v = CoreBoundaryViolation::firstOrCreate(
                 ['rule_id' => 'A2', 'file_path' => 'tests/waiver-sample.php', 'signature' => 'route-roles-waiver-sample'],
                 [
                     'category' => 'table_prefix',
@@ -5101,6 +5103,7 @@ return [
                     'expires_at' => now()->addDays(30),
                 ]
             );
+
             return ['id' => $v->id];
         },
     ],

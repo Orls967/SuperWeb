@@ -73,4 +73,3 @@ class BoundaryBlastRadiusCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -119,4 +119,3 @@ final class AcyclicCondensationDecomposer
         ];
     }
 }
-

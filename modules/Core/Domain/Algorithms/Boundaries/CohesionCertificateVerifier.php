@@ -70,4 +70,3 @@ final class CohesionCertificateVerifier
         return $report['averageCohesionPermille'] === $expectedAvg;
     }
 }
-

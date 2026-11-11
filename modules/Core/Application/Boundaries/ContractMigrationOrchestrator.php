@@ -27,9 +27,6 @@ final class ContractMigrationOrchestrator
     /**
      * Advance a boundary violation to the next migration phase.
      *
-     * @param  CoreBoundaryViolation  $violation
-     * @param  string  $actorId
-     * @param  string  $reason
      * @param  array<string, mixed>  $metadata
      * @return array{
      *     violationId: int,
@@ -91,7 +88,6 @@ final class ContractMigrationOrchestrator
     /**
      * Batch advance all migrating violations whose baseline entries have been removed.
      *
-     * @param  string  $actorId
      * @return array{advancedCount: int, verifiedIds: list<int>}
      */
     public function batchVerifyMigrated(string $actorId = 'system:orchestrator'): array
@@ -119,4 +115,3 @@ final class ContractMigrationOrchestrator
         ];
     }
 }
-

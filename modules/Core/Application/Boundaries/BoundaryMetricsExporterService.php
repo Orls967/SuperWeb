@@ -139,4 +139,3 @@ final class BoundaryMetricsExporterService
         return implode("\n", $rows)."\n";
     }
 }
-

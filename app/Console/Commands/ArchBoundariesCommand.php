@@ -177,4 +177,3 @@ class ArchBoundariesCommand extends Command
         return implode("\n", $svg);
     }
 }
-

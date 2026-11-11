@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Boundaries;
 
 use App\Quality\Modules\BoundariesScanner;
-use Modules\Core\Domain\Algorithms\Boundaries\TablePrefixOwnershipResolver;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
 /**
@@ -25,7 +24,6 @@ final class ModuleIsolationAssuranceService
     /**
      * Run full isolation assurance audit.
      *
-     * @param  string  $basePath
      * @param  array<string, mixed>|null  $config
      * @return array{
      *     totalModulesAudited: int,
@@ -116,4 +114,3 @@ final class ModuleIsolationAssuranceService
         ];
     }
 }
-

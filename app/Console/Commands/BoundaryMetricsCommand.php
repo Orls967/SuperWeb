@@ -72,4 +72,3 @@ class BoundaryMetricsCommand extends Command
         return self::SUCCESS;
     }
 }
-

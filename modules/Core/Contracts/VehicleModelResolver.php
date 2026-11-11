@@ -87,4 +87,3 @@ final class VehicleModelResolver
         return $class::where($column, $operator, $value);
     }
 }
-

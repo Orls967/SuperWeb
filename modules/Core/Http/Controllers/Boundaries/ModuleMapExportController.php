@@ -148,4 +148,3 @@ final class ModuleMapExportController extends Controller
         }, 200, $headers);
     }
 }
-

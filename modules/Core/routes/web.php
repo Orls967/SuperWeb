@@ -14,6 +14,10 @@ use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
 use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
+use Modules\Core\Http\Controllers\Boundaries\ModuleMapController;
+use Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController;
+use Modules\Core\Http\Controllers\Boundaries\ViolationController;
+use Modules\Core\Http\Controllers\Boundaries\WaiverController;
 use Modules\Core\Http\Controllers\DesignSystem\DesignSystemCatalogController;
 use Modules\Core\Http\Controllers\DesignSystem\DesignSystemReleaseController;
 use Modules\Core\Http\Controllers\DesignSystem\ThemePreferenceController;
@@ -207,16 +211,16 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // Modular Boundaries & Architecture Governance — Fase R4
     Route::middleware('role:admin,superadmin,platform_architect')->prefix('admin/boundaries')->group(function () {
-        Route::get('/map', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapController::class, 'index'])->name('admin.boundaries.map');
-        Route::get('/violations', [\Modules\Core\Http\Controllers\Boundaries\ViolationController::class, 'index'])->name('admin.boundaries.violations');
-        Route::get('/violations/{id}', [\Modules\Core\Http\Controllers\Boundaries\ViolationController::class, 'show'])->name('admin.boundaries.violations.show');
-        Route::get('/waivers', [\Modules\Core\Http\Controllers\Boundaries\WaiverController::class, 'index'])->name('admin.boundaries.waivers');
-        Route::post('/waivers/{id}/extend', [\Modules\Core\Http\Controllers\Boundaries\WaiverController::class, 'extend'])->name('admin.boundaries.waivers.extend');
+        Route::get('/map', [ModuleMapController::class, 'index'])->name('admin.boundaries.map');
+        Route::get('/violations', [ViolationController::class, 'index'])->name('admin.boundaries.violations');
+        Route::get('/violations/{id}', [ViolationController::class, 'show'])->name('admin.boundaries.violations.show');
+        Route::get('/waivers', [WaiverController::class, 'index'])->name('admin.boundaries.waivers');
+        Route::post('/waivers/{id}/extend', [WaiverController::class, 'extend'])->name('admin.boundaries.waivers.extend');
 
         // Exports
-        Route::get('/export/violations', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportViolations'])->name('admin.boundaries.export.violations');
-        Route::get('/export/waivers', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportWaivers'])->name('admin.boundaries.export.waivers');
-        Route::get('/export/coverage', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportCoverage'])->name('admin.boundaries.export.coverage');
-        Route::get('/export/table-ownership', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportTableOwnership'])->name('admin.boundaries.export.table-ownership');
+        Route::get('/export/violations', [ModuleMapExportController::class, 'exportViolations'])->name('admin.boundaries.export.violations');
+        Route::get('/export/waivers', [ModuleMapExportController::class, 'exportWaivers'])->name('admin.boundaries.export.waivers');
+        Route::get('/export/coverage', [ModuleMapExportController::class, 'exportCoverage'])->name('admin.boundaries.export.coverage');
+        Route::get('/export/table-ownership', [ModuleMapExportController::class, 'exportTableOwnership'])->name('admin.boundaries.export.table-ownership');
     });
 });

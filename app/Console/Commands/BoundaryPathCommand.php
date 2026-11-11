@@ -74,4 +74,3 @@ class BoundaryPathCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Modules\Core\Http\Controllers\Boundaries;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Core\Application\Boundaries\BoundaryOutboxPublisher;
-use Modules\Core\Application\Boundaries\WaiveViolationAction;
 use Modules\Core\Application\Boundaries\WaiverApprovalBridge;
+use Modules\Core\Application\Boundaries\WaiveViolationAction;
 use Modules\Core\Domain\Enums\ViolationStatus;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
@@ -92,7 +92,7 @@ final class WaiverController extends Controller
         ]);
 
         $violation = CoreBoundaryViolation::findOrFail($id);
-        $user = $request->user() ?? \App\Models\User::firstOrFail();
+        $user = $request->user() ?? User::firstOrFail();
 
         $expiresAt = now()->addDays($validated['days']);
         $approvalRequest = $this->approvalBridge->requestWaiverApproval(

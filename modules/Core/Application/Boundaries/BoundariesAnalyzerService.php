@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Boundaries;
 
 use App\Quality\ArchScan\ArchScanner;
-use App\Quality\ArchScan\ScanReport;
 use App\Quality\Modules\ModuleRegistry;
 use App\Quality\Support\NameReferences;
 use App\Quality\Support\SourceFile;

@@ -31,4 +31,3 @@ final class BoundariesScanner
         return $this->analyzer->analyze($basePath, $config, $paths);
     }
 }
-

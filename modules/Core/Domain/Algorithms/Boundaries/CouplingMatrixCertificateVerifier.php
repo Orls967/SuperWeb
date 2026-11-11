@@ -76,4 +76,3 @@ final class CouplingMatrixCertificateVerifier
         return $sumCa === $sumCe;
     }
 }
-

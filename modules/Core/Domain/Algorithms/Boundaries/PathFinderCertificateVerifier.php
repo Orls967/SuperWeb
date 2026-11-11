@@ -93,4 +93,3 @@ final class PathFinderCertificateVerifier
         return true;
     }
 }
-

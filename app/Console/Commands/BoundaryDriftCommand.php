@@ -63,4 +63,3 @@ class BoundaryDriftCommand extends Command
         return self::SUCCESS;
     }
 }
-

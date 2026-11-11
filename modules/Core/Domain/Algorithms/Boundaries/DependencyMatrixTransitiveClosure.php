@@ -104,4 +104,3 @@ final class DependencyMatrixTransitiveClosure
         return $report;
     }
 }
-

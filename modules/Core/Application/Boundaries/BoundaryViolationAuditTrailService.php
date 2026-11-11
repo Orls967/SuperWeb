@@ -22,7 +22,6 @@ final class BoundaryViolationAuditTrailService
     /**
      * Retrieve complete chronological timeline for a violation.
      *
-     * @param  int  $violationId
      * @return array{
      *     violationId: int,
      *     ruleId: string,
@@ -139,4 +138,3 @@ final class BoundaryViolationAuditTrailService
         return $summary;
     }
 }
-

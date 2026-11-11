@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Boundaries;
 
-use Illuminate\Support\Str;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
@@ -171,4 +170,3 @@ final class BoundaryOutboxPublisher
         }
     }
 }
-

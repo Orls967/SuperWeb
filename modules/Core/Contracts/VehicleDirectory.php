@@ -72,4 +72,3 @@ interface VehicleDirectory
      */
     public function getFleetSummary(): VehicleFleetSummary;
 }
-

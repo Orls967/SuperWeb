@@ -6,26 +6,33 @@ namespace Tests\Acceptance\Boundaries;
 
 use App\Models\User;
 use App\Quality\Audit\Fixtures\BoundaryAuditCorruptionFixture;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Modules\Core\Application\Boundaries\BoundaryOutboxPublisher;
 use Modules\Core\Application\Boundaries\ExpireWaiversAction;
 use Modules\Core\Application\Boundaries\TransitionViolationAction;
 use Modules\Core\Application\Boundaries\TriageViolationAction;
 use Modules\Core\Application\Boundaries\VerifyViolationAction;
+use Modules\Core\Application\Boundaries\WaiverApprovalBridge;
 use Modules\Core\Application\Boundaries\WaiveViolationAction;
 use Modules\Core\Contracts\VehicleDirectory;
 use Modules\Core\Contracts\VehicleModelResolver;
+use Modules\Core\Contracts\VehicleSearchCriteria;
 use Modules\Core\Contracts\VehicleSnapshot;
+use Modules\Core\Domain\Algorithms\Boundaries\BlastRadiusCertificateVerifier;
 use Modules\Core\Domain\Algorithms\Boundaries\ContractCoverageScorer;
 use Modules\Core\Domain\Algorithms\Boundaries\CoverageCertificateVerifier;
+use Modules\Core\Domain\Algorithms\Boundaries\CrossModuleBlastRadiusAnalyzer;
+use Modules\Core\Domain\Algorithms\Boundaries\DependencyCondensationGraph;
 use Modules\Core\Domain\Algorithms\Boundaries\PrefixCertificateVerifier;
 use Modules\Core\Domain\Algorithms\Boundaries\SccCertificateVerifier;
 use Modules\Core\Domain\Algorithms\Boundaries\StronglyConnectedComponents;
 use Modules\Core\Domain\Algorithms\Boundaries\TablePrefixOwnershipResolver;
+use Modules\Core\Domain\Algorithms\Boundaries\TopologicalCertificateVerifier;
 use Modules\Core\Domain\Enums\ViolationCategory;
 use Modules\Core\Domain\Enums\ViolationStatus;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
-use Modules\Core\Domain\StateMachines\BoundaryViolationStateMachine;
 use Tests\TestCase;
 
 class BoundariesLifecycleTest extends TestCase
@@ -173,13 +180,13 @@ class BoundariesLifecycleTest extends TestCase
         $this->assertEquals(ViolationStatus::TRIAGED, $waiverViolation->status);
 
         // 8. Integrasi ApprovalEngine, TaskInbox & OutboxBus (DR4-7b, DR4-7d)
-        $approvalBridge = app(\Modules\Core\Application\Boundaries\WaiverApprovalBridge::class);
+        $approvalBridge = app(WaiverApprovalBridge::class);
         $task = $approvalBridge->notifyUpcomingExpiration($waiverViolation, 3, $architect);
         $this->assertNotNull($task);
         $this->assertEquals('urgent', $task->priority);
         $this->assertEquals('platform_architect', $task->assignee_role);
 
-        $outboxPublisher = app(\Modules\Core\Application\Boundaries\BoundaryOutboxPublisher::class);
+        $outboxPublisher = app(BoundaryOutboxPublisher::class);
         $outboxMsg = $outboxPublisher->publishWaiverExpired($waiverViolation);
         $this->assertNotNull($outboxMsg);
     }
@@ -226,11 +233,11 @@ class BoundariesLifecycleTest extends TestCase
 
         // 5. Query through VehicleModelResolver for Eloquent relations
         $resolvedVehicle = VehicleModelResolver::findOrFail($vehicle->id);
-        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Model::class, $resolvedVehicle);
+        $this->assertInstanceOf(Model::class, $resolvedVehicle);
         $this->assertEquals($user->id, $resolvedVehicle->user_id);
 
         // 6. Search criteria and fleet summary through contract
-        $searchResult = $directory->search(new \Modules\Core\Contracts\VehicleSearchCriteria(
+        $searchResult = $directory->search(new VehicleSearchCriteria(
             plateNumberPattern: '1234',
             statuses: ['active']
         ));
@@ -338,7 +345,7 @@ class BoundariesLifecycleTest extends TestCase
         $this->assertTrue($coverageVerifier->verify($scoreResult));
 
         // 4. CrossModuleBlastRadiusAnalyzer & BlastRadiusCertificateVerifier
-        $blastAnalyzer = new \Modules\Core\Domain\Algorithms\Boundaries\CrossModuleBlastRadiusAnalyzer;
+        $blastAnalyzer = new CrossModuleBlastRadiusAnalyzer;
         $blastReport = $blastAnalyzer->analyze('Core', $acyclicGraph, ['Core' => 950]);
 
         $this->assertEquals('Core', $blastReport['target']);
@@ -346,18 +353,18 @@ class BoundariesLifecycleTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $blastReport['impactScorePermille']);
         $this->assertLessThanOrEqual(1000, $blastReport['impactScorePermille']);
 
-        $blastVerifier = new \Modules\Core\Domain\Algorithms\Boundaries\BlastRadiusCertificateVerifier;
+        $blastVerifier = new BlastRadiusCertificateVerifier;
         $this->assertTrue($blastVerifier->verify($blastReport, $acyclicGraph));
 
         // 5. DependencyCondensationGraph & TopologicalCertificateVerifier
-        $condensationGraph = new \Modules\Core\Domain\Algorithms\Boundaries\DependencyCondensationGraph;
+        $condensationGraph = new DependencyCondensationGraph;
         $graphAnalysis = $condensationGraph->analyze($nodes, $acyclicGraph);
 
         $this->assertTrue($graphAnalysis['isDag']);
         $this->assertCount(5, $graphAnalysis['topologicalOrder']);
         $this->assertContains('Core', $graphAnalysis['leafModules']); // out-degree 0
 
-        $topoVerifier = new \Modules\Core\Domain\Algorithms\Boundaries\TopologicalCertificateVerifier;
+        $topoVerifier = new TopologicalCertificateVerifier;
         $this->assertTrue($topoVerifier->verify($nodes, $acyclicGraph, $graphAnalysis['topologicalOrder']));
     }
 

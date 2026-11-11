@@ -6,6 +6,7 @@ namespace Modules\Core\database\seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Domain\Enums\ViolationCategory;
 use Modules\Core\Domain\Enums\ViolationStatus;
@@ -31,7 +32,7 @@ class BoundariesT1Seeder extends Seeder
         DB::table('core_boundary_violations')->delete();
 
         // 1b. Sinkronkan pelanggaran nyata hasil scan ke core_boundary_violations
-        \Illuminate\Support\Facades\Artisan::call('boundary:triage');
+        Artisan::call('boundary:triage');
 
         // 2. Daftar 28 pelanggaran representatif lintas berbagai modul dan status
         $violationsData = [

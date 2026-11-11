@@ -73,4 +73,3 @@ final class PrefixCertificateVerifier
         return strlen($selectedPrefix) === $maxLength && in_array($selectedPrefix, $matching, true);
     }
 }
-

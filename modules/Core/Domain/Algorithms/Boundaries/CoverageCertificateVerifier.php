@@ -49,4 +49,3 @@ final class CoverageCertificateVerifier
         return $global === $expectedGlobal;
     }
 }
-

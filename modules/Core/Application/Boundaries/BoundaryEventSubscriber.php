@@ -6,7 +6,6 @@ namespace Modules\Core\Application\Boundaries;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
-use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
 /**
  * Event subscriber for architectural boundary domain events (DR4-7d).
@@ -117,4 +116,3 @@ final class BoundaryEventSubscriber
         );
     }
 }
-

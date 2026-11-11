@@ -59,4 +59,3 @@ class BoundaryRemediateCommand extends Command
         return self::SUCCESS;
     }
 }
-

@@ -94,4 +94,3 @@ final class ModuleCohesionScorer
         return $report;
     }
 }
-

@@ -145,4 +145,3 @@ final class ModuleCouplingMatrixScorer
         return $report;
     }
 }
-

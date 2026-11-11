@@ -69,4 +69,3 @@ class BoundaryComplianceCommand extends Command
         return self::SUCCESS;
     }
 }
-

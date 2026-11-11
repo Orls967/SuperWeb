@@ -19,4 +19,3 @@ enum ViolationCategory: string
         return array_map(fn (self $case): string => $case->value, self::cases());
     }
 }
-

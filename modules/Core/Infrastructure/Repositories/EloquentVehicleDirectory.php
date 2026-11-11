@@ -6,6 +6,8 @@ namespace Modules\Core\Infrastructure\Repositories;
 
 use Modules\Core\Contracts\Vehicle;
 use Modules\Core\Contracts\VehicleDirectory;
+use Modules\Core\Contracts\VehicleFleetSummary;
+use Modules\Core\Contracts\VehicleSearchCriteria;
 use Modules\Core\Contracts\VehicleSnapshot;
 
 final class EloquentVehicleDirectory implements VehicleDirectory
@@ -90,7 +92,7 @@ final class EloquentVehicleDirectory implements VehicleDirectory
             ->all();
     }
 
-    public function search(\Modules\Core\Contracts\VehicleSearchCriteria $criteria): array
+    public function search(VehicleSearchCriteria $criteria): array
     {
         $query = Vehicle::query();
 
@@ -129,7 +131,7 @@ final class EloquentVehicleDirectory implements VehicleDirectory
         return $vehicles->map(fn (Vehicle $v): VehicleSnapshot => $this->toSnapshot($v))->all();
     }
 
-    public function getFleetSummary(): \Modules\Core\Contracts\VehicleFleetSummary
+    public function getFleetSummary(): VehicleFleetSummary
     {
         $total = Vehicle::count();
         $active = Vehicle::where('status', 'active')->count();
@@ -143,7 +145,7 @@ final class EloquentVehicleDirectory implements VehicleDirectory
             ->map(fn ($c): int => (int) $c)
             ->all();
 
-        return new \Modules\Core\Contracts\VehicleFleetSummary(
+        return new VehicleFleetSummary(
             totalVehicles: $total,
             activeVehicles: $active,
             maintenanceVehicles: $maintenance,
@@ -170,4 +172,3 @@ final class EloquentVehicleDirectory implements VehicleDirectory
         );
     }
 }
-

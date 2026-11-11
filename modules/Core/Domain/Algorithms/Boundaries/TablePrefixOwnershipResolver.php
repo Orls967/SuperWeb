@@ -115,4 +115,3 @@ final class TablePrefixOwnershipResolver
         return false;
     }
 }
-

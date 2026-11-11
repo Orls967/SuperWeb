@@ -27,4 +27,3 @@ enum ViolationStatus: string
         return $this === self::CLOSED;
     }
 }
-

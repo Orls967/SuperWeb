@@ -17,8 +17,6 @@ final class ModuleDependencyPathFinder
     /**
      * Find all simple paths from $source to $target within $maxDepth hops.
      *
-     * @param  string  $source
-     * @param  string  $target
      * @param  array<string, list<string>>  $adjacencyList  directed graph
      * @param  int  $maxDepth  maximum path length in hops (defaults to 6)
      * @param  int  $maxPaths  maximum number of paths to return (defaults to 20)
@@ -205,4 +203,3 @@ final class ModuleDependencyPathFinder
         }
     }
 }
-

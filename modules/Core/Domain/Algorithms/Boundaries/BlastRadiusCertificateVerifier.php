@@ -86,4 +86,3 @@ final class BlastRadiusCertificateVerifier
         return true;
     }
 }
-

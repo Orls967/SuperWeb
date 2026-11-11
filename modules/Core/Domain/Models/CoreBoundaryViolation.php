@@ -70,4 +70,3 @@ class CoreBoundaryViolation extends Model
         return $this->status === ViolationStatus::CLOSED;
     }
 }
-

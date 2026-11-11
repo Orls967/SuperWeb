@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\Domain\StateMachines;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use DomainException;
 use Modules\Core\Application\Boundaries\BoundaryOutboxPublisher;
 use Modules\Core\Domain\Enums\ViolationStatus;
@@ -186,9 +188,9 @@ final class BoundaryViolationStateMachine
                 throw new DomainException('Guard failed: Waiver requires expires_at deadline.');
             }
 
-            $expires = $expiresAt instanceof \Carbon\CarbonInterface
+            $expires = $expiresAt instanceof CarbonInterface
                 ? $expiresAt
-                : \Carbon\Carbon::parse($expiresAt);
+                : Carbon::parse($expiresAt);
 
             $days = (int) now()->diffInDays($expires, false);
             if ($days <= 0) {

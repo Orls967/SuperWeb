@@ -15,7 +15,6 @@ final class CrossModuleBlastRadiusAnalyzer
     /**
      * Compute comprehensive blast radius for a given target module.
      *
-     * @param  string  $targetModule
      * @param  array<string, list<string>>  $dependencyGraph  Adjacency list: client => [targets]
      * @param  array<string, int>  $moduleCoverageScores  Coverage permille per module (0..1000)
      * @return array{
@@ -145,7 +144,7 @@ final class CrossModuleBlastRadiusAnalyzer
             $mitigations[] = "Kedalaman riak tinggi ({$maxDepth} level). Gunakan EventSpine untuk memutus rantai sinkron.";
         }
         if (count($directConsumers) > 10) {
-            $mitigations[] = "Fan-in tinggi (".count($directConsumers)." konsumen langsung). Stabilkan kontrak di Modules\\Core\\Contracts.";
+            $mitigations[] = 'Fan-in tinggi ('.count($directConsumers).' konsumen langsung). Stabilkan kontrak di Modules\\Core\\Contracts.';
         }
         if ($targetCoverage < 700) {
             $mitigations[] = "Skor cakupan kontrak rendah ({$targetCoverage} permil). Prioritaskan pembuatan interface kontrak formal.";
@@ -171,4 +170,3 @@ final class CrossModuleBlastRadiusAnalyzer
         ];
     }
 }
-

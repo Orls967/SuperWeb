@@ -178,4 +178,3 @@ final class WaiverApprovalBridge
         }
     }
 }
-

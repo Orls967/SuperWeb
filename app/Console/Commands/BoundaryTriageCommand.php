@@ -71,4 +71,3 @@ class BoundaryTriageCommand extends Command
         return self::SUCCESS;
     }
 }
-

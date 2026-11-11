@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\ArchScanCommand;
 use App\Quality\Baseline\FingerprintBaseline;
 use App\Quality\Docs\DecisionLog;
 use App\Quality\Modules\BoundariesScanner;
@@ -113,7 +112,7 @@ class BoundaryAuditCommand extends Command
 
         // Report audit results
         if ($discrepancies !== []) {
-            $this->error('[AUDIT_FAIL] boundary:audit mendeteksi ' . count($discrepancies) . ' diskrepansi:');
+            $this->error('[AUDIT_FAIL] boundary:audit mendeteksi '.count($discrepancies).' diskrepansi:');
             foreach ($discrepancies as $idx => $d) {
                 $this->line(sprintf('  [%d] %s', $idx + 1, $d));
             }
@@ -126,4 +125,3 @@ class BoundaryAuditCommand extends Command
         return self::SUCCESS;
     }
 }
-
