@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Mall\Application\Actions\RegisterParkingMemberAction;
 use Modules\Mall\Application\Actions\ValidateParkingAction;
 use Modules\Mall\Application\Queries\FootfallAnalyticsQuery;

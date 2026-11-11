@@ -5061,4 +5061,59 @@ return [
     'admin.spine.schemas.export' => [
         'roles' => ['spine_operator', 'auditor', 'admin', 'superadmin'],
     ],
+    'admin.boundaries.map' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.violations' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.violations.show' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+        'params' => function () {
+            $v = \Modules\Core\Domain\Models\CoreBoundaryViolation::firstOrCreate(
+                ['rule_id' => 'A1', 'file_path' => 'tests/sample.php', 'signature' => 'route-roles-sample'],
+                [
+                    'category' => 'domain_import',
+                    'line_number' => 10,
+                    'client_module' => 'Core',
+                    'owner_module' => 'Core',
+                    'status' => 'detected',
+                ]
+            );
+            return ['id' => $v->id];
+        },
+    ],
+    'admin.boundaries.waivers' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.waivers.extend' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+        'params' => function () {
+            $v = \Modules\Core\Domain\Models\CoreBoundaryViolation::firstOrCreate(
+                ['rule_id' => 'A2', 'file_path' => 'tests/waiver-sample.php', 'signature' => 'route-roles-waiver-sample'],
+                [
+                    'category' => 'table_prefix',
+                    'line_number' => 10,
+                    'client_module' => 'Core',
+                    'owner_module' => 'Core',
+                    'status' => 'waived',
+                    'adr_anchor' => 'docs/DECISIONS.md#w8-d43',
+                    'expires_at' => now()->addDays(30),
+                ]
+            );
+            return ['id' => $v->id];
+        },
+    ],
+    'admin.boundaries.export.violations' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.export.waivers' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.export.coverage' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.boundaries.export.table-ownership' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
 ];

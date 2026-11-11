@@ -7,7 +7,7 @@ namespace Modules\Store\Application\Actions;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Str;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Inventory\Contracts\StockMovement;
 use Modules\Inventory\Domain\Enums\StockMovementReason;
 use Modules\Shared\Application\BaseAction;

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Logistics\Contracts\FleetMaintenanceBooking;
 
 class AutoServeFleetMaintenanceBooking implements FleetMaintenanceBooking

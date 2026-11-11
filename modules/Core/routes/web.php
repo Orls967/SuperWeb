@@ -204,4 +204,19 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::post('/{run}/pause', [SimulationRunController::class, 'pause'])->name('admin.simulation.runs.pause');
         Route::post('/{run}/resume', [SimulationRunController::class, 'resume'])->name('admin.simulation.runs.resume');
     });
+
+    // Modular Boundaries & Architecture Governance — Fase R4
+    Route::middleware('role:admin,superadmin,platform_architect')->prefix('admin/boundaries')->group(function () {
+        Route::get('/map', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapController::class, 'index'])->name('admin.boundaries.map');
+        Route::get('/violations', [\Modules\Core\Http\Controllers\Boundaries\ViolationController::class, 'index'])->name('admin.boundaries.violations');
+        Route::get('/violations/{id}', [\Modules\Core\Http\Controllers\Boundaries\ViolationController::class, 'show'])->name('admin.boundaries.violations.show');
+        Route::get('/waivers', [\Modules\Core\Http\Controllers\Boundaries\WaiverController::class, 'index'])->name('admin.boundaries.waivers');
+        Route::post('/waivers/{id}/extend', [\Modules\Core\Http\Controllers\Boundaries\WaiverController::class, 'extend'])->name('admin.boundaries.waivers.extend');
+
+        // Exports
+        Route::get('/export/violations', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportViolations'])->name('admin.boundaries.export.violations');
+        Route::get('/export/waivers', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportWaivers'])->name('admin.boundaries.export.waivers');
+        Route::get('/export/coverage', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportCoverage'])->name('admin.boundaries.export.coverage');
+        Route::get('/export/table-ownership', [\Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController::class, 'exportTableOwnership'])->name('admin.boundaries.export.table-ownership');
+    });
 });

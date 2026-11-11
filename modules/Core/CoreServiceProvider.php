@@ -333,6 +333,11 @@ class CoreServiceProvider extends ServiceProvider
             SimTwinSnapshotRepositoryInterface::class,
             SimTwinSnapshotEloquentRepository::class
         );
+
+        $this->app->singleton(
+            \Modules\Core\Contracts\VehicleDirectory::class,
+            \Modules\Core\Infrastructure\Repositories\EloquentVehicleDirectory::class
+        );
     }
 
     public function boot(): void
@@ -508,6 +513,16 @@ class CoreServiceProvider extends ServiceProvider
                 SpineSchemaEvolutionCommand::class,
                 SpineArchiveCommand::class,
                 SpineScaleRecommendCommand::class,
+                \App\Console\Commands\ArchBoundariesCommand::class,
+                \App\Console\Commands\BoundaryAuditCommand::class,
+                \App\Console\Commands\BoundaryBlastRadiusCommand::class,
+                \App\Console\Commands\BoundaryComplianceCommand::class,
+                \App\Console\Commands\BoundaryDriftCommand::class,
+                \App\Console\Commands\BoundaryExpireWaiversCommand::class,
+                \App\Console\Commands\BoundaryMetricsCommand::class,
+                \App\Console\Commands\BoundaryPathCommand::class,
+                \App\Console\Commands\BoundaryRemediateCommand::class,
+                \App\Console\Commands\BoundaryTriageCommand::class,
             ]);
         }
 
@@ -541,6 +556,7 @@ class CoreServiceProvider extends ServiceProvider
 
         // === Event Listeners ===
         Event::listen(VehicleAcquired::class, RecordVehicleAcquiredPassportEvent::class);
+        Event::subscribe(\Modules\Core\Application\Boundaries\BoundaryEventSubscriber::class);
 
         // === Event Spine Cross-Module Consumers ===
         CrossModuleSpineHandlers::registerAll();

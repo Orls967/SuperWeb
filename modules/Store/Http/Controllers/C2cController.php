@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Store\Application\Actions\CancelC2cOrderAction;
 use Modules\Store\Application\Actions\ConfirmC2cReceiptAction;
 use Modules\Store\Application\Actions\DisputeC2cOrderAction;

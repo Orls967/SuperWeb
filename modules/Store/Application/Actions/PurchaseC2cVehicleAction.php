@@ -8,7 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Str;
 use Modules\Banking\Contracts\VerifiesWalletPin;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Inventory\Contracts\InventoryService;
 use Modules\Payment\Contracts\PaymentGateway;
 use Modules\Payment\Domain\Enums\PaymentIntentStatus;
