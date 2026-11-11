@@ -15,6 +15,7 @@ use Modules\Hotel\Application\Actions\ExecuteWalkCompensationAction;
 use Modules\Hotel\Application\Actions\ProcessGuestDepositAction;
 use Modules\Hotel\Application\Actions\ReserveRoomAction;
 use Modules\Hotel\Application\DTOs\ReserveRoomDTO;
+use Modules\Hotel\Application\Services\HotelBusinessDateService;
 use Modules\Hotel\database\seeders\HotelDemoSeeder;
 use Modules\Hotel\Domain\Models\HotelProperty;
 use Modules\Hotel\Domain\Models\HotelRatePlan;
@@ -68,6 +69,8 @@ class HotelCancellationAndWalkTest extends TestCase
                 'energy_setback_active' => true,
             ]);
         }
+
+        app(HotelBusinessDateService::class)->initializeBusinessDate($this->property->id, '2026-11-01');
     }
 
     public function test_pembatalan_sebelum_batas_waktu_bebas_denda_dan_deposit_dikembalikan_penuh(): void
