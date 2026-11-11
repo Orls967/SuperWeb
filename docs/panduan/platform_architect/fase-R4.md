@@ -48,32 +48,15 @@ Sesuai aturan ketat T-10:
 ## 4. Alur Kerja Triage & Resolusi Pelanggaran
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Software Engineer
-    actor Arch as Platform Architect
-    participant Scan as Boundaries Scanner
-    participant DB as core_boundary_violations
-    participant Engine as ApprovalEngine
-    participant Inbox as TaskInboxService
-
-    Dev->>Scan: Jalankan arch:scan / arch:boundaries
-    Scan-->>Dev: Ditemukan pelanggaran baru (detected)
-    Dev->>DB: boundary:triage
-    Arch->>DB: TriageViolationAction (tetapkan kategori & pemilik -> triaged)
-    alt Jalur Perbaikan Kontrak
-        Arch->>DB: Rancang Kontrak (status -> contract_designed)
-        Dev->>DB: Mulai refaktor (status -> migrating)
-        Dev->>Scan: Hapus tanda tangan baseline & jalankan test unit
-        Dev->>DB: VerifyViolationAction (status -> verified)
-        Dev->>DB: Commit & scan bersih (status -> closed)
-    else Jalur Waiver Sementara
-        Dev->>Engine: Ajukan permohonan waiver (alasan, anchor DECISIONS, <=90 hari)
-        Engine->>Arch: Evaluasi permohonan waiver
-        Arch->>DB: WaiveViolationAction (status -> waived)
-        Note over DB,Inbox: Menjelang kedaluwarsa (H-7)
-        DB->>Inbox: createTask() pemberitahuan kedaluwarsa
-    end
+flowchart TD
+    Dev["Software Engineer"] -->|Jalankan arch:scan| Scan["Boundaries Scanner"]
+    Scan -->|Pelanggaran baru detected| DB["core_boundary_violations"]
+    DB -->|boundary:triage| Arch["Platform Architect"]
+    Arch -->|Triage & tetapkan pemilik| DB
+    DB -->|Jalur Perbaikan Kontrak| C["Rancang Kontrak & Refaktor"]
+    C -->|Verifikasi & Commit| Cl["Status: closed"]
+    DB -->|Jalur Waiver Sementara| W["Waiver <= 90 hari & TaskInbox"]
+    W -->|Evaluasi & Setujui| Arch
 ```
 
 ---
@@ -111,3 +94,12 @@ Setiap pipeline CI dan rilis wave wajib menjalankan verifikasi dua sumber melalu
 4. **Bebas Siklus Dependensi**: Pemindaian Tarjan SCC wajib membuktikan 0 siklus terlarang pada graf modul.
 5. **Konflik Prefiks**: Pemetaan prefiks tabel di `config/modules.php` wajib bebas dari tumpang-tindih atau duplikasi ambigu.
 
+---
+
+## 8. Daftar Periksa Persetujuan Waiver & Pemantauan Ekspirasi
+Setiap permohonan waiver atas pelanggaran batas modul (*boundary violation waiver*) hanya disetujui apabila memenuhi syarat berikut:
+1. **Penautan Anchor Keputusan**: Wajib mencantumkan tautan eksplisit ke entri ADR pada `docs/DECISIONS.md` (contoh: `DECISIONS.md#w8-d43`).
+2. **Batas Durasi Maksimal**: Durasi efektif waiver tidak boleh melebihi 90 hari kalender sejak tanggal persetujuan oleh Platform Architect.
+3. **Alur Persetujuan Formal**: Pengajuan memicu entri tugas persetujuan di `TaskInboxService` untuk dievaluasi sesuai peran `platform_architect` atau `auditor`.
+4. **Peringatan H-7 & Eskalasi Otomatis**: Scheduler menjalankan `php artisan boundary:expire-waivers` setiap hari guna mengirim tugas peringatan 7 hari sebelum kedaluwarsa (`H-7`) serta mengembalikan pelanggaran yang melewati masa berlaku ke status `triaged`.
+5. **Validasi Penghapusan**: Pelanggaran berstatus `closed` baru dinyatakan sah setelah pemeriksaan `BoundaryViolationStateMachine` mengonfirmasi tidak ada lagi kecocokan tanda tangan AST pada `arch:scan`.

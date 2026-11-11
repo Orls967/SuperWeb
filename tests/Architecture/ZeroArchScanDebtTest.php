@@ -24,8 +24,8 @@ it('ensures zero architecture scan debt across all rules A1 through A13 in basel
      * DILARANG menaikkan plafon tanpa persetujuan eksplisit.
      */
     $ceilings = [
-        'A1' => 14,
-        'A2' => 25,
+        'A1' => 0,
+        'A2' => 15,
         'A3' => 0,
         'A4' => 0,
         'A5' => 0,
