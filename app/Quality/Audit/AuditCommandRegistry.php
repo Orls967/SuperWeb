@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Quality\Audit;
 
+use App\Quality\Audit\Fixtures\AccessAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AgriAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AgyAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\AiAuditCorruptionFixture;
@@ -108,7 +109,7 @@ final class AuditCommandRegistry
     public static function fixtures(): array
     {
         return [
-
+            'access:audit' => new AccessAuditCorruptionFixture,
             'agri:audit' => new AgriAuditCorruptionFixture,
             'agy:audit' => new AgyAuditCorruptionFixture,
             'avi:audit' => new AviationAuditCorruptionFixture,

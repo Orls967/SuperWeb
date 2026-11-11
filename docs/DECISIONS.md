@@ -3209,3 +3209,29 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   - [`docs/decisions/ADR-0051-multi-tenancy-scope-registry.md`](decisions/ADR-0051-multi-tenancy-scope-registry.md)
   - [`docs/decisions/ADR-0052-retensi-cold-archive-dan-audit-api.md`](decisions/ADR-0052-retensi-cold-archive-dan-audit-api.md)
 - **Keputusan:** W8-D45 (API v2 envelope, keyset cursor, RFC 7807 & header Deprecation v1), W8-D46 (`Idempotency-Key` persisten 24 jam + 409 konflik), W8-D47 (`IntegerTokenBucket` B1 milli-token per tier Silver/Gold/Platinum), W8-D48 (Webhook HMAC B2 + rotasi 7 hari + `EventDelivery`/DLQ W8-P3 + circuit breaker), W8-D49 (EDI `EdiInterchangeCodec` B3 + SM 8 status + `EdiDocumentHandler` 3 modul tanpa posting ledger), W8-D50 (Impor CSV/XLSX streaming batch 500 + Approval >10k + ekspor ZIP bertanda tangan), W8-D51 (`TenantContext` & `TenantScopeRegistry` fail-closed tanpa edit model), W8-D52 (Retensi arsip dingin >5 tahun & perluasan dual-source `api:audit`).
+
+<a id="w8-d53"></a>
+<a id="w8-d54"></a>
+<a id="w8-d55"></a>
+<a id="w8-d56"></a>
+<a id="w8-d57"></a>
+<a id="w8-d58"></a>
+<a id="w8-d59"></a>
+<a id="w8-d60"></a>
+## 2026-11-12: [W8-P4.3] Core — Tata Kelola Identitas, Akses & Multi-Tenancy 30 Lini (Fase 188, W8-D53..W8-D60)
+- **Anchor:** `2026-11-12-w8-p4-fase-188-identity-access-tenancy` / `w8-d53` / `w8-d54` / `w8-d55` / `w8-d56` / `w8-d57` / `w8-d58` / `w8-d59` / `w8-d60`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-188.md`](design/fase-188.md) (Desain Arsitektur ABAC & Tenancy Fase 188)
+  - [`docs/dor/fase-188.md`](dor/fase-188.md) (Definition of Ready & Kriteria Terima Fase 188)
+  - [`docs/dor/bukti-l0-fase-188.md`](dor/bukti-l0-fase-188.md) (Bukti Kondisi Awal L.0 Fase 188)
+  - [`docs/architecture/abac-attribute-matrix.md`](architecture/abac-attribute-matrix.md) (Matriks Atribut ABAC & Dimensi)
+  - [`docs/runbooks/access-governance-operations.md`](runbooks/access-governance-operations.md) (Runbook Operasional Akses & Multi-Tenancy)
+  - [`docs/decisions/ADR-0053-abac-memory-deny-overrides.md`](decisions/ADR-0053-abac-memory-deny-overrides.md)
+  - [`docs/decisions/ADR-0054-multi-dimensional-scoping.md`](decisions/ADR-0054-multi-dimensional-scoping.md)
+  - [`docs/decisions/ADR-0055-access-grant-lifecycle-subsecond-revocation.md`](decisions/ADR-0055-access-grant-lifecycle-subsecond-revocation.md)
+  - [`docs/decisions/ADR-0056-weighted-identity-linker-double-consent.md`](decisions/ADR-0056-weighted-identity-linker-double-consent.md)
+  - [`docs/decisions/ADR-0057-cross-line-vendor-exposure-aggregator.md`](decisions/ADR-0057-cross-line-vendor-exposure-aggregator.md)
+  - [`docs/decisions/ADR-0058-automated-multi-tenancy-daily-probe.md`](decisions/ADR-0058-automated-multi-tenancy-daily-probe.md)
+  - [`docs/decisions/ADR-0059-periodic-access-recertification-campaigns.md`](decisions/ADR-0059-periodic-access-recertification-campaigns.md)
+  - [`docs/decisions/ADR-0060-audit-akses-dua-sumber.md`](decisions/ADR-0060-audit-akses-dua-sumber.md)
+- **Keputusan:** W8-D53 (`DenyOverridesEvaluator` C1 in-memory fail-closed), W8-D54 (Matriks pembatasan 5 dimensi: entity, region, site, project, valid_window), W8-D55 (`AccessGrantStateMachine` 8 status & pencabutan sub-detik versi cache), W8-D56 (`WeightedIdentityLinker` C2 skor >= 90 & double consent invariant), W8-D57 (`VendorExposureAggregator` C3 konsolidasi liabilitas 4 tranche integer minor-units IDR), W8-D58 (`access:tenant-probe` continuous probing 100 sampel lintas tenant 403), W8-D59 (`access:recert-campaign` sweep tenggat waktu auto-revocation), W8-D60 (`access:audit` dua-sumber independen + `AccessAuditCorruptionFixture`).
