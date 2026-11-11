@@ -1,18 +1,38 @@
-# Register Galat (Error Registry): Modul EnterpriseFinance
+# Kamus Galat & Penanganan Pengecualian (Exceptions): EnterpriseFinance
 
-Dokumen ini mendokumentasikan kode galat, pesan kesalahan, dan solusi penanganan dalam modul `EnterpriseFinance`.
+## 1. Daftar Pengecualian Domain (Domain Exceptions)
 
----
+### `BudgetGuardrailBreachException`
+- **Kode Pesan**: `EF-BUDGET-001`
+- **Penyebab**: Percobaan mencadangkan komitmen pengadaan atau membelanjakan anggaran melebihi pagu yang tersedia pada mode hard-stop.
+- **Tindakan**: Tingkatkan pagu anggaran melalui proses revisi resmi (`EnterpriseBudgetCycleStateMachine::STATUS_REVISED`) atau ajukan otorisasi soft-stop ke komite anggaran.
 
-## 1. Daftar Galat Bisnis & Penanganan
+### `BudgetInvalidTransitionException`
+- **Kode Pesan**: `EF-BUDGET-002`
+- **Penyebab**: Upaya transisi status siklus hidup anggaran yang melanggar matriks transisi yang diizinkan (misal: langsung dari `DRAFT` ke `ACTIVE` tanpa persetujuan).
+- **Tindakan**: Ikuti urutan status formal: `DRAFT` $\to$ `SUBMITTED` $\to$ `REVIEWED` $\to$ `APPROVED` $\to$ `ACTIVE`.
 
-| Kode Galat | Pesan Galat | Penyebab | Solusi Penanganan |
-|---|---|---|---|
-| **EF-ERR-001** | `Pagu anggaran tidak mencukupi untuk reservasi komitmen.` | Nilai komitmen belanja PO melampaui sisa pagu tersedia pada mode Hard-Stop. | Kurangi nilai PO atau ajukan revisi penambahan pagu anggaran via state machine `REVISED`. |
-| **EF-ERR-002** | `Transisi status siklus anggaran tidak sah dari [X] ke [Y].` | Percobaan transisi di luar matriks `EnterpriseBudgetCycleStateMachine`. | Ikuti alur transisi resmi: DRAFT -> SUBMITTED -> REVIEWED -> APPROVED -> ACTIVE. |
-| **EF-ERR-003** | `Pelanggaran prinsip pembuat-pemeriksa (Four-Eyes Principle).` | Pengesahan anggaran dilakukan oleh user yang sama dengan pembuat usulan. | Wajib disahkan oleh pejabat otorisasi yang berbeda. |
-| **EF-ERR-004** | `Sertifikat covenant utang sindikasi tidak valid atau rusak.` | Payload atau hash SHA-256 sertifikat diubah secara tidak sah. | Hitung ulang melalui `SyndicatedLoanCovenantCalculator` untuk menerbitkan sertifikat baru. |
-| **EF-ERR-005** | `Neraca saldo konsolidasi tidak seimbang (Zero-Sum Breach).` | Total debit tidak sama dengan total kredit pada proses agregasi. | Identifikasi entitas anak yang memiliki selisih pembukuan sebelum konsolidasi. |
-| **EF-ERR-006** | `Pelanggaran pemisahan tugas (SoD Conflict) tingkat kritis.` | Pengguna memiliki kombinasi peran terlarang (misal maker & checker). | Cabut salah satu peran pengguna di modul Identity/RBAC. |
-| **EF-ERR-007** | `Nilai belanja melebihi batas delegasi wewenang (DoA Limit).` | Manajer mencoba menyetujui transaksi di atas plafon tingkatannya. | Eskalasi persetujuan ke tingkatan manajemen di atasnya (CFO / Direksi). |
-| **EF-ERR-008** | `Kewajiban pelaporan regulasi telah melewati tenggat waktu (Overdue).` | Laporan belum diserahkan hingga tanggal jatuh tempo kepatuhan. | Serahkan laporan segera dan catat estimasi denda administrasi pada sistem. |
+### `BudgetMakerCheckerViolationException`
+- **Kode Pesan**: `EF-BUDGET-003`
+- **Penyebab**: Operator pembuat anggaran (`created_by`) mencoba menyetujui anggarannya sendiri pada status `APPROVED`.
+- **Tindakan**: Otorisasi persetujuan wajib dilakukan oleh operator berbeda dengan wewenang yang sah sesuai prinsip *Four-Eyes Principle*.
+
+### `PeriodAlreadyLockedException`
+- **Kode Pesan**: `EF-CLOSE-001`
+- **Penyebab**: Percobaan menutup buku pada periode yang statusnya sudah terkunci di `ef_financial_period_locks` atau mencoba memposting transaksi baru ke periode terkunci.
+- **Tindakan**: Gunakan periode fiskal berikutnya yang masih aktif untuk membukukan penyesuaian.
+
+### `SubledgerReconciliationMismatchException`
+- **Kode Pesan**: `EF-CLOSE-002`
+- **Penyebab**: Penutupan buku ditolak karena saldo subledger (AR, AP, Fixed Asset, Inventory) tidak identik dengan saldo akun buku besar terkait.
+- **Tindakan**: Selesaikan selisih subledger sebelum melakukan penutupan buku.
+
+### `SodViolationException`
+- **Kode Pesan**: `EF-SOD-001`
+- **Penyebab**: Upaya pemberian hak akses atau penetapan peran ganda yang melanggar matriks 12 aturan pemisahan tugas tanpa dispensasi aktif.
+- **Tindakan**: Hapus salah satu peran yang berkonflik, atau ajukan dispensasi berbatas waktu melalui form pengecualian SoD dengan persetujuan manajemen risiko.
+
+### `InvalidAuditEvidenceManifestException`
+- **Kode Pesan**: `EF-AUDIT-001`
+- **Penyebab**: Verifikasi paket data bukti audit menemukan ketidakcocokan antara berkas CSV yang diarsipkan dengan checksum SHA-256 yang tercantum dalam manifest.
+- **Tindakan**: Lakukan generate ulang data pack audit dan periksa integritas disk storage.
