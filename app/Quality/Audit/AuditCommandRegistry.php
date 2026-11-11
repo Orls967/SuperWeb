@@ -14,6 +14,7 @@ use App\Quality\Audit\Fixtures\AviationAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\B2bAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\BankReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\BiddingAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\BoundaryAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ChainAuditAllCorruptionFixture;
 use App\Quality\Audit\Fixtures\CirAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\CircularAuditCorruptionFixture;
@@ -118,6 +119,7 @@ final class AuditCommandRegistry
             'b2b:audit' => new B2bAuditCorruptionFixture,
             'bank:reconcile' => new BankReconcileCorruptionFixture,
             'bidding:audit' => new BiddingAuditCorruptionFixture,
+            'boundary:audit' => new BoundaryAuditCorruptionFixture,
             'chain:audit-all' => new ChainAuditAllCorruptionFixture,
             'cir:audit' => new CirAuditCorruptionFixture,
             'ck:audit' => new CkAuditCorruptionFixture,

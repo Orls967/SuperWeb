@@ -14,6 +14,10 @@ use Modules\Core\Http\Controllers\Ai\AiQuarantineController;
 use Modules\Core\Http\Controllers\Ai\AiStockRecommendationController;
 use Modules\Core\Http\Controllers\AiGovernanceController;
 use Modules\Core\Http\Controllers\AuditLogController;
+use Modules\Core\Http\Controllers\Boundaries\ModuleMapController;
+use Modules\Core\Http\Controllers\Boundaries\ModuleMapExportController;
+use Modules\Core\Http\Controllers\Boundaries\ViolationController;
+use Modules\Core\Http\Controllers\Boundaries\WaiverController;
 use Modules\Core\Http\Controllers\DesignSystem\DesignSystemCatalogController;
 use Modules\Core\Http\Controllers\DesignSystem\DesignSystemReleaseController;
 use Modules\Core\Http\Controllers\DesignSystem\ThemePreferenceController;
@@ -203,5 +207,35 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::get('/{run}', [SimulationRunController::class, 'show'])->name('admin.simulation.runs.show');
         Route::post('/{run}/pause', [SimulationRunController::class, 'pause'])->name('admin.simulation.runs.pause');
         Route::post('/{run}/resume', [SimulationRunController::class, 'resume'])->name('admin.simulation.runs.resume');
+    });
+
+    // Modular Boundaries & Architecture Governance — Fase R4
+    Route::middleware('role:admin,superadmin,platform_architect')->prefix('admin/boundaries')->group(function () {
+        Route::get('/map', [ModuleMapController::class, 'index'])->name('admin.boundaries.map');
+        Route::get('/violations', [ViolationController::class, 'index'])->name('admin.boundaries.violations');
+        Route::get('/violations/{id}', [ViolationController::class, 'show'])->name('admin.boundaries.violations.show');
+
+        // Exports
+        Route::get('/export/violations', [ModuleMapExportController::class, 'exportViolations'])->name('admin.boundaries.export.violations');
+        Route::get('/export/waivers', [ModuleMapExportController::class, 'exportWaivers'])->name('admin.boundaries.export.waivers');
+        Route::get('/export/coverage', [ModuleMapExportController::class, 'exportCoverage'])->name('admin.boundaries.export.coverage');
+        Route::get('/export/table-ownership', [ModuleMapExportController::class, 'exportTableOwnership'])->name('admin.boundaries.export.table-ownership');
+    });
+
+    Route::middleware('role:admin,superadmin,platform_architect,auditor')->prefix('admin/boundaries')->group(function () {
+        Route::get('/waivers', [WaiverController::class, 'index'])->name('admin.boundaries.waivers');
+        Route::post('/waivers/{id}/extend', [WaiverController::class, 'extend'])->name('admin.boundaries.waivers.extend');
+    });
+
+    // Canonical Architecture Routes per W8-P4 Specification (T-10 / R4)
+    Route::middleware('role:admin,superadmin,platform_architect')->prefix('admin/architecture')->group(function () {
+        Route::get('/modules', [ModuleMapController::class, 'index'])->name('admin.architecture.modules');
+        Route::get('/violations', [ViolationController::class, 'index'])->name('admin.architecture.violations');
+        Route::get('/violations/{id}', [ViolationController::class, 'show'])->name('admin.architecture.violations.show');
+    });
+
+    Route::middleware('role:admin,superadmin,platform_architect,auditor')->prefix('admin/architecture')->group(function () {
+        Route::get('/waivers', [WaiverController::class, 'index'])->name('admin.architecture.waivers');
+        Route::post('/waivers/{id}/extend', [WaiverController::class, 'extend'])->name('admin.architecture.waivers.extend');
     });
 });

@@ -490,7 +490,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
 | 12 | **ControlTower** | `sct_` | 1 |
-| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 40 |
+| 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 41 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
 | 16 | **Edu** | `edu_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **700 Migrasi** |
+| | **Total: 65 Modul** | | **701 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -561,7 +561,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
 | **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
-| **Core** | 101 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
+| **Core** | 115 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
 | **Edu** | 23 | `api/v1/edu/certificates/verify`, `academy/certificates/verify`, `academy/admin/programs` ... | web, auth, role:academy_admin,admin |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1721 Rute** | | |
+| **Total** | **1735 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -623,6 +623,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ai:audit` | `manual` | Audit deterministic AI decision snapshots, pricing guardrails, and anomaly quarantines (Fase 64.4) |
 | `api:audit` | `manual` | Audit API: tanda tangan HMAC webhook & EDI (Fase 55) + platform economy — billing API developer, embedded finance, isolasi white label (Fase 147) |
 | `app:rotate-blind-index` | `manual` | Rotasi pepper blind index HMAC untuk seluruh record PII terenkripsi secara idempoten |
+| `arch:boundaries` | `manual` | Pindai peta dependensi modul, siklus SCC, kepemilikan data, dan skor cakupan kontrak |
 | `arch:scan` | `manual` | Pindai pola jalan pintas A1–A13 (KONSEP §A14.1) dan bandingkan dengan baseline ratchet |
 | `ast:audit` | **`monthlyOn(1, '02:00')`** | Audit aset: penyusutan, book value, ledger, hash-chain (0 selisih) |
 | `ast:backfill-links` | `manual` | Backfill asset_id pada data aset lama (idempoten, aman diulang) |
@@ -648,6 +649,15 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `bank:reconcile` | **`daily()`** | Rekonsiliasi ledger: verifikasi cached_balance tiap akun dengan SUM(entries) dan SUM global per aset = 0 |
 | `benchmark:run` | `manual` | Jalankan benchmark suite platform: latensi p95 endpoint kritis dan durasi audit finansial (PROGRESS R9.2) |
 | `bidding:audit` | `manual` | Audit AI Bidding Agent: verifikasi determinisme evaluasi lelang, four-eyes approval, dan komitmen kontrak (0 selisih) |
+| `boundary:audit` | `manual` | Audit rekonsiliasi dua sumber: graf pemindaian batas vs database, baseline, waiver, dan siklus |
+| `boundary:blast-radius` | `manual` | Hitung jangkauan riak dan radius ledakan perubahan arsitektur lintas modul |
+| `boundary:compliance` | `manual` | Kompilasi laporan kepatuhan eksekutif, scorecard peringkat modul, dan status SLA waiver |
+| `boundary:drift` | `manual` | Pindai pergeseran kontrak (contract drift), interface yatim, dan kesehatan binding container |
+| `boundary:expire-waivers` | `manual` | Periksa dan kembalikan waiver batas arsitektur yang telah kedaluwarsa ke status triaged |
+| `boundary:metrics` | `manual` | Kompilasi dan ekspor metrik kepatuhan batas modul, waiver, dan skor kontrak |
+| `boundary:path` | `manual` | Temukan seluruh jalur ketergantungan dan titik leher botol (bottlenecks) antara dua modul |
+| `boundary:remediate` | `manual` | Hasilkan resep refaktor dan rencana remediasi modular untuk pelanggaran batas arsitektur |
+| `boundary:triage` | `manual` | Sinkronkan pelanggaran batas arsitektur dari scan ke basis data secara idempoten |
 | `chain:audit-all` | `manual` | Jalankan orkestrasi audit menyeluruh seluruh rantai nilai ekosistem (Double-Entry Ledger, Treasury, Trade, TF, Proc, Mfg, Dist, Agency, Group, SCT, EF, API) |
 | `cir:audit` | `manual` | Audit dua sumber Circular Marketplace (D24-5: tonase terjual = dikirim = diterima K1, escrow balance, dan fee revenue) |
 | `ck:audit` | `manual` | Perform two-source verification of cloud kitchen capacities, catering subscriptions, and meal order billings |
@@ -965,7 +975,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 347 Command** | **37 Terjadwal** | |
+| **Total: 357 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

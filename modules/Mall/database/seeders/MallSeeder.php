@@ -12,7 +12,7 @@ use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Mall\Application\Actions\GenerateMonthlyBillingAction;
 use Modules\Mall\Application\Actions\PayInvoiceAction;
 use Modules\Mall\Application\Actions\RecordUtilityReadingAction;

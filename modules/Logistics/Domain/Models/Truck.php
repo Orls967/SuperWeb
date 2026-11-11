@@ -6,7 +6,7 @@ namespace Modules\Logistics\Domain\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Logistics\Domain\Enums\FleetStatus;
 use Modules\Logistics\Domain\Enums\TruckType;
 

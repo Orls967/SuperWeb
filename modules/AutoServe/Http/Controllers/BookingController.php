@@ -15,7 +15,7 @@ use Modules\AutoServe\Domain\Enums\EstimateStatus;
 use Modules\AutoServe\Domain\Models\Booking;
 use Modules\AutoServe\Domain\Models\Service;
 use Modules\AutoServe\Domain\Models\Sparepart;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 
 class BookingController extends Controller
 {

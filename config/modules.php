@@ -294,6 +294,20 @@ return [
         'Party' => ['lgx_carriers', 'lgx_shipper_accounts', 'mall_tenants', 'resto_suppliers'],
         'Payment' => ['serve_bookings'],
         'Store' => ['spareparts', 'inv_stock_movements'],
+        'Pricing' => [
+            // W8-D43 waiver (docs/DECISIONS.md#w8-d43): legacy pricing tables prior to pric_ prefix harmonization
+            'prc_frozen_quotes',
+            'prc_price_ticks',
+            'prc_price_tick_aggregates',
+        ],
+        'Vending' => [
+            // W8-D43 waiver (docs/DECISIONS.md#w8-d43): legacy vending tables prior to vnd_ prefix harmonization
+            'ven_auto_pos',
+            'ven_demand_forecasts',
+            'ven_restock_tasks',
+            'ven_vending_transactions',
+            'ven_vending_units',
+        ],
         'Integration' => (static function (): array {
             $path = dirname(__DIR__).'/tests/Architecture/baselines/integration-freeze.json';
             if (! file_exists($path)) {

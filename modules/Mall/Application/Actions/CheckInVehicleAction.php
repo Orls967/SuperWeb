@@ -7,7 +7,7 @@ namespace Modules\Mall\Application\Actions;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Mall\Domain\Enums\MemberStatus;
 use Modules\Mall\Domain\Enums\ParkingPaymentStatus;
 use Modules\Mall\Domain\Enums\ParkingSessionStatus;

@@ -15,7 +15,7 @@ use Modules\Banking\Application\DTOs\PostingEntryDTO;
 use Modules\Banking\Contracts\Ledger;
 use Modules\Banking\Contracts\VerifiesWalletPin;
 use Modules\Banking\Domain\Enums\TransactionType;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Mall\Application\Services\MallLedgerAccounts;
 use Modules\Mall\Domain\Enums\MemberStatus;
 use Modules\Mall\Domain\Enums\VehicleType;

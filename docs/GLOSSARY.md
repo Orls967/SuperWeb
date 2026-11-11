@@ -48,3 +48,15 @@ Glosarium istilah baku arsitektur dan bisnis yang digunakan lintas modul SuperWe
 - **Search Diversity Ranker:** Algoritma perankingan sekunder yang menerapkan diskon relevansi marginal pada dokumen dari modul atau kategori yang sama untuk menghindari monopoli satu jenis entitas pada halaman pertama hasil pencarian.
 - **SLA Breach Threshold:** Batas waktu maksimum yang diizinkan untuk pemrosesan sebuah tugas sebelum mekanisme eskalasi berjenjang (Level 1 $\to$ Level 4) terpicu secara otomatis.
 - **Search Pinning:** Kemampuan personalisasi yang memungkinkan pengguna menyematkan dokumen atau hasil pencarian penting ke posisi teratas kueri rujukan mereka.
+
+---
+
+## Istilah Batas Modul & Kepemilikan Data (Fase R4 / W8-P4)
+
+- **Directed Acyclic Graph (DAG) Modul:** Graf dependensi berarah antar direktori modul (`modules/*`) tanpa siklus berpanjang $\ge 2$, menegakkan *Acyclic Dependencies Principle* (Robert C. Martin, ADR-0041).
+- **Strongly Connected Components (Tarjan SCC):** Partisi maksimal graf dependensi berarah ke dalam subgraf berhubung kuat dalam $\mathcal{O}(V + E)$; komponen beranggota $|C| > 1$ menandakan siklus terlarang antar modul (self-loop $|C|=1$ diabaikan per W8-D41).
+- **Longest Prefix Match (`TablePrefixOwnershipResolver`):** Aturan resolusi kepemilikan tabel basis data yang memilih prefiks terpanjang di `config/modules.php` (mis. `hcm_pay_` mengalahkan `hcm_`); prefiks kembar lintas dua modul memicu status `PREFIX_CONFLICT`.
+- **Contract Coverage Scorer (Permil):** Skor kepatuhan modular bilangan bulat $0\text{--}1.000\text{ permil}$ ($\lfloor 1.000 \times C_{\text{contract}} / (C_{\text{contract}} + V_{\text{direct}}) \rfloor$) tanpa aritmetika titik mengambang (total $0 \to 1.000$).
+- **BoundaryViolation State Machine:** Mesin status 7 tahap (`detected`, `triaged`, `contract_designed`, `migrating`, `verified`, `closed`, `waived`) dengan riwayat transisi append-only (`core_boundary_violation_transitions`) dan guard wajib hapus entri baseline sebelum `verified`.
+- **Waiver Arsitektur Ber-Anchor:** Pengecualian sementara pelanggaran arsitektur yang wajib mencantumkan anchor `docs/DECISIONS.md#...`, alasan, pemilik, dan kedaluwarsa $\le 90$ hari (otomatis dikembalikan ke `triaged` lewat `boundary:expire-waivers`).
+

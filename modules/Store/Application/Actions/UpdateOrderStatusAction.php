@@ -7,7 +7,7 @@ namespace Modules\Store\Application\Actions;
 use Exception;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\AcquiresVehicle;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Shared\Application\BaseAction;
 use Modules\Store\Domain\Enums\OrderStatus;
 use Modules\Store\Domain\Models\Order;

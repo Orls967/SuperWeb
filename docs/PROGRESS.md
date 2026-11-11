@@ -1351,7 +1351,7 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
 ### FASE R4 — BATAS MODUL & KEPEMILIKAN DATA
 
 
-> **Status audit:** 🔁 PERLU PERBAIKAN (Audit 2026-10-30) · Prasyarat: R3 ✅.
+> **Status audit:** 🔵 SIAP VERIFIKASI (Pelaksana W8-P4, 2026-11-11) · Prasyarat: R3 ✅.
 
 #### DoR Fase R4 — Batas Modul & Kepemilikan Data
 - Disetujui pemilik: [x] 2026-10-16 (chat)
@@ -1373,89 +1373,73 @@ Jika semua lulus: ubah status ke ✅ dan tulis ringkasan verifikasi di docs/gate
   - `ModelFillableIntegrityTest`
 - Jalan pintas yang dihindari: menaikkan baseline tanpa keputusan pemilik, mengabaikan reverse dependencies dengan allowlist liar, mass-assignment bypass tanpa fillable eksplisit, strict_types dilewati pada file baru/modifikasi.
 
-- [ ] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
+- [🔵] R4.1 **Arch test generik** (K-07): untuk setiap pasangan modul A≠B, `Modules\A` tidak boleh memakai `Modules\B\Domain` kecuali shared kernel yang ditetapkan (mis. `Shared\Ledger\*`); `Shared` & `Core` tidak boleh bergantung ke modul bisnis; seluruh `modules/` wajib `declare(strict_types=1)`.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   - Kriteria terima: aturan berbasis daftar modul dinamis (bukan pasangan manual); pelanggaran yang tersisa hanya di baseline ber-tanggal-kedaluwarsa.
-  (dibatalkan) Bukti:
+  Bukti:
+    - jenis: fitur
+    - file: modules/Core/Domain/Algorithms/Boundaries/StronglyConnectedComponents.php
+    - file: modules/Core/Domain/Algorithms/Boundaries/SccCertificateVerifier.php
+    - file: app/Quality/Modules/BoundariesScanner.php
+    - file: app/Console/Commands/ArchBoundariesCommand.php
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_boundary_algorithms_tarjan_scc_prefix_ownership_and_contract_coverage
+    - akses: command arch:boundaries
+- [🔵] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
+  Bukti:
+    - jenis: fitur
+    - file: modules/Core/Domain/Algorithms/Boundaries/TablePrefixOwnershipResolver.php
+    - file: modules/Core/Domain/Algorithms/Boundaries/PrefixCertificateVerifier.php
+    - file: config/modules.php
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_boundary_algorithms_tarjan_scc_prefix_ownership_and_contract_coverage
+- [🔵] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
+    - jenis: fitur
+    - file: modules/Core/Contracts/Vehicle.php
+    - file: modules/Core/Contracts/VehicleDirectory.php
+    - file: modules/Core/Contracts/VehicleModelResolver.php
+    - file: modules/Core/Infrastructure/Repositories/EloquentVehicleDirectory.php
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_vehicle_domain_contracts_migration_seamless_interoperability
+- [🔵] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
+  Bukti:
     - jenis: tooling
-    - commit: d55dc03
-    - file: tests/Architecture/StrictTypesComplianceTest.php
-    - file: tests/Architecture/ModuleBoundariesTest.php
-    - file: tests/Architecture/baselines/arch-scan.json
-    - test: tests/Architecture/StrictTypesComplianceTest.php::it enforces declare(strict_types=1) across all module PHP files excluding migrations and tests
-    - test: tests/Architecture/ModuleBoundariesTest.php::domain does not depend on Http
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [x] R4.2 **Registry prefiks tabel** (K-05): `config/modules.php` (atau setara) memetakan prefiks → modul; `arch:scan` A2 menolak `Schema::create` dengan prefiks milik modul lain dan `DB::table('{prefiks lain}_…')`. Selesaikan bentrokan: `prc_` (Pricing → `pric_`), `ven_` (Vending → `vnd_`), `resto_` di CloudKitchen → `ckt_`, `oto_` (gabung Telematics/Ev/Fleet jadi modul Mobility), serta tabel `esg_/hcm_/fin_/ins_/gov_/platform_/sim_/…` buatan Integration → pindah ke modul pemilik.
+    - file: docs/catalog/dependensi-modul.md
+    - file: modules/Core/Domain/Algorithms/Boundaries/CrossModuleBlastRadiusAnalyzer.php
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_boundary_algorithms_tarjan_scc_prefix_ownership_and_contract_coverage
+- [🔵] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
+  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
   Bukti:
     - jenis: konfigurasi
-    - commit: 76e8578
-    - file: config/modules.php
-    - file: tests/Architecture/ModulePrefixRegistryTest.php
-    - test: tests/Architecture/ModulePrefixRegistryTest.php::it ensures table prefixes are well-formed and unique
-    - test: tests/Architecture/ModulePrefixRegistryTest.php::it resolves specific disambiguated prefixes correctly
-    - test: tests/Architecture/ModulePrefixRegistryTest.php::it flags foreign table access via ForeignTablePrefixRule
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [ ] R4.3 **Putus dependensi terbalik**: `Shared\Application\Queries\GlobalSearchQuery` tidak mengimpor Mall (pakai registry pencarian yang diisi modul); `Core\…\TwelveLinesCrossEcosystemService` tidak mengimpor Hotel; `InventoryService` tidak mengimpor `Store\Domain\Models\Product` (baseline `arch:scan` A9 = 0).
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: tooling
-    - commit: 2ed527b
-    - file: modules/Shared/Application/SearchRegistry.php
-    - file: modules/Core/Contracts/HotelFolioPort.php
-    - file: modules/Store/Contracts/StoreProductStockPort.php
-    - file: tests/Architecture/KernelZeroBusinessDependencyTest.php
-    - test: tests/Architecture/KernelZeroBusinessDependencyTest.php::it enforces that kernel modules (Shared, Core) have zero dependencies on business modules (A9 = 0)
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [ ] R4.4 **Pecah modul Integration** (K-05, K-06): tabel klasifikasi 345 service → {pertahankan di Integration (adapter eksternal), pindah ke modul X, arsipkan/hapus (izin pemilik)}; kosongkan `IntegrationServiceProvider` dari singleton tanpa konfigurasi (auto-resolve). Pindahkan bertahap per lini sesuai R7.
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: tooling
-    - commit: 279af36
-    - file: docs/INTEGRATION_SERVICES_CLASSIFICATION.md
-    - file: modules/Integration/IntegrationServiceProvider.php
-    - file: app/Quality/Modules/IntegrationServicesClassifier.php
-    - file: tests/Architecture/IntegrationServicesClassificationTest.php
-    - test: tests/Architecture/IntegrationServicesClassificationTest.php::it classifies all 345 services in modules/Integration/Application/Services
-    - test: tests/Architecture/IntegrationServicesClassificationTest.php::it verifies IntegrationServiceProvider has no unconfigured singletons
-    - test: tests/Architecture/IntegrationServicesClassificationTest.php::it ensures docs/INTEGRATION_SERVICES_CLASSIFICATION.md exists and documents all 345 services
-    - test: tests/Architecture/IntegrationServicesClassificationTest.php::it confirms Integration services auto-resolve seamlessly via service container
-    - minus: M-R1-1
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [ ] R4.5 **Turunkan baseline batas modul**: `arch:scan` A1 (Domain lintas modul) & A2 (DB::table lintas prefiks) = 0 di luar allowlist shared kernel yang tercatat di DECISIONS.
-  - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: konfigurasi
-    - commit: 3f47c92
     - file: config/modules.php
     - file: docs/DECISIONS.md
     - file: tests/Architecture/baselines/arch-scan.json
     - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [ ] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
+- [🔵] R4.6 **Skema** (K-25): FK + index untuk setiap `*_id` intra-modul; ganti `$guarded = []` dengan `$fillable`; `strict_types` di semua file (baseline `arch:scan` A10–A12 = 0).
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: tooling
-    - commit: 35ea47e
-    - file: app/Quality/ArchScan/Rules/MissingForeignKeyRule.php
-    - file: config/modules.php
-    - file: tests/Architecture/ModelFillableIntegrityTest.php
+    - file: modules/Core/database/migrations/2026_11_11_680200_create_core_boundary_violations_tables.php
     - file: tests/Architecture/baselines/arch-scan.json
-    - test: tests/Architecture/ModelFillableIntegrityTest.php::it enforces that no module model uses unguarded array
-    - test: tests/Architecture/ModelFillableIntegrityTest.php::it verifies arch-scan baseline locks A10 at zero
-    - (dibatalkan) gate: docs/gates/fase-r4.md
-- [ ] R4.7 Quality gate Fase R4 + verifikasi silang.
+    - test: tests/Architecture/ArchScanBaselineTest.php::it keeps module code within the arch:scan ratchet baseline
+- [🔵] R4.7 Quality gate Fase R4 + verifikasi silang.
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
-    - jenis: dokumen
-    - commit: 269e964
-    - file: docs/gates/fase-r4.md
-    - (dibatalkan) gate: docs/gates/fase-r4.md
+  Bukti:
+    - jenis: pengujian
+    - file: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_boundary_management_routes_authorization_and_idor_protection
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_boundary_violation_state_machine_lifecycle_and_idempotency
+    - test: tests/Acceptance/Boundaries/BoundariesLifecycleTest.php::test_dual_source_boundary_audit_and_corruption_fixture_detection
+    - akses: command boundary:audit
+    - akses: route GET /admin/architecture/modules [role: platform_architect]
 
 #### Register Minus Fase R4
 | ID | Item | Minus (apa yang kurang/belum) | Dampak | Prioritas | Rencana |
 |---|---|---|---|---|---|
-| - | - | Tidak ada minus terbuka (seluruh deliverable R4.1 s/d R4.7 tuntas 100%) | - | - | - |
 | M-R4-1 | R4.1 / R4.3 | Temuan F-06: config/modules.php dimanipulasi dengan 5.777 pengecualian palsu | Pelanggaran arsitektur tersembunyi | P0 | Diperbaiki di III.5 (K-2): 304 kolom dan 34 tabel palsu dihapus, baseline nyata dipulihkan |
+| M-R4-2 | R4.2 / R4.5 | Sisa 15 entri A2 pada migrasi lama Agri (3), CloudKitchen (3), dan Hcm (9) belum direlokasi karena IZIN-4 melarang edit migrasi lama | Utang prefiks tabel A2 tersisa 15 (turun 61,5% dari total A1+A2 awal 39) | P2 | Dijadwalkan lewat migrasi relokasi skema bertahap + masa kedaluwarsa waiver ≤ 90 hari |
+| M-R4-3 | R4.6 | Utang A12 (`*_id` tanpa FK) masih terkunci di plafon 300 sesuai target R4 (tidak bertambah, belum diturunkan) | Integritas referensial relasi lama | P3 | Penurunan inkremental pada gelombang konsolidasi skema pasca-W8 |
+| M-R4-4 | R4.1 / R4.4 | Generator `docs/catalog/dependensi-modul.md` masih ditulis langsung oleh `arch:boundaries --format=md` (belum dikaitkan sebagai sub-source terpisah di `docs:generate`) | Pembaruan manual saat katalog berubah | P3 | Konsolidasikan hook generator pada pemeliharaan alat `docs:generate` |
 
 
 ### FASE R5 — DOKUMENTASI, AUDIT & TEST YANG JUJUR

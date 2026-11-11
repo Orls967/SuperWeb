@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\AutoServe\Domain\Enums\BookingStatus;
 use Modules\AutoServe\Domain\Enums\EstimateStatus;
-use Modules\Core\Domain\Models\Vehicle;
+use Modules\Core\Contracts\Vehicle;
 use Modules\Payment\Contracts\Payable;
 use Modules\Payment\Contracts\PaymentIntent;
 use Modules\Shared\Domain\Exceptions\InvalidStateTransition;

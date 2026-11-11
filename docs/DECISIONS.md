@@ -3135,6 +3135,29 @@ Pekerjaan G6-P5.4 mengimplementasikan Lini 20 Pendidikan Formal & Kampus (Edu Ca
   4. **W8-D39 (Replay Deterministik Stream & Verifikasi Hash Proyeksi Kanonikal)**: Replay per grup konsumen dan rentang offset tanpa mengirim efek keluar ganda; verifikasi konsistensi proyeksi dengan hash SHA-256 keadaan kanonikal yang identik ($h_1 == h_2$).
   5. **W8-D40 (Dead-Letter Queue & Karantina Poison Non-Blocking)**: Karantina poison message ke `core_poison_messages` agar offset tidak terhambat (*head-of-line blocking avoidance*); pembuangan batch $> 20$ pesan mewajibkan persetujuan Approval Engine via Kotak Masuk "Tugas Saya".
 
+<a id="w8-d41"></a>
+<a id="w8-d42"></a>
+<a id="w8-d43"></a>
+<a id="w8-d44"></a>
+## 2026-11-11: [W8-P4.1] Core — Batas Modul, Kepemilikan Data & Tata Kelola Waiver (Fase R4, W8-D41..W8-D44)
+- **Anchor:** `2026-11-11-w8-p4-fase-r4-batas-modul-kepemilikan-data` / `w8-d41` / `w8-d42` / `w8-d43` / `w8-d44`
+- **Rujukan Desain & Dokumen:**
+  - [`docs/design/fase-R4.md`](design/fase-R4.md) (Desain Arsitektur & Diagram Fase R4)
+  - [`docs/dor/fase-R4.md`](dor/fase-R4.md) (Definition of Ready & RAB Fase R4)
+  - [`docs/konsep/batas-api-tenancy.md`](konsep/batas-api-tenancy.md) (Konsep Batas Modular & Kepemilikan Data)
+  - [`docs/decisions/ADR-0041-peta-dependensi-modul.md`](decisions/ADR-0041-peta-dependensi-modul.md)
+  - [`docs/decisions/ADR-0042-kepemilikan-tabel-modular.md`](decisions/ADR-0042-kepemilikan-tabel-modular.md)
+  - [`docs/decisions/ADR-0043-tata-kelola-waiver-arsitektur.md`](decisions/ADR-0043-tata-kelola-waiver-arsitektur.md)
+  - [`docs/decisions/ADR-0044-migrasi-kontrak-domain-vehicle.md`](decisions/ADR-0044-migrasi-kontrak-domain-vehicle.md)
+  - [`docs/catalog/dependensi-modul.md`](catalog/dependensi-modul.md)
+- **Konteks:**
+  - Penegakan batas arsitektur modular, deteksi siklus dependensi dengan Tarjan SCC deterministik, aturan kepemilikan data tunggal terdaftar longest prefix match, State Machine BoundaryViolation 7 status dengan riwayat fakta append-only, tata kelola waiver bertenggat waktu <= 90 hari, migrasi nyata kontrak Vehicle lintas modul (AutoServe, Logistics, Mall, Store), dan audit integritas dua sumber `boundary:audit`.
+- **Keputusan:**
+  1. **W8-D41 (Peta Dependensi Modul, DAG & Tarjan SCC Deterministik)**: Simpul modul `modules/*` dianalisis via AST; siklus dilarang dan diidentifikasi via Tarjan SCC dengan sertifikat verifikasi DAG kondensasi `SccCertificateVerifier`.
+  2. **W8-D42 (Kepemilikan Tabel Basis Data Modular & Longest Prefix Match)**: Setiap tabel dimiliki tepat satu modul; resolusi prefiks bertumpuk (`hcm_pay_`) via `TablePrefixOwnershipResolver`; dua modul mengklaim prefiks sama memicu `PREFIX_CONFLICT`.
+  3. **W8-D43 (Tata Kelola State Machine Boundary Violation & Waiver <= 90 Hari)**: Siklus 7 status (`detected` -> `triaged` -> `contract_designed` -> `migrating` -> `verified` -> `closed` -> `waived`); waiver wajib anchor DECISIONS, approver, tenggat <= 90 hari; auto-expire harian via `boundary:expire-waivers`.
+  4. **W8-D44 (Migrasi Kontrak Domain Cross-Module Vehicle)**: Eliminasi 14 pelanggaran A1 via pemisahan kontrak `Modules\Core\Contracts\VehicleDirectory`, `VehicleSnapshot`, dan `VehicleModelResolver` pada modul AutoServe, Logistics, Mall, dan Store tanpa mematahkan pengujian yang ada.
+
 <a id="w8-d61"></a>
 <a id="w8-d62"></a>
 <a id="w8-d63"></a>
