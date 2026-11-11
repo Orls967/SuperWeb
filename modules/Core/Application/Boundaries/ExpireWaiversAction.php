@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Boundaries;
 
 use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Core\Domain\Enums\ViolationStatus;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
@@ -16,12 +17,14 @@ final class ExpireWaiversAction
         private readonly BoundaryViolationStateMachine $stateMachine = new BoundaryViolationStateMachine,
         private readonly ?TaskInboxService $taskInbox = null,
         private readonly ?OutboxBusInterface $outboxBus = null,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     public function execute(): int
     {
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
         $expiredViolations = CoreBoundaryViolation::where('status', ViolationStatus::WAIVED->value)
-            ->where('expires_at', '<=', now())
+            ->where('expires_at', '<=', $now)
             ->get();
 
         $count = 0;
@@ -61,7 +64,7 @@ final class ExpireWaiversAction
                             'client_module' => $violation->client_module,
                             'owner_module' => $violation->owner_module,
                             'signature' => $violation->signature,
-                            'expired_at' => now()->toIso8601String(),
+                            'expired_at' => $now->toIso8601String(),
                         ],
                         'Core',
                         'CoreBoundaryViolation',

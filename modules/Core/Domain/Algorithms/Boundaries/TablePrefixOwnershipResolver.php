@@ -6,7 +6,10 @@ namespace Modules\Core\Domain\Algorithms\Boundaries;
 
 /**
  * Deterministic longest-prefix table ownership resolver (R4-ALG-02, W8-D42).
- * Supports nested hierarchical prefixes and shared table waivers.
+ * Supports nested hierarchical prefixes, conflict detection (PREFIX_CONFLICT),
+ * explicit UNOWNED resolution, and shared table waivers.
+ *
+ * Complexity: O(P log P) initialization, O(P) per table lookup (P <= 500 prefixes). Integer/string ops only.
  */
 final class TablePrefixOwnershipResolver
 {
@@ -92,6 +95,44 @@ final class TablePrefixOwnershipResolver
     public function prefixes(): array
     {
         return $this->sortedPrefixes;
+    }
+
+    /**
+     * Resolve owner module name or return 'UNOWNED' when no prefix matches.
+     */
+    public function resolveOwnershipLabel(string $tableName): string
+    {
+        return $this->resolve($tableName)->owner ?? 'UNOWNED';
+    }
+
+    /**
+     * Detect identical prefixes claimed by multiple distinct modules (PREFIX_CONFLICT).
+     *
+     * @param  list<array{prefix: string, owner: string}>  $registrations
+     * @return list<string> Sorted conflicting prefixes
+     */
+    public static function detectConflicts(array $registrations): array
+    {
+        $ownersByPrefix = [];
+        foreach ($registrations as $entry) {
+            $prefix = (string) ($entry['prefix'] ?? '');
+            $owner = (string) ($entry['owner'] ?? '');
+            if ($prefix === '') {
+                continue;
+            }
+            $ownersByPrefix[$prefix][$owner] = true;
+        }
+
+        $conflicts = [];
+        foreach ($ownersByPrefix as $prefix => $owners) {
+            if (count($owners) > 1) {
+                $conflicts[] = $prefix;
+            }
+        }
+
+        sort($conflicts, SORT_STRING);
+
+        return $conflicts;
     }
 
     private function isModuleAllowed(string $table, string $owner, ?string $requestingModule): bool

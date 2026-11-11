@@ -4,12 +4,47 @@ declare(strict_types=1);
 
 namespace Modules\Core\Domain\Algorithms\Boundaries;
 
+use InvalidArgumentException;
+use Modules\Core\Domain\Algorithms\CanonicalCertificateSupport;
+
 /**
  * Formal certificate verifier for Table Prefix Ownership.
- * Proves well-formedness, prefix uniqueness (no PREFIX_CONFLICT), and longest-match invariant (R4-ALG-02).
+ * Complexity: O(P) per lookup where P <= 500 registered prefixes. Integer/string comparisons only.
+ * Proves well-formedness, prefix uniqueness (no PREFIX_CONFLICT), longest-match invariant,
+ * and SHA-256 canonical certificate integrity (R4-ALG-02).
  */
 final class PrefixCertificateVerifier
 {
+    /**
+     * Build canonical SHA-256 certificate for prefix ownership resolution.
+     *
+     * @param  array<string, mixed>  $input
+     * @param  list<string>  $steps
+     * @param  array<string, mixed>  $result
+     * @return array{input: array<string, mixed>, steps: list<string>, result: array<string, mixed>, sha256: string}
+     */
+    public function issueCertificate(array $input, array $steps, array $result): array
+    {
+        return CanonicalCertificateSupport::issue($input, $steps, $result);
+    }
+
+    /**
+     * Verify canonical SHA-256 certificate for table prefix resolution; throws on corruption.
+     *
+     * @param  array<string, mixed>  $certificate
+     */
+    public function verifyCertificate(array $certificate): bool
+    {
+        $verified = CanonicalCertificateSupport::verifyIntegrity($certificate, 'PREFIX_CERT');
+        $prefixes = $verified['input']['prefixes'] ?? null;
+
+        if (! is_array($prefixes) || ! $this->verifyPrefixes($prefixes)) {
+            throw new InvalidArgumentException('PREFIX_CERT_INVARIANT_FAILED: Daftar prefiks pada sertifikat tidak sah.');
+        }
+
+        return true;
+    }
+
     /**
      * Verify that all table prefixes are well-formed and unique.
      *

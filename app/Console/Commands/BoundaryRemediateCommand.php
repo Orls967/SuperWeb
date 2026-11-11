@@ -6,16 +6,19 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Application\Boundaries\BoundaryRemediationPlanner;
+use Modules\Core\Application\Boundaries\ContractMigrationOrchestrator;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
 class BoundaryRemediateCommand extends Command
 {
-    protected $signature = 'boundary:remediate {id : ID pelanggaran batas di core_boundary_violations} {--json : Format keluaran dalam JSON}';
+    protected $signature = 'boundary:remediate {id : ID pelanggaran batas di core_boundary_violations} {--json : Format keluaran dalam JSON} {--advance : Majukan fase state machine pelanggaran}';
 
     protected $description = 'Hasilkan resep refaktor dan rencana remediasi modular untuk pelanggaran batas arsitektur';
 
-    public function handle(BoundaryRemediationPlanner $planner): int
-    {
+    public function handle(
+        BoundaryRemediationPlanner $planner,
+        ContractMigrationOrchestrator $orchestrator,
+    ): int {
         $id = (int) $this->argument('id');
         $violation = CoreBoundaryViolation::find($id);
 
@@ -25,7 +28,16 @@ class BoundaryRemediateCommand extends Command
             return self::FAILURE;
         }
 
-        $plan = $planner->plan($violation);
+        if ($this->option('advance')) {
+            $result = $orchestrator->advancePhase(
+                $violation,
+                'cli:boundary-remediate',
+                'Promoted via boundary:remediate --advance'
+            );
+            $this->info("Status dimajukan: {$result['previousStatus']} -> {$result['currentStatus']}");
+        }
+
+        $plan = $planner->plan($violation->refresh());
 
         if ($this->option('json')) {
             $this->line((string) json_encode($plan, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));

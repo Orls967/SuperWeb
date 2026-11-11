@@ -57,14 +57,25 @@ class BoundariesLifecycleTest extends TestCase
         $this->get(route('admin.boundaries.waivers'))->assertForbidden();
         $this->get(route('admin.boundaries.export.violations'))->assertForbidden();
 
-        // 3. Authorized role (admin or platform_architect) has access (200 OK)
-        $architect = User::factory()->create(['role' => 'admin']);
+        // 3. Authorized role (platform_architect / admin) has access (200 OK)
+        $architect = User::factory()->create(['role' => 'platform_architect']);
         $this->actingAs($architect);
 
         $this->get(route('admin.boundaries.map'))->assertOk();
         $this->get(route('admin.boundaries.violations'))->assertOk();
         $this->get(route('admin.boundaries.waivers'))->assertOk();
         $this->get(route('admin.boundaries.export.violations'))->assertOk();
+        $this->get('/admin/architecture/modules')->assertOk();
+        $this->get('/admin/architecture/violations')->assertOk();
+        $this->get('/admin/architecture/waivers')->assertOk();
+
+        // 4. Role auditor only accesses waivers (200), rejected on modules/violations (403)
+        $auditor = User::factory()->create(['role' => 'auditor']);
+        $this->actingAs($auditor);
+
+        $this->get('/admin/architecture/waivers')->assertOk();
+        $this->get('/admin/architecture/modules')->assertForbidden();
+        $this->get('/admin/architecture/violations')->assertForbidden();
     }
 
     /**
@@ -135,10 +146,44 @@ class BoundariesLifecycleTest extends TestCase
         );
         $this->assertEquals(ViolationStatus::CLOSED, $violation->status);
 
-        // Guard Check: Invalid transition throws exception
+        // Guard Check 1: Invalid transition throws exception
         try {
             $transitionAction->execute($violation, ViolationStatus::DETECTED, (string) $architect->id, 'Illegal jump');
             $this->fail('Expected DomainException for illegal transition from closed to detected');
+        } catch (\DomainException) {
+            // Expected
+        }
+
+        // Guard Check 2: verified tanpa baseline turun ditolak (A2 Agri gov_proposals masih ada di baseline)
+        $baselineStillPresent = CoreBoundaryViolation::create([
+            'rule_id' => 'A2',
+            'category' => ViolationCategory::TABLE_PREFIX->value,
+            'file_path' => 'modules/Agri/database/migrations/2026_10_07_860100_create_ndvi_and_dao_tables.php',
+            'line_number' => 10,
+            'signature' => "Schema::create('gov_proposals')",
+            'client_module' => 'Agri',
+            'owner_module' => 'Governance',
+            'status' => ViolationStatus::MIGRATING->value,
+            'contract_name' => 'GovProposalAdapter',
+        ]);
+        try {
+            $verifyAction->execute($baselineStillPresent, (string) $architect->id, 'Premature verify');
+            $this->fail('Expected DomainException when verifying violation still in arch-scan baseline');
+        } catch (\DomainException) {
+            // Expected
+        }
+
+        // Guard Check 3: append-only history transition rejects update and delete (PR5)
+        $historyRow = $violation->transitions()->firstOrFail();
+        try {
+            $historyRow->update(['reason' => 'Tampered reason']);
+            $this->fail('Expected DomainException when updating append-only transition history');
+        } catch (\DomainException) {
+            // Expected
+        }
+        try {
+            $historyRow->delete();
+            $this->fail('Expected DomainException when deleting append-only transition history');
         } catch (\DomainException) {
             // Expected
         }
@@ -156,6 +201,14 @@ class BoundariesLifecycleTest extends TestCase
         ]);
 
         $waiveAction = app(WaiveViolationAction::class);
+
+        // Guard Check 4: waiver tanpa anchor DECISIONS sah ditolak
+        try {
+            $waiveAction->execute($waiverViolation, (string) $architect->id, 'Missing anchor reason', '', now()->addDays(30));
+            $this->fail('Expected DomainException when waiving without DECISIONS anchor');
+        } catch (\DomainException) {
+            // Expected
+        }
         $waiverViolation = $waiveAction->execute(
             $waiverViolation,
             (string) $architect->id,
@@ -189,6 +242,33 @@ class BoundariesLifecycleTest extends TestCase
         $outboxPublisher = app(BoundaryOutboxPublisher::class);
         $outboxMsg = $outboxPublisher->publishWaiverExpired($waiverViolation);
         $this->assertNotNull($outboxMsg);
+
+        // 9. Idempotency-Key enforcement on waiver extend HTTP route (422 tanpa key, satu efek dengan key sama, 409 beda payload)
+        $this->actingAs($architect);
+        $extendUrl = route('admin.architecture.waivers.extend', $waiverViolation->id);
+        $payload = [
+            'reason' => 'Perpanjangan dispensasi operasional pasca review arsitek',
+            'adr_anchor' => 'docs/DECISIONS.md#w8-d43',
+            'days' => 30,
+        ];
+
+        $this->postJson($extendUrl, $payload)->assertStatus(422);
+
+        $beforeTransitions = $waiverViolation->transitions()->count();
+        $this->withHeader('Idempotency-Key', 'waiver-ext-001')
+            ->postJson($extendUrl, $payload)
+            ->assertOk();
+        $afterFirst = $waiverViolation->transitions()->count();
+        $this->assertSame($beforeTransitions + 1, $afterFirst);
+
+        $this->withHeader('Idempotency-Key', 'waiver-ext-001')
+            ->postJson($extendUrl, $payload)
+            ->assertOk();
+        $this->assertSame($afterFirst, $waiverViolation->transitions()->count());
+
+        $this->withHeader('Idempotency-Key', 'waiver-ext-001')
+            ->postJson($extendUrl, array_merge($payload, ['days' => 45]))
+            ->assertStatus(409);
     }
 
     /**

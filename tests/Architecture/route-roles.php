@@ -5086,10 +5086,10 @@ return [
         },
     ],
     'admin.boundaries.waivers' => [
-        'roles' => ['admin', 'superadmin', 'platform_architect'],
+        'roles' => ['admin', 'superadmin', 'platform_architect', 'auditor'],
     ],
     'admin.boundaries.waivers.extend' => [
-        'roles' => ['admin', 'superadmin', 'platform_architect'],
+        'roles' => ['admin', 'superadmin', 'platform_architect', 'auditor'],
         'params' => function () {
             $v = CoreBoundaryViolation::firstOrCreate(
                 ['rule_id' => 'A2', 'file_path' => 'tests/waiver-sample.php', 'signature' => 'route-roles-waiver-sample'],
@@ -5118,5 +5118,50 @@ return [
     ],
     'admin.boundaries.export.table-ownership' => [
         'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.architecture.modules' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.architecture.violations' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+    ],
+    'admin.architecture.violations.show' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect'],
+        'params' => function () {
+            $v = CoreBoundaryViolation::firstOrCreate(
+                ['rule_id' => 'A1', 'file_path' => 'tests/sample.php', 'signature' => 'route-roles-sample'],
+                [
+                    'category' => 'domain_import',
+                    'line_number' => 10,
+                    'client_module' => 'Core',
+                    'owner_module' => 'Core',
+                    'status' => 'detected',
+                ]
+            );
+
+            return ['id' => $v->id];
+        },
+    ],
+    'admin.architecture.waivers' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect', 'auditor'],
+    ],
+    'admin.architecture.waivers.extend' => [
+        'roles' => ['admin', 'superadmin', 'platform_architect', 'auditor'],
+        'params' => function () {
+            $v = CoreBoundaryViolation::firstOrCreate(
+                ['rule_id' => 'A2', 'file_path' => 'tests/waiver-sample.php', 'signature' => 'route-roles-waiver-sample'],
+                [
+                    'category' => 'table_prefix',
+                    'line_number' => 10,
+                    'client_module' => 'Core',
+                    'owner_module' => 'Core',
+                    'status' => 'waived',
+                    'adr_anchor' => 'docs/DECISIONS.md#w8-d43',
+                    'expires_at' => now()->addDays(30),
+                ]
+            );
+
+            return ['id' => $v->id];
+        },
     ],
 ];

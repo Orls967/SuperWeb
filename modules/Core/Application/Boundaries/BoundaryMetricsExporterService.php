@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Boundaries;
 
+use Illuminate\Database\Eloquent\Collection;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
 /**
@@ -14,32 +16,29 @@ use Modules\Core\Domain\Models\CoreBoundaryViolation;
  */
 final class BoundaryMetricsExporterService
 {
+    public function __construct(
+        private readonly ?ClockInterface $clock = null,
+    ) {}
+
     /**
      * Export violations to CSV format.
      */
     public function exportViolationsCsv(): string
     {
-        $violations = CoreBoundaryViolation::orderBy('rule_id')
-            ->orderBy('client_module')
-            ->orderBy('id')
-            ->get();
-
-        $rows = [];
-        $rows[] = 'ID,RuleID,Category,ClientModule,OwnerModule,FilePath,LineNumber,Status,ContractName';
-
-        foreach ($violations as $v) {
-            $rows[] = sprintf(
-                '%d,"%s","%s","%s","%s","%s",%d,"%s","%s"',
+        $rows = ['ID,RuleID,Category,ClientModule,OwnerModule,FilePath,LineNumber,Status,ContractName'];
+        foreach ($this->orderedRecords() as $v) {
+            $status = $v->status instanceof \BackedEnum ? $v->status->value : (string) $v->status;
+            $rows[] = $this->formatCsvLine([
                 $v->id,
                 $v->rule_id,
                 $v->category,
                 $v->client_module,
                 $v->owner_module,
-                str_replace('"', '""', $v->file_path),
+                $v->file_path,
                 $v->line_number,
-                $v->status instanceof \BackedEnum ? $v->status->value : (string) $v->status,
-                str_replace('"', '""', (string) $v->contract_name)
-            );
+                $status,
+                (string) $v->contract_name,
+            ]);
         }
 
         return implode("\n", $rows)."\n";
@@ -50,19 +49,12 @@ final class BoundaryMetricsExporterService
      */
     public function exportWaiversCsv(): string
     {
-        $waivers = CoreBoundaryViolation::where('status', 'waived')
-            ->orderBy('rule_id')
-            ->orderBy('client_module')
-            ->orderBy('id')
-            ->get();
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
+        $rows = ['ID,RuleID,ClientModule,OwnerModule,AdrAnchor,WaivedBy,ExpiresAt,DaysRemaining,Reason'];
 
-        $rows = [];
-        $rows[] = 'ID,RuleID,ClientModule,OwnerModule,AdrAnchor,WaivedBy,ExpiresAt,DaysRemaining,Reason';
-
-        foreach ($waivers as $w) {
-            $daysRemaining = $w->expires_at ? max(0, (int) now()->diffInDays($w->expires_at, false)) : 0;
-            $rows[] = sprintf(
-                '%d,"%s","%s","%s","%s","%s","%s",%d,"%s"',
+        foreach ($this->orderedRecords('waived') as $w) {
+            $daysRemaining = $w->expires_at ? max(0, (int) $now->diffInDays($w->expires_at, false)) : 0;
+            $rows[] = $this->formatCsvLine([
                 $w->id,
                 $w->rule_id,
                 $w->client_module,
@@ -71,11 +63,24 @@ final class BoundaryMetricsExporterService
                 $w->waived_by ?? '',
                 $w->expires_at?->format('Y-m-d') ?? '',
                 $daysRemaining,
-                str_replace('"', '""', (string) $w->waiver_reason)
-            );
+                (string) $w->waiver_reason,
+            ]);
         }
 
         return implode("\n", $rows)."\n";
+    }
+
+    /**
+     * @return Collection<int, CoreBoundaryViolation>
+     */
+    private function orderedRecords(?string $status = null): Collection
+    {
+        $query = CoreBoundaryViolation::query();
+        if ($status !== null) {
+            $query->where('status', $status);
+        }
+
+        return $query->orderBy('rule_id')->orderBy('client_module')->orderBy('id')->get();
     }
 
     /**
@@ -85,20 +90,18 @@ final class BoundaryMetricsExporterService
      */
     public function exportCoverageCsv(array $coverageData): string
     {
-        $rows = [];
-        $rows[] = 'Module,CoveragePermille,Percentage,Status';
-
+        $rows = ['Module,CoveragePermille,Percentage,Status'];
         $perModule = $coverageData['perModuleScores'];
         ksort($perModule);
 
         foreach ($perModule as $module => $score) {
             $percent = number_format($score / 10, 1, '.', '');
             $status = $score >= 800 ? 'EXCELLENT' : ($score >= 500 ? 'MODERATE' : 'CRITICAL');
-            $rows[] = sprintf('"%s",%d,"%s%%","%s"', $module, $score, $percent, $status);
+            $rows[] = $this->formatCsvLine([$module, $score, "{$percent}%", $status]);
         }
 
         $globalPercent = number_format($coverageData['globalScore'] / 10, 1, '.', '');
-        $rows[] = sprintf('"_GLOBAL_TOTAL",%d,"%s%%","SUMMARY"', $coverageData['globalScore'], $globalPercent);
+        $rows[] = $this->formatCsvLine(['_GLOBAL_TOTAL', $coverageData['globalScore'], "{$globalPercent}%", 'SUMMARY']);
 
         return implode("\n", $rows)."\n";
     }
@@ -112,30 +115,42 @@ final class BoundaryMetricsExporterService
      */
     public function exportTableOwnershipCsv(array $prefixes, array $legacyTables, array $sharedTables): string
     {
-        $rows = [];
-        $rows[] = 'Type,PatternOrTable,OwnerModule,ExceptionKind';
+        $rows = ['Type,PatternOrTable,OwnerModule,ExceptionKind'];
 
-        // 1. Registered prefixes
         ksort($prefixes);
         foreach ($prefixes as $prefix => $owner) {
-            $rows[] = sprintf('"PREFIX","%s","%s","STANDARD"', $prefix, $owner);
+            $rows[] = $this->formatCsvLine(['PREFIX', $prefix, $owner, 'STANDARD']);
         }
 
-        // 2. Legacy tables
         ksort($legacyTables);
         foreach ($legacyTables as $table => $owner) {
-            $rows[] = sprintf('"LEGACY","%s","%s","LEGACY_ALLOWLIST"', $table, $owner);
+            $rows[] = $this->formatCsvLine(['LEGACY', $table, $owner, 'LEGACY_ALLOWLIST']);
         }
 
-        // 3. Shared tables
         ksort($sharedTables);
         foreach ($sharedTables as $consumer => $tables) {
             sort($tables);
             foreach ($tables as $t) {
-                $rows[] = sprintf('"SHARED","%s","%s","WAIVER_SHARED_ACCESS"', $t, $consumer);
+                $rows[] = $this->formatCsvLine(['SHARED', $t, $consumer, 'WAIVER_SHARED_ACCESS']);
             }
         }
 
         return implode("\n", $rows)."\n";
+    }
+
+    /**
+     * @param  list<mixed>  $fields
+     */
+    private function formatCsvLine(array $fields): string
+    {
+        $escaped = array_map(static function (mixed $value): string {
+            if (is_int($value)) {
+                return (string) $value;
+            }
+
+            return '"'.str_replace('"', '""', (string) ($value instanceof \BackedEnum ? $value->value : $value)).'"';
+        }, $fields);
+
+        return implode(',', $escaped);
     }
 }

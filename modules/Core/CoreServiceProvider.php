@@ -484,6 +484,36 @@ class CoreServiceProvider extends ServiceProvider
             activePattern: 'admin/simulation-governance*',
         );
 
+        $registry->addItem(
+            label: 'Peta Batas Modul',
+            route: 'admin.architecture.modules',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7zm5 3h6m-6 4h4"/></svg>',
+            roles: ['platform_architect', 'admin'],
+            order: 92,
+            group: 'Grup & Admin',
+            activePattern: 'admin/architecture/modules*',
+        );
+
+        $registry->addItem(
+            label: 'Pelanggaran Batas',
+            route: 'admin.architecture.violations',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/></svg>',
+            roles: ['platform_architect', 'admin'],
+            order: 91,
+            group: 'Grup & Admin',
+            activePattern: 'admin/architecture/violations*',
+        );
+
+        $registry->addItem(
+            label: 'Waiver Arsitektur',
+            route: 'admin.architecture.waivers',
+            icon: '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+            roles: ['platform_architect', 'auditor', 'admin'],
+            order: 90,
+            group: 'Grup & Admin',
+            activePattern: 'admin/architecture/waivers*',
+        );
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 VerifyPassportsCommand::class,

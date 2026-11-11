@@ -4,20 +4,36 @@ declare(strict_types=1);
 
 namespace Modules\Core\Domain\StateMachines;
 
+use App\Quality\Docs\DecisionLog;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use DomainException;
 use Modules\Core\Application\Boundaries\BoundaryOutboxPublisher;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Domain\Enums\ViolationStatus;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 use Modules\Core\Domain\Models\CoreBoundaryViolationTransition;
 
 /**
- * State Machine for BoundaryViolation lifecycle (7 statuses) (DR4-1, W8-D43).
+ * State Machine for BoundaryViolation lifecycle (7 statuses) (DR4-1, W8-D43, T-4).
  * Enforces strict transitions, guard invariants, and append-only transition logging.
  */
 final class BoundaryViolationStateMachine
 {
+    public const STATUS_DETECTED = 'detected';
+
+    public const STATUS_TRIAGED = 'triaged';
+
+    public const STATUS_CONTRACT_DESIGNED = 'contract_designed';
+
+    public const STATUS_MIGRATING = 'migrating';
+
+    public const STATUS_VERIFIED = 'verified';
+
+    public const STATUS_CLOSED = 'closed';
+
+    public const STATUS_WAIVED = 'waived';
+
     /** @var array<string, list<string>> valid transitions: from => list of allowed to */
     public const VALID_TRANSITIONS = [
         ViolationStatus::DETECTED->value => [
@@ -44,8 +60,12 @@ final class BoundaryViolationStateMachine
         ],
     ];
 
+    /** @var array<string, list<string>> Alias per W8 T-4 convention */
+    public const ALLOWED_TRANSITIONS = self::VALID_TRANSITIONS;
+
     public function __construct(
         private readonly ?BoundaryOutboxPublisher $outboxPublisher = null,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     /**
@@ -123,7 +143,7 @@ final class BoundaryViolationStateMachine
             'reason' => $reason,
             'commit_sha' => $metadata['commit_sha'] ?? null,
             'metadata' => $metadata !== [] ? $metadata : null,
-            'occurred_at' => now(),
+            'occurred_at' => $this->currentTime(),
         ]);
 
         // Publish outbox event
@@ -172,6 +192,22 @@ final class BoundaryViolationStateMachine
             }
         }
 
+        // Guard: migrating -> verified (baseline entry removed and related file tests green)
+        if ($from === ViolationStatus::MIGRATING && $to === ViolationStatus::VERIFIED) {
+            if (($metadata['tests_passed'] ?? true) === false) {
+                throw new DomainException('Guard failed: Related module tests must pass before marking violation as verified.');
+            }
+
+            $baselinePath = (string) ($metadata['baseline_path'] ?? base_path('tests/Architecture/baselines/arch-scan.json'));
+            if (is_file($baselinePath)) {
+                $baseline = json_decode((string) file_get_contents($baselinePath), true);
+                $ruleEntries = $baseline['rules'][$violation->rule_id]['entries'] ?? [];
+                if (isset($ruleEntries[$violation->file_path][$violation->signature])) {
+                    throw new DomainException("Guard failed: Baseline entry for '{$violation->file_path}' ({$violation->signature}) still exists in arch-scan.json.");
+                }
+            }
+        }
+
         // Guard: triaged -> waived (anchor DECISIONS, reason, approver, expiry <= 90 days)
         if ($from === ViolationStatus::TRIAGED && $to === ViolationStatus::WAIVED) {
             $anchor = $metadata['adr_anchor'] ?? $violation->adr_anchor;
@@ -181,6 +217,20 @@ final class BoundaryViolationStateMachine
             if (empty($anchor)) {
                 throw new DomainException('Guard failed: Waiver requires valid DECISIONS.md adr_anchor.');
             }
+
+            $decisionsPath = base_path('docs/DECISIONS.md');
+            if (is_file($decisionsPath)) {
+                $cleanAnchor = ltrim(trim((string) $anchor), '#');
+                if (str_contains($cleanAnchor, '#')) {
+                    $parts = explode('#', $cleanAnchor);
+                    $cleanAnchor = (string) end($parts);
+                }
+
+                if ($cleanAnchor === '' || ! DecisionLog::fromFile($decisionsPath)->has($cleanAnchor)) {
+                    throw new DomainException("Guard failed: Waiver adr_anchor '{$anchor}' does not exist in docs/DECISIONS.md.");
+                }
+            }
+
             if (empty($reason)) {
                 throw new DomainException('Guard failed: Waiver requires documented technical reason.');
             }
@@ -192,7 +242,7 @@ final class BoundaryViolationStateMachine
                 ? $expiresAt
                 : Carbon::parse($expiresAt);
 
-            $days = (int) now()->diffInDays($expires, false);
+            $days = (int) $this->currentTime()->diffInDays($expires, false);
             if ($days <= 0) {
                 throw new DomainException('Guard failed: Waiver expires_at cannot be in the past.');
             }
@@ -208,6 +258,15 @@ final class BoundaryViolationStateMachine
                 throw new DomainException('Guard failed: Transition to closed requires commit_sha proving clean arch:scan.');
             }
         }
+    }
+
+    private function currentTime(): CarbonInterface
+    {
+        if ($this->clock !== null) {
+            return $this->clock->now();
+        }
+
+        return app(ClockInterface::class)->now();
     }
 
     private function resolvePublisher(): ?BoundaryOutboxPublisher

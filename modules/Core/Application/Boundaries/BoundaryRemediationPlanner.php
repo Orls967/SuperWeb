@@ -109,11 +109,25 @@ PHP;
         return [
             'violationId' => (int) $violation->id,
             'ruleId' => $rule,
+            'currentStatus' => $violation->status instanceof \BackedEnum ? $violation->status->value : (string) $violation->status,
             'suggestedContractFqn' => $suggestedContractFqn,
             'contractTemplateCode' => trim($contractCode),
             'serviceProviderBindingCode' => trim($bindingCode),
             'callSiteRefactoringSnippet' => trim($callSiteSnippet),
             'verificationSteps' => $verificationSteps,
         ];
+    }
+
+    /**
+     * Advance remediation workflow to next phase via orchestrator.
+     *
+     * @param  array<string, mixed>  $metadata
+     * @return array<string, mixed>
+     */
+    public function advanceWorkflow(CoreBoundaryViolation $violation, string $actorId, string $reason, array $metadata = []): array
+    {
+        $orchestrator = $this->orchestrator ?? new ContractMigrationOrchestrator;
+
+        return $orchestrator->advancePhase($violation, $actorId, $reason, $metadata);
     }
 }

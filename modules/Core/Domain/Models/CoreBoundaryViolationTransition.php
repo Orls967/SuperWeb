@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Core\Domain\Models;
 
+use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Domain\Enums\ViolationStatus;
 
 /**
- * Append-only fact log of state machine transitions for boundary violations (DR4-1, W8-D43).
+ * Append-only fact log of state machine transitions for boundary violations (DR4-1, W8-D43, PR5).
  */
 class CoreBoundaryViolationTransition extends Model
 {
@@ -30,6 +31,17 @@ class CoreBoundaryViolationTransition extends Model
         'metadata',
         'occurred_at',
     ];
+
+    protected static function booted(): void
+    {
+        static::updating(static function (): void {
+            throw new DomainException('BOUND_TRANSITION_IMMUTABLE: Riwayat transisi pelanggaran batas bersifat append-only dan dilarang diubah.');
+        });
+
+        static::deleting(static function (): void {
+            throw new DomainException('BOUND_TRANSITION_IMMUTABLE: Riwayat transisi pelanggaran batas bersifat append-only dan dilarang dihapus.');
+        });
+    }
 
     protected function casts(): array
     {

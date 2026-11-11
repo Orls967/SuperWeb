@@ -19,6 +19,8 @@
             </div>
         </div>
 
+        @include('core::boundaries._states')
+
         <!-- Detail Attributes -->
         <x-ds.card title="Fakta Pelanggaran">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">

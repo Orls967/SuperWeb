@@ -6,7 +6,8 @@ namespace Modules\Core\Domain\Algorithms\Boundaries;
 
 /**
  * Deterministic Tarjan's Strongly Connected Components (SCC) algorithm.
- * Identifies cycles in module dependency graphs (R4-ALG-01, W8-D41).
+ * Identifies forbidden multi-module cycles (size > 1; self-loops ignored per W8-D41) in O(V + E).
+ * Bounded graph up to 10,000 nodes; uses pure integer indexing/lowlink arithmetic (R4-ALG-01, W8-D41).
  */
 final class StronglyConnectedComponents
 {
@@ -71,16 +72,11 @@ final class StronglyConnectedComponents
         // Sort components deterministically by their first element
         usort($this->components, static fn (array $a, array $b): int => strcmp($a[0] ?? '', $b[0] ?? ''));
 
-        // Identify cycles: any component with > 1 element or self-loop
+        // Identify cycles: strictly SCC size > 1; self-loops are ignored per W8-D41.
         $cycles = [];
         foreach ($this->components as $comp) {
             if (count($comp) > 1) {
                 $cycles[] = $comp;
-            } elseif (count($comp) === 1) {
-                $single = $comp[0];
-                if (in_array($single, $normalizedAdj[$single] ?? [], true)) {
-                    $cycles[] = $comp;
-                }
             }
         }
 

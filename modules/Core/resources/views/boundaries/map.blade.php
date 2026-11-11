@@ -24,8 +24,10 @@
             </div>
         </div>
 
+        @include('core::boundaries._states')
+
         <!-- Metric Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <x-ds.stat label="Total Modul" :value="$stats['total_modules']" hint="Modul terdaftar" />
             <x-ds.stat label="Busur Dependensi" :value="$stats['total_dependencies']" hint="Koneksi lintas modul" />
             <x-ds.stat label="Cakupan Kontrak" :value="sprintf('%.1f%%', $stats['coverage_permille'] / 10)" hint="{{ $stats['coverage_permille'] }} permil" />
@@ -33,7 +35,7 @@
         </div>
 
         <!-- Violation Summary Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <x-ds.stat label="Total Pelanggaran" :value="$stats['total_violations']" hint="Fakta tercatat" />
             <x-ds.stat label="Pelanggaran Terbuka" :value="$stats['open_violations']" hint="Dalam penanganan" />
             <x-ds.stat label="Dispensasi (Waiver)" :value="$stats['waived_violations']" hint="Bertenggat <= 90 hari" />
@@ -68,8 +70,8 @@
                         <tr class="bg-slate-50 dark:bg-slate-800/50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             <th class="px-4 py-3">Nama Modul</th>
                             <th class="px-4 py-3">Dependensi Keluar</th>
-                            <th class="px-4 py-3">Skor Cakupan</th>
-                            <th class="px-4 py-3">Persentase</th>
+                            <th class="px-4 py-3 text-right">Skor Cakupan</th>
+                            <th class="px-4 py-3 text-right">Persentase</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
@@ -95,10 +97,10 @@
                                         <span class="text-xs text-slate-400">Tidak ada dependensi luar</span>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">
+                                <td class="px-4 py-3 text-right font-mono tabular-nums text-slate-700 dark:text-slate-300">
                                     {{ $score }} permil
                                 </td>
-                                <td class="px-4 py-3 font-semibold {{ $score >= 900 ? 'text-emerald-600 dark:text-emerald-400' : ($score >= 700 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400') }}">
+                                <td class="px-4 py-3 text-right font-semibold tabular-nums {{ $score >= 900 ? 'text-emerald-600 dark:text-emerald-400' : ($score >= 700 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400') }}">
                                     {{ sprintf('%.1f%%', $score / 10) }}
                                 </td>
                             </tr>

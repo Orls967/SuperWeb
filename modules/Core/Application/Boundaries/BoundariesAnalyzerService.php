@@ -127,53 +127,22 @@ final class BoundariesAnalyzerService
 
         // 4. Run ArchScanner rules to get real violations
         $archReport = ArchScanner::scanProject($basePath, $config, $paths);
-        $extractedViolations = [];
-
-        foreach ($archReport->violations('A1') as $v) {
-            $file = new SourceFile($v->path, '');
-            $client = $file->module() ?? 'Unknown';
-
-            // Extract owner module from signature or message
-            $owner = 'Core';
-            if (preg_match('#Modules\\\\([^\\\\]+)\\\\Domain#', $v->signature, $m) === 1) {
-                $owner = $m[1];
-            }
-
-            $extractedViolations[] = [
-                'rule_id' => 'A1',
-                'category' => ViolationCategory::DOMAIN_IMPORT->value,
-                'file_path' => $v->path,
-                'line_number' => $v->line,
-                'signature' => $v->signature,
-                'client_module' => $client,
-                'owner_module' => $owner,
-                'message' => $v->message,
-            ];
-        }
-
-        foreach ($archReport->violations('A2') as $v) {
-            $file = new SourceFile($v->path, '');
-            $client = $file->module() ?? 'Unknown';
-
-            // Extract table name from signature
-            $owner = 'Unknown';
-            if (preg_match("#['\"]([^'\"]+)['\"]#", $v->signature, $m) === 1) {
-                $table = $m[1];
-                $res = $prefixResolver->resolve($table, $client);
-                $owner = $res->owner ?? 'Unknown';
-            }
-
-            $extractedViolations[] = [
-                'rule_id' => 'A2',
-                'category' => ViolationCategory::TABLE_PREFIX->value,
-                'file_path' => $v->path,
-                'line_number' => $v->line,
-                'signature' => $v->signature,
-                'client_module' => $client,
-                'owner_module' => $owner,
-                'message' => $v->message,
-            ];
-        }
+        $extractedViolations = array_merge(
+            $this->extractRuleViolations(
+                $archReport->violations('A1'),
+                'A1',
+                ViolationCategory::DOMAIN_IMPORT,
+                static fn (string $signature): string => preg_match('#Modules\\\\([^\\\\]+)\\\\Domain#', $signature, $m) === 1 ? $m[1] : 'Core'
+            ),
+            $this->extractRuleViolations(
+                $archReport->violations('A2'),
+                'A2',
+                ViolationCategory::TABLE_PREFIX,
+                static fn (string $signature, string $client): string => preg_match("#['\"]([^'\"]+)['\"]#", $signature, $m) === 1
+                    ? ($prefixResolver->resolve($m[1], $client)->owner ?? 'Unknown')
+                    : 'Unknown'
+            )
+        );
 
         // Add A3 violations if cycles exist
         foreach ($sccResult['cycles'] as $cycle) {
@@ -218,5 +187,34 @@ final class BoundariesAnalyzerService
                 'cyclesCount' => count($sccResult['cycles']),
             ],
         ];
+    }
+
+    /**
+     * @param  iterable<object>  $violations
+     * @param  callable(string, string): string  $ownerResolver
+     * @return list<array{rule_id: string, category: string, file_path: string, line_number: int, signature: string, client_module: string, owner_module: string, message: string}>
+     */
+    private function extractRuleViolations(
+        iterable $violations,
+        string $ruleId,
+        ViolationCategory $category,
+        callable $ownerResolver,
+    ): array {
+        $mapped = [];
+        foreach ($violations as $v) {
+            $client = (new SourceFile($v->path, ''))->module() ?? 'Unknown';
+            $mapped[] = [
+                'rule_id' => $ruleId,
+                'category' => $category->value,
+                'file_path' => $v->path,
+                'line_number' => $v->line,
+                'signature' => $v->signature,
+                'client_module' => $client,
+                'owner_module' => $ownerResolver($v->signature, $client),
+                'message' => $v->message,
+            ];
+        }
+
+        return $mapped;
     }
 }

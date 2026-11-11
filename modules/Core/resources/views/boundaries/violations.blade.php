@@ -24,6 +24,8 @@
             </div>
         </div>
 
+        @include('core::boundaries._states')
+
         <!-- Filter Bar -->
         <x-ds.card title="Penyaring Data">
             <form method="GET" action="{{ route('admin.boundaries.violations') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -70,18 +72,26 @@
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700 text-sm">
                         <thead>
+                            @php $nextDir = ($sortDir ?? 'asc') === 'asc' ? 'desc' : 'asc'; @endphp
                             <tr class="bg-slate-50 dark:bg-slate-800/50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                <th class="px-4 py-3">ID / Aturan</th>
-                                <th class="px-4 py-3">Modul (Klien &rarr; Pemilik)</th>
+                                <th class="px-4 py-3 text-right tabular-nums">
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'id', 'dir' => $nextDir]) }}" class="hover:underline">ID</a> /
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'rule_id', 'dir' => $nextDir]) }}" class="hover:underline">Aturan</a>
+                                </th>
+                                <th class="px-4 py-3">
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'client_module', 'dir' => $nextDir]) }}" class="hover:underline">Modul (Klien &rarr; Pemilik)</a>
+                                </th>
                                 <th class="px-4 py-3">Lokasi Berkas & Tanda Tangan</th>
-                                <th class="px-4 py-3">Status</th>
+                                <th class="px-4 py-3">
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'status', 'dir' => $nextDir]) }}" class="hover:underline">Status</a>
+                                </th>
                                 <th class="px-4 py-3 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
                             @foreach ($violations as $v)
                                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                    <td class="px-4 py-3 font-mono font-semibold text-slate-900 dark:text-slate-100">
+                                    <td class="px-4 py-3 text-right font-mono tabular-nums font-semibold text-slate-900 dark:text-slate-100">
                                         #{{ $v->id }}
                                         <span class="ml-1 px-2 py-0.5 text-xs bg-slate-200 dark:bg-slate-700 rounded">{{ $v->rule_id }}</span>
                                     </td>

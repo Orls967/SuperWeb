@@ -47,7 +47,13 @@ final class ViolationController extends Controller
             });
         }
 
-        $violations = $query->orderBy('rule_id')
+        $allowedSorts = ['id', 'rule_id', 'client_module', 'owner_module', 'status', 'line_number'];
+        $sortCol = in_array($request->string('sort')->toString(), $allowedSorts, true)
+            ? $request->string('sort')->toString()
+            : 'rule_id';
+        $sortDir = strtolower($request->string('dir')->toString()) === 'desc' ? 'desc' : 'asc';
+
+        $violations = $query->orderBy($sortCol, $sortDir)
             ->orderBy('file_path')
             ->orderBy('line_number')
             ->paginate(30)
@@ -63,6 +69,8 @@ final class ViolationController extends Controller
             'statuses' => ViolationStatus::values(),
             'categories' => ViolationCategory::values(),
             'statusCounts' => $statusCounts,
+            'sortCol' => $sortCol,
+            'sortDir' => $sortDir,
             'currentFilter' => [
                 'status' => $request->string('status')->toString(),
                 'rule_id' => $request->string('rule_id')->toString(),

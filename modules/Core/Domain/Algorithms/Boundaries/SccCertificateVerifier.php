@@ -4,12 +4,53 @@ declare(strict_types=1);
 
 namespace Modules\Core\Domain\Algorithms\Boundaries;
 
+use InvalidArgumentException;
+use Modules\Core\Domain\Algorithms\CanonicalCertificateSupport;
+
 /**
  * Formal certificate verifier for Tarjan Strongly Connected Components.
- * Proves that components partition the graph and condensation is acyclic (R4-ALG-01).
+ * Complexity: O(V + E). Integer arithmetic only. Bounded graph size <= 10,000 nodes.
+ * Proves that components partition the graph, condensation is acyclic,
+ * and SHA-256 canonical certificate matches recomputation (R4-ALG-01).
  */
 final class SccCertificateVerifier
 {
+    /**
+     * Build a canonical SHA-256 verification certificate for Tarjan SCC output.
+     *
+     * @param  array<string, mixed>  $input
+     * @param  list<string>  $steps
+     * @param  array<string, mixed>  $result
+     * @return array{input: array<string, mixed>, steps: list<string>, result: array<string, mixed>, sha256: string}
+     */
+    public function issueCertificate(array $input, array $steps, array $result): array
+    {
+        return CanonicalCertificateSupport::issue($input, $steps, $result);
+    }
+
+    /**
+     * Verify a canonical SHA-256 certificate; throws on tampering or structural invalidity.
+     *
+     * @param  array<string, mixed>  $certificate
+     */
+    public function verifyCertificate(array $certificate): bool
+    {
+        $verified = CanonicalCertificateSupport::verifyIntegrity($certificate, 'SCC_CERT');
+        $components = $verified['result']['components'] ?? null;
+        $condensationDag = $verified['result']['condensationDag'] ?? null;
+        $nodes = $verified['input']['nodes'] ?? null;
+
+        if (! is_array($components) || ! is_array($condensationDag) || ! is_array($nodes)) {
+            throw new InvalidArgumentException('SCC_CERT_PAYLOAD_INVALID: Data partisi atau DAG pada sertifikat rusak.');
+        }
+
+        if (! $this->verify($components, $condensationDag, $nodes)) {
+            throw new InvalidArgumentException('SCC_CERT_INVARIANT_FAILED: Sertifikat melanggar invarian partisi atau DAG asiklik.');
+        }
+
+        return true;
+    }
+
     /**
      * Verify that components form a complete partition and condensation graph is a DAG.
      *

@@ -7,9 +7,9 @@ namespace Modules\Core\Application\Boundaries;
 use App\Models\User;
 use Carbon\Carbon;
 use DomainException;
-use Illuminate\Support\Str;
 use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
 use Modules\Core\Application\Services\ApprovalEngineService;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Domain\Models\ApprovalRequest;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 use Modules\Core\Domain\Models\CoreTask;
@@ -26,6 +26,7 @@ final class WaiverApprovalBridge
     public function __construct(
         private readonly ?ApprovalEngineService $approvalEngine = null,
         private readonly ?TaskInboxService $taskInbox = null,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     /**
@@ -43,7 +44,8 @@ final class WaiverApprovalBridge
             return null;
         }
 
-        $days = (int) now()->diffInDays($expiresAt, false);
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
+        $days = (int) $now->diffInDays($expiresAt, false);
         if ($days <= 0 || $days > 90) {
             throw new DomainException("Tenggat waktu waiver harus antara 1 dan 90 hari (diminta: {$days} hari).");
         }
@@ -100,7 +102,6 @@ final class WaiverApprovalBridge
         );
 
         $taskData = [
-            'id' => (string) Str::uuid(),
             'title' => $title,
             'description' => $description,
             'module' => 'Core',
@@ -131,7 +132,7 @@ final class WaiverApprovalBridge
      */
     public function sweepExpiringWaivers(int $thresholdDays = 7): array
     {
-        $now = now();
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
         $targetDate = $now->copy()->addDays($thresholdDays);
 
         $expiringWaivers = CoreBoundaryViolation::where('status', 'waived')

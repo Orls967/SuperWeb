@@ -6,7 +6,9 @@ namespace Modules\Core\Domain\Algorithms\Boundaries;
 
 /**
  * Deterministic Contract Coverage Scorer using integer permille (0–1000).
- * Prevents IEEE 754 float precision errors (R4-ALG-03).
+ * Prevents IEEE 754 float precision errors; pure integer floor division via intdiv (R4-ALG-03).
+ *
+ * Complexity: O(M log M + V) on M modules and V violations (M <= 1,000). Pure integer arithmetic.
  */
 final class ContractCoverageScorer
 {
@@ -90,5 +92,34 @@ final class ContractCoverageScorer
             'totalContracts' => $totalContracts,
             'totalViolations' => $totalViolations,
         ];
+    }
+
+    /**
+     * Compute integer permille scores and sort deterministically ascending by score, then ascending module name.
+     *
+     * @param  array<string, array{via_kontrak: int, langsung: int}>  $moduleStats
+     * @return list<array{module: string, via_kontrak: int, langsung: int, score: int}>
+     */
+    public function rankModules(array $moduleStats): array
+    {
+        $ranked = [];
+
+        foreach ($moduleStats as $module => $counts) {
+            $via = max(0, (int) ($counts['via_kontrak'] ?? 0));
+            $direct = max(0, (int) ($counts['langsung'] ?? 0));
+            $total = $via + $direct;
+            $score = $total === 0 ? 1000 : (int) intdiv($via * 1000, $total);
+
+            $ranked[] = [
+                'module' => (string) $module,
+                'via_kontrak' => $via,
+                'langsung' => $direct,
+                'score' => $score,
+            ];
+        }
+
+        usort($ranked, static fn (array $a, array $b): int => ($a['score'] <=> $b['score']) ?: strcmp($a['module'], $b['module']));
+
+        return $ranked;
     }
 }

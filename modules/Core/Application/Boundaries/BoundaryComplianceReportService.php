@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Boundaries;
 
 use App\Quality\Modules\BoundariesScanner;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Domain\Algorithms\Boundaries\ModuleCohesionScorer;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
 /**
@@ -13,13 +15,15 @@ use Modules\Core\Domain\Models\CoreBoundaryViolation;
  * Computes:
  * - Module compliance grades (A+ through F) based on contract coverage and violation counts
  * - Waiver SLA breach analysis (Breached, Near-Breach <= 7 days, Compliant)
- * - Platform modularity index (0..1000 permille)
+ * - Platform modularity index (0..1000 permille) and relational cohesion summary
  */
 final class BoundaryComplianceReportService
 {
     public function __construct(
         private readonly BoundariesScanner $scanner = new BoundariesScanner,
         private readonly ModuleIsolationAssuranceService $isolationService = new ModuleIsolationAssuranceService,
+        private readonly ModuleCohesionScorer $cohesionScorer = new ModuleCohesionScorer,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     /**
@@ -32,6 +36,8 @@ final class BoundaryComplianceReportService
      *     activeWaiversCount: int,
      *     slaStatus: array{breachedCount: int, nearBreachCount: int, compliantCount: int},
      *     moduleGrades: array<string, array{grade: string, coveragePermille: int, activeViolations: int, riskStatus: string}>,
+     *     cohesionSummary: array{averageCohesionPermille: int, exemplaryCount: int, fragmentedCount: int},
+     *     isolationHealthPermille: int,
      *     topPriorityActions: list<string>
      * }
      */
@@ -42,7 +48,7 @@ final class BoundaryComplianceReportService
         $violations = CoreBoundaryViolation::all();
 
         $activeWaivers = $violations->where('status', 'waived');
-        $now = now();
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
 
         $breachedCount = 0;
         $nearBreachCount = 0;
@@ -128,6 +134,16 @@ final class BoundaryComplianceReportService
             $priorityActions[] = 'Seluruh invarian arsitektur berada dalam kepatuhan penuh. Pertahankan status green.';
         }
 
+        $cohesionProfiles = [];
+        foreach ($modules as $m) {
+            $depsCount = count($analysis['dependencyGraph'][$m] ?? []);
+            $cohesionProfiles[$m] = [
+                'totalClasses' => max(1, count(glob($basePath."/modules/{$m}/**/*.php") ?: [$m])),
+                'internalRelations' => max(1, ($scores[$m] ?? 1000) > 0 ? intdiv($scores[$m] ?? 1000, 100) + $depsCount : 1),
+            ];
+        }
+        $cohesionReport = $this->cohesionScorer->calculate($cohesionProfiles);
+
         return [
             'platformModularityIndex' => $platformIndex,
             'executiveRating' => $executiveRating,
@@ -139,6 +155,12 @@ final class BoundaryComplianceReportService
                 'compliantCount' => $compliantCount,
             ],
             'moduleGrades' => $moduleGrades,
+            'cohesionSummary' => [
+                'averageCohesionPermille' => $cohesionReport['averageCohesionPermille'],
+                'exemplaryCount' => count($cohesionReport['exemplaryModules']),
+                'fragmentedCount' => count($cohesionReport['fragmentedModules']),
+            ],
+            'isolationHealthPermille' => $isolationReport['isolationHealthPermille'],
             'topPriorityActions' => $priorityActions,
         ];
     }

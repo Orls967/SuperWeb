@@ -10,9 +10,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Modules\Core\Application\Boundaries\BoundaryOutboxPublisher;
 use Modules\Core\Application\Boundaries\WaiverApprovalBridge;
 use Modules\Core\Application\Boundaries\WaiveViolationAction;
+use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Domain\Enums\ViolationStatus;
 use Modules\Core\Domain\Models\CoreBoundaryViolation;
 
@@ -22,15 +24,25 @@ final class WaiverController extends Controller
         private readonly WaiveViolationAction $waiveAction = new WaiveViolationAction,
         private readonly WaiverApprovalBridge $approvalBridge = new WaiverApprovalBridge,
         private readonly BoundaryOutboxPublisher $outboxPublisher = new BoundaryOutboxPublisher,
+        private readonly ?ClockInterface $clock = null,
     ) {}
 
     public function index(Request $request): View
     {
-        $waivers = CoreBoundaryViolation::where('status', ViolationStatus::WAIVED->value)
-            ->orderBy('expires_at')
-            ->paginate(30);
+        $sortCol = in_array($request->string('sort')->toString(), ['id', 'rule_id', 'client_module', 'expires_at'], true)
+            ? $request->string('sort')->toString()
+            : 'expires_at';
+        $sortDir = strtolower($request->string('dir')->toString()) === 'desc' ? 'desc' : 'asc';
 
-        $now = now();
+        $query = CoreBoundaryViolation::where('status', ViolationStatus::WAIVED->value);
+        if ($request->filled('module')) {
+            $module = $request->string('module')->toString();
+            $query->where(fn ($q) => $q->where('client_module', $module)->orWhere('owner_module', $module));
+        }
+
+        $waivers = $query->orderBy($sortCol, $sortDir)->paginate(30)->withQueryString();
+
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
         $activeCount = 0;
         $expiringSoonCount = 0;
         $expiredCount = 0;
@@ -47,6 +59,9 @@ final class WaiverController extends Controller
 
         return view('core::boundaries.waivers', [
             'waivers' => $waivers,
+            'sortCol' => $sortCol,
+            'sortDir' => $sortDir,
+            'now' => $now,
             'summary' => [
                 'active' => $activeCount,
                 'expiring_soon' => $expiringSoonCount,
@@ -56,28 +71,64 @@ final class WaiverController extends Controller
         ]);
     }
 
-    public function extend(Request $request, int $id): RedirectResponse
+    public function extend(Request $request, int $id): RedirectResponse|JsonResponse
     {
+        $idempotencyKey = trim((string) ($request->header('Idempotency-Key') ?: $request->input('idempotency_key', '')));
+        if ($idempotencyKey === '') {
+            return response()->json([
+                'message' => 'Header atau field Idempotency-Key wajib disertakan untuk perpanjangan waiver.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'min:10', 'max:1000'],
             'adr_anchor' => ['required', 'string', 'max:255'],
             'days' => ['required', 'integer', 'min:1', 'max:90'],
         ]);
 
-        $violation = CoreBoundaryViolation::findOrFail($id);
+        $payloadHash = hash('sha256', (string) json_encode([
+            'violation_id' => $id,
+            'reason' => $validated['reason'],
+            'adr_anchor' => $validated['adr_anchor'],
+            'days' => (int) $validated['days'],
+        ]));
 
-        $updated = $this->waiveAction->execute(
+        $cacheKey = 'idemp:boundary:waiver:extend:'.sha1($id.':'.$idempotencyKey);
+        $cached = Cache::get($cacheKey);
+        if (is_array($cached)) {
+            if (($cached['payload_hash'] ?? '') !== $payloadHash) {
+                return response()->json([
+                    'message' => 'Idempotency conflict: payload berbeda untuk Idempotency-Key yang sama.',
+                ], 409);
+            }
+
+            if ($request->wantsJson()) {
+                return response()->json(['status' => 'replayed', 'violation_id' => $id], 200);
+            }
+
+            return redirect()->route('admin.architecture.waivers')->with('success', 'Waiver berhasil diperbarui (idempoten).');
+        }
+
+        $violation = CoreBoundaryViolation::findOrFail($id);
+        $actorId = (string) ($request->user()?->id ?? 'admin');
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
+
+        $updated = $this->waiveAction->extend(
             $violation,
-            (string) ($request->user()?->id ?? 'admin'),
+            $actorId,
             $validated['reason'],
             $validated['adr_anchor'],
-            now()->addDays($validated['days'])
+            (int) $validated['days']
         );
 
-        // Publish outbox event
         $this->outboxPublisher->publishWaiverGranted($updated);
+        Cache::put($cacheKey, ['payload_hash' => $payloadHash], $now->copy()->addHours(24));
 
-        return redirect()->route('admin.boundaries.waivers')->with('success', 'Waiver berhasil diperbarui.');
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'extended', 'violation_id' => $updated->id], 200);
+        }
+
+        return redirect()->route('admin.architecture.waivers')->with('success', 'Waiver berhasil diperbarui.');
     }
 
     /**
@@ -94,7 +145,8 @@ final class WaiverController extends Controller
         $violation = CoreBoundaryViolation::findOrFail($id);
         $user = $request->user() ?? User::firstOrFail();
 
-        $expiresAt = now()->addDays($validated['days']);
+        $now = ($this->clock ?? app(ClockInterface::class))->now();
+        $expiresAt = $now->copy()->addDays((int) $validated['days']);
         $approvalRequest = $this->approvalBridge->requestWaiverApproval(
             $violation,
             $user,
