@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Infrastructure\Tenancy;
 
 use Modules\Core\Contracts\TenantScopedModelProvider;
+use Modules\Core\Domain\Models\CoreApiClient;
 use Modules\Core\Domain\Models\CoreWebhook;
 
 class CoreTenantScopedModelProvider implements TenantScopedModelProvider
@@ -23,7 +24,7 @@ class CoreTenantScopedModelProvider implements TenantScopedModelProvider
                 'kind' => 'tenant',
             ],
             [
-                'model' => \Modules\Core\Domain\Models\CoreApiClient::class,
+                'model' => CoreApiClient::class,
                 'column' => 'tenant_id',
                 'kind' => 'tenant',
             ],

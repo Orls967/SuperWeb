@@ -6,6 +6,7 @@ namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Application\Api\StreamingBulkImportService;
+use Modules\Core\Domain\Models\CoreBulkImportJob;
 
 class ApiImportCommand extends Command
 {
@@ -18,10 +19,11 @@ class ApiImportCommand extends Command
         $jobId = $this->argument('job') ? (int) $this->argument('job') : ($this->option('job') ? (int) $this->option('job') : null);
 
         if ($jobId !== null || $this->option('resume')) {
-            $job = \Modules\Core\Domain\Models\CoreBulkImportJob::findOrFail($jobId);
+            $job = CoreBulkImportJob::findOrFail($jobId);
             $this->info("Resuming bulk import for Job #{$job->id} [{$job->target_key}]...");
             $completed = $service->executeJob($job);
             $this->info("Import completed successfully. {$completed->processed_rows} rows processed.");
+
             return self::SUCCESS;
         }
 
@@ -37,11 +39,13 @@ class ApiImportCommand extends Command
 
         if ($job->status === 'awaiting_approval') {
             $this->warn("Import dataset exceeds 10,000 rows. Awaiting approval (Job #{$job->id}).");
+
             return self::SUCCESS;
         }
 
         if ($job->status === 'failed') {
             $this->error("Import validation failed with {$job->error_rows} errors.");
+
             return self::FAILURE;
         }
 

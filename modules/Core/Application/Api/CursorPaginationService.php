@@ -10,14 +10,10 @@ use Illuminate\Support\Collection;
 class CursorPaginationService
 {
     public const DEFAULT_LIMIT = 25;
+
     public const MAX_LIMIT = 100;
 
     /**
-     * @param Builder $query
-     * @param int $limit
-     * @param string|null $cursor
-     * @param string $sortColumn
-     * @param string $direction
      * @return array{data: Collection, meta: array{limit: int, has_more: bool, next_cursor: string|null, total_returned: int}}
      */
     public function paginate(
@@ -83,11 +79,12 @@ class CursorPaginationService
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function encodeCursor(array $data): string
     {
         $json = json_encode($data, JSON_UNESCAPED_SLASHES);
+
         return rtrim(strtr(base64_encode($json), '+/', '-_'), '=');
     }
 
@@ -106,7 +103,7 @@ class CursorPaginationService
         }
 
         $data = json_decode($decoded, true);
+
         return is_array($data) ? $data : null;
     }
 }
-

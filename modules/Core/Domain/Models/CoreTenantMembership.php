@@ -37,4 +37,3 @@ class CoreTenantMembership extends Model
         return $this->belongsTo(CoreTenant::class, 'tenant_id');
     }
 }
-

@@ -29,6 +29,7 @@ class ApiArchiveDrillCommand extends Command
         $runs = $query->get();
         if ($runs->isEmpty()) {
             $this->warn('No retention runs available for drill restore.');
+
             return self::SUCCESS;
         }
 
@@ -46,4 +47,3 @@ class ApiArchiveDrillCommand extends Command
         return $mismatches === 0 ? self::SUCCESS : self::FAILURE;
     }
 }
-

@@ -99,7 +99,7 @@ class WarehouseResourceProvider implements ApiResourceProvider
 
         $id = (string) ($payload['id'] ?? '');
         $warehouse = Warehouse::findOrFail($id);
-        $warehouse->update(['is_active' => !$warehouse->is_active]);
+        $warehouse->update(['is_active' => ! $warehouse->is_active]);
 
         return [
             'status' => 200,
@@ -107,4 +107,3 @@ class WarehouseResourceProvider implements ApiResourceProvider
         ];
     }
 }
-

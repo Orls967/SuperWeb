@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
+use Modules\Core\Application\Tenancy\TenantIsolationScope;
 use Modules\Core\Application\Tenancy\TenantScopeRegistry;
 
 class ApiTenancyCoverageCommand extends Command
@@ -28,7 +29,7 @@ class ApiTenancyCoverageCommand extends Command
                 $instance = new $class;
                 $scopes = $instance->getGlobalScopes();
                 foreach ($scopes as $scope) {
-                    if ($scope instanceof \Modules\Core\Application\Tenancy\TenantIsolationScope) {
+                    if ($scope instanceof TenantIsolationScope) {
                         $hasScope = true;
                         break;
                     }
@@ -37,7 +38,7 @@ class ApiTenancyCoverageCommand extends Command
                 $hasScope = true; // Registered statically
             }
 
-            if (!$hasScope) {
+            if (! $hasScope) {
                 $unscopedCount++;
             }
 
@@ -59,10 +60,10 @@ class ApiTenancyCoverageCommand extends Command
 
         if ($this->option('strict') && $unscopedCount > 0) {
             $this->error("Tenancy coverage audit FAILED: {$unscopedCount} models lack TenantIsolationScope.");
+
             return self::FAILURE;
         }
 
         return self::SUCCESS;
     }
 }
-

@@ -36,6 +36,9 @@ use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Logistics\Contracts\VesselRegistry;
 use Modules\Logistics\Domain\Events\FleetServiceDue;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
+use Modules\Logistics\Infrastructure\Api\ShipmentResourceProvider;
+use Modules\Logistics\Infrastructure\Retention\LogisticsTrackingEventRetentionProvider;
+use Modules\Logistics\Infrastructure\Tenancy\LogisticsTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Store\Domain\Events\OrderPaid;
 
@@ -60,9 +63,9 @@ class LogisticsServiceProvider extends ServiceProvider
         $this->app->tag(LogisticsDemurrageTickHandler::class, 'sim.tick_handler');
         $this->app->bind(EventShuttleFleetScheduler::class, EventShuttleFleetService::class);
 
-        $this->app->tag(\Modules\Logistics\Infrastructure\Api\ShipmentResourceProvider::class, 'core.api_resource_provider');
-        $this->app->tag(\Modules\Logistics\Infrastructure\Tenancy\LogisticsTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
-        $this->app->tag(\Modules\Logistics\Infrastructure\Retention\LogisticsTrackingEventRetentionProvider::class, 'core.retention_archive_provider');
+        $this->app->tag(ShipmentResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(LogisticsTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(LogisticsTrackingEventRetentionProvider::class, 'core.retention_archive_provider');
     }
 
     public function boot(): void

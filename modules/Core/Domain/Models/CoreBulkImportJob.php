@@ -50,4 +50,3 @@ class CoreBulkImportJob extends Model
         return $this->hasMany(CoreBulkImportError::class, 'bulk_import_job_id');
     }
 }
-

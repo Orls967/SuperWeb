@@ -29,7 +29,7 @@ class ApiV2EdiController extends Controller
             ], 400);
         }
 
-        $idempKey = (string) $request->header('Idempotency-Key', 'edi-' . uniqid());
+        $idempKey = (string) $request->header('Idempotency-Key', 'edi-'.uniqid());
         $context = TenantContext::current() ?? new TenantContext('tenant-default');
 
         $interchange = $this->ediService->processInterchange(
@@ -51,4 +51,3 @@ class ApiV2EdiController extends Controller
         ], 201);
     }
 }
-

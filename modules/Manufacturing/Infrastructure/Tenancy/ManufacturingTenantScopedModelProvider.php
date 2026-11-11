@@ -25,4 +25,3 @@ class ManufacturingTenantScopedModelProvider implements TenantScopedModelProvide
         ];
     }
 }
-

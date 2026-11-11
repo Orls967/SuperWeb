@@ -39,4 +39,3 @@ class ApiArchiveRunCommand extends Command
         return self::SUCCESS;
     }
 }
-

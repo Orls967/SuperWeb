@@ -88,4 +88,3 @@ interface ApiResourceProvider
      */
     public function executeAction(string $action, array $payload, string $idempotencyKey, TenantContext $context): array;
 }
-

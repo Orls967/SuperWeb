@@ -13,7 +13,7 @@ class DeveloperSandboxService
     {
         return [
             'api_version' => 'v2',
-            'base_url' => config('app.url') . '/api/v2',
+            'base_url' => config('app.url').'/api/v2',
             'auth_header' => 'Authorization: Bearer <api_token>',
             'idempotency_header' => 'Idempotency-Key: <uuid-or-string-16-128-chars>',
             'supported_resources' => [
@@ -51,4 +51,3 @@ class DeveloperSandboxService
         ];
     }
 }
-

@@ -26,4 +26,3 @@ interface RetentionArchiveProvider
      */
     public function hashColumns(): array;
 }
-

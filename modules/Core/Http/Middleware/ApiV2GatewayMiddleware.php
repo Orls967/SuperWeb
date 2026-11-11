@@ -56,7 +56,7 @@ class ApiV2GatewayMiddleware
             if ($token !== null && method_exists($token, 'can')) {
                 $method = strtoupper($request->method());
                 $requiredAbility = $method === 'GET' ? 'resource:read' : 'resource:action';
-                if (!$token->can('*') && !$token->can($requiredAbility)) {
+                if (! $token->can('*') && ! $token->can($requiredAbility)) {
                     return $this->rfc7807(
                         status: 403,
                         type: 'https://superweb.example.com/probs/forbidden',
@@ -68,7 +68,7 @@ class ApiV2GatewayMiddleware
         }
 
         $tenantId = (string) ($request->header('X-Tenant-ID') ?? $client?->tenant_id ?? $user->tenant_id ?? 'tenant-default');
-        $clientCode = $client?->code ?? ($user ? 'usr_' . $user->id : 'anon');
+        $clientCode = $client?->code ?? ($user ? 'usr_'.$user->id : 'anon');
 
         // Tenancy Context binding
         $context = new TenantContext(
@@ -98,7 +98,7 @@ class ApiV2GatewayMiddleware
                     'bucket_last_ms' => $nowMs,
                 ]);
 
-                if (!$bucketResult['allowed']) {
+                if (! $bucketResult['allowed']) {
                     $this->logUsage($client, $tenantId, $request, 429, false, $bucketResult['retry_after_ms']);
 
                     return response()->json([
@@ -214,7 +214,7 @@ class ApiV2GatewayMiddleware
     }
 
     /**
-     * @param array<string, string> $headers
+     * @param  array<string, string>  $headers
      */
     private function rfc7807(
         int $status,

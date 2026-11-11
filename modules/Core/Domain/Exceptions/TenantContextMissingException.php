@@ -16,4 +16,3 @@ final class TenantContextMissingException extends DomainException
         return new self("TENANT_CONTEXT_REQUIRED: Operasi [{$operation}] ditolak (fail-closed) karena konteks tenant tidak ada.");
     }
 }
-

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use DomainException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Models\CoreWebhook;
@@ -12,15 +11,11 @@ use Modules\Core\Domain\Models\CoreWebhook;
 class WebhookSubscriptionService
 {
     public const CIRCUIT_FAILURE_THRESHOLD = 5;
+
     public const CIRCUIT_RESET_TIMEOUT_SECONDS = 300;
 
     /**
-     * @param string $tenantId
-     * @param string $code
-     * @param string $name
-     * @param string $targetUrl
-     * @param array<int, string> $eventTopics
-     * @param int|null $apiClientId
+     * @param  array<int, string>  $eventTopics
      * @return array{webhook: CoreWebhook, secret: string}
      */
     public function register(
@@ -31,7 +26,7 @@ class WebhookSubscriptionService
         array $eventTopics,
         ?int $apiClientId = null,
     ): array {
-        $secret = 'whsec_' . Str::random(32);
+        $secret = 'whsec_'.Str::random(32);
 
         $webhook = CoreWebhook::create([
             'tenant_id' => $tenantId,
@@ -62,7 +57,7 @@ class WebhookSubscriptionService
      */
     public function rotateSecret(CoreWebhook $webhook, int $gracePeriodHours = 24): array
     {
-        $newSecret = 'whsec_' . Str::random(32);
+        $newSecret = 'whsec_'.Str::random(32);
 
         $webhook->update([
             'previous_secret_encrypted' => $webhook->secret_encrypted,
@@ -113,7 +108,7 @@ class WebhookSubscriptionService
      */
     public function canDispatch(CoreWebhook $webhook): bool
     {
-        if (!$webhook->is_active) {
+        if (! $webhook->is_active) {
             return false;
         }
 
@@ -124,6 +119,7 @@ class WebhookSubscriptionService
             ) {
                 // Trip to half-open
                 $webhook->update(['circuit_state' => 'half_open']);
+
                 return true;
             }
 

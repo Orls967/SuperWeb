@@ -43,6 +43,16 @@ use Modules\Core\Application\Actions\Search\Providers\ProcurementSearchProvider;
 use Modules\Core\Application\Actions\Search\Providers\RestoDiningSearchProvider;
 use Modules\Core\Application\Actions\Search\Providers\RetailStoreSearchProvider;
 use Modules\Core\Application\Actions\TransferVehicleOwnershipAction;
+use Modules\Core\Application\Api\ApiClientLifecycleService;
+use Modules\Core\Application\Api\AsyncZipExportService;
+use Modules\Core\Application\Api\CoreApiAuditor;
+use Modules\Core\Application\Api\CursorPaginationService;
+use Modules\Core\Application\Api\EdiProcessingService;
+use Modules\Core\Application\Api\IdempotencyStoreService;
+use Modules\Core\Application\Api\RetentionArchiveService;
+use Modules\Core\Application\Api\StreamingBulkImportService;
+use Modules\Core\Application\Api\WebhookDeliveryOrchestrator;
+use Modules\Core\Application\Api\WebhookSubscriptionService;
 use Modules\Core\Application\Boundaries\BoundaryEventSubscriber;
 use Modules\Core\Application\Copilot\ExecutiveCopilotEngine;
 use Modules\Core\Application\Listeners\RecordVehicleAcquiredPassportEvent;
@@ -86,7 +96,15 @@ use Modules\Core\Application\Services\SpineLagMonitorService;
 use Modules\Core\Application\Services\SpineReplayService;
 use Modules\Core\Application\Services\VenueZoneSurveillanceFeedService;
 use Modules\Core\Application\Telemetry\LiveTelemetryStreamService;
+use Modules\Core\Application\Tenancy\TenantScopeRegistry;
 use Modules\Core\Application\TickHandlers\BillingTickHandler;
+use Modules\Core\Console\Commands\ApiArchiveDrillCommand;
+use Modules\Core\Console\Commands\ApiArchiveRunCommand;
+use Modules\Core\Console\Commands\ApiExportPurgeCommand;
+use Modules\Core\Console\Commands\ApiImportCommand;
+use Modules\Core\Console\Commands\ApiKeysRotateCommand;
+use Modules\Core\Console\Commands\ApiTenancyCoverageCommand;
+use Modules\Core\Console\Commands\ApiUsageRollupCommand;
 use Modules\Core\Console\Commands\AuditAiCommand;
 use Modules\Core\Console\Commands\AuditMobileCommand;
 use Modules\Core\Console\Commands\AuditSimulationKernelCommand;
@@ -149,6 +167,8 @@ use Modules\Core\Contracts\TransactionAnomalyDetectorInterface;
 use Modules\Core\Contracts\TransfersVehicleOwnership;
 use Modules\Core\Contracts\VehicleDirectory;
 use Modules\Core\Contracts\VenueZoneSurveillanceFeedGateway;
+use Modules\Core\Domain\Algorithms\Api\WebhookSignatureVerifier;
+use Modules\Core\Domain\Algorithms\Edi\EdiInterchangeCodec;
 use Modules\Core\Domain\Algorithms\Events\ProjectionHashCalculator;
 use Modules\Core\Domain\Contracts\DataSovereigntyComplianceInterface;
 use Modules\Core\Domain\Contracts\DisasterRecoveryDrillInterface;
@@ -162,12 +182,16 @@ use Modules\Core\Domain\Models\Vehicle;
 use Modules\Core\Domain\Repositories\SimCheckpointRepositoryInterface;
 use Modules\Core\Domain\Repositories\SimRunRepositoryInterface;
 use Modules\Core\Domain\Repositories\SimTwinSnapshotRepositoryInterface;
+use Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine;
+use Modules\Core\Http\Controllers\ApiV2ResourceController;
 use Modules\Core\Http\Policies\SimTwinStatePolicy;
 use Modules\Core\Http\Policies\SimulationRunPolicy;
 use Modules\Core\Infrastructure\Repositories\EloquentVehicleDirectory;
 use Modules\Core\Infrastructure\Repositories\SimCheckpointEloquentRepository;
 use Modules\Core\Infrastructure\Repositories\SimRunEloquentRepository;
 use Modules\Core\Infrastructure\Repositories\SimTwinSnapshotEloquentRepository;
+use Modules\Core\Infrastructure\Retention\CoreAuditLogRetentionProvider;
+use Modules\Core\Infrastructure\Tenancy\CoreTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
 
@@ -310,20 +334,20 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(LiveTelemetryStreamService::class);
 
         // Fase 55: API v2, Webhook, EDI, Multi-tenancy, Bulk I/O & Retention
-        $this->app->singleton(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
-        $this->app->singleton(\Modules\Core\Application\Api\StreamingBulkImportService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\AsyncZipExportService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\RetentionArchiveService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\EdiProcessingService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\WebhookSubscriptionService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\WebhookDeliveryOrchestrator::class);
-        $this->app->singleton(\Modules\Core\Application\Api\ApiClientLifecycleService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\IdempotencyStoreService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\CursorPaginationService::class);
-        $this->app->singleton(\Modules\Core\Application\Api\CoreApiAuditor::class);
-        $this->app->singleton(\Modules\Core\Domain\Algorithms\Api\WebhookSignatureVerifier::class);
-        $this->app->singleton(\Modules\Core\Domain\Algorithms\Edi\EdiInterchangeCodec::class);
-        $this->app->singleton(\Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine::class);
+        $this->app->singleton(TenantScopeRegistry::class);
+        $this->app->singleton(StreamingBulkImportService::class);
+        $this->app->singleton(AsyncZipExportService::class);
+        $this->app->singleton(RetentionArchiveService::class);
+        $this->app->singleton(EdiProcessingService::class);
+        $this->app->singleton(WebhookSubscriptionService::class);
+        $this->app->singleton(WebhookDeliveryOrchestrator::class);
+        $this->app->singleton(ApiClientLifecycleService::class);
+        $this->app->singleton(IdempotencyStoreService::class);
+        $this->app->singleton(CursorPaginationService::class);
+        $this->app->singleton(CoreApiAuditor::class);
+        $this->app->singleton(WebhookSignatureVerifier::class);
+        $this->app->singleton(EdiInterchangeCodec::class);
+        $this->app->singleton(EdiInterchangeStateMachine::class);
 
         $this->app->tag([
             PassportScaleProvisioner::class,
@@ -582,13 +606,13 @@ class CoreServiceProvider extends ServiceProvider
                 BoundaryPathCommand::class,
                 BoundaryRemediateCommand::class,
                 BoundaryTriageCommand::class,
-                \Modules\Core\Console\Commands\ApiKeysRotateCommand::class,
-                \Modules\Core\Console\Commands\ApiUsageRollupCommand::class,
-                \Modules\Core\Console\Commands\ApiImportCommand::class,
-                \Modules\Core\Console\Commands\ApiExportPurgeCommand::class,
-                \Modules\Core\Console\Commands\ApiArchiveRunCommand::class,
-                \Modules\Core\Console\Commands\ApiArchiveDrillCommand::class,
-                \Modules\Core\Console\Commands\ApiTenancyCoverageCommand::class,
+                ApiKeysRotateCommand::class,
+                ApiUsageRollupCommand::class,
+                ApiImportCommand::class,
+                ApiExportPurgeCommand::class,
+                ApiArchiveRunCommand::class,
+                ApiArchiveDrillCommand::class,
+                ApiTenancyCoverageCommand::class,
             ]);
         }
 
@@ -629,31 +653,31 @@ class CoreServiceProvider extends ServiceProvider
 
         // === API v2 Gateway Providers (Fase 55 / W8-D45..D52) ===
         try {
-            $tenancyRegistry = $this->app->make(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
-            $tenancyRegistry->registerProvider(new \Modules\Core\Infrastructure\Tenancy\CoreTenantScopedModelProvider());
-            $retentionService = $this->app->make(\Modules\Core\Application\Api\RetentionArchiveService::class);
-            $retentionService->registerProvider(new \Modules\Core\Infrastructure\Retention\CoreAuditLogRetentionProvider());
+            $tenancyRegistry = $this->app->make(TenantScopeRegistry::class);
+            $tenancyRegistry->registerProvider(new CoreTenantScopedModelProvider);
+            $retentionService = $this->app->make(RetentionArchiveService::class);
+            $retentionService->registerProvider(new CoreAuditLogRetentionProvider);
         } catch (\Throwable) {
         }
 
         // Dynamically resolve tagged providers from owner business modules
         try {
             foreach ($this->app->tagged('core.api_resource_provider') as $provider) {
-                \Modules\Core\Http\Controllers\ApiV2ResourceController::registerProvider($provider);
+                ApiV2ResourceController::registerProvider($provider);
             }
-            $ediService = $this->app->make(\Modules\Core\Application\Api\EdiProcessingService::class);
+            $ediService = $this->app->make(EdiProcessingService::class);
             foreach ($this->app->tagged('core.edi_document_handler') as $handler) {
                 $ediService->registerHandler($handler);
             }
-            $bulkService = $this->app->make(\Modules\Core\Application\Api\StreamingBulkImportService::class);
+            $bulkService = $this->app->make(StreamingBulkImportService::class);
             foreach ($this->app->tagged('core.bulk_import_target') as $target) {
                 $bulkService->registerTarget($target);
             }
-            $tenancyRegistry = $this->app->make(\Modules\Core\Application\Tenancy\TenantScopeRegistry::class);
+            $tenancyRegistry = $this->app->make(TenantScopeRegistry::class);
             foreach ($this->app->tagged('core.tenant_scoped_model_provider') as $provider) {
                 $tenancyRegistry->registerProvider($provider);
             }
-            $retentionService = $this->app->make(\Modules\Core\Application\Api\RetentionArchiveService::class);
+            $retentionService = $this->app->make(RetentionArchiveService::class);
             foreach ($this->app->tagged('core.retention_archive_provider') as $provider) {
                 $retentionService->registerProvider($provider);
             }

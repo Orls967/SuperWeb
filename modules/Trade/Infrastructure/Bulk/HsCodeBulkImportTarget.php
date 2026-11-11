@@ -84,4 +84,3 @@ class HsCodeBulkImportTarget implements BulkImportTarget
         }
     }
 }
-

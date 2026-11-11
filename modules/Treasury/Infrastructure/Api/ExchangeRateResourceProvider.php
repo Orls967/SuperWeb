@@ -92,4 +92,3 @@ class ExchangeRateResourceProvider implements ApiResourceProvider
         throw new DomainException("ACTION_UNKNOWN: Aksi [{$action}] tidak didukung pada exchange-rates.");
     }
 }
-

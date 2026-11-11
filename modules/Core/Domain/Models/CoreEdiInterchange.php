@@ -48,4 +48,3 @@ class CoreEdiInterchange extends Model
         return $this->hasMany(CoreEdiTransition::class, 'edi_interchange_id')->orderBy('id');
     }
 }
-

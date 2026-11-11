@@ -43,4 +43,3 @@ class CoreApiUsageEvent extends Model
         return $this->belongsTo(CoreApiClient::class, 'api_client_id');
     }
 }
-

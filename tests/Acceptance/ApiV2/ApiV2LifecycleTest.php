@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Quality\Audit\Fixtures\ApiAuditCorruptionFixture;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +29,9 @@ use Modules\Core\Domain\Models\CoreTenant;
 use Modules\Core\Domain\Models\CoreWebhook;
 use Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine;
 use Modules\Procurement\Domain\Models\PurchaseOrder;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('test_55_1_access_and_sanctum_token_abilities', function (): void {
     $this->seed(DatabaseSeeder::class);
@@ -79,7 +81,7 @@ it('test_55_2_api_v2_envelope_cursor_rfc7807_idempotency_and_b1_rate_limit', fun
     {
         public function __construct(public CarbonImmutable $current) {}
 
-        public function now(): \Carbon\CarbonInterface
+        public function now(): CarbonInterface
         {
             return $this->current;
         }
@@ -389,4 +391,3 @@ it('test_55_5_api_audit_clean_and_corruption_fixtures', function (): void {
         }
     }
 });
-

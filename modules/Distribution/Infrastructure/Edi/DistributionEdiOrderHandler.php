@@ -46,7 +46,7 @@ class DistributionEdiOrderHandler implements EdiDocumentHandler
         }
 
         $order = DistOrder::create([
-            'number' => $document->documentNumber ?: 'EDI-ORD-' . uniqid(),
+            'number' => $document->documentNumber ?: 'EDI-ORD-'.uniqid(),
             'distributor_id' => $distributorId,
             'status' => 'draft',
             'subtotal_idr' => $totalCents,
@@ -56,10 +56,9 @@ class DistributionEdiOrderHandler implements EdiDocumentHandler
             'currency' => 'IDR',
             'shipping_address' => 'EDI Partner Warehouse',
             'requested_date' => now()->addDays(3),
-            'notes' => 'Imported via EDI ' . $document->standard . ' control_ref: ' . $document->interchangeControlRef,
+            'notes' => 'Imported via EDI '.$document->standard.' control_ref: '.$document->interchangeControlRef,
         ]);
 
-        return EdiHandleResult::success((string) $order->id, 'Draft distribution order created from EDI ' . $document->messageType);
+        return EdiHandleResult::success((string) $order->id, 'Draft distribution order created from EDI '.$document->messageType);
     }
 }
-

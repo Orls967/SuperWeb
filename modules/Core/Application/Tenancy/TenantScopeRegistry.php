@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Tenancy;
 
-use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\TenantScopedModelProvider;
 use Modules\Core\Domain\Models\CoreTenantScopeBypass;
 
 class TenantScopeRegistry
 {
     private static bool $bypassed = false;
+
     private static bool $strict = false;
 
     /** @var array<int, TenantScopedModelProvider> */
@@ -34,8 +33,7 @@ class TenantScopeRegistry
     }
 
     /**
-     * @param string $module
-     * @param class-string<Model> $modelClass
+     * @param  class-string<Model>  $modelClass
      */
     public function registerModel(string $module, string $modelClass): void
     {
@@ -49,7 +47,7 @@ class TenantScopeRegistry
         ];
 
         if (is_subclass_of($modelClass, Model::class)) {
-            $modelClass::addGlobalScope(new TenantIsolationScope());
+            $modelClass::addGlobalScope(new TenantIsolationScope);
         }
     }
 
@@ -70,7 +68,8 @@ class TenantScopeRegistry
 
     /**
      * @template T
-     * @param callable(): T $callback
+     *
+     * @param  callable(): T  $callback
      * @return T
      */
     public function withStrictEnforcement(callable $callback): mixed
@@ -88,9 +87,8 @@ class TenantScopeRegistry
      * Run callback bypassing tenant scoping with audit trail in core_tenant_scope_bypasses.
      *
      * @template T
-     * @param string $ability
-     * @param string $reason
-     * @param callable(): T $callback
+     *
+     * @param  callable(): T  $callback
      * @return T
      */
     public function withoutTenantScope(string $ability, string $reason, callable $callback): mixed

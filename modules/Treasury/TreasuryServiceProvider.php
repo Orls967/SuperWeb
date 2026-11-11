@@ -20,6 +20,7 @@ use Modules\Treasury\Console\Commands\RunFxRevaluationCommand;
 use Modules\Treasury\Console\Commands\TestCreditCovenantCommand;
 use Modules\Treasury\Contracts\ExchangeRateLookup;
 use Modules\Treasury\Contracts\FxMonetaryItemFeed;
+use Modules\Treasury\Infrastructure\Api\ExchangeRateResourceProvider;
 
 class TreasuryServiceProvider extends ServiceProvider
 {
@@ -31,7 +32,7 @@ class TreasuryServiceProvider extends ServiceProvider
         $this->app->bind(ExchangeRateLookup::class, TreasuryService::class);
         $this->app->bind(FxMonetaryItemFeed::class, TreasuryService::class);
 
-        $this->app->tag(\Modules\Treasury\Infrastructure\Api\ExchangeRateResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(ExchangeRateResourceProvider::class, 'core.api_resource_provider');
     }
 
     public function boot(): void

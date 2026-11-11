@@ -61,4 +61,3 @@ final class WebhookSignatureCertificateVerifier
         return true;
     }
 }
-

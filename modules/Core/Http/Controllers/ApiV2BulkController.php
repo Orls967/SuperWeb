@@ -99,7 +99,7 @@ class ApiV2BulkController extends Controller
 
     public function download(Request $request, int $jobId): BinaryFileResponse|JsonResponse
     {
-        if (!$request->user() && !$request->hasValidSignature()) {
+        if (! $request->user() && ! $request->hasValidSignature()) {
             return response()->json([
                 'type' => 'https://superweb.example.com/probs/invalid-signature',
                 'title' => 'Invalid or Expired Signed URL',
@@ -110,7 +110,7 @@ class ApiV2BulkController extends Controller
         /** @var CoreBulkExportJob $job */
         $job = CoreBulkExportJob::findOrFail($jobId);
 
-        if (!$job->zip_path || !file_exists($job->zip_path)) {
+        if (! $job->zip_path || ! file_exists($job->zip_path)) {
             return response()->json([
                 'type' => 'https://superweb.example.com/probs/file-not-found',
                 'title' => 'Export Archive File Not Found',
@@ -127,6 +127,7 @@ class ApiV2BulkController extends Controller
     public function downloadExport(Request $request): BinaryFileResponse|JsonResponse
     {
         $exportId = (int) ($request->query('export') ?? $request->input('export', 0));
+
         return $this->download($request, $exportId);
     }
 }

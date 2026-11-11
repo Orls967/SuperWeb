@@ -82,7 +82,7 @@ class CoreApiAuditor
 
         foreach ($activeClients as $client) {
             $hasActiveKey = $client->keys->where('status', 'active')->isNotEmpty();
-            if (!$hasActiveKey) {
+            if (! $hasActiveKey) {
                 $discrepancies++;
                 $invalidRecords[] = "Corrupted CoreApiClient ID {$client->id}: Active client has no active keys";
             }

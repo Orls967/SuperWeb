@@ -65,4 +65,3 @@ final class TokenBucketCertificateVerifier
         return true;
     }
 }
-

@@ -25,4 +25,3 @@ class LogisticsTenantScopedModelProvider implements TenantScopedModelProvider
         ];
     }
 }
-

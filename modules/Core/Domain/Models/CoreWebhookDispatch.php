@@ -38,4 +38,3 @@ class CoreWebhookDispatch extends Model
         return $this->belongsTo(CoreWebhook::class, 'webhook_id');
     }
 }
-

@@ -9,6 +9,7 @@ use Illuminate\Database\Seeder;
 use Modules\Core\Application\Actions\AcquireVehicleAction;
 use Modules\Core\Application\Services\ActivityLogger;
 use Modules\Core\Application\Services\NotificationService;
+use Modules\Core\Domain\Models\CoreTenant;
 use Modules\Core\Domain\Models\Vehicle;
 
 class PlatformSeeder extends Seeder
@@ -29,16 +30,16 @@ class PlatformSeeder extends Seeder
         $this->seedGarageVehicles($customer);
 
         // === Seed CoreTenants for API v2 & Multi-Tenancy (Fase 55) ===
-        if (class_exists(\Modules\Core\Domain\Models\CoreTenant::class)) {
-            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+        if (class_exists(CoreTenant::class)) {
+            CoreTenant::firstOrCreate(
                 ['code' => 'TENANT-A'],
                 ['id' => 'TENANT-A', 'name' => 'Tenant Alpha Corp', 'is_active' => true]
             );
-            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+            CoreTenant::firstOrCreate(
                 ['code' => 'TENANT-B'],
                 ['id' => 'TENANT-B', 'name' => 'Tenant Beta Logistics', 'is_active' => true]
             );
-            \Modules\Core\Domain\Models\CoreTenant::firstOrCreate(
+            CoreTenant::firstOrCreate(
                 ['code' => 'DEFAULT'],
                 ['id' => 'tenant-default', 'name' => 'Default Platform Tenant', 'is_active' => true]
             );

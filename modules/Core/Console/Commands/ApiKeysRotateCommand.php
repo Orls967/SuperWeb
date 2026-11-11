@@ -53,4 +53,3 @@ class ApiKeysRotateCommand extends Command
         return self::SUCCESS;
     }
 }
-

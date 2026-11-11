@@ -76,4 +76,3 @@ class CoreApiClient extends Model
         return $this->hasMany(CoreApiUsageRollup::class, 'api_client_id');
     }
 }
-

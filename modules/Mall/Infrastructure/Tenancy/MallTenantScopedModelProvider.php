@@ -31,4 +31,3 @@ class MallTenantScopedModelProvider implements TenantScopedModelProvider
         ];
     }
 }
-

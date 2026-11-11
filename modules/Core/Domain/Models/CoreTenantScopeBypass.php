@@ -30,4 +30,3 @@ class CoreTenantScopeBypass extends Model
         ];
     }
 }
-

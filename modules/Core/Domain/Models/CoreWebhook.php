@@ -68,4 +68,3 @@ class CoreWebhook extends Model
         return array_values(array_unique(array_filter($secrets)));
     }
 }
-

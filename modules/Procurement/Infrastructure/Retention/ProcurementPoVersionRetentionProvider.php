@@ -38,4 +38,3 @@ class ProcurementPoVersionRetentionProvider implements RetentionArchiveProvider
         return ['id', 'po_id', 'version', 'status'];
     }
 }
-

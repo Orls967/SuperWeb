@@ -54,4 +54,3 @@ class CoreApiClientKey extends Model
         return in_array('*', $granted, true) || in_array($ability, $granted, true);
     }
 }
-

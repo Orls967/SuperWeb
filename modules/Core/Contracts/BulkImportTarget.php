@@ -44,4 +44,3 @@ interface BulkImportTarget
      */
     public function exportRows(int $maxRows = 50000): iterable;
 }
-

@@ -50,4 +50,3 @@ class CoreTenant extends Model
         return $this->hasMany(CoreApiClient::class, 'tenant_id');
     }
 }
-

@@ -34,16 +34,16 @@ class ProcurementEdiInvoiceHandler implements EdiDocumentHandler
             $totalCents += ($item['quantity'] * $item['unit_price']);
         }
 
-        $supplier = \Modules\Supplier\Contracts\Supplier::first();
+        $supplier = Supplier::first();
         if (! $supplier) {
-            $supplier = \Modules\Supplier\Contracts\Supplier::create([
+            $supplier = Supplier::create([
                 'name' => 'EDI Default Supplier',
             ]);
         }
         $supplierId = $supplier->id;
 
         $invoice = SupplierInvoice::create([
-            'number' => $document->documentNumber ?: 'EDI-INV-' . uniqid(),
+            'number' => $document->documentNumber ?: 'EDI-INV-'.uniqid(),
             'supplier_id' => $supplierId,
             'po_id' => null,
             'status' => 'draft',
@@ -55,10 +55,9 @@ class ProcurementEdiInvoiceHandler implements EdiDocumentHandler
             'invoice_date' => now(),
             'due_date' => now()->addDays(30),
             'currency' => 'IDR',
-            'notes' => 'Ingested via EDI INVOIC interchange ' . $document->interchangeControlRef . ' (No ledger entry created).',
+            'notes' => 'Ingested via EDI INVOIC interchange '.$document->interchangeControlRef.' (No ledger entry created).',
         ]);
 
         return EdiHandleResult::success((string) $invoice->id, 'Draft supplier invoice created without ledger posting');
     }
 }
-

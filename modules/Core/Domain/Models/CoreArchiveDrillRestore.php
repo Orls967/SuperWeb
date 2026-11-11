@@ -33,4 +33,3 @@ class CoreArchiveDrillRestore extends Model
         return $this->belongsTo(CoreRetentionRun::class, 'retention_run_id');
     }
 }
-

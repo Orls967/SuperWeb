@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use DomainException;
-use Modules\Core\Contracts\CanonicalEdiDocument;
 use Modules\Core\Contracts\EdiDocumentHandler;
 use Modules\Core\Domain\Algorithms\Edi\EdiInterchangeCodec;
 use Modules\Core\Domain\Models\CoreEdiInterchange;
@@ -85,10 +83,11 @@ class EdiProcessingService
             $this->stateMachine->transition(
                 $interchange,
                 EdiInterchangeStateMachine::STATUS_REJECTED,
-                'EDI decode syntax error: ' . $e->getMessage(),
+                'EDI decode syntax error: '.$e->getMessage(),
                 $actorUserId,
                 ['error_codes' => ['SYNTAX_ERROR']]
             );
+
             return $interchange->fresh();
         }
 
@@ -123,8 +122,8 @@ class EdiProcessingService
             $actorUserId
         );
 
-        if (!$doc->isValid) {
-            $reason = !empty($doc->errorCodes) ? implode(', ', $doc->errorCodes) : 'Invalid EDI payload';
+        if (! $doc->isValid) {
+            $reason = ! empty($doc->errorCodes) ? implode(', ', $doc->errorCodes) : 'Invalid EDI payload';
             $this->stateMachine->transition(
                 $interchange,
                 EdiInterchangeStateMachine::STATUS_REJECTED,
@@ -132,6 +131,7 @@ class EdiProcessingService
                 $actorUserId,
                 ['contrl_payload' => $doc->acknowledgmentPayload]
             );
+
             return $interchange->fresh();
         }
 
@@ -152,6 +152,7 @@ class EdiProcessingService
                 "No registered EdiDocumentHandler for message type [{$doc->messageType}]",
                 $actorUserId
             );
+
             return $interchange->fresh();
         }
 
@@ -183,7 +184,7 @@ class EdiProcessingService
                 $this->stateMachine->transition(
                     $interchange,
                     EdiInterchangeStateMachine::STATUS_POSTED,
-                    'Applied by handler: ' . $result->message,
+                    'Applied by handler: '.$result->message,
                     $actorUserId,
                     [
                         'handler_module' => $handler->moduleName(),
@@ -195,7 +196,7 @@ class EdiProcessingService
                 $this->stateMachine->transition(
                     $interchange,
                     EdiInterchangeStateMachine::STATUS_REJECTED,
-                    'Handler rejected document: ' . $result->message,
+                    'Handler rejected document: '.$result->message,
                     $actorUserId
                 );
             }
@@ -203,7 +204,7 @@ class EdiProcessingService
             $this->stateMachine->transition(
                 $interchange,
                 EdiInterchangeStateMachine::STATUS_REJECTED,
-                'Handler execution exception: ' . $e->getMessage(),
+                'Handler execution exception: '.$e->getMessage(),
                 $actorUserId
             );
         }

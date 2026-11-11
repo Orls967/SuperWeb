@@ -20,6 +20,7 @@ use Modules\Contract\Console\Commands\RemindContractObligationsCommand;
 use Modules\Contract\Console\Commands\VerifyContractChainsCommand;
 use Modules\Contract\Contracts\ClauseTemplateReader;
 use Modules\Contract\Contracts\ContractLookupInterface;
+use Modules\Contract\Infrastructure\Tenancy\ContractTenantScopedModelProvider;
 use Modules\Logistics\Contracts\RateCardOverrideResolver;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -48,7 +49,7 @@ class ContractServiceProvider extends ServiceProvider
             ClauseTemplateReaderService::class
         );
 
-        $this->app->tag(\Modules\Contract\Infrastructure\Tenancy\ContractTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(ContractTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

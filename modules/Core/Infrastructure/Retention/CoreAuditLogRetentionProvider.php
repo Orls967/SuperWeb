@@ -38,4 +38,3 @@ class CoreAuditLogRetentionProvider implements RetentionArchiveProvider
         return ['id', 'action', 'auditable_type', 'auditable_id'];
     }
 }
-

@@ -35,4 +35,3 @@ class CoreApiIdempotencyRecord extends Model
         ];
     }
 }
-

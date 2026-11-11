@@ -96,4 +96,3 @@ class WholesaleCatalogResourceProvider implements ApiResourceProvider
         throw new DomainException("ACTION_UNKNOWN: Aksi [{$action}] tidak didukung pada wholesale-catalogs.");
     }
 }
-

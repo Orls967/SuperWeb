@@ -39,4 +39,3 @@ class CoreRetentionRun extends Model
         return $this->hasMany(CoreArchiveDrillRestore::class, 'retention_run_id');
     }
 }
-

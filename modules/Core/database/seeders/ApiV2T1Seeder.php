@@ -18,7 +18,6 @@ use Modules\Core\Domain\Models\CoreEdiTransition;
 use Modules\Core\Domain\Models\CoreRetentionPolicy;
 use Modules\Core\Domain\Models\CoreTenant;
 use Modules\Core\Domain\Models\CoreWebhook;
-use Modules\Core\Domain\Models\CoreWebhookDispatch;
 use Modules\Core\Domain\StateMachines\EdiInterchangeStateMachine;
 
 /**
@@ -103,7 +102,7 @@ class ApiV2T1Seeder extends Seeder
 
             // Buat active key jika belum ada
             if ($client->keys()->where('status', 'active')->count() === 0) {
-                $rawKey = 'sk_live_' . Str::random(32);
+                $rawKey = 'sk_live_'.Str::random(32);
                 CoreApiClientKey::create([
                     'api_client_id' => $client->id,
                     'key_prefix' => substr($rawKey, 0, 12),
@@ -134,7 +133,7 @@ class ApiV2T1Seeder extends Seeder
                 $targetClient = $clients[($u - 1) % $clientCount];
                 $route = $routes[($u - 1) % count($routes)];
                 $isThrottled = ($u % 50 === 0);
-                $isInvalid = (!$isThrottled && $u % 100 === 0);
+                $isInvalid = (! $isThrottled && $u % 100 === 0);
 
                 $status = $isThrottled ? 429 : ($isInvalid ? 422 : 200);
                 $allowed = ($status === 200 || $status === 422);
@@ -158,7 +157,7 @@ class ApiV2T1Seeder extends Seeder
                     $usageRows = [];
                 }
             }
-            if (!empty($usageRows)) {
+            if (! empty($usageRows)) {
                 DB::table('core_api_usage_events')->insert($usageRows);
             }
         }
@@ -178,7 +177,7 @@ class ApiV2T1Seeder extends Seeder
                 $tKey = ($w % 3 === 0) ? 'tenant-default' : (($w % 2 === 0) ? 'tenant-a' : 'tenant-b');
                 $tenant = $tenants[$tKey];
                 $topics = $topicsPool[($w - 1) % count($topicsPool)];
-                $secret = 'whsec_' . Str::random(32);
+                $secret = 'whsec_'.Str::random(32);
 
                 $webhookRows[] = [
                     'tenant_id' => $tenant->id,
@@ -202,7 +201,7 @@ class ApiV2T1Seeder extends Seeder
                     $webhookRows = [];
                 }
             }
-            if (!empty($webhookRows)) {
+            if (! empty($webhookRows)) {
                 DB::table('core_webhooks')->insert($webhookRows);
             }
         }

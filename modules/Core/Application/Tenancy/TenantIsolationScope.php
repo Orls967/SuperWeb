@@ -13,6 +13,7 @@ class TenantIsolationScope implements Scope
 {
     /**
      * Cache column names per table to avoid repeated schema checks.
+     *
      * @var array<string, array<string, bool>>
      */
     private static array $tableColumnsCache = [];
@@ -29,6 +30,7 @@ class TenantIsolationScope implements Scope
             if (TenantScopeRegistry::isStrict()) {
                 $builder->whereRaw('1 = 0');
             }
+
             return;
         }
 
@@ -36,16 +38,16 @@ class TenantIsolationScope implements Scope
         $columns = $this->getTableColumns($model);
 
         if (isset($columns['tenant_id'])) {
-            $allowed = !empty($context->allowedTenantIds) ? $context->allowedTenantIds : [$context->tenantId];
-            $builder->whereIn($table . '.tenant_id', $allowed);
+            $allowed = ! empty($context->allowedTenantIds) ? $context->allowedTenantIds : [$context->tenantId];
+            $builder->whereIn($table.'.tenant_id', $allowed);
         }
 
-        if (isset($columns['legal_entity_id']) && !empty($context->allowedEntityIds)) {
-            $builder->whereIn($table . '.legal_entity_id', $context->allowedEntityIds);
+        if (isset($columns['legal_entity_id']) && ! empty($context->allowedEntityIds)) {
+            $builder->whereIn($table.'.legal_entity_id', $context->allowedEntityIds);
         }
 
-        if (isset($columns['party_id']) && !empty($context->allowedPartyIds)) {
-            $builder->whereIn($table . '.party_id', $context->allowedPartyIds);
+        if (isset($columns['party_id']) && ! empty($context->allowedPartyIds)) {
+            $builder->whereIn($table.'.party_id', $context->allowedPartyIds);
         }
     }
 
@@ -55,7 +57,7 @@ class TenantIsolationScope implements Scope
     private function getTableColumns(Model $model): array
     {
         $table = $model->getTable();
-        if (!isset(self::$tableColumnsCache[$table])) {
+        if (! isset(self::$tableColumnsCache[$table])) {
             $connection = $model->getConnectionName();
             try {
                 $cols = Schema::connection($connection)->getColumnListing($table);
@@ -68,4 +70,3 @@ class TenantIsolationScope implements Scope
         return self::$tableColumnsCache[$table];
     }
 }
-

@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Wms\Application\Services\WmsService;
 use Modules\Wms\Console\Commands\AuditWmsCommand;
+use Modules\Wms\Infrastructure\Api\WarehouseResourceProvider;
+use Modules\Wms\Infrastructure\Edi\WmsEdiDesadvHandler;
 
 class WmsServiceProvider extends ServiceProvider
 {
@@ -15,8 +17,8 @@ class WmsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(WmsService::class);
 
-        $this->app->tag(\Modules\Wms\Infrastructure\Api\WarehouseResourceProvider::class, 'core.api_resource_provider');
-        $this->app->tag(\Modules\Wms\Infrastructure\Edi\WmsEdiDesadvHandler::class, 'core.edi_document_handler');
+        $this->app->tag(WarehouseResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(WmsEdiDesadvHandler::class, 'core.edi_document_handler');
     }
 
     public function boot(): void

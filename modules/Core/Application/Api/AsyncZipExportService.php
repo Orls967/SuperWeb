@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Modules\Core\Application\Api;
 
 use DomainException;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Modules\Core\Contracts\BulkImportTarget;
 use Modules\Core\Domain\Models\CoreBulkExportJob;
 use ZipArchive;
 
 class AsyncZipExportService
 {
     public const MAX_ROWS = 50000;
+
     public const DOWNLOAD_URL_EXPIRY_MINUTES = 15;
 
     public function __construct(
@@ -40,8 +39,8 @@ class AsyncZipExportService
     ): CoreBulkExportJob {
         $target = $this->importService->getTarget($targetKey);
 
-        $tempDir = storage_path('app/exports/' . $tenantId);
-        if (!is_dir($tempDir)) {
+        $tempDir = storage_path('app/exports/'.$tenantId);
+        if (! is_dir($tempDir)) {
             mkdir($tempDir, 0755, true);
         }
 
@@ -75,7 +74,7 @@ class AsyncZipExportService
         fclose($csvHandle);
 
         // Compress into ZIP using native ext-zip
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             @unlink($csvPath);
             throw new DomainException("EXPORT_ZIP_ERROR: Gagal membuat arsip ZIP di [{$zipPath}].");

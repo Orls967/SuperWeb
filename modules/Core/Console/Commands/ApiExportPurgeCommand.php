@@ -24,4 +24,3 @@ class ApiExportPurgeCommand extends Command
         return self::SUCCESS;
     }
 }
-

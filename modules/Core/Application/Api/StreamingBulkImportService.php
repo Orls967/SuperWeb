@@ -14,6 +14,7 @@ use SplFileObject;
 class StreamingBulkImportService
 {
     public const CHUNK_SIZE = 500;
+
     public const APPROVAL_THRESHOLD = 10000;
 
     /** @var array<string, BulkImportTarget> */
@@ -27,7 +28,7 @@ class StreamingBulkImportService
     public function getTarget(string $key): BulkImportTarget
     {
         $normalized = str_replace('_', '-', $key);
-        if (!isset($this->targets[$normalized])) {
+        if (! isset($this->targets[$normalized])) {
             throw new DomainException("BULK_TARGET_UNKNOWN: Target bulk import [{$key}] tidak terdaftar.");
         }
 
@@ -83,7 +84,7 @@ class StreamingBulkImportService
     ): CoreBulkImportJob {
         $target = $this->getTarget($targetKey);
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             throw new DomainException("BULK_FILE_NOT_FOUND: Berkas [{$filePath}] tidak ditemukan.");
         }
 
@@ -107,7 +108,7 @@ class StreamingBulkImportService
         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
 
         $headers = $file->fgetcsv();
-        if (!$headers || !is_array($headers)) {
+        if (! $headers || ! is_array($headers)) {
             $job->update([
                 'status' => 'failed',
                 'error_rows' => 1,
@@ -118,12 +119,13 @@ class StreamingBulkImportService
                 'reason' => 'Berkas kosong atau format CSV tidak valid.',
                 'raw_row_json' => null,
             ]);
+
             return $job->fresh();
         }
 
         $headers = array_map(fn ($h) => trim((string) $h), $headers);
         $missingColumns = array_diff($target->requiredColumns(), $headers);
-        if (!empty($missingColumns)) {
+        if (! empty($missingColumns)) {
             $job->update([
                 'status' => 'failed',
                 'error_rows' => 1,
@@ -131,9 +133,10 @@ class StreamingBulkImportService
             CoreBulkImportError::create([
                 'bulk_import_job_id' => $job->id,
                 'row_number' => 1,
-                'reason' => 'Kolom wajib tidak ada: ' . implode(', ', $missingColumns),
+                'reason' => 'Kolom wajib tidak ada: '.implode(', ', $missingColumns),
                 'raw_row_json' => json_encode($headers),
             ]);
+
             return $job->fresh();
         }
 
@@ -142,9 +145,9 @@ class StreamingBulkImportService
         $errorRows = 0;
         $errorsList = [];
 
-        while (!$file->eof()) {
+        while (! $file->eof()) {
             $row = $file->fgetcsv();
-            if (!$row || (count($row) === 1 && $row[0] === null)) {
+            if (! $row || (count($row) === 1 && $row[0] === null)) {
                 continue;
             }
 
@@ -170,7 +173,7 @@ class StreamingBulkImportService
             }
         }
 
-        if (!empty($errorsList)) {
+        if (! empty($errorsList)) {
             CoreBulkImportError::insert($errorsList);
         }
 
@@ -237,9 +240,9 @@ class StreamingBulkImportService
         $resumeLine = $job->last_processed_row;
         $batchCount = 0;
 
-        while (!$file->eof()) {
+        while (! $file->eof()) {
             $row = $file->fgetcsv();
-            if (!$row || (count($row) === 1 && $row[0] === null)) {
+            if (! $row || (count($row) === 1 && $row[0] === null)) {
                 continue;
             }
 
@@ -278,7 +281,7 @@ class StreamingBulkImportService
             }
         }
 
-        if (!empty($chunk)) {
+        if (! empty($chunk)) {
             $idempKey = sprintf('bulk_chk:%d:%d', $job->id, $currentLine);
             DB::transaction(function () use ($target, $chunk, $idempKey, $job): void {
                 $target->applyBatch($chunk, $idempKey, $job->tenant_id);

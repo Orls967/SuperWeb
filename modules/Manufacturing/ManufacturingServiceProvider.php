@@ -24,6 +24,7 @@ use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
 use Modules\Manufacturing\Contracts\ProcessOutputRecorder;
 use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
+use Modules\Manufacturing\Infrastructure\Tenancy\ManufacturingTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Domain\Algorithms\Graph\GenealogyEdgeProviderInterface;
 use Modules\Store\Domain\Events\OrderPaid;
@@ -43,7 +44,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(ProcessOutputRecorder::class, ProcessOutputRecorderService::class);
         $this->app->bind(GenealogyEdgeProviderInterface::class, MfgAgriGenealogyService::class);
 
-        $this->app->tag(\Modules\Manufacturing\Infrastructure\Tenancy\ManufacturingTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(ManufacturingTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

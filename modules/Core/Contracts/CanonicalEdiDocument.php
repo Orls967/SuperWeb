@@ -39,4 +39,3 @@ class CanonicalEdiDocument
         public readonly string $rawPayload,
     ) {}
 }
-

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use DomainException;
 use Illuminate\Support\Str;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Domain\Models\CoreApiClient;
@@ -13,18 +12,7 @@ use Modules\Core\Domain\Models\CoreApiClientKey;
 class ApiClientLifecycleService
 {
     /**
-     * @param string $tenantId
-     * @param string $name
-     * @param string|null $code
-     * @param string|null $clientCode
-     * @param string|null $legalEntityName
-     * @param string $tier
-     * @param array<int, string> $abilities
-     * @param int|null $capacityOverride
-     * @param int|null $rateOverride
-     * @param int|null $rateLimitPerMinute
-     * @param int|null $burstLimit
-     * @param int|null $createdById
+     * @param  array<int, string>  $abilities
      * @return array{client: CoreApiClient, key: CoreApiClientKey, raw_key: string, plain_key: string}
      */
     public function provisionClient(
@@ -41,7 +29,7 @@ class ApiClientLifecycleService
         ?int $burstLimit = null,
         ?int $createdById = null,
     ): array {
-        $effectiveCode = $code ?? $clientCode ?? ('cli_' . Str::random(10));
+        $effectiveCode = $code ?? $clientCode ?? ('cli_'.Str::random(10));
         $tierDefaults = CoreApiClient::TIER_DEFAULTS[$tier] ?? CoreApiClient::TIER_DEFAULTS['SILVER'];
         $capacity = $capacityOverride ?? $burstLimit ?? $tierDefaults['capacity'];
         $refill = $rateOverride ?? ($rateLimitPerMinute ? (int) max(1, round($rateLimitPerMinute / 60)) : $tierDefaults['refill_per_sec']);
@@ -79,9 +67,6 @@ class ApiClientLifecycleService
     /**
      * Rotate client API key. Allows at most two concurrently active keys during grace period (≤ 7 days).
      *
-     * @param CoreApiClient $client
-     * @param int|null $createdById
-     * @param int $gracePeriodDays
      * @return array{client: CoreApiClient, key: CoreApiClientKey, raw_key: string}
      */
     public function rotateKey(CoreApiClient $client, ?int $createdById = null, int $gracePeriodDays = 7): array
@@ -145,7 +130,7 @@ class ApiClientLifecycleService
             })
             ->first();
 
-        if ($key === null || $key->client === null || !$key->client->is_active) {
+        if ($key === null || $key->client === null || ! $key->client->is_active) {
             return null;
         }
 
@@ -164,10 +149,7 @@ class ApiClientLifecycleService
     }
 
     /**
-     * @param CoreApiClient $client
-     * @param array<int, string> $abilities
-     * @param int|null $createdById
-     * @param int|null $rotatedFromId
+     * @param  array<int, string>  $abilities
      * @return array{key: CoreApiClientKey, raw_key: string}
      */
     private function generateAndPersistKey(
@@ -176,9 +158,9 @@ class ApiClientLifecycleService
         ?int $createdById = null,
         ?int $rotatedFromId = null,
     ): array {
-        $prefix = 'sw_live_' . Str::random(8);
+        $prefix = 'sw_live_'.Str::random(8);
         $secret = Str::random(32);
-        $rawKey = $prefix . '_' . $secret;
+        $rawKey = $prefix.'_'.$secret;
         $digest = hash('sha256', $rawKey);
 
         $key = CoreApiClientKey::create([

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Domain\Models\CoreApiUsageEvent;
 use Modules\Core\Domain\Models\CoreApiUsageRollup;
@@ -14,7 +13,7 @@ class ApiUsageRollupService
     /**
      * Roll up raw usage events for a given hour or default past 24 hours.
      *
-     * @param string|null $specificHour Format: YYYY-MM-DD-HH
+     * @param  string|null  $specificHour  Format: YYYY-MM-DD-HH
      * @return int Number of rollup records processed
      */
     public function rollup(?string $specificHour = null): int
@@ -71,4 +70,3 @@ class ApiUsageRollupService
         return $processedCount;
     }
 }
-

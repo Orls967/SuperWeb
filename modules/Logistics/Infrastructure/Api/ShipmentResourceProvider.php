@@ -85,7 +85,7 @@ class ShipmentResourceProvider implements ApiResourceProvider
         /** @var Shipment $record */
         $phone = (string) $record->consignee_phone;
         $maskedPhone = strlen($phone) > 4
-            ? substr($phone, 0, 3) . str_repeat('*', max(0, strlen($phone) - 7)) . substr($phone, -4)
+            ? substr($phone, 0, 3).str_repeat('*', max(0, strlen($phone) - 7)).substr($phone, -4)
             : '***';
 
         return [
@@ -116,4 +116,3 @@ class ShipmentResourceProvider implements ApiResourceProvider
         ];
     }
 }
-

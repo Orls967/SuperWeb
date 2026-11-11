@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use DomainException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Modules\Core\Domain\Algorithms\Api\WebhookSignatureVerifier;
@@ -21,12 +21,7 @@ class WebhookDeliveryOrchestrator
     /**
      * Dispatch an outbound event to a subscribed webhook.
      *
-     * @param CoreWebhook $webhook
-     * @param string $eventType
-     * @param string $outboundRef
-     * @param array<string, mixed> $payload
-     * @param int|null $eventDeliveryId
-     * @return CoreWebhookDispatch
+     * @param  array<string, mixed>  $payload
      */
     public function dispatch(
         CoreWebhook $webhook,
@@ -61,11 +56,12 @@ class WebhookDeliveryOrchestrator
             'idempotency_key' => $idempotencyKey,
         ]);
 
-        if (!$this->subscriptionService->canDispatch($webhook)) {
+        if (! $this->subscriptionService->canDispatch($webhook)) {
             $dispatch->update([
                 'status' => 'circuit_broken',
                 'response_excerpt' => 'Circuit breaker is open due to consecutive failures',
             ]);
+
             return $dispatch;
         }
 
@@ -96,7 +92,7 @@ class WebhookDeliveryOrchestrator
                     'http_status' => $status,
                     'response_excerpt' => $bodyExcerpt,
                 ]);
-                $this->recordDeliveryFailure($webhook, $eventType, $outboundRef, $payloadJson, 'HTTP ' . $status);
+                $this->recordDeliveryFailure($webhook, $eventType, $outboundRef, $payloadJson, 'HTTP '.$status);
             }
         } catch (\Throwable $e) {
             $this->subscriptionService->recordFailure($webhook);
@@ -119,9 +115,9 @@ class WebhookDeliveryOrchestrator
         string $error
     ): void {
         try {
-            \Illuminate\Support\Facades\DB::table('core_event_deliveries')->insert([
+            DB::table('core_event_deliveries')->insert([
                 'message_id' => $outboundRef,
-                'consumer_group' => 'webhook:' . $webhook->id,
+                'consumer_group' => 'webhook:'.$webhook->id,
                 'topic' => $eventType,
                 'status' => 'dead_lettered',
                 'attempts' => $webhook->consecutive_failures,

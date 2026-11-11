@@ -54,7 +54,7 @@ class B2bCatalogBulkImportTarget implements BulkImportTarget
             'reason' => null,
             'normalized' => [
                 'sku' => $sku,
-                'vendor_id' => !empty($row['vendor_id']) ? (string) $row['vendor_id'] : 'vnd_default',
+                'vendor_id' => ! empty($row['vendor_id']) ? (string) $row['vendor_id'] : 'vnd_default',
                 'product_name' => $name,
                 'category' => trim($row['category'] ?? 'General'),
                 'base_price_idr' => $price,

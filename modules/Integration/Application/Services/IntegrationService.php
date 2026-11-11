@@ -6,6 +6,7 @@ namespace Modules\Integration\Application\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Modules\Core\Application\Api\CoreApiAuditor;
 use Modules\Core\Application\Services\OutboxBusService;
 use Modules\Integration\Domain\Models\ApiClient;
 use Modules\Integration\Domain\Models\EdiMessage;
@@ -195,9 +196,9 @@ class IntegrationService
             }
         }
 
-        if (class_exists(\Modules\Core\Application\Api\CoreApiAuditor::class)) {
+        if (class_exists(CoreApiAuditor::class)) {
             try {
-                $coreAudit = app(\Modules\Core\Application\Api\CoreApiAuditor::class)->audit();
+                $coreAudit = app(CoreApiAuditor::class)->audit();
                 $invalidDeliveries += $coreAudit['discrepancies'];
                 foreach ($coreAudit['invalid_records'] as $record) {
                     $invalidRecords[] = $record;

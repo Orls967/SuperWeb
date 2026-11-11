@@ -7,7 +7,6 @@ namespace App\Quality\Audit\Fixtures;
 use App\Quality\Audit\CorruptionFixture;
 use Illuminate\Support\Facades\Crypt;
 use Modules\Core\Domain\Models\CoreApiClient;
-use Modules\Core\Domain\Models\CoreApiClientKey;
 use Modules\Core\Domain\Models\CoreEdiInterchange;
 use Modules\Core\Domain\Models\CoreTenant;
 use Modules\Core\Domain\Models\CoreWebhook;
@@ -83,7 +82,7 @@ final class ApiAuditCorruptionFixture implements CorruptionFixture
 
         $wh = CoreWebhook::create([
             'tenant_id' => $tenant->id,
-            'code' => 'WH-CORRUPT-' . uniqid(),
+            'code' => 'WH-CORRUPT-'.uniqid(),
             'name' => 'Corrupted Webhook',
             'target_url' => 'https://example.com/corrupt',
             'event_topics' => ['corrupt.event'],
@@ -94,15 +93,15 @@ final class ApiAuditCorruptionFixture implements CorruptionFixture
         $dispatch = CoreWebhookDispatch::create([
             'tenant_id' => $tenant->id,
             'webhook_id' => $wh->id,
-            'outbound_event_ref' => 'EVT-CORRUPT-' . uniqid(),
+            'outbound_event_ref' => 'EVT-CORRUPT-'.uniqid(),
             'event_type' => 'corrupt.event',
             'timestamp_unix' => time(),
             'payload_json' => json_encode(['corrupt' => true]),
-            'signature_header' => 't=' . time() . ',v1=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb',
+            'signature_header' => 't='.time().',v1=badbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadbadb',
             'http_status' => 200,
             'status' => 'delivered',
             'attempt_count' => 1,
-            'idempotency_key' => 'idemp-wh-corrupt-' . uniqid(),
+            'idempotency_key' => 'idemp-wh-corrupt-'.uniqid(),
         ]);
 
         return "Corrupted CoreWebhookDispatch ID {$dispatch->id}";
@@ -128,7 +127,7 @@ final class ApiAuditCorruptionFixture implements CorruptionFixture
             'contrl_payload' => '',
             'handler_module' => 'Distribution',
             'target_reference' => '',
-            'idempotency_key' => 'idemp-edi-corrupt-' . uniqid(),
+            'idempotency_key' => 'idemp-edi-corrupt-'.uniqid(),
         ]);
 
         return "Corrupted CoreEdiInterchange ID {$interchange->id}";
@@ -143,7 +142,7 @@ final class ApiAuditCorruptionFixture implements CorruptionFixture
 
         $client = CoreApiClient::create([
             'tenant_id' => $tenant->id,
-            'code' => 'CLI-NO-KEYS-' . uniqid(),
+            'code' => 'CLI-NO-KEYS-'.uniqid(),
             'name' => 'Client without active keys',
             'legal_entity_name' => 'PT No Keys',
             'is_active' => true,

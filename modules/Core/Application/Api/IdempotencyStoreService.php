@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Api;
 
-use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Modules\Core\Domain\Exceptions\ApiIdempotencyConflictException;
 use Modules\Core\Domain\Models\CoreApiIdempotencyRecord;
@@ -54,6 +53,7 @@ class IdempotencyStoreService
 
         if ($record->expires_at->isPast()) {
             $record->delete();
+
             return null;
         }
 
@@ -75,16 +75,7 @@ class IdempotencyStoreService
     /**
      * Store response for 24 hours.
      *
-     * @param string $tenantId
-     * @param string $clientCode
-     * @param string $routeName
-     * @param string $httpMethod
-     * @param string $idempotencyKey
-     * @param string $requestHash
-     * @param int $responseStatus
-     * @param mixed $responseBody
-     * @param array<string, mixed> $headers
-     * @param int $ttlHours
+     * @param  array<string, mixed>  $headers
      */
     public function store(
         string $tenantId,
@@ -118,4 +109,3 @@ class IdempotencyStoreService
         );
     }
 }
-

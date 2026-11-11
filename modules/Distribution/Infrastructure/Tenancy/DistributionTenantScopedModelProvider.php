@@ -25,4 +25,3 @@ class DistributionTenantScopedModelProvider implements TenantScopedModelProvider
         ];
     }
 }
-

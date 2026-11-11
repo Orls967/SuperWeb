@@ -43,15 +43,14 @@ class WmsEdiDesadvHandler implements EdiDocumentHandler
         $appointment = DockAppointment::create([
             'warehouse_id' => $warehouseId,
             'direction' => 'inbound',
-            'reference' => $document->documentNumber ?: 'ASN-' . uniqid(),
+            'reference' => $document->documentNumber ?: 'ASN-'.uniqid(),
             'window_start' => now()->addHours(2),
             'window_end' => now()->addHours(6),
             'status' => 'confirmed',
             'carrier' => $document->senderId,
-            'notes' => 'Inbound ASN from EDI DESADV interchange ' . $document->interchangeControlRef,
+            'notes' => 'Inbound ASN from EDI DESADV interchange '.$document->interchangeControlRef,
         ]);
 
         return EdiHandleResult::success((string) $appointment->id, 'Inbound dock appointment scheduled from DESADV ASN');
     }
 }
-

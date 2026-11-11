@@ -16,4 +16,3 @@ final class ApiIdempotencyConflictException extends DomainException
         return new self("IDEMPOTENCY_CONFLICT: Kunci idempotensi [{$key}] telah dipakai dengan isi permintaan berbeda.");
     }
 }
-

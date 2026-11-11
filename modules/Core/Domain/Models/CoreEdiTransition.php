@@ -42,4 +42,3 @@ class CoreEdiTransition extends Model
         return $this->belongsTo(CoreEdiInterchange::class, 'edi_interchange_id');
     }
 }
-

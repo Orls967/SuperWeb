@@ -48,6 +48,7 @@ use Modules\Mall\Domain\Models\Voucher;
 use Modules\Mall\Domain\Models\VoucherTemplate;
 use Modules\Mall\Domain\Models\WorkOrder;
 use Modules\Mall\Domain\Models\Zone;
+use Modules\Mall\Infrastructure\Tenancy\MallTenantScopedModelProvider;
 use Modules\Mall\Listeners\CancelParkingMembershipOnVehicleTransfer;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Application\SearchRegistry;
@@ -74,7 +75,7 @@ class MallServiceProvider extends ServiceProvider
             MallUsageReaderService::class
         );
 
-        $this->app->tag(\Modules\Mall\Infrastructure\Tenancy\MallTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(MallTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

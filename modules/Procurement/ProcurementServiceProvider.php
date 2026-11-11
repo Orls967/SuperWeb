@@ -11,6 +11,10 @@ use Modules\Procurement\Application\Services\ReceivingService;
 use Modules\Procurement\Console\Commands\AuditProcurementCommand;
 use Modules\Procurement\Console\Commands\ScanVmiReorderCommand;
 use Modules\Procurement\Contracts\MrpRequisitionProposer as MrpRequisitionProposerContract;
+use Modules\Procurement\Infrastructure\Api\PurchaseOrderResourceProvider;
+use Modules\Procurement\Infrastructure\Edi\ProcurementEdiInvoiceHandler;
+use Modules\Procurement\Infrastructure\Retention\ProcurementPoVersionRetentionProvider;
+use Modules\Procurement\Infrastructure\Tenancy\ProcurementTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 
 class ProcurementServiceProvider extends ServiceProvider
@@ -21,10 +25,10 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->app->singleton(ReceivingService::class);
         $this->app->bind(MrpRequisitionProposerContract::class, MrpRequisitionProposer::class);
 
-        $this->app->tag(\Modules\Procurement\Infrastructure\Api\PurchaseOrderResourceProvider::class, 'core.api_resource_provider');
-        $this->app->tag(\Modules\Procurement\Infrastructure\Edi\ProcurementEdiInvoiceHandler::class, 'core.edi_document_handler');
-        $this->app->tag(\Modules\Procurement\Infrastructure\Tenancy\ProcurementTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
-        $this->app->tag(\Modules\Procurement\Infrastructure\Retention\ProcurementPoVersionRetentionProvider::class, 'core.retention_archive_provider');
+        $this->app->tag(PurchaseOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(ProcurementEdiInvoiceHandler::class, 'core.edi_document_handler');
+        $this->app->tag(ProcurementTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(ProcurementPoVersionRetentionProvider::class, 'core.retention_archive_provider');
     }
 
     public function boot(): void

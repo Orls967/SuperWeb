@@ -7,6 +7,8 @@ namespace Modules\B2b;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Modules\B2b\Console\Commands\AuditB2bCommand;
+use Modules\B2b\Infrastructure\Api\WholesaleCatalogResourceProvider;
+use Modules\B2b\Infrastructure\Bulk\B2bCatalogBulkImportTarget;
 
 class B2bServiceProvider extends ServiceProvider
 {
@@ -16,8 +18,8 @@ class B2bServiceProvider extends ServiceProvider
             AuditB2bCommand::class,
         ]);
 
-        $this->app->tag(\Modules\B2b\Infrastructure\Api\WholesaleCatalogResourceProvider::class, 'core.api_resource_provider');
-        $this->app->tag(\Modules\B2b\Infrastructure\Bulk\B2bCatalogBulkImportTarget::class, 'core.bulk_import_target');
+        $this->app->tag(WholesaleCatalogResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(B2bCatalogBulkImportTarget::class, 'core.bulk_import_target');
     }
 
     public function boot(): void

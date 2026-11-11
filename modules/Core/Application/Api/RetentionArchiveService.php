@@ -6,7 +6,10 @@ namespace Modules\Core\Application\Api;
 
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Application\Tenancy\TenantContext;
+use Modules\Core\Application\Tenancy\TenantScopeRegistry;
 use Modules\Core\Contracts\RetentionArchiveProvider;
+use Modules\Core\Domain\Exceptions\TenantContextMissingException;
 use Modules\Core\Domain\Models\CoreArchiveDrillRestore;
 use Modules\Core\Domain\Models\CoreRetentionPolicy;
 use Modules\Core\Domain\Models\CoreRetentionRun;
@@ -25,8 +28,8 @@ class RetentionArchiveService
 
     public function runBatchForCurrentTenant(): int
     {
-        if (\Modules\Core\Application\Tenancy\TenantScopeRegistry::isStrict() && \Modules\Core\Application\Tenancy\TenantContext::current() === null) {
-            throw new \Modules\Core\Domain\Exceptions\TenantContextMissingException(
+        if (TenantScopeRegistry::isStrict() && TenantContext::current() === null) {
+            throw new TenantContextMissingException(
                 'Tenant context is required when strict enforcement is active.'
             );
         }
@@ -44,7 +47,7 @@ class RetentionArchiveService
 
     public function getProvider(string $sourceTable): RetentionArchiveProvider
     {
-        if (!isset($this->providers[$sourceTable])) {
+        if (! isset($this->providers[$sourceTable])) {
             throw new DomainException("RETENTION_PROVIDER_UNKNOWN: Provider untuk [{$sourceTable}] tidak terdaftar.");
         }
 
@@ -63,7 +66,7 @@ class RetentionArchiveService
                 'module_name' => $provider->moduleName(),
                 'archive_table' => $provider->archiveTable(),
                 'retention_days' => $retentionDays,
-                'native_partition_hint' => 'PARTITION BY RANGE (YEAR(' . $provider->timestampColumn() . '))',
+                'native_partition_hint' => 'PARTITION BY RANGE (YEAR('.$provider->timestampColumn().'))',
                 'is_active' => true,
             ]
         );

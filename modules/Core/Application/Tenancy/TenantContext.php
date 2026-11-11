@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\Application\Tenancy;
 
-use Closure;
 use Modules\Core\Contracts\TenantContextMissingException;
+use Modules\Core\Domain\Models\CoreTenant;
 
 /**
  * TenantContext holds active tenancy boundary state for the request/process.
@@ -17,11 +17,10 @@ final class TenantContext
     private static array $stack = [];
 
     /**
-     * @param string $tenantId
-     * @param array<int, string> $allowedTenantIds
-     * @param array<int, int> $allowedNumericTenantIds
-     * @param array<int, int> $allowedEntityIds
-     * @param array<int, int> $allowedPartyIds
+     * @param  array<int, string>  $allowedTenantIds
+     * @param  array<int, int>  $allowedNumericTenantIds
+     * @param  array<int, int>  $allowedEntityIds
+     * @param  array<int, int>  $allowedPartyIds
      */
     public function __construct(
         public readonly string $tenantId,
@@ -69,11 +68,11 @@ final class TenantContext
      * Execute callable within the provided tenant context.
      *
      * @template T
-     * @param self|\Modules\Core\Domain\Models\CoreTenant $context
-     * @param callable(): T $callback
+     *
+     * @param  callable(): T  $callback
      * @return T
      */
-    public static function runWith(self|\Modules\Core\Domain\Models\CoreTenant $context, callable $callback): mixed
+    public static function runWith(self|CoreTenant $context, callable $callback): mixed
     {
         $instance = $context instanceof self
             ? $context

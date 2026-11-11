@@ -16,7 +16,7 @@ class ApiUsageRollupCommand extends Command
     public function handle(ApiUsageRollupService $service): int
     {
         $hour = $this->option('hour') ? (string) $this->option('hour') : null;
-        $this->info('Running API usage rollup' . ($hour ? " for hour [{$hour}]" : '...'));
+        $this->info('Running API usage rollup'.($hour ? " for hour [{$hour}]" : '...'));
 
         $processed = $service->rollup($hour);
 
@@ -25,4 +25,3 @@ class ApiUsageRollupCommand extends Command
         return self::SUCCESS;
     }
 }
-

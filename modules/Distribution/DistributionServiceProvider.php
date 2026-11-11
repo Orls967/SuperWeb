@@ -10,6 +10,10 @@ use Modules\Distribution\Application\Services\DistributionFulfilmentService;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Console\Commands\AuditDistributionCommand;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Distribution\Infrastructure\Api\DistOrderResourceProvider;
+use Modules\Distribution\Infrastructure\Bulk\HetPriceBulkImportTarget;
+use Modules\Distribution\Infrastructure\Edi\DistributionEdiOrderHandler;
+use Modules\Distribution\Infrastructure\Tenancy\DistributionTenantScopedModelProvider;
 use Modules\Distribution\Policies\DistributorPolicy;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -20,10 +24,10 @@ class DistributionServiceProvider extends ServiceProvider
         $this->app->singleton(DistributionService::class);
         $this->app->singleton(DistributionFulfilmentService::class);
 
-        $this->app->tag(\Modules\Distribution\Infrastructure\Api\DistOrderResourceProvider::class, 'core.api_resource_provider');
-        $this->app->tag(\Modules\Distribution\Infrastructure\Edi\DistributionEdiOrderHandler::class, 'core.edi_document_handler');
-        $this->app->tag(\Modules\Distribution\Infrastructure\Bulk\HetPriceBulkImportTarget::class, 'core.bulk_import_target');
-        $this->app->tag(\Modules\Distribution\Infrastructure\Tenancy\DistributionTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
+        $this->app->tag(DistOrderResourceProvider::class, 'core.api_resource_provider');
+        $this->app->tag(DistributionEdiOrderHandler::class, 'core.edi_document_handler');
+        $this->app->tag(HetPriceBulkImportTarget::class, 'core.bulk_import_target');
+        $this->app->tag(DistributionTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
     }
 
     public function boot(): void

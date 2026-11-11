@@ -38,4 +38,3 @@ class LogisticsTrackingEventRetentionProvider implements RetentionArchiveProvide
         return ['id', 'shipment_id', 'event_type', 'occurred_at'];
     }
 }
-

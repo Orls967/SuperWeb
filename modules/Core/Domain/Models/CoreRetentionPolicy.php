@@ -30,4 +30,3 @@ class CoreRetentionPolicy extends Model
         return $this->hasMany(CoreRetentionRun::class, 'retention_policy_id');
     }
 }
-

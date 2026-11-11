@@ -25,4 +25,3 @@ interface EdiDocumentHandler
      */
     public function handle(CanonicalEdiDocument $document, string $idempotencyKey): EdiHandleResult;
 }
-

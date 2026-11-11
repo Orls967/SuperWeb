@@ -62,7 +62,7 @@ class ApiV2ResourceController extends Controller
         $sortCol = $provider->defaultSortColumn();
         if ($request->has('sort')) {
             $requestedSort = (string) $request->query('sort');
-            if (!in_array($requestedSort, $provider->declaredSorts(), true)) {
+            if (! in_array($requestedSort, $provider->declaredSorts(), true)) {
                 return response()->json([
                     'type' => 'https://superweb.example.com/probs/invalid-sort-parameter',
                     'title' => 'Invalid Sort Parameter',
@@ -141,7 +141,7 @@ class ApiV2ResourceController extends Controller
         }
 
         $declaredActions = $provider->declaredActions();
-        if (!isset($declaredActions[$action])) {
+        if (! isset($declaredActions[$action])) {
             return response()->json([
                 'type' => 'https://superweb.example.com/probs/action-not-found',
                 'title' => 'Action Not Found',
@@ -152,7 +152,7 @@ class ApiV2ResourceController extends Controller
 
         $def = $declaredActions[$action];
         foreach ($def['required_fields'] as $field) {
-            if (!$request->has($field) || $request->input($field) === null) {
+            if (! $request->has($field) || $request->input($field) === null) {
                 return response()->json([
                     'type' => 'https://superweb.example.com/probs/validation-error',
                     'title' => 'Missing Required Field',
@@ -167,6 +167,7 @@ class ApiV2ResourceController extends Controller
 
         try {
             $result = $provider->executeAction($action, $request->all(), $idempKey, $context);
+
             return response()->json($result['data'], $result['status']);
         } catch (DomainException $e) {
             return response()->json([

@@ -31,4 +31,3 @@ class CoreBulkImportError extends Model
         return $this->belongsTo(CoreBulkImportJob::class, 'bulk_import_job_id');
     }
 }
-

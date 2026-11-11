@@ -25,4 +25,3 @@ class ContractTenantScopedModelProvider implements TenantScopedModelProvider
         ];
     }
 }
-

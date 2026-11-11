@@ -21,4 +21,3 @@ interface TenantScopedModelProvider
      */
     public function scopedModels(): array;
 }
-

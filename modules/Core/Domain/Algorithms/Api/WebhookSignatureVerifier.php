@@ -167,4 +167,3 @@ final class WebhookSignatureVerifier
         return ['timestamp' => $timestamp, 'v1s' => $v1s];
     }
 }
-

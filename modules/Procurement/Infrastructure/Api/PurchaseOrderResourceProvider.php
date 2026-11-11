@@ -102,6 +102,7 @@ class PurchaseOrderResourceProvider implements ApiResourceProvider
         if ($action === 'acknowledge') {
             $id = (string) ($payload['po_id'] ?? $payload['id'] ?? '');
             $po = PurchaseOrder::findOrFail($id);
+
             return [
                 'status' => 200,
                 'data' => [

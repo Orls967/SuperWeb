@@ -41,7 +41,7 @@ class ApiV2WebhookController extends Controller
 
         $result = $this->webhookService->register(
             tenantId: $context->tenantId,
-            code: (string) $request->input('code', 'WH-' . uniqid()),
+            code: (string) $request->input('code', 'WH-'.uniqid()),
             name: (string) $request->input('name', 'Webhook Subscription'),
             targetUrl: (string) $request->input('target_url'),
             eventTopics: (array) $request->input('event_topics', ['*'])
@@ -75,4 +75,3 @@ class ApiV2WebhookController extends Controller
         ]);
     }
 }
-
