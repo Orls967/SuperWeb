@@ -6,6 +6,7 @@ namespace Modules\Intercompany\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Modules\Intercompany\Application\Services\IntercompanyMismatchSweepService;
 use Modules\Intercompany\Application\Services\IntercompanyService;
 use Modules\Intercompany\Contracts\SubledgerTotalProvider;
 use Modules\Intercompany\Domain\Models\CostSharingAgreement;
@@ -21,7 +22,8 @@ class AuditIntercompanyCommand extends Command
 
     public function handle(
         IntercompanyService $service,
-        ?SubledgerTotalProvider $subledgerProvider = null
+        ?SubledgerTotalProvider $subledgerProvider = null,
+        ?IntercompanyMismatchSweepService $sweepService = null
     ): int {
         $this->info('Starting Group Consolidation & Intercompany Audit...');
 
@@ -39,6 +41,16 @@ class AuditIntercompanyCommand extends Command
 
         if ($res['discrepancy_count'] > 0) {
             $discrepancies[] = "Invarian dasar intercompany terlanggar! (Jumlah diskrepansi: {$res['discrepancy_count']})";
+        }
+
+        // 1b. Audit Asimetri Bilateral & Pos Gantung
+        if ($sweepService !== null) {
+            $sweepRes = $sweepService->sweep();
+            if ($sweepRes['mismatch_count'] > 0) {
+                foreach ($sweepRes['mismatches'] as $m) {
+                    $discrepancies[] = "Mismatch bilateral [{$m['type']}]: {$m['description']}";
+                }
+            }
         }
 
         // 2. Audit Keseimbangan Jurnal Eliminasi (Nominal > 0 & Akun Berbeda)

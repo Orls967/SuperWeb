@@ -265,6 +265,46 @@ final class EventCatalog
                 'closing_voucher_id' => 'string',
             ],
         ],
+        'intercompany.mismatch.detected.v1' => [
+            'name' => 'intercompany.mismatch.detected.v1',
+            'version' => 1,
+            'producer' => 'Intercompany',
+            'consumers' => ['EnterpriseFinance', 'Core'],
+            'purpose' => 'Alert controllers and auditors on bilateral reciprocal balance mismatch',
+            'payload_schema' => [
+                'pair_key' => 'string',
+                'seller_entity_code' => 'string',
+                'buyer_entity_code' => 'string',
+                'seller_balance_minor' => 'integer',
+                'buyer_balance_minor' => 'integer',
+                'discrepancy_minor' => 'integer',
+            ],
+        ],
+        'intercompany.mirror.posted.v1' => [
+            'name' => 'intercompany.mirror.posted.v1',
+            'version' => 1,
+            'producer' => 'Intercompany',
+            'consumers' => ['EnterpriseFinance', 'Banking'],
+            'purpose' => 'Broadcast mirrored intercompany sales invoice and purchase bill generation',
+            'payload_schema' => [
+                'transaction_code' => 'string',
+                'selling_entity_code' => 'string',
+                'buying_entity_code' => 'string',
+                'amount_minor' => 'integer',
+            ],
+        ],
+        'intercompany.consolidation.locked.v1' => [
+            'name' => 'intercompany.consolidation.locked.v1',
+            'version' => 1,
+            'producer' => 'Intercompany',
+            'consumers' => ['EnterpriseFinance', 'Core'],
+            'purpose' => 'Seal intercompany consolidation elimination cycle and prevent post-closing tampering',
+            'payload_schema' => [
+                'fiscal_period' => 'string',
+                'locked_by_user_id' => 'integer',
+                'total_eliminated_minor' => 'integer',
+            ],
+        ],
     ];
 
     /**

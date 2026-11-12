@@ -20,7 +20,15 @@ use Modules\Intercompany\Application\Actions\IssueIntercompanyLoanAction;
 use Modules\Intercompany\Application\Actions\TransferIntercompanyAssetAction;
 use Modules\Intercompany\Application\Actions\TransferIntercompanyStockAction;
 use Modules\Intercompany\Application\Actions\TranslateSubsidiaryFinancialsAction;
+use Modules\Intercompany\Domain\Algorithms\BilateralNettedSettlementMatrixCalculator;
+use Modules\Intercompany\Domain\Algorithms\ConsolidationRollupTreeOptimizer;
+use Modules\Intercompany\Domain\Algorithms\MultivariateBenchmarkComparator;
+use Modules\Intercompany\Domain\Algorithms\NciDividendCascadeCalculator;
 use Modules\Intercompany\Domain\Algorithms\TransferPricingMarkupCalculator;
+use Modules\Intercompany\Domain\DTOs\ConsolidationTreeResultDTO;
+use Modules\Intercompany\Domain\DTOs\MultivariateBenchmarkResultDTO;
+use Modules\Intercompany\Domain\DTOs\NciCascadeResultDTO;
+use Modules\Intercompany\Domain\DTOs\NettingMatrixResultDTO;
 use Modules\Intercompany\Domain\Models\CostSharingAllocation;
 use Modules\Intercompany\Domain\Models\EliminationEntry;
 use Modules\Intercompany\Domain\Models\IntercompanyAssetTransfer;
@@ -54,6 +62,10 @@ class IntercompanyService
         protected readonly TransferIntercompanyAssetAction $assetTransferAction,
         protected readonly TransferIntercompanyStockAction $stockTransferAction,
         protected readonly TransferPricingMarkupCalculator $tpCalculator,
+        protected readonly ?MultivariateBenchmarkComparator $benchmarkComparator = null,
+        protected readonly ?BilateralNettedSettlementMatrixCalculator $nettingCalculator = null,
+        protected readonly ?ConsolidationRollupTreeOptimizer $rollupOptimizer = null,
+        protected readonly ?NciDividendCascadeCalculator $dividendCascadeCalculator = null,
         protected readonly ?ClockInterface $clock = null
     ) {}
 
@@ -319,6 +331,122 @@ class IntercompanyService
     public function distributeNciDividend(string $subsidiary, int $totalDividendIdr, string $declarationDate): NciDividend
     {
         return $this->nciDividendAction->execute($subsidiary, $totalDividendIdr, $declarationDate);
+    }
+
+    /**
+     * Perluasan 52.2: Evaluasi Pembanding Multivariat Transfer Pricing (OECD / PMK 172)
+     */
+    public function evaluateMultivariateBenchmark(
+        array $config,
+        array $testedPartyData,
+        array $comparatorsData
+    ): MultivariateBenchmarkResultDTO {
+        $comparator = $this->benchmarkComparator ?? app(MultivariateBenchmarkComparator::class);
+
+        return $comparator->evaluate($config, $testedPartyData, $comparatorsData);
+    }
+
+    /**
+     * Perluasan 52.1: Optimasi Multilateral Netting Intercompany Treasury
+     */
+    public function calculateMultilateralNetting(
+        array $config,
+        array $grossObligations,
+        array $exchangeRatesNumerator = ['IDR' => 100],
+        array $exchangeRatesDenominator = ['IDR' => 100]
+    ): NettingMatrixResultDTO {
+        $calculator = $this->nettingCalculator ?? app(BilateralNettedSettlementMatrixCalculator::class);
+
+        return $calculator->calculate($config, $grossObligations, $exchangeRatesNumerator, $exchangeRatesDenominator);
+    }
+
+    /**
+     * Perluasan 52.4: Roll-Up Konsolidasi Laporan Keuangan Grup (PSAK 65 / IFRS 10)
+     */
+    public function executeConsolidationRollup(
+        array $config,
+        array $trialBalances,
+        array $unrealizedInventoryProfits = []
+    ): ConsolidationTreeResultDTO {
+        $optimizer = $this->rollupOptimizer ?? app(ConsolidationRollupTreeOptimizer::class);
+
+        return $optimizer->rollup($config, $trialBalances, $unrealizedInventoryProfits);
+    }
+
+    /**
+     * Perluasan 52.5: Cascade Dividen dan Pemotongan Pajak NCI
+     */
+    public function calculateNciDividendCascade(
+        array $declarationConfig,
+        array $nciShareholders
+    ): NciCascadeResultDTO {
+        $calculator = $this->dividendCascadeCalculator ?? app(NciDividendCascadeCalculator::class);
+
+        return $calculator->calculate($declarationConfig, $nciShareholders);
+    }
+
+    /**
+     * Perluasan 52.2: Ekspor Paket Audit Kepatuhan Transfer Pricing Lengkap (PMK 172)
+     */
+    public function exportTpAuditPack(array $config, array $financialMetrics, array $comparators): array
+    {
+        return app(GroupTransferPricingAuditPackExporter::class)->exportAuditPack($config, $financialMetrics, $comparators);
+    }
+
+    /**
+     * Perluasan 52.4: Orkestrasi Konsolidasi dan Penguncian Periode Eliminasi
+     */
+    public function runAndLockConsolidation(array $config, array $trialBalances, array $unrealizedProfits = []): array
+    {
+        return app(ConsolidationEliminationRollupOrchestrator::class)->runAndLock($config, $trialBalances, $unrealizedProfits);
+    }
+
+    /**
+     * Perluasan 52.3: Resolusi Penilaian dan Eliminasi Pengalihan Aset Tetap Intra-Grup
+     */
+    public function evaluateAssetTransferValuation(array $data): array
+    {
+        return app(IntercompanyAssetValuationDisputeResolver::class)->evaluateAssetTransfer($data);
+    }
+
+    /**
+     * Perluasan 52.1: Eksekusi Penyapuan Saldo Kas Terpusat (Cash Pool Sweeper)
+     */
+    public function executeCashPoolSweep(array $config, array $participantAccounts): array
+    {
+        return app(IntercompanyCashPoolSweeper::class)->executeSweep($config, $participantAccounts);
+    }
+
+    /**
+     * Perluasan 52.4: Pembuatan Jurnal Amortisasi Selisih Nilai Wajar Akuisisi (PPA)
+     */
+    public function generatePpaAmortization(array $config, array $revaluedAssets): array
+    {
+        return app(ConsolidationAdjustmentJournalGenerator::class)->generatePpaAmortizationJournals($config, $revaluedAssets);
+    }
+
+    /**
+     * Perluasan 52.4: Pembuatan Jurnal Metode Ekuitas Asosiasi (PSAK 15)
+     */
+    public function generateEquityMethodAdjustments(array $data): array
+    {
+        return app(ConsolidationAdjustmentJournalGenerator::class)->generateEquityMethodJournals($data);
+    }
+
+    /**
+     * Perluasan 52.4: Eliminasi Transaksi Sewa Antar-Perusahaan (PSAK 73)
+     */
+    public function generateIntercompanyLeaseEliminations(array $leaseData): array
+    {
+        return app(ConsolidationAdjustmentJournalGenerator::class)->generateIntercompanyLeaseEliminations($leaseData);
+    }
+
+    /**
+     * Perluasan 52.4: Penurunan Nilai Goodwill dan Aset CGU (PSAK 48)
+     */
+    public function generateIntangibleImpairments(array $impairmentData): array
+    {
+        return app(ConsolidationAdjustmentJournalGenerator::class)->generateIntangibleImpairmentJournals($impairmentData);
     }
 
     /**

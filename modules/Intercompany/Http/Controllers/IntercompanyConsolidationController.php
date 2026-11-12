@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Modules\Intercompany\Application\Actions\ApplyArmsLengthTransferPricingMarkupAction;
 use Modules\Intercompany\Application\Actions\CreateMirroredIntercompanyTransactionAction;
 use Modules\Intercompany\Application\Actions\GenerateIntercompanyEliminationJournalAction;
+use Modules\Intercompany\Application\Services\GroupEntityRegistry;
 use Modules\Intercompany\Domain\Models\EliminationEntry;
 use Modules\Intercompany\Domain\Models\IntercompanyTransaction;
 use Modules\Intercompany\Domain\Models\TransferPricingRule;
@@ -98,5 +99,15 @@ class IntercompanyConsolidationController extends Controller
             'message' => 'Consolidation elimination journal generated.',
             'elimination_entry' => $entry,
         ], 201);
+    }
+
+    public function getGroupTree(string $rootEntity, GroupEntityRegistry $registry): JsonResponse
+    {
+        $tree = $registry->buildConsolidationTree($rootEntity);
+
+        return response()->json([
+            'success' => true,
+            'data' => $tree,
+        ]);
     }
 }

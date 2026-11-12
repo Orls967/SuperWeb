@@ -6,6 +6,7 @@ namespace Modules\Intercompany\Application\Actions;
 
 use InvalidArgumentException;
 use Modules\Intercompany\Application\Services\IntercompanyLedgerPoster;
+use Modules\Intercompany\Domain\Algorithms\NciDividendCascadeCalculator;
 use Modules\Intercompany\Domain\Models\IntercompanyEntity;
 use Modules\Intercompany\Domain\Models\NciDividend;
 use Modules\Intercompany\Domain\Models\SubsidiaryNci;
@@ -13,7 +14,8 @@ use Modules\Intercompany\Domain\Models\SubsidiaryNci;
 class DistributeNciDividendAction
 {
     public function __construct(
-        protected readonly IntercompanyLedgerPoster $ledgerPoster
+        protected readonly IntercompanyLedgerPoster $ledgerPoster,
+        protected readonly ?NciDividendCascadeCalculator $cascadeCalculator = null
     ) {}
 
     public function execute(
@@ -31,7 +33,7 @@ class DistributeNciDividendAction
             throw new InvalidArgumentException('Total dividen yang dideklarasikan harus lebih besar dari nol.');
         }
 
-        $nciDividend = (int) floor(($totalDividendIdr * $nci->nci_ownership_permille) / 100000);
+        $nciDividend = intdiv($totalDividendIdr * (int) $nci->nci_ownership_permille, 100000);
         $entity = IntercompanyEntity::where('entity_code', $subsidiaryName)->first();
 
         $record = NciDividend::create([

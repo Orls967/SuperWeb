@@ -3295,6 +3295,10 @@ return [
         'params' => fn () => ['rule' => 1],
     ],
     'intercompany.consolidation.mirror-tx' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'intercompany.consolidation.tree' => [
+        'roles' => ['admin', 'auditor', 'legal', 'treasury'],
+        'params' => fn () => ['rootEntity' => 'HOLDING-01'],
+    ],
     'international.tax_royalty.index' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'international.tax_royalty.oem.tooling' => [
         'roles' => ['admin', 'auditor', 'legal', 'treasury'],
@@ -3498,6 +3502,10 @@ return [
     'api.intercompany.eliminations.run' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'api.intercompany.matrix' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'api.intercompany.tp.evaluate' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'api.intercompany.tp.multivariate' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'api.intercompany.netting.calculate' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'api.intercompany.consolidation.tree' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
+    'api.intercompany.nci.cascade' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'api.intercompany.nci' => ['roles' => ['admin', 'auditor', 'legal', 'treasury']],
     'api.enterprise_finance.budgets.spend' => [
         'roles' => ['admin', 'treasury'],

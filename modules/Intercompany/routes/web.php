@@ -30,6 +30,7 @@ Route::middleware(['web', 'auth', 'role:admin,auditor,legal,treasury'])->prefix(
     // Kompatibilitas Warisan Konsolidasi
     Route::prefix('consolidation')->name('consolidation.')->group(function () {
         Route::get('/', [IntercompanyConsolidationController::class, 'index'])->name('index');
+        Route::get('/tree/{rootEntity}', [IntercompanyConsolidationController::class, 'getGroupTree'])->name('tree');
         Route::post('/mirror-tx', [IntercompanyConsolidationController::class, 'createMirrorTransaction'])->name('mirror-tx');
         Route::post('/markup/{rule}', [IntercompanyConsolidationController::class, 'applyMarkup'])->name('markup');
         Route::post('/elimination', [IntercompanyConsolidationController::class, 'postElimination'])->name('elimination');
