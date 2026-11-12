@@ -337,63 +337,34 @@ Perintah `php artisan treasury:export-reports` menghasilkan 8 berkas CSV determi
 
 ---
 
-## 10. Spesifikasi Detail Alur Lintas-Modul & Sequence Diagram Integrasi (D48-11)
+## 10. Spesifikasi Detail Alur Lintas-Modul & Diagram Alir Integrasi (D48-11)
 
-### 10.1 Diagram Sequence Agregasi `FxMonetaryItemFeed` & Revaluasi PSAK 10
+### 10.1 Diagram Alir Agregasi `FxMonetaryItemFeed` & Revaluasi PSAK 10
 ```mermaid
-sequenceDiagram
-    participant Cron as "treasury:fx-revalue"
-    participant Gov as "TreasuryCovenantGovernanceService"
-    participant Proc as "ProcurementFxMonetaryItemFeed"
-    participant Trade as "TradeFxMonetaryItemFeed"
-    participant Calc as "FxRevaluationCalculator (D1)"
-    participant Poster as "TreasuryLedgerPoster"
-    participant Ledger as "LedgerService"
-    participant Spine as "TreasuryEventPublisher"
-
-    Cron->>Gov: aggregateAndRevalueCrossModuleFeeds(period, asOfDate)
-    Gov->>Proc: items(period)
-    Proc-->>Gov: Komitmen PO Impor Valas (USD/EUR/SGD)
-    Gov->>Trade: items(period)
-    Trade-->>Gov: Utang Impor & Piutang Ekspor Valas
-    Gov->>Gov: Sinkronkan baris baru ke subledger trs_fx_lots
-    loop Setiap Mata Uang Aktif
-        Gov->>Calc: calculateRevaluation(totalForeignMinor, totalBookIdr, closingRate)
-        Calc-->>Gov: FxRevaluationResult + FxRevaluationCertificate (SHA-256)
-        Gov->>Poster: postFxRevaluation(period, currency, gainLossIdr, idempotencyKey)
-        Poster->>Ledger: post(PostingDTO TRS_FX_REVAL)
-        Ledger-->>Poster: LedgerTransaction
-        Gov->>Spine: publishRevaluationPosted(TreasuryRevaluationPostedEvent)
-    end
+flowchart TD
+    Cron["Cron: treasury:fx-revalue"] --> Gov["TreasuryCovenantGovernanceService::aggregateAndRevalueCrossModuleFeeds"]
+    Gov --> Proc["ProcurementFxMonetaryItemFeed::items(period)"]
+    Proc --> Lots["Sinkronkan Komitmen PO Impor Valas ke trs_fx_lots"]
+    Gov --> Trade["TradeFxMonetaryItemFeed::items(period)"]
+    Trade --> Lots
+    Lots --> Calc["FxRevaluationCalculator (D1): Hitung Revaluasi & Sertifikat SHA-256"]
+    Calc --> Poster["TreasuryLedgerPoster::postFxRevaluation"]
+    Poster --> Ledger["LedgerService::post (TRS_FX_REVAL)"]
+    Calc --> Spine["TreasuryEventPublisher::publishRevaluationPosted"]
 ```
 
-### 10.2 Diagram Sequence Pengawasan Covenant, Eskalasi Breach & Dispensasi Waiver
+### 10.2 Diagram Alir Pengawasan Covenant, Eskalasi Breach & Dispensasi Waiver
 ```mermaid
-sequenceDiagram
-    participant Dealer as "Dealer Treasury"
-    participant Draw as "DrawFacilityAction"
-    participant LoanExp as "LoanExposureProvider (Finance)"
-    participant Spine as "TreasuryEventPublisher"
-    participant Gov as "TreasuryCovenantGovernanceService"
-    participant Approver as "CFO / Kepala Treasury"
-    participant Poster as "TreasuryLedgerPoster"
-
-    Dealer->>Draw: execute(facility, amountIdr, currentDerPermille)
-    Draw->>Draw: Cek CovenantWaiver aktif (valid_until >= today)
-    alt DER > EffectiveMaxDER (Tanpa Waiver)
-        Draw->>Spine: publishCovenantBreached(TreasuryCovenantBreachedEvent)
-        Draw-->>Dealer: Throw CovenantBreachException (TRS-COV-001)
-        Dealer->>Gov: requestCovenantWaiver(facility, breachedDer, waivedMaxDer, validUntil, reason)
-        Gov-->>Dealer: CovenantWaiver (status = pending)
-        Approver->>Gov: approveCovenantWaiver(waiver, approverId != requestedBy)
-        Gov-->>Approver: CovenantWaiver (status = approved)
-        Dealer->>Draw: execute(facility, amountIdr, currentDerPermille) [Ulang dengan Waiver]
-        Draw->>Poster: postFacilityDrawdown(facilityCode, amountIdr, idempotencyKey)
-        Draw-->>Dealer: Penarikan Berhasil (CreditFacilityDrawdown)
-    else DER <= EffectiveMaxDER
-        Draw->>Poster: postFacilityDrawdown(facilityCode, amountIdr, idempotencyKey)
-        Draw-->>Dealer: Penarikan Berhasil (CreditFacilityDrawdown)
-    end
+flowchart TD
+    Dealer["Dealer Treasury"] --> Draw["DrawFacilityAction::execute"]
+    Draw --> CheckWaiver{"Cek CovenantWaiver Aktif"}
+    CheckWaiver -->|DER > EffectiveMaxDER| Breach["TreasuryEventPublisher::publishCovenantBreached"]
+    Breach --> Throw["Throw CovenantBreachException (TRS-COV-001)"]
+    Throw --> ReqWaiver["TreasuryCovenantGovernanceService::requestCovenantWaiver (pending)"]
+    ReqWaiver --> ApprWaiver["Approver != Requester: approveCovenantWaiver (approved)"]
+    ApprWaiver --> Draw
+    CheckWaiver -->|DER <= EffectiveMaxDER| PostDraw["TreasuryLedgerPoster::postFacilityDrawdown"]
+    PostDraw --> Done["CreditFacilityDrawdown Tercatat & Seimbang"]
 ```
 
 ### 10.3 Spesifikasi Struktur Sertifikat Kriptografis D1, D2, & D3
@@ -467,6 +438,37 @@ Kelas `Modules\Treasury\Policies\TreasuryPolicy` menegakkan otorisasi berlapis p
 5. **`drawCreditFacility(User $user, CreditFacility $facility)`**:
    - Memeriksa kecocokan tenant/entitas untuk mencegah serangan *Insecure Direct Object Reference* (IDOR) lintas anak perusahaan.
    - Menolak akses `403 Forbidden` bagi pengguna di luar peran perbendaharaan yang sah.
+
+---
+
+## 12. Spesifikasi Komponen ViewModel & Pemetaan Antarmuka Pengguna (`TreasuryDashboardViewModel`)
+
+Kelas `Modules\Treasury\ViewModels\TreasuryDashboardViewModel` merangkum metrik real-time meja perbendaharaan tanpa membebani lapisan controller dengan logika agregasi SQL:
+
+### 12.1 Struktur Payload `toArray()`
+1. **`liquidity_summary`**:
+   - `total_functional_cash_idr`: Total saldo kas ekuivalen IDR dari seluruh rekening aktif (`is_active = true`).
+   - `active_accounts_count`: Jumlah rekening bank korporat dan dana kas kecil aktif.
+   - `petty_cash_balance_idr`: Total dana tunai tersedia pada seluruh rekening kas kecil imprest (`is_petty_cash = true`).
+   - `currencies_breakdown`: Daftar saldo minor unit dan nilai buku IDR yang dikelompokkan per mata uang (`IDR`, `USD`, `EUR`, `SGD`, `JPY`).
+2. **`fx_exposure_summary`**:
+   - `open_lots_count`: Jumlah lot moneter valuta asing berstatus `active` di `trs_fx_lots`.
+   - `total_carrying_idr`: Total nilai tercatat historis IDR seluruh lot valas terbuka.
+   - `last_revaluation_period`: Periode akuntansi terakhir (`YYYY-MM`) yang telah direvaluasi.
+3. **`hedge_portfolio_summary`**:
+   - `active_contracts_count`: Jumlah kontrak derivatif forward pada status `booked` dan `active`.
+   - `matured_pending_settlement_count`: Jumlah kontrak yang sudah mencapai status `matured` dan menunggu penyelesaian kas atau roll-over.
+   - `net_mtm_fair_value_idr`: Akumulasi nilai wajar Mark-to-Market bersih seluruh portofolio lindung nilai aktif.
+4. **`credit_facility_headroom`**:
+   - `total_credit_limit_idr`: Total plafon fasilitas kredit sindikasi yang disetujui.
+   - `total_drawn_idr`: Total pokok pinjaman yang sedang ditarik.
+   - `available_headroom_idr`: Sisa plafon fasilitas kredit yang siap ditarik ($\text{Limit} - \text{Drawn}$).
+   - `active_waivers_count`: Jumlah `CovenantWaiver` berstatus `approved` yang masih berlaku.
+5. **`reconciliation_health`**:
+   - `matched_statements_count`: Jumlah baris mutasi rekening koran yang telah terpadankan (`is_reconciled = true`).
+   - `pending_unmatched_count`: Jumlah baris mutasi pada antrean `trs_bank_reconciliation_unmatched` berstatus `pending`.
+   - `escalated_overdue_count`: Jumlah pos unmatched dengan `aging_days > 5` yang telah memiliki tiket eskalasi di `TaskInboxService`.
+
 
 
 
