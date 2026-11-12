@@ -911,7 +911,12 @@ return [
     'distribution.territories.store' => ['roles' => ['admin', 'procurement']],
     'distribution.tier.evaluate' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
     'distribution.transition' => ['roles' => ['admin', 'procurement'], 'params' => $distributorParamHelper],
-    'enterprise_finance.budgets' => ['roles' => ['admin', 'auditor', 'treasury']],
+    'enterprise_finance.budgets' => ['roles' => ['admin', 'budget_owner', 'finance_controller', 'auditor', 'treasury']],
+    'enterprise_finance.budgets.commitments' => ['roles' => ['admin', 'budget_owner', 'finance_controller', 'auditor', 'treasury'], 'params' => function () {
+        $budget = EnterpriseBudget::firstOrCreate(['budget_code' => 'BDG-TEST-ROUTE'], ['fiscal_year' => '2026', 'cost_center_code' => 'CC-01', 'account_code' => 'AC-01', 'allocated_amount_idr' => 1000000]);
+
+        return ['id' => $budget->id];
+    }],
     'enterprise_finance.budget_lifecycle' => ['roles' => ['admin', 'auditor', 'treasury']],
     'enterprise_finance.compliance_calendar' => ['roles' => ['admin', 'auditor', 'treasury']],
     'enterprise_finance.index' => ['roles' => ['admin', 'auditor', 'treasury']],
@@ -920,6 +925,18 @@ return [
     'enterprise_finance.sod_matrix' => ['roles' => ['admin', 'auditor', 'treasury']],
     'enterprise_finance.tax_compliance' => ['roles' => ['admin', 'auditor', 'treasury']],
     'enterprise_finance.working_capital' => ['roles' => ['admin', 'auditor', 'treasury']],
+    'enterprise_finance.statements' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.tax' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.tax.settle' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.sod' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.sod.exception' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.controls' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.controls.run' => ['roles' => ['admin', 'finance_controller', 'auditor']],
+    'enterprise_finance.close' => ['roles' => ['admin', 'finance_controller']],
+    'enterprise_finance.close.execute' => ['roles' => ['admin', 'finance_controller']],
+    'enterprise_finance.compliance' => ['roles' => ['admin', 'finance_controller', 'legal', 'auditor']],
+    'enterprise_finance.audit_pack' => ['roles' => ['admin', 'auditor', 'finance_controller']],
+    'enterprise_finance.audit_pack.generate' => ['roles' => ['admin', 'auditor', 'finance_controller']],
     'epc.index' => ['roles' => ['admin', 'epc_manager', 'asset_manager']],
     'esg.index' => ['roles' => ['admin', 'esg_officer', 'auditor']],
     'ev.index' => ['roles' => ['admin', 'driver', 'ev_admin', 'station_operator']],

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\EnterpriseFinance\Domain\Algorithms\ConsolidatedTrialBalanceAggregator;
+use Modules\EnterpriseFinance\Domain\Algorithms\Forecasting\CorporateCashRunwayForecaster;
 use Modules\EnterpriseFinance\Domain\Algorithms\SyndicatedLoanCovenantCalculator;
 use Modules\EnterpriseFinance\Domain\DTOs\AccountBalanceDTO;
 use Modules\EnterpriseFinance\Domain\DTOs\ConsolidatedFinancialRatiosDTO;
@@ -20,8 +21,10 @@ use Modules\EnterpriseFinance\Domain\Models\ConsolidationRun;
 use Modules\EnterpriseFinance\Domain\Models\DebtCovenantEvaluation;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseTaxSummary;
+use Modules\EnterpriseFinance\Domain\Models\FinancialPeriodLock;
 use Modules\EnterpriseFinance\Domain\Models\SodRule;
 use Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility;
+use Modules\EnterpriseFinance\Domain\Models\TaxReconSummary;
 use Modules\EnterpriseFinance\Domain\Models\WorkingCapitalMetric;
 use Modules\EnterpriseFinance\Domain\Services\ConsolidatedFinancialRatioAnalyzer;
 
@@ -253,13 +256,18 @@ class EnterpriseFinanceService
         int $inventoryBalanceMinor,
         int $apBalanceMinor
     ): WorkingCapitalMetric {
-        $dailySales = ($revenueMinor > 0) ? (int) intdiv($revenueMinor, 365) : 1;
-        $dailyCogs = ($cogsMinor > 0) ? (int) intdiv($cogsMinor, 365) : 1;
+        $cccResult = CorporateCashRunwayForecaster::calculateCashConversionCycle(
+            receivablesMinor: $arBalanceMinor,
+            inventoryMinor: $inventoryBalanceMinor,
+            payablesMinor: $apBalanceMinor,
+            annualRevenueMinor: max(1, $revenueMinor),
+            annualCogsMinor: max(1, $cogsMinor)
+        );
 
-        $dso = (int) intdiv($arBalanceMinor, $dailySales);
-        $dio = (int) intdiv($inventoryBalanceMinor, $dailyCogs);
-        $dpo = (int) intdiv($apBalanceMinor, $dailyCogs);
-        $ccc = ($dso + $dio) - $dpo;
+        $dso = $cccResult['dso_days'];
+        $dio = $cccResult['dio_days'];
+        $dpo = $cccResult['dpo_days'];
+        $ccc = $cccResult['ccc_days'];
 
         $tier = ($ccc <= 30) ? 'EXCELLENT' : (($ccc <= 60) ? 'NORMAL' : 'NEEDS_IMPROVEMENT');
 
@@ -414,7 +422,25 @@ class EnterpriseFinanceService
         $invalidFacilityDates = SyndicatedFacility::whereRaw('maturity_date < start_date')
             ->count();
 
-        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates;
+        // Invarian 6: FinancialPeriodLock wajib memiliki closing voucher valid dan bukan voucher rusak
+        $invalidLocks = FinancialPeriodLock::query()
+            ->where('is_locked', true)
+            ->where(function ($q) {
+                $q->whereNull('closing_voucher_ref')
+                    ->orWhere('closing_voucher_ref', 'like', 'INVALID%');
+            })
+            ->count();
+
+        // Invarian 7: TaxReconSummary net payable wajib sama dengan vat_output - vat_input
+        $invalidTaxRecons = TaxReconSummary::query()
+            ->whereRaw('vat_output_minor >= vat_input_minor AND net_payable_minor != (vat_output_minor - vat_input_minor)')
+            ->count();
+
+        // Audit Komprehensif Dua Sumber 10-Dimensi
+        $auditService = app(CorporateFinancialPeriodAuditService::class);
+        $compAudit = $auditService->executeComprehensiveAudit();
+
+        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates + $invalidLocks + $invalidTaxRecons + $compAudit['total_discrepancies'];
 
         return [
             'status' => ($discrepancyCount === 0) ? 'OK' : 'DISCREPANCY',
@@ -429,6 +455,8 @@ class EnterpriseFinanceService
             'invalid_taxes' => $invalidTaxes,
             'invalid_consolidations' => $invalidConsolidations,
             'invalid_facilities' => $invalidFacilities,
+            'invalid_locks' => $invalidLocks,
+            'invalid_tax_recons' => $invalidTaxRecons,
         ];
     }
 }

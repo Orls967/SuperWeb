@@ -31,6 +31,13 @@ class ConglomerateCapitalAndGovernanceService
         $payoutRatio = (float) $params['dividend_payout_ratio_pct'];
         $declaredMinor = (int) round(($netProfit * $payoutRatio) / 100.0);
 
+        CorporateDividendDistributionService::evaluateDividendEligibility(
+            paidInCapitalMinor: 10_000_000_000_00,
+            currentStatutoryReserveMinor: 2_000_000_000_00,
+            netIncomeMinor: max(1, $netProfit),
+            proposedDividendMinor: max(1, $declaredMinor)
+        );
+
         return DB::transaction(function () use ($params, $netProfit, $payoutRatio, $declaredMinor) {
             $divCode = 'DIV-'.strtoupper(Str::random(8));
 

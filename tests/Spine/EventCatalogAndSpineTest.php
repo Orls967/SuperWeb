@@ -24,7 +24,7 @@ class EventCatalogAndSpineTest extends TestCase
 
     /**
      * C1: Real Handler Coverage for EventCatalog.
-     * Evaluates which of the 16 catalog events have actual runtime consumers in CrossModuleSpineHandlers.
+     * Evaluates which of the 19 catalog events have actual runtime consumers in CrossModuleSpineHandlers.
      */
     public function test_c1_event_catalog_handler_coverage_reveals_unhandled_events(): void
     {
@@ -36,7 +36,7 @@ class EventCatalogAndSpineTest extends TestCase
         $registeredSubscriptions = $prop->getValue();
 
         $catalog = EventCatalog::all();
-        $this->assertCount(16, $catalog);
+        $this->assertCount(19, $catalog);
 
         $handledEventNames = [];
         foreach ($registeredSubscriptions as $group => $events) {
@@ -52,8 +52,8 @@ class EventCatalogAndSpineTest extends TestCase
             }
         }
 
-        // Exactly 8 events currently lack registered spine handlers
-        $this->assertCount(8, $unhandledEvents, 'Expected 8 unhandled events in spine catalog');
+        // Exactly 11 events currently lack registered spine handlers (8 lama + 3 event enterprise.* Fase 54: produsen nyata, konsumen belum ada)
+        $this->assertCount(11, $unhandledEvents, 'Expected 11 unhandled events in spine catalog');
         $this->assertContains('lgx.temperature.breached.v1', $unhandledEvents);
         $this->assertContains('auto.telematics.anomaly_detected.v1', $unhandledEvents);
         $this->assertContains('mall.footfall.recorded.v1', $unhandledEvents);
@@ -62,6 +62,9 @@ class EventCatalogAndSpineTest extends TestCase
         $this->assertContains('epc.project.handed_over.v1', $unhandledEvents);
         $this->assertContains('esg.emission.recorded.v1', $unhandledEvents);
         $this->assertContains('gov.proposal.passed.v1', $unhandledEvents);
+        $this->assertContains('enterprise.budget.threshold_exceeded.v1', $unhandledEvents);
+        $this->assertContains('enterprise.sod.violation_detected.v1', $unhandledEvents);
+        $this->assertContains('enterprise.period.closed.v1', $unhandledEvents);
     }
 
     /**

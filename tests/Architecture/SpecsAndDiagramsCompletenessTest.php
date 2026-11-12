@@ -146,7 +146,8 @@ it('verifies that total sequence diagrams across docs/ is at least 210', functio
     // 3. docs/design/energy-mvp.md (+1, commit bcced3e5 / PR #39 ML3)
     // 4. docs/design/hospital-rawat-jalan.md (+2, PR #35 Hospital)
     // 5. docs/design/hotel-siklus-tamu.md (+5, PR G5-C2 Hotel)
-    expect($totalSeq)->toBe(259, "Total sequenceDiagram di seluruh docs/ wajib tepat 259 (ditemukan: {$totalSeq})");
+    // 6. docs/design/fase-54.md (+2, PR #115 Fase 54 Kelengkapan)
+    expect($totalSeq)->toBe(261, "Total sequenceDiagram di seluruh docs/ wajib tepat 261 (ditemukan: {$totalSeq})");
 });
 
 it('verifies that docs/ROLES_60_PLAYBOOK.md contains at least 600 lines and details all 60 operational roles', function (): void {

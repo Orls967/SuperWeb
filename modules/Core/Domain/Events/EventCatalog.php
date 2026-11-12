@@ -223,6 +223,48 @@ final class EventCatalog
                 'passed_at' => 'string',
             ],
         ],
+        'enterprise.budget.threshold_exceeded.v1' => [
+            'name' => 'enterprise.budget.threshold_exceeded.v1',
+            'version' => 1,
+            'producer' => 'EnterpriseFinance',
+            'consumers' => ['Procurement', 'Core'],
+            'purpose' => 'Alert cost center and procurement when department budget available is low',
+            'payload_schema' => [
+                'budget_id' => 'integer',
+                'budget_code' => 'string',
+                'entity_code' => 'string',
+                'allocated_amount_minor' => 'integer',
+                'remaining_available_minor' => 'integer',
+                'threshold_percent' => 'integer',
+            ],
+        ],
+        'enterprise.sod.violation_detected.v1' => [
+            'name' => 'enterprise.sod.violation_detected.v1',
+            'version' => 1,
+            'producer' => 'EnterpriseFinance',
+            'consumers' => ['Core', 'Audit'],
+            'purpose' => 'Notify governance officers when segregation of duties conflict is detected',
+            'payload_schema' => [
+                'user_id' => 'integer',
+                'sod_rule_id' => 'string',
+                'first_role' => 'string',
+                'second_role' => 'string',
+                'severity' => 'string',
+            ],
+        ],
+        'enterprise.period.closed.v1' => [
+            'name' => 'enterprise.period.closed.v1',
+            'version' => 1,
+            'producer' => 'EnterpriseFinance',
+            'consumers' => ['Intercompany', 'Treasury'],
+            'purpose' => 'Signal monthly fiscal period closure and lock across holding ecosystem',
+            'payload_schema' => [
+                'entity_code' => 'string',
+                'period' => 'string',
+                'net_income_loss_minor' => 'integer',
+                'closing_voucher_id' => 'string',
+            ],
+        ],
     ];
 
     /**

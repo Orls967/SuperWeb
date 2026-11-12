@@ -6,6 +6,8 @@ namespace Modules\EnterpriseFinance\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\EnterpriseFinance\Application\Services\EnterpriseFinanceService;
+use Modules\EnterpriseFinance\Domain\Algorithms\Valuation\CorporateSyndicationCalculator;
+use Modules\EnterpriseFinance\Domain\Algorithms\Valuation\SyndicatedFacilityCovenantMonitor;
 use Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility;
 
 class EvaluateCovenantsCommand extends Command
@@ -49,10 +51,28 @@ class EvaluateCovenantsCommand extends Command
                 currentLiabilitiesMinor: 450_000_000_000
             );
 
+            // Verifikasi stress test lonjakan suku bunga
+            SyndicatedFacilityCovenantMonitor::stressTestInterestRateHikes(
+                totalDebtMinor: 1_200_000_000_000,
+                baseInterestRateBps: 850,
+                rateHikeBpsList: [100, 250, 400],
+                ebitdaMinor: 500_000_000_000
+            );
+
+            // Evaluasi kovenan mendalam
+            $detailedCovenant = CorporateSyndicationCalculator::evaluateCovenants(
+                ebitdaMinor: 500_000_000_000,
+                debtServiceMinor: 250_000_000_000,
+                totalDebtMinor: 1_200_000_000_000,
+                totalEquityMinor: 1_000_000_000_000,
+                maxDerBps: 25000,
+                minDscrBps: 15000
+            );
+
             $statusText = $evaluation->is_compliant ? '<info>COMPLIANT</info>' : '<error>BREACH</error>';
             $this->line("Fasilitas [{$fac->facility_code}] DSCR: {$evaluation->dscr_permille}‰, DER: {$evaluation->der_permille}‰ -> {$statusText}");
 
-            if (! $evaluation->is_compliant) {
+            if (! $evaluation->is_compliant || ! $detailedCovenant['is_fully_compliant']) {
                 $breachCount++;
             }
         }

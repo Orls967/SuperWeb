@@ -9,12 +9,13 @@ use Database\Seeders\LedgerAccountsSeeder;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;
-use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Contracts\LedgerTransaction;
+use Modules\Banking\Domain\Enums\AccountKind;
 use Modules\Banking\Support\Posting;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseBudget;
 use Modules\EnterpriseFinance\Domain\Models\EnterpriseTaxSummary;
 use Modules\EnterpriseFinance\Domain\Models\SyndicatedFacility;
+use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceAccounts;
 use Modules\EnterpriseFinance\Ledger\EnterpriseFinanceTransactionTypes;
 use Psr\Clock\ClockInterface;
 
@@ -41,31 +42,208 @@ class EnterpriseFinanceLedgerPoster
         }
     }
 
-    protected function ensureAccount(string $code, string $name, string $kind, string $assetCode = 'IDR'): void
+    protected function ensureAccount(string $code, string $name, AccountKind $kind, string $assetCode = 'IDR'): void
     {
         if ($this->ledgerService->findAccountByCode($code) === null) {
-            LedgerAccount::firstOrCreate(
-                ['code' => $code],
-                [
-                    'name' => $name,
-                    'asset_code' => $assetCode,
-                    'kind' => $kind,
-                    'allow_negative' => true,
-                    'cached_balance' => '0',
-                    'is_frozen' => false,
-                ]
-            );
+            EnterpriseFinanceAccounts::ensureAccount($code, $name, $kind, $assetCode, true);
         }
     }
 
     /**
-     * Memosting penarikan fasilitas kredit sindikasi korporat (Drawdown).
+     * Memosting penutupan periode fiskal (D54-10).
+     *
+     * Jurnal Berimbang Single-Sign:
+     * 1. Penutupan pendapatan: Debit Pendapatan, Kredit Income Summary.
+     * 2. Penutupan beban: Debit Income Summary, Kredit Beban.
+     * 3. Pemindahan laba/rugi bersih:
+     *    - Bila Laba (revenue > expense): Debit Income Summary, Kredit Retained Earnings.
+     *    - Bila Rugi (expense > revenue): Debit Retained Earnings, Kredit Income Summary.
+     * Total Debit = Total Kredit persis.
+     */
+    public function postPeriodClosing(
+        string $entity,
+        string $period,
+        int $revenueMinor,
+        int $expenseMinor,
+        ?string $idempotencyKey = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($revenueMinor < 0 || $expenseMinor < 0) {
+            throw new InvalidArgumentException('Nominal pendapatan dan beban penutupan tidak boleh negatif.');
+        }
+
+        $currency = 'IDR';
+        $incomeSummaryAccount = EnterpriseFinanceAccounts::incomeSummary($entity, $currency);
+        $retainedEarningsAccount = EnterpriseFinanceAccounts::retainedEarnings($entity, $currency);
+        $revenueNominalAccount = "ef:nominal_revenue:{$entity}:{$currency}";
+        $expenseNominalAccount = "ef:nominal_expense:{$entity}:{$currency}";
+
+        $this->ensureAccount($incomeSummaryAccount, "Income Summary {$entity}", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($retainedEarningsAccount, "Retained Earnings {$entity}", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($revenueNominalAccount, "Nominal Revenue Clearing {$entity}", AccountKind::REVENUE, $currency);
+        $this->ensureAccount($expenseNominalAccount, "Nominal Expense Clearing {$entity}", AccountKind::EXPENSE, $currency);
+
+        $lines = Posting::lines();
+
+        // 1. Tutup Akun Pendapatan
+        if ($revenueMinor > 0) {
+            $lines->debit($revenueNominalAccount, $revenueMinor, $currency);
+            $lines->credit($incomeSummaryAccount, $revenueMinor, $currency);
+        }
+
+        // 2. Tutup Akun Beban
+        if ($expenseMinor > 0) {
+            $lines->debit($incomeSummaryAccount, $expenseMinor, $currency);
+            $lines->credit($expenseNominalAccount, $expenseMinor, $currency);
+        }
+
+        // 3. Pindahkan Laba / Rugi Bersih ke Retained Earnings
+        $netIncomeMinor = $revenueMinor - $expenseMinor;
+        if ($netIncomeMinor > 0) {
+            // Laba bersih -> Debit Income Summary, Kredit Retained Earnings
+            $lines->debit($incomeSummaryAccount, $netIncomeMinor, $currency);
+            $lines->credit($retainedEarningsAccount, $netIncomeMinor, $currency);
+        } elseif ($netIncomeMinor < 0) {
+            // Rugi bersih -> Debit Retained Earnings, Kredit Income Summary
+            $absLossMinor = abs($netIncomeMinor);
+            $lines->debit($retainedEarningsAccount, $absLossMinor, $currency);
+            $lines->credit($incomeSummaryAccount, $absLossMinor, $currency);
+        }
+
+        $idemKey = $idempotencyKey ?? "IDEM:EF:CLOSE:{$entity}:{$period}";
+
+        return $this->ledgerService->post(new PostingDTO(
+            type: EnterpriseFinanceTransactionTypes::FISCAL_PERIOD_CLOSING->value,
+            description: "Penutupan Buku Periode {$period} Entitas {$entity}",
+            idempotencyKey: $idemKey,
+            entries: $lines->toEntries($currency),
+            referenceType: 'ef_financial_period_locks',
+            referenceId: "{$entity}:{$period}",
+            meta: [
+                'entity' => $entity,
+                'period' => $period,
+                'revenue_minor' => $revenueMinor,
+                'expense_minor' => $expenseMinor,
+                'net_income_minor' => $netIncomeMinor,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        ));
+    }
+
+    /**
+     * Memosting penyelesaian selisih PPN Masa (D54-10).
      *
      * Jurnal Single-Sign:
-     * - Debit Kas Clearing: -amountMinor
-     * - Kredit Kewajiban Pinjaman Sindikasi: +amountMinor
+     * - Debit PPN Keluaran: vatOutputMinor
+     * - Kredit PPN Masukan: vatInputMinor
+     * - Kredit Kas Kliring Setoran Negara: (vatOutputMinor - vatInputMinor)
      * Net = 0
      */
+    public function postVatSettlement(
+        string $entity,
+        string $period,
+        int $vatOutputMinor,
+        int $vatInputMinor,
+        ?string $idempotencyKey = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($vatOutputMinor < 0 || $vatInputMinor < 0) {
+            throw new InvalidArgumentException('Nominal PPN tidak boleh negatif.');
+        }
+
+        $netPayableMinor = $vatOutputMinor - $vatInputMinor;
+        if ($netPayableMinor < 0) {
+            throw new InvalidArgumentException('PPN Lebih Bayar (restitusi) tidak memerlukan setoran kas.');
+        }
+
+        $currency = 'IDR';
+        $vatOutputAccount = EnterpriseFinanceAccounts::vatOutputPayable($entity, $currency);
+        $vatInputAccount = EnterpriseFinanceAccounts::vatInputReceivable($entity, $currency);
+        $vatClearingAccount = EnterpriseFinanceAccounts::vatSettlementClearing($entity, $currency);
+
+        $this->ensureAccount($vatOutputAccount, "VAT Output Payable {$entity}", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($vatInputAccount, "VAT Input Receivable {$entity}", AccountKind::ASSET, $currency);
+        $this->ensureAccount($vatClearingAccount, "VAT Settlement Clearing {$entity}", AccountKind::ASSET, $currency);
+
+        $lines = Posting::lines();
+        if ($vatOutputMinor > 0) {
+            $lines->debit($vatOutputAccount, $vatOutputMinor, $currency);
+        }
+        if ($vatInputMinor > 0) {
+            $lines->credit($vatInputAccount, $vatInputMinor, $currency);
+        }
+        if ($netPayableMinor > 0) {
+            $lines->credit($vatClearingAccount, $netPayableMinor, $currency);
+        }
+
+        $idemKey = $idempotencyKey ?? "IDEM:EF:VAT_SETTLE:{$entity}:{$period}";
+
+        return $this->ledgerService->post(new PostingDTO(
+            type: EnterpriseFinanceTransactionTypes::TAX_PPN_SETTLEMENT->value,
+            description: "Penyelesaian PPN Masa Periode {$period} Entitas {$entity}",
+            idempotencyKey: $idemKey,
+            entries: $lines->toEntries($currency),
+            referenceType: 'ef_tax_recon_summaries',
+            referenceId: "{$entity}:{$period}",
+            meta: [
+                'entity' => $entity,
+                'period' => $period,
+                'vat_output_minor' => $vatOutputMinor,
+                'vat_input_minor' => $vatInputMinor,
+                'net_payable_minor' => $netPayableMinor,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        ));
+    }
+
+    /**
+     * Memosting dividen sub-holding yang diumumkan (D54-10).
+     */
+    public function postSubholdingDividend(
+        string $entity,
+        int $amountMinor,
+        string $idempotencyKey,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($amountMinor <= 0) {
+            throw new InvalidArgumentException('Nominal dividen sub-holding harus lebih besar dari nol.');
+        }
+
+        $currency = 'IDR';
+        $declaredAccount = EnterpriseFinanceAccounts::dividendDeclared($entity, $currency);
+        $payableAccount = EnterpriseFinanceAccounts::dividendPayable($entity, $currency);
+
+        $this->ensureAccount($declaredAccount, "Dividend Declared {$entity}", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($payableAccount, "Dividend Payable {$entity}", AccountKind::LIABILITY, $currency);
+
+        $lines = Posting::lines()
+            ->debit($declaredAccount, $amountMinor, $currency)
+            ->credit($payableAccount, $amountMinor, $currency);
+
+        return $this->ledgerService->post(new PostingDTO(
+            type: EnterpriseFinanceTransactionTypes::SUBHOLDING_DIVIDEND_DECLARATION->value,
+            description: "Deklarasi Dividen Subholding {$entity}",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries($currency),
+            referenceType: 'ef_subholding_dividends',
+            referenceId: "{$entity}:DIV",
+            meta: [
+                'entity' => $entity,
+                'amount_minor' => $amountMinor,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        ));
+    }
+
     public function postSyndicatedDrawdown(
         SyndicatedFacility $facility,
         int $amountMinor,
@@ -83,8 +261,8 @@ class EnterpriseFinanceLedgerPoster
         $cashClearing = "ef:cash_disbursement_clearing:{$currency}";
         $loanLiability = "ef:syndicated_loan_liability:{$currency}";
 
-        $this->ensureAccount($cashClearing, "Cash Clearing {$currency}", 'asset', $currency);
-        $this->ensureAccount($loanLiability, "Syndicated Loan Liability {$currency}", 'liability', $currency);
+        $this->ensureAccount($cashClearing, "Cash Clearing {$currency}", AccountKind::ASSET, $currency);
+        $this->ensureAccount($loanLiability, "Syndicated Loan Liability {$currency}", AccountKind::LIABILITY, $currency);
 
         $lines = Posting::lines()
             ->debit($cashClearing, $amountMinor, $currency)
@@ -106,15 +284,6 @@ class EnterpriseFinanceLedgerPoster
         ));
     }
 
-    /**
-     * Memosting pelunasan cicilan pokok dan beban bunga pinjaman sindikasi.
-     *
-     * Jurnal Single-Sign:
-     * - Debit Kewajiban Pinjaman Pokok: -principalMinor
-     * - Debit Beban Bunga Sindikasi: -interestMinor
-     * - Kredit Kas Clearing: +(principalMinor + interestMinor)
-     * Net = 0
-     */
     public function postSyndicatedRepayment(
         SyndicatedFacility $facility,
         int $principalMinor,
@@ -134,9 +303,9 @@ class EnterpriseFinanceLedgerPoster
         $loanLiability = "ef:syndicated_loan_liability:{$currency}";
         $interestExpense = "ef:syndicated_interest_expense:{$currency}";
 
-        $this->ensureAccount($cashClearing, "Cash Clearing {$currency}", 'asset', $currency);
-        $this->ensureAccount($loanLiability, "Syndicated Loan Liability {$currency}", 'liability', $currency);
-        $this->ensureAccount($interestExpense, "Syndicated Interest Expense {$currency}", 'expense', $currency);
+        $this->ensureAccount($cashClearing, "Cash Clearing {$currency}", AccountKind::ASSET, $currency);
+        $this->ensureAccount($loanLiability, "Syndicated Loan Liability {$currency}", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($interestExpense, "Syndicated Interest Expense {$currency}", AccountKind::EXPENSE, $currency);
 
         $totalDisbursement = $principalMinor + $interestMinor;
         $lines = Posting::lines();
@@ -167,14 +336,6 @@ class EnterpriseFinanceLedgerPoster
         ));
     }
 
-    /**
-     * Memosting realisasi belanja operasional departemen dari pagu anggaran.
-     *
-     * Jurnal Single-Sign:
-     * - Debit Beban Operasional: -amountMinor
-     * - Kredit Kas Clearing: +amountMinor
-     * Net = 0
-     */
     public function postBudgetSpendRealization(
         EnterpriseBudget $budget,
         int $amountMinor,
@@ -192,8 +353,8 @@ class EnterpriseFinanceLedgerPoster
         $expenseAccount = 'ef:operating_budget_clearing:IDR';
         $cashClearing = 'ef:cash_disbursement_clearing:IDR';
 
-        $this->ensureAccount($expenseAccount, 'Operating Budget Clearing IDR', 'expense', $currency);
-        $this->ensureAccount($cashClearing, 'Cash Disbursement Clearing IDR', 'asset', $currency);
+        $this->ensureAccount($expenseAccount, 'Operating Budget Clearing IDR', AccountKind::EXPENSE, $currency);
+        $this->ensureAccount($cashClearing, 'Cash Disbursement Clearing IDR', AccountKind::ASSET, $currency);
 
         $lines = Posting::lines()
             ->debit($expenseAccount, $amountMinor, $currency)
@@ -216,14 +377,6 @@ class EnterpriseFinanceLedgerPoster
         ));
     }
 
-    /**
-     * Memosting penyetoran kewajiban pajak masa PPN/PPh ke Kas Negara.
-     *
-     * Jurnal Single-Sign:
-     * - Debit Utang Pajak PPN/PPh: -payableMinor
-     * - Kredit Kas Clearing: +payableMinor
-     * Net = 0
-     */
     public function postTaxSettlement(
         EnterpriseTaxSummary $taxSummary,
         int $payableMinor,
@@ -242,8 +395,8 @@ class EnterpriseFinanceLedgerPoster
         $taxAccount = ($taxType === 'PPN') ? 'ef:tax_payable_ppn:IDR' : 'ef:tax_payable_pph:IDR';
         $cashClearing = 'ef:cash_disbursement_clearing:IDR';
 
-        $this->ensureAccount($taxAccount, "Tax Payable {$taxType} IDR", 'liability', $currency);
-        $this->ensureAccount($cashClearing, 'Cash Disbursement Clearing IDR', 'asset', $currency);
+        $this->ensureAccount($taxAccount, "Tax Payable {$taxType} IDR", AccountKind::LIABILITY, $currency);
+        $this->ensureAccount($cashClearing, 'Cash Disbursement Clearing IDR', AccountKind::ASSET, $currency);
 
         $lines = Posting::lines()
             ->debit($taxAccount, $payableMinor, $currency)
@@ -284,14 +437,6 @@ class EnterpriseFinanceLedgerPoster
         ));
     }
 
-    /**
-     * Memosting deklarasi dividen dari anak perusahaan ke Holding Korporat.
-     *
-     * Jurnal Single-Sign:
-     * - Debit Piutang Dividen Holding: -dividendMinor
-     * - Kredit Pendapatan Dividen Holding: +dividendMinor
-     * Net = 0
-     */
     public function postDividendDistribution(
         string $subsidiaryCode,
         int $dividendMinor,
@@ -309,8 +454,8 @@ class EnterpriseFinanceLedgerPoster
         $receivableAccount = 'ef:holding_dividend_receivable:IDR';
         $incomeAccount = 'ef:holding_dividend_income:IDR';
 
-        $this->ensureAccount($receivableAccount, 'Holding Dividend Receivable IDR', 'asset', $currency);
-        $this->ensureAccount($incomeAccount, 'Holding Dividend Income IDR', 'revenue', $currency);
+        $this->ensureAccount($receivableAccount, 'Holding Dividend Receivable IDR', AccountKind::ASSET, $currency);
+        $this->ensureAccount($incomeAccount, 'Holding Dividend Income IDR', AccountKind::REVENUE, $currency);
 
         $lines = Posting::lines()
             ->debit($receivableAccount, $dividendMinor, $currency)

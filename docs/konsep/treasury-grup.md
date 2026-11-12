@@ -101,3 +101,84 @@ Seluruh operasi menggunakan `bcmath` dengan skala desimal nol untuk menghasilkan
 13. **`TRS-CASE-13`**: Forecast Kas 13 Minggu Musiman Multiplikatif. Riwayat arus kas 12 minggu dengan rata-rata 105 juta dan pola musiman 4 mingguan menghasilkan proyeksi minggu 13–25 dengan total Rp 1.761.000.000.
 14. **`TRS-CASE-14`**: Pelanggaran Covenant DER Saat Penarikan Kredit. Fasilitas kredit plafon Rp 10 Miliar dengan batas DER 2,50x (2500 permil). Percobaan penarikan Rp 2 Miliar yang menyebabkan proyeksi DER menjadi 2,65x (2650 permil) langsung ditolak oleh sistem dengan pesan `COVENANT_BREACH`.
 15. **`TRS-CASE-15`**: Siklus Lengkap Forward Hedge & Roll-Over. Kontrak forward USD 100.000 dibuat, disetujui melalui ApprovalEngine, dibukukan, aktif, dievaluasi MTM harian, jatuh tempo, lalu diperpanjang (*rolled-over*) ke kontrak forward baru dengan mengaitkan ID kontrak induk.
+
+
+---
+
+# BAGIAN 3 — FASE 54: TATA KELOLA KEUANGAN GRUP, ANGGARAN & TUTUP BUKU
+
+## 1. Masalah Bisnis
+Pengelolaan keuangan di tingkat grup konglomerasi menghadapi tantangan struktural yang memerlukan sistem terpadu:
+1. **Kebocoran Anggaran Akibat Ketiadaan Encumbrance**: Pengadaan barang/jasa yang menerbitkan Purchase Order tanpa mengunci pagu secara otomatis menyebabkan over-budget saat faktur ditagihkan di kemudian hari.
+2. **Keterlambatan & Kerentanan Tutup Buku Fiskal**: Penutupan periode bulanan seringkali terhambat oleh diskrepansi antara buku besar dengan subledger pembantu (Piutang, Utang, Persediaan, Aset Tetap). Penutupan buku manual tanpa penguncian otomatis rawan disusupi transaksi susulan (*backdated transactions*).
+3. **Risiko Sanksi Perpajakan**: Perhitungan PPN masukan vs keluaran yang lambat dan pelaporan SPT Masa yang tidak terintegrasi berisiko menimbulkan denda bunga perpajakan serta ketidakteraturan nomor seri faktur.
+4. **Kecurangan Akibat Konflik Pemisahan Tugas (SoD)**: Penggabungan wewenang berbahaya (seperti pembuat PO yang sekaligus menyetujui, atau staf AP yang mengeksekusi transfer bank) menciptakan celah penipuan tanpa audit trail yang transparan.
+5. **Kelemahan Kontrol Internal atas Pelaporan Keuangan (ICFR)**: Ketiadaan pengujian titik kontrol berkala menyebabkan auditor eksternal menemukan defisiensi material saat audit tahunan.
+6. **Beban Pengumpulan Bukti Audit Eksternal**: Pengumpulan bukti pembukuan dan dokumen pendukung untuk Kantor Akuntan Publik (KAP) memakan waktu berminggu-minggu tanpa jaminan integritas hash checksum data.
+
+---
+
+## 2. Aktor & Peran (RBAC)
+- **`budget_owner`**: Pemilik mata anggaran departemen yang berwenang menyusun usulan pagu, memantau realisasi komitmen, dan mengajukan revisi anggaran.
+- **`finance_controller`**: Pejabat pengendali keuangan korporat yang bertugas menyetujui revisi anggaran, mengesahkan dispensasi SoD, mengeksekusi checklist tutup buku bulanan, dan merekonsiliasi kewajiban perpajakan.
+- **`legal`**: Penasihat hukum korporat yang memantau kalender kepatuhan regulasi, tenggat waktu lisensi operasional, dan eskalasi risiko litigasi.
+- **`auditor`**: Pemeriksa internal dan auditor eksternal independen yang menguji efektivitas matriks kontrol (RCM), menelaah laporan rekonsiliasi, dan mengunduh paket bukti audit.
+- **`admin`**: Administrator sistem platform dengan wewenang konfigurasi parameter global.
+
+---
+
+## 3. Konsep Inti & Glosarium Istilah
+- **Komitmen Anggaran (*Budget Encumbrance*)**: Pencatatan alokasi pagu anggaran yang dicadangkan segera setelah dokumen komitmen hukum (seperti Purchase Order disetujui) diterbitkan, sebelum kewajiban faktur diakui dalam buku besar.
+- **Akun Memo (*Memo Account*)**: Akun pelaporan non-ledger yang melacak mutasi tanpa memengaruhi neraca saldo formal buku besar (D76).
+- **Penguncian Periode (*Financial Period Lock*)**: Pembekuan status buku besar untuk periode bulan tertentu setelah seluruh checklist terpenuhi, sehingga menolak segala mutasi baru bertanggal periode tersebut.
+- **Ikhtisar Laba Rugi (`Income Summary`)**: Akun kliring ekuitas penampung penutupan seluruh akun nominal pendapatan dan beban pada akhir siklus fiskal.
+- **Pemisahan Tugas (*Segregation of Duties / SoD*)**: Kebijakan tata kelola yang memisahkan tanggung jawab penyusunan, persetujuan, pencatatan, dan rekonsiliasi transaksi keuangan untuk memitigasi risiko fraud.
+- **Matriks Risiko & Kontrol (*Risk and Control Matrix / RCM*)**: Katalog titik kendali internal yang diuji secara deterministik untuk menjamin keandalan pelaporan keuangan.
+- **Nomor Faktur Pajak Gapless**: Penomoran faktur pajak simulasi yang terurut sempurna tanpa celah angka yang hilang sesuai ketentuan administrasi perpajakan.
+- **Paket Bukti Audit (*Auditor Data Pack*)**: Bundel arsip kompresi deterministik berisi buku besar, neraca saldo, mutasi rekening, dan daftar aset tetap yang disertai berkas verifikasi `manifest.sha256`.
+
+---
+
+## 4. Invarian Sistem Tata Kelola Finansial Grup
+1. **Invarian Pagu Non-Negatif**: Sisa anggaran bebas ($\text{Available} = \text{Allocated} - \text{Encumbered} - \text{Spent}$) dilarang bernilai negatif pada anggaran berkonfigurasi hard-stop.
+2. **Invarian Keseimbangan Tutup Buku**: Penutupan akun pendapatan dan beban ke `ef:income_summary:{entitas}:IDR` wajib memenuhi $\Sigma \text{Debit} = \Sigma \text{Kredit}$.
+3. **Invarian Penguncian Mutlak**: Seluruh transaksi pembukuan baru pada entitas dan periode yang telah tercatat dalam `ef_financial_period_locks` wajib ditolak dengan pengecualian `PeriodAlreadyLockedException`.
+4. **Invarian Rekonsiliasi Subledger Sempurna**: Penutupan buku ditolak apabila selisih antara saldo buku besar dengan agregasi `SubledgerTotalProvider` $\neq 0$.
+5. **Invarian Penegakan Four-Eyes**: Operator pembuat anggaran (`created_by`) dilarang menyetujui anggaran miliknya sendiri pada saat transisi ke status `APPROVED`.
+6. **Invarian Pencegahan SoD Tanpa Pengecualian**: Penugasan dua peran yang tercantum dalam 12 aturan konflik SoD wajib ditolak kecuali terdapat pengecualian aktif yang belum kedaluwarsa di `ef_sod_exceptions`.
+7. **Invarian Keaslian Paket Data Audit**: Setiap berkas CSV dalam arsip paket data audit KAP wajib cocok 100% dengan digest heksadesimal SHA-256 pada `manifest.sha256`.
+
+---
+
+## 5. Alur Nilai & Tabel Penjurnalan Buku Besar (D54-10)
+
+| Kejadian Finansial | Debit | Kredit | Keterangan & Idempotensi |
+|---|---|---|---|
+| Penutupan Akun Pendapatan | Akun Pendapatan Operasional | `ef:income_summary:{entitas}:IDR` | Mengosongkan saldo kredit nominal pendapatan ke ikhtisar laba rugi. Kunci: `IDEM:EF:CLOSE_REV:{ENT}:{PER}` |
+| Penutupan Akun Beban | `ef:income_summary:{entitas}:IDR` | Akun Beban Operasional | Mengosongkan saldo debit nominal beban ke ikhtisar laba rugi. Kunci: `IDEM:EF:CLOSE_EXP:{ENT}:{PER}` |
+| Pemindahan Laba Bersih | `ef:income_summary:{entitas}:IDR` | `ef:retained_earnings:{entitas}:IDR` | Memindahkan saldo kredit bersih (laba) ke ekuitas saldo laba ditahan. Kunci: `IDEM:EF:CLOSE_NET:{ENT}:{PER}` |
+| Pemindahan Rugi Bersih | `ef:retained_earnings:{entitas}:IDR` | `ef:income_summary:{entitas}:IDR` | Menutup saldo debit bersih (rugi) dengan mengurangi saldo laba ditahan. Kunci: `IDEM:EF:CLOSE_NET:{ENT}:{PER}` |
+| Setoran Kurang Bayar PPN | `ef:vat_output_payable:{entitas}:IDR` | `ef:vat_input_receivable:{entitas}:IDR` dan `ef:vat_settlement_clearing:{entitas}:IDR` | Menghilangkan utang PPN keluaran dengan mengkreditkan PPN masukan dan setoran kas negara. Kunci: `IDEM:EF:VAT_SETTLE:{ENT}:{PER}` |
+| Pengumuman Deviden Subholding | `ef:dividend_declared:{entitas}:IDR` | `ef:dividend_payable:{entitas}:IDR` | Mengakui kewajiban pembagian dividen anak perusahaan kepada induk holding. Kunci: `IDEM:EF:DIV_DEC:{ENT}:{ID}` |
+
+---
+
+## 6. Katalog Kasus Uji Nyata Fase 54
+
+1. **`EF-CASE-01`**: Reservasi Anggaran Sukses. PO Pengadaan Rp 50.000.000 pada pagu aktif Rp 100.000.000 mengunci pagu komitmen (`RESERVED`), sisa bebas menjadi Rp 50.000.000.
+2. **`EF-CASE-02`**: Pelanggaran Pagu Hard-Stop. PO Pengadaan Rp 60.000.000 saat sisa pagu bebas hanya Rp 50.000.000 langsung ditolak dengan `BudgetGuardrailBreachException`.
+3. **`EF-CASE-03`**: Likuidasi Komitmen Anggaran. Faktur vendor terbit Rp 48.000.000 atas PO Rp 50.000.000. Status komitmen menjadi `LIQUIDATED`, realisasi tercatat Rp 48.000.000, dan sisa Rp 2.000.000 dilepas kembali ke pagu bebas.
+4. **`EF-CASE-04`**: Pelepasan Komitmen Dibatalkan. PO dibatalkan oleh procurement, memanggil `BudgetCommitmentPort::release()`, komitmen menjadi `RELEASED` dan pagu bebas bertambah penuh.
+5. **`EF-CASE-05`**: Peringatan Ambang Batas Anggaran. Penarikan pagu yang menyebabkan sisa bebas $< 10\%$ memancarkan event `enterprise.budget.threshold_exceeded.v1`.
+6. **`EF-CASE-06`**: Pelanggaran Persetujuan Mandiri Maker-Checker. Pengguna pembuat anggaran mencoba menyetujui anggarannya sendiri, memicu penolakan seketika dengan `BudgetMakerCheckerViolationException`.
+7. **`EF-CASE-07`**: Revisi Anggaran Berversi. Anggaran aktif berstatus `ACTIVE` disetujui direvisi: status versi lama diubah menjadi `REVISED` permanen dan dibuat entri anggaran baru versi ke-2.
+8. **`EF-CASE-08`**: Rekonsiliasi Subledger Sukses. Seluruh saldo Piutang, Utang, Aset Tetap, dan Persediaan cocok persis dengan buku besar ($\text{Diskrepansi} = 0$).
+9. **`EF-CASE-09`**: Penolakan Tutup Buku karena Diskrepansi. Saldo subledger Piutang berselisih Rp 500.000 dengan buku besar, checklist tutup buku gagal dan menghentikan proses penutupan.
+10. **`EF-CASE-10`**: Jurnal Penutupan Laba Bersih Fiskal. Entitas membukukan pendapatan Rp 500.000.000 dan beban Rp 350.000.000. Jurnal tutup buku memposting debit `ef:income_summary` Rp 150.000.000 dan kredit `ef:retained_earnings` Rp 150.000.000 secara seimbang.
+11. **`EF-CASE-11`**: Pencegahan Mutasi pada Periode Terkunci. Penjurnalan susulan ke bulan yang berstatus `is_locked = true` ditolak keras oleh sistem dengan `PeriodAlreadyLockedException`.
+12. **`EF-CASE-12`**: Deteksi & Pencegahan Konflik SoD. Pengguna dengan peran `procurement_buyer` ditugaskan peran `procurement_manager`, sistem melempar `SodViolationException`.
+13. **`EF-CASE-13`**: Dispensasi SoD Aktif. Pengguna memiliki pengecualian yang terdaftar di `ef_sod_exceptions` dengan masa berlaku 14 hari ke depan, penugasan berhasil diproses dengan pencatatan log audit.
+14. **`EF-CASE-14`**: Penolakan Dispensasi SoD Kedaluwarsa. Dispensasi SoD telah melewati tanggal `expires_at`, sistem otomatis mencabut hak dan memicu tiket remediasi di Kotak Masuk Tugas.
+15. **`EF-CASE-15`**: Uji Kontrol Internal RCM & Penerbitan Tugas. Uji 3-Way Match mendeteksi 1 pembayaran tanpa Good Receipt Note, sistem mencatat hasil uji `DEFICIENT` dan memanggil `TaskInboxService::createTask()`.
+16. **`EF-CASE-16`**: Rekonsiliasi PPN & Nomor Faktur Gapless. PPN Keluaran Rp 110.000.000 dan PPN Masukan Rp 80.000.000 menghasilkan setoran PPN Rp 30.000.000 dengan urutan nomor faktur tanpa celah.
+17. **`EF-CASE-17`**: Ekspor Paket Data Bukti Audit KAP. Command `enterprise:data-pack` menghasilkan arsip ZIP dengan checksum `manifest.sha256` yang valid.

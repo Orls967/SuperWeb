@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\EnterpriseFinance\Application\Services;
 
 use InvalidArgumentException;
+use Modules\EnterpriseFinance\Domain\Algorithms\Consolidation\ConsolidationEliminationEngine;
 
 /**
  * Mesin Eliminasi Transaksi & Saldo Resiprokal Antar-Entitas Grup (54.2 - PSAK 65).
@@ -117,9 +118,14 @@ class IntercompanyEliminationEngine
             ];
         }
 
-        // Hitung margin keuntungan yang terkandung dalam persediaan
-        // Contoh markup 25% (2500 bps): Profit = Inv * (2500 / 12500) = Inv * 20%
-        $unrealizedProfit = (int) intdiv($remainingInventoryMinor * $markupBps, 10000 + $markupBps);
+        // Hitung margin keuntungan yang terkandung dalam persediaan via ConsolidationEliminationEngine
+        $marginBps = intdiv($markupBps * 10000, 10000 + $markupBps);
+        $res = ConsolidationEliminationEngine::eliminateIntercompanyInventoryProfit(
+            intercompanySalesMinor: $remainingInventoryMinor,
+            endingInventoryMinor: $remainingInventoryMinor,
+            sellerGrossMarginBps: $marginBps
+        );
+        $unrealizedProfit = $res['unrealized_inventory_profit_minor'];
 
         return [
             'elimination_type' => 'ELIM_UNREALIZED_INVENTORY_PROFIT',
