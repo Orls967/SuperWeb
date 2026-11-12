@@ -17,6 +17,7 @@ use Modules\TradeFinance\Console\Commands\AuditTradeFinanceCommand;
 use Modules\TradeFinance\Contracts\OfftakeLetterOfCreditGateway;
 use Modules\TradeFinance\Domain\Models\Clearing\ClearingEscrow;
 use Modules\TradeFinance\Http\Policies\ClearingEscrowPolicy;
+use Modules\TradeFinance\Infrastructure\Access\TradeFinanceVendorExposureProvider;
 
 class TradeFinanceServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,7 @@ class TradeFinanceServiceProvider extends ServiceProvider
         $this->app->singleton(ClearingEscrowService::class);
         $this->app->singleton(CbamDeclarationService::class);
         $this->app->bind(OfftakeLetterOfCreditGateway::class, OfftakeLetterOfCreditGatewayService::class);
+        $this->app->tag(TradeFinanceVendorExposureProvider::class, 'core.vendor_exposure_provider');
     }
 
     public function boot(): void

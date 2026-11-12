@@ -45,6 +45,9 @@ class PlatformSeeder extends Seeder
             );
         }
 
+        // === Access, ABAC & Multi-Tenancy T1 Datasets (Fase 188) ===
+        $this->call(AccessT1Seeder::class);
+
         // === Sample Notifications for Customer ===
         $notif->send(
             userId: $customer->id,

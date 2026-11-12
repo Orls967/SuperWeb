@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Core\Http\Controllers\AccessAdminDashboardController;
 use Modules\Core\Http\Controllers\ActivityFeedController;
 use Modules\Core\Http\Controllers\Admin\Spine\SpineConsumerController;
 use Modules\Core\Http\Controllers\Admin\Spine\SpineDashboardController;
@@ -269,5 +270,13 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::middleware('role:admin,api_admin,developer,superadmin')->group(function () {
         Route::get('/developer', [ApiAdminDashboardController::class, 'developer'])->name('developer.index');
         Route::get('/admin/developer', [ApiAdminDashboardController::class, 'developer'])->name('admin.developer.index');
+    });
+
+    // Identity, Access & Tenancy Governance (Fase 188)
+    Route::middleware('role:admin,api_admin,security_officer,superadmin')->group(function () {
+        Route::get('/admin/access/grants', [AccessAdminDashboardController::class, 'grants'])->name('admin.access.grants');
+        Route::get('/admin/access/policies', [AccessAdminDashboardController::class, 'policies'])->name('admin.access.policies');
+        Route::get('/admin/access/identity', [AccessAdminDashboardController::class, 'identity'])->name('admin.access.identity');
+        Route::get('/admin/access/campaigns', [AccessAdminDashboardController::class, 'campaigns'])->name('admin.access.campaigns');
     });
 });

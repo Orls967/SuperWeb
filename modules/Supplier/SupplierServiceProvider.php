@@ -11,6 +11,7 @@ use Modules\Supplier\Application\Services\SupplierService;
 use Modules\Supplier\Console\Commands\RemindSupplierCertificationsCommand;
 use Modules\Supplier\Console\Commands\ScanSupplierRisksCommand;
 use Modules\Supplier\Contracts\SupplierRiskInterface;
+use Modules\Supplier\Infrastructure\Access\SupplierVendorExposureProvider;
 
 class SupplierServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class SupplierServiceProvider extends ServiceProvider
             SupplierRiskInterface::class,
             SupplierRiskService::class
         );
+        $this->app->tag(SupplierVendorExposureProvider::class, 'core.vendor_exposure_provider');
     }
 
     public function boot(): void
