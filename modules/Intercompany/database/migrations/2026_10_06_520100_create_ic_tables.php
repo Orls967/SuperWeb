@@ -64,8 +64,8 @@ return new class extends Migration
             $table->bigInteger('amount_idr');
             $table->bigInteger('amount_minor')->default(0);
             $table->bigInteger('amount_functional_idr')->default(0);
-            $table->string('sales_invoice_ref', 32);
-            $table->string('purchase_bill_ref', 32);
+            $table->string('sales_invoice_ref', 32)->nullable();
+            $table->string('purchase_bill_ref', 32)->nullable();
             $table->foreignId('tp_rule_id')->nullable()->constrained('ic_transfer_pricing_rules');
             $table->string('status', 32)->default('draft');
             $table->timestamp('reconciled_at')->nullable();

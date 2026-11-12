@@ -11,6 +11,10 @@ use Modules\Intercompany\Application\Actions\CreateMirroredIntercompanyTransacti
 use Modules\Intercompany\Application\Actions\GenerateBilateralEliminationJournalAction;
 use Modules\Intercompany\Application\Actions\IssueIntercompanyLoanAction;
 use Modules\Intercompany\Application\Actions\ValidateArmsLengthMarginAction;
+use Modules\Intercompany\Domain\Algorithms\BilateralNettedSettlementMatrixCalculator;
+use Modules\Intercompany\Domain\Algorithms\ConsolidationRollupTreeOptimizer;
+use Modules\Intercompany\Domain\Algorithms\MultivariateBenchmarkComparator;
+use Modules\Intercompany\Domain\Algorithms\NciDividendCascadeCalculator;
 use Modules\Intercompany\Domain\Models\EliminationEntry;
 use Modules\Intercompany\Domain\Models\IntercompanyEntity;
 use Modules\Intercompany\Domain\Models\IntercompanyLoan;
@@ -205,6 +209,133 @@ class IntercompanyApiController extends Controller
             'status' => 'success',
             'data' => $ncis,
             'count' => $ncis->count(),
+        ]);
+    }
+
+    public function evaluateMultivariateBenchmark(
+        Request $request,
+        MultivariateBenchmarkComparator $comparator
+    ): JsonResponse {
+        $validated = $request->validate([
+            'config' => 'required|array',
+            'config.rule_code' => 'required|string',
+            'config.tested_entity_code' => 'required|string',
+            'config.period' => 'required|string',
+            'tested_party' => 'required|array',
+            'tested_party.revenue_minor' => 'required|integer',
+            'tested_party.operating_profit_minor' => 'required|integer',
+            'tested_party.cogs_minor' => 'nullable|integer',
+            'tested_party.opex_minor' => 'nullable|integer',
+            'tested_party.accounts_receivable_minor' => 'nullable|integer',
+            'tested_party.inventory_minor' => 'nullable|integer',
+            'tested_party.accounts_payable_minor' => 'nullable|integer',
+            'comparators' => 'required|array|min:1',
+        ]);
+
+        $testedParty = [
+            'revenue_minor' => (int) $validated['tested_party']['revenue_minor'],
+            'cogs_minor' => (int) ($validated['tested_party']['cogs_minor'] ?? 0),
+            'opex_minor' => (int) ($validated['tested_party']['opex_minor'] ?? 0),
+            'operating_profit_minor' => (int) $validated['tested_party']['operating_profit_minor'],
+            'accounts_receivable_minor' => (int) ($validated['tested_party']['accounts_receivable_minor'] ?? 0),
+            'inventory_minor' => (int) ($validated['tested_party']['inventory_minor'] ?? 0),
+            'accounts_payable_minor' => (int) ($validated['tested_party']['accounts_payable_minor'] ?? 0),
+        ];
+
+        $comparators = [];
+        foreach ($validated['comparators'] as $comp) {
+            $comparators[] = [
+                'name' => (string) ($comp['name'] ?? 'Comp'),
+                'revenue_minor' => (int) ($comp['revenue_minor'] ?? 1),
+                'cogs_minor' => (int) ($comp['cogs_minor'] ?? 0),
+                'opex_minor' => (int) ($comp['opex_minor'] ?? 0),
+                'operating_profit_minor' => (int) ($comp['operating_profit_minor'] ?? 0),
+                'accounts_receivable_minor' => (int) ($comp['accounts_receivable_minor'] ?? 0),
+                'inventory_minor' => (int) ($comp['inventory_minor'] ?? 0),
+                'accounts_payable_minor' => (int) ($comp['accounts_payable_minor'] ?? 0),
+            ];
+        }
+
+        $result = $comparator->evaluate($validated['config'], $testedParty, $comparators);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result->toArray(),
+        ]);
+    }
+
+    public function calculateMultilateralNetting(
+        Request $request,
+        BilateralNettedSettlementMatrixCalculator $calculator
+    ): JsonResponse {
+        $validated = $request->validate([
+            'config' => 'required|array',
+            'config.session_code' => 'required|string',
+            'config.settlement_period' => 'required|string',
+            'obligations' => 'required|array|min:1',
+            'exchange_rates_numerator' => 'nullable|array',
+            'exchange_rates_denominator' => 'nullable|array',
+        ]);
+
+        $num = $validated['exchange_rates_numerator'] ?? ['IDR' => 100];
+        $den = $validated['exchange_rates_denominator'] ?? ['IDR' => 100];
+
+        $result = $calculator->calculate($validated['config'], $validated['obligations'], $num, $den);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result->toArray(),
+        ]);
+    }
+
+    public function executeConsolidationRollup(
+        Request $request,
+        ConsolidationRollupTreeOptimizer $optimizer
+    ): JsonResponse {
+        $validated = $request->validate([
+            'config' => 'required|array',
+            'config.run_id' => 'required|string',
+            'config.fiscal_period' => 'required|string',
+            'config.holding_entity_code' => 'required|string',
+            'trial_balances' => 'required|array|min:1',
+            'unrealized_profits' => 'nullable|array',
+        ]);
+
+        $result = $optimizer->rollup(
+            $validated['config'],
+            $validated['trial_balances'],
+            $validated['unrealized_profits'] ?? []
+        );
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result->toArray(),
+        ]);
+    }
+
+    public function calculateNciDividendCascade(
+        Request $request,
+        NciDividendCascadeCalculator $calculator
+    ): JsonResponse {
+        $validated = $request->validate([
+            'config' => 'required|array',
+            'config.declaration_code' => 'required|string',
+            'config.distributing_entity_code' => 'required|string',
+            'config.fiscal_year' => 'required|string',
+            'config.gross_dividend_minor' => 'required|integer',
+            'config.retained_earnings_minor' => 'required|integer',
+            'config.issued_capital_minor' => 'required|integer',
+            'config.existing_statutory_reserve_minor' => 'required|integer',
+            'config.parent_entity_code' => 'required|string',
+            'config.parent_ownership_bps' => 'required|integer',
+            'nci_shareholders' => 'required|array',
+        ]);
+
+        $result = $calculator->calculate($validated['config'], $validated['nci_shareholders']);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $result->toArray(),
         ]);
     }
 }

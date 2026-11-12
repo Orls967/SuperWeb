@@ -13,7 +13,9 @@ use Psr\Clock\ClockInterface;
 
 class AccrueIntercompanyInterestCommand extends Command
 {
-    protected $signature = 'ic:accrue-interest {--period= : Periode jatuh tempo format YYYY-MM} {--dry-run : Simulasi tanpa posting ledger}';
+    protected $signature = 'group:ic-interest {--period= : Periode jatuh tempo format YYYY-MM} {--dry-run : Simulasi tanpa posting ledger}';
+
+    protected $aliases = ['ic:accrue-interest'];
 
     protected $description = 'Menghitung akrual bunga pinjaman intercompany, memotong PPh 23/26, dan memosting jurnal buku besar';
 

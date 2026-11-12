@@ -15,5 +15,9 @@ Route::middleware(['api', 'auth', 'role:admin,auditor,legal,treasury'])->prefix(
     Route::post('/eliminations/run', [IntercompanyApiController::class, 'runElimination'])->name('eliminations.run');
     Route::get('/matrix', [IntercompanyApiController::class, 'getMatrix'])->name('matrix');
     Route::post('/transfer-pricing/evaluate', [IntercompanyApiController::class, 'evaluateTransferPricing'])->name('tp.evaluate');
+    Route::post('/multivariate-benchmark', [IntercompanyApiController::class, 'evaluateMultivariateBenchmark'])->name('tp.multivariate');
+    Route::post('/multilateral-netting', [IntercompanyApiController::class, 'calculateMultilateralNetting'])->name('netting.calculate');
+    Route::post('/consolidation-tree', [IntercompanyApiController::class, 'executeConsolidationRollup'])->name('consolidation.tree');
+    Route::post('/nci-dividend-cascade', [IntercompanyApiController::class, 'calculateNciDividendCascade'])->name('nci.cascade');
     Route::get('/nci', [IntercompanyApiController::class, 'getNciSummary'])->name('nci');
 });

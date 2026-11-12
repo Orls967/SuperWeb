@@ -45,6 +45,21 @@ class IntercompanyTransaction extends Model
         'approved_by' => 'integer',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->selling_entity) && ! empty($model->selling_entity_id)) {
+                $model->selling_entity = IntercompanyEntity::find($model->selling_entity_id)?->entity_code ?? 'ENTITY_'.$model->selling_entity_id;
+            }
+            if (empty($model->buying_entity) && ! empty($model->buying_entity_id)) {
+                $model->buying_entity = IntercompanyEntity::find($model->buying_entity_id)?->entity_code ?? 'ENTITY_'.$model->buying_entity_id;
+            }
+            if (empty($model->amount_idr) && ! empty($model->amount_minor)) {
+                $model->amount_idr = $model->amount_minor;
+            }
+        });
+    }
+
     public function statusEnum(): IntercompanyTransactionStatus
     {
         return IntercompanyTransactionStatus::tryFrom($this->status) ?? IntercompanyTransactionStatus::DRAFT;

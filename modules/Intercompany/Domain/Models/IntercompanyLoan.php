@@ -49,6 +49,21 @@ class IntercompanyLoan extends Model
         $this->attributes['loan_agreement_number'] = $val;
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->lender_entity) && ! empty($model->lender_entity_id)) {
+                $model->lender_entity = IntercompanyEntity::find($model->lender_entity_id)?->entity_code ?? 'ENTITY_'.$model->lender_entity_id;
+            }
+            if (empty($model->borrower_entity) && ! empty($model->borrower_entity_id)) {
+                $model->borrower_entity = IntercompanyEntity::find($model->borrower_entity_id)?->entity_code ?? 'ENTITY_'.$model->borrower_entity_id;
+            }
+            if (empty($model->principal_idr) && ! empty($model->principal_minor)) {
+                $model->principal_idr = $model->principal_minor;
+            }
+        });
+    }
+
     protected $casts = [
         'principal_idr' => 'integer',
         'principal_minor' => 'integer',
