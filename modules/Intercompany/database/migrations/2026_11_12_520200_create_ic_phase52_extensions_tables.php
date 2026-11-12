@@ -22,7 +22,7 @@ return new class extends Migration
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
 
-                $table->index(['parent_entity_code', 'child_entity_code']);
+                $table->index(['parent_entity_code', 'child_entity_code'], 'ic_ownership_parent_child_idx');
             });
         }
 
@@ -42,7 +42,7 @@ return new class extends Migration
                 $table->string('authorized_by_ref', 64)->nullable();
                 $table->timestamps();
 
-                $table->index(['source_entity_code', 'target_entity_code']);
+                $table->index(['source_entity_code', 'target_entity_code'], 'ic_transfers_src_tgt_idx');
             });
         }
     }
