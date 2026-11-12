@@ -102,6 +102,82 @@ Seluruh operasi menggunakan `bcmath` dengan skala desimal nol untuk menghasilkan
 14. **`TRS-CASE-14`**: Pelanggaran Covenant DER Saat Penarikan Kredit. Fasilitas kredit plafon Rp 10 Miliar dengan batas DER 2,50x (2500 permil). Percobaan penarikan Rp 2 Miliar yang menyebabkan proyeksi DER menjadi 2,65x (2650 permil) langsung ditolak oleh sistem dengan pesan `COVENANT_BREACH`.
 15. **`TRS-CASE-15`**: Siklus Lengkap Forward Hedge & Roll-Over. Kontrak forward USD 100.000 dibuat, disetujui melalui ApprovalEngine, dibukukan, aktif, dievaluasi MTM harian, jatuh tempo, lalu diperpanjang (*rolled-over*) ke kontrak forward baru dengan mengaitkan ID kontrak induk.
 
+---
+
+## 9. Matriks Kejadian Uang & Pemostingan Buku Besar (`TreasuryLedgerPoster` — D48-10)
+
+Seluruh pencatatan finansial di domain Treasury diposting secara eksklusif melalui `Modules\Treasury\Application\Services\TreasuryLedgerPoster` ke `Modules\Banking\Application\Services\LedgerService`. Tabel di bawah merinci 15 kejadian uang standar beserta kode akun Debit (bertanda negatif `-`), kode akun Kredit (bertanda positif `+`), tipe transaksi (`TreasuryTransactionTypes`), dan pola kunci idempotensi:
+
+| No | Kejadian Bisnis Perbendaharaan | Metode `TreasuryLedgerPoster` | Akun Debit (`-`) | Akun Kredit (`+`) | Tipe Transaksi | Pola Kunci Idempotensi |
+|---|---|---|---|---|---|---|
+| 1 | Revaluasi akhir periode aset valas — Keuntungan kurs ($\Delta > 0$) | `postFxRevaluation()` | `trs:fx_reval_asset_adj:IDR` | `trs:fx_unrealized_gain_loss:IDR` | `TRS_FX_REVAL` | `IDEM:TRS:REVAL:{period}:{ccy}:{id}` |
+| 2 | Revaluasi akhir periode aset valas — Kerugian kurs ($\Delta < 0$) | `postFxRevaluation()` | `trs:fx_unrealized_gain_loss:IDR` | `trs:fx_reval_asset_adj:IDR` | `TRS_FX_REVAL` | `IDEM:TRS:REVAL:{period}:{ccy}:{id}` |
+| 3 | Revaluasi akhir periode liabilitas valas — Keuntungan kurs turun ($\Delta > 0$) | `postFxLiabilityRevaluation()` | `trs:fx_reval_liability_adj:IDR` | `trs:fx_unrealized_gain_loss:IDR` | `TRS_FX_REVAL` | `IDEM:TRS:REVAL_LIAB:{period}:{ccy}:{id}` |
+| 4 | Revaluasi akhir periode liabilitas valas — Kerugian kurs naik ($\Delta < 0$) | `postFxLiabilityRevaluation()` | `trs:fx_unrealized_gain_loss:IDR` | `trs:fx_reval_liability_adj:IDR` | `TRS_FX_REVAL` | `IDEM:TRS:REVAL_LIAB:{period}:{ccy}:{id}` |
+| 5 | Pembalik revaluasi otomatis awal periode baru (atas keuntungan) | `postFxReversal()` | `trs:fx_unrealized_gain_loss:IDR` | `trs:fx_reval_asset_adj:IDR` | `TRS_FX_REVAL_REV` | `IDEM:TRS:REVAL_REV:{newPeriod}:{ccy}:{origId}` |
+| 6 | Pembalik revaluasi otomatis awal periode baru (atas kerugian) | `postFxReversal()` | `trs:fx_reval_asset_adj:IDR` | `trs:fx_unrealized_gain_loss:IDR` | `TRS_FX_REVAL_REV` | `IDEM:TRS:REVAL_REV:{newPeriod}:{ccy}:{origId}` |
+| 7 | Penyelesaian lot valas terealisasi — Keuntungan (*Realized Gain*) | `postFxRealizedSettlement()` | `trs:fx_settlement_clearing:IDR` | `trs:fx_realized_gain_loss:IDR` | `TRS_FX_SETTLE_REALIZED` | `IDEM:TRS:SETTLE:{lotId}:{seq}` |
+| 8 | Penyelesaian lot valas terealisasi — Kerugian (*Realized Loss*) | `postFxRealizedSettlement()` | `trs:fx_realized_gain_loss:IDR` | `trs:fx_settlement_clearing:IDR` | `TRS_FX_SETTLE_REALIZED` | `IDEM:TRS:SETTLE:{lotId}:{seq}` |
+| 9 | Valuasi harian Mark-to-Market kontrak forward naik ($\Delta\text{MTM} > 0$) | `postForwardMarkToMarket()` | `trs:derivative_asset:IDR` | `trs:derivative_gain_loss:IDR` | `TRS_FORWARD_MTM` | `IDEM:TRS:MTM:{contractId}:{date}` |
+| 10 | Valuasi harian Mark-to-Market kontrak forward turun ($\Delta\text{MTM} < 0$) | `postForwardMarkToMarket()` | `trs:derivative_gain_loss:IDR` | `trs:derivative_liability:IDR` | `TRS_FORWARD_MTM` | `IDEM:TRS:MTM:{contractId}:{date}` |
+| 11 | Penyelesaian jatuh tempo kontrak forward (*Net Settlement*) | `postForwardSettlement()` | `trs:bank_operational:{ent}:IDR` (atau `trs:derivative_gain_loss:IDR` bila rugi) | `trs:derivative_gain_loss:IDR` (atau `trs:bank_operational:{ent}:IDR` bila rugi) | `TRS_FORWARD_SETTLE` | `IDEM:TRS:FWD_SETTLE:{contractId}` |
+| 12 | Pembebanan biaya penalti pembatalan kontrak forward | `postForwardCancellationFee()` | `trs:hedge_cancellation_cost:IDR` | `trs:bank_operational:{ent}:IDR` | `TRS_FORWARD_CANCEL` | `IDEM:TRS:FWD_CANCEL:{contractId}` |
+| 13 | Penyesuaian selisih rekonsiliasi bank / selisih opname kas disetujui | `postReconciliationDifference()` | `trs:bank_reconciliation_diff:IDR` (bila defisit) | `trs:bank_operational:{ent}:IDR` (bila defisit) | `TRS_BANK_RECON_DIFF` | `IDEM:TRS:RECON_DIFF:{stmtId}` |
+| 14 | Penarikan pokok fasilitas kredit bank & akrual bunga periodik | `postFacilityDrawdown()` & `postFacilityInterestAccrual()` | `trs:bank_operational:{ent}:IDR` / `trs:interest_expense:IDR` | `trs:facility_payable:IDR` / `trs:interest_payable:IDR` | `TRS_FACILITY_DRAW` / `TRS_FACILITY_INTEREST` | `IDEM:TRS:FACILITY_DRAW:{drawId}` |
+| 15 | Penyapuan kas pool (*Cash Pool Sweep*) & Kas Kecil Imprest | `postCashPoolSweep()`, `postPettyCashExpense()`, `postPettyCashReplenishment()` | `trs:pool_sweep_clearing:{sub}:IDR` & `trs:bank_operational:{hdr}:IDR` | `trs:bank_operational:{sub}:IDR` & `trs:pool_sweep_clearing:{sub}:IDR` | `TRS_POOL_SWEEP` / `TRS_PETTY_CASH_*` | `IDEM:TRS:POOL_SWEEP:{sweepId}` |
+
+---
+
+## 10. Kontrak Event Lintas-Modul & Integrasi Ekosistem (D48-11)
+
+Modul Treasury menerbitkan tiga event domain terstandar yang terdaftar di `Modules\Core\Domain\Events\EventCatalog`:
+1. **`treasury.revaluation.posted.v1`** (`TreasuryRevaluationPostedEvent`):
+   - **Produsen**: `Treasury` (`RunFxRevaluationAction`, `RunMultiCurrencyFxRevaluationAction`, `TreasuryCovenantGovernanceService`).
+   - **Konsumen**: `EnterpriseFinance`, `Banking`, `Core`, dan `TreasuryDomainEventSubscriber`.
+   - **Payload**: `revaluation_id`, `period`, `currency`, `foreign_balance_minor`, `book_functional_idr`, `revalued_functional_idr`, `gain_loss_idr`, `certificate_hash`.
+2. **`treasury.covenant.breached.v1`** (`TreasuryCovenantBreachedEvent`):
+   - **Produsen**: `Treasury` (`DrawFacilityAction`, `TestCreditCovenantCommand`).
+   - **Konsumen**: `EnterpriseFinance`, `Core`, `Audit`, dan `TreasuryDomainEventSubscriber` (yang meneruskannya ke `TreasuryTaskInboxNotifier::notifyCovenantNearBreach()`).
+   - **Payload**: `facility_id`, `facility_code`, `bank_name`, `covenant_der_permil`, `max_der_permil`, `verified_debt_idr`, `verified_equity_idr`, `severity`.
+3. **`treasury.hedge.matured.v1`** (`TreasuryHedgeMaturedEvent`):
+   - **Produsen**: `Treasury` (`HedgeContractStateMachine` saat transisi ke `matured`).
+   - **Konsumen**: `Banking`, `Core`, `EnterpriseFinance`, dan `TreasuryDomainEventSubscriber` (yang menerbitkan tiket instruksi penyelesaian di `TaskInboxService`).
+   - **Payload**: `contract_id`, `contract_number`, `currency`, `notional_foreign_amount`, `maturity_date`, `mtm_value_idr`.
+
+---
+
+## 11. Arsitektur Pengawasan Likuiditas Grup, Skenario Stres & Tata Kelola Risiko Valas
+
+### 11.1 Metodologi Skenario Stres Likuiditas 13 Minggu (`base`, `optimistic`, `pessimistic`)
+Dalam peramalan arus kas 13 minggu berbasis dekomposisi musiman multiplikatif (Algoritma D3), meja perbendaharaan wajib menyusun tiga skenario berdampingan untuk mengantisipasi guncangan rantai pasok maupun keterlambatan pelunasan piutang pelanggan:
+1. **Skenario Dasar (`base`)**:
+   - Menggunakan proyeksi langsung dari persamaan regresi linier Ordinary Least Squares (OLS) terdeseasonalisasi $\hat{y}_t = \lfloor (a + b \cdot t) \times S_{(t-1) \bmod p} \rfloor$ tanpa faktor haircut tambahan.
+   - Digunakan sebagai acuan penjadwalan penyapuan kas harian (*daily cash pool sweep*) dan penempatan deposito overnight.
+2. **Skenario Optimis (`optimistic`)**:
+   - Mengasumsikan percepatan penagihan piutang dagang (*Accounts Receivable DSO compression*) dan stabilitas harga komoditas impor.
+   - Digunakan untuk merencanakan percepatan pelunasan pokok fasilitas kredit berbunga tinggi (*early facility repayment*).
+3. **Skenario Pesimis / Stres (`pessimistic`)**:
+   - Menguji ketahanan kas grup (*liquidity stress test*) apabila arus kas bersih mingguan mengalami kontraksi musiman ekstrem.
+   - Apabila proyeksi saldo kas kumulatif pada minggu ke-$k$ ($1 \le k \le 13$) jatuh di bawah ambang penyangga likuiditas minimum (*Minimum Liquidity Buffer*), sistem memberikan sinyal peringatan dini agar dealer menyiapkan penarikan fasilitas kredit siaga (*standby revolving credit facility*) sebelum krisis kas terjadi.
+
+### 11.2 Kebijakan Nisbah Lindung Nilai (*Hedge Ratio Policy*) & Eksposur Bersih Lintas-Modul
+1. **Pengumpulan Eksposur Otomatis (`FxMonetaryItemFeed`)**:
+   - Eksposur kotor mata uang asing dikumpulkan dari saldo kas valas (`trs_fx_lots`), komitmen pesanan pembelian impor (`ProcurementFxMonetaryItemFeed`), serta utang impor dan piutang ekspor (`TradeFxMonetaryItemFeed`).
+   - Eksposur bersih (*net exposure*) per mata uang $c$ dihitung sebagai:
+     $$\text{NetExposure}_c = \sum \text{MonetaryAssets}_c - \sum \text{MonetaryLiabilities}_c + \sum \text{ActiveForwardNotional}_c$$
+2. **Aturan Nisbah Lindung Nilai Korporat**:
+   - Untuk eksposur liabilitas valas bersih berjangka waktu $\le 90$ hari, kebijakan grup mewajibkan nisbah lindung nilai (*hedge ratio*) minimal $50\%$ dan maksimal $100\%$ dari total eksposur.
+   - Kontrak forward spekulatif yang melebihi $100\%$ eksposur mendasar (*over-hedging*) dilarang oleh kebijakan manajemen risiko grup dan diawasi melalui persetujuan berjenjang Four-Eyes pada `HedgeContractStateMachine`.
+
+### 11.3 Tata Kelola Rekonsiliasi Berkelanjutan & Eskalasi Umur Selisih (*Aging Escalation*)
+Untuk mencegah menumpuknya transaksi gantung (*suspense items*) pada buku bank di akhir bulan:
+- Setiap baris mutasi bank yang tidak terpadankan pada Tahap 1 (Eksak), Tahap 2 (Toleransi), maupun Tahap 3 (Subset Many-to-One) langsung diberi cap waktu dan dihitung umur harinya (`aging_days`) terhadap jam sistem (`ClockInterface`).
+- **Tingkat Eskalasi Umur**:
+  - **Umur $0\text{--}2$ hari**: Status normal (*in-transit clearing*), ditangani oleh staf rekonsiliasi harian.
+  - **Umur $3\text{--}5$ hari**: Peringatan kuning pada dasbor `TreasuryDashboardViewModel`, memerlukan konfirmasi bukti transfer dari unit bisnis terkait.
+  - **Umur $> 5$ hari**: Eskalasi otomatis ke `TaskInboxService` dengan nomor tiket tercatat di `trs_bank_reconciliation_unmatched.escalation_task_id`, wajib diselesaikan atau dibukukan jurnal penyesuaiannya (`postReconciliationDifference`) sebelum penutupan buku bulanan.
+
+
 
 ---
 

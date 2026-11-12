@@ -7,27 +7,29 @@ namespace Modules\Treasury\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Core\Contracts\ClockInterface;
+use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Models\ExchangeRate;
 use Modules\Treasury\Http\Requests\StoreExchangeRateRequest;
+use Psr\Clock\ClockInterface;
 
 final class ExchangeRateController extends Controller
 {
     public function __construct(
-        protected readonly ClockInterface $clock
+        protected readonly ?ClockInterface $clock = null,
+        protected readonly ?TreasuryService $treasuryService = null
     ) {}
 
     public function index(Request $request): JsonResponse
     {
         $currency = $request->query('currency');
-        $rateType = $request->query('rate_type', 'SPOT');
+        $rateType = $request->query('rate_type');
 
-        $query = ExchangeRate::query()->where('is_active', true);
+        $query = ExchangeRate::query();
         if ($currency) {
-            $query->where('currency', strtoupper((string) $currency));
+            $query->where('from_currency', strtoupper((string) $currency));
         }
         if ($rateType) {
-            $query->where('rate_type', $rateType);
+            $query->where('rate_type', strtolower((string) $rateType));
         }
 
         $rates = $query->orderByDesc('rate_date')->limit(100)->get();
@@ -41,15 +43,19 @@ final class ExchangeRateController extends Controller
 
     public function store(StoreExchangeRateRequest $request): JsonResponse
     {
-        $rate = ExchangeRate::create([
-            'currency' => $request->getCurrency(),
-            'rate_date' => $request->getRateDate(),
-            'rate_numerator' => $request->getNumerator(),
-            'rate_denominator' => $request->getDenominator(),
-            'rate_type' => $request->getRateType(),
-            'source' => $request->getSource(),
-            'is_active' => true,
-        ]);
+        $service = $this->treasuryService ?? app(TreasuryService::class);
+        $service->registerCurrency($request->getCurrency(), $request->getCurrency());
+        $service->registerCurrency('IDR', 'Indonesian Rupiah', 'Rp', 0);
+
+        $rate = $service->recordExchangeRate(
+            from: $request->getCurrency(),
+            to: 'IDR',
+            rateDate: $request->getRateDate(),
+            rateNumerator: $request->getNumerator(),
+            rateDenominator: $request->getDenominator(),
+            rateType: strtolower($request->getRateType()),
+            source: $request->getSource()
+        );
 
         return response()->json([
             'status' => 'created',

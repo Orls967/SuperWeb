@@ -7,41 +7,53 @@ namespace Modules\Treasury\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Core\Contracts\ClockInterface;
-use Modules\Treasury\Application\Actions\Forecast13WeekCashAction;
+use Modules\Treasury\Application\Actions\GenerateSeasonalCashForecastAction;
+use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\CashForecast;
 use Modules\Treasury\Http\Requests\GenerateCashForecastRequest;
+use Psr\Clock\ClockInterface;
 
 final class CashForecastController extends Controller
 {
     public function __construct(
-        protected readonly Forecast13WeekCashAction $forecastAction,
-        protected readonly ClockInterface $clock
+        protected readonly GenerateSeasonalCashForecastAction $forecastAction,
+        protected readonly ?ClockInterface $clock = null
     ) {}
 
     public function index(Request $request): JsonResponse
     {
-        $currency = $request->query('currency', 'IDR');
+        $scenario = (string) $request->query('scenario', 'base');
 
         $forecasts = CashForecast::query()
-            ->where('currency', strtoupper((string) $currency))
-            ->orderByDesc('forecast_date')
+            ->where('scenario', $scenario)
+            ->orderBy('week_number')
             ->limit(52)
             ->get();
 
         return response()->json([
             'status' => 'success',
-            'currency' => $currency,
+            'scenario' => $scenario,
             'forecasts' => $forecasts,
         ]);
     }
 
     public function generate(GenerateCashForecastRequest $request): JsonResponse
     {
+        $openingBalance = (int) BankAccount::where('currency', $request->getCurrency())->sum('balance');
+        if ($openingBalance === 0) {
+            $openingBalance = 500_000_000;
+        }
+
+        $historicalInflows = [
+            140_000_000, 160_000_000, 150_000_000, 170_000_000,
+            145_000_000, 165_000_000, 155_000_000, 175_000_000,
+        ];
+
         $result = $this->forecastAction->execute(
-            currency: $request->getCurrency(),
+            openingBalanceIdr: $openingBalance,
             startDate: $request->getStartDate(),
-            seasonPeriod: $request->getSeasonPeriod(),
+            historicalInflows: $historicalInflows,
+            scenario: 'base',
             horizonWeeks: $request->getHorizonWeeks()
         );
 

@@ -184,3 +184,291 @@ Acceptance test dibatasi maksimal 5 pengujian komprehensif di `tests/Acceptance/
 4. **`TreasuryHedgeAndFacilityOperationsTest`**: Pengujian siklus state machine 8 status HedgeContract, MTM harian, roll-over, penolakan penarikan fasilitas yang melanggar covenant DER integer, serta perlindungan saldo kas negatif pada sweep pooling.
 5. **`TreasuryDualSourceAuditTest`**: Pengujian audit dua sumber `treasury:audit` (data bersih exit 0 vs data sengaja dikorup exit != 0 dengan pelaporan anomali).
 Vektor algoritma diuji secara terpisah pada test runner algoritma tanpa menambah hitungan acceptance test suite.
+
+---
+
+## 6. Desain Komponen Kelengkapan W8-P5-b.3
+
+### 6.1 Arsitektur Pengadaptasi `FxMonetaryItemFeed` Lintas-Modul
+Untuk memastikan revaluasi akhir periode PSAK 10 mencakup seluruh eksposur moneter valas grup tanpa menciptakan ketergantungan melingkar (*circular dependency*):
+- Modul `Treasury` mendefinisikan kontrak `Modules\Treasury\Contracts\FxMonetaryItemFeed`.
+- Modul `Procurement` menyediakan `ProcurementFxMonetaryItemFeed` yang membaca komitmen PO impor valas dari `prc_purchase_orders`.
+- Modul `Trade` menyediakan `TradeFxMonetaryItemFeed` yang membaca utang impor (`trd_import_orders`) dan piutang ekspor (`trd_export_shipments`).
+- Seluruh implementasi didaftarkan ke container Laravel dengan tag `'treasury.fx_monetary_item_feed'` dan dikonsumsi secara malas (*lazy iteration*) oleh `TreasuryCovenantGovernanceService::aggregateAndRevalueCrossModuleFeeds()`.
+
+### 6.2 Tata Kelola Covenant Waiver & Akrual Bunga Rasional
+- Ketika proyeksi DER suatu entitas melampaui `max_der_permil` pada `trs_credit_facilities`, `DrawFacilityAction` memancarkan event `treasury.covenant.breached.v1` dan menolak penarikan dengan `CovenantBreachException`.
+- Apabila bank sindikasi menerbitkan surat persetujuan keringanan sementara, dealer mengajukan `CovenantWaiver` (`trs_covenant_waivers`) yang wajib disetujui oleh pejabat berbeda (Four-Eyes principle) melalui `TreasuryCovenantGovernanceService::approveCovenantWaiver()`.
+- Selama `valid_until` waiver belum kedaluwarsa dan berstatus `approved`, batas DER efektif dinaikkan ke `waived_max_der_permil`.
+- Akrual bunga dihitung dengan rumus integer rasional:
+  $$\text{Interest}_{\text{IDR}} = \left\lfloor \frac{\text{Drawn}_{\text{IDR}} \times \text{Rate}_{\text{permil}} \times \text{Days}}{365.000} \right\rfloor$$
+  dan diposting ke `trs:interest_expense:IDR` (Debit) serta `trs:interest_payable:IDR` (Kredit).
+
+### 6.3 Impor MT940 Idempoten & Siklus Kas Kecil Imprest
+- `BankStatementImportService` mem-parsing pesan SWIFT MT940 (`:20:`, `:25:`, `:60F:`, `:61:`, `:86:`, `:62F:`) menjadi baris `trs_bank_statements` dan menyimpan hash SHA-256 payload di `trs_statement_import_batches`.
+- `ProcessPettyCashVoucherAction::replenishImprestFund()` membandingkan saldo buku kas kecil terhadap hasil perhitungan fisik kas (`physical_cash_counted_idr`), memosting selisih opname (jika ada) ke `trs:bank_reconciliation_diff:IDR`, dan memosting pengisian kembali dana ke `trs:petty_cash:IDR` hingga kembali tepat sebesar `imprest_limit`.
+
+---
+
+## 7. Spesifikasi Skema Basis Data Lengkap (15 Tabel `trs_*`)
+
+Seluruh tabel domain Treasury berada di bawah konvensi prefiks `trs_`, menggunakan kunci primer UUID, dan menerapkan isolasi multi-tenant via `tenant_id` serta `company_id`. Semua nama indeks dibatasi maksimal 64 karakter untuk portabilitas penuh di SQLite dan MySQL 8.
+
+### 7.1 `trs_exchange_rates` — Master Kurs Rasional Versi Append-Only
+| Kolom | Tipe Data | Kendala / Default | Deskripsi Teknis |
+|---|---|---|---|
+| `id` | `uuid` | PK | Identitas unik baris versi kurs |
+| `tenant_id` | `uuid` | Indexed, Nullable | Identitas tenant grup |
+| `from_currency` | `char(3)` | Not Null | Kode ISO 4217 mata uang asal (contoh: `USD`, `EUR`, `SGD`, `JPY`) |
+| `to_currency` | `char(3)` | Not Null | Kode ISO 4217 mata uang tujuan (umumnya `IDR`) |
+| `rate_date` | `date` | Not Null | Tanggal efektif berlakunya kurs |
+| `rate_type` | `varchar(20)` | Default `'spot'` | Jenis kurs: `spot`, `closing`, `tax`, `forward` |
+| `numerator` | `bigint` | Not Null (`> 0`) | Pembilang kurs rasional dalam satuan bulat |
+| `denominator` | `bigint` | Not Null (`> 0`) | Penyebut kurs rasional dalam satuan bulat |
+| `version` | `integer` | Default `1` | Nomor urut versi kurs pada kombinasi `(from, to, date, type)` |
+| `source_reference` | `varchar(100)` | Nullable | Sumber kurs resmi (contoh: `JISDOR-BI`, `REUTERS-CLOSING`) |
+
+- **Invarian**: Tidak ada operasi `UPDATE` pada baris kurs yang telah terbit. Koreksi kurs dilakukan dengan menyisipkan baris baru dengan `version = max(version) + 1`.
+
+### 7.2 `trs_bank_accounts` — Rekening Bank Multi-Mata Uang & Dana Kas Kecil
+| Kolom | Tipe Data | Kendala / Default | Deskripsi Teknis |
+|---|---|---|---|
+| `id` | `uuid` | PK | Identitas unik rekening |
+| `tenant_id` | `uuid` | Indexed, Nullable | Identitas tenant |
+| `company_id` | `uuid` | Indexed, Nullable | Entitas anak perusahaan pemilik rekening |
+| `account_number` | `varchar(64)` | Unique | Nomor rekening perbankan atau kode brankas kas kecil |
+| `bank_name` | `varchar(120)` | Not Null | Nama institusi bank atau deskripsi kas kecil |
+| `currency` | `char(3)` | Default `'IDR'` | Mata uang denominasi rekening |
+| `balance` | `bigint` | Default `0` | Saldo dalam unit minor mata uang asal |
+| `functional_balance_idr` | `bigint` | Default `0` | Nilai ekuivalen saldo dalam IDR |
+| `is_petty_cash` | `boolean` | Default `false` | Penanda rekening dana kas kecil imprest |
+| `imprest_limit` | `bigint` | Default `0` | Plafon dana tetap kas kecil dalam IDR |
+
+### 7.3 `trs_fx_lots` — Subledger Lot Pos Moneter Valuta Asing
+| Kolom | Tipe Data | Kendala / Default | Deskripsi Teknis |
+|---|---|---|---|
+| `id` | `uuid` | PK | Identitas unik lot valas |
+| `tenant_id` | `uuid` | Indexed, Nullable | Identitas tenant |
+| `bank_account_id` | `uuid` | FK `trs_bank_accounts` | Rekening bank valas tempat lot berada |
+| `currency` | `char(3)` | Not Null | Mata uang asing lot |
+| `original_amount` | `bigint` | Not Null | Nominal awal perolehan lot (minor unit) |
+| `remaining_amount` | `bigint` | Not Null | Sisa nominal lot yang belum terealisasi/dilunasi |
+| `book_rate_num` | `bigint` | Not Null | Pembilang kurs perolehan awal |
+| `book_rate_den` | `bigint` | Not Null | Penyebut kurs perolehan awal |
+| `original_carrying_idr` | `bigint` | Not Null | Nilai tercatat IDR saat perolehan awal |
+| `current_carrying_idr` | `bigint` | Not Null | Nilai tercatat IDR terkini setelah revaluasi/settlement parsial |
+| `status` | `varchar(20)` | Default `'open'` | Status lot: `open`, `partial`, `exhausted` |
+
+- **Invarian**: Jika `status = 'exhausted'`, maka wajib berlaku `remaining_amount = 0` dan `current_carrying_idr = 0` (diverifikasi oleh Check 6 pada `treasury:audit`).
+
+### 7.4 `trs_revaluations` — Riwayat Revaluasi Kurs & Pembalik Otomatis
+| Kolom | Tipe Data | Kendala / Default | Deskripsi Teknis |
+|---|---|---|---|
+| `id` | `uuid` | PK | Identitas unik rekaman revaluasi |
+| `tenant_id` | `uuid` | Indexed, Nullable | Identitas tenant |
+| `period` | `varchar(7)` | Indexed (`YYYY-MM`) | Periode akuntansi penutupan buku |
+| `currency` | `char(3)` | Not Null | Mata uang asing yang direvaluasi |
+| `foreign_balance_minor` | `bigint` | Not Null | Saldo valas yang direvaluasi |
+| `carrying_idr_before` | `bigint` | Not Null | Nilai tercatat IDR sebelum revaluasi |
+| `revalued_idr_after` | `bigint` | Not Null | Nilai wajar IDR berdasarkan kurs penutupan |
+| `gain_loss_idr` | `bigint` | Not Null | Selisih kurs belum terealisasi (`+` untung, `-` rugi) |
+| `closing_rate_num` | `bigint` | Not Null | Pembilang kurs penutupan |
+| `closing_rate_den` | `bigint` | Not Null | Penyebut kurs penutupan |
+| `is_reversed` | `boolean` | Default `false` | Penanda apakah jurnal pembalik awal bulan sudah dibuat |
+| `reverse_of` | `uuid` | Nullable | Referensi ke ID revaluasi asli (khusus baris pembalik) |
+| `ledger_transaction_id` | `varchar(64)` | Nullable | ID transaksi jurnal pada `bank_ledger_transactions` |
+| `certificate` | `json` | Nullable | Payload sertifikat kriptografis D1 (`FxRevaluationCertificate`) |
+
+### 7.5 `trs_bank_statements`, `trs_bank_reconciliation_matches`, & `trs_bank_reconciliation_unmatched`
+- **`trs_bank_statements`**: Menyimpan mutasi rekening koran (`bank_account_id`, `statement_date`, `reference_no`, `description`, `amount`, `is_reconciled`, `reconciliation_status`, `matched_ledger_entry_id`, `match_stage`, `unmatch_reason`, `unmatched_by`, `unmatched_at`).
+- **`trs_bank_reconciliation_matches`**: Menyimpan bukti pencocokan Tahap 1 (`exact`), Tahap 2 (`tolerance`), dan Tahap 3 (`many_to_one`) beserta `delta_amount`, `delta_days`, dan `certificate` D2.
+- **`trs_bank_reconciliation_unmatched`**: Menyimpan antrean pos mutasi bank yang belum cocok lengkap dengan `aging_days`, `escalation_task_id` (tautan ke `TaskInboxService` bila umur $> 5$ hari), dan `status` (`pending` / `resolved`).
+
+### 7.6 `trs_statement_import_batches` — Jejak Audit Impor Rekening Koran
+- Mencatat setiap eksekusi impor berkas MT940 atau CSV: `bank_account_id`, `source_format` (`MT940` / `CSV`), `batch_reference`, `file_hash_sha256`, `total_lines`, `imported_lines`, `duplicate_lines`, `opening_balance_minor`, `closing_balance_minor`, `status`, dan `imported_by`.
+- Menjamin idempotensi tingkat batch dan tingkat baris mutasi.
+
+### 7.7 `trs_cash_forecasts` — Proyeksi Likuiditas 13 Minggu
+- Menyimpan hasil algoritma D3 (`SeasonalCashForecaster`): `scenario` (`base`, `optimistic`, `pessimistic`), `season_period`, `history_weeks` (JSON), `seasonal_indices_permil` (JSON), `projected_weeks` (JSON 13 elemen), `projected_sum_idr`, dan `certificate` D3.
+
+### 7.8 `trs_forward_contracts` & `trs_forward_contract_histories`
+- **`trs_forward_contracts`**: Menyimpan parameter kontrak derivatif forward (`contract_number`, `counterparty_bank`, `currency`, `notional_foreign_minor`, `strike_rate_num`, `strike_rate_den`, `contract_value_idr`, `mtm_fair_value_idr`, `cumulative_mtm_idr`, `realized_gain_loss_idr`, `cancellation_penalty_idr`, `maturity_date`, `status`, `creator_id`, `approver_id`, `rolled_to_contract_id`, `ledger_transaction_id`).
+- **`trs_forward_contract_histories`**: Log append-only seluruh perpindahan state (`forward_contract_id`, `from_status`, `to_status`, `actor_id`, `reason`, `metadata`).
+
+### 7.9 `trs_credit_facilities`, `trs_credit_facility_drawdowns`, & `trs_covenant_waivers`
+- **`trs_credit_facilities`**: Menyimpan plafon kredit bank (`facility_code`, `lender_bank`, `credit_limit_idr`, `drawn_amount_idr`, `interest_rate_permil`, `max_der_permil`, `min_icr_permil`, `status`).
+- **`trs_credit_facility_drawdowns`**: Mencatat setiap penarikan dana (`credit_facility_id`, `amount_idr`, `verified_debt_idr`, `verified_equity_idr`, `covenant_der_permil`, `status`, `ledger_transaction_id`).
+- **`trs_covenant_waivers`**: Mencatat dispensasi pelanggaran covenant (`credit_facility_id`, `waived_max_der_permil`, `original_max_der_permil`, `requested_by`, `approved_by`, `bank_waiver_reference`, `reason`, `status`, `valid_until`, `approved_at`).
+
+### 7.10 `trs_cash_pools`, `trs_cash_pool_sweeps`, `trs_petty_cash_vouchers`, & `trs_petty_cash_replenishments`
+- **`trs_cash_pools` & `trs_cash_pool_sweeps`**: Mengatur struktur zero-balancing notional/physical pooling antara rekening induk (`header_account_id`) dan rekening anak (`sub_account_id`) dengan pencatatan pinjaman intercompany otomatis (`intercompany_loan_id`).
+- **`trs_petty_cash_vouchers` & `trs_petty_cash_replenishments`**: Mengelola pencairan voucher kas kecil dengan guard Four-Eyes serta siklus pengisian kembali dana imprest disertai rekonsiliasi opname fisik kas (`physical_cash_counted_idr` vs `book_balance_before_idr`).
+
+---
+
+## 8. Spesifikasi Teknis Parser SWIFT MT940 (`BankStatementImportService`)
+
+Parser MT940 di `Modules\Treasury\Application\Services\BankStatementImportService` memproses pesan standar perbankan internasional tanpa pustaka eksternal:
+1. **Ekstraksi Header**:
+   - Tag `:20:` — Referensi batch pengiriman (`Transaction Reference Number`).
+   - Tag `:25:` — Identifikasi nomor rekening bank.
+   - Tag `:60F:` / `:60M:` — Saldo awal (`C`/`D`, tanggal `YYMMDD`, kode mata uang 3 huruf, nominal dengan koma desimal).
+2. **Ekstraksi Baris Mutasi (`:61:` & `:86:`)**:
+   - Pola regex `:61:(\d{6})(\d{4})?(C|D|RC|RD)([0-9,\.]+)([A-Z0-9]{4})([^\r\n\/]+)(?:\/\/([^\r\n]+))?` mengekstrak tanggal valuta (`YYMMDD`), indikator Debit/Kredit (termasuk reversal `RC`/`RD`), nominal minor unit bulat, kode tipe transaksi SWIFT (`NTRF`, `NMSC`, `NCHG`), dan nomor referensi nasabah.
+   - Baris `:86:` langsung di bawah `:61:` digabungkan sebagai deskripsi naratif transaksi.
+3. **Ekstraksi Footer (`:62F:` / `:62M:`)**:
+   - Mengekstrak saldo akhir pernyataan bank dan memvalidasi konsistensi pergerakan mutasi.
+4. **Penanganan Idempotensi**:
+   - Setiap baris diperiksa terhadap kombinasi unik `(bank_account_id, reference_no, statement_date, amount)`. Baris yang sudah pernah diimpor dilewati secara aman dan dihitung pada metrik `duplicate_lines`.
+
+---
+
+## 9. Spesifikasi 8 Laporan CSV Resmi (`TreasuryReportExportService`)
+
+Perintah `php artisan treasury:export-reports` menghasilkan 8 berkas CSV deterministik dengan header standar dan pemisah koma:
+1. **`cash_position.csv`**: Posisi saldo rekening per mata uang, ekuivalen IDR, dan persentase alokasi kas grup.
+2. **`fx_revaluation_summary.csv`**: Daftar revaluasi periode berjalan per mata uang, kurs penutupan rasional, nilai tercatat sebelum/sesudah, dan hash sertifikat D1.
+3. **`bank_reconciliation_status.csv`**: Ringkasan mutasi terpadankan per tahap (`exact`, `tolerance`, `many_to_one`) serta daftar pos belum cocok beserta `aging_days`.
+4. **`cash_forecast_13w.csv`**: Matriks proyeksi arus kas 13 minggu untuk skenario `base`, `optimistic`, dan `pessimistic` beserta indeks musiman permil.
+5. **`hedge_maturity_schedule.csv`**: Jadwal jatuh tempo kontrak forward aktif, nosional valas, kurs strike, nilai MTM terkini, dan status siklus hidup.
+6. **`covenant_compliance_report.csv`**: Rasio DER dan ICR aktual per fasilitas kredit dibandingkan dengan ambang batas covenant dan status waiver.
+7. **`cash_pool_intercompany_balances.csv`**: Rekapitulasi penyapuan kas harian (`sub_to_header` dan `header_to_sub`) beserta nomor referensi pinjaman intercompany.
+8. **`petty_cash_imprest_register.csv`**: Daftar voucher kas kecil, status persetujuan Four-Eyes, dan riwayat pengisian kembali dana imprest beserta selisih opname fisik.
+
+---
+
+## 10. Spesifikasi Detail Alur Lintas-Modul & Diagram Alir Integrasi (D48-11)
+
+### 10.1 Diagram Alir Agregasi `FxMonetaryItemFeed` & Revaluasi PSAK 10
+```mermaid
+flowchart TD
+    Cron["Cron: treasury:fx-revalue"] --> Gov["TreasuryCovenantGovernanceService::aggregateAndRevalueCrossModuleFeeds"]
+    Gov --> Proc["ProcurementFxMonetaryItemFeed::items(period)"]
+    Proc --> Lots["Sinkronkan Komitmen PO Impor Valas ke trs_fx_lots"]
+    Gov --> Trade["TradeFxMonetaryItemFeed::items(period)"]
+    Trade --> Lots
+    Lots --> Calc["FxRevaluationCalculator (D1): Hitung Revaluasi & Sertifikat SHA-256"]
+    Calc --> Poster["TreasuryLedgerPoster::postFxRevaluation"]
+    Poster --> Ledger["LedgerService::post (TRS_FX_REVAL)"]
+    Calc --> Spine["TreasuryEventPublisher::publishRevaluationPosted"]
+```
+
+### 10.2 Diagram Alir Pengawasan Covenant, Eskalasi Breach & Dispensasi Waiver
+```mermaid
+flowchart TD
+    Dealer["Dealer Treasury"] --> Draw["DrawFacilityAction::execute"]
+    Draw --> CheckWaiver{"Cek CovenantWaiver Aktif"}
+    CheckWaiver -->|DER > EffectiveMaxDER| Breach["TreasuryEventPublisher::publishCovenantBreached"]
+    Breach --> Throw["Throw CovenantBreachException (TRS-COV-001)"]
+    Throw --> ReqWaiver["TreasuryCovenantGovernanceService::requestCovenantWaiver (pending)"]
+    ReqWaiver --> ApprWaiver["Approver != Requester: approveCovenantWaiver (approved)"]
+    ApprWaiver --> Draw
+    CheckWaiver -->|DER <= EffectiveMaxDER| PostDraw["TreasuryLedgerPoster::postFacilityDrawdown"]
+    PostDraw --> Done["CreditFacilityDrawdown Tercatat & Seimbang"]
+```
+
+### 10.3 Spesifikasi Struktur Sertifikat Kriptografis D1, D2, & D3
+
+Seluruh sertifikat algoritma disimpan sebagai kolom JSON tak berubah (*immutable*) dan diverifikasi ulang oleh kelas `*CertificateVerifier`:
+
+1. **Sertifikat D1 (`FxRevaluationCertificate`)**:
+   - **`algorithm`**: `"FxRevaluationCalculator.v1"`
+   - **`inputs`**:
+     - `foreign_balance_minor`: `int`
+     - `carrying_functional_idr`: `int`
+     - `rate_numerator`: `int`
+     - `rate_denominator`: `int`
+     - `currency_decimals`: `int`
+     - `is_asset`: `bool`
+   - **`steps`**:
+     - `scale_factor`: $10^{\text{currency\_decimals}}$
+     - `effective_denominator`: $\text{rate\_denominator} \times \text{scale\_factor}$
+     - `raw_numerator_product`: $\text{foreign\_balance\_minor} \times \text{rate\_numerator}$
+   - **`results`**:
+     - `revalued_functional_idr`: `int`
+     - `unrealized_gain_loss_idr`: `int`
+     - `direction`: `"GAIN" | "LOSS" | "NEUTRAL"`
+   - **`certificateHash`**: `hash('sha256', json_encode([algorithm, inputs, steps, results]))`
+
+2. **Sertifikat D2 (`BankReconciliationCertificate`)**:
+   - **`algorithm`**: `"BankReconciliationMatcher.v1"`
+   - **`inputs`**:
+     - `bank_lines_count`: `int`
+     - `book_lines_count`: `int`
+     - `amount_tolerance_minor`: `int` (default `500`)
+     - `day_window_tolerance`: `int` (default `3`)
+   - **`results`**:
+     - `stage1_exact_count`: `int`
+     - `stage2_tolerance_count`: `int`
+     - `stage3_many_to_one_count`: `int`
+     - `unmatched_bank_count`: `int`
+     - `unmatched_book_count`: `int`
+   - **`Invarian Verifikasi`**:
+     $$\text{stage1\_exact\_count} + \text{stage2\_tolerance\_count} + \text{stage3\_many\_to\_one\_count} + \text{unmatched\_bank\_count} = \text{bank\_lines\_count}$$
+
+3. **Sertifikat D3 (`SeasonalCashForecastCertificate`)**:
+   - **`algorithm`**: `"SeasonalCashForecaster.v1"`
+   - **`inputs`**:
+     - `history_weeks`: `list<int>`
+     - `season_period`: `int` (`4`)
+     - `horizon_weeks`: `int` (`13`)
+   - **`steps`**:
+     - `overall_mean_num`: `int`
+     - `overall_mean_den`: `int`
+     - `seasonal_indices_permille`: `list<int>`
+     - `ols_slope_num`: `int`
+     - `ols_slope_den`: `int`
+     - `ols_intercept_num`: `int`
+     - `ols_intercept_den`: `int`
+   - **`results`**:
+     - `projected_weeks`: `list<int>` (13 elemen)
+     - `projected_sum`: $\sum_{k=1}^{13} \text{projected\_weeks}[k]$
+
+---
+
+## 11. Kontrak Keamanan, Anti-IDOR, & Segregasi Tugas (`TreasuryPolicy`)
+
+Kelas `Modules\Treasury\Policies\TreasuryPolicy` menegakkan otorisasi berlapis pada setiap operasi perbendaharaan:
+1. **`viewPosition(User $user)`**: Mengizinkan peran `admin`, `treasury`, `finance_controller`, dan `auditor` untuk melihat posisi kas dan subledger valas.
+2. **`manageExchangeRates(User $user)`**: Hanya mengizinkan `admin` dan `treasury` untuk mendaftarkan versi kurs baru (`auditor` bersifat *read-only* murni).
+3. **`executeReconciliation(User $user)`**: Hanya mengizinkan `admin` dan `treasury` untuk menjalankan pencocokan mutasi bank dan unmatch.
+4. **`createHedge(User $user)` & `approveHedge(User $user, ForwardContract $contract)`**:
+   - Memastikan pembuat draf memiliki peran `treasury` atau `admin`.
+   - Memblokir persetujuan mandiri (*self-approval*): jika `$contract->creator_id === $user->id`, policy mengembalikan `false` dan state machine melempar `HedgeMakerCheckerViolationException`.
+5. **`drawCreditFacility(User $user, CreditFacility $facility)`**:
+   - Memeriksa kecocokan tenant/entitas untuk mencegah serangan *Insecure Direct Object Reference* (IDOR) lintas anak perusahaan.
+   - Menolak akses `403 Forbidden` bagi pengguna di luar peran perbendaharaan yang sah.
+
+---
+
+## 12. Spesifikasi Komponen ViewModel & Pemetaan Antarmuka Pengguna (`TreasuryDashboardViewModel`)
+
+Kelas `Modules\Treasury\ViewModels\TreasuryDashboardViewModel` merangkum metrik real-time meja perbendaharaan tanpa membebani lapisan controller dengan logika agregasi SQL:
+
+### 12.1 Struktur Payload `toArray()`
+1. **`liquidity_summary`**:
+   - `total_functional_cash_idr`: Total saldo kas ekuivalen IDR dari seluruh rekening aktif (`is_active = true`).
+   - `active_accounts_count`: Jumlah rekening bank korporat dan dana kas kecil aktif.
+   - `petty_cash_balance_idr`: Total dana tunai tersedia pada seluruh rekening kas kecil imprest (`is_petty_cash = true`).
+   - `currencies_breakdown`: Daftar saldo minor unit dan nilai buku IDR yang dikelompokkan per mata uang (`IDR`, `USD`, `EUR`, `SGD`, `JPY`).
+2. **`fx_exposure_summary`**:
+   - `open_lots_count`: Jumlah lot moneter valuta asing berstatus `active` di `trs_fx_lots`.
+   - `total_carrying_idr`: Total nilai tercatat historis IDR seluruh lot valas terbuka.
+   - `last_revaluation_period`: Periode akuntansi terakhir (`YYYY-MM`) yang telah direvaluasi.
+3. **`hedge_portfolio_summary`**:
+   - `active_contracts_count`: Jumlah kontrak derivatif forward pada status `booked` dan `active`.
+   - `matured_pending_settlement_count`: Jumlah kontrak yang sudah mencapai status `matured` dan menunggu penyelesaian kas atau roll-over.
+   - `net_mtm_fair_value_idr`: Akumulasi nilai wajar Mark-to-Market bersih seluruh portofolio lindung nilai aktif.
+4. **`credit_facility_headroom`**:
+   - `total_credit_limit_idr`: Total plafon fasilitas kredit sindikasi yang disetujui.
+   - `total_drawn_idr`: Total pokok pinjaman yang sedang ditarik.
+   - `available_headroom_idr`: Sisa plafon fasilitas kredit yang siap ditarik ($\text{Limit} - \text{Drawn}$).
+   - `active_waivers_count`: Jumlah `CovenantWaiver` berstatus `approved` yang masih berlaku.
+5. **`reconciliation_health`**:
+   - `matched_statements_count`: Jumlah baris mutasi rekening koran yang telah terpadankan (`is_reconciled = true`).
+   - `pending_unmatched_count`: Jumlah baris mutasi pada antrean `trs_bank_reconciliation_unmatched` berstatus `pending`.
+   - `escalated_overdue_count`: Jumlah pos unmatched dengan `aging_days > 5` yang telah memiliki tiket eskalasi di `TaskInboxService`.
+
+
+
+

@@ -7,9 +7,12 @@ namespace Modules\Treasury\Application\Actions;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Modules\Banking\Contracts\LedgerEntry;
+use Modules\Treasury\Application\Services\TreasuryEventPublisher;
+use Modules\Treasury\Application\Services\TreasuryTaskInboxNotifier;
 use Modules\Treasury\Domain\Algorithms\BankReconciliationMatcher;
 use Modules\Treasury\Domain\DTOs\BankStatementLineDTO;
 use Modules\Treasury\Domain\DTOs\BookLedgerLineDTO;
+use Modules\Treasury\Domain\Events\BankStatementReconciledEvent;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\BankReconciliationMatch;
 use Modules\Treasury\Domain\Models\BankReconciliationUnmatched;
@@ -21,6 +24,8 @@ class ReconcileBankStatementsAction
     public function __construct(
         protected readonly ?ClockInterface $clock = null,
         protected readonly BankReconciliationMatcher $matcher = new BankReconciliationMatcher,
+        protected readonly ?TreasuryTaskInboxNotifier $taskNotifier = null,
+        protected readonly ?TreasuryEventPublisher $eventPublisher = null,
     ) {}
 
     protected function now(): CarbonImmutable
@@ -157,6 +162,8 @@ class ReconcileBankStatementsAction
                 }
             }
 
+            $notifier = $this->taskNotifier ?? (app()->bound(TreasuryTaskInboxNotifier::class) ? app(TreasuryTaskInboxNotifier::class) : null);
+
             foreach ($result->unmatchedBankLines as $u) {
                 $stmt = BankStatement::find($u->id);
                 if ($stmt !== null) {
@@ -165,7 +172,13 @@ class ReconcileBankStatementsAction
                         'reconciliation_status' => 'unmatched',
                     ]);
 
-                    BankReconciliationUnmatched::firstOrCreate(
+                    $stmtDate = $stmt->transaction_date instanceof \DateTimeInterface
+                        ? CarbonImmutable::instance($stmt->transaction_date)
+                        : CarbonImmutable::parse((string) $u->date);
+
+                    $agingDays = (int) max(0, $stmtDate->diffInDays($now, false));
+
+                    $unmatchedRecord = BankReconciliationUnmatched::updateOrCreate(
                         [
                             'statement_id' => $stmt->id,
                             'status' => 'pending',
@@ -173,10 +186,49 @@ class ReconcileBankStatementsAction
                         [
                             'reason' => 'Tidak ditemukan padanan buku dalam batas toleransi',
                             'notes' => "Mutasi bank tanggal {$u->date} nominal {$u->amount}",
+                            'aging_days' => $agingDays,
                             'reported_by' => $userId,
                         ]
                     );
+
+                    if ($notifier !== null && empty($unmatchedRecord->escalation_task_id)) {
+                        $taskId = $notifier->notifyUnmatchedStatement($unmatchedRecord);
+                        if ($taskId !== null) {
+                            $unmatchedRecord->update(['escalation_task_id' => $taskId]);
+                        }
+                    }
                 }
+            }
+
+            $publisher = $this->eventPublisher ?? (app()->bound(TreasuryEventPublisher::class) ? app(TreasuryEventPublisher::class) : null);
+            if ($publisher !== null) {
+                $matchedAmount = 0;
+                foreach ($result->exactMatches as $em) {
+                    $matchedAmount += $em->amount;
+                }
+                foreach ($result->toleranceMatches as $tm) {
+                    $matchedAmount += $tm->bankAmount;
+                }
+                foreach ($result->manyToOneMatches as $mm) {
+                    $matchedAmount += $mm->bankAmount;
+                }
+
+                $unmatchedAmount = 0;
+                foreach ($result->unmatchedBankLines as $ub) {
+                    $unmatchedAmount += $ub->amount;
+                }
+
+                $publisher->publishBankReconciled(new BankStatementReconciledEvent(
+                    bankAccountId: (string) $account->id,
+                    accountNumber: (string) $account->account_number,
+                    currency: (string) $account->currency,
+                    matchedCount: $matchedCount,
+                    unmatchedCount: count($result->unmatchedBankLines),
+                    matchedAmountMinor: $matchedAmount,
+                    unmatchedAmountMinor: $unmatchedAmount,
+                    certificateHash: $result->certificate->certificateHash,
+                    actorId: $userId
+                ));
             }
 
             return [

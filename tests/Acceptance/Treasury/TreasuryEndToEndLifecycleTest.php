@@ -11,13 +11,17 @@ use Modules\Banking\Application\Services\LedgerService;
 use Modules\Treasury\Application\Actions\DrawFacilityAction;
 use Modules\Treasury\Application\Actions\ExecuteCashPoolSweepAction;
 use Modules\Treasury\Application\Actions\GenerateSeasonalCashForecastAction;
+use Modules\Treasury\Application\Actions\ProcessPettyCashVoucherAction;
 use Modules\Treasury\Application\Actions\ReconcileBankStatementsAction;
 use Modules\Treasury\Application\Actions\ReverseRevaluationsAction;
 use Modules\Treasury\Application\Actions\RunFxRevaluationAction;
 use Modules\Treasury\Application\Actions\SettleForwardContractAction;
+use Modules\Treasury\Application\Services\BankStatementImportService;
+use Modules\Treasury\Application\Services\TreasuryCovenantGovernanceService;
 use Modules\Treasury\Application\Services\TreasuryService;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
 use Modules\Treasury\Domain\Enums\HedgeStatus;
+use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\Currency;
 use Modules\Treasury\Domain\StateMachines\HedgeContractStateMachine;
 use Tests\TestCase;
@@ -242,5 +246,96 @@ class TreasuryEndToEndLifecycleTest extends TestCase
         $this->assertSame(30_000_000, $sweptAmount);
         $this->assertSame(50_000_000, $subAcc->fresh()->balance);
         $this->assertSame(130_000_000, $headerAcc->fresh()->balance);
+    }
+
+    public function test_mt940_idempotent_import_covenant_waiver_petty_cash_imprest_and_cross_module_fx_feeds(): void
+    {
+        $maker = User::factory()->create(['name' => 'Maker Treasury', 'role' => 'treasury']);
+        $checker = User::factory()->create(['name' => 'Checker Treasury', 'role' => 'treasury']);
+
+        $this->service->registerCurrency('USD', 'US Dollar', '$', 2);
+        $this->service->registerCurrency('IDR', 'Indonesian Rupiah', 'Rp', 0);
+        $this->service->recordExchangeRate('USD', 'IDR', '2026-11-30', 15800, 1, 'closing');
+
+        // 1. MT940 Idempotent Statement Import
+        $bankAcc = $this->service->createBankAccount('ACC-MT940-01', 'BCA Corporate', 'IDR', 200_000_000);
+        $mt940Sample = ":20:STMT20261130\n:25:ACC-MT940-01\n:28C:001/001\n:60F:C261101IDR200000000,00\n:61:2611151115C15000000,00NTRFINV-MT940-01//BANKREF001\n:86:SETTLEMENT EXPORT INVOICE 01\n:61:2611161116D2500000,00NMSCFEES-MT940-02//BANKREF002\n:86:MONTHLY CUSTODY FEE\n:62F:C261130IDR212500000,00";
+
+        $importService = app(BankStatementImportService::class);
+        $batch1 = $importService->importMt940Content($bankAcc, $mt940Sample, 'stmt-nov.mt940', $maker->id);
+        $this->assertFalse($batch1['is_duplicate_batch']);
+        $this->assertSame(2, $batch1['imported_count']);
+
+        // Re-import file MT940 yang sama -> idempoten (0 baris baru)
+        $batch2 = $importService->importMt940Content($bankAcc, $mt940Sample, 'stmt-nov.mt940', $maker->id);
+        $this->assertTrue($batch2['is_duplicate_batch']);
+        $this->assertSame(0, $batch2['imported_count']);
+
+        // 2. Covenant Waiver Four-Eyes & Interest Accrual
+        $facility = $this->service->createCreditFacility('FAC-WAIVER-01', 'Mandiri Corporate', 8_000_000_000, 9.0, 2.0);
+        $govService = app(TreasuryCovenantGovernanceService::class);
+
+        $waiver = $govService->requestCovenantWaiver(
+            facility: $facility,
+            breachedDerPermil: 2350,
+            waivedMaxDerPermil: 2500,
+            validUntilDate: '2099-12-31',
+            reason: 'Ekspansi modal kerja musiman Q4',
+            requestedByUserId: $maker->id,
+            customWaiverCode: 'BMRI-WVR-2026-119'
+        );
+        $this->assertSame('pending', $waiver->status);
+
+        $approvedWaiver = $govService->approveCovenantWaiver($waiver, $checker->id);
+        $this->assertSame('approved', $approvedWaiver->status);
+
+        // Dengan waiver aktif (2500 permil), penarikan pada DER 2350 permil diizinkan
+        $drawAction = app(DrawFacilityAction::class);
+        $drawRes = $drawAction->execute($facility, 1_000_000_000, 2350, 'IDEM:TRS:DRAW_WAIVED_01');
+        $this->assertSame(1_000_000_000, $drawRes['drawn_amount']);
+
+        // Akrual bunga fasilitas 30 hari
+        $interestIdr = $govService->accrueFacilityInterest($facility->fresh(), 30, '2026-11');
+        $this->assertGreaterThan(0, $interestIdr);
+
+        // 3. Kas Kecil Imprest & Replenishment Opname Fisik
+        $pettyAcc = BankAccount::create([
+            'account_number' => 'PC-HO-01',
+            'bank_name' => 'Kas Kecil Kantor Pusat',
+            'currency' => 'IDR',
+            'balance' => 10_000_000,
+            'functional_balance_idr' => 10_000_000,
+            'is_petty_cash' => true,
+            'imprest_limit' => 10_000_000,
+        ]);
+
+        $pcvAction = app(ProcessPettyCashVoucherAction::class);
+        $voucher = $pcvAction->submitVoucher(
+            bankAccount: $pettyAcc,
+            amount: 1_500_000,
+            payee: 'Kurir Ekspor Nusantara',
+            expenseAccountCode: 'trs:petty_cash_expense:IDR',
+            description: 'Biaya kurir dokumen ekspor',
+            creatorId: $maker->id
+        );
+        $approvedVoucher = $pcvAction->approveAndReimburse($voucher, $checker->id);
+        $this->assertSame('reimbursed', $approvedVoucher->status);
+        $this->assertSame(8_500_000, (int) $pettyAcc->fresh()->balance);
+
+        // Opname fisik menemukan Rp 8.450.000 (selisih kurang Rp 50.000) -> Replenish kembali ke Rp 10.000.000
+        $replenishment = $pcvAction->replenishImprestFund(
+            pettyCashAccount: $pettyAcc->fresh(),
+            physicalCashCountedIdr: 8_450_000,
+            approverId: $checker->id,
+            creatorId: $maker->id
+        );
+        $this->assertSame(1_550_000, (int) $replenishment->replenished_amount_idr);
+        $this->assertSame(-50_000, (int) $replenishment->shortage_overage_idr);
+        $this->assertSame(10_000_000, (int) $pettyAcc->fresh()->balance);
+
+        // 4. Cross-Module FxMonetaryItemFeed Aggregation
+        $crossModuleRes = $govService->aggregateAndRevalueCrossModuleFeeds('2026-11', '2026-11-30');
+        $this->assertSame('2026-11', $crossModuleRes['period']);
+        $this->assertArrayHasKey('ingested_items_count', $crossModuleRes);
     }
 }

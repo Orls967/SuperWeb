@@ -26,6 +26,9 @@ class BankStatement extends Model
         'raw_payload',
         'is_reconciled',
         'reconciliation_status',
+        'unmatch_reason',
+        'unmatched_by',
+        'unmatched_at',
         'matched_ledger_tx_id',
     ];
 
@@ -34,6 +37,8 @@ class BankStatement extends Model
         'amount' => 'integer',
         'raw_payload' => 'array',
         'is_reconciled' => 'boolean',
+        'unmatched_by' => 'integer',
+        'unmatched_at' => 'datetime',
         'matched_ledger_tx_id' => 'integer',
     ];
 

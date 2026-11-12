@@ -7,19 +7,24 @@ namespace Modules\Treasury\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Treasury\Application\Actions\ProcessPettyCashVoucherAction;
+use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\PettyCashVoucher;
 use Modules\Treasury\Http\Requests\ProcessPettyCashVoucherRequest;
 
 final class PettyCashController extends Controller
 {
+    public function __construct(
+        protected readonly ProcessPettyCashVoucherAction $voucherAction
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
-        $actionType = $request->query('action_type');
-        $currency = $request->query('currency', 'IDR');
+        $status = $request->query('status');
 
-        $query = PettyCashVoucher::query()->where('currency', strtoupper((string) $currency));
-        if ($actionType) {
-            $query->where('action_type', $actionType);
+        $query = PettyCashVoucher::query()->with('bankAccount');
+        if ($status) {
+            $query->where('status', strtolower((string) $status));
         }
 
         $vouchers = $query->orderByDesc('voucher_date')->limit(50)->get();
@@ -33,19 +38,17 @@ final class PettyCashController extends Controller
 
     public function store(ProcessPettyCashVoucherRequest $request): JsonResponse
     {
-        $voucher = PettyCashVoucher::create([
-            'voucher_number' => $request->getVoucherNumber(),
-            'action_type' => $request->getActionType(),
-            'amount' => $request->getAmount(),
-            'currency' => $request->getCurrency(),
-            'expense_category' => $request->getExpenseCategory(),
-            'description' => $request->getDescription(),
-            'receipt_reference' => $request->getReceiptReference(),
-            'payee_name' => $request->getPayeeName(),
-            'voucher_date' => now()->toDateString(),
-            'status' => 'APPROVED',
-            'actor_id' => auth()->id() ?? 1,
-        ]);
+        $pettyAccount = BankAccount::where('is_petty_cash', true)->firstOrFail();
+
+        $voucher = $this->voucherAction->submitVoucher(
+            bankAccount: $pettyAccount,
+            amount: $request->getAmount(),
+            payee: $request->getPayeeName() ?? 'Operational Payee',
+            expenseAccountCode: $request->getExpenseCategory() ?? 'trs:petty_cash_expense:IDR',
+            description: $request->getDescription(),
+            creatorId: $request->user()?->id ?? 1,
+            customVoucherNumber: $request->getVoucherNumber()
+        );
 
         return response()->json([
             'status' => 'created',
@@ -57,7 +60,7 @@ final class PettyCashController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'voucher' => $voucher,
+            'voucher' => $voucher->load('bankAccount'),
         ]);
     }
 }

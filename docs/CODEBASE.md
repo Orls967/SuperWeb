@@ -538,12 +538,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 58 | **Tlx** | `tlx_` | 4 |
 | 59 | **Trade** | `trd_` | 3 |
 | 60 | **TradeFinance** | `tf_` | 4 |
-| 61 | **Treasury** | `trs_` | 2 |
+| 61 | **Treasury** | `trs_` | 3 |
 | 62 | **Vending** | `vnd_` | 3 |
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **708 Migrasi** |
+| | **Total: 65 Modul** | | **709 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -968,15 +968,15 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `tlx:rate-cdr` | `manual` | Rating dan agregasi pemakaian CDR data perangkat IoT Lini 14 |
 | `tower:audit` | `manual` | Audit supply chain control tower (multi-echelon stock, ATP/CTP invariant, and forecasts) |
 | `trade:audit` | `manual` | Audit cross-border trade operations, orders, duties, and hash-chain tracking |
-| `treasury:audit` | `manual` | Dual-source audit for Treasury: DB lokal vs Ledger & Subledger, Facility Limits vs Drawdowns, Cash Pool invariants |
+| `treasury:audit` | `manual` | Dual-source audit for Treasury: DB lokal vs Ledger & Subledger, Facility Limits vs Drawdowns, Cash Pool & Covenant invariants |
 | `treasury:covenant-test` | `manual` | Uji pemenuhan covenant Debt-to-Equity Ratio (DER) pada seluruh fasilitas kredit bank |
 | `treasury:export-reports` | `manual` | Mengekspor laporan resmi perbendaharaan (Treasury) ke berkas CSV |
 | `treasury:forecast` | `manual` | Kalkulasi forecast arus kas 13 minggu dengan dekomposisi musiman D3 |
 | `treasury:fx-revalue` | `manual` | Jalankan kalkulasi revaluasi kurs valas akhir periode PSAK 10 dan posting ke ledger |
-| `treasury:import-statement` | `manual` | Impor mutasi rekening bank format CSV atau MT940 (fixture simulasi) |
-| `treasury:match-bank-statements` | `manual` | Jalankan algoritma rekonsiliasi bank 3-tahap deterministik (D2) |
+| `treasury:import-statement` | `manual` | Impor mutasi rekening bank format CSV atau MT940 (fixture simulasi) secara idempoten |
 | `treasury:mtm` | `manual` | Kalkulasi harian nilai wajar pasar (Mark-to-Market) seluruh kontrak lindung nilai aktif |
 | `treasury:pool-sweep` | `manual` | Jalankan penyapuan zero-balancing/target-balance cash pool holding & entitas anak |
+| `treasury:reconcile` | `manual` | Jalankan algoritma rekonsiliasi bank 3-tahap deterministik (D2) harian secara idempoten |
 | `treasury:reverse-revaluations` | `manual` | Pembalik otomatis revaluasi kurs awal periode baru |
 | `ui:lint` | `manual` | Linter aksesibilitas, tokenisasi warna, responsivitas, dan kepatuhan Design System untuk template Blade |
 | `up` | `manual` | Bring the application out of maintenance mode |

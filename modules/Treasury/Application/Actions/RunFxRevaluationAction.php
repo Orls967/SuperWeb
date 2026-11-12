@@ -7,9 +7,11 @@ namespace Modules\Treasury\Application\Actions;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Treasury\Application\Services\TreasuryEventPublisher;
 use Modules\Treasury\Application\Services\TreasuryLedgerPoster;
 use Modules\Treasury\Domain\Algorithms\FxRevaluationCalculator;
 use Modules\Treasury\Domain\Algorithms\RationalRate;
+use Modules\Treasury\Domain\Events\TreasuryRevaluationPostedEvent;
 use Modules\Treasury\Domain\Models\ExchangeRate;
 use Modules\Treasury\Domain\Models\FxLot;
 use Modules\Treasury\Domain\Models\Revaluation;
@@ -20,6 +22,7 @@ class RunFxRevaluationAction
     public function __construct(
         protected readonly ?TreasuryLedgerPoster $ledgerPoster = null,
         protected readonly ?ClockInterface $clock = null,
+        protected readonly ?TreasuryEventPublisher $eventPublisher = null,
     ) {}
 
     protected function now(): CarbonImmutable
@@ -141,6 +144,22 @@ class RunFxRevaluationAction
                     $reval->update(['ledger_transaction_id' => $tx->id]);
                 }
 
+                $publisher = $this->eventPublisher ?? (app()->bound(TreasuryEventPublisher::class) ? app(TreasuryEventPublisher::class) : null);
+                if ($publisher !== null) {
+                    $publisher->publishRevaluationPosted(new TreasuryRevaluationPostedEvent(
+                        revaluationId: (string) $reval->id,
+                        period: $period,
+                        currency: $curr,
+                        foreignBalanceMinor: $totalForeign,
+                        bookFunctionalIdr: $totalBook,
+                        revaluedFunctionalIdr: $revaluedIdr,
+                        gainLossIdr: $gainLossIdr,
+                        certificateHash: $cert->certificateHash,
+                        ledgerTransactionId: $reval->ledger_transaction_id ? (int) $reval->ledger_transaction_id : null,
+                        userId: $userId
+                    ));
+                }
+
                 $results[] = $reval->fresh();
             }
 
@@ -212,6 +231,22 @@ class RunFxRevaluationAction
                     userId: $userId
                 );
                 $reval->update(['ledger_transaction_id' => $tx->id]);
+            }
+
+            $publisher = $this->eventPublisher ?? (app()->bound(TreasuryEventPublisher::class) ? app(TreasuryEventPublisher::class) : null);
+            if ($publisher !== null) {
+                $publisher->publishRevaluationPosted(new TreasuryRevaluationPostedEvent(
+                    revaluationId: (string) $reval->id,
+                    period: $period,
+                    currency: $currency,
+                    foreignBalanceMinor: $foreignBalanceMinor,
+                    bookFunctionalIdr: $bookFunctionalIdr,
+                    revaluedFunctionalIdr: $revaluedFunctionalIdr,
+                    gainLossIdr: $gainLossIdr,
+                    certificateHash: $certificate->certificateHash,
+                    ledgerTransactionId: $reval->ledger_transaction_id ? (int) $reval->ledger_transaction_id : null,
+                    userId: $userId
+                ));
             }
 
             return [

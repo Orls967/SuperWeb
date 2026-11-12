@@ -408,4 +408,233 @@ class TreasuryLedgerPoster
 
         return $this->ledgerService->post($dto);
     }
+
+    /**
+     * Memosting revaluasi liabilitas valas akhir periode (PSAK 10 — D48-10 #2).
+     * Saat kurs naik (gainLossIdr < 0 bagi liabilitas): Debit Rugi Selisih Kurs Belum Terealisasi, Kredit Penyesuaian Liabilitas Valas.
+     * Saat kurs turun (gainLossIdr > 0 bagi liabilitas): Debit Penyesuaian Liabilitas Valas, Kredit Untung Selisih Kurs Belum Terealisasi.
+     */
+    public function postFxLiabilityRevaluation(
+        string $period,
+        string $currency,
+        int $gainLossIdr,
+        string $idempotencyKey,
+        ?string $revaluationId = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($gainLossIdr === 0) {
+            throw new TreasuryException('Tidak ada selisih kurs liabilitas yang perlu diposting.');
+        }
+
+        $lines = Posting::lines();
+
+        if ($gainLossIdr > 0) {
+            // Keuntungan revaluasi liabilitas (kurs turun): Debit Penyesuaian Liabilitas Valas, Kredit Untung Belum Terealisasi
+            $lines->debit('trs:fx_reval_liability_adj:IDR', $gainLossIdr, 'IDR')
+                ->credit('trs:fx_unrealized_gain_loss:IDR', $gainLossIdr, 'IDR');
+        } else {
+            // Kerugian revaluasi liabilitas (kurs naik): Debit Rugi Belum Terealisasi, Kredit Penyesuaian Liabilitas Valas
+            $lossAmount = abs($gainLossIdr);
+            $lines->debit('trs:fx_unrealized_gain_loss:IDR', $lossAmount, 'IDR')
+                ->credit('trs:fx_reval_liability_adj:IDR', $lossAmount, 'IDR');
+        }
+
+        $dto = new PostingDTO(
+            type: TreasuryTransactionTypes::TRS_FX_REVAL->value,
+            description: "Revaluasi kurs liabilitas periode {$period} valas {$currency}",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries('IDR'),
+            referenceType: 'trs_revaluations',
+            referenceId: $revaluationId,
+            meta: [
+                'period' => $period,
+                'currency' => $currency,
+                'gain_loss_idr' => $gainLossIdr,
+                'item_side' => 'liability',
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        );
+
+        return $this->ledgerService->post($dto);
+    }
+
+    /**
+     * Memosting penyelesaian lot valas terealisasi (Realized FX Gain/Loss — D48-10 #4 & #5).
+     */
+    public function postFxRealizedSettlement(
+        string $lotId,
+        string $currency,
+        int $realizedGainLossIdr,
+        string $idempotencyKey,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($realizedGainLossIdr === 0) {
+            throw new TreasuryException('Tidak ada selisih kurs terealisasi pada penyelesaian lot.');
+        }
+
+        $lines = Posting::lines();
+
+        if ($realizedGainLossIdr > 0) {
+            $lines->debit('trs:fx_settlement_clearing:IDR', $realizedGainLossIdr, 'IDR')
+                ->credit('trs:fx_realized_gain_loss:IDR', $realizedGainLossIdr, 'IDR');
+        } else {
+            $lossAmount = abs($realizedGainLossIdr);
+            $lines->debit('trs:fx_realized_gain_loss:IDR', $lossAmount, 'IDR')
+                ->credit('trs:fx_settlement_clearing:IDR', $lossAmount, 'IDR');
+        }
+
+        $dto = new PostingDTO(
+            type: TreasuryTransactionTypes::TRS_FX_SETTLE_REALIZED->value,
+            description: "Realisasi selisih kurs settlement lot {$lotId} ({$currency})",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries('IDR'),
+            referenceType: 'trs_fx_lots',
+            referenceId: $lotId,
+            meta: [
+                'lot_id' => $lotId,
+                'currency' => $currency,
+                'realized_gain_loss_idr' => $realizedGainLossIdr,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        );
+
+        return $this->ledgerService->post($dto);
+    }
+
+    /**
+     * Memosting penyesuaian nilai wajar harian (Mark-to-Market) kontrak forward (D48-10 #6 & #7).
+     */
+    public function postForwardMarkToMarket(
+        string $contractNumber,
+        int $mtmDeltaIdr,
+        string $idempotencyKey,
+        ?string $contractId = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($mtmDeltaIdr === 0) {
+            throw new TreasuryException('Tidak ada perubahan nilai wajar MTM untuk diposting.');
+        }
+
+        $lines = Posting::lines();
+
+        if ($mtmDeltaIdr > 0) {
+            // MTM kontrak lindung nilai naik: Debit Aset Derivatif, Kredit Untung/Rugi Derivatif
+            $lines->debit('trs:derivative_asset:IDR', $mtmDeltaIdr, 'IDR')
+                ->credit('trs:derivative_gain_loss:IDR', $mtmDeltaIdr, 'IDR');
+        } else {
+            // MTM kontrak lindung nilai turun: Debit Untung/Rugi Derivatif, Kredit Liabilitas Derivatif
+            $absDelta = abs($mtmDeltaIdr);
+            $lines->debit('trs:derivative_gain_loss:IDR', $absDelta, 'IDR')
+                ->credit('trs:derivative_liability:IDR', $absDelta, 'IDR');
+        }
+
+        $dto = new PostingDTO(
+            type: TreasuryTransactionTypes::TRS_FORWARD_MTM->value,
+            description: "Penyesuaian nilai wajar MTM kontrak forward {$contractNumber}",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries('IDR'),
+            referenceType: 'trs_forward_contracts',
+            referenceId: $contractId,
+            meta: [
+                'contract_number' => $contractNumber,
+                'mtm_delta_idr' => $mtmDeltaIdr,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        );
+
+        return $this->ledgerService->post($dto);
+    }
+
+    /**
+     * Memosting akrual bunga fasilitas kredit bank harian/bulanan (D48-10 #13).
+     * Debit trs:interest_expense:IDR / Kredit trs:interest_payable:IDR.
+     */
+    public function postFacilityInterestAccrual(
+        string $facilityCode,
+        int $interestAmountIdr,
+        string $periodOrDate,
+        string $idempotencyKey,
+        ?string $facilityId = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($interestAmountIdr <= 0) {
+            throw new TreasuryException('Nominal akrual bunga fasilitas kredit harus lebih besar dari 0.');
+        }
+
+        $lines = Posting::lines()
+            ->debit('trs:interest_expense:IDR', $interestAmountIdr, 'IDR')
+            ->credit('trs:interest_payable:IDR', $interestAmountIdr, 'IDR');
+
+        $dto = new PostingDTO(
+            type: TreasuryTransactionTypes::TRS_FACILITY_INTEREST->value,
+            description: "Akrual bunga fasilitas kredit {$facilityCode} ({$periodOrDate})",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries('IDR'),
+            referenceType: 'trs_credit_facilities',
+            referenceId: $facilityId,
+            meta: [
+                'facility_code' => $facilityCode,
+                'interest_amount_idr' => $interestAmountIdr,
+                'period' => $periodOrDate,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        );
+
+        return $this->ledgerService->post($dto);
+    }
+
+    /**
+     * Memosting pengisian kembali (replenishment) kas kecil sistem imprest
+     * dari rekening bank operasional ke akun kas kecil.
+     */
+    public function postPettyCashReplenishment(
+        string $replenishmentRef,
+        int $amountIdr,
+        string $pettyCashAccountCode,
+        string $sourceBankAccountCode,
+        string $idempotencyKey,
+        ?string $bankAccountId = null,
+        ?int $userId = null
+    ): LedgerTransaction {
+        $this->ensureAccountsSeeded();
+
+        if ($amountIdr <= 0) {
+            throw new TreasuryException('Nominal pengisian kembali kas kecil harus lebih besar dari 0.');
+        }
+
+        $lines = Posting::lines()
+            ->debit($pettyCashAccountCode, $amountIdr, 'IDR')
+            ->credit($sourceBankAccountCode, $amountIdr, 'IDR');
+
+        $dto = new PostingDTO(
+            type: TreasuryTransactionTypes::TRS_PETTY_CASH_REPLENISH->value,
+            description: "Pengisian kembali kas kecil imprest {$replenishmentRef}",
+            idempotencyKey: $idempotencyKey,
+            entries: $lines->toEntries('IDR'),
+            referenceType: 'trs_bank_accounts',
+            referenceId: $bankAccountId,
+            meta: [
+                'replenishment_ref' => $replenishmentRef,
+                'amount_idr' => $amountIdr,
+                'petty_cash_account' => $pettyCashAccountCode,
+                'source_bank_account' => $sourceBankAccountCode,
+            ],
+            createdBy: $userId,
+            postedAt: $this->now(),
+        );
+
+        return $this->ledgerService->post($dto);
+    }
 }

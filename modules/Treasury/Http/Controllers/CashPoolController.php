@@ -20,8 +20,7 @@ final class CashPoolController extends Controller
     public function index(Request $request): JsonResponse
     {
         $pools = CashPool::query()
-            ->with('accounts')
-            ->where('is_active', true)
+            ->with(['headerAccount', 'subAccount', 'sweeps'])
             ->get();
 
         return response()->json([
@@ -35,20 +34,20 @@ final class CashPoolController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'pool' => $pool->load('accounts'),
+            'pool' => $pool->load(['headerAccount', 'subAccount', 'sweeps']),
         ]);
     }
 
     public function sweep(ExecuteCashPoolSweepRequest $request, CashPool $pool): JsonResponse
     {
         $result = $this->sweepAction->execute(
-            pool: $pool,
-            referenceDate: $request->getReferenceDate()
+            cashPool: $pool,
+            userId: $request->user()?->id
         );
 
         return response()->json([
             'status' => 'swept',
-            'pool_code' => $pool->pool_code,
+            'pool_name' => $pool->pool_name,
             'result' => $result,
         ]);
     }

@@ -36,7 +36,7 @@ class EventCatalogAndSpineTest extends TestCase
         $registeredSubscriptions = $prop->getValue();
 
         $catalog = EventCatalog::all();
-        $this->assertCount(22, $catalog);
+        $this->assertCount(25, $catalog);
 
         $handledEventNames = [];
         foreach ($registeredSubscriptions as $group => $events) {
@@ -52,8 +52,8 @@ class EventCatalogAndSpineTest extends TestCase
             }
         }
 
-        // Exactly 14 events currently lack registered spine handlers (8 lama + 3 enterprise.* Fase 54 + 3 intercompany.* Fase 52)
-        $this->assertCount(14, $unhandledEvents, 'Expected 14 unhandled events in spine catalog');
+        // Exactly 17 events currently lack registered spine handlers (8 lama + 3 enterprise.* Fase 54 + 3 intercompany.* Fase 52 + 3 treasury.* Fase 48)
+        $this->assertCount(17, $unhandledEvents, 'Expected 17 unhandled events in spine catalog');
         $this->assertContains('lgx.temperature.breached.v1', $unhandledEvents);
         $this->assertContains('auto.telematics.anomaly_detected.v1', $unhandledEvents);
         $this->assertContains('mall.footfall.recorded.v1', $unhandledEvents);
