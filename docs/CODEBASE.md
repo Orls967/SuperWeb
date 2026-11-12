@@ -508,7 +508,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 28 | **Hotel** | `htl_` | 20 |
 | 29 | **Insurance** | `ins_` | 8 |
 | 30 | **Integration** | `intg_` | 340 |
-| 31 | **Intercompany** | `ic_` | 1 |
+| 31 | **Intercompany** | `ic_` | 2 |
 | 32 | **International** | `intl_` | 1 |
 | 33 | **Inventory** | `inv_` | 2 |
 | 34 | **Logistics** | `lgx_` | 32 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **707 Migrasi** |
+| | **Total: 65 Modul** | | **708 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -578,7 +578,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Hotel** | 93 | `hotel`, `hotel/reservations/{reservation}/settle`, `hotel/pms/reservations` ... | web, auth, role:admin,hotel_admin,front_desk |
 | **Insurance** | 97 | `insurance`, `insurance/policies`, `insurance/policies/issue` ... | web, auth, role:admin,insurance_admin,underwriter,customer |
 | **Integration** | 2 | `integration`, `integration/webhooks` | web, auth, role:admin |
-| **Intercompany** | 28 | `intercompany`, `intercompany/transactions`, `intercompany/loans` ... | web, auth, role:admin,auditor,legal,treasury |
+| **Intercompany** | 33 | `intercompany`, `intercompany/transactions`, `intercompany/loans` ... | web, auth, role:admin,auditor,legal,treasury |
 | **International** | 6 | `international`, `international/jvs`, `international/tax-royalty` ... | web, auth, role:admin,auditor,legal,treasury |
 | **Inventory** | 2 | `inventory/explorer`, `inventory/explorer/{id}` | web, auth, role:admin,auditor,procurement |
 | **Logistics** | 85 | `track`, `track/{tracking_number}`, `logistics` ... | web, throttle:30,1, auth |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1773 Rute** | | |
+| **Total** | **1778 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -742,6 +742,11 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `gate:run` | `manual` | Runs all 9 mandatory gate pipeline steps and records genuine results to gate manifest |
 | `governance:audit` | `manual` | Audit DAO governance proposals, voter weights, and hash-chained vote receipts |
 | `group:audit` | `manual` | Audit intercompany transactions, elimination entries, loans, transfer pricing margins, and dual-source ledger reconciliation |
+| `group:cash-pool-sweep` | `manual` | Menjalankan eksekusi liquidity sweep saldo nol rekening anak perusahaan ke header pool kas |
+| `group:consolidation-lock` | `manual` | Mengeksekusi roll-up konsolidasi grup dan mengunci periode eliminasi intercompany |
+| `group:ic-interest` | `manual` | Menghitung akrual bunga pinjaman intercompany, memotong PPh 23/26, dan memosting jurnal buku besar |
+| `group:mismatch-sweep` | `manual` | Penyisiran selisih saldo bilateral timbal balik dan anomali transaksi intra-grup |
+| `group:tp-audit-pack` | `manual` | Menghasilkan paket dossier audit kepatuhan transfer pricing lengkap (PMK 172/2023) |
 | `hcm:audit` | `manual` | Audit Human Capital Management payroll calculations, deductions, and labor allocations (0 discrepancies) |
 | `hcm:encrypt-legacy` | `manual` | Idempotently backfill encrypted NIK and blind index for legacy employee records |
 | `hcm:run-payroll` | `manual` | Menjalankan kalkulasi penggajian bulanan enterprise secara idempoten |
@@ -993,7 +998,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 375 Command** | **37 Terjadwal** | |
+| **Total: 380 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
