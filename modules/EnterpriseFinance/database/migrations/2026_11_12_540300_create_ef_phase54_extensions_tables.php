@@ -42,7 +42,7 @@ return new class extends Migration
                 $table->boolean('is_locked')->default(false);
                 $table->timestamp('locked_at')->nullable();
                 $table->unsignedBigInteger('locked_by')->nullable();
-                $table->string('closing_voucher_id', 64)->nullable();
+                $table->string('closing_voucher_ref', 64)->nullable();
                 $table->json('subledger_recon_summary')->nullable();
                 $table->bigInteger('net_income_loss_minor')->default(0);
                 $table->timestamps();
@@ -55,7 +55,7 @@ return new class extends Migration
         if (! Schema::hasTable('ef_sod_exceptions')) {
             Schema::create('ef_sod_exceptions', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->string('sod_rule_id', 64);
+                $table->string('sod_rule_ref', 64);
                 $table->unsignedBigInteger('user_id');
                 $table->unsignedBigInteger('granted_by');
                 $table->text('justification');
@@ -89,7 +89,7 @@ return new class extends Migration
                 $table->unsignedInteger('sample_count');
                 $table->unsignedInteger('deviation_count')->default(0);
                 $table->json('details')->nullable();
-                $table->string('task_id', 64)->nullable();
+                $table->string('task_ref', 64)->nullable();
                 $table->timestamps();
 
                 $table->foreign('control_id')->references('id')->on('ef_control_points')->cascadeOnDelete();

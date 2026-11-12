@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\EnterpriseFinance\Ledger;
 
+use Modules\Banking\Contracts\LedgerAccount;
 use Modules\Banking\Domain\Enums\AccountKind;
-use Modules\Banking\Domain\Models\LedgerAccount;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul EnterpriseFinance.
@@ -66,9 +66,11 @@ final class EnterpriseFinanceAccounts
         return LedgerAccount::create([
             'code' => $code,
             'name' => $name,
-            'kind' => $kind,
+            'kind' => $kind->value,
             'asset_code' => $assetCode,
             'allow_negative' => $allowNegative,
+            'cached_balance' => '0',
+            'is_frozen' => false,
         ]);
     }
 

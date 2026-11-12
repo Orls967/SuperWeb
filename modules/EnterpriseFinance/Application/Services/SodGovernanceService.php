@@ -227,7 +227,7 @@ class SodGovernanceService
             if ($isDirectConflict || $isReverseConflict) {
                 // Periksa apakah ada pengecualian aktif yang sah
                 $hasActiveException = SodException::query()
-                    ->where('sod_rule_id', $rule['id'])
+                    ->where('sod_rule_ref', $rule['id'])
                     ->where('user_id', $userId)
                     ->where('status', 'ACTIVE')
                     ->where('expires_at', '>', $this->now())
@@ -300,7 +300,7 @@ class SodGovernanceService
         $expiresAt = $now->addDays($expiresDays);
 
         return SodException::create([
-            'sod_rule_id' => $sodRuleId,
+            'sod_rule_ref' => $sodRuleId,
             'user_id' => $userId,
             'granted_by' => $grantedBy,
             'justification' => $justification,

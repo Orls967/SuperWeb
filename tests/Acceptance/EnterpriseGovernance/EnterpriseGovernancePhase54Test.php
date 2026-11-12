@@ -213,7 +213,7 @@ class EnterpriseGovernancePhase54Test extends TestCase
             'entity_code' => 'CORRUPT-ENT',
             'period' => '2026-09',
             'is_locked' => true,
-            'closing_voucher_id' => 'INVALID-VOUCHER',
+            'closing_voucher_ref' => 'INVALID-VOUCHER',
             'net_income_loss_minor' => 999999,
         ]);
 

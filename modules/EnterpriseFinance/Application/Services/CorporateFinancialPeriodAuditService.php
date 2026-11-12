@@ -95,7 +95,7 @@ class CorporateFinancialPeriodAuditService
         // Dimensi 6: Kekebalan Imutabilitas Periode Terkunci (Anti-Backdating)
         $corruptLocks = FinancialPeriodLock::query()
             ->where('is_locked', true)
-            ->where('closing_voucher_id', 'INVALID-VOUCHER')
+            ->where('closing_voucher_ref', 'INVALID-VOUCHER')
             ->count();
 
         $d6Discrepancies = $corruptLocks;

@@ -56,7 +56,7 @@
                                 <td class="p-3 text-right tabular-nums font-semibold {{ $tr->deviation_count > 0 ? 'text-red-600' : 'text-green-600' }}">
                                     {{ $tr->deviation_count }}
                                 </td>
-                                <td class="p-3 font-mono text-xs text-gray-500">{{ $tr->task_id ?? '-' }}</td>
+                                <td class="p-3 font-mono text-xs text-gray-500">{{ $tr->task_ref ?? '-' }}</td>
                             </tr>
                         @empty
                             <tr>

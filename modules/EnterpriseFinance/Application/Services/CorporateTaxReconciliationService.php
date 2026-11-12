@@ -16,8 +16,34 @@ class CorporateTaxReconciliationService
 {
     public function __construct(
         protected readonly EnterpriseFinanceLedgerPoster $ledgerPoster,
+        protected readonly ?CorporateTaxFilingService $taxFilingService = null,
         protected readonly ?ClockInterface $clock = null
     ) {}
+
+    /**
+     * Membentuk Draf SPT Masa PPN 1111 lengkap.
+     */
+    public function generateSptMasaPpn(
+        string $entityCode,
+        string $period,
+        int $exportTaxBaseMinor,
+        int $domesticTaxBaseMinor,
+        int $exemptTaxBaseMinor,
+        int $domesticInputTaxMinor,
+        int $importedGoodsInputTaxMinor
+    ): array {
+        $service = $this->taxFilingService ?? app(CorporateTaxFilingService::class);
+
+        return $service->generateSptMasaPpn1111(
+            $entityCode,
+            $period,
+            $exportTaxBaseMinor,
+            $domesticTaxBaseMinor,
+            $exemptTaxBaseMinor,
+            $domesticInputTaxMinor,
+            $importedGoodsInputTaxMinor
+        );
+    }
 
     protected function now(): CarbonImmutable
     {

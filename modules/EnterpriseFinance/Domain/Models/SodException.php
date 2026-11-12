@@ -15,7 +15,7 @@ class SodException extends Model
 
     protected $fillable = [
         'id',
-        'sod_rule_id',
+        'sod_rule_ref',
         'user_id',
         'granted_by',
         'justification',

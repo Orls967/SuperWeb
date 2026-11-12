@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\EnterpriseFinance\Application\Actions;
 
 use Modules\EnterpriseFinance\Application\Services\GoodwillImpairmentAssessmentEngine;
+use Modules\EnterpriseFinance\Domain\Algorithms\Goodwill\MergerAcquisitionValuationEngine;
 use Modules\EnterpriseFinance\Domain\DTOs\GoodwillImpairmentResultDTO;
 
 /**
@@ -34,6 +35,16 @@ class ConductAnnualGoodwillImpairmentReviewAction
             discountRateBps: $discountRateBps,
             terminalGrowthRateBps: $terminalGrowthRateBps
         );
+
+        if ($carryingAmountWithoutGoodwillMinor > 0) {
+            MergerAcquisitionValuationEngine::executePurchasePriceAllocation(
+                purchaseConsiderationMinor: $carryingAmountWithoutGoodwillMinor + $carryingGoodwillMinor,
+                bookValueNetAssetsMinor: $carryingAmountWithoutGoodwillMinor,
+                tangibleFairValueAdjustmentMinor: 0,
+                identifiableIntangiblesMinor: 0,
+                deferredTaxLiabilityMinor: 0
+            );
+        }
 
         return new GoodwillImpairmentResultDTO(
             cguCode: $result['cgu_code'],

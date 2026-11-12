@@ -30,7 +30,7 @@
                             <tr>
                                 <td class="p-3 font-mono font-medium">{{ $lock->period }}</td>
                                 <td class="p-3">{{ $lock->entity_code }}</td>
-                                <td class="p-3 font-mono text-xs">{{ $lock->closing_voucher_id ?? '-' }}</td>
+                                <td class="p-3 font-mono text-xs">{{ $lock->closing_voucher_ref ?? '-' }}</td>
                                 <td class="p-3 text-right tabular-nums font-semibold {{ $lock->net_income_loss_minor >= 0 ? 'text-green-600' : 'text-red-600' }}">
                                     IDR {{ number_format($lock->net_income_loss_minor, 0, ',', '.') }}
                                 </td>

@@ -22,7 +22,7 @@ class ControlTestRun extends Model
         'sample_count',
         'deviation_count',
         'details',
-        'task_id',
+        'task_ref',
     ];
 
     protected $casts = [

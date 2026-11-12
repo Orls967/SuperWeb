@@ -76,7 +76,7 @@
                     <tbody class="divide-y">
                         @forelse($exceptions as $ex)
                             <tr>
-                                <td class="p-3 font-mono font-medium">{{ $ex->sod_rule_id }}</td>
+                                <td class="p-3 font-mono font-medium">{{ $ex->sod_rule_ref }}</td>
                                 <td class="p-3">User #{{ $ex->user_id }}</td>
                                 <td class="p-3">User #{{ $ex->granted_by }}</td>
                                 <td class="p-3 text-xs text-gray-600">{{ $ex->justification }}</td>

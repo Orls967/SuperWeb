@@ -208,7 +208,7 @@ class EnterpriseFinanceLedgerPoster
     public function postSubholdingDividend(
         string $entity,
         int $amountMinor,
-        ?string $idempotencyKey = null,
+        string $idempotencyKey,
         ?int $userId = null
     ): LedgerTransaction {
         $this->ensureAccountsSeeded();
@@ -228,12 +228,10 @@ class EnterpriseFinanceLedgerPoster
             ->debit($declaredAccount, $amountMinor, $currency)
             ->credit($payableAccount, $amountMinor, $currency);
 
-        $idemKey = $idempotencyKey ?? "IDEM:EF:DIV_DEC:{$entity}:".time();
-
         return $this->ledgerService->post(new PostingDTO(
             type: EnterpriseFinanceTransactionTypes::SUBHOLDING_DIVIDEND_DECLARATION->value,
             description: "Deklarasi Dividen Subholding {$entity}",
-            idempotencyKey: $idemKey,
+            idempotencyKey: $idempotencyKey,
             entries: $lines->toEntries($currency),
             referenceType: 'ef_subholding_dividends',
             referenceId: "{$entity}:DIV",

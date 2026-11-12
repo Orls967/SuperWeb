@@ -20,7 +20,7 @@ class FinancialPeriodLock extends Model
         'is_locked',
         'locked_at',
         'locked_by',
-        'closing_voucher_id',
+        'closing_voucher_ref',
         'subledger_recon_summary',
         'net_income_loss_minor',
     ];

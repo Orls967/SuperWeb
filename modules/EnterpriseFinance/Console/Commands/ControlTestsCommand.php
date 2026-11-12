@@ -27,7 +27,7 @@ class ControlTestsCommand extends Command
                 $run->status,
                 $run->sample_count,
                 $run->deviation_count,
-                $run->task_id ?? '-',
+                $run->task_ref ?? '-',
             ];
         }
 

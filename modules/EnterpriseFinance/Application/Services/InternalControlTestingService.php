@@ -145,7 +145,7 @@ class InternalControlTestingService
             'sample_count' => max(1, $sampleCount),
             'deviation_count' => $deviations,
             'details' => $deviationDetails,
-            'task_id' => $taskId,
+            'task_ref' => $taskId,
         ]);
 
         // 2. Uji CP-02: 3-Way Match Verification
@@ -156,7 +156,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Seluruh sampel faktur cocok dengan PO dan GRN.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 3. Uji CP-03: Toleransi Timbangan
@@ -167,7 +167,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Deviasi timbangan berada di bawah batas permil.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 4. Uji CP-04: Margin Floor
@@ -178,7 +178,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Tidak ditemukan penjualan di bawah standar biaya tanpa diskon resmi.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 5. Uji CP-05: Credit Limit Enforcement
@@ -189,7 +189,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Seluruh pesanan pelanggan tertahan mematuhi plafon kredit AR.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 6. Uji CP-06: Dual Sign-off Bank Disbursements
@@ -200,7 +200,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Pencairan kas besar memiliki voucher pengeluaran berotorisasi ganda.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 7. Uji CP-07: Fixed Asset Depreciation
@@ -211,7 +211,7 @@ class InternalControlTestingService
             'sample_count' => $sampleSize,
             'deviation_count' => 0,
             'details' => ['message' => 'Penyusutan aset tetap terhitung konsisten menurut masa manfaat SAK.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         // 8. Uji CP-08: Period Immutability
@@ -223,7 +223,7 @@ class InternalControlTestingService
             'sample_count' => max(1, $lockedPeriods),
             'deviation_count' => 0,
             'details' => ['message' => 'Ketiadaan mutasi susulan pada seluruh periode terkunci terverifikasi.'],
-            'task_id' => null,
+            'task_ref' => null,
         ]);
 
         return $results;

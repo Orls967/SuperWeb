@@ -108,7 +108,7 @@ class CorporateDividendDistributionService
         }
 
         return DB::transaction(function () use ($entityCode, $amountMinor, $rupsResolutionNumber, $operatorId): array {
-            $voucher = $this->ledgerPoster->postSubholdingDividendDeclaration(
+            $voucher = $this->ledgerPoster->postSubholdingDividend(
                 entity: $entityCode,
                 amountMinor: $amountMinor,
                 idempotencyKey: "IDEM:EF:DIV:{$entityCode}:".md5($rupsResolutionNumber),

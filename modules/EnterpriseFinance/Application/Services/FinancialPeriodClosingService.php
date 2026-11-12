@@ -173,7 +173,7 @@ class FinancialPeriodClosingService
                     'is_locked' => true,
                     'locked_at' => $this->now(),
                     'locked_by' => $operatorId,
-                    'closing_voucher_id' => (string) $voucher->id,
+                    'closing_voucher_ref' => (string) $voucher->id,
                     'subledger_recon_summary' => $reconSummary,
                     'net_income_loss_minor' => $netIncomeLossMinor,
                 ]

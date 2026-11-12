@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Modules\EnterpriseFinance\Domain\Algorithms\ConsolidatedTrialBalanceAggregator;
+use Modules\EnterpriseFinance\Domain\Algorithms\Forecasting\CorporateCashRunwayForecaster;
 use Modules\EnterpriseFinance\Domain\Algorithms\SyndicatedLoanCovenantCalculator;
 use Modules\EnterpriseFinance\Domain\DTOs\AccountBalanceDTO;
 use Modules\EnterpriseFinance\Domain\DTOs\ConsolidatedFinancialRatiosDTO;
@@ -255,13 +256,18 @@ class EnterpriseFinanceService
         int $inventoryBalanceMinor,
         int $apBalanceMinor
     ): WorkingCapitalMetric {
-        $dailySales = ($revenueMinor > 0) ? (int) intdiv($revenueMinor, 365) : 1;
-        $dailyCogs = ($cogsMinor > 0) ? (int) intdiv($cogsMinor, 365) : 1;
+        $cccResult = CorporateCashRunwayForecaster::calculateCashConversionCycle(
+            receivablesMinor: $arBalanceMinor,
+            inventoryMinor: $inventoryBalanceMinor,
+            payablesMinor: $apBalanceMinor,
+            annualRevenueMinor: max(1, $revenueMinor),
+            annualCogsMinor: max(1, $cogsMinor)
+        );
 
-        $dso = (int) intdiv($arBalanceMinor, $dailySales);
-        $dio = (int) intdiv($inventoryBalanceMinor, $dailyCogs);
-        $dpo = (int) intdiv($apBalanceMinor, $dailyCogs);
-        $ccc = ($dso + $dio) - $dpo;
+        $dso = $cccResult['dso_days'];
+        $dio = $cccResult['dio_days'];
+        $dpo = $cccResult['dpo_days'];
+        $ccc = $cccResult['ccc_days'];
 
         $tier = ($ccc <= 30) ? 'EXCELLENT' : (($ccc <= 60) ? 'NORMAL' : 'NEEDS_IMPROVEMENT');
 
@@ -420,8 +426,8 @@ class EnterpriseFinanceService
         $invalidLocks = FinancialPeriodLock::query()
             ->where('is_locked', true)
             ->where(function ($q) {
-                $q->whereNull('closing_voucher_id')
-                    ->orWhere('closing_voucher_id', 'like', 'INVALID%');
+                $q->whereNull('closing_voucher_ref')
+                    ->orWhere('closing_voucher_ref', 'like', 'INVALID%');
             })
             ->count();
 
@@ -430,7 +436,11 @@ class EnterpriseFinanceService
             ->whereRaw('vat_output_minor >= vat_input_minor AND net_payable_minor != (vat_output_minor - vat_input_minor)')
             ->count();
 
-        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates + $invalidLocks + $invalidTaxRecons;
+        // Audit Komprehensif Dua Sumber 10-Dimensi
+        $auditService = app(CorporateFinancialPeriodAuditService::class);
+        $compAudit = $auditService->executeComprehensiveAudit();
+
+        $discrepancyCount = $invalidBudgets + $invalidTaxes + $invalidConsolidations + $invalidFacilities + $invalidFacilityDates + $invalidLocks + $invalidTaxRecons + $compAudit['total_discrepancies'];
 
         return [
             'status' => ($discrepancyCount === 0) ? 'OK' : 'DISCREPANCY',

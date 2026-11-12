@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\EnterpriseFinance\Application\Services;
 
 use Modules\Banking\Application\Services\LedgerService;
+use Modules\EnterpriseFinance\Domain\Models\WorkingCapitalMetric;
 
 /**
  * Layanan Kompilasi dan Penerbitan Laporan Keuangan Standar Korporat Multi-Entitas.
@@ -50,32 +51,51 @@ class CorporateFinancialReportGeneratorService
      */
     public function generateBalanceSheet(string $entityCode, string $asOfDate): array
     {
+        $metric = WorkingCapitalMetric::where('entity_code', $entityCode)->latest('period')->first()
+            ?? WorkingCapitalMetric::latest('period')->first();
+
         // 1. Aset Lancar
+        $cashMinor = 12_500_000_000_00;
+        $arMinor = $metric?->ar_balance_minor ? (int) ($metric->ar_balance_minor * 100) : 8_450_000_000_00;
+        $invMinor = $metric?->inventory_balance_minor ? (int) ($metric->inventory_balance_minor * 100) : 6_200_000_000_00;
+        $prepaidVat = 450_000_000_00;
+        $prepaidExpenses = 300_000_000_00;
+
         $currentAssets = [
-            'Kas & Setara Kas' => 12_500_000_000_00,
-            'Piutang Usaha Bersih' => 8_450_000_000_00,
-            'Persediaan Barang Dagang' => 6_200_000_000_00,
-            'Pajak Dibayar di Muka (PPN Masukan)' => 450_000_000_00,
-            'Biaya Dibayar di Muka' => 300_000_000_00,
+            'Kas & Setara Kas' => $cashMinor,
+            'Piutang Usaha Bersih' => $arMinor,
+            'Persediaan Barang Dagang' => $invMinor,
+            'Pajak Dibayar di Muka (PPN Masukan)' => $prepaidVat,
+            'Biaya Dibayar di Muka' => $prepaidExpenses,
         ];
         $totalCurrentAssets = array_sum($currentAssets);
 
         // 2. Aset Tidak Lancar
+        $fixedAssets = 45_000_000_000_00;
+        $depreciation = -9_500_000_000_00;
+        $intangibles = 3_200_000_000_00;
+        $investments = 15_000_000_000_00;
+
         $nonCurrentAssets = [
-            'Aset Tetap (Nilai Perolehan)' => 45_000_000_000_00,
-            'Akumulasi Penyusutan' => -9_500_000_000_00,
-            'Aset Tak Berwujud & Goodwill' => 3_200_000_000_00,
-            'Investasi pada Entitas Anak' => 15_000_000_000_00,
+            'Aset Tetap (Nilai Perolehan)' => $fixedAssets,
+            'Akumulasi Penyusutan' => $depreciation,
+            'Aset Tak Berwujud & Goodwill' => $intangibles,
+            'Investasi pada Entitas Anak' => $investments,
         ];
         $totalNonCurrentAssets = array_sum($nonCurrentAssets);
         $totalAssets = $totalCurrentAssets + $totalNonCurrentAssets;
 
         // 3. Kewajiban Jangka Pendek
+        $apMinor = $metric?->ap_balance_minor ? (int) ($metric->ap_balance_minor * 100) : 5_800_000_000_00;
+        $taxPayable = 650_000_000_00;
+        $accruals = 1_200_000_000_00;
+        $shortTermBankLoan = 2_500_000_000_00;
+
         $currentLiabilities = [
-            'Utang Usaha (AP)' => 5_800_000_000_00,
-            'Utang PPN Keluaran & PPh' => 650_000_000_00,
-            'Beban Akrual & Gaji Karyawan' => 1_200_000_000_00,
-            'Bagian Utang Bank Lancar' => 2_500_000_000_00,
+            'Utang Usaha (AP)' => $apMinor,
+            'Utang PPN Keluaran & PPh' => $taxPayable,
+            'Beban Akrual & Gaji Karyawan' => $accruals,
+            'Bagian Utang Bank Lancar' => $shortTermBankLoan,
         ];
         $totalCurrentLiabilities = array_sum($currentLiabilities);
 
@@ -146,22 +166,25 @@ class CorporateFinancialReportGeneratorService
      */
     public function generateIncomeStatement(string $entityCode, string $period): array
     {
-        $grossRevenue = 18_500_000_000_00;
-        $salesDiscounts = 350_000_000_00;
+        $metric = WorkingCapitalMetric::where('entity_code', $entityCode)->latest('period')->first()
+            ?? WorkingCapitalMetric::latest('period')->first();
+
+        $grossRevenue = $metric?->revenue_minor ? (int) ($metric->revenue_minor * 100) : 18_500_000_000_00;
+        $salesDiscounts = intdiv($grossRevenue * 2, 100);
         $netRevenue = $grossRevenue - $salesDiscounts;
 
-        $cogs = 11_200_000_000_00;
+        $cogs = $metric?->cogs_minor ? (int) ($metric->cogs_minor * 100) : 11_200_000_000_00;
         $grossProfit = $netRevenue - $cogs;
 
-        $operatingExpenses = 3_450_000_000_00; // Biaya Gaji, Sewa, Utilitas, Pemasaran
+        $operatingExpenses = intdiv($grossRevenue * 18, 100); // Biaya Gaji, Sewa, Utilitas, Pemasaran
         $ebit = $grossProfit - $operatingExpenses;
 
-        $interestExpense = 420_000_000_00;
-        $otherIncomeExpense = 110_000_000_00; // Selisih kurs & pendapatan bunga
+        $interestExpense = intdiv($grossRevenue * 2, 100);
+        $otherIncomeExpense = intdiv($grossRevenue * 6, 1000); // Selisih kurs & pendapatan bunga
         $ebt = $ebit - $interestExpense + $otherIncomeExpense;
 
         // Beban Pajak Penghasilan Badan (CIT) 22% UU HPP
-        $taxExpense = intdiv($ebt * 2200, 10000);
+        $taxExpense = intdiv(max(0, $ebt) * 2200, 10000);
         $netIncome = $ebt - $taxExpense;
 
         return [
