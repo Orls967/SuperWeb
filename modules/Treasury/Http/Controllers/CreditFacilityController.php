@@ -20,7 +20,7 @@ final class CreditFacilityController extends Controller
     public function index(Request $request): JsonResponse
     {
         $facilities = CreditFacility::query()
-            ->where('is_active', true)
+            ->where('status', 'active')
             ->orderBy('bank_name')
             ->get();
 
@@ -35,7 +35,7 @@ final class CreditFacilityController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'facility' => $facility,
+            'facility' => $facility->load('drawdowns'),
         ]);
     }
 
@@ -43,10 +43,10 @@ final class CreditFacilityController extends Controller
     {
         $result = $this->drawAction->execute(
             facility: $facility,
-            amount: $request->getAmount(),
+            amountIdr: $request->getAmount(),
             currentDerPermille: $request->getCurrentDerPermille(),
-            description: $request->getDescription(),
-            actorId: auth()->id() ?? 1
+            idempotencyKey: $request->header('Idempotency-Key'),
+            userId: $request->user()?->id ?? 1
         );
 
         return response()->json([

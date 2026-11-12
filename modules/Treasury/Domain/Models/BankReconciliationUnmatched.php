@@ -20,10 +20,13 @@ class BankReconciliationUnmatched extends Model
         'reason',
         'notes',
         'status',
+        'aging_days',
+        'escalation_task_id',
         'reported_by',
     ];
 
     protected $casts = [
+        'aging_days' => 'integer',
         'reported_by' => 'integer',
     ];
 

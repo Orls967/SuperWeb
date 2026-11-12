@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Treasury;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Treasury\Application\Listeners\TreasuryDomainEventSubscriber;
+use Modules\Treasury\Application\Services\BankStatementImportService;
+use Modules\Treasury\Application\Services\TreasuryCovenantGovernanceService;
+use Modules\Treasury\Application\Services\TreasuryEventPublisher;
 use Modules\Treasury\Application\Services\TreasuryLedgerPoster;
 use Modules\Treasury\Application\Services\TreasuryService;
+use Modules\Treasury\Application\Services\TreasuryTaskInboxNotifier;
 use Modules\Treasury\Console\Commands\AuditTreasuryCommand;
 use Modules\Treasury\Console\Commands\CashPoolSweepCommand;
 use Modules\Treasury\Console\Commands\DailyMarkToMarketCommand;
@@ -20,6 +26,9 @@ use Modules\Treasury\Console\Commands\RunFxRevaluationCommand;
 use Modules\Treasury\Console\Commands\TestCreditCovenantCommand;
 use Modules\Treasury\Contracts\ExchangeRateLookup;
 use Modules\Treasury\Contracts\FxMonetaryItemFeed;
+use Modules\Treasury\Domain\Events\TreasuryCovenantBreachedEvent;
+use Modules\Treasury\Domain\Events\TreasuryHedgeMaturedEvent;
+use Modules\Treasury\Domain\Events\TreasuryRevaluationPostedEvent;
 use Modules\Treasury\Infrastructure\Api\ExchangeRateResourceProvider;
 
 class TreasuryServiceProvider extends ServiceProvider
@@ -28,10 +37,16 @@ class TreasuryServiceProvider extends ServiceProvider
     {
         $this->app->singleton(TreasuryService::class);
         $this->app->singleton(TreasuryLedgerPoster::class);
+        $this->app->singleton(TreasuryEventPublisher::class);
+        $this->app->singleton(TreasuryTaskInboxNotifier::class);
+        $this->app->singleton(TreasuryDomainEventSubscriber::class);
+        $this->app->singleton(BankStatementImportService::class);
+        $this->app->singleton(TreasuryCovenantGovernanceService::class);
 
         $this->app->bind(ExchangeRateLookup::class, TreasuryService::class);
         $this->app->bind(FxMonetaryItemFeed::class, TreasuryService::class);
 
+        $this->app->tag(TreasuryService::class, 'treasury.fx_monetary_item_feed');
         $this->app->tag(ExchangeRateResourceProvider::class, 'core.api_resource_provider');
     }
 
@@ -65,6 +80,19 @@ class TreasuryServiceProvider extends ServiceProvider
                 ExportTreasuryReportsCommand::class,
             ]);
         }
+
+        Event::listen(
+            TreasuryRevaluationPostedEvent::class,
+            [TreasuryDomainEventSubscriber::class, 'handleRevaluationPosted']
+        );
+        Event::listen(
+            TreasuryCovenantBreachedEvent::class,
+            [TreasuryDomainEventSubscriber::class, 'handleCovenantBreached']
+        );
+        Event::listen(
+            TreasuryHedgeMaturedEvent::class,
+            [TreasuryDomainEventSubscriber::class, 'handleHedgeMatured']
+        );
 
         $this->registerMenu();
     }

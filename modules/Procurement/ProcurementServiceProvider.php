@@ -16,6 +16,7 @@ use Modules\Procurement\Infrastructure\Api\PurchaseOrderResourceProvider;
 use Modules\Procurement\Infrastructure\Edi\ProcurementEdiInvoiceHandler;
 use Modules\Procurement\Infrastructure\Retention\ProcurementPoVersionRetentionProvider;
 use Modules\Procurement\Infrastructure\Tenancy\ProcurementTenantScopedModelProvider;
+use Modules\Procurement\Infrastructure\Treasury\ProcurementFxMonetaryItemFeed;
 use Modules\Shared\Application\MenuRegistry;
 
 class ProcurementServiceProvider extends ServiceProvider
@@ -31,6 +32,7 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->app->tag(ProcurementTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
         $this->app->tag(ProcurementPoVersionRetentionProvider::class, 'core.retention_archive_provider');
         $this->app->tag(ProcurementVendorExposureProvider::class, 'core.vendor_exposure_provider');
+        $this->app->tag(ProcurementFxMonetaryItemFeed::class, 'treasury.fx_monetary_item_feed');
     }
 
     public function boot(): void

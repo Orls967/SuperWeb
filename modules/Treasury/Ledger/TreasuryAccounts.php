@@ -124,7 +124,7 @@ final class TreasuryAccounts
                 'name' => 'Beban Biaya Pembatalan Lindung Nilai IDR',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:bank_reconciliation_diff:IDR',
@@ -138,21 +138,21 @@ final class TreasuryAccounts
                 'name' => 'Utang Pokok Fasilitas Kredit Bank IDR',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:interest_expense:IDR',
                 'name' => 'Beban Bunga Pinjaman Bank IDR',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:interest_payable:IDR',
                 'name' => 'Utang Bunga Pinjaman Bank IDR',
                 'kind' => AccountKind::LIABILITY,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:pool_sweep_clearing:default:IDR',
@@ -168,21 +168,21 @@ final class TreasuryAccounts
                 'name' => 'Kas Operasional Treasury IDR',
                 'kind' => AccountKind::ASSET,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:petty_cash:IDR',
                 'name' => 'Kas Kecil Imprest IDR',
                 'kind' => AccountKind::ASSET,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
             [
                 'code' => 'trs:petty_cash_expense:IDR',
                 'name' => 'Beban Kas Kecil IDR',
                 'kind' => AccountKind::EXPENSE,
                 'asset_code' => 'IDR',
-                'allow_negative' => false,
+                'allow_negative' => true,
             ],
 
             // Bank Operasional Multi-Entitas & Multi-Valas

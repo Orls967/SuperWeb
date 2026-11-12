@@ -89,6 +89,7 @@ use App\Quality\Audit\Fixtures\TlxAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TowerAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TradeAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\TreasuryAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\TreasuryReconcileCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenCrowdAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\VenEconomyAuditCorruptionFixture;
@@ -197,6 +198,7 @@ final class AuditCommandRegistry
             'tower:audit' => new TowerAuditCorruptionFixture,
             'trade:audit' => new TradeAuditCorruptionFixture,
             'treasury:audit' => new TreasuryAuditCorruptionFixture,
+            'treasury:reconcile' => new TreasuryReconcileCorruptionFixture,
             'ven:audit' => new VenAuditCorruptionFixture,
             'ven:audit-crowd' => new VenCrowdAuditCorruptionFixture('ven:audit-crowd'),
             'ven:audit-economy' => new VenEconomyAuditCorruptionFixture('ven:audit-economy'),

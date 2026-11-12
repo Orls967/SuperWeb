@@ -107,3 +107,69 @@ Setiap transaksi mematuhi konvensi KONSEP §A2.1 (Debit -, Credit +, Σ = 0 per 
 - **W8-D68**: Covenant fasilitas bank berbasis permil integer tanpa float.
 - **W8-D69**: Cash pooling zero-balancing via pinjaman intercompany arm's length.
 
+---
+
+## 7. Spesifikasi Kelengkapan W8-P5-b.3 (D48-5, D48-11, D48-12)
+
+### 7.1 Kelengkapan Rekening Bank, Rekonsiliasi & Kas Kecil Imprest (D48-5)
+1. **Impor Rekening Koran Idempoten (`BankStatementImportService`)**:
+   - Mendukung format SWIFT MT940 (`:20:`, `:25:`, `:28C:`, `:60F:`, `:61:`, `:86:`, `:62F:`) serta format CSV standar perbankan korporat.
+   - Setiap batch impor direkam ke tabel `trs_statement_import_batches` dengan sidik jari `payload_hash` (SHA-256). Pengiriman ulang berkas yang sama dikenali secara idempoten (`is_duplicate_batch = true`, `imported_count = 0`).
+2. **Antrean Unmatched dengan Umur (`aging_days`) & Eskalasi TaskInbox**:
+   - Baris mutasi bank yang tidak terpadankan setelah Tahap 1 (Exact), Tahap 2 (Toleransi), dan Tahap 3 (Subset Many-to-One) dicatat di `trs_bank_reconciliation_unmatched` lengkap dengan perhitungan `aging_days` deterministik terhadap `ClockInterface` dan nomor tiket `escalation_task_id` dari `TaskInboxService::createTask()`.
+3. **Pembatalan Pemadanan (`UnmatchBankStatementAction`)**:
+   - Mewajibkan alasan tertulis (`unmatch_reason`), mencatat ID petugas (`unmatched_by`) dan waktu pembatalan (`unmatched_at`) pada `trs_bank_statements`, serta menghapus rekaman `trs_bank_reconciliation_matches` dalam satu transaksi atomik.
+4. **Kas Kecil Sistem Imprest & Opname Fisik (`trs_petty_cash_replenishments`)**:
+   - Mendukung pengajuan voucher (`submitVoucher`), persetujuan & pencairan Four-Eyes (`approveAndReimburse`), serta pengisian kembali pagu imprest (`replenishImprestFund`) yang menghitung selisih opname fisik kas (`shortage_overage_idr`) dan memosting jurnal selisih serta jurnal replenishment ke `LedgerService`.
+
+### 7.2 Enam Titik Integrasi Lintas-Modul (D48-11)
+1. **(a) Ledger Posting (`TreasuryLedgerPoster` -> `LedgerService`)**:
+   - Seluruh 15 kejadian uang pada Tabel D48-10 diposting dengan konvensi single-sign ($\Sigma\text{debit} + \Sigma\text{kredit} = 0$) dan kunci idempotensi deterministik `IDEM:TRS:*`.
+2. **(b) Feed Pos Moneter Valas Lintas-Modul (`FxMonetaryItemFeed`)**:
+   - Kontrak `Modules\Treasury\Contracts\FxMonetaryItemFeed` diimplementasikan oleh minimal 2 modul sumber eksternal:
+     - `Modules\Procurement\Infrastructure\Treasury\ProcurementFxMonetaryItemFeed` (membaca komitmen/PO impor valas terbuka dari `prc_purchase_orders`).
+     - `Modules\Trade\Infrastructure\Treasury\TradeFxMonetaryItemFeed` (membaca pesanan impor `trd_import_orders` dan pengapalan ekspor `trd_export_shipments` berdenominasi valas).
+   - Keduanya ditag sebagai `'treasury.fx_monetary_item_feed'` pada ServiceProvider masing-masing dan diagregasi oleh `TreasuryCovenantGovernanceService::aggregateAndRevalueCrossModuleFeeds()`.
+3. **(c) Integrasi Intercompany untuk Cash Pooling & Pinjaman**:
+   - Sweep zero-balancing dan notional cash pooling membentuk kode akun kliring antar-entitas melalui `EntityAccountFactory::forPoolSweepClearing()` dan menautkan `intercompany_loan_id` pada `trs_cash_pool_sweeps`.
+4. **(d) Integrasi Finance untuk Eksposur Covenant (`LoanExposureProvider`)**:
+   - `DrawFacilityAction`, `DrawCreditFacilityAction`, dan `TestCreditCovenantCommand` membaca total utang dan ekuitas grup melalui `Modules\Finance\Contracts\LoanExposureProvider`.
+5. **(e) Integrasi Governance (`ApprovalEngine` & `TaskInboxService`)**:
+   - Persetujuan kontrak lindung nilai (`HedgeContractStateMachine`) dan keringanan covenant (`CovenantWaiver` di `trs_covenant_waivers`) menegakkan prinsip Four-Eyes Segregation of Duties (`creator_id != approver_id` / `requested_by != approved_by`).
+   - Mutasi bank tak terpadankan, covenant mendekati batas ($\ge 90\%$), kontrak forward jatuh tempo, dan saldo kas kecil menipis ($< 20\%$ pagu imprest) otomatis menerbitkan tugas di `TaskInboxService`.
+6. **(f) Tiga Event Resmi di `EventCatalog` & Konsumen Nyata**:
+   - `treasury.revaluation.posted.v1` (`TreasuryRevaluationPostedEvent`)
+   - `treasury.covenant.breached.v1` (`TreasuryCovenantBreachedEvent`)
+   - `treasury.hedge.matured.v1` (`TreasuryHedgeMaturedEvent`)
+   - Ketiganya terdaftar di `Modules\Core\Domain\Events\EventCatalog`, dipancarkan melalui `TreasuryEventPublisher`, dan dikonsumsi oleh `TreasuryDomainEventSubscriber`.
+
+### 7.3 Delapan Pemeriksaan Audit Dua Sumber (`treasury:audit` — D48-12)
+Perintah `php artisan treasury:audit` memverifikasi 8 invarian dua sumber dan keluar dengan kode `0` hanya bila seluruh pemeriksaan bersih:
+1. **Check 1**: $\Sigma$ entri buku besar per transaksi dan per mata uang bernilai tepat nol.
+2. **Check 2**: Konsistensi saldo terpakai fasilitas kredit (`drawn_amount_idr`) terhadap jumlah riwayat penarikan subledger (`trs_credit_facility_drawdowns`), batas plafon (`credit_limit_idr`), dan validitas nosional kontrak forward aktif.
+3. **Check 3**: Kelengkapan pasangan revaluasi–pembalik (`reverse_of` merujuk ke induk sah dengan `gain_loss_idr` berlawanan tanda persis).
+4. **Check 4**: Invarian satu keadaan (*single-state invariant*) pada mutasi bank (`trs_bank_statements` tidak boleh berstatus `is_reconciled = true` sekaligus memiliki antrean `pending` di `trs_bank_reconciliation_unmatched` atau `reconciliation_status = unmatched`).
+5. **Check 5**: Kecocokan nominal antara rekaman `trs_bank_reconciliation_matches` bertipe `exact` dengan nilai mutasi di `trs_bank_statements`.
+6. **Check 6**: Lot valas berstatus `exhausted` pada `trs_fx_lots` wajib memiliki `remaining_amount = 0` dan `current_carrying_idr = 0`.
+7. **Check 7**: Tidak ada saldo negatif pada rekening kas kecil (`is_petty_cash = true`) maupun akun buku besar perbendaharaan ber-atribut `allow_negative = false`.
+8. **Check 8**: Rasio covenant tersimpan (`covenant_der_permil`) pada `trs_credit_facility_drawdowns` cocok dengan hasil hitung ulang rasional $\lfloor \text{verified\_debt\_idr} \times 1000 / \text{verified\_equity\_idr} \rfloor$.
+
+---
+
+## 8. Matriks Ketertelusuran Kriteria Penerimaan (Acceptance Criteria Traceability Matrix)
+
+| Sub-Fase | Deskripsi Kriteria Penerimaan | Komponen Implementasi Utama | Pengujian Verifikasi (`tests/Acceptance/Treasury/`) |
+|---|---|---|---|
+| **48.1** | Skema 15+ tabel `trs_*`, model Eloquent integer minor units, migrasi dengan indeks pendek $\le 64$ karakter | `2026_03_28_000148_create_treasury_tables.php`, `2026_11_12_480300_create_trs_phase48_completeness_tables.php`, `ExchangeRate`, `FxLot`, `ForwardContract`, `CovenantWaiver`, `PettyCashReplenishment`, `StatementImportBatch` | `TreasuryEndToEndLifecycleTest`, `TreasuryDualSourceAuditTest` |
+| **48.2** | Master kurs rasional append-only (`RationalRate`), konversi mata uang tanpa float, subledger `trs_fx_lots`, pelunasan parsial/penuh | `RationalRate`, `TreasuryService::recordExchangeRate()`, `convertAmount()`, `settleFxLot()` | `FxRevaluationCalculatorVectorTest`, `TreasuryEndToEndLifecycleTest` |
+| **48.3** | Algoritma D1 `FxRevaluationCalculator`, sertifikat SHA-256 `FxRevaluationCertificateVerifier`, revaluasi aset & liabilitas, pembalik otomatis, feed lintas-modul `FxMonetaryItemFeed` | `FxRevaluationCalculator`, `RunFxRevaluationAction`, `RunMultiCurrencyFxRevaluationAction`, `ReverseFxRevaluationAction`, `ProcurementFxMonetaryItemFeed`, `TradeFxMonetaryItemFeed` | `FxRevaluationCalculatorVectorTest`, `TreasuryEndToEndLifecycleTest`, `TreasuryBusinessRulesAndFailureTest` |
+| **48.4** | Algoritma D2 `BankReconciliationMatcher` 3 tahap (exact, tolerance, subset), impor MT940/CSV idempoten, antrean unmatched dengan `aging_days` & eskalasi `TaskInbox`, aksi `UnmatchBankStatementAction` | `BankReconciliationMatcher`, `BankStatementImportService`, `ReconcileBankStatementsAction`, `UnmatchBankStatementAction`, `ReconcileBankStatementsCommand` | `BankReconciliationMatcherVectorTest`, `TreasuryEndToEndLifecycleTest`, `TreasuryBusinessRulesAndFailureTest` |
+| **48.5** | Algoritma D3 `SeasonalCashForecaster` 13 minggu, dekomposisi musiman 4-mingguan & regresi OLS rasional, 3 skenario (`base`, `optimistic`, `pessimistic`) | `SeasonalCashForecaster`, `SeasonalCashForecastCertificateVerifier`, `GenerateCashForecastAction`, `ForecastCashCommand` | `SeasonalCashForecasterVectorTest`, `TreasuryEndToEndLifecycleTest` |
+| **48.6** | State machine `HedgeContractStateMachine` 8 status (`draft`..`cancelled`), Four-Eyes guard, MTM harian, settlement, roll-over, kalkulasi penalti pembatalan, event `treasury.hedge.matured.v1` | `HedgeContractStateMachine`, `BookForwardContractAction`, `MarkToMarketHedgeCommand`, `ForwardContractHistory`, `TreasuryHedgeMaturedEvent` | `TreasuryEndToEndLifecycleTest`, `TreasuryBusinessRulesAndFailureTest` |
+| **48.7** | Fasilitas kredit & pengawasan covenant DER/ICR permil bulat, blokir otomatis saat breach + pancaran `treasury.covenant.breached.v1`, alur `CovenantWaiver` Four-Eyes, akrual bunga rasional | `DrawFacilityAction`, `DrawCreditFacilityAction`, `TreasuryCovenantGovernanceService`, `TestCreditCovenantCommand`, `CovenantWaiver` | `TreasuryEndToEndLifecycleTest`, `TreasuryBusinessRulesAndFailureTest` |
+| **48.8** | Cash pooling zero-balancing (`sub_to_header` & `header_to_sub`), perlindungan saldo negatif, integrasi pinjaman intercompany, kas kecil sistem imprest & opname fisik | `ExecuteCashPoolSweepAction`, `ProcessPettyCashVoucherAction`, `SweepCashPoolCommand`, `PettyCashReplenishment` | `TreasuryEndToEndLifecycleTest`, `TreasuryBusinessRulesAndFailureTest` |
+| **48.9** | Antarmuka HTTP & API tipis, `TreasuryPolicy` RBAC (`treasury`, `auditor`, `admin`), `TreasuryDashboardViewModel`, 8 laporan CSV `TreasuryReportExportService` | `ExchangeRateController`, `ReconciliationController`, `CashForecastController`, `HedgeContractController`, `CreditFacilityController`, `CashPoolController`, `PettyCashController` | `TreasuryRbacAndIdempotencyTest`, `TreasuryEndToEndLifecycleTest` |
+| **48.10** | Perintah `treasury:audit` 8 pemeriksaan dua sumber (ledger vs subledger), dokumentasi DoR/Desain/Konsep/Runbook/Panduan/Galat | `AuditTreasuryCommand`, `TreasuryLedgerPoster`, berkas `docs/**/fase-48.md` & `docs/**/treasury-*.md` | `TreasuryDualSourceAuditTest` |
+
+
+

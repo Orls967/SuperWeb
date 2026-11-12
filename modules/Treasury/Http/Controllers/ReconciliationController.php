@@ -8,27 +8,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Treasury\Application\Actions\ReconcileBankStatementsAction;
+use Modules\Treasury\Application\Actions\UnmatchBankStatementAction;
 use Modules\Treasury\Domain\Models\BankAccount;
 use Modules\Treasury\Domain\Models\BankReconciliationMatch;
 use Modules\Treasury\Domain\Models\BankReconciliationUnmatched;
+use Modules\Treasury\Domain\Models\BankStatement;
 use Modules\Treasury\Http\Requests\ReconcileBankStatementsRequest;
 
 final class ReconciliationController extends Controller
 {
     public function __construct(
-        protected readonly ReconcileBankStatementsAction $reconcileAction
+        protected readonly ReconcileBankStatementsAction $reconcileAction,
+        protected readonly UnmatchBankStatementAction $unmatchAction
     ) {}
 
     public function index(Request $request): JsonResponse
     {
         $bankAccountId = $request->query('bank_account_id');
-        $query = BankReconciliationMatch::query();
+        $query = BankReconciliationMatch::query()->with('statement');
 
         if ($bankAccountId) {
-            $query->where('bank_account_id', $bankAccountId);
+            $query->whereHas('statement', fn ($q) => $q->where('bank_account_id', $bankAccountId));
         }
 
-        $matches = $query->orderByDesc('matched_at')->limit(50)->get();
+        $matches = $query->orderByDesc('created_at')->limit(50)->get();
 
         return response()->json([
             'status' => 'success',
@@ -44,7 +47,7 @@ final class ReconciliationController extends Controller
 
         $result = $this->reconcileAction->execute(
             bankAccount: $bankAccount,
-            toleranceDays: $request->getDateToleranceDays()
+            userId: $request->user()?->id
         );
 
         return response()->json([
@@ -57,18 +60,36 @@ final class ReconciliationController extends Controller
     public function unmatched(Request $request): JsonResponse
     {
         $bankAccountId = $request->query('bank_account_id');
-        $query = BankReconciliationUnmatched::query();
+        $query = BankReconciliationUnmatched::query()->with('statement');
 
         if ($bankAccountId) {
-            $query->where('bank_account_id', $bankAccountId);
+            $query->whereHas('statement', fn ($q) => $q->where('bank_account_id', $bankAccountId));
         }
 
-        $unmatched = $query->orderByDesc('created_at')->limit(100)->get();
+        $unmatched = $query->orderByDesc('aging_days')->orderByDesc('created_at')->limit(100)->get();
 
         return response()->json([
             'status' => 'success',
             'count' => $unmatched->count(),
             'unmatched' => $unmatched,
+        ]);
+    }
+
+    public function unmatch(Request $request, BankStatement $statement): JsonResponse
+    {
+        $data = $request->validate([
+            'reason' => 'required|string|min:3|max:255',
+        ]);
+
+        $updated = $this->unmatchAction->execute(
+            statement: $statement,
+            reason: (string) $data['reason'],
+            userId: $request->user()?->id
+        );
+
+        return response()->json([
+            'status' => 'unmatched',
+            'statement' => $updated,
         ]);
     }
 }

@@ -14,6 +14,7 @@ use Modules\Trade\Console\Commands\AuditTradeCommand;
 use Modules\Trade\Contracts\ImportLandedCostQuoter;
 use Modules\Trade\Infrastructure\Api\ImportOrderResourceProvider;
 use Modules\Trade\Infrastructure\Bulk\HsCodeBulkImportTarget;
+use Modules\Trade\Infrastructure\Treasury\TradeFxMonetaryItemFeed;
 
 class TradeServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,7 @@ class TradeServiceProvider extends ServiceProvider
 
         $this->app->tag(ImportOrderResourceProvider::class, 'core.api_resource_provider');
         $this->app->tag(HsCodeBulkImportTarget::class, 'core.bulk_import_target');
+        $this->app->tag(TradeFxMonetaryItemFeed::class, 'treasury.fx_monetary_item_feed');
     }
 
     public function boot(): void

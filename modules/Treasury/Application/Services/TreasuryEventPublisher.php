@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Treasury\Application\Services;
 
+use Illuminate\Support\Facades\Event;
 use Modules\Core\Application\Services\EventSchemaRegistry;
 use Modules\Core\Contracts\EventSpineInterface;
 use Modules\Treasury\Domain\Events\BankStatementReconciledEvent;
@@ -12,6 +13,9 @@ use Modules\Treasury\Domain\Events\FacilityDrawdownExecutedEvent;
 use Modules\Treasury\Domain\Events\FxRevaluationCompletedEvent;
 use Modules\Treasury\Domain\Events\HedgeContractTransitionedEvent;
 use Modules\Treasury\Domain\Events\PettyCashVoucherProcessedEvent;
+use Modules\Treasury\Domain\Events\TreasuryCovenantBreachedEvent;
+use Modules\Treasury\Domain\Events\TreasuryHedgeMaturedEvent;
+use Modules\Treasury\Domain\Events\TreasuryRevaluationPostedEvent;
 
 /**
  * Service penerbit event domain Treasury ke bus EventSpine terpusat.
@@ -175,6 +179,73 @@ class TreasuryEventPublisher
             'Treasury',
             ['GeneralLedger', 'PettyCashManagement']
         );
+
+        $this->registry->registerSchema(
+            TreasuryRevaluationPostedEvent::EVENT_NAME,
+            1,
+            [
+                'type' => 'object',
+                'properties' => [
+                    'event' => ['type' => 'string'],
+                    'revaluation_id' => ['type' => 'string'],
+                    'period' => ['type' => 'string'],
+                    'currency' => ['type' => 'string'],
+                    'foreign_balance_minor' => ['type' => 'integer'],
+                    'book_functional_idr' => ['type' => 'integer'],
+                    'revalued_functional_idr' => ['type' => 'integer'],
+                    'gain_loss_idr' => ['type' => 'integer'],
+                    'certificate_hash' => ['type' => 'string'],
+                ],
+                'required' => ['event', 'revaluation_id', 'period', 'currency', 'gain_loss_idr', 'certificate_hash'],
+            ],
+            'Broadcast period-end foreign exchange revaluation journal posting (PSAK 10) across group financial reporting',
+            'Treasury',
+            ['EnterpriseFinance', 'Banking', 'Core']
+        );
+
+        $this->registry->registerSchema(
+            TreasuryCovenantBreachedEvent::EVENT_NAME,
+            1,
+            [
+                'type' => 'object',
+                'properties' => [
+                    'event' => ['type' => 'string'],
+                    'facility_id' => ['type' => 'string'],
+                    'facility_code' => ['type' => 'string'],
+                    'bank_name' => ['type' => 'string'],
+                    'covenant_der_permil' => ['type' => 'integer'],
+                    'max_der_permil' => ['type' => 'integer'],
+                    'verified_debt_idr' => ['type' => 'integer'],
+                    'verified_equity_idr' => ['type' => 'integer'],
+                    'severity' => ['type' => 'string'],
+                ],
+                'required' => ['event', 'facility_id', 'facility_code', 'covenant_der_permil', 'max_der_permil'],
+            ],
+            'Alert corporate finance and governance officers when bank credit facility debt-to-equity covenant is breached or near breach',
+            'Treasury',
+            ['EnterpriseFinance', 'Core', 'Audit']
+        );
+
+        $this->registry->registerSchema(
+            TreasuryHedgeMaturedEvent::EVENT_NAME,
+            1,
+            [
+                'type' => 'object',
+                'properties' => [
+                    'event' => ['type' => 'string'],
+                    'contract_id' => ['type' => 'string'],
+                    'contract_number' => ['type' => 'string'],
+                    'currency' => ['type' => 'string'],
+                    'notional_foreign_amount' => ['type' => 'integer'],
+                    'maturity_date' => ['type' => 'string'],
+                    'mtm_value_idr' => ['type' => 'integer'],
+                ],
+                'required' => ['event', 'contract_id', 'contract_number', 'currency', 'notional_foreign_amount', 'maturity_date'],
+            ],
+            'Notify treasury dealers and settlement desk when a forward FX hedge contract reaches maturity for physical or net settlement',
+            'Treasury',
+            ['Banking', 'Core', 'EnterpriseFinance']
+        );
     }
 
     public function publishFxRevaluation(FxRevaluationCompletedEvent $event): void
@@ -267,6 +338,60 @@ class TreasuryEventPublisher
         $this->spine->publish(
             self::TOPIC_TREASURY,
             PettyCashVoucherProcessedEvent::EVENT_NAME,
+            $event->jsonSerialize(),
+            $idempotencyKey,
+            1
+        );
+    }
+
+    public function publishRevaluationPosted(TreasuryRevaluationPostedEvent $event): void
+    {
+        Event::dispatch($event);
+
+        if ($this->spine === null) {
+            return;
+        }
+
+        $idempotencyKey = "trs_reval_posted:{$event->revaluationId}:{$event->period}:{$event->currency}";
+        $this->spine->publish(
+            self::TOPIC_TREASURY,
+            TreasuryRevaluationPostedEvent::EVENT_NAME,
+            $event->jsonSerialize(),
+            $idempotencyKey,
+            1
+        );
+    }
+
+    public function publishCovenantBreached(TreasuryCovenantBreachedEvent $event): void
+    {
+        Event::dispatch($event);
+
+        if ($this->spine === null) {
+            return;
+        }
+
+        $idempotencyKey = "trs_covenant_breach:{$event->facilityId}:{$event->covenantDerPermil}:{$event->severity}";
+        $this->spine->publish(
+            self::TOPIC_TREASURY,
+            TreasuryCovenantBreachedEvent::EVENT_NAME,
+            $event->jsonSerialize(),
+            $idempotencyKey,
+            1
+        );
+    }
+
+    public function publishHedgeMatured(TreasuryHedgeMaturedEvent $event): void
+    {
+        Event::dispatch($event);
+
+        if ($this->spine === null) {
+            return;
+        }
+
+        $idempotencyKey = "trs_hedge_matured:{$event->contractId}:{$event->maturityDate}";
+        $this->spine->publish(
+            self::TOPIC_TREASURY,
+            TreasuryHedgeMaturedEvent::EVENT_NAME,
             $event->jsonSerialize(),
             $idempotencyKey,
             1
