@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Actions;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Core\Contracts\ApprovalEngineInterface;
@@ -97,12 +98,24 @@ final readonly class EvaluateRoboticsRoiProposalAction
                 throw new InvalidArgumentException('Proposal ROI dengan NPV negatif wajib menyertakan alasan tertulis.');
             }
 
-            $this->approvalEngine->submit(
+            /** @var User $approver */
+            $approver = User::query()->findOrFail($approverUserId);
+            /** @var User $creator */
+            $creator = $locked->created_by_user_id !== null
+                ? (User::query()->find($locked->created_by_user_id) ?? $approver)
+                : $approver;
+
+            $approvalReq = $this->approvalEngine->submit(
                 'wms_robotics_roi_proposal',
-                (string) $locked->id,
-                (int) ($locked->created_by_user_id ?? $approverUserId),
+                "ROI {$locked->proposal_code}: {$locked->title}",
+                $creator,
+                $locked,
+                (string) $locked->capex_minor,
+                [['role' => 'admin']],
+                48,
                 ['proposal_code' => $locked->proposal_code, 'npv_minor' => $locked->npv_minor],
             );
+            $this->approvalEngine->approve($approvalReq, $approver, trim($justification) !== '' ? trim($justification) : null);
 
             $locked->update([
                 'status' => 'approved',

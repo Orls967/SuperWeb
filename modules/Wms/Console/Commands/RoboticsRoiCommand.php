@@ -6,7 +6,7 @@ namespace Modules\Wms\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Wms\Application\Actions\EvaluateRoboticsRoiProposalAction;
-use Modules\Wms\Models\Warehouse;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Command evaluasi proposal ROI otomasi J3 dalam aritmetika rasional eksak (D279-7, D279-9).

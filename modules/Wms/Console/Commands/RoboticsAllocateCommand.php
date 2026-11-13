@@ -6,7 +6,7 @@ namespace Modules\Wms\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Wms\Application\Actions\AllocateRobotMissionsAction;
-use Modules\Wms\Models\Warehouse;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Command terjadwal 5-menitan idempoten untuk alokasi misi robot memakai HungarianSolver (D279-3, D279-9).

@@ -9,7 +9,7 @@ use Modules\Wms\Domain\StateMachines\RobotMissionStateMachine;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotWave;
-use Modules\Wms\Models\Task as WarehouseTask;
+use Modules\Wms\Domain\Models\Task as WarehouseTask;
 use Modules\Wms\Models\TrafficZone;
 use Modules\Wms\Models\ZoneReservation;
 

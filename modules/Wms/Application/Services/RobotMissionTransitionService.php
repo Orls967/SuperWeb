@@ -12,7 +12,7 @@ use Modules\Wms\Domain\StateMachines\RobotMissionStateMachine;
 use Modules\Wms\Models\Robot;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotMissionEvent;
-use Modules\Wms\Models\Task as WarehouseTask;
+use Modules\Wms\Domain\Models\Task as WarehouseTask;
 use Modules\Wms\Models\TrafficZone;
 use Modules\Wms\Models\ZoneReservation;
 
@@ -106,8 +106,9 @@ final class RobotMissionTransitionService
                     'title' => "Fallback Manual Misi Robot {$locked->mission_code}",
                     'description' => "Misi {$locked->mission_code} di zona {$locked->zone_code} beralih ke fallback manual ({$reasonCode}).",
                     'module' => 'Wms',
-                    'entity_type' => 'robot_mission',
-                    'entity_id' => (string) $locked->id,
+                    'source_entity_type' => 'robot_mission',
+                    'source_entity_id' => (string) $locked->id,
+                    'assignee_role' => 'hub_operator',
                     'priority' => 'high',
                 ]);
             }
@@ -191,7 +192,7 @@ final class RobotMissionTransitionService
         ];
 
         DB::afterCommit(function () use ($eventName, $mission, $payload): void {
-            $this->outboxBus->publish($eventName, $payload, "robotics-mission-{$mission->id}-{$payload['to_status']}-{$mission->retry_count}");
+            $this->outboxBus->record($eventName, $payload, "robotics-mission-{$mission->id}-{$payload['to_status']}-{$mission->retry_count}");
         });
     }
 }

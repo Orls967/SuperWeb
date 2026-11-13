@@ -7,7 +7,7 @@ namespace Modules\Wms\Console\Commands;
 use Illuminate\Console\Command;
 use Modules\Wms\Application\Actions\ResolveTrafficDeadlockAction;
 use Modules\Wms\Models\RobotMission;
-use Modules\Wms\Models\Warehouse;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Command terjadwal per menit untuk mendeteksi dan memecah siklus deadlock lalu lintas (X279-3).

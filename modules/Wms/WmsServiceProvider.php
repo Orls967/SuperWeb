@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Wms;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Intercompany\Contracts\SubledgerTotalProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Wms\Http\Policies\RobotMissionPolicy;
+use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Application\Services\StockReservationService;
 use Modules\Wms\Application\Services\WmsService;
 use Modules\Wms\Console\Commands\AuditWmsCommand;
@@ -28,8 +31,10 @@ use Modules\Wms\Console\Commands\RoboticsTwoSourceAuditCommand;
 use Modules\Wms\Console\Commands\RoboticsWavePlanCommand;
 use Modules\Wms\Console\Commands\TransitSweepCommand;
 use Modules\Wms\Console\Commands\UtilizationSnapshotCommand;
+use Modules\Wms\Contracts\SimulatedDeviceAdapterInterface;
 use Modules\Wms\Contracts\StockAvailabilityReader;
 use Modules\Wms\Contracts\WarehouseValuationReader;
+use Modules\Wms\Infrastructure\Adapters\SimulatedAmrDeviceAdapter;
 use Modules\Wms\Infrastructure\Adapters\WarehouseValuationReaderAdapter;
 use Modules\Wms\Infrastructure\Adapters\WmsSubledgerTotalAdapter;
 use Modules\Wms\Infrastructure\Api\WarehouseResourceProvider;
@@ -42,6 +47,7 @@ class WmsServiceProvider extends ServiceProvider
         $this->app->singleton(WmsService::class);
         $this->app->bind(StockAvailabilityReader::class, StockReservationService::class);
         $this->app->bind(WarehouseValuationReader::class, WarehouseValuationReaderAdapter::class);
+        $this->app->bind(SimulatedDeviceAdapterInterface::class, SimulatedAmrDeviceAdapter::class);
 
         $this->app->tag(WarehouseResourceProvider::class, 'core.api_resource_provider');
         $this->app->tag(WmsEdiDesadvHandler::class, 'core.edi_document_handler');
@@ -50,6 +56,8 @@ class WmsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(RobotMission::class, RobotMissionPolicy::class);
+
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         if (file_exists(__DIR__.'/routes/web.php')) {

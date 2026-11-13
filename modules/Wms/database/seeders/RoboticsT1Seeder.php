@@ -17,7 +17,7 @@ use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotUnit;
 use Modules\Wms\Models\RobotWave;
 use Modules\Wms\Models\TrafficZone;
-use Modules\Wms\Models\Warehouse;
+use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Models\ZoneReservation;
 
 /**
@@ -35,9 +35,8 @@ final class RoboticsT1Seeder extends Seeder
         $warehouse = Warehouse::query()->firstOrCreate(
             ['code' => 'WH-ROB-T1'],
             [
-                'id' => '019a0000-0000-7000-8000-000000000279',
                 'name' => 'Gudang Robotika Simulasi T1',
-                'type' => 'fulfillment',
+                'kind' => 'fulfillment',
                 'address' => 'Zona Simulasi T1',
                 'is_active' => true,
             ],

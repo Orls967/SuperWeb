@@ -11,7 +11,7 @@ use Modules\Logistics\Contracts\CarrierCutoffProvider;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotWave;
-use Modules\Wms\Models\Warehouse;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Action perencanaan wave FFD (J2) per (carrier, cutoff) dan penyusunan ulang saat misi fallback manual (D279-5, D97).
@@ -70,7 +70,7 @@ final readonly class PlanRoboticsWaveAction
             ];
 
             DB::afterCommit(function () use ($batchCode, $payload): void {
-                $this->outboxBus->publish('robotics.wave.released.v1', $payload, "robotics-wave-{$batchCode}");
+                $this->outboxBus->record('robotics.wave.released.v1', $payload, "robotics-wave-{$batchCode}");
             });
 
             return [

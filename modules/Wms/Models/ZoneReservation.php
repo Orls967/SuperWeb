@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Wms\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Wms\Domain\Models\Warehouse;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**

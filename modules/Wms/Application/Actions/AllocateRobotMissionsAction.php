@@ -79,7 +79,7 @@ final readonly class AllocateRobotMissionsAction
             $nMissions = $missions->count();
             $nRobots = $robots->count();
             $dim = max($nMissions, $nRobots);
-            $dummyCost = 1_000_000_000;
+            $dummyCost = 500_000_000; // Strictly < HungarianSolver::INF (1_000_000_000) for dummy pad cells
 
             $costMatrix = [];
             for ($i = 0; $i < $dim; $i++) {
@@ -96,7 +96,8 @@ final readonly class AllocateRobotMissionsAction
                     $r = $robots[$j];
                     $zoneHashDist = (abs(crc32((string) $m->zone_code) % 50) + (int) $r->position_x + (int) $r->position_y);
                     $batteryPenalty = (100 - (int) $r->battery_pct) * self::WEIGHT_BATTERY_PENALTY;
-                    $row[] = ($zoneHashDist * self::WEIGHT_DISTANCE) + $batteryPenalty;
+                    $priorityPenalty = max(0, 100 - (int) $m->priority) * 50;
+                    $row[] = ($zoneHashDist * self::WEIGHT_DISTANCE) + $batteryPenalty + $priorityPenalty;
                 }
                 $costMatrix[] = $row;
             }
