@@ -8,6 +8,7 @@ use Modules\Wms\Domain\Algorithms\AutomationRoiPlanner;
 use Modules\Wms\Domain\Algorithms\RobotTaskAllocator;
 use Modules\Wms\Domain\Algorithms\TrafficDeadlockDetector;
 use Modules\Wms\Domain\Algorithms\WaveAutomationDispatcher;
+use Modules\Wms\Domain\Exceptions\RobotMissionTransitionException;
 use Modules\Wms\Domain\StateMachines\RobotMissionStateMachine;
 
 it('computes deterministic integer ROI and payback without floats in J1 AutomationRoiPlanner', function (): void {
@@ -83,5 +84,5 @@ it('enforces all 8 states and rejects invalid transitions in RobotMissionStateMa
         ->and(RobotMissionStateMachine::canTransition('completed', 'queued'))->toBeFalse();
 
     expect(fn () => RobotMissionStateMachine::assertTransition('completed', 'moving'))
-        ->toThrow(Modules\Wms\Domain\Exceptions\RobotMissionTransitionException::class);
+        ->toThrow(RobotMissionTransitionException::class);
 });
