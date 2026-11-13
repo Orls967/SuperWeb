@@ -58,7 +58,7 @@ class ControlTowerSeeder extends Seeder
             ['cycle_code' => 'SOP-2026-11'],
             [
                 'period' => '2026-11',
-                'status' => 'consensus',
+                'status' => 'pre_sop',
                 'scenario_type' => 'moderate',
                 'demand_plan_qty' => 1200,
                 'supply_plan_qty' => 1260,
