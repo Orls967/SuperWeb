@@ -11,7 +11,9 @@ use Modules\ControlTower\Application\Services\AlertScannerService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
 use Modules\ControlTower\Application\Services\ForecastOverrideService;
 use Modules\ControlTower\Application\Services\OrderRiskAssessmentService;
+use Modules\ControlTower\Application\Services\PromiseQuoteService;
 use Modules\ControlTower\Application\Services\SopPublicationOrchestrator;
+use Modules\ControlTower\Console\Commands\AtpRefreshCommand;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
@@ -20,11 +22,14 @@ use Modules\ControlTower\Console\Commands\ScanDisruptionAlertsCommand;
 use Modules\ControlTower\Console\Commands\ScanOrderRiskCommand;
 use Modules\ControlTower\Console\Commands\SelectForecastModelCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
+use Modules\ControlTower\Contracts\ItemAvailabilityReader;
+use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Algorithms\ForecastModelSelector;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Domain\Services\OrderRiskScorer;
 use Modules\ControlTower\Domain\StateMachines\SopCycleStateMachine;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
+use Modules\ControlTower\Infrastructure\Adapters\WmsItemAvailabilityReader;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
 use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
 use Modules\Core\Application\Services\EventSchemaRegistry;
@@ -41,6 +46,8 @@ class ControlTowerServiceProvider extends ServiceProvider
         $this->app->bind(ControlTowerVisibilityReader::class, ControlTowerVisibilityReaderAdapter::class);
 
         // [fix2:bindings:promise]
+        $this->app->bind(ItemAvailabilityReader::class, WmsItemAvailabilityReader::class);
+        $this->app->bind(PromiseQuoteInterface::class, PromiseQuoteService::class);
         //
         // [fix2:bindings:forecast]
         $this->app->singleton(ForecastModelSelector::class);
@@ -131,6 +138,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 RecalculateSafetyStockCommand::class,
                 RunTwinSimulationCommand::class,
                 // [fix2:commands:promise]
+                AtpRefreshCommand::class,
                 //
                 // [fix2:commands:forecast]
                 SelectForecastModelCommand::class,

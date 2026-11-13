@@ -22,8 +22,10 @@ use Modules\Manufacturing\Console\Commands\AuditVmiCommand;
 use Modules\Manufacturing\Console\Commands\QmsAuditCommand;
 use Modules\Manufacturing\Console\Commands\RunMrpCommand;
 use Modules\Manufacturing\Console\Commands\WipReportCommand;
+use Modules\Manufacturing\Contracts\CapacityAndMaterialProvider;
 use Modules\Manufacturing\Contracts\ProcessOutputRecorder;
 use Modules\Manufacturing\Contracts\RecycledMaterialReceiver;
+use Modules\Manufacturing\Infrastructure\Adapters\ManufacturingCapacityAndMaterialProvider;
 use Modules\Manufacturing\Infrastructure\Tenancy\ManufacturingTenantScopedModelProvider;
 use Modules\Shared\Application\MenuRegistry;
 use Modules\Shared\Domain\Algorithms\Graph\GenealogyEdgeProviderInterface;
@@ -42,6 +44,7 @@ class ManufacturingServiceProvider extends ServiceProvider
         $this->app->singleton(HseService::class);
         $this->app->singleton(RecycledMaterialReceiver::class, RecycledMaterialReceiverService::class);
         $this->app->singleton(ProcessOutputRecorder::class, ProcessOutputRecorderService::class);
+        $this->app->bind(CapacityAndMaterialProvider::class, ManufacturingCapacityAndMaterialProvider::class);
         $this->app->bind(GenealogyEdgeProviderInterface::class, MfgAgriGenealogyService::class);
 
         $this->app->tag(ManufacturingTenantScopedModelProvider::class, 'core.tenant_scoped_model_provider');
