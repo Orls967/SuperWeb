@@ -542,8 +542,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Vending** | `vnd_` | 3 |
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
-| 65 | **Wms** | `wms_` | 4 |
-| | **Total: 65 Modul** | | **712 Migrasi** |
+| 65 | **Wms** | `wms_` | 5 |
+| | **Total: 65 Modul** | | **713 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -612,8 +612,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
-| **Wms** | 27 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
-| **Total** | **1801 Rute** | | |
+| **Wms** | 33 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
+| **Total** | **1807 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -1006,9 +1006,12 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `wms:replenish` | `manual` | Membuat permintaan replenishment pick-face untuk bin di bawah ambang minimum |
 | `wms:reservation-sweep` | `manual` | Melepas reservasi stok gudang yang sudah melewati TTL |
 | `wms:revalue-cost` | `manual` | Melakukan revaluasi harga pokok standar produk & posting selisih ke ledger (D41-10/11) |
+| `wms:robotics-audit` | `manual` | Audit integritas kunci zona, misi, dan rencana ROI robotika gudang |
+| `wms:robotics-dispatch` | `manual` | Dispatch misi robotik gudang ke zona target dengan kunci zona eksklusif |
+| `wms:robotics-roi-plan` | `manual` | Hitung dan simpan rencana ROI automasi robotika gudang (J1) |
 | `wms:transit-sweep` | `manual` | Menyapu pengiriman in-transit yang melewati batas SLA |
 | `wms:utilization-snapshot` | `manual` | Mengambil snapshot utilisasi bin & deteksi dead stock gudang |
-| **Total: 390 Command** | **37 Terjadwal** | |
+| **Total: 393 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
