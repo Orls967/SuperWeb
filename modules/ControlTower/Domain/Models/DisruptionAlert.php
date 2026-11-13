@@ -12,15 +12,20 @@ class DisruptionAlert extends Model
 
     protected $fillable = [
         'alert_code',
+        'dedup_key',
         'severity',
         'category',
         'title',
         'description',
         'affected_orders_count',
         'status',
+        'mitigation_proposal_json',
+        'approved_by_user_id',
     ];
 
     protected $casts = [
         'affected_orders_count' => 'integer',
+        'mitigation_proposal_json' => 'array',
+        'approved_by_user_id' => 'integer',
     ];
 }

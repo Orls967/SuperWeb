@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ControlTower\Application\Actions;
 
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\ControlTower\Domain\Models\DisruptionAlert;
 use Modules\ControlTower\Domain\Models\EchelonStock;
@@ -76,5 +77,126 @@ class ExecuteAutonomousReallocationPlaybookAction
             'to_node_new_on_hand' => $dest->fresh()->on_hand_qty,
             'mitigated_alert_code' => $mitigatedAlertCode,
         ];
+    }
+
+    /**
+     * Membentuk usulan realokasi antar-node yang menunggu persetujuan planner tanpa langsung memindahkan stok.
+     *
+     * @return array{
+     *     action: string,
+     *     status: string,
+     *     item_code: string,
+     *     from_node: string,
+     *     to_node: string,
+     *     transfer_qty: int,
+     *     alert_id: int|null,
+     *     alert_code: string|null
+     * }
+     */
+    public function proposeReallocation(
+        string $itemCode,
+        string $fromNode,
+        string $toNode,
+        int $transferQty,
+        ?DisruptionAlert $alert = null,
+    ): array {
+        if ($transferQty <= 0) {
+            throw new InvalidArgumentException('Reallocation transfer quantity must be greater than zero.');
+        }
+
+        if ($fromNode === $toNode) {
+            throw new InvalidArgumentException('Source and destination echelon nodes cannot be identical.');
+        }
+
+        $source = EchelonStock::where('item_code', $itemCode)->where('echelon_node', $fromNode)->first();
+        if (! $source || $source->on_hand_qty < $transferQty) {
+            throw new InvalidArgumentException("Insufficient available stock at source node {$fromNode} to propose {$transferQty} units.");
+        }
+
+        $proposal = [
+            'action' => 'reallocation',
+            'status' => 'pending_approval',
+            'item_code' => $itemCode,
+            'from_node' => $fromNode,
+            'to_node' => $toNode,
+            'transfer_qty' => $transferQty,
+        ];
+
+        if ($alert !== null) {
+            $alert->update(['mitigation_proposal_json' => $proposal]);
+        }
+
+        return [
+            ...$proposal,
+            'alert_id' => $alert?->id,
+            'alert_code' => $alert?->alert_code,
+        ];
+    }
+
+    /**
+     * Menyetujui usulan realokasi pada alert dan mengeksekusi pemindahan stok secara transaksional.
+     *
+     * @return array{
+     *     item_code: string,
+     *     from_node: string,
+     *     to_node: string,
+     *     transfer_qty: int,
+     *     from_node_remaining_on_hand: int,
+     *     to_node_new_on_hand: int,
+     *     mitigated_alert_code: string|null,
+     *     alert_id: int,
+     *     approved_by_user_id: int,
+     *     status: string
+     * }
+     */
+    public function approveReallocation(DisruptionAlert $alert, int $approverUserId): array
+    {
+        if ($approverUserId <= 0) {
+            throw new InvalidArgumentException('Approver user ID must be a positive integer.');
+        }
+
+        $proposal = is_array($alert->mitigation_proposal_json) ? $alert->mitigation_proposal_json : [];
+
+        if (($proposal['status'] ?? null) === 'approved') {
+            throw new InvalidArgumentException('Reallocation proposal for this alert has already been approved.');
+        }
+
+        if (
+            ! isset($proposal['item_code'], $proposal['from_node'], $proposal['to_node'], $proposal['transfer_qty'])
+            || (int) $proposal['transfer_qty'] <= 0
+        ) {
+            throw new InvalidArgumentException('Alert does not contain a valid reallocation proposal.');
+        }
+
+        return DB::transaction(function () use ($alert, $approverUserId, $proposal): array {
+            $lockedAlert = DisruptionAlert::query()->lockForUpdate()->findOrFail($alert->id);
+            $lockedProposal = is_array($lockedAlert->mitigation_proposal_json) ? $lockedAlert->mitigation_proposal_json : $proposal;
+
+            if (($lockedProposal['status'] ?? null) === 'approved') {
+                throw new InvalidArgumentException('Reallocation proposal for this alert has already been approved.');
+            }
+
+            $result = $this->execute(
+                (string) $lockedProposal['item_code'],
+                (string) $lockedProposal['from_node'],
+                (string) $lockedProposal['to_node'],
+                (int) $lockedProposal['transfer_qty'],
+            );
+
+            $lockedProposal['status'] = 'approved';
+
+            $lockedAlert->update([
+                'status' => 'mitigated',
+                'approved_by_user_id' => $approverUserId,
+                'mitigation_proposal_json' => $lockedProposal,
+            ]);
+
+            return [
+                ...$result,
+                'alert_id' => $lockedAlert->id,
+                'approved_by_user_id' => $approverUserId,
+                'status' => 'mitigated',
+            ];
+        });
     }
 }
