@@ -26,3 +26,4 @@ Selain NPV, kalkulator juga menghitung:
 ## 3. Vektor Uji
 - CAPEX `1_000_000_000` (Rp 10 jt minor), 4 tahun arus kas masing-masing `400_000_000`, rate `1/4` (`25%`): `npv_minor == -55_360_000` (eksak).
 - Pemalsuan `npv` pada `AutomationNpvCertificate` wajib melempar `InvalidArgumentException`.
+

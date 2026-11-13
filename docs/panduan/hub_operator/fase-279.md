@@ -28,3 +28,4 @@ Rute yang dapat Anda akses:
 ### C. Menangani Wave & Fallback Order
 1. Saat menyusun wave baru di `/wms/robotics/waves`, masukkan `warehouse_id`, `capacity`, dan `batch_code`.
 2. Sistem mengelompokkan order secara otomatis berdasarkan `cutoff` kurir agar tidak ada order yang tertinggal saat fallback manual terjadi.
+

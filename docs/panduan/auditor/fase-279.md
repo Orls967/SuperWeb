@@ -25,3 +25,4 @@ Sebagai **Auditor**, Anda memiliki akses baca-saja terhadap seluruh jejak audit 
 ## 3. Verifikasi Kelayakan ROI & Pemisahan Tugas (SoD)
 - Periksa pada `/wms/robotics/roi` bahwa setiap proposal berstatus `approved` memiliki `approved_by_user_id != created_by_user_id`.
 - Untuk setiap proposal dengan `npv_minor < 0`, pastikan kolom `justification` terisi jelas dan tercatat di `ApprovalEngine` (`approval_requests`).
+

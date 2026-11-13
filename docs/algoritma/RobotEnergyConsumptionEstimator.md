@@ -29,3 +29,4 @@ Sertifikat menyimpan `totalDrainPct`, `projectedEndBatteryPct`, `totalEnergyMwh`
 ## 3. Penggunaan Operasional
 - `RobotFleetDispatchOptimizer` memanggil `estimateBatch()` untuk menolak penugasan misi jika robot berisiko kehabisan baterai sebelum mencapai stasiun pengisian.
 - `IngestSimulatedTelemetryBatchAction` memanggil `maxSafeRangeMeters()` untuk menghitung sisa jarak aman setiap unit armada pada dashboard Control Tower.
+

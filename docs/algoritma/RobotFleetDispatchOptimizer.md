@@ -24,3 +24,4 @@ Setelah `HungarianSolver::solve($costMatrix)` mengembalikan penugasan optimal be
 ## 3. Kompleksitas & Vektor Uji
 - **Kompleksitas**: `O(dim^3)` untuk pemecahan Hungarian ditambah `O(N_missions * N_robots)` evaluasi interlock & energi.
 - **Vektor Uji**: 2 misi (`MIS-1` di `Z-OK` prioritas 90, `MIS-2` di `Z-BLK` `staff_blocked=true` prioritas 50) dan 1 robot online -> `MIS-1` terpilih, `MIS-2` masuk `unassigned_mission_ids`.
+

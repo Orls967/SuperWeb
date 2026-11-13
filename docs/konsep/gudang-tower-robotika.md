@@ -51,3 +51,51 @@ Setiap invarian di bawah ini dijaga di level kode dan diverifikasi oleh test sui
 3. **Pelaporan Control Tower & T1**: `RoboticsT1SimulationReportService` menggabungkan `RoboticsFleetKpiAggregator`, `ZoneCongestionHeatmapCalculator`, `RoboticsRoiSensitivityMatrixBuilder`, dan `RoboticsTwoSourceAuditService` menjadi satu payload konsisten untuk rute `/wms/robotics/simulations` serta keluaran CLI `robotics:simulate`.
 4. **ViewModels**: `RoboticsMissionBoardViewModel` dan `RoboticsRoiPortfolioViewModel` memformat status badge dan nilai minor IDR secara murni tanpa operasi `float` sebelum dirender oleh Blade `x-ds.*`.
 
+
+## 6. Matriks Lengkap Transisi State Machine (`RobotMissionStateMachine`)
+Berikut adalah tabel transisi yang diizinkan oleh `RobotMissionStateMachine` beserta efek samping domainnya:
+
+| Dari Status | Ke Status | Pemicu / Action | Prasyarat & Efek Samping |
+|---|---|---|---|
+| `queued` | `assigned` | `AllocateRobotMissionsAction` | `robot_id` terisi dari hasil `HungarianSolver`, robot `is_online=true`, baterai >= 20% |
+| `assigned` | `moving` | `ReserveZoneForMissionAction` | Zona tidak `staff_blocked`, slot `[start, end)` lolos `ZoneReservationScheduler` `J1` |
+| `moving` | `picking` | `RobotMissionTransitionService` | Robot tiba di koordinat rak/bin target, reservasi zona tetap aktif |
+| `picking` | `delivering` | `RobotMissionTransitionService` | Barang berhasil diambil; menuju stasiun pack/stage |
+| `delivering` | `completed` | `CompleteRobotMissionAction` | Melepas `ZoneReservation`, mengonfirmasi `WarehouseTask`, terbitkan `robotics.mission.completed.v1` |
+| `assigned` | `failed` | `RoboticsMissionLifecycleSaga` / `ResolveTrafficDeadlockAction` | Melepas reservasi aktif (jika ada), catat `RobotMissionEvent`, terbitkan `robotics.mission.failed.v1` |
+| `moving` | `failed` | Interlock / Deadlock / Baterai Kritis | Melepas reservasi zona aktif, catat `RobotMissionEvent` & `RobotSafetyIncident` jika perlu |
+| `picking` | `failed` | Error aktuator / sensor | Melepas reservasi zona aktif, catat alasan kegagalan |
+| `delivering` | `failed` | Error drop-off stasiun | Melepas reservasi zona aktif, catat alasan kegagalan |
+| `failed` | `queued` | `RetryOrFallbackRobotMissionAction::retry()` | Hanya diizinkan bila `retry_count < MAX_RETRY_ATTEMPTS (2)`; menaikkan `retry_count + 1` |
+| `failed` | `fallback_manual` | `RetryOrFallbackRobotMissionAction::fallbackAndReplan()` | Menandai `fallback_manual=true`, membuat `WarehouseTask` manual, mengirim `TaskInbox`, replanning wave `J2` |
+
+Transisi selain pasangan di atas (misalnya `completed -> queued` atau `fallback_manual -> moving`) ditolak keras dengan `RobotMissionTransitionException`.
+
+## 7. Spesifikasi Lengkap 6 Pemeriksaan Audit Dua Sumber (`RoboticsTwoSourceAuditService`)
+`RoboticsTwoSourceAuditService::runAudit()` memeriksa konsistensi lintas-tabel tanpa toleransi:
+1. **Audit Penugasan Robot Offline**: Tidak boleh ada `RobotMission` berstatus aktif (`assigned`, `moving`, `picking`, `delivering`) yang tertaut ke `Robot` dengan `is_online = false`.
+2. **Audit Referensi Robot & Zona**: Setiap misi non-`queued` yang memiliki `robot_id` atau `traffic_zone_id` harus merujuk ke baris yang benar-benar ada di `wms_robots` / `wms_traffic_zones` (mendeteksi misi yatim seperti `MIS-CORRUPT-01`).
+3. **Audit Kapasitas Interval Zona `J1`**: Untuk setiap `TrafficZone`, jumlah `ZoneReservation` berstatus `active` yang saling bertumpuk pada titik waktu manapun tidak boleh melebihi `capacity_k`.
+4. **Audit Pelanggaran Blokir Staf**: Tidak boleh ada `ZoneReservation` berstatus `active` pada zona dengan `staff_blocked = true` yang intervalnya bertumpuk dengan `[block_start_min, block_end_min)`.
+5. **Audit Integritas State Machine**: Misi dengan `retry_count > 2` tidak boleh berada pada status `queued`, dan misi berstatus `fallback_manual` wajib memiliki `fallback_manual = true`.
+6. **Audit Tata Kelola ROI `J3`**: Proposal `RoboticsRoiProposal` berstatus `approved` tidak boleh memiliki `created_by_user_id === approved_by_user_id`, dan bila `npv_minor < 0` kolom `justification` tidak boleh kosong.
+
+## 8. Rasional Desain Aritmetika Integer & Anti-Float (`A3`)
+Dalam sistem gudang dan evaluasi investasi terdistribusi, penggunaan bilangan titik-ambang (`float` / IEEE-754) menimbulkan tiga risiko utama:
+- **Perbedaan Pembulatan Lintas CPU/PHP**: Nilai NPV atau rasio utilisasi bisa selisih 1 sen antara lingkungan lokal dan CI.
+- **Kegagalan Hash Sertifikat Kanonik**: Perubahan representasi string float (`1.0000000000000002`) merusak verifikasi SHA-256 pada `*Certificate`.
+- **Pelanggaran Aturan `arch:scan` A3**: Seluruh modul bisnis dilarang memakai tipe `float` atau kolom `decimal` untuk IDR.
+
+Oleh karena itu, seluruh fase 279 memakai:
+- **Minor integer IDR (sen)** untuk `capex_minor`, `annual_cashflows_minor`, dan `npv_minor`.
+- **Basis points (`bps`)** dan **Permil (`‰`)** untuk tingkat bunga/IRR, rasio kesehatan armada, dan utilisasi zona.
+- **`RationalRate(numerator, denominator)`** untuk laju diskonto eksak pada `AutomationNpvCalculator`.
+- **Menit bulat (`int`)** dan **`IntervalWindow [start, end)`** untuk seluruh penjadwalan `J1`, charging, dan pemeliharaan preventif.
+
+## 9. Katalog Kasus Uji Tambahan (K279-17 s.d. K279-20)
+| Kode | Kategori | Skenario & Kondisi | Ekspektasi Sistem |
+|---|---|---|---|
+| `K279-17` | Energi & Sertifikat | Robot baterai `80%` menjalankan 2 misi (`100m/10kg` & `250m/25kg`) | `RobotEnergyConsumptionEstimator` menghasilkan `allFeasible=true`, `maxSafeRangeMeters > 1000m`, sertifikat lolos `verify()` |
+| `K279-18` | Degradasi Baterai | Armada 2 robot (`1200` siklus / `5` deep-discharge & `2600` siklus / `2` deep-discharge) | `RobotBatteryDegradationTracker` menandai 1 robot perlu ganti pak (`<= 750‰`), rata-rata armada `799‰` |
+| `K279-19` | Bay Charger Contention | 3 robot meminta slot charging bertumpukan pada `maxBays = 2` | `ChargingBayContentionResolver` mengalokasikan 2 robot ke `BAY-01`, `BAY-02` dan menunda robot ke-3 |
+| `K279-20` | Maintenance & Handover | 2 kandidat maintenance bertumpukan pada armada 10 robot (`max 15% = 1`) | `RobotMaintenanceWindowPlanner` menjadwalkan skor kesehatan terendah lebih dulu; `RoboticsShiftHandoverReportService` menyertakan audit hash |

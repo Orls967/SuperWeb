@@ -27,3 +27,4 @@ Tujuan algoritma adalah menemukan bilangan bulat `t >= earliest` **paling kecil*
   - `R = [[0,5), [7,10)]`, `k=1`, `d=3`, `earliest=4` -> hasil `[10, 13)`.
   - `R = [[0,5), [7,10)]`, `k=1`, `d=2`, `earliest=4` -> hasil `[5, 7)` (mengisi celah sempit).
   - Pemalsuan `result` pada `ZoneReservationCertificate` wajib melempar `InvalidArgumentException` saat `verifyOrFail()`.
+

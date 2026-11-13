@@ -13,3 +13,4 @@
 | `RuntimeException` (Sandbox Mutated) | `RoboticsSimulateCommand` / `RoboticsSimulationScenarioRunner` | Hash tabel produksi berubah setelah simulasi mode sandbox | Segera hentikan job simulasi dan audit mutasi database |
 | `LogicException` (Append-Only Violation) | `RobotMissionEvent`, `RobotTelemetry`, `RobotSafetyIncident` | Percobaan `update()` atau `delete()` pada tabel log immutable | Gunakan entri kompensasi/koreksi baru; jangan ubah rekaman historis |
 | `HTTP 403 Forbidden` (IDOR / RBAC) | `RobotMissionPolicy` / Middleware `role` | Operator mencoba fallback misi milik operator lain atau role tidak berhak mengakses rute | Gunakan akun operator tertaut atau eskalasi ke `admin` gudang |
+

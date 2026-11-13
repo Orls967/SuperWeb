@@ -21,3 +21,4 @@ Tujuan:
 ## 3. Vektor Uji
 - Siklus `M-01 -> M-02 -> M-03 -> M-01` dengan prioritas `['M-01' => 90, 'M-02' => 20, 'M-03' => 50]` -> `has_deadlock = true`, `victim_node = 'M-02'`.
 - Pemalsuan `has_deadlock` pada `TrafficDeadlockCertificate` wajib melempar `InvalidArgumentException`.
+
