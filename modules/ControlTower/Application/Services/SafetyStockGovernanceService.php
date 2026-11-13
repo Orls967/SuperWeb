@@ -36,4 +36,3 @@ final class SafetyStockGovernanceService
         return $this->detector->classify($onHandQty, $avgDailySalesQty, $daysSinceLastMove);
     }
 }
-
