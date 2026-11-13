@@ -11,14 +11,17 @@ use Modules\ControlTower\Application\Services\AlertScannerService;
 use Modules\ControlTower\Application\Services\ControlTowerKpiDrilldownService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
 use Modules\ControlTower\Application\Services\ForecastOverrideService;
+use Modules\ControlTower\Application\Services\InventoryHealthOrchestratorService;
 use Modules\ControlTower\Application\Services\OrderRiskAssessmentService;
 use Modules\ControlTower\Application\Services\PromiseQuoteService;
 use Modules\ControlTower\Application\Services\SopPublicationOrchestrator;
+use Modules\ControlTower\Application\Services\SupplierScorecardOrchestratorService;
 use Modules\ControlTower\Application\Services\TwinWhatIfOrchestratorService;
 use Modules\ControlTower\Console\Commands\AtpRefreshCommand;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\ControlTowerKpiCommand;
+use Modules\ControlTower\Console\Commands\GenerateSupplierScorecardCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
 use Modules\ControlTower\Console\Commands\RunWhatIfTwinCommand;
@@ -30,9 +33,13 @@ use Modules\ControlTower\Contracts\ItemAvailabilityReader;
 use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Algorithms\ForecastModelSelector;
 use Modules\ControlTower\Domain\Models\SopCycle;
+use Modules\ControlTower\Domain\Services\InventoryHealthAnalyzer;
 use Modules\ControlTower\Domain\Services\OrderRiskScorer;
+use Modules\ControlTower\Domain\Services\SupplierScorecardService;
 use Modules\ControlTower\Domain\StateMachines\SopCycleStateMachine;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
+use Modules\ControlTower\Infrastructure\Adapters\EchelonItemAvailabilityReader;
+use Modules\ControlTower\Infrastructure\Adapters\NullSupplierLeadTimeStatistics;
 use Modules\ControlTower\Infrastructure\Adapters\WmsItemAvailabilityReader;
 use Modules\ControlTower\Infrastructure\Simulation\ControlTowerTwinTickHandler;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
@@ -41,6 +48,7 @@ use Modules\Core\Application\Services\EventSchemaRegistry;
 use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
+use Modules\Procurement\Contracts\SupplierLeadTimeStatistics;
 use Modules\Shared\Application\MenuRegistry;
 
 class ControlTowerServiceProvider extends ServiceProvider
@@ -87,7 +95,12 @@ class ControlTowerServiceProvider extends ServiceProvider
         $this->app->tag(ControlTowerTwinTickHandler::class, 'sim.tick_handler');
         //
         // [fix2:bindings:scorecard_health]
-        //
+        $this->app->bindIf(SupplierLeadTimeStatistics::class, NullSupplierLeadTimeStatistics::class);
+        $this->app->bindIf(ItemAvailabilityReader::class, EchelonItemAvailabilityReader::class);
+        $this->app->singleton(SupplierScorecardService::class);
+        $this->app->singleton(InventoryHealthAnalyzer::class);
+        $this->app->singleton(SupplierScorecardOrchestratorService::class);
+        $this->app->singleton(InventoryHealthOrchestratorService::class);
     }
 
     public function boot(): void
@@ -126,7 +139,7 @@ class ControlTowerServiceProvider extends ServiceProvider
             $schedule->command('tower:kpi')->dailyAt('02:30')->withoutOverlapping();
             //
             // [fix2:schedule:scorecard_health]
-            //
+            $schedule->command('tower:supplier-scorecard')->dailyAt('02:30')->withoutOverlapping();
         });
 
         if (file_exists(__DIR__.'/routes/web.php')) {
@@ -164,7 +177,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 ControlTowerKpiCommand::class,
                 //
                 // [fix2:commands:scorecard_health]
-                //
+                GenerateSupplierScorecardCommand::class,
             ]);
         }
 
