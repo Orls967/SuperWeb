@@ -33,7 +33,10 @@ final class WhatIfTwinSimulator
         $otifImpactBps = match ($normalized) {
             'PORT_CLOSURE' => min($baselineOtifBps, intdiv($shockMagnitudeBps * $durationDays, 10)),
             'MATERIAL_INFLATION' => intdiv($shockMagnitudeBps, 20),
-            'DEMAND_SURGE' => min($baselineOtifBps, intdiv($shockMagnitudeBps, 4)),
+            'SUPPLY_DELAY' => min($baselineOtifBps, intdiv($shockMagnitudeBps * $durationDays, 12)),
+            'DEMAND_SPIKE', 'DEMAND_SURGE' => min($baselineOtifBps, intdiv($shockMagnitudeBps, 4)),
+            'SUPPLIER_LOSS' => min($baselineOtifBps, intdiv($shockMagnitudeBps * $durationDays, 8)),
+            'WAREHOUSE_CAPACITY' => min($baselineOtifBps, intdiv($shockMagnitudeBps * $durationDays, 14)),
             'PLANT_EXPANSION' => -min(10_000 - $baselineOtifBps, intdiv($shockMagnitudeBps, 5)),
             default => intdiv($shockMagnitudeBps, 10),
         };

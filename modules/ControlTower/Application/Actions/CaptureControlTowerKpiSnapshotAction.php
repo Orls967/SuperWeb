@@ -40,13 +40,27 @@ final class CaptureControlTowerKpiSnapshotAction
             netSalesIdr: $netSalesIdr,
         );
 
-        return ControlTowerKpiSnapshot::create([
-            'snapshot_date' => $this->clock->now()->toDateString(),
+        $snapshotDate = $this->clock->now()->toDateString();
+        $attributes = [
+            'snapshot_date' => $snapshotDate,
             'otif_bps' => $bundle->otifBps,
             'cash_to_cash_days' => $bundle->cashToCashDays,
             'inventory_dos_days' => $bundle->inventoryDosDays,
             'fulfillment_lead_time_hours' => $bundle->fulfillmentLeadTimeHours,
             'logistics_cost_ratio_bps' => $bundle->logisticsCostRatioBps,
-        ]);
+        ];
+
+        $existing = ControlTowerKpiSnapshot::query()
+            ->whereDate('snapshot_date', $snapshotDate)
+            ->first();
+
+        if ($existing !== null) {
+            $existing->fill($attributes);
+            $existing->save();
+
+            return $existing;
+        }
+
+        return ControlTowerKpiSnapshot::create($attributes);
     }
 }

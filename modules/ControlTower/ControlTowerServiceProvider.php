@@ -7,14 +7,19 @@ namespace Modules\ControlTower;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\ControlTower\Application\Services\ControlTowerKpiDrilldownService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\TwinWhatIfOrchestratorService;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
+use Modules\ControlTower\Console\Commands\ControlTowerKpiCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
+use Modules\ControlTower\Console\Commands\RunWhatIfTwinCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
+use Modules\ControlTower\Infrastructure\Simulation\ControlTowerTwinTickHandler;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -36,6 +41,9 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:alerts]
         //
         // [fix2:bindings:twin_kpi]
+        $this->app->singleton(TwinWhatIfOrchestratorService::class);
+        $this->app->singleton(ControlTowerKpiDrilldownService::class);
+        $this->app->tag(ControlTowerTwinTickHandler::class, 'sim.tick_handler');
         //
         // [fix2:bindings:scorecard_health]
         //
@@ -73,6 +81,7 @@ class ControlTowerServiceProvider extends ServiceProvider
             // [fix2:schedule:alerts]
             //
             // [fix2:schedule:twin_kpi]
+            $schedule->command('tower:kpi')->dailyAt('02:30')->withoutOverlapping();
             //
             // [fix2:schedule:scorecard_health]
             //
@@ -106,6 +115,8 @@ class ControlTowerServiceProvider extends ServiceProvider
                 // [fix2:commands:alerts]
                 //
                 // [fix2:commands:twin_kpi]
+                RunWhatIfTwinCommand::class,
+                ControlTowerKpiCommand::class,
                 //
                 // [fix2:commands:scorecard_health]
                 //

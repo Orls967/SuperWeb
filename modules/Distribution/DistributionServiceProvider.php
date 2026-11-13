@@ -9,7 +9,9 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Distribution\Application\Services\DistributionFulfilmentService;
 use Modules\Distribution\Application\Services\DistributionService;
 use Modules\Distribution\Console\Commands\AuditDistributionCommand;
+use Modules\Distribution\Contracts\OpenDemandProvider;
 use Modules\Distribution\Domain\Models\Distributor;
+use Modules\Distribution\Infrastructure\Adapters\OpenDemandProviderAdapter;
 use Modules\Distribution\Infrastructure\Api\DistOrderResourceProvider;
 use Modules\Distribution\Infrastructure\Bulk\HetPriceBulkImportTarget;
 use Modules\Distribution\Infrastructure\Edi\DistributionEdiOrderHandler;
@@ -23,6 +25,7 @@ class DistributionServiceProvider extends ServiceProvider
     {
         $this->app->singleton(DistributionService::class);
         $this->app->singleton(DistributionFulfilmentService::class);
+        $this->app->bindIf(OpenDemandProvider::class, OpenDemandProviderAdapter::class);
 
         $this->app->tag(DistOrderResourceProvider::class, 'core.api_resource_provider');
         $this->app->tag(DistributionEdiOrderHandler::class, 'core.edi_document_handler');
