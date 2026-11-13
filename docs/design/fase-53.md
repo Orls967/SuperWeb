@@ -386,7 +386,7 @@ Seluruh antarmuka web baru dan pembaruan view lama di Control Tower memenuhi sta
 `Modules\ControlTower\database\seeders\ControlTowerSeeder` dipanggil dari `DatabaseSeeder` setelah `WmsSeeder` dengan karakter idempoten (`firstOrCreate`) dan bebas `now()` (`A8` bersih):
 - **Stok Multi-Eselon:** 4 entri `EchelonStock` (`SP-001` di `PLANT`/`DC`/`OUTLET` + `SP-004` di `DC`) dengan kapasitas pasokan total melebihi reservasi.
 - **Kebijakan & Forecast:** `SafetyStockPolicy` aktif untuk `SP-001` (`echelon_breakdown: PLANT=50, DC=40, OUTLET=25`) serta `DemandForecast` `FC-2026-11-SP001` (`HOLT`).
-- **Siklus S&OP & Janji ATP:** `SopCycle` `SOP-2026-11` pada status kanonik `consensus` serta `OrderPromise` `PRM-SEED-001` (`ATP_SUFFICIENT_ON_TIME`, `requested_qty = 45`).
+- **Siklus S&OP & Janji ATP:** `SopCycle` `SOP-2026-11` pada status kanonik `pre_sop` serta `OrderPromise` `PRM-SEED-001` (`ATP_SUFFICIENT_ON_TIME`, `requested_qty = 45`).
 - **Risiko, Alert, Scorecard & Kesehatan:** `AlertRule` `RULE-STOCKOUT-HIGH`, `DisruptionAlert` `ALT-SEED-001`, `OrderRiskScore` `SO-SEED-002`, `SupplierScorecardSnapshot` `SUP-SEED-001` (`STRATEGIC`, skor `865`), `InventoryHealthSnapshot` `SP-001` (`HEALTHY`), `ControlTowerKpiSnapshot`, serta `TwinScenario` `TWIN-SEED-DEMAND15`.
 
 

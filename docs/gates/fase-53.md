@@ -1,6 +1,6 @@
 # Quality Gate Report: Fase 53 — Supply Chain Control Tower & S&OP (FIX-2)
 
-- **Commit:** `afc1157b4deb4ed04235329c958569d3e9bb2535` (afc1157b)
+- **Commit:** `8fd53396677170db4153f177ad7d954a5dbf5aaf` (8fd53396)
 - **Tanggal:** 2026-11-14T01:48:30+08:00
 - **PHP:** 8.4
 - **Database:** sqlite + MySQL 8.4 DDL compatibility (`MysqlSchemaCompatibilityTest` PASS)
