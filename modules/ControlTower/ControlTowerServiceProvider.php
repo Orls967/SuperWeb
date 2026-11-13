@@ -12,6 +12,7 @@ use Modules\ControlTower\Application\Services\ControlTowerKpiDrilldownService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
 use Modules\ControlTower\Application\Services\ForecastOverrideService;
 use Modules\ControlTower\Application\Services\InventoryHealthOrchestratorService;
+use Modules\ControlTower\Application\Services\MultiEchelonSafetyStockService;
 use Modules\ControlTower\Application\Services\OrderRiskAssessmentService;
 use Modules\ControlTower\Application\Services\PromiseQuoteService;
 use Modules\ControlTower\Application\Services\SopPublicationOrchestrator;
@@ -19,6 +20,7 @@ use Modules\ControlTower\Application\Services\SupplierScorecardOrchestratorServi
 use Modules\ControlTower\Application\Services\TwinWhatIfOrchestratorService;
 use Modules\ControlTower\Console\Commands\AtpRefreshCommand;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
+use Modules\ControlTower\Console\Commands\CalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\ControlTowerKpiCommand;
 use Modules\ControlTower\Console\Commands\GenerateSupplierScorecardCommand;
@@ -32,6 +34,7 @@ use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
 use Modules\ControlTower\Contracts\ItemAvailabilityReader;
 use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Algorithms\ForecastModelSelector;
+use Modules\ControlTower\Domain\Algorithms\MultiEchelonSafetyStock;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Domain\Services\InventoryHealthAnalyzer;
 use Modules\ControlTower\Domain\Services\OrderRiskScorer;
@@ -71,7 +74,8 @@ class ControlTowerServiceProvider extends ServiceProvider
         });
         //
         // [fix2:bindings:safety]
-        //
+        $this->app->singleton(MultiEchelonSafetyStock::class);
+        $this->app->singleton(MultiEchelonSafetyStockService::class);
         // [fix2:bindings:sop]
         $this->app->singleton(SopCycleStateMachine::class);
         $this->app->bind(SopPublicationOrchestrator::class, function ($app): SopPublicationOrchestrator {
@@ -166,7 +170,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 SelectForecastModelCommand::class,
                 //
                 // [fix2:commands:safety]
-                //
+                CalculateSafetyStockCommand::class,
                 // [fix2:commands:sop]
                 //
                 // [fix2:commands:alerts]
