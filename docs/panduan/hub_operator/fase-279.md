@@ -29,3 +29,11 @@ Rute yang dapat Anda akses:
 1. Saat menyusun wave baru di `/wms/robotics/waves`, masukkan `warehouse_id`, `capacity`, dan `batch_code`.
 2. Sistem mengelompokkan order secara otomatis berdasarkan `cutoff` kurir agar tidak ada order yang tertinggal saat fallback manual terjadi.
 
+
+## 3. Daftar Periksa Serah-Terima Shift Operator (`RoboticsShiftHandoverReportService`)
+Sebelum pergantian shift, `hub_operator` wajib memeriksa poin berikut pada paket serah-terima (`buildHandover`):
+1. **Misi Aktif & Fallback**: Catat jumlah `active_missions_count` dan pastikan seluruh misi `fallback_manual` sudah memiliki tugas manual `MAN-*` yang ditangani di `TaskInbox`.
+2. **Zona Terblokir Staf (`blocked_zones`)**: Konfirmasi apakah pekerja staf masih berada di dalam zona bertanda `staff_blocked = true`; jika sudah keluar, buka blokir agar misi tertunda dapat dialokasikan.
+3. **Unit Baterai Rendah (`low_battery_robots`)**: Pastikan seluruh robot dengan `battery_pct < 25%` sudah masuk rencana `charger_bay_plan` (`BAY-01..BAY-04`).
+4. **Insiden Terbuka (`open_incidents_count`)**: Tinjau dan selesaikan seluruh insiden berstatus `reported` di `/wms/robotics/incidents`.
+5. **Status Audit (`audit_passed`)**: Pastikan `audit_passed = true` sebelum menandatangani serah-terima shift berikutnya.

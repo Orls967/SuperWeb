@@ -26,3 +26,19 @@ Sebagai **Auditor**, Anda memiliki akses baca-saja terhadap seluruh jejak audit 
 - Periksa pada `/wms/robotics/roi` bahwa setiap proposal berstatus `approved` memiliki `approved_by_user_id != created_by_user_id`.
 - Untuk setiap proposal dengan `npv_minor < 0`, pastikan kolom `justification` terisi jelas dan tercatat di `ApprovalEngine` (`approval_requests`).
 
+
+## 4. Referensi Kolom Ekspor CSV (`GET /wms/robotics/export/{entity}`)
+| Entity (`{entity}`) | Sumber Tabel | Kolom Utama yang Diekspor | Kegunaan Audit |
+|---|---|---|---|
+| `robots` | `wms_robots` | `id`, `warehouse_id`, `robot_code`, `is_online`, `battery_pct`, `health_score`, `position_x`, `position_y` | Verifikasi rasio armada online & kesehatan unit |
+| `missions` | `wms_robot_missions` | `id`, `mission_code`, `warehouse_id`, `robot_id`, `zone_code`, `status`, `priority`, `retry_count`, `fallback_manual` | Rekonsiliasi distribusi 8 status & batas retry <= 2 |
+| `waves` | `wms_robot_waves` | `id`, `warehouse_id`, `batch_code`, `carrier_code`, `cutoff_hhmm`, `capacity`, `total_load`, `certificate_hash` | Verifikasi konservasi order `J2` & sertifikat SHA-256 |
+| `roi` | `wms_robotics_roi_proposals` | `id`, `proposal_code`, `status`, `capex_minor`, `npv_minor`, `irr_bps`, `payback_months`, `created_by_user_id`, `approved_by_user_id`, `justification` | Pemeriksaan SoD & alasan NPV negatif `J3` |
+| `incidents` | `wms_robot_safety_incidents` | `id`, `incident_code`, `warehouse_id`, `severity`, `incident_type`, `status`, `reviewed_by_user_id`, `recorded_at` | Audit jejak keselamatan append-only |
+
+## 5. Daftar Periksa Kepatuhan Auditor Sebelum Penutupan Periode
+1. Jalankan `php artisan robotics:audit` dan simpan `state_hash` SHA-256 sebagai bukti integritas periode.
+2. Pastikan seluruh proposal ROI berstatus `approved` memenuhi `created_by_user_id !== approved_by_user_id`.
+3. Pastikan setiap proposal ROI dengan `npv_minor < 0` memiliki `justification` yang tercatat di kedua tabel (`wms_robotics_roi_proposals` dan `approval_requests`).
+4. Pastikan tidak ada selisih order antara `wms_robot_waves` dan `wms_tasks` untuk misi yang beralih ke `fallback_manual`.
+5. Pastikan hasil simulasi `robotics:simulate` mencantumkan `hash_identik=true`.
