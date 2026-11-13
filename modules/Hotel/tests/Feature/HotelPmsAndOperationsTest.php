@@ -87,8 +87,8 @@ class HotelPmsAndOperationsTest extends TestCase
             propertyId: $this->property->id,
             roomType: 'VILLA',
             guestUserId: $guestId,
-            checkInDate: '2026-11-10',
-            checkOutDate: '2026-11-12',
+            checkInDate: now()->toDateString(),
+            checkOutDate: now()->addDays(2)->toDateString(),
             requestedRateIdr: 3500000
         );
 
@@ -226,8 +226,8 @@ class HotelPmsAndOperationsTest extends TestCase
             propertyId: $this->property->id,
             roomType: 'VILLA',
             guestUserId: $guestId,
-            checkInDate: '2026-11-10',
-            checkOutDate: '2026-11-12',
+            checkInDate: now()->toDateString(),
+            checkOutDate: now()->addDays(2)->toDateString(),
             requestedRateIdr: 3000000
         );
 

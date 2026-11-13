@@ -33,14 +33,15 @@ it('rejects reservation when checkout is before or equal checkin date', function
 })->throws(InvalidArgumentException::class, 'Check-out date must be after check-in date.');
 
 it('rejects reservation when overlapping booking exists', function () {
+    $today = Carbon::today();
     HotelReservation::create([
         'id' => (string) Str::uuid(),
         'reservation_number' => 'HTL/RSV/LOCK-001',
         'property_id' => $this->property->id,
         'room_id' => $this->room->id,
         'guest_user_id' => $this->guest->id,
-        'check_in_date' => '2026-11-10',
-        'check_out_date' => '2026-11-15',
+        'check_in_date' => $today->toDateString(),
+        'check_out_date' => $today->copy()->addDays(5)->toDateString(),
         'daily_rate_idr' => 1000000,
         'total_room_charge_idr' => 5000000,
         'status' => 'confirmed',
@@ -51,20 +52,21 @@ it('rejects reservation when overlapping booking exists', function () {
         propertyId: $this->property->id,
         roomId: $this->room->id,
         guestUserId: (string) $this->guest->id,
-        checkInDate: '2026-11-12',
-        checkOutDate: '2026-11-17',
+        checkInDate: $today->copy()->addDays(2)->toDateString(),
+        checkOutDate: $today->copy()->addDays(7)->toDateString(),
         dailyRateIdr: 1000000
     );
 })->throws(RuntimeException::class, 'is already booked for the selected dates.');
 
 it('successfully reserves room with night lock', function () {
+    $today = Carbon::today();
     $action = app(ReserveRoomWithInventoryNightLockAction::class);
     $result = $action->handle(
         propertyId: $this->property->id,
         roomId: $this->room->id,
         guestUserId: (string) $this->guest->id,
-        checkInDate: '2026-11-20',
-        checkOutDate: '2026-11-23',
+        checkInDate: $today->copy()->addDays(6)->toDateString(),
+        checkOutDate: $today->copy()->addDays(9)->toDateString(),
         dailyRateIdr: 1200000
     );
 
