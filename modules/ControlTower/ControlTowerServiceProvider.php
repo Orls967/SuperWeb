@@ -8,14 +8,23 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\InventoryHealthOrchestratorService;
+use Modules\ControlTower\Application\Services\SupplierScorecardOrchestratorService;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
+use Modules\ControlTower\Console\Commands\GenerateSupplierScorecardCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
+use Modules\ControlTower\Contracts\ItemAvailabilityReader;
 use Modules\ControlTower\Domain\Models\SopCycle;
+use Modules\ControlTower\Domain\Services\InventoryHealthAnalyzer;
+use Modules\ControlTower\Domain\Services\SupplierScorecardService;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
+use Modules\ControlTower\Infrastructure\Adapters\EchelonItemAvailabilityReader;
+use Modules\ControlTower\Infrastructure\Adapters\NullSupplierLeadTimeStatistics;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
+use Modules\Procurement\Contracts\SupplierLeadTimeStatistics;
 use Modules\Shared\Application\MenuRegistry;
 
 class ControlTowerServiceProvider extends ServiceProvider
@@ -38,7 +47,12 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:twin_kpi]
         //
         // [fix2:bindings:scorecard_health]
-        //
+        $this->app->bindIf(SupplierLeadTimeStatistics::class, NullSupplierLeadTimeStatistics::class);
+        $this->app->bindIf(ItemAvailabilityReader::class, EchelonItemAvailabilityReader::class);
+        $this->app->singleton(SupplierScorecardService::class);
+        $this->app->singleton(InventoryHealthAnalyzer::class);
+        $this->app->singleton(SupplierScorecardOrchestratorService::class);
+        $this->app->singleton(InventoryHealthOrchestratorService::class);
     }
 
     public function boot(): void
@@ -75,7 +89,7 @@ class ControlTowerServiceProvider extends ServiceProvider
             // [fix2:schedule:twin_kpi]
             //
             // [fix2:schedule:scorecard_health]
-            //
+            $schedule->command('tower:supplier-scorecard')->dailyAt('02:30')->withoutOverlapping();
         });
 
         if (file_exists(__DIR__.'/routes/web.php')) {
@@ -108,7 +122,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 // [fix2:commands:twin_kpi]
                 //
                 // [fix2:commands:scorecard_health]
-                //
+                GenerateSupplierScorecardCommand::class,
             ]);
         }
 
