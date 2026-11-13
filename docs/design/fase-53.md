@@ -1,51 +1,89 @@
 # Desain Teknis — Fase 53: Supply Chain Control Tower & S&OP
 
-## 1. Ikhtisar Arsitektur
+## 1. Ikhtisar Arsitektur Terintegrasi
 
-Modul `ControlTower` (`sct_`) menyediakan visibilitas rantai pasok multi-eselon, mesin peramalan permintaan deterministik, siklus kolaboratif S&OP, janji pesanan ATP/CTP berbasis kapasitas nyata, analisis dampak disrupsi, KPI eksekutif, serta What-If Digital Twin sandbox.
+Modul `ControlTower` (`modules/ControlTower/`, prefiks tabel `sct_`) menyatukan lapisan visibilitas, perencanaan konsensus, janji pengiriman deterministik, mitigasi risiko, analitik modal kerja, hingga simulasi Digital Twin. Seluruh interaksi ke modul operasional lain dijalankan melalui kontrak terinversi (`ADR-053`), sementara seluruh kejadian uang tetap ditangani oleh modul pemilik transaksi (`RAB Posting = 0`).
 
 ```mermaid
 flowchart LR
-    WMS["Wms::StockAvailabilityReader"] --> CT["ControlTowerService / Actions"]
-    SIM["Core::SimTickHandlerInterface"] --> TWIN["ControlTowerTwinTickHandler"]
-    CT --> I1["I1 DemandForecastEngine + Certificate"]
-    CT --> I2["I2 AtpCtpCalculator + Certificate"]
-    CT --> I3["I3 SafetyStockAbcXyzOptimizer + Certificate"]
-    CT --> SM["SopCycleStateMachine (7 states)"]
-    CT --> AUD["tower:audit + SabotageFixture"]
+    EXT["Order Modules"] -->|"PromiseQuoteInterface"| PQS["PromiseQuoteService"]
+    PQS --> NET["I1 AtpCtpNetter"]
+    NET --> IAR["ItemAvailabilityReader (Wms + Store + Logistics)"]
+    NET --> MFG["Manufacturing::CapacityAndMaterialProvider"]
+    NET --> DIST["Distribution::OpenDemandProvider"]
+    FC["I2 ForecastModelSelector (SES/Holt/Croston)"] --> OVR["X53-4 ForecastOverrideService"]
+    SS["I3 MultiEchelonSafetyStock"] --> PRC["Procurement::SupplierLeadTimeStatistics"]
+    SOP["SopPublicationOrchestrator (7 states)"] --> CORE["ApprovalEngine + TaskInbox + Outbox"]
+    RISK["X53-1 OrderRiskScorer & AlertScanner"] --> SUP["X53-2 SupplierScorecardService"]
+    HLTH["X53-3 InventoryHealthAnalyzer"] --> TWIN["TwinWhatIfOrchestrator (0 Mutation)"]
+    DIST --> KPI["ControlTowerKpiDrilldownService"]
 ```
 
-## 2. Skema Database Tambahan (`sct_*`)
+---
 
-Migrasi aditif baru `2026_11_13_000001_create_sct_sop_cycles_and_twin_scenarios_tables.php`:
-1. `sct_sop_cycles`: siklus bulanan S&OP (`cycle_code`, `period`, `status`, `demand_plan_qty`, `supply_plan_qty`, `capacity_utilization_bps`, `gross_margin_est_idr`, `cash_impact_est_idr`, `scenario_type`, `signed_off_by_user_id` FK `users.id`, `signed_off_at`).
-2. `sct_sop_events`: jejak transisi siklus S&OP (`sop_cycle_id` FK `sct_sop_cycles.id`, `from_status`, `to_status`, `actor_user_id` FK `users.id`, `notes`, `created_at`).
-3. `sct_forecast_overrides`: riwayat override kolaboratif (`demand_forecast_id` FK `sct_demand_forecasts.id`, `previous_qty`, `new_qty`, `reason`, `overridden_by_user_id` FK `users.id`).
-4. `sct_twin_scenarios`: skenario simulasi what-if (`scenario_code`, `name`, `shock_type`, `shock_magnitude_bps`, `duration_days`, `baseline_otif_bps`, `simulated_otif_bps`, `at_risk_orders_count`, `estimated_margin_delta_idr`, `status`, `created_by_user_id` FK `users.id`).
+## 2. Arsitektur Lapisan Domain, Application, Infrastructure & Presentation
 
-## 3. Algoritma Tersertifikasi (I1–I3)
+### 2.1 Domain Layer (`modules/ControlTower/Domain/`)
+1. **Algoritma Deterministik (`Domain/Algorithms/`):**
+   - `AtpCtpNetter` (`I1`): netting multi-periode kumulatif (`1..T`), proteksi pencurian komitmen periode mendatang (*look-ahead protection*), penentuan `status` (`on_time|late|cannot_promise`), `promised_period`, `late_periods`, kode alasan eksplisit (`INSUFFICIENT_CAPACITY|INSUFFICIENT_MATERIAL|HORIZON_EXCEEDED`), dan hash sertifikat SHA-256.
+   - `AtpCtpCalculator`: evaluator janji periode tunggal dan pembangkit `OrderPromiseCertificate`.
+   - `ForecastModelSelector` (`I2`): evaluasi komparatif rasional skala tetap (`10_000`) antara `SES` ($\alpha=3/10$), `HOLT` ($\alpha=3/10, \beta=1/10$), dan `CROSTON` ($\alpha=2/10$) memakai backtest *walk-forward* 6 titik terakhir, memilih `mae_scaled` minimum beserta tie-breaker deterministik `SES -> HOLT -> CROSTON`.
+   - `DemandForecastEngine`: perhitungan `MOVING_AVG`, `EXP_SMOOTHING`, `HOLT_WINTERS`, `LINEAR_REGRESSION` dalam integer fixed-point.
+   - `MultiEchelonSafetyStock` (`I3`): klasifikasi matriks ABC/XYZ 3×3 (`AX..CZ`) dan penggabungan variabilitas permintaan serta variabilitas waktu tunggu pemasok riil (`mean_days`, `sigma_days`) melalui akar kuadrat integer `isqrt`.
+   - `SafetyStockAbcXyzOptimizer`, `BlastRadiusImpactAnalyzer`, `WhatIfTwinSimulator`: pendukung analisis echelon dan dampak kejut.
+2. **State Machine (`Domain/StateMachines/`):**
+   - `SopCycleStateMachine`: mengelola siklus 7 tahap kanonik (`data_gathering -> demand_review -> supply_review -> pre_sop -> exec_sop -> published -> closed`) sekaligus mempertahankan kompatibilitas jalur historis (`draft -> demand_review -> supply_review -> pre_sop_balancing -> executive_signoff -> published -> archived`), disertai pemeriksaan transisi mundur ber-alasan wajib (`assertTransitionWithReason`).
+3. **Domain Services (`Domain/Services/`):**
+   - `OrderRiskScorer` (`X53-1`): agregasi skor risiko pesanan `0..1000` berbasis shortfall, variabilitas pemasok, umur lot tertua, dan keterlambatan in-transit, dengan pemetaan tier `LOW|MEDIUM|HIGH|CRITICAL` serta rencana mitigasi.
+   - `SupplierScorecardService` (`X53-2`): kalkulasi skor kinerja pemasok `0..1000` (OTD 45%, konsistensi lead time 30%, reliabilitas volume sampel 25%) lengkap dengan tiering `STRATEGIC|PREFERRED|WATCHLIST|AT_RISK` dan tren historis bulanan.
+   - `InventoryHealthAnalyzer` (`X53-3`): klasifikasi kesehatan persediaan (`DEAD_STOCK|SLOW_MOVING|EXCESS|SHORTAGE_RISK|HEALTHY`), pembagian bucket umur (`0-30`, `31-90`, `91-180`, `>180`), kalkulasi `dos_days`, dan eksposur risiko obsolet IDR integer.
+4. **Domain Models (`Domain/Models/`):**
+   - `EchelonStock`, `DemandForecast`, `ForecastOverride`, `OrderPromise`, `DisruptionAlert`, `AlertRule`, `OrderRiskScore`, `SopCycle`, `SopEvent`, `SafetyStockPolicy`, `TwinScenario`, `ControlTowerKpiSnapshot`, `SupplierScorecardSnapshot`, `InventoryHealthSnapshot`.
 
-- **I1 (`DemandForecastEngine`)**: Menghitung WMA, Exponential Smoothing (`alpha_bps`), Holt-Winters (`alpha_bps`, `beta_bps`, `gamma_bps`), dan Linear Regression dalam aritmetika integer (`intdiv` dengan pembulatan deterministik) serta metrik `mape_bps`, `mad_units`, `tracking_signal_bps`. Menghasilkan `ForecastAccuracyCertificate` yang dapat diverifikasi ulang oleh `ForecastAccuracyCertificateVerifier`.
-- **I2 (`AtpCtpCalculator`)**: Mengevaluasi ATP kumulatif lintas bucket periode (`on_hand + scheduled_receipts - committed_orders`) dan memperluas ke CTP (kapasitas lini & ketersediaan bahan baku) bila ATP tidak mencukupi. Menghasilkan `OrderPromiseCertificate` yang menjamin `atp_allocated <= available_supply`.
-- **I3 (`SafetyStockAbcXyzOptimizer`)**: Mengklasifikasikan SKU ke matriks 3x3 ABC/XYZ dan menghitung Dynamic Safety Stock (`z_factor_bps * sqrt_approx(...)`) sepenuhnya dalam integer. Menghasilkan `SafetyStockPolicyCertificate`.
+### 2.2 Application Layer (`modules/ControlTower/Application/`)
+- **Services Utama:**
+  - `PromiseQuoteService` (implementasi `PromiseQuoteInterface`, `DB::transaction`, `IdempotencyConflictException`, emisi event `tower.promise.made.v1`).
+  - `ForecastOverrideService` (`X53-4`: validasi alasan minimal 5 karakter, `deviation_bps`, eskalasi approval deviasi besar, serta dukungan `revertOverride`).
+  - `MultiEchelonSafetyStockService`: pembuatan dan evaluasi usulan kebijakan safety stock multi-eselon.
+  - `SopPublicationOrchestrator`: penghubung state machine S&OP ke `TaskInboxService::createTask()`, `ApprovalEngineInterface` four-eyes, serta emisi `tower.sop.published.v1`.
+  - `OrderRiskAssessmentService` & `AlertScannerService`: pemindaian risiko pesanan, deteksi anomali echelon/transit terdeduplikasi via `dedup_key`, serta emisi `tower.alert.raised.v1`.
+  - `TwinWhatIfOrchestratorService`: isolasi simulasi sandbox bebas mutasi dengan pemeriksaan kesetaraan checksum SHA-256 `before_hash === after_hash` serta komparator dua skenario.
+  - `ControlTowerKpiDrilldownService`: perhitungan nyata `otif_permil` & `fill_rate_permil` dari `OpenDemandProvider::fulfillmentLines()` dengan rincian status pesanan.
+  - `SupplierScorecardOrchestratorService` & `InventoryHealthOrchestratorService`: persistensi snapshot berkala idempoten per periode/tanggal.
+  - `ControlTowerAuditReportService`: validasi invarian lintas tabel `sct_*` dan fixture sabotase untuk verifikasi deterministik `tower:audit`.
+- **Actions:**
+  - `RefreshAtpCtpHorizonAction`, `RunForecastModelSelectionAction`, `DecideSafetyStockProposalAction`, `EvaluateOrderPromiseAction`, `OverrideDemandForecastAction`, `RunConsensusSopHoltWintersForecastAction`, `DetectSupplyChainBottleneckAlertAction`, `ExecuteAutonomousReallocationPlaybookAction` (dilengkapi `proposeReallocation` dan `approveReallocation`), `StartSopCycleAction`, `TransitionSopCycleAction`, `RecalculateSafetyStockAction`, `CaptureControlTowerKpiSnapshotAction`, `RunWhatIfTwinScenarioAction`, `AnalyzeDisruptionBlastRadiusAction`.
 
-## 4. State Machine S&OP 7-Status (`SopCycleStateMachine`)
+### 2.3 Infrastructure & Cross-Module Adapters
+- `Modules\ControlTower\Infrastructure\Adapters\WmsItemAvailabilityReader` -> `ItemAvailabilityReader`
+- `Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter` -> `ControlTowerVisibilityReader`
+- `Modules\Manufacturing\Infrastructure\Adapters\ManufacturingCapacityAndMaterialProvider` -> `CapacityAndMaterialProvider`
+- `Modules\Distribution\Infrastructure\Adapters\DistributionOpenDemandProvider` -> `OpenDemandProvider`
+- `Modules\Procurement\Infrastructure\Adapters\ProcurementSupplierLeadTimeStatistics` -> `SupplierLeadTimeStatistics`
+- `Modules\ControlTower\Infrastructure\Simulation\ControlTowerTwinTickHandler` -> `SimTickHandlerInterface`
+- `Modules\ControlTower\Infrastructure\Audit\ControlTowerAuditCorruptionFixture`
 
-Status valid: `draft`, `demand_review`, `supply_review`, `pre_sop_balancing`, `executive_signoff`, `published`, `archived`.
-Transisi hanya diizinkan melalui peta transisi terdefinisi dan seluruhnya dicatat ke `sct_sop_events` dengan `actor_user_id` dan stempel waktu dari `ClockInterface`.
+---
 
-## 5. Rute HTTP, Policy & Perintah Artisan
+## 3. Skema Migrasi Database (`sct_*`, MySQL 8.4 & SQLite Compatible)
 
-- Policy: `ControlTowerOperationPolicy` (`viewAny`, `manageSop`, `overrideForecast`, `runTwin`).
-- Rute baru di `modules/ControlTower/routes/web.php` (terdaftar di `tests/Architecture/route-roles.php`):
-  - `GET /control-tower/sop` (`control_tower.sop.index`)
-  - `POST /control-tower/sop` (`control_tower.sop.store`)
-  - `POST /control-tower/sop/{cycle}/transition` (`control_tower.sop.transition`)
-  - `GET /control-tower/forecasting` (`control_tower.forecasting.index`)
-  - `POST /control-tower/forecasting/override` (`control_tower.forecasting.override`)
-  - `GET /control-tower/twin` (`control_tower.twin.index`)
-  - `POST /control-tower/twin/simulate` (`control_tower.twin.simulate`)
-  - `GET /control-tower/kpi` (`control_tower.kpi.index`)
-  - `GET /control-tower/export/echelon.csv` (`control_tower.export.echelon`)
-- Commands: `tower:audit` (diperluas dengan verifikasi ATP/CTP, S&OP, & sabotage detection), `tower:sop-advance`, `tower:twin-simulate`, `tower:safety-stock-recalc`, `tower:kpi-snapshot`.
+Seluruh perubahan skema pada `W8-P6-fix` berbentuk **migrasi aditif murni**:
 
+| Berkas Migrasi | Tabel Terpengaruh | Kolom Kunci & Foreign Key Eksplisit |
+| :--- | :--- | :--- |
+| `2026_10_06_530100_create_sct_tables.php` | `sct_echelon_stocks`, `sct_demand_forecasts`, `sct_order_promises`, `sct_disruption_alerts` | Dasar stok echelon, proyeksi permintaan, janji pesanan, alert disrupsi. |
+| `2026_11_13_000001_create_sct_sop_cycles_and_twin_scenarios_tables.php` | `sct_sop_cycles`, `sct_sop_events`, `sct_forecast_overrides`, `sct_twin_scenarios`, `sct_kpi_snapshots`, `sct_safety_stock_policies` | FK ke `users.id`, `sct_sop_cycles.id`, `sct_demand_forecasts.id`. |
+| `2026_11_14_000001_enhance_sct_order_promises_table.php` | `sct_order_promises` (alter aditif) | `idempotency_key` (unique), `payload_hash`, `promised_period`, `late_periods`, `reason_code`, `certificate_hash`, `as_of_date`, `atp_cumulative`, `ctp_cumulative`. |
+| `2026_11_14_000002_enhance_sct_forecast_tables.php` | `sct_demand_forecasts`, `sct_forecast_overrides` (alter aditif) | `mae_scaled`, `candidates_json`, `certificate_hash`, `history_json`; override `status`, `deviation_bps`, `approval_id`, `reverted_at`, `reverted_by_user_id`. |
+| `2026_11_14_000003_add_consensus_fields_to_sct_sop_cycles.php` | `sct_sop_cycles` (alter aditif) | `approval_id`, `task_id`, `published_at`, `published_by_user_id` FK `users.id`, `consensus_snapshot_json`, `notes`, `created_by_user_id` FK `users.id`. |
+| `2026_11_14_000004_create_sct_risk_scores_and_alert_rules_tables.php` | `sct_order_risk_scores`, `sct_alert_rules`, `sct_disruption_alerts` (alter aditif) | Skor 4 komponen risiko, tier risiko, aturan ambang, `dedup_key`, proposal mitigasi. |
+| `2026_11_14_000005_create_sct_scorecards_and_inventory_health_tables.php` | `sct_supplier_scorecards`, `sct_inventory_health_snapshots` | Komponen skor pemasok (`0..1000`), tier, bucket aging, `tied_capital_idr`, `obsolescence_risk_idr`. |
+
+---
+
+## 4. Desain Antarmuka Web (`x-ds.*`) & Responsivitas 375px
+
+Seluruh tampilan web di `modules/ControlTower/resources/views/control_tower/` dirancang menggunakan komponen Design System standar (`<x-ds.card>`, `<x-ds.stat-card>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>`):
+- Grid adaptif `grid-cols-1 md:grid-cols-3` atau `grid-cols-1 md:grid-cols-4` agar kartu metrik tersusun rapi pada viewport mobile `375px` tanpa overflow horizontal.
+- Tabel data dibungkus kontainer `overflow-x-auto` dan dilengkapi formulir aksi interaktif (simulasi, kuotasi ATP, seleksi model, override forecast, transisi S&OP, mitigasi alert, penyegaran skor pemasok/kesehatan stok) serta tautan langsung ekspor `.csv`.
+- Setiap rute terdaftar dalam `tests/Architecture/route-roles.php` sehingga lulus uji matrik otorisasi RBAC maupun `php artisan ui:lint --render --responsive`.
