@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Wms\Http\Controllers\WmsController;
 use Modules\Wms\Http\Controllers\WmsOperationsController;
+use Modules\Wms\Http\Controllers\WmsRoboticsController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procurement,auditor'])
     ->prefix('wms')
@@ -18,8 +19,14 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procureme
         Route::get('/utilization', [WmsOperationsController::class, 'utilization'])->name('utilization');
         Route::get('/export/valuation.csv', [WmsOperationsController::class, 'exportValuationCsv'])->name('export.valuation');
         Route::get('/export/bin-stocks.csv', [WmsOperationsController::class, 'exportBinStocksCsv'])->name('export.bin-stocks');
+        Route::get('/robotics/fleet', [WmsRoboticsController::class, 'fleet'])->name('robotics.fleet');
+        Route::get('/robotics/missions', [WmsRoboticsController::class, 'missions'])->name('robotics.missions');
+        Route::get('/robotics/roi', [WmsRoboticsController::class, 'roi'])->name('robotics.roi');
 
         Route::middleware('role:admin,hub_operator')->group(function () {
+            Route::post('/robotics/missions/dispatch', [WmsRoboticsController::class, 'dispatchMission'])->name('robotics.missions.dispatch');
+            Route::post('/robotics/missions/{mission}/fallback', [WmsRoboticsController::class, 'triggerFallback'])->name('robotics.missions.fallback');
+            Route::post('/robotics/interlock', [WmsRoboticsController::class, 'enforceInterlock'])->name('robotics.interlock');
             Route::post('/operations/putaway', [WmsOperationsController::class, 'executePutaway'])->name('operations.putaway');
             Route::post('/operations/wave-picking', [WmsOperationsController::class, 'allocateWavePicking'])->name('operations.wave-picking');
             Route::post('/operations/receive-inbound', [WmsOperationsController::class, 'receiveInbound'])->name('operations.receive-inbound');

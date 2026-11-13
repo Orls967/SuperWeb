@@ -15,6 +15,9 @@ use Modules\Wms\Console\Commands\PostOpeningBalanceCommand;
 use Modules\Wms\Console\Commands\ReplenishWmsCommand;
 use Modules\Wms\Console\Commands\ReservationSweepCommand;
 use Modules\Wms\Console\Commands\RevalueCostCommand;
+use Modules\Wms\Console\Commands\RoboticsAuditCommand;
+use Modules\Wms\Console\Commands\RoboticsDispatchCommand;
+use Modules\Wms\Console\Commands\RoboticsRoiPlanCommand;
 use Modules\Wms\Console\Commands\TransitSweepCommand;
 use Modules\Wms\Console\Commands\UtilizationSnapshotCommand;
 use Modules\Wms\Contracts\StockAvailabilityReader;
@@ -59,6 +62,9 @@ class WmsServiceProvider extends ServiceProvider
                 RevalueCostCommand::class,
                 ReservationSweepCommand::class,
                 UtilizationSnapshotCommand::class,
+                RoboticsDispatchCommand::class,
+                RoboticsAuditCommand::class,
+                RoboticsRoiPlanCommand::class,
             ]);
         }
 

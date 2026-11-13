@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 /**
+ * @deprecated Fase 279 dipindahkan menjadi vertical slice penuh ke Modules\Wms\Application\Services\RoboticsFleetOrchestratorService.
+ *
  * WarehouseRoboticsAutomationService (Fase 279)
  *
  * Implements:
