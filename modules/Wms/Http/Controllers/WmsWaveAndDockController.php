@@ -7,40 +7,96 @@ namespace Modules\Wms\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 use Modules\Wms\Application\Actions\AllocateOutboundWavePickingAction;
 use Modules\Wms\Application\Actions\ExecuteDirectedPutawayAction;
 use Modules\Wms\Application\Actions\ProcessCrossDockingTransferAction;
+use Modules\Wms\Application\Services\WmsOperationalAnalyticsService;
 use Modules\Wms\Domain\Models\Bin;
 use Modules\Wms\Domain\Models\DockAppointment;
 use Modules\Wms\Domain\Models\Task;
 use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Domain\Models\Wave;
 use Modules\Wms\Domain\Models\Zone;
+use Modules\Wms\Domain\Services\DockSchedulingOptimizationService;
+use Modules\Wms\Domain\Services\WavePickPathOptimizationService;
 
 final class WmsWaveAndDockController extends Controller
 {
     public function __construct(
         private readonly AllocateOutboundWavePickingAction $allocateWaveAction,
         private readonly ProcessCrossDockingTransferAction $crossDockAction,
-        private readonly ExecuteDirectedPutawayAction $putawayAction
+        private readonly ExecuteDirectedPutawayAction $putawayAction,
+        private readonly WavePickPathOptimizationService $pickPathOptimizer,
+        private readonly DockSchedulingOptimizationService $dockOptimizer,
+        private readonly WmsOperationalAnalyticsService $analyticsService,
     ) {}
 
     public function waveIndex(): View
     {
-        $waves = Wave::query()->latest()->limit(20)->get();
-        $tasks = Task::query()->where('kind', 'pick')->latest()->limit(50)->get();
+        $waves = Wave::query()->latest('id')->limit(20)->get();
+        $tasks = Task::query()
+            ->where('kind', 'pick')
+            ->with(['bin.rack.zone'])
+            ->latest('id')
+            ->limit(50)
+            ->get();
 
-        return view('wms::wave_picking', compact('waves', 'tasks'));
+        $pickOptimization = $this->pickPathOptimizer->optimizeFromEloquentTasks($tasks);
+        $analytics = $this->analyticsService->summarize();
+        $waveRows = $this->analyticsService->pickingTableRows(20);
+
+        return view('wms::wave_picking', compact(
+            'waves',
+            'tasks',
+            'pickOptimization',
+            'analytics',
+            'waveRows'
+        ));
     }
 
     public function dockIndex(): View
     {
-        $docks = DockAppointment::query()->latest()->limit(20)->get();
+        $docks = DockAppointment::query()
+            ->with('warehouse')
+            ->latest('id')
+            ->limit(20)
+            ->get();
         $warehouses = Warehouse::query()->where('is_active', true)->get();
 
-        return view('wms::cross_dock', compact('docks', 'warehouses'));
+        $dockEvaluation = $this->dockOptimizer->evaluateFromEloquentAppointments($docks);
+        $analytics = $this->analyticsService->summarize();
+        $dockRows = $this->analyticsService->dockTableRows(20);
+
+        return view('wms::cross_dock', compact(
+            'docks',
+            'warehouses',
+            'dockEvaluation',
+            'analytics',
+            'dockRows'
+        ));
+    }
+
+    public function exportPickingCsv(): Response
+    {
+        $csv = $this->analyticsService->buildPickingCsv();
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="wms-picking.csv"',
+        ]);
+    }
+
+    public function exportDocksCsv(): Response
+    {
+        $csv = $this->analyticsService->buildDocksCsv();
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="wms-docks.csv"',
+        ]);
     }
 
     public function putawayIndex(): View
