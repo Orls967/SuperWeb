@@ -8,16 +8,20 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\AlertScannerService;
+use Modules\ControlTower\Application\Services\ControlTowerKpiDrilldownService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
 use Modules\ControlTower\Application\Services\ForecastOverrideService;
 use Modules\ControlTower\Application\Services\OrderRiskAssessmentService;
 use Modules\ControlTower\Application\Services\PromiseQuoteService;
 use Modules\ControlTower\Application\Services\SopPublicationOrchestrator;
+use Modules\ControlTower\Application\Services\TwinWhatIfOrchestratorService;
 use Modules\ControlTower\Console\Commands\AtpRefreshCommand;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
+use Modules\ControlTower\Console\Commands\ControlTowerKpiCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
+use Modules\ControlTower\Console\Commands\RunWhatIfTwinCommand;
 use Modules\ControlTower\Console\Commands\ScanDisruptionAlertsCommand;
 use Modules\ControlTower\Console\Commands\ScanOrderRiskCommand;
 use Modules\ControlTower\Console\Commands\SelectForecastModelCommand;
@@ -30,6 +34,7 @@ use Modules\ControlTower\Domain\Services\OrderRiskScorer;
 use Modules\ControlTower\Domain\StateMachines\SopCycleStateMachine;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
 use Modules\ControlTower\Infrastructure\Adapters\WmsItemAvailabilityReader;
+use Modules\ControlTower\Infrastructure\Simulation\ControlTowerTwinTickHandler;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
 use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
 use Modules\Core\Application\Services\EventSchemaRegistry;
@@ -77,6 +82,9 @@ class ControlTowerServiceProvider extends ServiceProvider
         $this->app->bind(OrderRiskAssessmentService::class);
         $this->app->bind(AlertScannerService::class);
         // [fix2:bindings:twin_kpi]
+        $this->app->singleton(TwinWhatIfOrchestratorService::class);
+        $this->app->singleton(ControlTowerKpiDrilldownService::class);
+        $this->app->tag(ControlTowerTwinTickHandler::class, 'sim.tick_handler');
         //
         // [fix2:bindings:scorecard_health]
         //
@@ -115,6 +123,7 @@ class ControlTowerServiceProvider extends ServiceProvider
             $schedule->command('tower:risk-scan')->hourly()->withoutOverlapping();
             $schedule->command('tower:alerts-scan')->everyFifteenMinutes()->withoutOverlapping();
             // [fix2:schedule:twin_kpi]
+            $schedule->command('tower:kpi')->dailyAt('02:30')->withoutOverlapping();
             //
             // [fix2:schedule:scorecard_health]
             //
@@ -151,6 +160,8 @@ class ControlTowerServiceProvider extends ServiceProvider
                 ScanOrderRiskCommand::class,
                 ScanDisruptionAlertsCommand::class,
                 // [fix2:commands:twin_kpi]
+                RunWhatIfTwinCommand::class,
+                ControlTowerKpiCommand::class,
                 //
                 // [fix2:commands:scorecard_health]
                 //
