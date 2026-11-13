@@ -11,7 +11,9 @@ use Modules\Procurement\Application\Services\ReceivingService;
 use Modules\Procurement\Console\Commands\AuditProcurementCommand;
 use Modules\Procurement\Console\Commands\ScanVmiReorderCommand;
 use Modules\Procurement\Contracts\MrpRequisitionProposer as MrpRequisitionProposerContract;
+use Modules\Procurement\Contracts\SupplierLeadTimeStatistics;
 use Modules\Procurement\Infrastructure\Access\ProcurementVendorExposureProvider;
+use Modules\Procurement\Infrastructure\Adapters\ProcurementSupplierLeadTimeStatistics;
 use Modules\Procurement\Infrastructure\Api\PurchaseOrderResourceProvider;
 use Modules\Procurement\Infrastructure\Edi\ProcurementEdiInvoiceHandler;
 use Modules\Procurement\Infrastructure\Retention\ProcurementPoVersionRetentionProvider;
@@ -26,6 +28,7 @@ class ProcurementServiceProvider extends ServiceProvider
         $this->app->singleton(ProcurementService::class);
         $this->app->singleton(ReceivingService::class);
         $this->app->bind(MrpRequisitionProposerContract::class, MrpRequisitionProposer::class);
+        $this->app->bind(SupplierLeadTimeStatistics::class, ProcurementSupplierLeadTimeStatistics::class);
 
         $this->app->tag(PurchaseOrderResourceProvider::class, 'core.api_resource_provider');
         $this->app->tag(ProcurementEdiInvoiceHandler::class, 'core.edi_document_handler');

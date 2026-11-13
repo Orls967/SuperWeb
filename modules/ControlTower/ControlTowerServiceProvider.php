@@ -8,11 +8,14 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\MultiEchelonSafetyStockService;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
+use Modules\ControlTower\Console\Commands\CalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
+use Modules\ControlTower\Domain\Algorithms\MultiEchelonSafetyStock;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
@@ -30,7 +33,8 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:forecast]
         //
         // [fix2:bindings:safety]
-        //
+        $this->app->singleton(MultiEchelonSafetyStock::class);
+        $this->app->singleton(MultiEchelonSafetyStockService::class);
         // [fix2:bindings:sop]
         //
         // [fix2:bindings:alerts]
@@ -100,7 +104,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 // [fix2:commands:forecast]
                 //
                 // [fix2:commands:safety]
-                //
+                CalculateSafetyStockCommand::class,
                 // [fix2:commands:sop]
                 //
                 // [fix2:commands:alerts]
