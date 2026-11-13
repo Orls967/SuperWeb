@@ -15,6 +15,7 @@ use Modules\Wms\Application\Actions\PlanRoboticsWaveAction;
 use Modules\Wms\Application\Actions\ReserveZoneForMissionAction;
 use Modules\Wms\Application\Actions\RetryOrFallbackRobotMissionAction;
 use Modules\Wms\Application\Services\RoboticsFleetReadinessService;
+use Modules\Wms\Application\Services\RoboticsShiftHandoverReportService;
 use Modules\Wms\Application\Services\RoboticsSimulationScenarioRunner;
 use Modules\Wms\Application\Services\RoboticsT1SimulationReportService;
 use Modules\Wms\Application\Services\RoboticsTwoSourceAuditService;
@@ -211,6 +212,10 @@ test('5. robotics:audit bersih deterministik exit 0 dan fixture korupsi exit non
 
     $reconciled = app(RoboticsWaveReconciliationService::class)->reconcileBatch($whId, 'NONEXISTENT', []);
     expect($reconciled['conserved'])->toBeTrue();
+
+    $handover = app(RoboticsShiftHandoverReportService::class)->buildHandover($whId, 'SHIFT-MALAM');
+    expect($handover['audit_passed'])->toBeTrue()
+        ->and($handover['shift_label'])->toBe('SHIFT-MALAM');
 
     $exitClean = Artisan::call('robotics:audit');
     expect($exitClean)->toBe(0);

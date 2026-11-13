@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver;
 use Modules\Wms\Domain\Algorithms\AutomationNpvCalculator;
+use Modules\Wms\Domain\Algorithms\ChargingBayContentionResolver;
 use Modules\Wms\Domain\Algorithms\RobotBatteryDegradationTracker;
 use Modules\Wms\Domain\Algorithms\RobotEnergyConsumptionEstimator;
 use Modules\Wms\Domain\Algorithms\RobotFleetDispatchOptimizer;
+use Modules\Wms\Domain\Algorithms\RobotMaintenanceWindowPlanner;
 use Modules\Wms\Domain\Algorithms\TrafficDeadlockDetector;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
 use Modules\Wms\Domain\Algorithms\WaveCutoffSlackCalculator;
@@ -209,4 +211,19 @@ test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): v
     $prioPolicy = new RoboticsMissionPriorityPolicy;
     expect($prioPolicy->computeEffectivePriority(50, 25, 1, true))->toBe(78)
         ->and($prioPolicy->shouldEscalate('queued', 50, 0))->toBeTrue();
+
+    $bayResolver = new ChargingBayContentionResolver;
+    $bays = $bayResolver->assignBays([
+        ['robot_id' => 1, 'window_start_min' => 0, 'window_end_min' => 20],
+        ['robot_id' => 2, 'window_start_min' => 5, 'window_end_min' => 25],
+        ['robot_id' => 3, 'window_start_min' => 10, 'window_end_min' => 30],
+    ], 2);
+    expect(count($bays['assigned']))->toBe(2)->and($bays['deferred_robot_ids'])->toBe([3]);
+
+    $maintPlanner = new RobotMaintenanceWindowPlanner;
+    $maint = $maintPlanner->plan([
+        ['robot_id' => 1, 'health_score' => 500, 'preferred_start_min' => 60, 'duration_min' => 30],
+        ['robot_id' => 2, 'health_score' => 650, 'preferred_start_min' => 70, 'duration_min' => 30],
+    ], 10);
+    expect(count($maint['scheduled']))->toBe(1)->and($maint['deferred_robot_ids'])->toBe([2]);
 });
