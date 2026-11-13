@@ -121,3 +121,4 @@
 3. Seluruh views web Control Tower lulus `php artisan ui:lint --render --responsive` pada lebar viewport `375px` tanpa overflow horizontal dan memakai komponen `<x-ds.*>`.
 4. `php artisan arch:scan --json` tidak menambah 1 pun pelanggaran di luar baseline terpasang (`A1`, `A2`, `A12`), dengan `A3=0`, `A6=0`, `A8=0`, `A11=0`.
 5. `php artisan tower:audit` lulus bersih exit code `0` dalam kondisi sehat dan gagal deterministik exit code `1` setelah fixture sabotase disuntikkan.
+
