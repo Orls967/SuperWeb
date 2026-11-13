@@ -1,31 +1,37 @@
-# Definition of Ready (DoR) — Fase 279: Warehouse Automation & Robotics Simulation
+# DoR — Fase 279: Gudang, Control Tower & Robotika Otomasi
 
-- **Fase:** 279 (`modules/Wms/`, sub-domain `Robotics` dengan prefiks tabel `wms_robotics_*` / `wms_`)
-- **Gelombang / Paket:** W8-P6.3
-- **Tanggal:** 2026-11-13
-- **Status Target:** `🔵 DIIMPLEMENTASIKAN` (non-PU)
+- **Fase**: 279 (W8-P6.3)
+- **Modul**: `Wms` (`Modules\Wms\*`)
+- **Status Target**: 🔵 Siap Uji & Audit
+- **Prompt Type**: Non-PU (Fokus Operasional Armada, Penjadwalan Zona, Wave, Simulasi Sandbox, dan Kelayakan ROI)
 
-## 1. Justifikasi RAB Posting Ledger = 0 (Aturan D98)
+## 1. Alasan RAB Posting Ledger = 0 (Aturan Keuangan)
+Fase 279 **tidak memiliki kejadian uang/jurnal akuntansi langsung** (`posting ledger = 0`). Seluruh nilai uang pada fase ini berupa **proyeksi investasi CAPEX & arus kas tahunan** (`wms_robotics_roi_proposals.capex_minor`, `npv_minor`) dalam satuan minor integer IDR (sen) untuk evaluasi kelayakan otomasi (`J3`), bukan transaksi kas, faktur, atau mutasi persediaan finansial. Mutasi nilai persediaan fisik gudang ke buku besar sudah ditangani penuh oleh Fase 41 (`wms_stock_moves` & `InventoryLedger`).
 
-**RAB Posting Ledger = 0.**
-**Alasan tertulis (D98):**
-Fase 279 berfokus pada perencanaan automasi DC (pemilihan metode picking: manual vs AMR vs conveyor, kapasitas, ROI simulasi), manajemen armada robot simulasi (alokasi misi, reservasi zona anti-tabrakan, deteksi deadlock, jadwal pengisian baterai, safety interlock manusia+robot), dan re-plan gelombang picking saat terjadi kegagalan robot (*fallback manual*). Seluruh aktivitas Fase 279 adalah **simulasi operasional, orkestrasi perangkat keras, dan perencanaan kapasitas** yang tidak menghasilkan kejadian uang (*money event*) langsung ke buku besar. Posting persediaan riil tetap terjadi pada Fase 41 (`WmsLedgerPoster`), sedangkan pembelian aset capex tetap terjadi di modul `Asset` / `Purchasing`. Oleh karena itu, Fase 279 tidak menambah akun ledger maupun tipe transaksi baru.
+## 2. Tabel Rencana Anggaran & Bobot (RAB — T-2)
+| Komponen | Bobot Target | Realisasi & Bukti | Posting Ledger |
+|---|---|---|---|
+| Skema & Model (`wms_robots`, `wms_traffic_zones`, `wms_zone_reservations`, `wms_robot_waves`, `wms_robotics_roi_proposals`, dll.) | 15% | Migrasi `2026_11_13_000004` + 9 model + append-only guard | 0 (Non-monetary) |
+| Algoritma & Sertifikat (`J1` ZoneReservationScheduler, `J2` WaveBinPacker, `J3` AutomationNpvCalculator, `HungarianSolver`, `TrafficDeadlockDetector`, `RobotEnergyConsumptionEstimator`) | 25% | 6 kelas algoritma + 5 kelas sertifikat `verifyOrFail()` | 0 (Pure domain math) |
+| State Machine 8 Status & Saga (`RobotMissionStateMachine`, `RoboticsMissionLifecycleSaga`, `EnforceZoneSafetyInterlockAction`) | 20% | 8 status, max retry 2, interlock zona staf, kompensasi reservasi | 0 (Operational flow) |
+| Integrasi Lintas Modul & Adapter (`CarrierCutoffProvider`, `SimTickHandlerInterface`, `SimulatedAmrDeviceAdapter`, `WarehouseTaskCompletionBridge`) | 15% | Tidak ada import Domain lintas modul (A1 = 0) | 0 (Contract-based) |
+| Command CLI (`8 robotics:*`), Audit 2 Sumber (`robotics:audit`), & Seeder T1 (`RoboticsT1Seeder`) | 15% | 8 command + `RoboticsAuditCorruptionFixture` + 20 robot / 120 misi | 0 (CLI & Audit) |
+| Control Tower UI (`x-ds.*`), ViewModels, RBAC & Dokumentasi T-7 | 10% | 8 route + 5 Blade baru + `RobotMissionPolicy` + 12 dokumen T-7 | 0 (UI & Docs) |
+| **Total** | **100%** | **B1 >= 8.000, B3 >= 1.800, arch:scan Baru = 0** | **0** |
 
-## 2. Daftar Keputusan Terkunci
+## 3. Daftar Kebutuhan Fungsional & Teknis (`D279-1..9`, `X279-1..4`)
+- **D279-1**: Manajemen armada robot (`wms_robots`) dengan status online/offline, skor kesehatan (`RobotHealthScorer`), koordinat grid, dan batas cadangan baterai.
+- **D279-2**: Alokasi misi optimal (`AllocateRobotMissionsAction` & `RobotFleetDispatchOptimizer`) menggunakan `HungarianSolver` dengan penalti prioritas, jarak zona, baterai, serta penolakan zona diblokir staf.
+- **D279-3**: Penjadwalan reservasi zona lalu lintas `J1` (`ZoneReservationScheduler`) pada interval setengah-terbuka `[start, end)` dengan kapasitas `k` dan deteksi deadlock (`TrafficDeadlockDetector`).
+- **D279-4**: Penyusunan wave pemenuhan order `J2` (`WaveBinPacker` FFD) menghormati cutoff carrier (`CarrierCutoffProvider`) tanpa order hilang atau ganda saat fallback manual.
+- **D279-5**: Evaluasi kelayakan investasi otomasi `J3` (`AutomationNpvCalculator` + `RoboticsRoiSensitivityMatrixBuilder`) berbasis integer minor IDR & `RationalRate`; pembuat proposal dilarang menyetujui proposalnya sendiri (`ApprovalEngineService`), dan NPV negatif wajib menyertakan alasan tertulis.
+- **D279-6**: Simulasi kepadatan & skenario kejutan (`robotics:simulate`, `RoboticsSimulationScenarioRunner`, `RoboticsSimulationTickHandler`) berjalan dalam mode sandbox P3 tanpa mengubah hash tabel produksi.
+- **D279-7**: Penjadwalan pengisian daya (`ChargingSchedulePlanner`, `robotics:charge-plan`) dan pencatatan insiden keselamatan (`SafetyIncidentLog`) beserta audit log append-only (`RobotMissionEvent`, `RobotTelemetry`, `RobotSafetyIncident`).
+- **D279-8**: Keterbukaan & keamanan akses via `RobotMissionPolicy` (anti-IDOR operator gudang), `route-roles.php`, serta ekspor CSV (`RoboticsCsvExportService`).
+- **D279-9**: Audit dua sumber deterministik (`RoboticsTwoSourceAuditService`, `robotics:audit`) dengan `RoboticsAuditCorruptionFixture` yang gagal deterministik (exit non-0) saat data dirusak.
+- **X279-1..4**: Tidak ada `float` pada perhitungan uang/rate (A3 = 0), seluruh key idempotensi berbasis entitas/tick deterministik (A4 = 0), `declare(strict_types=1)` di semua file PHP modul (A11 = 0), dan tidak ada pelanggaran UI lint (`x-ds.*`).
 
-1. **Pemilik Modul & Deprekasi Legacy (X2/X21)**:
-   - Pemilik resmi adalah modul `Wms` (`Modules\Wms\...`).
-   - `Modules\Integration\Application\Services\WarehouseRoboticsAutomationService` diberi anotasi `@deprecated` yang mengarahkan pemanggil ke `Modules\Wms\Application\Services\RoboticsFleetOrchestratorService` (tanpa menyalin kode mentah `DB::table()` dari `Integration`).
-2. **Reuse `HungarianSolver` + Algoritma J1–J3 & Deadlock**:
-   - **J1 (`AutomationRoiPlanner` + `AutomationPlanCertificate`)**: Evaluasi metode pick (`manual`, `amr`, `conveyor`), kapasitas throughput/jam, biaya capex/opex integer IDR, payback & ROI bps.
-   - **J2 (`RobotTaskAllocator` + `MissionAssignmentCertificate`)**: Mengonversi matriks jarak/baterai robot × misi menjadi cost matrix integer dan memanggil `Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver` (dengan sertifikat dual `AssignmentCertificateVerifier`).
-   - **J3 (`WaveAutomationDispatcher` + `WaveFallbackPlanCertificate`)**: Perencanaan wave berbasis cutoff & prioritas dengan integrasi `PickPathPlanner` (Fase 41.3) serta re-plan otomatis + *fallback manual* ketika robot gagal di tengah wave.
-   - **`TrafficDeadlockDetector`**: Deteksi siklus tunggu (*wait-for graph*) antar robot di koridor/zona dan resolusi prioritas deterministik.
-3. **State Machine `RobotMissionStateMachine` (8 Status)**:
-   - `queued` -> `assigned` -> `en_route` -> `picking` -> `delivering` -> `completed`, dengan jalur `interlocked` (human-in-zone safety halt) dan `failed_fallback` (manual takeover).
-4. **Safety Interlock & Audit (`wms:audit`)**:
-   - Kehadiran manusia di zona otomatis membatasi kecepatan (`max_speed_mm_s <= 300`) atau memicu `emergency_stop` bila jarak aman dilanggar.
-   - `wms:audit` diperluas memeriksa konflik reservasi zona ganda (dua robot aktif di zona eksklusif yang sama) & misi robot yatim, disertai `RoboticsAuditCorruptionFixture`.
-5. **Integritas & Larangan**:
-   - Zero `float` pada biaya/ROI/kapasitas; zero `now()`/`Carbon::now()` (`ClockInterface`); `declare(strict_types=1);`; seluruh FK `*_id` cocok MySQL 8.4 (`string('warehouse_id', 64)` ke `wms_warehouses.id`, `unsignedBigInteger` ke `users.id` / `wms_robot_units.id`); UI `x-ds.*` dengan `ui:lint` = 0.
-
+## 4. Kriteria Penerimaan (Acceptance Criteria)
+1. Seluruh vektor uji `J1`, `J2`, `J3`, `HungarianSolver`, `TrafficDeadlockDetector`, dan `RobotEnergyConsumptionEstimator` lulus tepat beserta penolakan sertifikat rusak (`InvalidArgumentException`).
+2. `WarehouseRoboticsFullAcceptanceTest` memverifikasi 5 skenario end-to-end: RBAC seluruh grup rute robotika, alokasi Hungarian + interlock zona staf, wave FFD + fallback manual + ROI approval SoD, state machine retry maks 2 + saga kompensasi + sandbox hash identik + IDOR policy, serta `robotics:audit` bersih vs fixture korupsi.
+3. `arch:scan` mencatat `Baru = 0`, `ui:lint` = `0`, dan `docs:check` lulus penuh.

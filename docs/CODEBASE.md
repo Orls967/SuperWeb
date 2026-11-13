@@ -542,8 +542,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Vending** | `vnd_` | 3 |
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
-| 65 | **Wms** | `wms_` | 5 |
-| | **Total: 65 Modul** | | **713 Migrasi** |
+| 65 | **Wms** | `wms_` | 6 |
+| | **Total: 65 Modul** | | **714 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -612,8 +612,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
-| **Wms** | 33 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
-| **Total** | **1807 Rute** | | |
+| **Wms** | 42 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
+| **Total** | **1816 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -908,6 +908,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `ret:audit` | `manual` | Audit operasional ritel & omnichannel: integritas stok, harga MAP, pemenuhan dark store, dan rekonsiliasi ledger dua-sumber |
 | `ret:expire-cashback` | `manual` | Proses kedaluwarsa saldo cashback super app dan pengakuan pendapatan breakage |
 | `ret:settle-sellers` | `manual` | Penyelesaian escrow terjadwal untuk seluruh pesanan ritel yang telah terkirim (DELIVERED) |
+| `robotics:allocate` | `manual` | Alokasikan misi robot queued ke armada online secara deterministik (HungarianSolver) |
+| `robotics:audit` | `manual` | Audit dua sumber robotika gudang (zona, reservasi, misi offline, wave, ROI) |
+| `robotics:charge-plan` | `manual` | Jadwalkan pengisian daya robot baterai rendah dengan menjaga minimum armada siaga |
+| `robotics:deadlock-scan` | `manual` | Pindai siklus wait-for antar misi aktif dan batalkan misi prioritas terendah bila deadlock |
+| `robotics:reservation-sweep` | `manual` | Lepaskan reservasi zona lalu lintas yang telah melewati waktu selesai |
+| `robotics:roi` | `manual` | Evaluasi proposal ROI otomasi gudang (J3, asumsi_simulasi) |
+| `robotics:simulate` | `manual` | Jalankan simulasi robotika gudang dalam mode sandbox P3 tanpa mengubah data produksi |
+| `robotics:wave-plan` | `manual` | Susun wave picking robotika per (carrier, cutoff) dengan FFD J2 |
 | `roster:scan` | `manual` | Detect packages, stacks, frameworks, agents, and approaches in use and output as JSON |
 | `rwa:audit` | `manual` | Perform two-source verification of RWA asset tokens, allocations, and dividend conservation |
 | `sanctum:prune-expired` | `manual` | Prune tokens expired for more than specified number of hours |
@@ -1011,7 +1019,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `wms:robotics-roi-plan` | `manual` | Hitung dan simpan rencana ROI automasi robotika gudang (J1) |
 | `wms:transit-sweep` | `manual` | Menyapu pengiriman in-transit yang melewati batas SLA |
 | `wms:utilization-snapshot` | `manual` | Mengambil snapshot utilisasi bin & deteksi dead stock gudang |
-| **Total: 393 Command** | **37 Terjadwal** | |
+| **Total: 401 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
