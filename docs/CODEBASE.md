@@ -1006,8 +1006,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `wms:replenish` | `manual` | Membuat permintaan replenishment pick-face untuk bin di bawah ambang minimum |
 | `wms:reservation-sweep` | `manual` | Melepas reservasi stok gudang yang sudah melewati TTL |
 | `wms:revalue-cost` | `manual` | Melakukan revaluasi harga pokok standar produk & posting selisih ke ledger (D41-10/11) |
-| `wms:robotics-audit` | `manual` | Audit integritas kunci zona, misi, dan rencana ROI robotika gudang |
 | `wms:robotics-dispatch` | `manual` | Dispatch misi robotik gudang ke zona target dengan kunci zona eksklusif |
+| `wms:robotics-inspect` | `manual` | Audit integritas kunci zona, misi, dan rencana ROI robotika gudang |
 | `wms:robotics-roi-plan` | `manual` | Hitung dan simpan rencana ROI automasi robotika gudang (J1) |
 | `wms:transit-sweep` | `manual` | Menyapu pengiriman in-transit yang melewati batas SLA |
 | `wms:utilization-snapshot` | `manual` | Mengambil snapshot utilisasi bin & deteksi dead stock gudang |
