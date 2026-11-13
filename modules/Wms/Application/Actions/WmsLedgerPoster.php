@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Actions;
 
-use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Modules\Banking\Application\DTOs\PostingDTO;
 use Modules\Banking\Application\Services\LedgerService;

@@ -36,3 +36,4 @@ Setiap tindakan krusial meninggalkan jejak permanen:
 - Penerimaan barang → `wms_receiving_receipts` (`received_by_user_id`, `variance_bps`, `tolerance_decision`).
 - Perubahan harga pokok → `wms_unit_costs` (`created_by_user_id`, `effective_date`, `is_active`).
 - Mutasi keuangan → `bank_ledger_transactions` (`idempotency_key`, `reference_type`, `reference_id`).
+

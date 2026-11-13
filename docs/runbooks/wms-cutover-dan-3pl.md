@@ -34,3 +34,4 @@ Contoh perhitungan deterministik:
 - `palletDays = 30`, `storageRate = 5.000` → `150.000`
 - `handlingUnits = 20`, `handlingRate = 1.000` → `20.000`
 - Total tagihan = `170.000 IDR` (dibandingkan dengan `minimumMonthlyFeeIdr`; diambil nilai terbesar).
+

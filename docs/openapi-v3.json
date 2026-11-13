@@ -182392,12 +182392,11 @@
                     "Wms"
                 ],
                 "summary": "Export Bin Stocks Csv (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -182488,12 +182487,11 @@
                     "Wms"
                 ],
                 "summary": "Export Valuation Csv (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -182584,13 +182582,10 @@
                     "Wms"
                 ],
                 "summary": "Execute Putaway (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, hub_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "hub_operator"
                 ],
                 "parameters": [
                     {
@@ -182692,13 +182687,10 @@
                     "Wms"
                 ],
                 "summary": "Release Quarantine (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, hub_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "hub_operator"
                 ],
                 "parameters": [
                     {
@@ -182809,13 +182801,10 @@
                     "Wms"
                 ],
                 "summary": "Receive Inbound (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, hub_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "hub_operator"
                 ],
                 "parameters": [
                     {
@@ -182917,13 +182906,9 @@
                     "Wms"
                 ],
                 "summary": "Revalue Cost (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin].",
                 "x-allowed-roles": [
-                    "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "admin"
                 ],
                 "parameters": [
                     {
@@ -183025,13 +183010,10 @@
                     "Wms"
                 ],
                 "summary": "Capture Utilization (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, hub_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "hub_operator"
                 ],
                 "parameters": [
                     {
@@ -183142,13 +183124,10 @@
                     "Wms"
                 ],
                 "summary": "Allocate Wave Picking (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, hub_operator].",
                 "x-allowed-roles": [
                     "admin",
-                    "auditor",
-                    "hub_operator",
-                    "logistics_admin",
-                    "procurement"
+                    "hub_operator"
                 ],
                 "parameters": [
                     {
@@ -183460,12 +183439,11 @@
                     "Wms"
                 ],
                 "summary": "Quarantine (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -183556,12 +183534,11 @@
                     "Wms"
                 ],
                 "summary": "Receiving (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -183757,12 +183734,11 @@
                     "Wms"
                 ],
                 "summary": "Tasks (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -184186,12 +184162,11 @@
                     "Wms"
                 ],
                 "summary": "Utilization (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [
@@ -184282,12 +184257,11 @@
                     "Wms"
                 ],
                 "summary": "Valuation (Wms)",
-                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, logistics_admin, procurement].",
+                "description": "Operational endpoint for Wms module. Protected by role matrix: [admin, auditor, hub_operator, procurement].",
                 "x-allowed-roles": [
                     "admin",
                     "auditor",
                     "hub_operator",
-                    "logistics_admin",
                     "procurement"
                 ],
                 "parameters": [

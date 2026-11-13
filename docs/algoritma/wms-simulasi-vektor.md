@@ -139,3 +139,4 @@ Misalkan gudang `DC-JKT` menjalankan urutan transaksi berikut dalam satu siklus 
 - `QuantityNormalizer::varianceBps(100, 104)` → `+400 bps` → `within_tolerance` (batas `500 bps`).
 - `QuantityNormalizer::varianceBps(100, 110)` → `+1000 bps` → `over_receipt` (memerlukan persetujuan supervisor).
 - `QuantityNormalizer::varianceBps(100, 90)` → `-1000 bps` → `short_receipt` (memicu klaim vendor).
+

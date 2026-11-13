@@ -9,8 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Modules\Wms\Application\Actions\AllocateOutboundWavePickingAction;
-use Modules\Wms\Application\Actions\ExecuteDirectedPutawayAction;
+use Modules\Wms\Application\Actions\PostDirectedPutawayAction;
+use Modules\Wms\Application\Actions\PostWavePickingAllocationAction;
 use Modules\Wms\Application\Actions\ReceiveInboundShipmentAction;
 use Modules\Wms\Application\Actions\RevalueInventoryCostAction;
 use Modules\Wms\Application\Services\LotQuarantineService;
@@ -55,7 +55,7 @@ class WmsOperationsController extends Controller
         return view('wms::utilization', $this->viewModel->utilizationData());
     }
 
-    public function executePutaway(StoreDirectedPutawayRequest $request, ExecuteDirectedPutawayAction $action): RedirectResponse
+    public function executePutaway(StoreDirectedPutawayRequest $request, PostDirectedPutawayAction $action): RedirectResponse
     {
         $v = $request->validated();
         $action->execute(
@@ -73,7 +73,7 @@ class WmsOperationsController extends Controller
         return back()->with('status', 'Directed putaway berhasil dieksekusi.');
     }
 
-    public function allocateWavePicking(StoreWavePickingRequest $request, AllocateOutboundWavePickingAction $action): RedirectResponse
+    public function allocateWavePicking(StoreWavePickingRequest $request, PostWavePickingAllocationAction $action): RedirectResponse
     {
         $v = $request->validated();
         $action->execute(

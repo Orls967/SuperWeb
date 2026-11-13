@@ -65,3 +65,4 @@ Setelah setiap insiden ditangani, wajib jalankan verifikasi akhir:
 1. `php artisan wms:audit` → harus exit `0`.
 2. `WmsInventoryIntegrityVerifier::verify()` → `is_healthy === true`.
 3. `WmsValuationReconciliationReportService::generateReport()` → `is_reconciled === true`.
+

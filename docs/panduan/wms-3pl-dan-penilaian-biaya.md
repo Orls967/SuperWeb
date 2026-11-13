@@ -63,3 +63,4 @@ Pada akhir periode akuntansi, `EnterpriseFinance` memanggil `WmsSubledgerTotalAd
 - `subledger_total_idr`
 - `ledger_total_idr`
 - `discrepancy_idr` (wajib `0` sebelum periode ditutup).
+

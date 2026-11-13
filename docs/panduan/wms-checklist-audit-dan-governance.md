@@ -39,3 +39,4 @@ Dokumen ini menjadi daftar periksa (*compliance checklist*) sebelum setiap rilis
 - Unit Tests algoritma (`H1`, `H2`, `H3`, `QuantityNormalizer`, `AbcVelocityClassifier`, `FefoLotAllocator`, `ReplenishmentMinMaxCalculator`, `WaveBatchOptimizer`) lulus 100%.
 - Feature Tests 12 kejadian ledger & sabotase audit lulus 100%.
 - Dokumentasi DoR, Desain, Konsep, Algoritma, Panduan, Runbook, Galat, dan ADR lengkap dan mutakhir.
+

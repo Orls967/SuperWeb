@@ -45,3 +45,4 @@
 - Akun ledger didaftarkan di `Modules\Wms\Ledger\WmsAccounts` (yang terdaftar di `Database\Seeders\LedgerAccountsSeeder::ACCOUNT_REGISTRIES`).
 - Tipe transaksi didaftarkan di enum `Modules\Wms\Ledger\WmsTransactionTypes` (yang terdaftar di `Modules\Banking\Application\Registry\TransactionTypeRegistry::$registries`).
 - Jangan pernah memanggil `LedgerAccount::create()` di dalam Action atau Test.
+

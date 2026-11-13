@@ -54,3 +54,4 @@ Setiap snapshot merekam:
 
 ### 3.2 Simulasi Relokasi (`SlottingScenarioPlanner`)
 Sebelum tim gudang melakukan pemindahan fisik rak, `SlottingScenarioPlanner::simulateRelocation()` menjalankan `PutawaySlotter` (H1) pada daftar SKU target dan menghitung total penghematan jarak tempuh (`Σ max(0, (currentDistance - targetDistance) × allocatedQty)`).
+

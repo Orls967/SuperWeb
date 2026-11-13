@@ -38,3 +38,4 @@ Untuk membuktikan bahwa `php artisan wms:audit` bukanlah pengecekan kosong (*fal
 - Tidak ada controller atau action yang boleh mengubah kolom `wms_tasks.status` secara langsung tanpa melewati `WarehouseTaskStateMachine`.
 - Seluruh tugas yang macet di status `exception` ditangani secara eksplisit melalui `ResolveTaskExceptionAction`.
 - Regresi pada perintah `wms:audit` akan langsung tertangkap oleh CI melalui pengujian sabotase L.5.
+

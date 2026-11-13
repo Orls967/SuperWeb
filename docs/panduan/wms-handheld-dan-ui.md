@@ -53,3 +53,4 @@ Setiap aksi `POST` dilindungi oleh `FormRequest` khusus dan `WarehouseOperationP
 - `StoreWavePickingRequest`: memvalidasi `lines` minimal 1 item dengan `qty_base >= 1`.
 - `StoreInboundReceivingRequest`: memvalidasi `expected_qty_base >= 1`, `received_qty_base >= 0`, dan flag `approve_over_receipt`.
 - `RevalueInventoryCostRequest`: membatasi akses hanya untuk `role === 'admin'` dan metode `in:std,avg,fifo`.
+

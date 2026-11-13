@@ -85,3 +85,4 @@ Orkestrator tunggal untuk 12 kejadian uang WMS:
 
 - **Value Objects**: `BinCoordinate`, `ThreePlRateCard`, `WarehouseDimensions`, `AbcClassificationRule`, `PickingWaveSpec`, `CycleCountPolicy`, `TransferManifest`, `DockScheduleSlot`.
 - **Domain Services**: `BinCapacityEvaluator`, `ShelfLifeGuard`, `StorageBillingCalculator`, `SlottingFitnessCalculator`, `ReceivingDiscrepancyClassifier`, `WaveReleaseReadinessChecker`, `TransitSlaEvaluator`, `PutawayRuleEngine`, `PickWavePriorityScorer`, `InventoryAgingAnalyzer`, `CycleCountVarianceAnalyzer`, `CrossDockEligibilityEvaluator`, `PalletizationPlanner`, `DockQueueDispatcher`, `ReturnGoodsInspectionService`, `LaborProductivityEstimator`, `CrossDockTransferValidator`.
+

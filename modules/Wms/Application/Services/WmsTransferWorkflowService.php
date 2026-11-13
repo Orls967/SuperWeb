@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Services;
 
-use Modules\Wms\Application\Actions\ProcessCrossDockingTransferAction;
+use Modules\Wms\Application\Actions\PostCrossDockingTransferAction;
 use Modules\Wms\Domain\ValueObjects\TransferManifest;
 
 /**
@@ -13,7 +13,7 @@ use Modules\Wms\Domain\ValueObjects\TransferManifest;
 final class WmsTransferWorkflowService
 {
     public function __construct(
-        private readonly ProcessCrossDockingTransferAction $transferAction,
+        private readonly PostCrossDockingTransferAction $transferAction,
     ) {}
 
     /**

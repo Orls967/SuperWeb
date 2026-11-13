@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Wms\Application\Services;
 
 use DomainException;
-use Modules\Wms\Application\Actions\AllocateOutboundWavePickingAction;
+use Modules\Wms\Application\Actions\PostWavePickingAllocationAction;
 use Modules\Wms\Domain\Algorithms\WaveBatchOptimizer;
 use Modules\Wms\Domain\Services\PickWavePriorityScorer;
 use Modules\Wms\Domain\Services\WaveReleaseReadinessChecker;
@@ -19,7 +19,7 @@ final class WmsOutboundDispatchWorkflowService
         private readonly PickWavePriorityScorer $scorer,
         private readonly WaveBatchOptimizer $batchOptimizer,
         private readonly WaveReleaseReadinessChecker $readinessChecker,
-        private readonly AllocateOutboundWavePickingAction $allocateAction,
+        private readonly PostWavePickingAllocationAction $allocateAction,
         private readonly PackingListGenerator $packingListGenerator,
     ) {}
 

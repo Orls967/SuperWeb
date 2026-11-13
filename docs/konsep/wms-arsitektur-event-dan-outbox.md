@@ -79,3 +79,4 @@ Apabila sebuah *job* atau *command* dijalankan ulang (mis. `php artisan wms:post
 1. `WmsLedgerPoster::postBalanced()` memeriksa keberadaan `idempotency_key` pada tabel `bank_ledger_transactions`.
 2. Jika sudah ada, metode mengembalikan `false` tanpa melempar pengecualian dan tanpa membuat entri ganda.
 3. Pemanggil (`PostOpeningBalanceAction`) melaporkan `already_posted: true` sehingga integrasi tetap bersih dan aman untuk *cron retry*.
+

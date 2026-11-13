@@ -38,3 +38,4 @@ Pada akhir setiap shift (07:00, 15:00, 23:00 WIB), supervisor shift lama wajib m
 Setiap pekan, tim inventori menjalankan dua analisis berikut:
 1. **`InventoryAgingAnalyzer::analyze()`**: mengelompokkan stok ke bucket `0_30`, `31_60`, `61_90`, `91_180`, dan `over_180` hari serta menghitung estimasi cadangan penurunan nilai (`200 / 500 / 1500 / 5000 bps`).
 2. **`CycleCountVarianceAnalyzer::analyze()`**: menghitung `shrinkage_rate_bps` dan mengidentifikasi `repeat_offender_products` (SKU dengan selisih negatif berulang `>= 2` kali atau tingkat penyusutan `> 200 bps`).
+

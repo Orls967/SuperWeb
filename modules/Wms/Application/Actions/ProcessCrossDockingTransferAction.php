@@ -4,100 +4,70 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Actions;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-use Modules\Core\Contracts\ClockInterface;
-use Modules\Wms\Domain\Events\WarehouseTransferReceivedEvent;
-use Modules\Wms\Domain\Models\BinStock;
+use App\Models\User;
+use InvalidArgumentException;
+use Modules\Shared\Application\BaseAction;
+use Modules\Wms\Application\Services\WmsService;
+use Modules\Wms\Domain\Models\DockAppointment;
+use Modules\Wms\Domain\Models\Transfer;
 use Modules\Wms\Domain\Models\Warehouse;
-use Modules\Wms\Domain\Support\QuantityNormalizer;
 
-/**
- * Transfer antar-gudang & cross-docking (D41-4 keluar, D41-5 masuk, D41-9 transit loss).
- */
-final class ProcessCrossDockingTransferAction
+final class ProcessCrossDockingTransferAction extends BaseAction
 {
     public function __construct(
-        private readonly WmsLedgerPoster $poster,
-        private readonly ClockInterface $clock,
+        private readonly WmsService $wmsService
     ) {}
 
     /**
-     * @return array{
-     *     transfer_ref: string,
-     *     shipped_qty_base: int,
-     *     received_qty_base: int,
-     *     lost_qty_base: int,
-     *     shipped_value_idr: int,
-     *     received_value_idr: int,
-     *     lost_value_idr: int
-     * }
+     * Executes cross-docking from inbound dock appointment directly to outbound transfer.
+     *
+     * @param  list<array{product_id: int, qty: int}>  $items
      */
     public function execute(
-        int $fromWarehouseId,
-        int $fromBinId,
-        int $toWarehouseId,
-        int $toBinId,
-        int $productId,
-        int $shippedQtyBase,
-        int $receivedQtyBase,
-        int $unitCostIdr,
-        string $transferRef,
-    ): array {
-        return DB::transaction(function () use (
-            $fromWarehouseId,
-            $fromBinId,
-            $toWarehouseId,
-            $toBinId,
-            $productId,
-            $shippedQtyBase,
-            $receivedQtyBase,
-            $unitCostIdr,
-            $transferRef
-        ): array {
-            $origin = Warehouse::findOrFail($fromWarehouseId);
-            $dest = Warehouse::findOrFail($toWarehouseId);
+        DockAppointment $inboundDock,
+        Warehouse $originWarehouse,
+        Warehouse $destinationWarehouse,
+        array $items,
+        ?User $operator = null
+    ): Transfer {
+        if (empty($items)) {
+            throw new InvalidArgumentException('Item transfer cross-dock tidak boleh kosong.');
+        }
 
-            $srcStock = BinStock::where('bin_id', $fromBinId)->where('product_id', $productId)->firstOrFail();
-            $srcBase = (int) ($srcStock->qty_base ?? 0);
-            $srcStock->qty_base = max(0, $srcBase - $shippedQtyBase);
-            $srcStock->qty = $srcStock->qty_base;
-            $srcStock->save();
+        if ($inboundDock->status === 'cancelled') {
+            throw new InvalidArgumentException('Dock appointment inbound telah dibatalkan.');
+        }
 
-            $dstStock = BinStock::firstOrNew(['bin_id' => $toBinId, 'product_id' => $productId]);
-            $dstStock->qty_base = (int) ($dstStock->qty_base ?? 0) + $receivedQtyBase;
-            $dstStock->qty = $dstStock->qty_base;
-            $dstStock->stock_status = $dstStock->stock_status ?: 'available';
-            $dstStock->save();
+        $user = $operator ?? auth()->user() ?? User::first();
+        if ($user === null) {
+            throw new InvalidArgumentException('Operator cross-docking diperlukan.');
+        }
 
-            $lostQty = max(0, $shippedQtyBase - $receivedQtyBase);
-            $shippedValue = QuantityNormalizer::computeValueIdr($shippedQtyBase, $unitCostIdr);
-            $receivedValue = QuantityNormalizer::computeValueIdr($receivedQtyBase, $unitCostIdr);
-            $lostValue = QuantityNormalizer::computeValueIdr($lostQty, $unitCostIdr);
+        return $this->transaction(function () use ($inboundDock, $originWarehouse, $destinationWarehouse, $items, $user) {
+            // Create transfer with cross-dock reference
+            $lines = array_map(fn ($item) => [
+                'product_id' => (int) $item['product_id'],
+                'qty' => (float) $item['qty'],
+            ], $items);
 
-            $this->poster->postTransferOut((string) $origin->code, $shippedValue, $transferRef);
-            $this->poster->postTransferIn((string) $dest->code, $receivedValue, $transferRef);
-            if ($lostValue > 0) {
-                $this->poster->postTransitLoss($lostValue, $transferRef);
-            }
+            $transfer = $this->wmsService->createTransfer(
+                $originWarehouse,
+                $destinationWarehouse,
+                $lines,
+                $user,
+                true // crossDock flag
+            );
 
-            Event::dispatch(new WarehouseTransferReceivedEvent(
-                transferId: crc32($transferRef),
-                fromWarehouseId: (int) $origin->id,
-                toWarehouseId: (int) $dest->id,
-                totalValueIdr: $receivedValue,
-                occurredAt: $this->clock->now()->toIso8601String(),
-            ));
+            // Ship immediately as cross-dock avoids internal bin putaway
+            $transfer = $this->wmsService->shipTransfer($transfer, $user);
 
-            return [
-                'transfer_ref' => $transferRef,
-                'shipped_qty_base' => $shippedQtyBase,
-                'received_qty_base' => $receivedQtyBase,
-                'lost_qty_base' => $lostQty,
-                'shipped_value_idr' => $shippedValue,
-                'received_value_idr' => $receivedValue,
-                'lost_value_idr' => $lostValue,
-            ];
+            $this->audit('wms.cross_dock_processed', $transfer, null, [
+                'inbound_dock_id' => $inboundDock->id,
+                'from_warehouse_id' => $originWarehouse->id,
+                'to_warehouse_id' => $destinationWarehouse->id,
+            ]);
+
+            return $transfer;
         });
     }
 }

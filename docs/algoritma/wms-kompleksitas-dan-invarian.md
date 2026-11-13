@@ -35,3 +35,4 @@ Seluruh perhitungan menggunakan integer bertanda 64-bit (`PHP_INT_MAX = 9.223.37
 4. **Keseimbangan Buku Besar**: Untuk setiap transaksi `WmsLedgerPoster`, `Σ entries.signed_amount === 0`.
 5. **Non-Negativitas Stok**: Tidak ada mutasi resmi yang menghasilkan `qty_base < 0` atau `available_base < 0`.
 6. **Konsistensi Subledger-Ledger**: Pada kondisi sehat (`wms:audit` exit `0`), `Σ(wms_bin_stocks.qty_base × wms_unit_costs.cost_idr) === -ledger_account.cached_balance` untuk setiap gudang.
+

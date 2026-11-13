@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Wms\Http\Controllers\WmsController;
 use Modules\Wms\Http\Controllers\WmsOperationsController;
 
-Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procurement,auditor,logistics_admin'])
+Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procurement,auditor'])
     ->prefix('wms')
     ->name('wms.')
     ->group(function () {
@@ -19,7 +19,7 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procureme
         Route::get('/export/valuation.csv', [WmsOperationsController::class, 'exportValuationCsv'])->name('export.valuation');
         Route::get('/export/bin-stocks.csv', [WmsOperationsController::class, 'exportBinStocksCsv'])->name('export.bin-stocks');
 
-        Route::middleware('role:admin,hub_operator,logistics_admin')->group(function () {
+        Route::middleware('role:admin,hub_operator')->group(function () {
             Route::post('/operations/putaway', [WmsOperationsController::class, 'executePutaway'])->name('operations.putaway');
             Route::post('/operations/wave-picking', [WmsOperationsController::class, 'allocateWavePicking'])->name('operations.wave-picking');
             Route::post('/operations/receive-inbound', [WmsOperationsController::class, 'receiveInbound'])->name('operations.receive-inbound');

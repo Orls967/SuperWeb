@@ -30,3 +30,4 @@ Setiap integrasi lintas modul wajib melalui antarmuka kontrak (*Port & Adapter*)
 ## 3. Konsekuensi
 - `php artisan arch:scan` mencatat **0 pelanggaran A1 dan 0 pelanggaran A2 baru**.
 - Setiap modul tetap dapat diuji secara terisolasi maupun terintegrasi penuh melalui *dependency injection* container Laravel.
+

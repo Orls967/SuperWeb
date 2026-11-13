@@ -8,10 +8,9 @@ use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\LedgerAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Modules\Wms\Application\Actions\Calculate3PlStorageHandlingBillingAction;
+use Modules\Wms\Application\Actions\Post3PlStorageBillingAction;
 use Modules\Wms\Application\Actions\WmsLedgerPoster;
 use Modules\Wms\Application\Services\WmsService;
-use Modules\Wms\Infrastructure\Audit\WmsAuditCorruptionFixture;
 use Tests\TestCase;
 
 /**
@@ -45,7 +44,7 @@ class WmsLedgerAndAuditSabotageTest extends TestCase
         expect($poster->postCostRevaluationMarkUp('DC-JKT', 15000, 'REV-1'))->toBeTrue();
         expect($poster->postCostRevaluationMarkDown('DC-JKT', 5000, 'REV-2'))->toBeTrue();
 
-        $billing = app(Calculate3PlStorageHandlingBillingAction::class)->execute('3PL-1', 10, 5000, 20, 1000);
+        $billing = app(Post3PlStorageBillingAction::class)->execute('3PL-1', 10, 5000, 20, 1000);
         expect($billing['total_billing_idr'])->toBe(70000);
 
         // Saldo akhir DC-JKT = 100k + 50k - 20k - 30k + 10k - 5k - 10k + 15k - 5k = 105,000

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Services;
 
-use Modules\Wms\Application\Actions\RecordCycleCountAdjustmentAction;
+use Modules\Wms\Application\Actions\PostCycleCountAdjustmentAction;
 use Modules\Wms\Domain\Algorithms\CycleCountScheduler;
 use Modules\Wms\Domain\Support\QuantityNormalizer;
 use Modules\Wms\Domain\ValueObjects\CycleCountPolicy;
@@ -16,7 +16,7 @@ final class WmsCycleCountWorkflowService
 {
     public function __construct(
         private readonly CycleCountScheduler $scheduler,
-        private readonly RecordCycleCountAdjustmentAction $adjustmentAction,
+        private readonly PostCycleCountAdjustmentAction $adjustmentAction,
         private readonly CycleCountPolicy $policy = new CycleCountPolicy,
     ) {}
 

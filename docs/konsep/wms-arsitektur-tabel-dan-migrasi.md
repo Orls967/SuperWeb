@@ -113,3 +113,4 @@ Log transisi *append-only* untuk `WarehouseTaskStateMachine` (D41-1).
 1. Tidak boleh ada baris `wms_bin_stocks` dengan `qty < 0` atau `qty_base < 0`.
 2. Jumlah reservasi berstatus `active` yang belum kedaluwarsa tidak boleh melebihi total `qty_base` berstatus `available` pada `(warehouse_id, product_id)`.
 3. Total nilai subledger `Σ(qty_base × cost_idr)` per gudang wajib sama dengan `-cached_balance` pada akun `wms:inventory:{kode}:IDR` di `bank_ledger_accounts`.
+

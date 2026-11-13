@@ -37,3 +37,4 @@ Untuk pengujian skala dan validasi performa di lingkungan uji/staging, dataset T
    - Injeksi permintaan putaway melebihi kapasitas total → verifikasi `PutawaySlotter` melempar `NO_CAPACITY`.
    - Injeksi karantina lot (`LotQuarantineService`) → verifikasi `StockAvailabilityReader::getAvailableQty()` otomatis berkurang sebesar kuantitas karantina.
    - Injeksi stok negatif via `WmsAuditCorruptionFixture` (X41-5) → verifikasi `php artisan wms:audit` gagal dengan exit code `1`.
+
