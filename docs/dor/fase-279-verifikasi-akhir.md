@@ -21,3 +21,4 @@
 - [x] **T-6 / T-6b**: `RoboticsT1Seeder` deterministik & 8 halaman Blade `x-ds.*` lulus `ui:lint` (0 pelanggaran).
 - [x] **T-7 / T-8**: Dokumentasi konseptual, desain, algoritma, ADR, panduan 5 peran, runbook, dan galat lengkap serta lulus `docs:check`.
 - [x] **T-9**: `arch:scan` mencatat `Baru: 0` di seluruh aturan `A1`–`A13`; `tests/Architecture`, `modules/Wms/tests`, dan `tests/Acceptance/WarehouseRobotics` lulus penuh.
+

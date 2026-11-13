@@ -13,3 +13,4 @@ Sumbu matriks:
 
 ## 2. Keluaran & Kegunaan Audit
 Untuk setiap dari 9 sel `(rate_shift_bps, capex_multiplier_pct)`, builder memanggil `AutomationNpvCalculator::evaluate()` dan mengembalikan `npv_minor`, `irr_bps`, serta `payback_months`. Auditor dapat langsung melihat apakah proposal ber-NPV positif tetap layak jika CAPEX naik 15% atau suku bunga naik 5%.
+

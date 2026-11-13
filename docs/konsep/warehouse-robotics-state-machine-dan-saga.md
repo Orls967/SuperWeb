@@ -37,3 +37,4 @@ Agar sistem WMS induk (Fase 41) tetap sinkron dengan eksekusi robot:
 - `robotics.mission.failed.v1`: key idempoten `robotics-mission-{id}-failed-{retry_count}` atau `fallback_manual`.
 - `robotics.wave.released.v1`: key idempoten `robotics-wave-{batchCode}`.
 Seluruh key bersifat deterministik tanpa UUID/random/timestamp (memenuhi Aturan `arch:scan` A4 = 0).
+

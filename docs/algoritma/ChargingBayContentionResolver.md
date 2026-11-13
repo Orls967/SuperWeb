@@ -12,3 +12,4 @@ Stasiun pengisian daya memiliki jumlah bay fisik terbatas (`DEFAULT_MAX_BAYS = 4
 
 ## 2. Vektor Uji
 3 permintaan bertumpuk (`[0,20)`, `[5,25)`, `[10,30)`) pada `maxBays = 2` -> 2 dialokasikan (`BAY-01`, `BAY-02`), robot ke-3 masuk `deferred_robot_ids`.
+

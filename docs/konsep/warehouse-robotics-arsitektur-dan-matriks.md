@@ -41,3 +41,4 @@ Sesuai aturan arsitektur `A1`, `modules/Wms/` dilarang keras mengimpor kelas dar
 | `D279-8` | `RobotMissionPolicy`, `route-roles.php`, `RoboticsCsvExportService` | `WarehouseRoboticsFullAcceptanceTest` #1, #4 |
 | `D279-9` | `RoboticsTwoSourceAuditService`, `RoboticsTwoSourceAuditCommand`, `RoboticsAuditCorruptionFixture` | `WarehouseRoboticsFullAcceptanceTest` #5, `AuditCommandContractTest` |
 | `X279-1..4` | `declare(strict_types=1)`, integer arithmetic, deterministic idempotency keys, `x-ds.*` UI | `arch:scan` (`Baru: 0`), `ui:lint` (`0`) |
+

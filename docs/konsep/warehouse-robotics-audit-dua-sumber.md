@@ -22,3 +22,4 @@ Dalam operasi harian, constraint foreign key saja tidak cukup menjamin kebenaran
 ## 3. Verifikasi `computeProductionStateHash()` & Fixture Korupsi
 - `computeProductionStateHash()` menghasilkan SHA-256 deterministik atas keadaan seluruh tabel inti robotika. Dua pemanggilan berurutan tanpa mutasi dijamin identik.
 - `RoboticsAuditCorruptionFixture::corrupt()` menyisipkan misi yatim (`MIS-CORRUPT-01`) untuk membuktikan di `AuditCommandContractTest` dan `WarehouseRoboticsFullAcceptanceTest` bahwa `robotics:audit` langsung mendeteksi kerusakan dan keluar dengan kode non-0.
+

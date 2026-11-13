@@ -38,3 +38,4 @@ Setiap evaluasi batch menghasilkan `RobotEnergyCertificate` yang diverifikasi la
    - Memastikan tidak ada dua robot menempati bay yang sama secara bersamaan; kelebihan permintaan ditunda (`deferred_robot_ids`) ke siklus berikutnya.
 3. **Pemeliharaan Preventif (`RobotMaintenanceWindowPlanner`)**:
    - Membatasi jumlah unit yang ditarik ke maintenance bersamaan maksimal `15%` dari total armada (`MAX_CONCURRENT_MAINTENANCE_PCT = 15`), memprioritaskan unit dengan `health_score` terendah terlebih dahulu.
+

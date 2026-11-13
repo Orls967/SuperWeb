@@ -15,3 +15,4 @@
 - Content-Type: `text/csv; charset=UTF-8` dengan header `Content-Disposition: attachment; filename="robotics-{entity}.csv"`.
 - Nilai uang tidak diformat sebagai float, melainkan integer minor unit agar bebas dari kehilangan presisi saat dibuka di alat audit eksternal.
 - Permintaan untuk `{entity}` di luar daftar di atas ditolak dengan `404 Not Found`.
+

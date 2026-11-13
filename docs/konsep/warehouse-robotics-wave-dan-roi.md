@@ -34,3 +34,4 @@ Setiap proposal penambahan robot atau infrastruktur zona dievaluasi menggunakan 
 1. **Anti-Self-Approval (SoD)**: Jika `created_by_user_id === approverUserId`, persetujuan ditolak (`InvalidArgumentException`).
 2. **NPV Negatif Wajib Alasan**: Jika `npv_minor < 0` dan `trim($justification) === ''`, persetujuan ditolak (`InvalidArgumentException`).
 3. **Integrasi `ApprovalEngineService`**: Setiap persetujuan sah diteruskan ke `ApprovalEngineService::submit()` dan `approve()` agar tercatat pada jejak persetujuan lintas modul.
+

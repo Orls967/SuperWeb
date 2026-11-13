@@ -20,3 +20,4 @@
 | `peak_zone_utilization_permil` | `intdiv(max_concurrent_in_bucket * 1000, capacity_k)` | `ZoneCongestionHeatmapCalculator` |
 | `max_safe_range_m` | `intdiv((usable_pct * 4800) - 1500, 120 + 4 * payload_kg)` | `RobotEnergyConsumptionEstimator` |
 | `battery_health_permil` | `max(0, 1000 - intdiv(cycles, 10) - deep_discharges * 3)` | `RobotBatteryDegradationTracker` |
+

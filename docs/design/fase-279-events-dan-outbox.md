@@ -56,3 +56,4 @@ Seluruh event domain Fase 279 tidak pernah dikirim langsung ke message broker di
 
 ## 5. Panduan Konsumen Event
 Konsumen di modul lain (misalnya analitik atau notifikasi) wajib memproses event secara idempoten berdasarkan `(event_type, idempotency_key)` dan tidak boleh mengasumsikan urutan kedatangan antar-batch yang berbeda.
+

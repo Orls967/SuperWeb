@@ -25,3 +25,4 @@
 | `302 Redirect` | Aksi `POST` (`waves/plan`, `roi/{id}/approve`, `incidents/{id}/review`) sukses atau validasi form gagal | Periksa session flash `status` / `errors` |
 | `403 Forbidden` | Peran tidak ada di middleware `role:...` atau ditolak `RobotMissionPolicy` (anti-IDOR) | Verifikasi peran user & `assigned_operator_user_id` |
 | `404 Not Found` | ID proposal/insiden atau entity ekspor CSV tidak ditemukan | Pastikan ID valid & entity termasuk `robots|missions|waves|roi|incidents` |
+

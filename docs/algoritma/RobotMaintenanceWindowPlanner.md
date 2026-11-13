@@ -13,3 +13,4 @@ Agar operasi gudang tidak lumpuh akibat terlalu banyak robot ditarik untuk pemel
 
 ## 3. Vektor Uji
 Armada 10 robot (`maxConcurrent = 1`), 2 kandidat bertumpuk (`health_score` `500` dan `650`) -> robot `500` terjadwal, robot `650` ditunda.
+

@@ -30,3 +30,4 @@ robotics:audit [GAGAL] issues=1 state_hash=<16-hex>
 ## 4. Diagnostik `HungarianSolver`
 - Nilai `HungarianSolver::INF` adalah `1_000_000_000`.
 - Sel padding dummy pada matriks persegi `dim x dim` wajib bernilai strictly `< INF` (pada `AllocateRobotMissionsAction` dan `RobotFleetDispatchOptimizer` digunakan `500_000_000`). Jika sel dummy bernilai `>= INF`, solver akan melempar `InvalidArgumentException: Masalah penugasan tidak layak`.
+

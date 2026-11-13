@@ -31,3 +31,4 @@ Keluaran terdiri atas dua baris terstruktur:
 ## 4. Menangani Hasil Simulasi Buruk
 - Jika `online_robots` terlalu rendah saat 2 unit offline: periksa jadwal charging (`robotics:charge-plan`) dan batasi maintenance bersamaan (`RobotMaintenanceWindowPlanner`).
 - Jika `simulated_zone_slots` menyempit tajam saat 1 zona diblokir: buka rute alternatif atau aktifkan pembatasan kecepatan koeksistensi `800 mm/s` pada zona `capacity_k >= 2`.
+

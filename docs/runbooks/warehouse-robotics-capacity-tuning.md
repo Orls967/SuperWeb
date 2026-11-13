@@ -24,3 +24,4 @@
 ## 4. Kalibrasi Energi (`RobotEnergyConsumptionEstimator`)
 - Pak standar `480 Wh` (`4_800 mWh` per `1%`), `120 mWh/m` dasar, `+4 mWh/(m*kg)` beban, dan `1_500 mWh` overhead aktuator.
 - Selalu uji perubahan parameter menggunakan `php artisan robotics:simulate traffic_density` sebelum diterapkan ke konfigurasi shift.
+

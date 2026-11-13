@@ -22,3 +22,4 @@ Control Tower Robotika membutuhkan kemampuan menjalankan simulasi skenario kepad
 ## 4. Konsekuensi
 - **Positif**: Operator dan auditor dapat menguji skenario kejutan kapan saja di staging maupun produksi dengan jaminan `hash_identik=true`.
 - **Negatif**: Penambahan tabel inti baru di masa depan mengharuskan pembaruan daftar tabel di `computeProductionStateHash()` agar cakupan hash tetap menyeluruh.
+

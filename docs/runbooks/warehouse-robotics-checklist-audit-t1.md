@@ -42,3 +42,4 @@ Pastikan jumlah data minimal terpenuhi:
 | Code Formatting | `./vendor/bin/pint --test modules/Wms/ tests/Acceptance/WarehouseRobotics/` | `"result":"passed"` |
 | Docs Link & Mermaid | `php artisan docs:check` | Nihil tautan atau diagram basi |
 | Volume T-1 | `bash /tmp/gerbang.sh origin/master 8000 1800` | `B1 >= 8000`, `B3 >= 1800` |
+

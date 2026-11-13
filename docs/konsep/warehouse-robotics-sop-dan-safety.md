@@ -42,3 +42,4 @@ Dalam operasi gudang hibrida di mana pekerja manusia (`hub_operator`, picker, te
 
 ## 5. Jejak Audit Keselamatan (Append-Only)
 Seluruh rekaman peristiwa misi (`wms_robot_mission_events`), telemetri (`wms_robot_telemetries`), dan insiden keselamatan (`wms_robot_safety_incidents`) dilindungi oleh guard model Eloquent yang menolak mutasi atau penghapusan historis. Auditor dapat mengekspor seluruh insiden melalui `/wms/robotics/export/incidents` dan memverifikasi integritasnya melalui `php artisan robotics:audit`.
+

@@ -14,3 +14,4 @@ Setiap unit robot memulai masa pak dengan kapasitas nominal `INITIAL_HEALTH_PERM
 - Unit dengan `health_permil <= 750` (`REPLACEMENT_THRESHOLD_PERMIL`) ditandai `replace_recommended = true`.
 - `BatteryDegradationCertificate::verify()` memverifikasi `totalRobots`, `replacementCount`, `fleetAvgHealthPermil`, dan `signatureHash` SHA-256 kanonik.
 - Vektor uji: robot 1 (`1200` siklus, `5` deep-discharge -> `865‰`), robot 2 (`2600` siklus, `2` deep-discharge -> `734‰`, rekomendasi ganti) -> rata-rata `799‰`, `replacementCount = 1`.
+

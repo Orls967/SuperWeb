@@ -20,3 +20,4 @@ Untuk setiap bucket `[b_start, b_end)`:
 
 ## 3. Validasi Parameter
 `capacityK <= 0`, `bucketSizeMin <= 0`, atau `horizonEndMin <= horizonStartMin` ditolak dengan `InvalidArgumentException`.
+

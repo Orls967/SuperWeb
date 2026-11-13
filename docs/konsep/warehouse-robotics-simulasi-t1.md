@@ -41,3 +41,4 @@ Skenario kejutan wajib pada L.4 mensimulasikan kondisi gangguan mendadak di teng
 
 ## 5. Verifikasi Determinisme
 Dengan seed tetap (`--seed=27901`), pemanggilan berulang `robotics:simulate` menghasilkan `fingerprint` run yang identik dan `computeProductionStateHash()` yang sama persis.
+

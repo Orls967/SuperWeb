@@ -77,3 +77,4 @@
 1. Segera hentikan eksekusi simulasi terjadwal.
 2. Bandingkan `computeProductionStateHash()` dan periksa apakah ada koneksi database non-sandbox yang tertulis selama eksekusi.
 3. Verifikasi `RoboticsSimulationScenarioRunner::runScenario()` kembali menghasilkan `hash_identical = true` sebelum mengaktifkan kembali simulasi pra-shift.
+

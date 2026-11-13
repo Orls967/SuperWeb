@@ -23,3 +23,4 @@ Saat beban picking meningkat, pantau klasifikasi urgensi wave terhadap jam cutof
 
 ## 4. Koordinasi Saat Terjadi `fallback_manual`
 Apabila salah satu misi robot pada wave Anda gagal melewati batas retry (`retry_count >= 2`), sistem mengalihkan misi tersebut ke `fallback_manual` dan menyusun ulang wave sisa secara otomatis tanpa menghilangkan satu pun order dari batch pengiriman kurir.
+

@@ -21,3 +21,4 @@ Dalam investigasi insiden keselamatan maupun audit kepatuhan SLA gudang, jejak p
 ## 3. Konsekuensi
 - **Positif**: Memenuhi aturan `A4 = 0` pada `arch:scan`; pemrosesan ulang batch telemetri dengan `tickKey` yang sama aman dan tidak menggandakan baris maupun tugas `TaskInbox`.
 - **Negatif**: Koreksi data historis tidak dapat dilakukan dengan `UPDATE` langsung; segala pembetulan wajib dicatat sebagai entri peristiwa kompensasi baru.
+

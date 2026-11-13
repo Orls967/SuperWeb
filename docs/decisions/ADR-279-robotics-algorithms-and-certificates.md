@@ -31,3 +31,4 @@ Tanpa verifikasi integritas struktural atas keluaran algoritma, kegagalan serial
 ## 5. Konsekuensi & Mitigasi
 - **Positif**: Uji sabotase pada `RoboticsAlgorithmsVectorTest` membuktikan seluruh 6 jenis sertifikat menolak payload yang dimanipulasi.
 - **Mitigasi Biaya**: Komputasi `sha256(json_encode(...))` berukuran kecil (< 10 KB per eksekusi) sehingga latensi per sertifikat berada di bawah 0,1 ms.
+

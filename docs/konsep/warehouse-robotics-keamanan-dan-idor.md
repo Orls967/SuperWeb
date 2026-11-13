@@ -24,3 +24,4 @@ Keamanan akses pada Control Tower Robotika ditegakkan pada tiga lapisan beruruta
 ## 3. Tata Kelola Persetujuan Finansial (`J3` SoD)
 - `EvaluateRoboticsRoiProposalAction::approveProposal()` menegakkan Pemisahan Tugas (`created_by_user_id !== approverUserId`) di sisi server meskipun pengguna memiliki peran `admin`.
 - Setiap persetujuan tercatat di `ApprovalEngineService` (`approval_requests`) sehingga tidak ada persetujuan diam-diam tanpa jejak audit.
+

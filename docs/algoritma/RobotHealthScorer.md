@@ -22,3 +22,4 @@ Skor akhir:
 
 ## 3. Invarian Determinisme
 Seluruh perhitungan menggunakan integer penuh tanpa `float`. Dua pemanggilan dengan masukan telemetri identik selalu menghasilkan `health_score`, `is_anomaly`, dan `anomaly_code` yang persis sama.
+

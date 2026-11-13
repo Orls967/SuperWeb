@@ -21,3 +21,4 @@ Untuk membandingkan penawaran vendor yang berbeda, tinjau grid sensitivitas 3x3 
 - Penurunan biaya pengadaan `-10%` (`capex_multiplier_pct = 90`) melalui negosiasi kontrak volume.
 - Pergeseran biaya modal `±500 bps` (`±5%`).
 Proposal yang tetap memiliki `npv_minor > 0` pada skenario `115% CAPEX / +500 bps` merupakan kandidat pengadaan paling tangguh.
+

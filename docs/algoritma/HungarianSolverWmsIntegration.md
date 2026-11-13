@@ -16,3 +16,4 @@
 ## 2. Verifikasi Dual `(u, v)` & Tie-Breaking
 `HungarianSolver` mengembalikan `AssignmentResult` berisi vektor `assignment`, potensi dual `(u, v)`, dan total biaya optimal dengan tie-breaking indeks kolom terkecil.
 - Vektor uji pada `RoboticsAlgorithmsVectorTest` memverifikasi penugasan optimal identik dan sertifikat dual memenuhi `u[i] + v[j] <= cost[i][j]`.
+

@@ -37,3 +37,4 @@ Seluruh halaman Control Tower Robotika dibangun menggunakan komponen Design Syst
 - `PlanRoboticsWaveRequest`: memvalidasi `warehouse_id` (UUID/string), `capacity` (integer `>= 10`), dan `batch_code` (string unik/non-kosong).
 - `ApproveRoboticsRoiRequest`: memvalidasi `justification` (string opsional pada tingkat HTTP, lalu ditegakkan wajib oleh `EvaluateRoboticsRoiProposalAction` apabila `npv_minor < 0`).
 - `ReviewSafetyIncidentRequest`: memvalidasi `decision_status` (`reviewed` / `resolved` / `escalated`).
+

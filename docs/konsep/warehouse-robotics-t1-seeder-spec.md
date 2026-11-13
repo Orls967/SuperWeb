@@ -13,3 +13,4 @@ Seeder ini bersifat idempoten (`firstOrCreate` / `updateOrCreate`) dan membangun
 
 ## 2. Kegunaan dalam Uji Otomatis
 `WarehouseRoboticsFullAcceptanceTest` #1 dan #5 memanggil `$this->seed(RoboticsT1Seeder::class)` untuk memverifikasi seluruh rute Control Tower, `IngestSimulatedTelemetryBatchAction`, `RoboticsT1SimulationReportService`, dan `robotics:audit`.
+
