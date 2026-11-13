@@ -11,11 +11,13 @@ use Illuminate\Support\Str;
 use Modules\Wms\Application\Actions\AllocateRobotMissionsAction;
 use Modules\Wms\Application\Actions\CompleteRobotMissionAction;
 use Modules\Wms\Application\Actions\EvaluateRoboticsRoiProposalAction;
+use Modules\Wms\Application\Actions\IngestSimulatedTelemetryBatchAction;
 use Modules\Wms\Application\Actions\PlanRoboticsWaveAction;
 use Modules\Wms\Application\Actions\ReserveZoneForMissionAction;
 use Modules\Wms\Application\Actions\RetryOrFallbackRobotMissionAction;
 use Modules\Wms\Application\Services\RoboticsMissionLifecycleSaga;
 use Modules\Wms\Application\Services\RoboticsSimulationScenarioRunner;
+use Modules\Wms\Application\Services\RoboticsT1SimulationReportService;
 use Modules\Wms\Application\Services\RoboticsTwoSourceAuditService;
 use Modules\Wms\Application\Services\RobotMissionTransitionService;
 use Modules\Wms\database\seeders\RoboticsT1Seeder;
@@ -191,6 +193,14 @@ test('5. robotics:audit bersih deterministik exit 0 dan fixture korupsi exit non
     $run2 = $auditService->runAudit();
     expect($run1)->toBe($run2)
         ->and($run1['ok'])->toBeTrue();
+
+    $whId = (string) TrafficZone::query()->value('warehouse_id');
+    $telBatch = app(IngestSimulatedTelemetryBatchAction::class)->execute($whId, 'T1-BATCH-1', 279);
+    expect($telBatch['robots_processed'])->toBeGreaterThanOrEqual(20);
+
+    $t1Report = app(RoboticsT1SimulationReportService::class)->buildReport($whId);
+    expect($t1Report['audit_status']['passed'])->toBeTrue()
+        ->and($t1Report['roi_portfolio']['negative_npv_count'])->toBeGreaterThanOrEqual(1);
 
     $exitClean = Artisan::call('robotics:audit');
     expect($exitClean)->toBe(0);

@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 use Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver;
 use Modules\Wms\Domain\Algorithms\AutomationNpvCalculator;
+use Modules\Wms\Domain\Algorithms\RobotEnergyConsumptionEstimator;
 use Modules\Wms\Domain\Algorithms\TrafficDeadlockDetector;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
 use Modules\Wms\Domain\Algorithms\ZoneReservationScheduler;
 use Modules\Wms\Domain\Certificates\AutomationNpvCertificate;
+use Modules\Wms\Domain\Certificates\RobotEnergyCertificate;
 use Modules\Wms\Domain\Certificates\TrafficDeadlockCertificate;
 use Modules\Wms\Domain\Certificates\WaveBinPackerCertificate;
 use Modules\Wms\Domain\Certificates\ZoneReservationCertificate;
+use Modules\Wms\Domain\Services\RoboticsZoneInterlockEvaluator;
+use Modules\Wms\Domain\ValueObjects\IntervalWindow;
 
 test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalculator, Hungarian, dan TrafficDeadlockDetector lulus persis', function (): void {
     // J1: ZoneReservationScheduler
@@ -138,4 +142,32 @@ test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): v
     $c4 = $dl->detectAndResolve(['M-01' => 'M-02', 'M-02' => 'M-01'], ['M-01' => 10, 'M-02' => 20])['certificate'];
     $tampered4 = new TrafficDeadlockCertificate($c4->canonicalInput, $c4->steps, ['has_deadlock' => false, 'cycle_nodes' => [], 'victim_node' => null], $c4->sha256);
     expect(fn () => $tampered4->verifyOrFail())->toThrow(InvalidArgumentException::class);
+
+    $estimator = new RobotEnergyConsumptionEstimator();
+    $energyCert = $estimator->estimateBatch(101, 80, [
+        ['mission_id' => 1, 'distance_m' => 100, 'payload_kg' => 10],
+        ['mission_id' => 2, 'distance_m' => 250, 'payload_kg' => 25],
+    ]);
+    expect($energyCert->allFeasible)->toBeTrue()
+        ->and($energyCert->totalDrainPct)->toBeGreaterThan(0)
+        ->and($estimator->maxSafeRangeMeters(80, 10))->toBeGreaterThan(1000);
+
+    $tamperedEnergy = new RobotEnergyCertificate(
+        $energyCert->robotId,
+        $energyCert->initialBatteryPct,
+        $energyCert->reserveMinBatteryPct,
+        $energyCert->totalDrainPct + 5,
+        $energyCert->projectedEndBatteryPct,
+        $energyCert->totalEnergyMwh,
+        $energyCert->allFeasible,
+        $energyCert->items,
+        $energyCert->signatureHash,
+    );
+    expect(fn () => $tamperedEnergy->verify())->toThrow(InvalidArgumentException::class);
+
+    $interlock = new RoboticsZoneInterlockEvaluator();
+    $blockedRes = $interlock->evaluateEntry('Z-BLK', 1, true, 0, 30, new IntervalWindow(5, 10), [], 90);
+    expect($blockedRes['allowed'])->toBeFalse()->and($blockedRes['reason_code'])->toBe('STAFF_ZONE_BLOCKED');
+    $clearRes = $interlock->evaluateEntry('Z-OK', 2, false, null, null, new IntervalWindow(5, 10), [['mission_id' => 9, 'start_min' => 4, 'end_min' => 8, 'robot_id' => 1]], 90);
+    expect($clearRes['allowed'])->toBeTrue()->and($clearRes['recommended_speed_mm_s'])->toBe(RoboticsZoneInterlockEvaluator::MAX_COEXISTENCE_SPEED_MM_S);
 });

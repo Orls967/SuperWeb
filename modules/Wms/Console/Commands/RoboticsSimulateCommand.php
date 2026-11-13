@@ -8,7 +8,9 @@ use Illuminate\Console\Command;
 use Modules\Core\Application\Services\SimulationRunnerService;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Wms\Application\Services\RoboticsSimulationTickHandler;
+use Modules\Wms\Application\Services\RoboticsT1SimulationReportService;
 use Modules\Wms\Application\Services\RoboticsTwoSourceAuditService;
+use Modules\Wms\Models\TrafficZone;
 use RuntimeException;
 
 /**
@@ -24,6 +26,7 @@ final class RoboticsSimulateCommand extends Command
         SimulationRunnerService $runner,
         RoboticsSimulationTickHandler $handler,
         RoboticsTwoSourceAuditService $audit,
+        RoboticsT1SimulationReportService $reportService,
         ClockInterface $clock,
     ): int {
         $scenario = (string) $this->argument('scenario');
@@ -49,6 +52,12 @@ final class RoboticsSimulateCommand extends Command
             (int) $tickResult['simulated_zone_slots'],
         ));
 
+        $warehouseId = (string) (TrafficZone::query()->value('warehouse_id') ?? '');
+        if ($warehouseId !== '') {
+            $this->line($reportService->formatCliSummary($warehouseId));
+        }
+
         return self::SUCCESS;
     }
 }
+

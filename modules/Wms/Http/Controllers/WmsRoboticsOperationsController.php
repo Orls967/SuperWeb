@@ -16,6 +16,7 @@ use Modules\Wms\Application\Services\RoboticsCsvExportService;
 use Modules\Wms\Application\Services\RoboticsFleetKpiAggregator;
 use Modules\Wms\Application\Services\RoboticsSimulationScenarioRunner;
 use Modules\Wms\Application\Services\RoboticsSimulationTickHandler;
+use Modules\Wms\Application\Services\RoboticsT1SimulationReportService;
 use Modules\Wms\Application\Services\SafetyIncidentLog;
 use Modules\Wms\Http\Requests\ApproveRoboticsRoiRequest;
 use Modules\Wms\Http\Requests\PlanRoboticsWaveRequest;
@@ -64,13 +65,16 @@ final class WmsRoboticsOperationsController extends Controller
         RoboticsSimulationTickHandler $handler,
         RoboticsSimulationScenarioRunner $scenarioRunner,
         RoboticsFleetKpiAggregator $kpiAggregator,
+        RoboticsT1SimulationReportService $reportService,
         ClockInterface $clock,
     ): View {
         $snapshot = $handler->handle($clock->now(), 1);
         $baselineScenario = $scenarioRunner->runScenario('baseline');
-        $kpis = $kpiAggregator->summarize((string) (TrafficZone::query()->value('warehouse_id') ?? ''));
+        $whId = (string) (TrafficZone::query()->value('warehouse_id') ?? '');
+        $kpis = $kpiAggregator->summarize($whId);
+        $t1Report = $whId !== '' ? $reportService->buildReport($whId) : [];
 
-        return view('wms::robotics.simulations', compact('snapshot', 'baselineScenario', 'kpis'));
+        return view('wms::robotics.simulations', compact('snapshot', 'baselineScenario', 'kpis', 't1Report'));
     }
 
     public function charging(): View

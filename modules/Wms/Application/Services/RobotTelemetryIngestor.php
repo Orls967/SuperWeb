@@ -65,8 +65,9 @@ final readonly class RobotTelemetryIngestor
                     'title' => "Anomali Telemetri Robot {$lockedRobot->robot_code}",
                     'description' => "Kode anomali {$eval['anomaly_code']} (skor {$eval['health_score']}/1000, baterai {$batteryPct}%).",
                     'module' => 'Wms',
-                    'entity_type' => 'robot',
-                    'entity_id' => (string) $lockedRobot->id,
+                    'source_entity_type' => 'robot',
+                    'source_entity_id' => (string) $lockedRobot->id,
+                    'assignee_role' => 'hub_operator',
                     'priority' => 'high',
                 ]);
             }
@@ -75,3 +76,4 @@ final readonly class RobotTelemetryIngestor
         });
     }
 }
+
