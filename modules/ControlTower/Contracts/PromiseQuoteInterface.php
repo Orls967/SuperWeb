@@ -16,7 +16,7 @@ interface PromiseQuoteInterface
      * payload berbeda melempar IdempotencyConflictException.
      *
      * @return array{promise_code:string, status:string, promised_period:?int, late_periods:int, atp_cumulative:int, ctp_cumulative:int, reason_code:?string, certificate_hash:string}
-     *                                                                                                                                                                                  status: on_time|late|cannot_promise
+     *                                                                                                                                                                                 status: on_time|late|cannot_promise
      */
     public function quote(
         string $itemCode,

@@ -9,11 +9,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Modules\ControlTower\Contracts\PromiseQuoteInterface;
+use Modules\ControlTower\Domain\Exceptions\PromiseIdempotencyConflictException;
 use Modules\ControlTower\Domain\Models\OrderPromise;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Http\Requests\QuotePromiseRequest;
 use Modules\Core\Contracts\ClockInterface;
-use Modules\Core\Domain\Exceptions\ApiIdempotencyConflictException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class PromiseController extends Controller
@@ -58,7 +58,7 @@ final class PromiseController extends Controller
                 orderReference: $orderReference,
                 asOfDate: $asOfDate,
             );
-        } catch (ApiIdempotencyConflictException $e) {
+        } catch (PromiseIdempotencyConflictException $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),

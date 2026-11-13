@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Schema;
 use Modules\ControlTower\Contracts\ItemAvailabilityReader;
 use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Algorithms\AtpCtpNetter;
+use Modules\ControlTower\Domain\Exceptions\PromiseIdempotencyConflictException;
 use Modules\ControlTower\Domain\Models\OrderPromise;
 use Modules\Core\Application\Services\EventSchemaRegistry;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
-use Modules\Core\Domain\Exceptions\ApiIdempotencyConflictException;
 use Modules\Distribution\Contracts\OpenDemandProvider;
 use Modules\Manufacturing\Contracts\CapacityAndMaterialProvider;
 
@@ -75,7 +75,7 @@ final class PromiseQuoteService implements PromiseQuoteInterface
 
             if ($existing !== null) {
                 if ($existing->payload_hash !== $payloadHash) {
-                    throw ApiIdempotencyConflictException::forKey($idempotencyKey);
+                    throw PromiseIdempotencyConflictException::forKey($idempotencyKey);
                 }
 
                 return $this->toQuoteArray($existing);

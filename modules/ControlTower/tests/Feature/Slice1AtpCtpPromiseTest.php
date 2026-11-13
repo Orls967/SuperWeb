@@ -12,9 +12,9 @@ use Illuminate\Support\Str;
 use Modules\ControlTower\Contracts\ItemAvailabilityReader;
 use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Algorithms\AtpCtpNetter;
+use Modules\ControlTower\Domain\Exceptions\PromiseIdempotencyConflictException;
 use Modules\ControlTower\Domain\Models\EchelonStock;
 use Modules\ControlTower\Domain\Models\OrderPromise;
-use Modules\Core\Domain\Exceptions\ApiIdempotencyConflictException;
 use Modules\Distribution\Contracts\OpenDemandProvider;
 use Modules\Manufacturing\Contracts\CapacityAndMaterialProvider;
 use Modules\Store\Contracts\Product;
@@ -474,8 +474,8 @@ final class Slice1AtpCtpPromiseTest extends TestCase
         $this->assertSame($quote, $hit);
         $this->assertSame(1, OrderPromise::query()->where('idempotency_key', 'IDEMP-REAL-001')->count());
 
-        // Idempotency conflict: different payload throws ApiIdempotencyConflictException
-        $this->expectException(ApiIdempotencyConflictException::class);
+        // Idempotency conflict: different payload throws PromiseIdempotencyConflictException
+        $this->expectException(PromiseIdempotencyConflictException::class);
         $quoteService->quote(
             itemCode: $sku,
             quantity: 105,
