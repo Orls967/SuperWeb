@@ -40,6 +40,7 @@ use Modules\Treasury\Ledger\TreasuryTransactionTypes;
 use Modules\Vending\Ledger\VendingTransactionTypes;
 use Modules\Venue\Ledger\VenueTransactionTypes;
 use Modules\Wealth\Ledger\WealthTransactionTypes;
+use Modules\Wms\Ledger\WmsTransactionTypes;
 
 final class TransactionTypeRegistry
 {
@@ -79,6 +80,7 @@ final class TransactionTypeRegistry
         VendingTransactionTypes::class,
         VenueTransactionTypes::class,
         WealthTransactionTypes::class,
+        WmsTransactionTypes::class,
     ];
 
     /** @var list<string>|null */

@@ -47,6 +47,7 @@ use Modules\Treasury\Ledger\TreasuryAccounts;
 use Modules\Vending\Ledger\VendingAccounts;
 use Modules\Venue\Ledger\VenueAccounts;
 use Modules\Wealth\Ledger\WealthAccounts;
+use Modules\Wms\Ledger\WmsAccounts;
 
 /**
  * Bagan Akun Standar (Chart of Accounts) untuk modul-modul ekosistem.
@@ -97,6 +98,7 @@ class LedgerAccountsSeeder extends Seeder
         VendingAccounts::class,
         VenueAccounts::class,
         WealthAccounts::class,
+        WmsAccounts::class,
     ];
 
     public function run(): void

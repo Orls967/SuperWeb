@@ -4,55 +4,90 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Actions;
 
-use App\Models\User;
-use InvalidArgumentException;
-use Modules\Shared\Application\BaseAction;
-use Modules\Wms\Application\Services\WmsService;
-use Modules\Wms\Domain\Models\CycleCount;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Wms\Domain\Events\WarehouseStockAdjustedEvent;
+use Modules\Wms\Domain\Models\BinStock;
 use Modules\Wms\Domain\Models\Warehouse;
+use Modules\Wms\Domain\Support\QuantityNormalizer;
 
-final class RecordCycleCountAdjustmentAction extends BaseAction
+/**
+ * Mencatat penyesuaian cycle count (gain D41-6 / shrinkage D41-7) & mempublish event domain.
+ */
+final class RecordCycleCountAdjustmentAction
 {
     public function __construct(
-        private readonly WmsService $wmsService
+        private readonly WmsLedgerPoster $poster,
+        private readonly ClockInterface $clock,
     ) {}
 
     /**
-     * Records a cycle count count, submits variance for approval, and applies adjustment under 4-eyes rule.
-     *
-     * @param  list<array{bin_id: int, product_id: int, counted_qty: float, lot_number?: string}>  $lines
+     * @return array{
+     *     warehouse_id: int,
+     *     product_id: int,
+     *     variance_qty_base: int,
+     *     variance_value_idr: int,
+     *     kind: string
+     * }
      */
     public function execute(
-        Warehouse $warehouse,
-        array $lines,
-        User $counter,
-        User $approver
-    ): CycleCount {
-        if ($counter->id === $approver->id) {
-            throw new InvalidArgumentException('Prinsip empat mata (four-eyes): Penghitung fisik tidak boleh menyetujui penyesuaian sendiri.');
-        }
-
-        return $this->transaction(function () use ($warehouse, $lines, $counter, $approver) {
-            $count = $this->wmsService->startCycleCount($warehouse, $lines, $counter);
-
-            if (abs((float) $count->variance_qty) < 0.000001) {
-                // No variance to adjust, mark count closed
-                $count->update(['status' => 'completed']);
-
-                return $count;
-            }
-
-            $count = $this->wmsService->submitAdjustment($count, $counter);
-            $applied = $this->wmsService->approveAndApply($count, $approver);
-
-            $this->audit('wms.cycle_count_adjusted', $applied, null, [
-                'count_number' => $applied->number,
-                'counter_id' => $counter->id,
-                'approver_id' => $approver->id,
-                'variance_qty' => (float) $applied->variance_qty,
+        int $warehouseId,
+        int $binId,
+        int $productId,
+        int $countedQtyBase,
+        int $unitCostIdr,
+        string $cycleCountRef,
+    ): array {
+        return DB::transaction(function () use (
+            $warehouseId,
+            $binId,
+            $productId,
+            $countedQtyBase,
+            $unitCostIdr,
+            $cycleCountRef
+        ): array {
+            $warehouse = Warehouse::findOrFail($warehouseId);
+            $stock = BinStock::firstOrNew([
+                'bin_id' => $binId,
+                'product_id' => $productId,
             ]);
 
-            return $applied;
+            $systemQty = (int) ($stock->qty_base ?? 0);
+            $variance = $countedQtyBase - $systemQty;
+
+            $stock->qty_base = $countedQtyBase;
+            $stock->qty = $countedQtyBase;
+            $stock->stock_status = $stock->stock_status ?: 'available';
+            $stock->save();
+
+            $absValue = QuantityNormalizer::computeValueIdr(abs($variance), $unitCostIdr);
+            $kind = $variance > 0 ? 'gain' : ($variance < 0 ? 'shrinkage' : 'matched');
+
+            if ($absValue > 0) {
+                if ($variance > 0) {
+                    $this->poster->postCycleCountGain((string) $warehouse->code, $absValue, $cycleCountRef);
+                } else {
+                    $this->poster->postCycleCountShrinkage((string) $warehouse->code, $absValue, $cycleCountRef);
+                }
+            }
+
+            Event::dispatch(new WarehouseStockAdjustedEvent(
+                warehouseId: (int) $warehouse->id,
+                productId: $productId,
+                deltaQtyBase: $variance,
+                deltaValueIdr: $variance >= 0 ? $absValue : -$absValue,
+                reason: "cycle_count:{$cycleCountRef}",
+                occurredAt: $this->clock->now()->toIso8601String(),
+            ));
+
+            return [
+                'warehouse_id' => (int) $warehouse->id,
+                'product_id' => $productId,
+                'variance_qty_base' => $variance,
+                'variance_value_idr' => $absValue,
+                'kind' => $kind,
+            ];
         });
     }
 }

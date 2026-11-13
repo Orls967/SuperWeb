@@ -5,9 +5,22 @@ declare(strict_types=1);
 namespace Modules\Wms;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Intercompany\Contracts\SubledgerTotalProvider;
 use Modules\Shared\Application\MenuRegistry;
+use Modules\Wms\Application\Services\StockReservationService;
 use Modules\Wms\Application\Services\WmsService;
 use Modules\Wms\Console\Commands\AuditWmsCommand;
+use Modules\Wms\Console\Commands\CycleCountPlanCommand;
+use Modules\Wms\Console\Commands\PostOpeningBalanceCommand;
+use Modules\Wms\Console\Commands\ReplenishWmsCommand;
+use Modules\Wms\Console\Commands\ReservationSweepCommand;
+use Modules\Wms\Console\Commands\RevalueCostCommand;
+use Modules\Wms\Console\Commands\TransitSweepCommand;
+use Modules\Wms\Console\Commands\UtilizationSnapshotCommand;
+use Modules\Wms\Contracts\StockAvailabilityReader;
+use Modules\Wms\Contracts\WarehouseValuationReader;
+use Modules\Wms\Infrastructure\Adapters\WarehouseValuationReaderAdapter;
+use Modules\Wms\Infrastructure\Adapters\WmsSubledgerTotalAdapter;
 use Modules\Wms\Infrastructure\Api\WarehouseResourceProvider;
 use Modules\Wms\Infrastructure\Edi\WmsEdiDesadvHandler;
 
@@ -16,9 +29,12 @@ class WmsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(WmsService::class);
+        $this->app->bind(StockAvailabilityReader::class, StockReservationService::class);
+        $this->app->bind(WarehouseValuationReader::class, WarehouseValuationReaderAdapter::class);
 
         $this->app->tag(WarehouseResourceProvider::class, 'core.api_resource_provider');
         $this->app->tag(WmsEdiDesadvHandler::class, 'core.edi_document_handler');
+        $this->app->tag(WmsSubledgerTotalAdapter::class, SubledgerTotalProvider::class);
     }
 
     public function boot(): void
@@ -34,7 +50,16 @@ class WmsServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([AuditWmsCommand::class]);
+            $this->commands([
+                AuditWmsCommand::class,
+                ReplenishWmsCommand::class,
+                CycleCountPlanCommand::class,
+                TransitSweepCommand::class,
+                PostOpeningBalanceCommand::class,
+                RevalueCostCommand::class,
+                ReservationSweepCommand::class,
+                UtilizationSnapshotCommand::class,
+            ]);
         }
 
         $this->registerMenu();

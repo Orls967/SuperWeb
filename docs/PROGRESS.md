@@ -5107,7 +5107,7 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-40.md
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
-> **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 DIIMPLEMENTASIKAN (W8-P6, 2026-11-13) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
 - [ ] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03

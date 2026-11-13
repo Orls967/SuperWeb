@@ -4,112 +4,141 @@ declare(strict_types=1);
 
 namespace Modules\Wms\Application\Actions;
 
-use App\Models\User;
-use InvalidArgumentException;
-use Modules\Shared\Application\BaseAction;
-use Modules\Wms\Application\Services\WmsService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Wms\Domain\Algorithms\PutawaySlotter;
+use Modules\Wms\Domain\Events\WarehouseTaskConfirmedEvent;
 use Modules\Wms\Domain\Models\Bin;
 use Modules\Wms\Domain\Models\BinStock;
 use Modules\Wms\Domain\Models\Task;
-use Modules\Wms\Domain\Models\Zone;
+use Modules\Wms\Domain\Models\Warehouse;
+use Modules\Wms\Domain\StateMachines\WarehouseTaskStateMachine;
+use Modules\Wms\Domain\Support\QuantityNormalizer;
 
-final class ExecuteDirectedPutawayAction extends BaseAction
+/**
+ * Eksekusi directed putaway berbasis PutawaySlotter (H1), SM 7-state, event, dan ledger D41-2.
+ */
+final class ExecuteDirectedPutawayAction
 {
     public function __construct(
-        private readonly WmsService $wmsService
+        private readonly PutawaySlotter $slotter,
+        private readonly WarehouseTaskStateMachine $stateMachine,
+        private readonly WmsLedgerPoster $poster,
+        private readonly ClockInterface $clock,
     ) {}
 
     /**
-     * Executes directed putaway into target bin or best available bin in zone.
-     *
-     * @return array{stock: BinStock, task: Task}
+     * @return array{
+     *     mode: string,
+     *     allocations: list<array{bin_id: string, qty: int}>,
+     *     task_ids: list<int>,
+     *     ledger_posted_idr: int
+     * }
      */
     public function execute(
+        int $warehouseId,
         int $productId,
-        int $qty,
-        ?Bin $preferredBin = null,
-        ?Zone $targetZone = null,
-        ?User $operator = null,
+        int $qtyBase,
+        string $abcClass,
+        int $unitCostIdr,
+        string $referenceId,
+        ?int $actorUserId = null,
         ?string $lotNumber = null,
-        ?string $serialNumber = null,
-        string $status = 'available'
+        ?string $expiryDate = null,
     ): array {
-        if ($qty <= 0) {
-            throw new InvalidArgumentException('Kuantitas putaway harus lebih dari 0.');
+        $warehouse = Warehouse::findOrFail($warehouseId);
+        $binRows = DB::table('wms_bins as b')
+            ->join('wms_racks as r', 'r.id', '=', 'b.rack_id')
+            ->join('wms_zones as z', 'z.id', '=', 'r.zone_id')
+            ->where('z.warehouse_id', $warehouseId)
+            ->where('b.is_active', true)
+            ->select('b.id', 'b.code', 'b.capacity')
+            ->get();
+
+        $binsInput = [];
+        foreach ($binRows as $index => $bin) {
+            $used = (int) DB::table('wms_bin_stocks')
+                ->where('bin_id', $bin->id)
+                ->sum('qty_base');
+            $cap = (int) ($bin->capacity ?: 1000);
+            $free = max(0, $cap - $used);
+            if ($free > 0) {
+                $binsInput[] = [
+                    'id' => (string) $bin->id,
+                    'distance' => ($index + 1) * 10,
+                    'freeCapacity' => $free,
+                ];
+            }
         }
 
-        $user = $operator ?? auth()->user() ?? User::first();
-        if ($user === null) {
-            throw new InvalidArgumentException('Operator putaway diperlukan.');
-        }
+        $plan = $this->slotter->plan($qtyBase, $abcClass, $binsInput);
 
-        return $this->transaction(function () use ($productId, $qty, $preferredBin, $targetZone, $user, $lotNumber, $status) {
-            $destinationBin = $preferredBin;
+        return DB::transaction(function () use (
+            $warehouse,
+            $productId,
+            $qtyBase,
+            $unitCostIdr,
+            $referenceId,
+            $actorUserId,
+            $lotNumber,
+            $expiryDate,
+            $plan
+        ): array {
+            $taskIds = [];
+            $now = $this->clock->now();
 
-            if ($destinationBin !== null && $destinationBin->capacityReached($qty)) {
-                $destinationBin = null; // Preferred bin is full, auto-direct to alternative
-            }
+            foreach ($plan['allocations'] as $alloc) {
+                $binId = (int) $alloc['bin_id'];
+                $allocQty = (int) $alloc['qty'];
 
-            if ($destinationBin === null && $targetZone !== null) {
-                // Find first active bin in zone with sufficient capacity
-                $candidates = Bin::query()
-                    ->whereHas('rack', fn ($q) => $q->where('zone_id', $targetZone->id))
-                    ->where('is_active', true)
-                    ->get();
-
-                foreach ($candidates as $candidate) {
-                    if (! $candidate->capacityReached($qty)) {
-                        $destinationBin = $candidate;
-                        break;
-                    }
-                }
-            }
-
-            if ($destinationBin === null) {
-                if ($preferredBin !== null) {
-                    throw new InvalidArgumentException("Bin {$preferredBin->code} melebihi kapasitas dan tidak ada alternatif.");
-                }
-                throw new InvalidArgumentException('Tidak ada bin yang memiliki kapasitas cukup untuk putaway.');
-            }
-
-            // Execute putaway via WmsService
-            $putawayResult = $this->wmsService->putaway(
-                $destinationBin,
-                $productId,
-                (float) $qty,
-                $user,
-                $lotNumber,
-                $status
-            );
-
-            $stock = $putawayResult['stock'];
-            $task = $putawayResult['task'] ?? Task::query()->where('product_id', $productId)
-                ->where('bin_id', $destinationBin->id)
-                ->latest()
-                ->first();
-
-            if ($task === null) {
-                $task = Task::create([
-                    'warehouse_id' => $destinationBin->rack->zone->warehouse_id,
-                    'kind' => 'putaway',
-                    'status' => 'completed',
+                $stock = BinStock::firstOrNew([
+                    'bin_id' => $binId,
                     'product_id' => $productId,
-                    'qty' => $qty,
-                    'bin_id' => $destinationBin->id,
-                    'target_bin_id' => $destinationBin->id,
-                    'closed_at' => now(),
+                    'lot_number' => $lotNumber,
                 ]);
+                $newBase = (int) ($stock->qty_base ?? 0) + $allocQty;
+                $stock->qty_base = $newBase;
+                $stock->qty = $newBase;
+                $stock->expiry_date = $expiryDate ?? $stock->expiry_date;
+                $stock->stock_status = $stock->stock_status ?: 'available';
+                $stock->save();
+
+                $bin = Bin::findOrFail($binId);
+                $task = Task::create([
+                    'warehouse_id' => $warehouse->id,
+                    'kind' => 'putaway',
+                    'status' => WarehouseTaskStateMachine::STATUS_CREATED,
+                    'product_id' => $productId,
+                    'to_bin_id' => $bin->id,
+                    'qty' => $allocQty,
+                    'assigned_to' => $actorUserId,
+                ]);
+
+                $this->stateMachine->transition($task, 'assign', $actorUserId);
+                $this->stateMachine->transition($task, 'start', $actorUserId);
+                $this->stateMachine->transition($task, 'confirm', $actorUserId, 'Directed putaway selesai');
+                $this->stateMachine->transition($task, 'close', $actorUserId);
+
+                Event::dispatch(new WarehouseTaskConfirmedEvent(
+                    taskId: (int) $task->id,
+                    warehouseId: (int) $warehouse->id,
+                    kind: 'putaway',
+                    actorUserId: $actorUserId,
+                    occurredAt: $now->toIso8601String(),
+                ));
+
+                $taskIds[] = (int) $task->id;
             }
 
-            $this->audit('wms.directed_putaway', $stock, null, [
-                'bin_id' => $destinationBin->id,
-                'qty' => $qty,
-                'product_id' => $productId,
-            ]);
+            $valueIdr = QuantityNormalizer::computeValueIdr($qtyBase, $unitCostIdr);
+            $this->poster->postInboundReceipt((string) $warehouse->code, $valueIdr, $referenceId);
 
             return [
-                'stock' => $stock,
-                'task' => $task,
+                'mode' => $plan['mode'],
+                'allocations' => $plan['allocations'],
+                'task_ids' => $taskIds,
+                'ledger_posted_idr' => $valueIdr,
             ];
         });
     }
