@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Contracts\CarrierCutoffProvider;
+use Modules\Wms\Application\Services\RoboticsWaveReconciliationService;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
+use Modules\Wms\Domain\Algorithms\WaveCutoffSlackCalculator;
 use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotWave;
@@ -23,11 +25,13 @@ final readonly class PlanRoboticsWaveAction
         private CarrierCutoffProvider $cutoffProvider,
         private OutboxBusInterface $outboxBus,
         private ClockInterface $clock,
+        private WaveCutoffSlackCalculator $slackCalculator,
+        private RoboticsWaveReconciliationService $reconciler,
     ) {}
 
     /**
      * @param  list<array{id: string|int, size: int, carrier: string, cutoff: int}>  $orders
-     * @return array{waves: list<RobotWave>, certificate_hash: string, carrier_cutoffs: list<array<string, mixed>>}
+     * @return array{waves: list<RobotWave>, certificate_hash: string, carrier_cutoffs: list<array<string, mixed>>, cutoff_slack: list<array<string, mixed>>, reconciliation: array<string, mixed>}
      */
     public function execute(string $warehouseId, int $waveCapacity, array $orders, string $batchCode): array
     {
@@ -59,6 +63,18 @@ final readonly class PlanRoboticsWaveAction
                 $savedWaves[] = $wave;
             }
 
+            $slackInput = array_map(static fn (RobotWave $w): array => [
+                'wave_id' => (int) $w->id,
+                'carrier_code' => (string) $w->carrier_code,
+                'cutoff_hhmm' => max(0, min(2359, (int) $w->cutoff_min)),
+                'estimated_pick_min' => max(5, (int) $w->allocated_load),
+            ], $savedWaves);
+            $cutoffSlack = $slackInput !== []
+                ? $this->slackCalculator->evaluate($slackInput, (int) $this->clock->now()->format('Hi'))
+                : [];
+            $expectedIds = array_map(static fn (array $o): string => (string) $o['id'], $orders);
+            $reconciliation = $this->reconciler->reconcileBatch($warehouseId, $batchCode, $expectedIds);
+
             $nowIso = $this->clock->now()->toIso8601String();
             $payload = [
                 'event_id' => "wms-wave-{$batchCode}",
@@ -77,6 +93,8 @@ final readonly class PlanRoboticsWaveAction
                 'waves' => $savedWaves,
                 'certificate_hash' => $certHash,
                 'carrier_cutoffs' => $cutoffs,
+                'cutoff_slack' => $cutoffSlack,
+                'reconciliation' => $reconciliation,
             ];
         });
     }

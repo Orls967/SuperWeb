@@ -41,7 +41,7 @@ final readonly class RoboticsRoiPortfolioViewModel
                 $pending++;
             }
 
-            $capexMinor = (int) $proposal->capex_minor;
+            $capexMinor = (int) $proposal->investment_minor;
             $npvMinor = (int) $proposal->npv_minor;
             $isNegative = $npvMinor < 0;
             if ($isNegative) {
@@ -51,6 +51,9 @@ final readonly class RoboticsRoiPortfolioViewModel
             $totalCapexMinor += $capexMinor;
             $totalNpvMinor += $npvMinor;
 
+            $discountDen = max(1, (int) ($proposal->discount_rate_den ?: 1));
+            $discountBps = intdiv(((int) $proposal->discount_rate_num) * 10000, $discountDen);
+
             $rows[] = [
                 'id' => (int) $proposal->id,
                 'proposal_code' => (string) $proposal->proposal_code,
@@ -59,8 +62,8 @@ final readonly class RoboticsRoiPortfolioViewModel
                 'capex_idr' => self::formatMinorIdr($capexMinor),
                 'npv_idr' => self::formatMinorIdr($npvMinor),
                 'is_negative_npv' => $isNegative,
-                'irr_bps' => (int) $proposal->irr_bps,
-                'payback_months' => (int) $proposal->payback_months,
+                'irr_bps' => $discountBps,
+                'payback_months' => (int) ($proposal->payback_months ?? 0),
                 'requires_justification' => $isNegative && trim((string) ($proposal->justification ?? '')) === '',
             ];
         }

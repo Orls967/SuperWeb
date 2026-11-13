@@ -103,23 +103,23 @@ final readonly class RoboticsT1SimulationReportService
         if ($proposals->isNotEmpty()) {
             /** @var RoboticsRoiProposal $firstProp */
             $firstProp = $proposals->first();
-            $cashflows = is_array($firstProp->annual_cashflows_minor) ? $firstProp->annual_cashflows_minor : [400_000_000, 400_000_000, 400_000_000];
+            $cashflows = is_array($firstProp->cash_flows_minor) ? $firstProp->cash_flows_minor : [400_000_000, 400_000_000, 400_000_000];
             $gridResult = $this->sensitivityBuilder->buildGrid(
-                (int) $firstProp->capex_minor,
+                (int) $firstProp->investment_minor,
                 array_map('intval', $cashflows),
-                new RationalRate(1, 10),
+                new RationalRate(max(1, (int) ($firstProp->discount_rate_num ?: 1)), max(1, (int) ($firstProp->discount_rate_den ?: 10))),
             );
             $sensitivitySample = $gridResult['cells'] ?? [];
         }
 
-        $waves = RobotWave::query()->where('warehouse_id', $warehouseId)->get();
+        $waves = RobotWave::query()->where('warehouse_id', $warehouseId)->where('status', '!=', 'superseded')->get();
         $totalOrders = 0;
         $maxUtilPct = 0;
         foreach ($waves as $w) {
-            $orders = is_array($w->order_ids) ? $w->order_ids : [];
+            $orders = is_array($w->order_items) ? $w->order_items : [];
             $totalOrders += count($orders);
             if ((int) $w->capacity > 0) {
-                $util = intdiv((int) $w->total_load * 100, (int) $w->capacity);
+                $util = intdiv((int) $w->allocated_load * 100, (int) $w->capacity);
                 if ($util > $maxUtilPct) {
                     $maxUtilPct = $util;
                 }
@@ -130,7 +130,7 @@ final readonly class RoboticsT1SimulationReportService
         $avgTargetBattery = $charges->isEmpty() ? 0 : intdiv((int) $charges->sum('target_battery_pct'), $charges->count());
 
         $totalIncidents = RobotSafetyIncident::query()->where('warehouse_id', $warehouseId)->count();
-        $openIncidents = RobotSafetyIncident::query()->where('warehouse_id', $warehouseId)->where('status', 'open')->count();
+        $openIncidents = RobotSafetyIncident::query()->where('warehouse_id', $warehouseId)->where('status', 'reported')->count();
 
         $audit = $this->twoSourceAudit->runAudit();
 

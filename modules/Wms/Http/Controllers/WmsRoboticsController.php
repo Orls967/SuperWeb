@@ -14,7 +14,10 @@ use Modules\Wms\Application\Actions\TriggerRobotFallbackAction;
 use Modules\Wms\Application\Services\RoboticsFleetOrchestratorService;
 use Modules\Wms\Http\Requests\DispatchRobotMissionRequest;
 use Modules\Wms\Http\Requests\EnforceZoneInterlockRequest;
+use Modules\Wms\Http\ViewModels\RoboticsMissionBoardViewModel;
+use Modules\Wms\Http\ViewModels\RoboticsRoiPortfolioViewModel;
 use Modules\Wms\Models\RoboticsPlan;
+use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotUnit;
 use Modules\Wms\Models\RobotZoneLock;
@@ -26,24 +29,35 @@ class WmsRoboticsController extends Controller
 {
     public function fleet(RoboticsFleetOrchestratorService $orchestrator): View
     {
+        $firstWh = (string) (RobotUnit::query()->value('warehouse_id') ?? '');
+
         return view('wms::robotics.fleet', [
             'summary' => $orchestrator->fleetSummary(),
+            'dispatchPreview' => $firstWh !== '' ? $orchestrator->previewInterlockAwareDispatch($firstWh) : ['assignments' => [], 'unassigned_mission_ids' => [], 'total_cost' => 0],
             'units' => RobotUnit::query()->orderBy('robot_code')->limit(50)->get(),
             'locks' => RobotZoneLock::query()->where('lock_status', 'active')->orderBy('zone_code')->limit(50)->get(),
         ]);
     }
 
-    public function missions(): View
+    public function missions(RoboticsMissionBoardViewModel $boardVm): View
     {
+        $missions = RobotMission::query()->latest('id')->limit(50)->get();
+
         return view('wms::robotics.missions', [
-            'missions' => RobotMission::query()->latest('id')->limit(50)->get(),
+            'missions' => $missions,
+            'board' => $boardVm->present($missions),
         ]);
     }
 
-    public function roi(): View
+    public function roi(RoboticsRoiPortfolioViewModel $portfolioVm): View
     {
+        $plans = RoboticsPlan::query()->latest('id')->limit(30)->get();
+        $proposals = RoboticsRoiProposal::query()->latest('id')->limit(30)->get();
+
         return view('wms::robotics.roi', [
-            'plans' => RoboticsPlan::query()->latest('id')->limit(30)->get(),
+            'plans' => $plans,
+            'proposals' => $proposals,
+            'portfolio' => $portfolioVm->present($proposals),
         ]);
     }
 

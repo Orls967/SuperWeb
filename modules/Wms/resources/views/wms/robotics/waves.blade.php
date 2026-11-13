@@ -7,7 +7,14 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
             <x-ds.card title="Daftar Wave per Carrier &amp; Cutoff">
                 <div class="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm">
-                    <x-ds.badge variant="neutral">Algoritma: First-Fit Decreasing (J2)</x-ds.badge>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <x-ds.badge variant="neutral">Algoritma: First-Fit Decreasing (J2)</x-ds.badge>
+                        @if(isset($reconciliation))
+                            <x-ds.badge :variant="($reconciliation['conserved'] ?? true) ? 'success' : 'warning'">
+                                Konservasi Order: {{ ($reconciliation['conserved'] ?? true) ? 'UTUH' : 'SELISIH' }}
+                            </x-ds.badge>
+                        @endif
+                    </div>
                     <a href="{{ route('wms.robotics.export', ['entity' => 'waves']) }}" class="text-indigo-600 underline">Ekspor CSV Wave</a>
                 </div>
                 <div class="space-y-2">

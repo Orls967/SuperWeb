@@ -5,6 +5,22 @@
 
     <div class="py-6">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+            <x-ds.card title="Ringkasan Papan Misi &amp; Status State Machine">
+                <div class="grid grid-cols-3 gap-3 text-sm tabular-nums mb-4">
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Total Misi</p>
+                        <p class="text-lg font-semibold text-gray-900">{{ number_format((int) ($board['total'] ?? $missions->count())) }}</p>
+                    </div>
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Sedang Berjalan</p>
+                        <p class="text-lg font-semibold text-gray-900">{{ number_format((int) ($board['active_count'] ?? 0)) }}</p>
+                    </div>
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Fallback Manual</p>
+                        <p class="text-lg font-semibold text-gray-900">{{ number_format((int) ($board['fallback_count'] ?? 0)) }}</p>
+                    </div>
+                </div>
+            </x-ds.card>
             <x-ds.card title="Antrean &amp; Eksekusi Misi Robot">
                 <div class="space-y-2">
                     @forelse($missions as $mission)

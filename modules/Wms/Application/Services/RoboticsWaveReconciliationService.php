@@ -30,7 +30,8 @@ final readonly class RoboticsWaveReconciliationService
     {
         $waves = RobotWave::query()
             ->where('warehouse_id', $warehouseId)
-            ->where('batch_code', $batchCode)
+            ->where('wave_code', 'like', "{$batchCode}-%")
+            ->where('status', '!=', 'superseded')
             ->orderBy('id')
             ->get();
 
@@ -39,9 +40,12 @@ final readonly class RoboticsWaveReconciliationService
         $actualOrderIds = [];
 
         foreach ($waves as $wave) {
-            $orderIds = is_array($wave->order_ids) ? $wave->order_ids : [];
-            foreach ($orderIds as $rawId) {
-                $orderId = (string) $rawId;
+            $orderItems = is_array($wave->order_items) ? $wave->order_items : [];
+            foreach ($orderItems as $rawItem) {
+                $orderId = is_array($rawItem) ? (string) ($rawItem['id'] ?? '') : (string) $rawItem;
+                if ($orderId === '') {
+                    continue;
+                }
                 $actualOrderIds[] = $orderId;
                 if (isset($seen[$orderId])) {
                     $duplicates[] = $orderId;

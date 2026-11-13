@@ -29,6 +29,28 @@
                     </div>
                 </div>
             </x-ds.card>
+            @if(!empty($handover))
+            <x-ds.card title="Ringkasan Serah-Terima Shift Operator">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm tabular-nums">
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Misi Aktif</p>
+                        <p class="font-semibold text-gray-900">{{ number_format((int) ($handover['active_missions_count'] ?? 0)) }}</p>
+                    </div>
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Fallback Manual</p>
+                        <p class="font-semibold text-gray-900">{{ number_format((int) ($handover['fallback_missions_count'] ?? 0)) }}</p>
+                    </div>
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Insiden Terbuka</p>
+                        <p class="font-semibold text-gray-900">{{ number_format((int) ($handover['open_incidents_count'] ?? 0)) }}</p>
+                    </div>
+                    <div class="p-3 rounded border border-gray-200 bg-white">
+                        <p class="text-xs text-gray-500">Audit Dua Sumber</p>
+                        <p class="font-semibold text-gray-900">{{ ($handover['audit_passed'] ?? true) ? 'PASS' : 'FAIL' }}</p>
+                    </div>
+                </div>
+            </x-ds.card>
+            @endif
         </div>
     </div>
 </x-app-layout>
