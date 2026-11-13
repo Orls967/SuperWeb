@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver;
 use Modules\Wms\Domain\Algorithms\AutomationNpvCalculator;
 use Modules\Wms\Domain\Algorithms\RobotEnergyConsumptionEstimator;
+use Modules\Wms\Domain\Algorithms\RobotFleetDispatchOptimizer;
 use Modules\Wms\Domain\Algorithms\TrafficDeadlockDetector;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
 use Modules\Wms\Domain\Algorithms\ZoneReservationScheduler;
@@ -170,4 +171,18 @@ test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): v
     expect($blockedRes['allowed'])->toBeFalse()->and($blockedRes['reason_code'])->toBe('STAFF_ZONE_BLOCKED');
     $clearRes = $interlock->evaluateEntry('Z-OK', 2, false, null, null, new IntervalWindow(5, 10), [['mission_id' => 9, 'start_min' => 4, 'end_min' => 8, 'robot_id' => 1]], 90);
     expect($clearRes['allowed'])->toBeTrue()->and($clearRes['recommended_speed_mm_s'])->toBe(RoboticsZoneInterlockEvaluator::MAX_COEXISTENCE_SPEED_MM_S);
+
+    $optimizer = new RobotFleetDispatchOptimizer(new HungarianSolver(), $estimator, $interlock);
+    $optPlan = $optimizer->optimize(
+        [
+            ['mission_id' => 1, 'zone_code' => 'Z-OK', 'priority' => 90, 'distance_m' => 50, 'payload_kg' => 5, 'start_min' => 0, 'duration_min' => 4, 'staff_blocked' => false, 'capacity_k' => 1, 'active_reservations' => []],
+            ['mission_id' => 2, 'zone_code' => 'Z-BLK', 'priority' => 50, 'distance_m' => 50, 'payload_kg' => 5, 'start_min' => 0, 'duration_min' => 4, 'staff_blocked' => true, 'capacity_k' => 1, 'active_reservations' => []],
+        ],
+        [
+            ['robot_id' => 10, 'battery_pct' => 90, 'position_x' => 1, 'position_y' => 1, 'is_online' => true],
+        ],
+    );
+    expect(count($optPlan['assignments']))->toBe(1)
+        ->and($optPlan['assignments'][0]['mission_id'])->toBe(1)
+        ->and($optPlan['unassigned_mission_ids'])->toBe([2]);
 });
