@@ -12,6 +12,7 @@ use Modules\Banking\Application\Actions\SetPinAction;
 use Modules\Banking\Application\Actions\TopUpAction;
 use Modules\Banking\database\seeders\BankingSeeder;
 use Modules\Contract\database\seeders\ContractSeeder;
+use Modules\ControlTower\database\seeders\ControlTowerSeeder;
 use Modules\Core\database\seeders\PlatformSeeder;
 use Modules\Core\database\seeders\RbacSeeder;
 use Modules\Crypto\database\seeders\CryptoSeeder;
@@ -151,6 +152,7 @@ class DatabaseSeeder extends Seeder
             ManufacturingSeeder::class,
             DistributionSeeder::class,
             WmsSeeder::class,
+            ControlTowerSeeder::class,
             RbacSeeder::class,
             DesignSystemSeeder::class,
         ]);
