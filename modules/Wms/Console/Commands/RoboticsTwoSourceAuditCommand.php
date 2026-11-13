@@ -35,4 +35,3 @@ final class RoboticsTwoSourceAuditCommand extends Command
         return self::SUCCESS;
     }
 }
-

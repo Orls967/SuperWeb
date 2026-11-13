@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
 use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
+use Modules\Wms\Domain\Models\Task as WarehouseTask;
 use Modules\Wms\Domain\StateMachines\RobotMissionStateMachine;
 use Modules\Wms\Models\Robot;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotMissionEvent;
-use Modules\Wms\Domain\Models\Task as WarehouseTask;
 use Modules\Wms\Models\TrafficZone;
 use Modules\Wms\Models\ZoneReservation;
 

@@ -76,4 +76,3 @@ final readonly class RobotTelemetryIngestor
         });
     }
 }
-

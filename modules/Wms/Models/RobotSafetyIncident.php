@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Wms\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Wms\Domain\Models\Warehouse;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use LogicException;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Log insiden keselamatan simulasi yang menjaga integritas fakta (X279-4, PR5).

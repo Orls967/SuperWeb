@@ -8,16 +8,16 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Modules\Wms\Domain\Algorithms\AutomationNpvCalculator;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
+use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Domain\StateMachines\RobotMissionStateMachine;
 use Modules\Wms\Models\Robot;
+use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotMissionEvent;
 use Modules\Wms\Models\RobotSafetyIncident;
-use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotUnit;
 use Modules\Wms\Models\RobotWave;
 use Modules\Wms\Models\TrafficZone;
-use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Models\ZoneReservation;
 
 /**
@@ -171,7 +171,7 @@ final class RoboticsT1Seeder extends Seeder
                 'cutoff' => $c['cutoff'],
             ];
         }
-        $packer = new WaveBinPacker();
+        $packer = new WaveBinPacker;
         $packed = $packer->pack(70, $orders);
         foreach ($packed['waves'] as $w) {
             RobotWave::query()->updateOrCreate(
@@ -191,7 +191,7 @@ final class RoboticsT1Seeder extends Seeder
         }
 
         // 5. 4 Proposal ROI (>= 1 NPV negatif, berlabel asumsi_simulasi)
-        $npvCalc = new AutomationNpvCalculator();
+        $npvCalc = new AutomationNpvCalculator;
         $proposals = [
             ['PROP-T1-01', 'Armada 10 AMR Zona A', 1_000_000_000, [400_000_000, 400_000_000, 400_000_000, 400_000_000], 1, 10],
             ['PROP-T1-02', 'Conveyor Sortasi 2 Line', 1_000_000_000, [400_000_000, 400_000_000, 400_000_000, 400_000_000], 1, 5],

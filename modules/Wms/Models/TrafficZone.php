@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Wms\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Wms\Domain\Models\Warehouse;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Zona lalu lintas robot gudang dengan kapasitas k dan blokir staf (wms_traffic_zones, Fase 279).

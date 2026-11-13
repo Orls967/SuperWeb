@@ -9,9 +9,9 @@ use Modules\Core\Contracts\ClockInterface;
 use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Logistics\Contracts\CarrierCutoffProvider;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
+use Modules\Wms\Domain\Models\Warehouse;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotWave;
-use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Action perencanaan wave FFD (J2) per (carrier, cutoff) dan penyusunan ulang saat misi fallback manual (D279-5, D97).

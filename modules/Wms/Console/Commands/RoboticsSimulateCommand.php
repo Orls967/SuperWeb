@@ -60,4 +60,3 @@ final class RoboticsSimulateCommand extends Command
         return self::SUCCESS;
     }
 }
-

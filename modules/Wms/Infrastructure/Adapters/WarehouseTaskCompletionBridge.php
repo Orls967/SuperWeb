@@ -6,8 +6,8 @@ namespace Modules\Wms\Infrastructure\Adapters;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Contracts\ClockInterface;
-use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Domain\Models\Task as WarehouseTask;
+use Modules\Wms\Models\RobotMission;
 
 /**
  * Jembatan internal modul Wms antara RobotMission (Fase 279) dan WarehouseTask (Fase 41).
@@ -42,7 +42,7 @@ final readonly class WarehouseTaskCompletionBridge
 
     public function createManualFallbackTask(RobotMission $mission, int $operatorUserId, string $reason): WarehouseTask
     {
-        return DB::transaction(function () use ($mission, $operatorUserId, $reason): WarehouseTask {
+        return DB::transaction(function () use ($mission, $operatorUserId): WarehouseTask {
             if ($mission->warehouse_task_id !== null) {
                 /** @var WarehouseTask|null $existing */
                 $existing = WarehouseTask::query()->lockForUpdate()->find($mission->warehouse_task_id);

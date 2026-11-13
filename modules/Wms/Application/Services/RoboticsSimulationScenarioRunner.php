@@ -87,4 +87,3 @@ final readonly class RoboticsSimulationScenarioRunner
         ];
     }
 }
-

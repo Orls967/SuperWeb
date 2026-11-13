@@ -18,9 +18,6 @@ final class ZoneCongestionHeatmapCalculator
     /**
      * @param  int  $capacityK  Kapasitas zona >= 1
      * @param  list<array{start: int, end: int}>  $reservations
-     * @param  int  $horizonStartMin
-     * @param  int  $horizonEndMin
-     * @param  int  $bucketSizeMin
      * @return array{
      *     peak_active: int,
      *     peak_utilization_permil: int,

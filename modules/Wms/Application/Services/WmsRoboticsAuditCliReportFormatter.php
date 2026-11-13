@@ -27,6 +27,7 @@ final readonly class WmsRoboticsAuditCliReportFormatter
         foreach ($auditResult['issues'] as $idx => $issue) {
             if (is_string($issue)) {
                 $lines[] = sprintf('  [%d] %s', $idx + 1, $issue);
+
                 continue;
             }
             $lines[] = sprintf(

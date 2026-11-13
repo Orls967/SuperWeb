@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Intercompany\Contracts\SubledgerTotalProvider;
 use Modules\Shared\Application\MenuRegistry;
-use Modules\Wms\Http\Policies\RobotMissionPolicy;
-use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Application\Services\StockReservationService;
 use Modules\Wms\Application\Services\WmsService;
 use Modules\Wms\Console\Commands\AuditWmsCommand;
@@ -34,11 +32,13 @@ use Modules\Wms\Console\Commands\UtilizationSnapshotCommand;
 use Modules\Wms\Contracts\SimulatedDeviceAdapterInterface;
 use Modules\Wms\Contracts\StockAvailabilityReader;
 use Modules\Wms\Contracts\WarehouseValuationReader;
+use Modules\Wms\Http\Policies\RobotMissionPolicy;
 use Modules\Wms\Infrastructure\Adapters\SimulatedAmrDeviceAdapter;
 use Modules\Wms\Infrastructure\Adapters\WarehouseValuationReaderAdapter;
 use Modules\Wms\Infrastructure\Adapters\WmsSubledgerTotalAdapter;
 use Modules\Wms\Infrastructure\Api\WarehouseResourceProvider;
 use Modules\Wms\Infrastructure\Edi\WmsEdiDesadvHandler;
+use Modules\Wms\Models\RobotMission;
 
 class WmsServiceProvider extends ServiceProvider
 {

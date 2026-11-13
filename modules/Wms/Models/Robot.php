@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Wms\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Wms\Domain\Models\Warehouse;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Wms\Domain\Models\Warehouse;
 
 /**
  * Registri armada robot gudang simulasi (wms_robots, Fase 279).

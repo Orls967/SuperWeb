@@ -64,6 +64,7 @@ final readonly class RobotFleetDispatchOptimizer
             for ($j = 0; $j < $dim; $j++) {
                 if ($i >= $nMissions || $j >= $nRobots) {
                     $row[] = self::DUMMY_PAD_COST;
+
                     continue;
                 }
 
@@ -121,12 +122,14 @@ final readonly class RobotFleetDispatchOptimizer
 
             if ($robotIdx < 0 || $robotIdx >= $nRobots) {
                 $unassigned[] = (int) $m['mission_id'];
+
                 continue;
             }
 
             $meta = $feasibilityGrid[$i][$robotIdx];
             if (! $meta['interlock_allowed'] || ! $meta['energy_feasible']) {
                 $unassigned[] = (int) $m['mission_id'];
+
                 continue;
             }
 

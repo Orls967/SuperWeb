@@ -19,7 +19,7 @@ use Modules\Wms\Domain\ValueObjects\IntervalWindow;
 
 test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalculator, Hungarian, dan TrafficDeadlockDetector lulus persis', function (): void {
     // J1: ZoneReservationScheduler
-    $j1 = new ZoneReservationScheduler();
+    $j1 = new ZoneReservationScheduler;
     $resBase = [
         ['start' => 0, 'end' => 5],
         ['start' => 7, 'end' => 10],
@@ -55,7 +55,7 @@ test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalc
         ->toThrow(InvalidArgumentException::class, ZoneReservationScheduler::ERROR_INVALID_DURATION);
 
     // J2: WaveBinPacker
-    $j2 = new WaveBinPacker();
+    $j2 = new WaveBinPacker;
     $orders1 = [
         ['id' => 'o1', 'size' => 40, 'carrier' => 'C1', 'cutoff' => 100],
         ['id' => 'o2', 'size' => 35, 'carrier' => 'C1', 'cutoff' => 100],
@@ -87,7 +87,7 @@ test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalc
     expect(count($w4))->toBe(2);
 
     // J3: AutomationNpvCalculator
-    $j3 = new AutomationNpvCalculator();
+    $j3 = new AutomationNpvCalculator;
     $cf = [400_000_000, 400_000_000, 400_000_000, 400_000_000];
 
     $n1 = $j3->evaluate(1_000_000_000, $cf, 1, 10);
@@ -108,13 +108,13 @@ test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalc
         ->toThrow(InvalidArgumentException::class, AutomationNpvCalculator::ERROR_INVALID_RATE);
 
     // Hungarian Shared
-    $hungarian = new HungarianSolver();
+    $hungarian = new HungarianSolver;
     $hRes = $hungarian->solve([[4, 1, 3], [2, 0, 5], [3, 2, 2]]);
     expect($hRes->assignment)->toBe([1, 0, 2])
         ->and($hRes->totalCost)->toBe(5);
 
     // TrafficDeadlockDetector
-    $deadlock = new TrafficDeadlockDetector();
+    $deadlock = new TrafficDeadlockDetector;
     $cycle = $deadlock->detectAndResolve(
         ['M-01' => 'M-02', 'M-02' => 'M-03', 'M-03' => 'M-01'],
         ['M-01' => 90, 'M-02' => 20, 'M-03' => 50],
@@ -124,27 +124,27 @@ test('vektor J1 ZoneReservationScheduler, J2 WaveBinPacker, J3 AutomationNpvCalc
 });
 
 test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): void {
-    $j1 = new ZoneReservationScheduler();
+    $j1 = new ZoneReservationScheduler;
     $c1 = $j1->schedule(1, [], [], 2, 0)['certificate'];
     $tampered1 = new ZoneReservationCertificate($c1->canonicalInput, $c1->steps, ['start' => 99, 'end' => 101], $c1->sha256);
     expect(fn () => $tampered1->verifyOrFail())->toThrow(InvalidArgumentException::class);
 
-    $j2 = new WaveBinPacker();
+    $j2 = new WaveBinPacker;
     $c2 = $j2->pack(70, [['id' => 'o1', 'size' => 10, 'carrier' => 'C1', 'cutoff' => 100]])['certificate'];
     $tampered2 = new WaveBinPackerCertificate($c2->canonicalInput, $c2->steps, ['waves' => []], $c2->sha256);
     expect(fn () => $tampered2->verifyOrFail())->toThrow(InvalidArgumentException::class);
 
-    $j3 = new AutomationNpvCalculator();
+    $j3 = new AutomationNpvCalculator;
     $c3 = $j3->evaluate(1_000_000_000, [400_000_000, 400_000_000, 400_000_000, 400_000_000], 1, 10)['certificate'];
     $tampered3 = new AutomationNpvCertificate($c3->canonicalInput, $c3->steps, ['npv' => 0], $c3->sha256);
     expect(fn () => $tampered3->verifyOrFail())->toThrow(InvalidArgumentException::class);
 
-    $dl = new TrafficDeadlockDetector();
+    $dl = new TrafficDeadlockDetector;
     $c4 = $dl->detectAndResolve(['M-01' => 'M-02', 'M-02' => 'M-01'], ['M-01' => 10, 'M-02' => 20])['certificate'];
     $tampered4 = new TrafficDeadlockCertificate($c4->canonicalInput, $c4->steps, ['has_deadlock' => false, 'cycle_nodes' => [], 'victim_node' => null], $c4->sha256);
     expect(fn () => $tampered4->verifyOrFail())->toThrow(InvalidArgumentException::class);
 
-    $estimator = new RobotEnergyConsumptionEstimator();
+    $estimator = new RobotEnergyConsumptionEstimator;
     $energyCert = $estimator->estimateBatch(101, 80, [
         ['mission_id' => 1, 'distance_m' => 100, 'payload_kg' => 10],
         ['mission_id' => 2, 'distance_m' => 250, 'payload_kg' => 25],
@@ -166,13 +166,13 @@ test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): v
     );
     expect(fn () => $tamperedEnergy->verify())->toThrow(InvalidArgumentException::class);
 
-    $interlock = new RoboticsZoneInterlockEvaluator();
+    $interlock = new RoboticsZoneInterlockEvaluator;
     $blockedRes = $interlock->evaluateEntry('Z-BLK', 1, true, 0, 30, new IntervalWindow(5, 10), [], 90);
     expect($blockedRes['allowed'])->toBeFalse()->and($blockedRes['reason_code'])->toBe('STAFF_ZONE_BLOCKED');
     $clearRes = $interlock->evaluateEntry('Z-OK', 2, false, null, null, new IntervalWindow(5, 10), [['mission_id' => 9, 'start_min' => 4, 'end_min' => 8, 'robot_id' => 1]], 90);
     expect($clearRes['allowed'])->toBeTrue()->and($clearRes['recommended_speed_mm_s'])->toBe(RoboticsZoneInterlockEvaluator::MAX_COEXISTENCE_SPEED_MM_S);
 
-    $optimizer = new RobotFleetDispatchOptimizer(new HungarianSolver(), $estimator, $interlock);
+    $optimizer = new RobotFleetDispatchOptimizer(new HungarianSolver, $estimator, $interlock);
     $optPlan = $optimizer->optimize(
         [
             ['mission_id' => 1, 'zone_code' => 'Z-OK', 'priority' => 90, 'distance_m' => 50, 'payload_kg' => 5, 'start_min' => 0, 'duration_min' => 4, 'staff_blocked' => false, 'capacity_k' => 1, 'active_reservations' => []],

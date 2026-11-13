@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Modules\Wms\Application\Services;
 
 use Modules\Wms\Models\Robot;
+use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotMission;
 use Modules\Wms\Models\RobotSafetyIncident;
-use Modules\Wms\Models\RoboticsRoiProposal;
 use Modules\Wms\Models\RobotWave;
 use Modules\Wms\Models\ZoneReservation;
 

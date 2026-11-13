@@ -135,4 +135,3 @@ final class RobotEnergyConsumptionEstimator
         return intdiv($usableMwh - self::ACTUATOR_OVERHEAD_MWH, $mwhPerMeter);
     }
 }
-

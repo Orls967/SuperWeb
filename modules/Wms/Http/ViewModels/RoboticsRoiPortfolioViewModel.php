@@ -89,4 +89,3 @@ final readonly class RoboticsRoiPortfolioViewModel
         return sprintf('%sRp %s,%02d', $sign, number_format($wholeIdr, 0, ',', '.'), $cents);
     }
 }
-

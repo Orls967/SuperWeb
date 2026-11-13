@@ -102,4 +102,3 @@ final readonly class RobotEnergyCertificate
         return hash('sha256', $payload);
     }
 }
-
