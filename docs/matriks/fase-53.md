@@ -3,7 +3,7 @@
 - **Status audit:** 🔵 DIIMPLEMENTASIKAN (W8-P6-fix, 2026-11-14)
 - **Modul utama:** `modules/ControlTower/` (prefix tabel `sct_`, `PR non-ledger` sesuai `docs/decisions/ADR-053-control-tower-non-ledger.md`)
 - **Kontrak lintas modul:** `Manufacturing` (`CapacityAndMaterialProvider`), `Distribution` (`OpenDemandProvider`), `Procurement` (`SupplierLeadTimeStatistics`), `Wms` (`StockAvailabilityReader` -> `ItemAvailabilityReader`), `Logistics` (`InTransitShipmentProvider`), `Core` (`ApprovalEngineInterface`, `OutboxBusInterface`, `TaskInboxService`, `EventSchemaRegistry`)
-- **Dokumen rujukan:** [design/fase-53.md](../design/fase-53.md) · [specs/fase-053-control-tower-implementasi.md](../specs/fase-053-control-tower-implementasi.md) · [algoritma/i1-i3-control-tower.md](../algoritma/i1-i3-control-tower.md) · [konsep/control-tower-dan-sop.md](../konsep/control-tower-dan-sop.md) · [gates/fase-53.md](../gates/fase-53.md)
+- **Dokumen rujukan:** [design/fase-53.md](../design/fase-53.md) · [algoritma/i1-i3-control-tower.md](../algoritma/i1-i3-control-tower.md) · [konsep/control-tower-dan-sop.md](../konsep/control-tower-dan-sop.md) · [gates/fase-53.md](../gates/fase-53.md)
 
 ---
 
