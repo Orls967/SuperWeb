@@ -8,14 +8,21 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\SopPublicationOrchestrator;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
 use Modules\ControlTower\Domain\Models\SopCycle;
+use Modules\ControlTower\Domain\StateMachines\SopCycleStateMachine;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
+use Modules\Core\Application\Actions\TaskInbox\TaskInboxService;
+use Modules\Core\Application\Services\EventSchemaRegistry;
+use Modules\Core\Contracts\ApprovalEngineInterface;
+use Modules\Core\Contracts\ClockInterface;
+use Modules\Core\Contracts\OutboxBusInterface;
 use Modules\Shared\Application\MenuRegistry;
 
 class ControlTowerServiceProvider extends ServiceProvider
@@ -32,6 +39,17 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:safety]
         //
         // [fix2:bindings:sop]
+        $this->app->singleton(SopCycleStateMachine::class);
+        $this->app->bind(SopPublicationOrchestrator::class, function ($app): SopPublicationOrchestrator {
+            return new SopPublicationOrchestrator(
+                stateMachine: $app->make(SopCycleStateMachine::class),
+                clock: $app->make(ClockInterface::class),
+                taskInbox: $app->make(TaskInboxService::class),
+                approvalEngine: $app->bound(ApprovalEngineInterface::class) ? $app->make(ApprovalEngineInterface::class) : null,
+                outboxBus: $app->bound(OutboxBusInterface::class) ? $app->make(OutboxBusInterface::class) : null,
+                schemaRegistry: $app->bound(EventSchemaRegistry::class) ? $app->make(EventSchemaRegistry::class) : null,
+            );
+        });
         //
         // [fix2:bindings:alerts]
         //
