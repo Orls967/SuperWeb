@@ -4,12 +4,32 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Wms\Http\Controllers\WmsController;
+use Modules\Wms\Http\Controllers\WmsOperationsController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procurement,auditor'])
     ->prefix('wms')
     ->name('wms.')
     ->group(function () {
         Route::get('/', [WmsController::class, 'index'])->name('index');
+        Route::get('/tasks', [WmsOperationsController::class, 'tasks'])->name('tasks');
+        Route::get('/valuation', [WmsOperationsController::class, 'valuation'])->name('valuation');
+        Route::get('/receiving', [WmsOperationsController::class, 'receiving'])->name('receiving');
+        Route::get('/quarantine', [WmsOperationsController::class, 'quarantine'])->name('quarantine');
+        Route::get('/utilization', [WmsOperationsController::class, 'utilization'])->name('utilization');
+        Route::get('/export/valuation.csv', [WmsOperationsController::class, 'exportValuationCsv'])->name('export.valuation');
+        Route::get('/export/bin-stocks.csv', [WmsOperationsController::class, 'exportBinStocksCsv'])->name('export.bin-stocks');
+
+        Route::middleware('role:admin,hub_operator')->group(function () {
+            Route::post('/operations/putaway', [WmsOperationsController::class, 'executePutaway'])->name('operations.putaway');
+            Route::post('/operations/wave-picking', [WmsOperationsController::class, 'allocateWavePicking'])->name('operations.wave-picking');
+            Route::post('/operations/receive-inbound', [WmsOperationsController::class, 'receiveInbound'])->name('operations.receive-inbound');
+            Route::post('/operations/quarantine/{binStockId}/release', [WmsOperationsController::class, 'releaseQuarantine'])->name('operations.quarantine.release');
+            Route::post('/operations/utilization/{warehouseId}/snapshot', [WmsOperationsController::class, 'captureUtilization'])->name('operations.utilization.snapshot');
+        });
+
+        Route::middleware('role:admin')->group(function () {
+            Route::post('/operations/revalue-cost', [WmsOperationsController::class, 'revalueCost'])->name('operations.revalue-cost');
+        });
         Route::middleware('role:admin,hub_operator')->group(function () {
             Route::post('/warehouses', [WmsController::class, 'storeWarehouse'])->name('warehouses.store');
             Route::post('/putaway', [WmsController::class, 'storePutaway'])->name('putaway');

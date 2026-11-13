@@ -7,6 +7,7 @@ namespace Modules\Wms\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Modules\Store\Contracts\StoreProductStockPort;
+use Modules\Wms\Contracts\WarehouseValuationReader;
 
 /**
  * 41.8 Audit: Σ stok bin = saldo `inv_` terkait, tidak ada stok bin negatif.
@@ -22,8 +23,12 @@ class AuditWmsCommand extends Command
         $hasDiscrepancy = false;
         $rows = [];
 
-        // 1. Tidak ada stok bin negatif.
-        $negative = DB::table('wms_bin_stocks')->where('qty', '<', 0)->count();
+        // 1. Tidak ada stok bin negatif (qty maupun qty_base).
+        $negative = DB::table('wms_bin_stocks')
+            ->where(function ($q): void {
+                $q->where('qty', '<', 0)->orWhere('qty_base', '<', 0);
+            })
+            ->count();
         if ($negative > 0) {
             $hasDiscrepancy = true;
             $rows[] = ['bin_stocks.negatif', '0', (string) $negative, (string) $negative, 'SELISIH'];
@@ -65,6 +70,21 @@ class AuditWmsCommand extends Command
         if ($orphanLines > 0) {
             $hasDiscrepancy = true;
             $rows[] = ['transfer.diterima', '0 baris terbuka', $orphanLines.' baris', (string) $orphanLines, 'SELISIH'];
+        }
+
+        // 4. Rekonsiliasi nilai subledger persediaan vs saldo buku besar wms:inventory:*:IDR (T-10).
+        $valuations = app(WarehouseValuationReader::class)->getAllWarehousesValuationIdr();
+        foreach ($valuations as $val) {
+            if ($val['discrepancy_idr'] !== 0) {
+                $hasDiscrepancy = true;
+                $rows[] = [
+                    'ledger:'.$val['warehouse_code'],
+                    (string) $val['subledger_value_idr'],
+                    (string) $val['ledger_balance_idr'],
+                    (string) $val['discrepancy_idr'],
+                    'SELISIH',
+                ];
+            }
         }
 
         $this->table(['Sumber', 'Subledger', 'Saldo inv_', 'Selisih', 'Status'],

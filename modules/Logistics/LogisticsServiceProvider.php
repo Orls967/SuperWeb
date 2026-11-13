@@ -28,15 +28,19 @@ use Modules\Logistics\Console\Commands\PayCarriersCommand;
 use Modules\Logistics\Console\Commands\RetryWebhooksCommand;
 use Modules\Logistics\Console\Commands\SettleCodCommand;
 use Modules\Logistics\Console\Commands\VerifyCustodyCommand;
+use Modules\Logistics\Contracts\CarrierCutoffProvider;
 use Modules\Logistics\Contracts\CustodyVerifier;
 use Modules\Logistics\Contracts\DemurrageDetentionQuote;
 use Modules\Logistics\Contracts\EventShuttleFleetScheduler;
+use Modules\Logistics\Contracts\InTransitShipmentProvider;
 use Modules\Logistics\Contracts\LogisticsUsageReaderInterface;
 use Modules\Logistics\Contracts\ShipmentBooking;
 use Modules\Logistics\Contracts\VesselRegistry;
 use Modules\Logistics\Domain\Events\FleetServiceDue;
 use Modules\Logistics\Domain\Events\ShipmentDelivered;
 use Modules\Logistics\Infrastructure\Access\LogisticsVendorExposureProvider;
+use Modules\Logistics\Infrastructure\Adapters\CarrierCutoffProviderAdapter;
+use Modules\Logistics\Infrastructure\Adapters\InTransitShipmentProviderAdapter;
 use Modules\Logistics\Infrastructure\Api\ShipmentResourceProvider;
 use Modules\Logistics\Infrastructure\Retention\LogisticsTrackingEventRetentionProvider;
 use Modules\Logistics\Infrastructure\Tenancy\LogisticsTenantScopedModelProvider;
@@ -48,6 +52,8 @@ class LogisticsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ShipmentBooking::class, BookShipmentForOrderAction::class);
+        $this->app->bind(InTransitShipmentProvider::class, InTransitShipmentProviderAdapter::class);
+        $this->app->bind(CarrierCutoffProvider::class, CarrierCutoffProviderAdapter::class);
         $this->app->bind(
             LogisticsUsageReaderInterface::class,
             LogisticsUsageReaderService::class

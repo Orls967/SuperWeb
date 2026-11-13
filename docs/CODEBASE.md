@@ -542,8 +542,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 62 | **Vending** | `vnd_` | 3 |
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
-| 65 | **Wms** | `wms_` | 2 |
-| | **Total: 65 Modul** | | **709 Migrasi** |
+| 65 | **Wms** | `wms_` | 4 |
+| | **Total: 65 Modul** | | **711 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -612,8 +612,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
-| **Wms** | 14 | `wms`, `wms/warehouses`, `wms/putaway` ... | web, auth, verified |
-| **Total** | **1778 Rute** | | |
+| **Wms** | 27 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
+| **Total** | **1791 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -998,7 +998,14 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `vnd:audit` | `manual` | Perform two-source verification of smart vending unit stocks, transactions, restock tasks, and auto-POs |
 | `wm:audit` | `manual` | Perform two-source verification of Robo-Advisor profiles, portfolio allocations, and emergency fund guardrails |
 | `wms:audit` | `manual` | Audit WMS: Σ stok bin vs saldo inv_ dan stok tidak negatif |
-| **Total: 380 Command** | **37 Terjadwal** | |
+| `wms:cycle-count-plan` | `manual` | Menjadwalkan cycle count berdasarkan algoritma H3 CycleCountScheduler |
+| `wms:post-opening-balance` | `manual` | Posting saldo awal persediaan gudang ke buku besar secara idempoten (D41-1) |
+| `wms:replenish` | `manual` | Membuat permintaan replenishment pick-face untuk bin di bawah ambang minimum |
+| `wms:reservation-sweep` | `manual` | Melepas reservasi stok gudang yang sudah melewati TTL |
+| `wms:revalue-cost` | `manual` | Melakukan revaluasi harga pokok standar produk & posting selisih ke ledger (D41-10/11) |
+| `wms:transit-sweep` | `manual` | Menyapu pengiriman in-transit yang melewati batas SLA |
+| `wms:utilization-snapshot` | `manual` | Mengambil snapshot utilisasi bin & deteksi dead stock gudang |
+| **Total: 387 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |
@@ -1042,6 +1049,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | `VendingAccounts` | 3 | `ven:clearing:IDR`, `ven:sales_revenue:IDR` ... |
 | **Venue** | `VenueAccounts` | 41 | `artist:payable:default:IDR`, `artist:payable:BC-ART-001:IDR` ... |
 | **Wealth** | `WealthAccounts` | 5 | `treasury:pool:IDR`, `wm:management_fee:IDR` ... |
-| **Total: 39 Registry** | | **1486 Akun** | |
+| **Wms** | `WmsAccounts` | 12 | `wms:inventory:DEFAULT:IDR`, `wms:inventory_in_transit:IDR` ... |
+| **Total: 40 Registry** | | **1498 Akun** | |
 
 <!-- FACTUAL_INVENTORY:END -->
