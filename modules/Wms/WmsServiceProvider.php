@@ -15,9 +15,17 @@ use Modules\Wms\Console\Commands\PostOpeningBalanceCommand;
 use Modules\Wms\Console\Commands\ReplenishWmsCommand;
 use Modules\Wms\Console\Commands\ReservationSweepCommand;
 use Modules\Wms\Console\Commands\RevalueCostCommand;
+use Modules\Wms\Console\Commands\RoboticsAllocateCommand;
 use Modules\Wms\Console\Commands\RoboticsAuditCommand;
+use Modules\Wms\Console\Commands\RoboticsChargePlanCommand;
+use Modules\Wms\Console\Commands\RoboticsDeadlockScanCommand;
 use Modules\Wms\Console\Commands\RoboticsDispatchCommand;
+use Modules\Wms\Console\Commands\RoboticsReservationSweepCommand;
+use Modules\Wms\Console\Commands\RoboticsRoiCommand;
 use Modules\Wms\Console\Commands\RoboticsRoiPlanCommand;
+use Modules\Wms\Console\Commands\RoboticsSimulateCommand;
+use Modules\Wms\Console\Commands\RoboticsTwoSourceAuditCommand;
+use Modules\Wms\Console\Commands\RoboticsWavePlanCommand;
 use Modules\Wms\Console\Commands\TransitSweepCommand;
 use Modules\Wms\Console\Commands\UtilizationSnapshotCommand;
 use Modules\Wms\Contracts\StockAvailabilityReader;
@@ -65,6 +73,14 @@ class WmsServiceProvider extends ServiceProvider
                 RoboticsDispatchCommand::class,
                 RoboticsAuditCommand::class,
                 RoboticsRoiPlanCommand::class,
+                RoboticsAllocateCommand::class,
+                RoboticsReservationSweepCommand::class,
+                RoboticsWavePlanCommand::class,
+                RoboticsRoiCommand::class,
+                RoboticsSimulateCommand::class,
+                RoboticsTwoSourceAuditCommand::class,
+                RoboticsChargePlanCommand::class,
+                RoboticsDeadlockScanCommand::class,
             ]);
         }
 

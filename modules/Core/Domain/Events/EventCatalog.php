@@ -354,6 +354,47 @@ final class EventCatalog
                 'mtm_value_idr' => 'integer',
             ],
         ],
+        'robotics.mission.completed.v1' => [
+            'name' => 'robotics.mission.completed.v1',
+            'version' => 1,
+            'producer' => 'Wms',
+            'consumers' => ['Wms', 'ControlTower'],
+            'purpose' => 'Confirm linked warehouse task and update robot fleet telemetry when a robot mission completes',
+            'payload_schema' => [
+                'warehouse_id' => 'string',
+                'mission_id' => 'integer',
+                'mission_code' => 'string',
+                'from_status' => 'string',
+                'to_status' => 'string',
+            ],
+        ],
+        'robotics.mission.failed.v1' => [
+            'name' => 'robotics.mission.failed.v1',
+            'version' => 1,
+            'producer' => 'Wms',
+            'consumers' => ['Wms', 'ControlTower'],
+            'purpose' => 'Trigger zone reservation release compensation, manual fallback task, and wave replanning on robot failure',
+            'payload_schema' => [
+                'warehouse_id' => 'string',
+                'mission_id' => 'integer',
+                'mission_code' => 'string',
+                'from_status' => 'string',
+                'to_status' => 'string',
+            ],
+        ],
+        'robotics.wave.released.v1' => [
+            'name' => 'robotics.wave.released.v1',
+            'version' => 1,
+            'producer' => 'Wms',
+            'consumers' => ['Wms', 'Logistics'],
+            'purpose' => 'Publish FFD carrier-cutoff robotics wave plan with deterministic certificate hash',
+            'payload_schema' => [
+                'warehouse_id' => 'string',
+                'batch_code' => 'string',
+                'wave_count' => 'integer',
+                'certificate_hash' => 'string',
+            ],
+        ],
     ];
 
     /**
