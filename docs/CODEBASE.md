@@ -612,8 +612,8 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Vending** | 11 | `vending`, `vending/dispense`, `vending/units/{unit}/dispense` ... | web, auth, role:admin,vending_operator,store_manager |
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
-| **Wms** | 42 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
-| **Total** | **1845 Rute** | | |
+| **Wms** | 48 | `wms`, `wms/picking`, `wms/docks` ... | web, auth, verified |
+| **Total** | **1851 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
