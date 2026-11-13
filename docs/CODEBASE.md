@@ -489,7 +489,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 9 | **Circular** | `cir_` | 1 |
 | 10 | **CloudKitchen** | `ckt_` | 3 |
 | 11 | **Contract** | `ctr_` | 4 |
-| 12 | **ControlTower** | `sct_` | 1 |
+| 12 | **ControlTower** | `sct_` | 2 |
 | 13 | **Core** | `core_`, `platform_`, `role_`, `sim_`, `user_` | 44 |
 | 14 | **Crypto** | `crypto_` | 4 |
 | 15 | **Distribution** | `dist_` | 5 |
@@ -543,7 +543,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | 63 | **Venue** | `ven_` | 12 |
 | 64 | **Wealth** | `wm_` | 2 |
 | 65 | **Wms** | `wms_` | 4 |
-| | **Total: 65 Modul** | | **711 Migrasi** |
+| | **Total: 65 Modul** | | **712 Migrasi** |
 
 ### 6.2 Ringkasan Rute per Modul & Middleware
 | Modul | Jumlah Rute | Sampel Rute & URI | Middleware Utama |
@@ -560,7 +560,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Circular** | 12 | `circular/listings`, `circular/market`, `circular/orders` ... | web, auth, verified |
 | **CloudKitchen** | 11 | `cloud-kitchen`, `cloud-kitchen/orders`, `cloud-kitchen/subscriptions/{subscription}/dispatch` ... | web, auth, role:admin,kitchen,outlet_manager |
 | **Contract** | 40 | `contracts/clauses`, `contracts/clauses/create`, `contracts/clauses/{clause}/edit` ... | web, auth, verified |
-| **ControlTower** | 6 | `control-tower`, `control-tower/promises`, `control-tower/autonomous` ... | web, auth, role:admin,logistics_admin,planner,auditor |
+| **ControlTower** | 16 | `control-tower`, `control-tower/promises`, `control-tower/sop` ... | web, auth, role:admin,logistics_admin,planner,auditor |
 | **Core** | 140 | `passport/{uuid}`, `notifications`, `notifications/recent` ... | web, auth, verified |
 | **Crypto** | 10 | `crypto`, `crypto/market/{symbol}`, `crypto/api/prices` ... | web, auth, role:admin,customer,treasury,auditor |
 | **Distribution** | 17 | `distribution`, `distribution/{distributor}`, `distribution/distributors` ... | web, auth, verified |
@@ -613,7 +613,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | **Venue** | 71 | `guest/tickets`, `guest/tickets/{ticket_uuid}`, `venue/zones` ... | web, auth, role:admin,customer |
 | **Wealth** | 13 | `wealth`, `wealth/cash-sweep`, `wealth/portfolio-rebalancing` ... | web, auth, role:admin,wealth_manager,treasury,investor,customer |
 | **Wms** | 27 | `wms`, `wms/tasks`, `wms/valuation` ... | web, auth, verified |
-| **Total** | **1791 Rute** | | |
+| **Total** | **1801 Rute** | | |
 
 ### 6.3 Artisan Commands & Jadwal Eksekusi
 | Command | Jadwal (`routes/console.php`) | Deskripsi |
@@ -967,6 +967,9 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `tlx:correlate-alarms` | `manual` | Korelasi alarm topologi jaringan dan supresi gangguan hilir Lini 14 |
 | `tlx:rate-cdr` | `manual` | Rating dan agregasi pemakaian CDR data perangkat IoT Lini 14 |
 | `tower:audit` | `manual` | Audit supply chain control tower (multi-echelon stock, ATP/CTP invariant, and forecasts) |
+| `tower:kpi-snapshot` | `manual` | Capture daily Supply Chain Control Tower KPI snapshot (OTIF, C2C, DOS) |
+| `tower:safety-stock-recalc` | `manual` | Recalculate ABC/XYZ classification and Dynamic Safety Stock policies |
+| `tower:twin-simulate` | `manual` | Run deterministic Control Tower What-If Digital Twin simulation |
 | `trade:audit` | `manual` | Audit cross-border trade operations, orders, duties, and hash-chain tracking |
 | `treasury:audit` | `manual` | Dual-source audit for Treasury: DB lokal vs Ledger & Subledger, Facility Limits vs Drawdowns, Cash Pool & Covenant invariants |
 | `treasury:covenant-test` | `manual` | Uji pemenuhan covenant Debt-to-Equity Ratio (DER) pada seluruh fasilitas kredit bank |
@@ -1005,7 +1008,7 @@ Aturan: ringkas (fakta, nama kelas, alasan 1 baris), jangan menyalin kode. Bila 
 | `wms:revalue-cost` | `manual` | Melakukan revaluasi harga pokok standar produk & posting selisih ke ledger (D41-10/11) |
 | `wms:transit-sweep` | `manual` | Menyapu pengiriman in-transit yang melewati batas SLA |
 | `wms:utilization-snapshot` | `manual` | Mengambil snapshot utilisasi bin & deteksi dead stock gudang |
-| **Total: 387 Command** | **37 Terjadwal** | |
+| **Total: 390 Command** | **37 Terjadwal** | |
 
 ### 6.4 Bagan Akun Standar (Ledger) per Modul
 | Modul | Kelas Registry | Jumlah Akun | Contoh Kode Akun |

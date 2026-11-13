@@ -9,6 +9,8 @@ use Modules\ControlTower\Domain\Models\DemandForecast;
 use Modules\ControlTower\Domain\Models\DisruptionAlert;
 use Modules\ControlTower\Domain\Models\EchelonStock;
 use Modules\ControlTower\Domain\Models\OrderPromise;
+use Modules\ControlTower\Domain\Models\SopCycle;
+use Modules\ControlTower\Domain\StateMachines\SopCycleStateMachine;
 
 class ControlTowerService
 {
@@ -150,7 +152,28 @@ class ControlTowerService
         // Invariant: ATP confirmed <= requested qty
         $invalidPromises = OrderPromise::whereColumn('atp_confirmed_qty', '>', 'requested_qty')->count();
 
-        $discrepancyCount = $invalidStock + $invalidPromises;
+        // Invariant: total ATP confirmed per item <= total physical supply (on_hand + in_transit)
+        $atpOverPromises = 0;
+        $promisedByItem = OrderPromise::query()
+            ->selectRaw('item_code, SUM(atp_confirmed_qty) as total_atp')
+            ->groupBy('item_code')
+            ->pluck('total_atp', 'item_code');
+        foreach ($promisedByItem as $itemCode => $totalAtp) {
+            $supply = (int) EchelonStock::query()
+                ->where('item_code', $itemCode)
+                ->selectRaw('COALESCE(SUM(on_hand_qty + in_transit_qty), 0) as total_supply')
+                ->value('total_supply');
+            if ((int) $totalAtp > $supply) {
+                $atpOverPromises++;
+            }
+        }
+
+        // Invariant: S&OP cycle states must belong to SopCycleStateMachine::states()
+        $invalidSopStates = SopCycle::query()
+            ->whereNotIn('status', SopCycleStateMachine::states())
+            ->count();
+
+        $discrepancyCount = $invalidStock + $invalidPromises + $atpOverPromises + $invalidSopStates;
 
         return [
             'status' => ($discrepancyCount === 0) ? 'OK' : 'DISCREPANCY',
