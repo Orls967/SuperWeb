@@ -7,12 +7,17 @@ use Modules\Wms\Http\Controllers\WmsController;
 use Modules\Wms\Http\Controllers\WmsOperationsController;
 use Modules\Wms\Http\Controllers\WmsRoboticsController;
 use Modules\Wms\Http\Controllers\WmsRoboticsOperationsController;
+use Modules\Wms\Http\Controllers\WmsWaveAndDockController;
 
 Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procurement,auditor'])
     ->prefix('wms')
     ->name('wms.')
     ->group(function () {
         Route::get('/', [WmsController::class, 'index'])->name('index');
+        Route::get('/picking', [WmsWaveAndDockController::class, 'waveIndex'])->name('picking');
+        Route::get('/docks', [WmsWaveAndDockController::class, 'dockIndex'])->name('docks');
+        Route::get('/picking/export.csv', [WmsWaveAndDockController::class, 'exportPickingCsv'])->name('picking.export');
+        Route::get('/docks/export.csv', [WmsWaveAndDockController::class, 'exportDocksCsv'])->name('docks.export');
         Route::get('/tasks', [WmsOperationsController::class, 'tasks'])->name('tasks');
         Route::get('/valuation', [WmsOperationsController::class, 'valuation'])->name('valuation');
         Route::get('/receiving', [WmsOperationsController::class, 'receiving'])->name('receiving');
@@ -62,6 +67,8 @@ Route::middleware(['web', 'auth', 'verified', 'role:admin,hub_operator,procureme
             Route::post('/cycle-counts/{count}/apply', [WmsController::class, 'applyCount'])->middleware('role:admin')->name('cycle-counts.apply');
             Route::post('/dock-appointments', [WmsController::class, 'storeDock'])->name('dock.store');
             Route::post('/replenishments/compute', [WmsController::class, 'computeReplenishment'])->name('replenishments.compute');
+            Route::post('/picking/allocate', [WmsWaveAndDockController::class, 'allocateWave'])->name('picking.allocate');
+            Route::post('/docks/cross-dock', [WmsWaveAndDockController::class, 'processCrossDock'])->name('docks.cross_dock');
         });
     });
 

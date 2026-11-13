@@ -1,68 +1,156 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">WMS Wave Picking &amp; Outbound Allocation</h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <h2 class="font-semibold text-xl text-slate-900 dark:text-slate-100 leading-tight">
+                    WMS Wave Picking &amp; Optimasi Rute
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Pengelompokan zona, jarak Manhattan terpendek, dan deteksi kemacetan pick-face.
+                </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <x-ds.button variant="secondary" size="sm" :href="route('wms.docks')">
+                    Manajemen Dermaga
+                </x-ds.button>
+                <x-ds.button variant="primary" size="sm" :href="route('wms.picking.export')">
+                    Ekspor CSV Picking
+                </x-ds.button>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900">Alokasi Outbound Wave Picking</h3>
-                        <p class="text-sm text-gray-500">Eksekusi wave release dengan strategi FIFO, FEFO lot expiry, atau pemisahan zona pemenuhan.</p>
-                    </div>
+            @if (session('success'))
+                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                    {{ session('success') }}
                 </div>
+            @endif
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                        <span class="text-xs font-semibold text-blue-600 uppercase">Total Wave</span>
-                        <p class="text-2xl font-black text-blue-900 mt-1">{{ count($waves ?? []) }}</p>
-                    </div>
-                    <div class="p-4 bg-amber-50 border border-amber-100 rounded-lg">
-                        <span class="text-xs font-semibold text-amber-600 uppercase">Tugas Picking Aktif</span>
-                        <p class="text-2xl font-black text-amber-900 mt-1">{{ count($tasks ?? []) }}</p>
-                    </div>
-                    <div class="p-4 bg-teal-50 border border-teal-100 rounded-lg">
-                        <span class="text-xs font-semibold text-teal-600 uppercase">Strategi Teratas</span>
-                        <p class="text-2xl font-black text-teal-900 mt-1">FEFO Expiry Guard</p>
-                    </div>
-                    <div class="p-4 bg-rose-50 border border-rose-100 rounded-lg">
-                        <span class="text-xs font-semibold text-rose-600 uppercase">SLA Fulfillment</span>
-                        <p class="text-2xl font-black text-rose-900 mt-1">99.4%</p>
-                    </div>
-                </div>
+            @php
+                $totalWaves = (int) ($analytics['total_waves'] ?? count($waves ?? []));
+                $openPickTasks = (int) ($analytics['open_pick_tasks'] ?? count($tasks ?? []));
+                $completionPermil = (int) ($analytics['picking_wave_completion_permil'] ?? 0);
+                $slottingPermil = (int) ($analytics['slotting_abc_accuracy_permil'] ?? 0);
+                $estimatedSeconds = (int) ($pickOptimization['estimated_total_seconds'] ?? 0);
+                $totalDistance = (int) ($pickOptimization['total_manhattan_distance'] ?? 0);
+                $congestionCount = (int) ($pickOptimization['congestion_count'] ?? 0);
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-medium text-gray-700">ID Wave</th>
-                                <th class="px-4 py-3 text-left font-medium text-gray-700">Strategi</th>
-                                <th class="px-4 py-3 text-center font-medium text-gray-700">Status</th>
-                                <th class="px-4 py-3 text-right font-medium text-gray-700">Waktu Rilis</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @forelse($waves ?? [] as $wave)
-                                <tr>
-                                    <td class="px-4 py-3 font-semibold text-gray-900">WAVE-{{ $wave->id }}</td>
-                                    <td class="px-4 py-3 uppercase text-xs font-bold tracking-wider text-indigo-600">{{ $wave->strategy }}</td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full {{ $wave->status === 'released' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600' }}">
-                                            {{ $wave->status }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-right text-gray-500">{{ $wave->released_at ?? $wave->created_at }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-4 py-6 text-center text-gray-400">Belum ada outbound wave aktif.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                $waveHeaders = [
+                    ['key' => 'wave_code', 'label' => 'Kode Wave'],
+                    ['key' => 'strategy', 'label' => 'Strategi'],
+                    ['key' => 'status', 'label' => 'Status'],
+                    ['key' => 'task_count', 'label' => 'Tugas', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'total_qty', 'label' => 'Total Unit', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'estimated_seconds', 'label' => 'Est. Detik', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'released_at', 'label' => 'Waktu Rilis', 'align' => 'right', 'tabular' => true],
+                ];
+
+                $zoneRows = array_map(static fn (array $plan): array => [
+                    'zone_code' => $plan['zone_code'],
+                    'strategy' => $plan['strategy'],
+                    'aisle_count' => $plan['aisle_count'],
+                    'stop_count' => $plan['stop_count'],
+                    'manhattan_distance' => $plan['manhattan_distance'].' m',
+                    'estimated_seconds' => $plan['estimated_seconds'].' dtk',
+                ], $pickOptimization['zone_plans'] ?? []);
+
+                $zoneHeaders = [
+                    ['key' => 'zone_code', 'label' => 'Zona'],
+                    ['key' => 'strategy', 'label' => 'Algoritma'],
+                    ['key' => 'aisle_count', 'label' => 'Lorong', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'stop_count', 'label' => 'Titik Pick', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'manhattan_distance', 'label' => 'Jarak Manhattan', 'align' => 'right', 'tabular' => true],
+                    ['key' => 'estimated_seconds', 'label' => 'Estimasi Waktu', 'align' => 'right', 'tabular' => true],
+                ];
+            @endphp
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <x-ds.stat
+                    label="Total Wave"
+                    :value="$totalWaves"
+                    hint="Wave outbound tercatat"
+                    icon="cube"
+                />
+                <x-ds.stat
+                    label="Tugas Pick Aktif"
+                    :value="$openPickTasks"
+                    :delta="number_format($completionPermil / 10, 1) . '% selesai'"
+                    deltaDirection="up"
+                    hint="Rasio penyelesaian wave"
+                    icon="check-circle"
+                />
+                <x-ds.stat
+                    label="Jarak &amp; Estimasi Rute"
+                    :value="$totalDistance . ' m'"
+                    :delta="$estimatedSeconds . ' detik'"
+                    deltaDirection="neutral"
+                    hint="Optimasi S-Shape / Largest-Gap"
+                    icon="chart-bar"
+                />
+                <x-ds.stat
+                    label="Akurasi Slotting ABC"
+                    :value="number_format($slottingPermil / 10, 1) . '%'"
+                    :delta="$congestionCount . ' titik macet'"
+                    :deltaDirection="$congestionCount > 0 ? 'down' : 'up'"
+                    hint="Deteksi kepadatan pick-face"
+                    icon="chart-bar"
+                />
             </div>
+
+            <x-ds.card
+                title="Rencana Lintasan Pick per Zona"
+                subtitle="Urutan rute terpendek berbasis PickPathPlanner &amp; jarak Manhattan"
+            >
+                <x-slot name="header">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <x-ds.badge :variant="$congestionCount > 0 ? 'warning' : 'success'">
+                            Kemacetan Pick-Face: {{ $congestionCount }}
+                        </x-ds.badge>
+                    </div>
+                </x-slot>
+
+                <x-ds.table
+                    :headers="$zoneHeaders"
+                    :rows="$zoneRows"
+                    emptyMessage="Belum ada tugas pick aktif untuk dioptimasi."
+                />
+
+                @if(! empty($pickOptimization['congested_pick_faces']))
+                    <div class="mt-4 space-y-2">
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                            Peringatan Kemacetan Pick-Face
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @foreach($pickOptimization['congested_pick_faces'] as $alert)
+                                <div class="rounded-lg border border-amber-200 bg-amber-50/60 p-3 flex items-center justify-between gap-2 text-xs">
+                                    <div>
+                                        <span class="font-semibold text-slate-900">{{ $alert['zone_code'] }} · {{ $alert['bin_id'] }}</span>
+                                        <p class="text-slate-600 mt-0.5">{{ $alert['task_count'] }} tugas ({{ $alert['total_qty'] }} unit)</p>
+                                    </div>
+                                    <x-ds.badge :variant="$alert['severity'] === 'HIGH' ? 'danger' : 'warning'">
+                                        +{{ $alert['congestion_penalty_seconds'] }} dtk
+                                    </x-ds.badge>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </x-ds.card>
+
+            <x-ds.card
+                title="Daftar Outbound Wave Picking"
+                subtitle="Ringkasan status rilis wave dan estimasi durasi eksekusi"
+            >
+                <x-ds.table
+                    :headers="$waveHeaders"
+                    :rows="$waveRows ?? []"
+                    :exportable="true"
+                    :exportUrl="route('wms.picking.export')"
+                    emptyMessage="Belum ada outbound wave aktif."
+                />
+            </x-ds.card>
         </div>
     </div>
 </x-app-layout>

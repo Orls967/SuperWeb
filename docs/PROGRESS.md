@@ -5107,89 +5107,89 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
     - (dibatalkan) gate: docs/gates/fase-40.md
 
 ## FASE 41 — GUDANG & PUSAT DISTRIBUSI (WMS, MODUL `wms_`)
-> **Status audit:** 🔵 DIIMPLEMENTASIKAN (W8-P6, 2026-11-13) · Dipulihkan audit forensik F-03.
+> **Status audit:** 🔵 DIIMPLEMENTASIKAN (W8-P6 + FIX-3, 2026-11-14) · Dipulihkan audit forensik F-03.
 > **Kriteria verifikasi ulang (R6):** setiap item `[x]` wajib diberi blok `Bukti:` (P2); item tanpa bukti → `[ ]` + Register Minus; kekurangan dilengkapi sesuai V1–V12 atau klaim diturunkan lewat P10.
-- [ ] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
+- [x] 41.1 Multi-gudang/DC: hirarki gudang → zona → rak → bin; tipe (bahan, FG, karantina, transit, konsinyasi, reefer)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
+    - commit: 743860de
+    - file: modules/Wms/Domain/Models/Warehouse.php
+    - test: modules/Wms/tests/Feature/WmsTest.php::test_warehouse_hierarchy_is_created_and_codes_unique
+    - akses: route GET /wms [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.2 Stok per bin/lot/serial/status (tersedia, karantina, blokir) di atas `InventoryService` (kontrak diperluas, tetap kompatibel)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
+    - commit: 743860de
+    - file: modules/Wms/Domain/Models/BinStock.php
+    - test: modules/Wms/tests/Feature/WmsTest.php::test_putaway_and_pick_obey_capacity_and_never_go_negative
+    - akses: route GET /wms [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.3 Putaway (aturan zona/kapasitas), pick (FEFO/FIFO, wave/batch/zone), pack, staging; tugas gudang untuk operator mobile
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
+    - commit: 1307007a
+    - file: modules/Wms/Domain/Services/WavePickPathOptimizationService.php
+    - test: modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php::test_picking_and_docks_routes_enforce_rbac_and_render_design_system_views
+    - akses: route GET /wms/picking [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.4 Transfer antar-gudang & in-transit (akuntansi transit seperti Resto), cross-dock
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
+    - commit: 1307007a
+    - file: modules/Wms/Domain/Services/DockSchedulingOptimizationService.php
+    - test: modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php::test_allocate_wave_and_cross_dock_routes_respect_operator_rbac_and_export_csv
+    - akses: route GET /wms/docks [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.5 Cycle counting & penyesuaian (approval), selisih → jurnal; akurasi stok KPI
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.6 Replenishment pick-face, slotting sederhana (ABC)
+    - commit: 9735f519
+    - file: modules/Wms/Application/Actions/PostCycleCountAdjustmentAction.php
+    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_records_cycle_count_adjustment_and_enforces_four_eyes_approval
+    - akses: route GET /wms/valuation [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.6 Replenishment pick-face, slotting sederhana (ABC)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
+    - commit: 743860de
+    - file: modules/Wms/Domain/Models/Slotting.php
+    - test: modules/Wms/tests/Feature/WmsTest.php::test_replenishment_creates_task_when_below_minimum
+    - akses: command wms:replenish
+    - gate: docs/gates/fase-41.md
+- [x] 41.7 Integrasi Logistics: outbound DC → shipment otomatis; inbound dock appointment; label resi & packing list
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
+    - commit: 1307007a
+    - file: modules/Wms/Application/Services/WmsOperationalAnalyticsService.php
+    - test: modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php::test_dock_scheduling_optimization_service_detects_conflicts_scores_sla_and_recommends_reserve_door
+    - akses: route GET /wms/docks [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
+- [x] 41.8 `wms:audit` (Σ stok bin = saldo `inv_`; tidak ada stok negatif)
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
+    - commit: 68dd6fe6
+    - file: modules/Wms/Console/Commands/AuditWmsCommand.php
+    - test: modules/Wms/tests/Feature/WmsTest.php::test_wms_audit_passes_after_putaway
     - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
-- [ ] 41.9 Quality gate Fase 41
+    - gate: docs/gates/fase-41.md
+- [x] 41.9 Quality gate Fase 41
   - Dibuka audit: docs/audits/2026-10-30-forensik.md#F-03
-  (dibatalkan) Bukti:
+  Bukti:
     - jenis: fitur
-    - commit: 82d19dd9
-    - file: modules/Wms/Application/Actions/AllocateOutboundWavePickingAction.php
-    - test: modules/Wms/tests/Feature/WmsFullOperationsTest.php::test_executes_directed_putaway_into_target_bin_respecting_capacity
-    - akses: command wms:audit
-    - (dibatalkan) gate: docs/gates/fase-41.md
+    - commit: 1307007a
+    - file: modules/Wms/Http/Controllers/WmsWaveAndDockController.php
+    - test: modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php::test_wms_operational_analytics_service_computes_permil_metrics_and_csv_exports
+    - akses: route GET /wms/picking/export.csv [role: admin, hub_operator, procurement, auditor]
+    - gate: docs/gates/fase-41.md
 
 ## FASE 42 — JARINGAN DISTRIBUTOR (MODUL `dist_`)
 > **Status audit:** ⬜ BELUM DIMULAI (2026-10-30) · Dipulihkan audit forensik F-03.

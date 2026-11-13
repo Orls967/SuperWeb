@@ -1,86 +1,50 @@
-# Quality Gate Report: Fase 41
+# Quality Gate Report: Fase 41 — Gudang & Pusat Distribusi (WMS + FIX-3)
 
-- **Commit:** `82d19dd9`
-- **Tanggal:** 2026-10-23T08:00:00+08:00
-- **PHP:** 8.4.26
-- **Database:** sqlite (v3.53.4)
-- **Status Keseluruhan:** PASS 🟢
+- **Commit:** `697369f1f35edb203afea5de56eb9624be4f62fb` (697369f1)
+- **Tanggal:** 2026-11-14T03:09:00+08:00
+- **PHP:** 8.4
+- **Database:** sqlite + MySQL 8.4 DDL compatibility (`MysqlSchemaCompatibilityTest` PASS)
+- **Status Keseluruhan:** PASS 🔵 (Menunggu verifikasi independen lintas sesi sebelum status ✅)
+- **Sifat Akuntansi:** Posting buku besar konsisten antara `wms_` dan `inv_`/`WmsAccounts` (`AuditWmsCommand` PASS, 0 stok negatif)
 
-## 1. Ringkasan Test Suite (Pest / JUnit)
-- **Total Test:** 3077
-- **Total Assertion:** 18428
-- **Durasi:** 81.20s
-- **Gagal / Error:** 0 failures, 0 errors
+---
 
-## 2. Hasil Perintah Protokol P4
-| Perintah | Deskripsi | Exit Code | Status |
+## 1. Ringkasan Test Suite & Pagar Arsitektur
+
+- **Wms Feature Suite (`modules/Wms/tests/Feature/`):** `25` test, `150` assertions — LULUS `100%` (`0 failures`, `0 errors`)
+- **UI & Aksesibilitas (`php artisan ui:lint --paths=modules/Wms/resources/views/wms --responsive --json`):** `20` berkas dipindai, **`0` pelanggaran**, `ratchet_passed: true` pada lebar `375px`
+- **`vendor/bin/pint --test`:** PASS 🟢
+- **`php artisan arch:scan --json`:** `NEW = 0` pelanggaran baru di atas baseline terpasang
+
+## 2. Daftar Rute & Implementasi Baru (FIX-3)
+
+| Rute / Komponen | Target | Role Diizinkan | Status |
 |---|---|---|---|
-| `composer validate --strict` | Validasi composer.json dan lockfile | 0 | PASS 🟢 |
-| `vendor/bin/pest --parallel` | Eksekusi seluruh unit, feature, dan arch test suite | 0 | PASS 🟢 |
-| `vendor/bin/pint --test` | Verifikasi standar gaya kode PSR-12 / Laravel Pint | 0 | PASS 🟢 |
-| `php artisan arch:scan --json` | Pemindaian aturan arsitektur A1–A13 | 0 | PASS 🟢 |
-| `php artisan migrate:fresh --seed --force` | Validasi ulang migrasi bersih dan seeder database | 0 | PASS 🟢 |
-| `php artisan bank:reconcile` | Rekonsiliasi integritas ledger perbankan | 0 | PASS 🟢 |
-| `php artisan chain:audit-all` | Verifikasi rantai hash seluruh modul | 0 | PASS 🟢 |
-| `php artisan super:health-check` | Pemeriksaan kesehatan holistik pilar sistem | 0 | PASS 🟢 |
-| `php artisan wms:audit` | Audit kepatuhan modul | 0 | PASS 🟢 |
-| `npm run build` | Kompilasi aset frontend Vite | 0 | PASS 🟢 |
+| `GET /wms/picking` (`wms.picking`) | `WmsWaveAndDockController@pickingIndex` | `admin, hub_operator, procurement, auditor` | PASS 🔵 |
+| `POST /wms/picking/allocate` (`wms.picking.allocate`) | `WmsWaveAndDockController@allocateWave` | `admin, hub_operator, procurement` | PASS 🔵 |
+| `GET /wms/picking/export.csv` (`wms.picking.export`) | `WmsWaveAndDockController@exportPickingCsv` | `admin, hub_operator, procurement, auditor` | PASS 🔵 |
+| `GET /wms/docks` (`wms.docks`) | `WmsWaveAndDockController@docksIndex` | `admin, hub_operator, procurement, auditor` | PASS 🔵 |
+| `POST /wms/docks/cross-dock` (`wms.docks.cross_dock`) | `WmsWaveAndDockController@processCrossDock` | `admin, hub_operator, procurement` | PASS 🔵 |
+| `GET /wms/docks/export.csv` (`wms.docks.export`) | `WmsWaveAndDockController@exportDocksCsv` | `admin, hub_operator, procurement, auditor` | PASS 🔵 |
 
-## 3. Status Test Blok Bukti Fase 41
-| Item | Nama Test | File | Status (JUnit) | Durasi |
-|---|---|---|---|---|
-| 41.1 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.2 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.3 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.4 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.5 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.6 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.7 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.8 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
-| 41.9 | `test_executes_directed_putaway_into_target_bin_respecting_capacity` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🟢 | 0.020s |
+## 3. Status Test Blok Bukti Fase 41 (41.1 – 41.9)
 
-## 4. Ringkasan Arsitektur (`arch:scan`)
-- **Status Baseline:** Terpasang (5836 pelanggaran terbaseline).
-
-| Aturan | Deskripsi Singkat | Jumlah Pelanggaran |
-|---|---|---|
-| `A1` | Import/penggunaan Domain modul lain | 177 |
-| `A2` | Tabel berprefiks modul lain / tidak terdaftar | 5208 |
-| `A3` | Uang bertipe float / kolom IDR decimal | 0 |
-| `A4` | Idempotency key dari nilai acak/waktu | 0 |
-| `A5` | Tipe posting ledger > 32 char / di luar registry | 0 |
-| `A6` | Parameter bool kontrol di Application/ | 0 |
-| `A7` | Hash tanpa kunci untuk data sensitif | 0 |
-| `A8` | Carbon/Date::setTestNow di produksi | 0 |
-| `A9` | Kernel bergantung pada modul bisnis | 0 |
-| `A10` | Model dengan $guarded = [] | 0 |
-| `A11` | File PHP tanpa declare(strict_types=1) | 0 |
-| `A12` | Kolom *_id di migrasi tanpa FK | 0 |
-| `A13` | back()->errors() (HTTP 500 di jalur galat) | 0 |
-
-## 5. Verifikasi
-
-- **Tanggal:** 2026-10-23
-- **Verifikator:** Chief Release & Verification Architect
-- **Commit yang diverifikasi:** 82d19dd9
-- **Keputusan:** TERVERIFIKASI ✅
-
-| # | Hasil | Bukti (command / commit / output) | Catatan |
+| Item | Nama Test | File | Status |
 |---|---|---|---|
-| C1 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/ProgressIntegrityTest.php` exit 0. Teks item terkunci rapat sesuai `progress-item-texts.json`, blok Bukti valid. | Integritas PROGRESS.md P2/P10 terjaga penuh. |
-| C2 | LULUS 🟢 | Seluruh langkah Quality Gate P4 berstatus PASS 🟢 (`composer validate`, `pest`, `pint`, `arch:scan`, `migrate:fresh --seed`, `bank:reconcile`, `chain:audit-all`, `super:health-check`, `npm run build`). | Standar kualitas gate terpenuhi tanpa celah. |
-| C3 | LULUS 🟢 | Deliverable terimplementasi nyata pada modul domain terkait. | Kode produksi riil tanpa mock/bypass. |
-| C4 | LULUS 🟢 | Model dan tabel terdaftar resmi. Batas modul terjaga (A1, A2, A9). | Enabler lintas pilar monolit modular ditegakkan. |
-| C5 | LULUS 🟢 | Test suite modul lulus 100% tanpa regresi. | Zero regression pada modul terkait. |
-| C6 | LULUS 🟢 | Prosedur audit dua-sumber terverifikasi exit 0 (0 diskrepansi). | Invarian deterministik dan audit terbukti. |
-| C7 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/AuditCommandContractTest.php` exit 0. Corruption fixture membuktikan deteksi inkonsistensi. | Ratchet `audit-contract.json` tetap 0. |
-| C8 | LULUS 🟢 | Baseline `arch-scan.json` mengunci A3=0, A6=0, A8=0, A9=0, A10=0, A11=0, A12=0, A13=0. | Ratchet baselines terkunci ke bawah secara disiplin. |
-| C9 | LULUS 🟢 | Seluruh deskripsi teks item identik 100% dengan baseline `progress-item-texts.json`. | Integritas kontrak teks DoR terjaga (P10 / X18). |
-| C10 | LULUS 🟢 | `vendor/bin/pest tests/Architecture/MysqlSchemaCompatibilityTest.php` exit 0. Skema kompatibel dengan MySQL 8.4 dan SQLite. | Portabilitas skema database terverifikasi. |
-| C11 | LULUS 🟢 | Seluruh deliverable tuntas. Sub-bagian Register Minus bersih (0 minus terbuka). | Kriteria penutupan fase P9 dan P7 terpenuhi. |
-| C12 | LULUS 🟢 | `tests/Architecture/RouteAuthorizationMatrixTest.php` exit 0. RBAC terpasang penuh. | Proteksi rute web dan API tervalidasi. |
-| C13 | LULUS 🟢 | Riwayat git log atomik (`82d19dd9`), pesan commit konvensional, hash terverifikasi di git log. | Jejak audit git rapi dan terlacak. |
-| C14 | LULUS 🟢 | Tidak ada jalan pintas terlarang (X1–X25): zero missing FKs, zero models unguarded, zero strict_types omissions. | Standar integritas kode tertinggi terpenuhi. |
+| 41.1 | `test_warehouse_hierarchy_is_created_and_codes_unique` | `modules/Wms/tests/Feature/WmsTest.php` | PASS 🔵 |
+| 41.2 | `test_putaway_and_pick_obey_capacity_and_never_go_negative` | `modules/Wms/tests/Feature/WmsTest.php` | PASS 🔵 |
+| 41.3 | `test_picking_and_docks_routes_enforce_rbac_and_render_design_system_views` | `modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php` | PASS 🔵 |
+| 41.4 | `test_allocate_wave_and_cross_dock_routes_respect_operator_rbac_and_export_csv` | `modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php` | PASS 🔵 |
+| 41.5 | `test_records_cycle_count_adjustment_and_enforces_four_eyes_approval` | `modules/Wms/tests/Feature/WmsFullOperationsTest.php` | PASS 🔵 |
+| 41.6 | `test_replenishment_creates_task_when_below_minimum` | `modules/Wms/tests/Feature/WmsTest.php` | PASS 🔵 |
+| 41.7 | `test_dock_scheduling_optimization_service_detects_conflicts_scores_sla_and_recommends_reserve_door` | `modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php` | PASS 🔵 |
+| 41.8 | `test_wms_audit_passes_after_putaway` | `modules/Wms/tests/Feature/WmsTest.php` | PASS 🔵 |
+| 41.9 | `test_wms_operational_analytics_service_computes_permil_metrics_and_csv_exports` | `modules/Wms/tests/Feature/WmsPickingAndDockOperationsTest.php` | PASS 🔵 |
+
+## 4. Ringkasan Pagar Integritas & T-1c
+
+- **`T-1c` (`spek2.sh` / inspeksi kontrak Fase 41):** `0` fitur/rute/service hilang (`WavePickPathOptimizationService`, `DockSchedulingOptimizationService`, `WmsOperationalAnalyticsService`, `/wms/picking`, `/wms/docks`).
+- **`RouteAuthorizationMatrixTest` & `ProgressIntegrityTest`:** PASS 🔵.
 
 **Minus yang ditambahkan pelaksana:** Tidak ada (0 minus terbuka).  
-**Status Fase 41:** ✅ TERVERIFIKASI (2026-10-23).
+**Status Fase 41:** 🔵 DIIMPLEMENTASIKAN & LULUS QUALITY GATE PELAKSANA (W8-P6 + FIX-3, 2026-11-14).
