@@ -8,14 +8,18 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\ForecastOverrideService;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
+use Modules\ControlTower\Console\Commands\SelectForecastModelCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
+use Modules\ControlTower\Domain\Algorithms\ForecastModelSelector;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
+use Modules\Core\Contracts\ApprovalEngineInterface;
 use Modules\Shared\Application\MenuRegistry;
 
 class ControlTowerServiceProvider extends ServiceProvider
@@ -28,6 +32,12 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:promise]
         //
         // [fix2:bindings:forecast]
+        $this->app->singleton(ForecastModelSelector::class);
+        $this->app->singleton(ForecastOverrideService::class, function ($app): ForecastOverrideService {
+            return new ForecastOverrideService(
+                $app->make(ApprovalEngineInterface::class),
+            );
+        });
         //
         // [fix2:bindings:safety]
         //
@@ -98,6 +108,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 // [fix2:commands:promise]
                 //
                 // [fix2:commands:forecast]
+                SelectForecastModelCommand::class,
                 //
                 // [fix2:commands:safety]
                 //

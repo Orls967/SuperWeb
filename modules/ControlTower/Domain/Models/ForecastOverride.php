@@ -17,6 +17,11 @@ class ForecastOverride extends Model
         'new_qty',
         'reason',
         'overridden_by_user_id',
+        'status',
+        'deviation_bps',
+        'approval_id',
+        'reverted_at',
+        'reverted_by_user_id',
     ];
 
     protected function casts(): array
@@ -24,7 +29,15 @@ class ForecastOverride extends Model
         return [
             'previous_qty' => 'integer',
             'new_qty' => 'integer',
+            'deviation_bps' => 'integer',
+            'approval_id' => 'integer',
+            'reverted_at' => 'datetime',
         ];
+    }
+
+    public function getDeltaQtyAttribute(): int
+    {
+        return (int) $this->new_qty - (int) $this->previous_qty;
     }
 
     /**
