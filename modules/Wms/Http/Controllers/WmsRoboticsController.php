@@ -93,4 +93,3 @@ class WmsRoboticsController extends Controller
         return redirect()->route('wms.robotics.fleet')->with('status', "Interlock zona {$lock->zone_code} diperbarui (limit {$lock->speed_limit_mm_s} mm/s).");
     }
 }
-

@@ -25,4 +25,3 @@ class EnforceZoneInterlockRequest extends FormRequest
         ];
     }
 }
-

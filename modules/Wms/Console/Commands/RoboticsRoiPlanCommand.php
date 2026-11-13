@@ -32,4 +32,3 @@ class RoboticsRoiPlanCommand extends Command
         return self::SUCCESS;
     }
 }
-

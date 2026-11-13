@@ -35,4 +35,3 @@ class RoboticsDispatchCommand extends Command
         return self::SUCCESS;
     }
 }
-

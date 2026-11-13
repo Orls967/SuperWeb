@@ -48,4 +48,3 @@ final readonly class MissionAssignmentCertificate
         return hash('sha256', json_encode(['assignments' => $assignments, 'total_cost' => $totalCost], JSON_THROW_ON_ERROR));
     }
 }
-

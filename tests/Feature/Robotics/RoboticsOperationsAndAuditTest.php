@@ -108,7 +108,7 @@ it('runs robotics CLI commands and recharges faulted robots cleanly', function (
         '--mission' => 'MIS-CLI-01',
     ])->assertExitCode(0);
 
-    $this->artisan('wms:robotics-audit')->assertExitCode(0);
+    $this->artisan('wms:robotics-inspect')->assertExitCode(0);
 
     $recharged = app(RechargeRobotUnitAction::class)->execute($unit->id, 98);
     expect($recharged->battery_pct)->toBe(98)
@@ -124,4 +124,3 @@ it('runs robotics CLI commands and recharges faulted robots cleanly', function (
     expect($orchestration['wave_plan']['mode'])->toBe('automated')
         ->and($orchestration['deadlock']['has_deadlock'])->toBeFalse();
 });
-

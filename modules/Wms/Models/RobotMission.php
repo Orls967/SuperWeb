@@ -28,4 +28,3 @@ class RobotMission extends Model
         return $this->belongsTo(RobotUnit::class, 'robot_unit_id');
     }
 }
-

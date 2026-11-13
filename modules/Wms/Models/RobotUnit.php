@@ -26,4 +26,3 @@ class RobotUnit extends Model
         return $this->hasMany(RobotMission::class, 'robot_unit_id');
     }
 }
-

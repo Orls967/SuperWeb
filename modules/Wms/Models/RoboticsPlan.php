@@ -23,4 +23,3 @@ class RoboticsPlan extends Model
         'payback_months' => 'integer',
     ];
 }
-

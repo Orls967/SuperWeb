@@ -8,5 +8,5 @@
 ## Perintah Artisan
 - `php artisan wms:robotics-roi-plan {warehouse_id} {capex_idr} {annual_savings_idr}`
 - `php artisan wms:robotics-dispatch {warehouse_id} {robot_unit_id} {zone_code}`
-- `php artisan wms:robotics-audit` dan `php artisan wms:audit`
+- `php artisan wms:robotics-inspect` dan `php artisan wms:audit`
 

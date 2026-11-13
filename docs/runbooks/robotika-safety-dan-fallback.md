@@ -7,5 +7,5 @@
    - Jika robot gagal pulih, operator menjalankan `POST /wms/robotics/missions/{mission}/fallback`.
    - Kunci zona dilepas (`lock_status=released`), robot ditandai `faulted`, dan misi ditugaskan ke operator.
 3. **Verifikasi Pasca-Insiden**:
-   - Jalankan `php artisan wms:robotics-audit` dan `php artisan wms:audit` untuk memastikan 0 dual active lock.
+   - Jalankan `php artisan wms:robotics-inspect` dan `php artisan wms:audit` untuk memastikan 0 dual active lock.
 

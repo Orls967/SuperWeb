@@ -12,7 +12,7 @@ use Modules\Wms\Application\Services\RoboticsAuditService;
  */
 class RoboticsAuditCommand extends Command
 {
-    protected $signature = 'wms:robotics-audit';
+    protected $signature = 'wms:robotics-inspect';
 
     protected $description = 'Audit integritas kunci zona, misi, dan rencana ROI robotika gudang';
 
@@ -33,4 +33,3 @@ class RoboticsAuditCommand extends Command
         return self::SUCCESS;
     }
 }
-

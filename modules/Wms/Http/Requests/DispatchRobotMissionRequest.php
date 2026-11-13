@@ -27,4 +27,3 @@ class DispatchRobotMissionRequest extends FormRequest
         ];
     }
 }
-

@@ -30,4 +30,3 @@ class RobotZoneLock extends Model
         return $this->belongsTo(RobotUnit::class, 'robot_unit_id');
     }
 }
-

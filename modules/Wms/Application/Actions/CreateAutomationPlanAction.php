@@ -64,4 +64,3 @@ final readonly class CreateAutomationPlanAction
         ];
     }
 }
-

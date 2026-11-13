@@ -35,4 +35,3 @@ final readonly class WaveFallbackPlanCertificate
         return hash('sha256', implode('|', [$waveCode, $mode, (string) $taskCount, (string) $robotCount]));
     }
 }
-

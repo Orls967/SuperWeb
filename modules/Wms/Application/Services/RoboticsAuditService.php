@@ -52,4 +52,3 @@ final class RoboticsAuditService
         return $violations;
     }
 }
-
