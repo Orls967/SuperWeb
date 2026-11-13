@@ -87,7 +87,7 @@ final readonly class RoboticsFleetOrchestratorService
             'idle_units' => RobotUnit::query()->where('status', 'idle')->count(),
             'active_units' => RobotUnit::query()->where('status', 'active')->count(),
             'faulted_units' => RobotUnit::query()->where('status', 'faulted')->count(),
-            'active_missions' => RobotMission::query()->whereNotIn('status', ['completed', 'failed_fallback'])->count(),
+            'active_missions' => RobotMission::query()->whereNotIn('status', ['completed', 'fallback_manual', 'failed'])->count(),
             'fallback_missions' => RobotMission::query()->where('fallback_manual', true)->count(),
             'active_zone_locks' => RobotZoneLock::query()->where('lock_status', 'active')->count(),
         ];

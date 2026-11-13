@@ -62,9 +62,9 @@ final readonly class EnforceZoneSafetyInterlockAction
                     ->where('warehouse_id', $warehouseId)
                     ->where('zone_code', $zoneCode)
                     ->whereIn('status', [
-                        RobotMissionStateMachine::STATE_EN_ROUTE,
-                        RobotMissionStateMachine::STATE_PICKING,
-                        RobotMissionStateMachine::STATE_DELIVERING,
+                        RobotMissionStateMachine::STATUS_MOVING,
+                        RobotMissionStateMachine::STATUS_PICKING,
+                        RobotMissionStateMachine::STATUS_DELIVERING,
                     ])
                     ->lockForUpdate()
                     ->get();
@@ -72,10 +72,11 @@ final readonly class EnforceZoneSafetyInterlockAction
                 foreach ($activeMissions as $mission) {
                     RobotMissionStateMachine::assertTransition(
                         $mission->status,
-                        RobotMissionStateMachine::STATE_INTERLOCKED
+                        RobotMissionStateMachine::STATUS_FAILED
                     );
                     $mission->update([
-                        'status' => RobotMissionStateMachine::STATE_INTERLOCKED,
+                        'status' => RobotMissionStateMachine::STATUS_FAILED,
+                        'failure_reason' => 'zone_safety_interlock',
                     ]);
                 }
             }

@@ -79,7 +79,7 @@ it('serves robotics fleet, missions, and roi pages and handles HTTP dispatch, in
         ])
         ->assertRedirect(route('wms.robotics.missions'));
 
-    expect(DB::table('wms_robot_missions')->where('id', $missionId)->value('status'))->toBe('failed_fallback');
+    expect(DB::table('wms_robot_missions')->where('id', $missionId)->value('status'))->toBe('fallback_manual');
 });
 
 it('runs robotics CLI commands and recharges faulted robots cleanly', function (): void {

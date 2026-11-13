@@ -78,10 +78,10 @@ it('detects cyclic deadlocks and non-cyclic chains in TrafficDeadlockDetector', 
 it('enforces all 8 states and rejects invalid transitions in RobotMissionStateMachine', function (): void {
     expect(RobotMissionStateMachine::allStates())->toHaveCount(8)
         ->and(RobotMissionStateMachine::canTransition('queued', 'assigned'))->toBeTrue()
-        ->and(RobotMissionStateMachine::canTransition('en_route', 'interlocked'))->toBeTrue()
-        ->and(RobotMissionStateMachine::canTransition('interlocked', 'failed_fallback'))->toBeTrue()
+        ->and(RobotMissionStateMachine::canTransition('moving', 'failed'))->toBeTrue()
+        ->and(RobotMissionStateMachine::canTransition('failed', 'fallback_manual'))->toBeTrue()
         ->and(RobotMissionStateMachine::canTransition('completed', 'queued'))->toBeFalse();
 
-    expect(fn () => RobotMissionStateMachine::assertTransition('completed', 'en_route'))
-        ->toThrow(InvalidArgumentException::class);
+    expect(fn () => RobotMissionStateMachine::assertTransition('completed', 'moving'))
+        ->toThrow(Modules\Wms\Domain\Exceptions\RobotMissionTransitionException::class);
 });

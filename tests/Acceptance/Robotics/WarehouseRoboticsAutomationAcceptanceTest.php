@@ -123,9 +123,9 @@ it('executes end-to-end J1 ROI planning, J2 Hungarian allocation, J3 wave dispat
     );
 
     expect($mission)->toBeInstanceOf(RobotMission::class)
-        ->and($mission->status)->toBe(RobotMissionStateMachine::STATE_EN_ROUTE);
+        ->and($mission->status)->toBe(RobotMissionStateMachine::STATUS_MOVING);
 
-    // 5. Safety Interlock: human enters Z-A1 -> robot interlocked & speed capped
+    // 5. Safety Interlock: human enters Z-A1 -> robot halted (failed) & speed capped
     $interlockAction = app(EnforceZoneSafetyInterlockAction::class);
     $lock = $interlockAction->execute(
         warehouseId: $warehouseId,
@@ -136,7 +136,7 @@ it('executes end-to-end J1 ROI planning, J2 Hungarian allocation, J3 wave dispat
     expect($lock)->toBeInstanceOf(RobotZoneLock::class)
         ->and($lock->interlock_active)->toBeTrue()
         ->and($lock->speed_limit_mm_s)->toBe(300)
-        ->and($mission->fresh()->status)->toBe(RobotMissionStateMachine::STATE_INTERLOCKED);
+        ->and($mission->fresh()->status)->toBe(RobotMissionStateMachine::STATUS_FAILED);
 
     // 6. Robot failure -> TriggerRobotFallbackAction switches mission to manual fallback
     $fallbackAction = app(TriggerRobotFallbackAction::class);
@@ -146,7 +146,7 @@ it('executes end-to-end J1 ROI planning, J2 Hungarian allocation, J3 wave dispat
         reason: 'sensor_lidar_fault',
     );
 
-    expect($fallbackMission->status)->toBe(RobotMissionStateMachine::STATE_FAILED_FALLBACK)
+    expect($fallbackMission->status)->toBe(RobotMissionStateMachine::STATUS_FALLBACK_MANUAL)
         ->and($fallbackMission->fallback_manual)->toBeTrue()
         ->and($fallbackMission->assigned_operator_user_id)->toBe($user->id);
 

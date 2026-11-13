@@ -79,12 +79,12 @@ final readonly class DispatchRobotMissionAction
             }
 
             RobotMissionStateMachine::assertTransition(
-                RobotMissionStateMachine::STATE_QUEUED,
-                RobotMissionStateMachine::STATE_ASSIGNED
+                RobotMissionStateMachine::STATUS_QUEUED,
+                RobotMissionStateMachine::STATUS_ASSIGNED
             );
             RobotMissionStateMachine::assertTransition(
-                RobotMissionStateMachine::STATE_ASSIGNED,
-                RobotMissionStateMachine::STATE_EN_ROUTE
+                RobotMissionStateMachine::STATUS_ASSIGNED,
+                RobotMissionStateMachine::STATUS_MOVING
             );
 
             $robot->update([
@@ -98,7 +98,7 @@ final readonly class DispatchRobotMissionAction
                 'robot_unit_id' => $robotUnitId,
                 'wave_id' => $waveId,
                 'zone_code' => $zoneCode,
-                'status' => RobotMissionStateMachine::STATE_EN_ROUTE,
+                'status' => RobotMissionStateMachine::STATUS_MOVING,
                 'fallback_manual' => false,
                 'assigned_operator_user_id' => $operatorUserId,
                 'certificate_hash' => hash('sha256', "{$missionCode}|{$warehouseId}|{$robotUnitId}|{$zoneCode}"),

@@ -13,7 +13,7 @@
                                 <p class="font-semibold text-gray-900">{{ $mission->mission_code }} · Zona {{ $mission->zone_code }}</p>
                                 <p class="text-xs text-gray-600">Robot #{{ $mission->robot_unit_id }} · Fallback: {{ $mission->fallback_manual ? 'YA' : 'TIDAK' }}</p>
                             </div>
-                            <x-ds.badge :variant="$mission->status === 'completed' ? 'success' : ($mission->status === 'failed_fallback' || $mission->status === 'interlocked' ? 'warning' : 'neutral')">
+                            <x-ds.badge :variant="$mission->status === 'completed' ? 'success' : ($mission->status === 'fallback_manual' || $mission->status === 'failed' ? 'warning' : 'neutral')">
                                 {{ $mission->status }}
                             </x-ds.badge>
                         </div>

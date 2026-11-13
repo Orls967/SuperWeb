@@ -28,13 +28,24 @@ final readonly class TriggerRobotFallbackAction
         return DB::transaction(function () use ($missionId, $operatorUserId, $reason): RobotMission {
             $mission = RobotMission::query()->lockForUpdate()->findOrFail($missionId);
 
+            if ($mission->status !== RobotMissionStateMachine::STATUS_FAILED) {
+                RobotMissionStateMachine::assertTransition(
+                    $mission->status,
+                    RobotMissionStateMachine::STATUS_FAILED
+                );
+                $mission->update([
+                    'status' => RobotMissionStateMachine::STATUS_FAILED,
+                    'failure_reason' => $reason,
+                ]);
+            }
+
             RobotMissionStateMachine::assertTransition(
-                $mission->status,
-                RobotMissionStateMachine::STATE_FAILED_FALLBACK
+                RobotMissionStateMachine::STATUS_FAILED,
+                RobotMissionStateMachine::STATUS_FALLBACK_MANUAL
             );
 
             $mission->update([
-                'status' => RobotMissionStateMachine::STATE_FAILED_FALLBACK,
+                'status' => RobotMissionStateMachine::STATUS_FALLBACK_MANUAL,
                 'fallback_manual' => true,
                 'assigned_operator_user_id' => $operatorUserId,
                 'failure_reason' => $reason,
