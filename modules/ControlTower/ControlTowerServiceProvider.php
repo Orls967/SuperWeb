@@ -7,16 +7,21 @@ namespace Modules\ControlTower;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\ControlTower\Application\Services\AlertScannerService;
 use Modules\ControlTower\Application\Services\ControlTowerService;
 use Modules\ControlTower\Application\Services\ForecastOverrideService;
+use Modules\ControlTower\Application\Services\OrderRiskAssessmentService;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
+use Modules\ControlTower\Console\Commands\ScanDisruptionAlertsCommand;
+use Modules\ControlTower\Console\Commands\ScanOrderRiskCommand;
 use Modules\ControlTower\Console\Commands\SelectForecastModelCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
 use Modules\ControlTower\Domain\Algorithms\ForecastModelSelector;
 use Modules\ControlTower\Domain\Models\SopCycle;
+use Modules\ControlTower\Domain\Services\OrderRiskScorer;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
 use Modules\Core\Contracts\ApprovalEngineInterface;
@@ -44,7 +49,9 @@ class ControlTowerServiceProvider extends ServiceProvider
         // [fix2:bindings:sop]
         //
         // [fix2:bindings:alerts]
-        //
+        $this->app->singleton(OrderRiskScorer::class);
+        $this->app->bind(OrderRiskAssessmentService::class);
+        $this->app->bind(AlertScannerService::class);
         // [fix2:bindings:twin_kpi]
         //
         // [fix2:bindings:scorecard_health]
@@ -81,7 +88,8 @@ class ControlTowerServiceProvider extends ServiceProvider
             // [fix2:schedule:sop]
             //
             // [fix2:schedule:alerts]
-            //
+            $schedule->command('tower:risk-scan')->hourly()->withoutOverlapping();
+            $schedule->command('tower:alerts-scan')->everyFifteenMinutes()->withoutOverlapping();
             // [fix2:schedule:twin_kpi]
             //
             // [fix2:schedule:scorecard_health]
@@ -115,7 +123,8 @@ class ControlTowerServiceProvider extends ServiceProvider
                 // [fix2:commands:sop]
                 //
                 // [fix2:commands:alerts]
-                //
+                ScanOrderRiskCommand::class,
+                ScanDisruptionAlertsCommand::class,
                 // [fix2:commands:twin_kpi]
                 //
                 // [fix2:commands:scorecard_health]
