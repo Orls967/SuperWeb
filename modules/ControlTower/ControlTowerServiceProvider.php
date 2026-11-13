@@ -8,13 +8,18 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
+use Modules\ControlTower\Application\Services\PromiseQuoteService;
+use Modules\ControlTower\Console\Commands\AtpRefreshCommand;
 use Modules\ControlTower\Console\Commands\AuditControlTowerCommand;
 use Modules\ControlTower\Console\Commands\CaptureKpiSnapshotCommand;
 use Modules\ControlTower\Console\Commands\RecalculateSafetyStockCommand;
 use Modules\ControlTower\Console\Commands\RunTwinSimulationCommand;
 use Modules\ControlTower\Contracts\ControlTowerVisibilityReader;
+use Modules\ControlTower\Contracts\ItemAvailabilityReader;
+use Modules\ControlTower\Contracts\PromiseQuoteInterface;
 use Modules\ControlTower\Domain\Models\SopCycle;
 use Modules\ControlTower\Infrastructure\Adapters\ControlTowerVisibilityReaderAdapter;
+use Modules\ControlTower\Infrastructure\Adapters\WmsItemAvailabilityReader;
 use Modules\ControlTower\Policies\ControlTowerOperationPolicy;
 use Modules\Shared\Application\MenuRegistry;
 
@@ -26,6 +31,8 @@ class ControlTowerServiceProvider extends ServiceProvider
         $this->app->bind(ControlTowerVisibilityReader::class, ControlTowerVisibilityReaderAdapter::class);
 
         // [fix2:bindings:promise]
+        $this->app->bind(ItemAvailabilityReader::class, WmsItemAvailabilityReader::class);
+        $this->app->bind(PromiseQuoteInterface::class, PromiseQuoteService::class);
         //
         // [fix2:bindings:forecast]
         //
@@ -96,6 +103,7 @@ class ControlTowerServiceProvider extends ServiceProvider
                 RecalculateSafetyStockCommand::class,
                 RunTwinSimulationCommand::class,
                 // [fix2:commands:promise]
+                AtpRefreshCommand::class,
                 //
                 // [fix2:commands:forecast]
                 //

@@ -19,6 +19,15 @@ class OrderPromise extends Model
         'ctp_manufacturing_qty',
         'promised_delivery_date',
         'promise_status',
+        'idempotency_key',
+        'payload_hash',
+        'promised_period',
+        'late_periods',
+        'reason_code',
+        'certificate_hash',
+        'as_of_date',
+        'atp_cumulative',
+        'ctp_cumulative',
     ];
 
     protected $casts = [
@@ -26,5 +35,10 @@ class OrderPromise extends Model
         'atp_confirmed_qty' => 'integer',
         'ctp_manufacturing_qty' => 'integer',
         'promised_delivery_date' => 'date',
+        'promised_period' => 'integer',
+        'late_periods' => 'integer',
+        'as_of_date' => 'date',
+        'atp_cumulative' => 'integer',
+        'ctp_cumulative' => 'integer',
     ];
 }
