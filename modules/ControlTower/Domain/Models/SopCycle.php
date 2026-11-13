@@ -23,6 +23,13 @@ class SopCycle extends Model
         'cash_impact_est_idr',
         'signed_off_by_user_id',
         'signed_off_at',
+        'approval_id',
+        'task_id',
+        'published_at',
+        'published_by_user_id',
+        'consensus_snapshot_json',
+        'notes',
+        'created_by_user_id',
     ];
 
     protected function casts(): array
@@ -34,6 +41,11 @@ class SopCycle extends Model
             'gross_margin_est_idr' => 'integer',
             'cash_impact_est_idr' => 'integer',
             'signed_off_at' => 'datetime',
+            'approval_id' => 'integer',
+            'published_at' => 'datetime',
+            'published_by_user_id' => 'integer',
+            'consensus_snapshot_json' => 'array',
+            'created_by_user_id' => 'integer',
         ];
     }
 
