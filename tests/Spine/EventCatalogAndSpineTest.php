@@ -24,7 +24,7 @@ class EventCatalogAndSpineTest extends TestCase
 
     /**
      * C1: Real Handler Coverage for EventCatalog.
-     * Evaluates which of the 28 catalog events have actual runtime consumers in CrossModuleSpineHandlers.
+     * Evaluates which of the 31 catalog events have actual runtime consumers in CrossModuleSpineHandlers.
      */
     public function test_c1_event_catalog_handler_coverage_reveals_unhandled_events(): void
     {
@@ -36,7 +36,7 @@ class EventCatalogAndSpineTest extends TestCase
         $registeredSubscriptions = $prop->getValue();
 
         $catalog = EventCatalog::all();
-        $this->assertCount(28, $catalog);
+        $this->assertCount(31, $catalog);
 
         $handledEventNames = [];
         foreach ($registeredSubscriptions as $group => $events) {
@@ -52,8 +52,8 @@ class EventCatalogAndSpineTest extends TestCase
             }
         }
 
-        // Exactly 20 events currently lack registered spine handlers (8 lama + 3 enterprise.* Fase 54 + 3 intercompany.* Fase 52 + 3 treasury.* Fase 48 + 3 robotics.* Fase 279)
-        $this->assertCount(20, $unhandledEvents, 'Expected 20 unhandled events in spine catalog');
+        // Exactly 23 events currently lack registered spine handlers (8 lama + 3 enterprise.* Fase 54 + 3 intercompany.* Fase 52 + 3 treasury.* Fase 48 + 3 robotics.* Fase 279 + 3 tower.* Fase 53)
+        $this->assertCount(23, $unhandledEvents, 'Expected 23 unhandled events in spine catalog');
         $this->assertContains('lgx.temperature.breached.v1', $unhandledEvents);
         $this->assertContains('auto.telematics.anomaly_detected.v1', $unhandledEvents);
         $this->assertContains('mall.footfall.recorded.v1', $unhandledEvents);
@@ -68,6 +68,9 @@ class EventCatalogAndSpineTest extends TestCase
         $this->assertContains('robotics.mission.completed.v1', $unhandledEvents);
         $this->assertContains('robotics.mission.failed.v1', $unhandledEvents);
         $this->assertContains('robotics.wave.released.v1', $unhandledEvents);
+        $this->assertContains('tower.alert.raised.v1', $unhandledEvents);
+        $this->assertContains('tower.sop.published.v1', $unhandledEvents);
+        $this->assertContains('tower.promise.made.v1', $unhandledEvents);
     }
 
     /**

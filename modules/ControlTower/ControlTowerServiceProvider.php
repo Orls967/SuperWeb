@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\ControlTower;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\ControlTower\Application\Services\ControlTowerService;
@@ -23,6 +24,21 @@ class ControlTowerServiceProvider extends ServiceProvider
     {
         $this->app->singleton(ControlTowerService::class);
         $this->app->bind(ControlTowerVisibilityReader::class, ControlTowerVisibilityReaderAdapter::class);
+
+        // [fix2:bindings:promise]
+        //
+        // [fix2:bindings:forecast]
+        //
+        // [fix2:bindings:safety]
+        //
+        // [fix2:bindings:sop]
+        //
+        // [fix2:bindings:alerts]
+        //
+        // [fix2:bindings:twin_kpi]
+        //
+        // [fix2:bindings:scorecard_health]
+        //
     }
 
     public function boot(): void
@@ -30,9 +46,43 @@ class ControlTowerServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         Gate::policy(SopCycle::class, ControlTowerOperationPolicy::class);
+        // [fix2:boot:promise]
+        //
+        // [fix2:boot:forecast]
+        //
+        // [fix2:boot:safety]
+        //
+        // [fix2:boot:sop]
+        //
+        // [fix2:boot:alerts]
+        //
+        // [fix2:boot:twin_kpi]
+        //
+        // [fix2:boot:scorecard_health]
+        //
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+            // [fix2:schedule:promise]
+            //
+            // [fix2:schedule:forecast]
+            //
+            // [fix2:schedule:safety]
+            //
+            // [fix2:schedule:sop]
+            //
+            // [fix2:schedule:alerts]
+            //
+            // [fix2:schedule:twin_kpi]
+            //
+            // [fix2:schedule:scorecard_health]
+            //
+        });
 
         if (file_exists(__DIR__.'/routes/web.php')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        }
+        foreach (glob(__DIR__.'/routes/slice_*.php') ?: [] as $sliceRoutes) {
+            $this->loadRoutesFrom($sliceRoutes);
         }
 
         if (is_dir(__DIR__.'/resources/views/control_tower')) {
@@ -45,6 +95,20 @@ class ControlTowerServiceProvider extends ServiceProvider
                 CaptureKpiSnapshotCommand::class,
                 RecalculateSafetyStockCommand::class,
                 RunTwinSimulationCommand::class,
+                // [fix2:commands:promise]
+                //
+                // [fix2:commands:forecast]
+                //
+                // [fix2:commands:safety]
+                //
+                // [fix2:commands:sop]
+                //
+                // [fix2:commands:alerts]
+                //
+                // [fix2:commands:twin_kpi]
+                //
+                // [fix2:commands:scorecard_health]
+                //
             ]);
         }
 
