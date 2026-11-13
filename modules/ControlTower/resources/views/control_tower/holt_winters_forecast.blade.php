@@ -16,16 +16,16 @@
                 @csrf
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Kode Item</label>
-                        <input type="text" name="item_code" class="form-control" placeholder="SKU-CHIP-99" required>
+                        <label for="hw_item_code" class="form-label">Kode Item</label>
+                        <input id="hw_item_code" type="text" name="item_code" class="form-control" placeholder="SKU-CHIP-99" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Periode (YYYY-MM)</label>
-                        <input type="text" name="period" class="form-control" value="{{ date('Y-m') }}" required>
+                        <label for="hw_period" class="form-label">Periode (YYYY-MM)</label>
+                        <input id="hw_period" type="text" name="period" class="form-control" value="{{ date('Y-m') }}" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Alpha (Level Weight)</label>
-                        <input type="number" step="0.01" name="alpha" class="form-control" value="0.30" required>
+                        <label for="hw_alpha" class="form-label">Alpha (Level Weight)</label>
+                        <input id="hw_alpha" type="number" step="0.01" name="alpha" class="form-control" value="0.30" required>
                     </div>
                 </div>
                 <div class="mt-4">

@@ -1,73 +1,161 @@
 # Konsep Arsitektur Supply Chain Control Tower & S&OP (Fase 53)
 
-## 1. Visi dan Peran dalam Rantai Pasok Terpadu
+## 1. Visi dan Arsitektur End-to-End Rantai Pasok Terpadu
 
-Supply Chain Control Tower (`modules/ControlTower/`, prefiks `sct_`) bertindak sebagai menara pengawas terpadu yang menghubungkan simpul hulu hingga hilir:
-1. **Pemasok Tier-1 & Tier-2 (`SUPPLIER`)**: memantau ketepatan jadwal pengiriman, variabilitas *lead time*, dan risiko keterlambatan pasokan bahan baku.
-2. **Pelabuhan & Kepabeanan (`PORT`)**: melacak kargo impor dalam perjalanan (*in-transit*) serta mendeteksi kemacetan pelabuhan atau penundaan bea cukai.
-3. **Pabrik Manufaktur (`PLANT`)**: mengagregasi kapasitas kerja mesin bebas untuk kebutuhan perhitungan *Capable-to-Promise* (CTP) dan penyeimbangan pasokan S&OP.
-4. **Gudang Sentral / Pusat Distribusi (`DC`)**: membaca stok tersedia riil dari modul `Wms` melalui kontrak `StockAvailabilityReader` tanpa mengakses tabel `wms_*` secara langsung.
-5. **Distributor & Toko/Outlet (`OUTLET`)**: menghitung janji pengiriman pelanggan (*Available-to-Promise* / ATP) serta memantau rasio *On-Time In-Full* (OTIF).
+Supply Chain Control Tower (`modules/ControlTower/`, prefiks tabel `sct_`) berperan sebagai pusat orkestrasi visibilitas, perencanaan konsensus, manajemen risiko pasokan, evaluasi kinerja pemasok, analisis modal kerja persediaan, hingga simulasi skenario Digital Twin tanpa melakukan posting jurnal akuntansi langsung. Arsitektur ini menghubungkan lima simpul fisik dan digital secara end-to-end:
 
-## 2. Prinsip Desain Non-Ledger (D98)
+1. **Pemasok Hulu (`SUPPLIER` — terintegrasi `Procurement` & `Supplier`):**
+   - Memantau ketepatan jadwal kedatangan (*On-Time Delivery*), rata-rata serta standar deviasi *lead time* riil melalui kontrak `Modules\Procurement\Contracts\SupplierLeadTimeStatistics`.
+   - Menghitung skor komposit pemasok (tiering `STRATEGIC` hingga `AT_RISK`) sebagai umpan balik perencanaan pengadaan dan pemetaan risiko pesanan.
+2. **Simpul Transit & Kepabeanan (`PORT` / `IN_TRANSIT` — terintegrasi `Logistics`):**
+   - Melacak kargo pengiriman dalam perjalanan serta memantau keterlambatan melewati batas SLA (`> 72` jam) melalui `Modules\Logistics\Contracts\InTransitShipmentProvider`.
+   - Memberikan sinyal awal terhadap risiko keterlambatan bahan baku maupun barang jadi sebelum mencapai gudang.
+3. **Fasilitas Manufaktur (`PLANT` — terintegrasi `Manufacturing`):**
+   - Mengambil jadwal penerimaan Master Production Schedule (`mpsReceipts`), kapasitas kerja mesin kumulatif, dan ketersediaan bahan baku BOM melalui `Modules\Manufacturing\Contracts\CapacityAndMaterialProvider`.
+   - Menjadi dasar pembatasan realistis untuk janji pesanan *Capable-to-Promise* (CTP) dan tinjauan kapasitas pada tahap *Supply Review* S&OP.
+4. **Pusat Distribusi & Gudang (`DC` / `WAREHOUSE` — terintegrasi `Wms` & `Store`):**
+   - Mengagregasi stok tersedia fisik bebas reservasi dan bebas karantina melalui kontrak `Modules\Wms\Contracts\StockAvailabilityReader` serta `Modules\ControlTower\Contracts\ItemAvailabilityReader`.
+   - Mengelola usia lot tertua untuk deteksi dini risiko kedaluwarsa, persediaan bergerak lambat (*slow-moving*), serta stok mati (*dead stock*).
+5. **Distribusi Hilir & Pelanggan (`DISTRIBUTOR` / `OUTLET` — terintegrasi `Distribution`):**
+   - Menghitung komitmen pesanan distribusi terbuka (`commitmentsByPeriod`) dan fakta pemenuhan historis (`fulfillmentLines`) via `Modules\Distribution\Contracts\OpenDemandProvider`.
+   - Mengubah data pemenuhan aktual menjadi metrik kinerja eksekutif integer permil (`otif_permil`, `fill_rate_permil`) dan mengevaluasi janji pengiriman lewat `PromiseQuoteInterface`.
 
-Sesuai Keputusan Arsitektur `ADR-053` dan aturan D98, `ControlTower` tidak memiliki kejadian uang langsung (`RAB posting = 0`). Seluruh angka moneter pada `sct_sop_cycles` (proyeksi margin kotor, dampak arus kas modal kerja) dan `sct_twin_scenarios` (estimasi delta margin) bersifat analitis/perencanaan dalam satuan minor IDR (`int64` / `bigInteger`), tanpa pernah menggunakan `float`.
+---
 
-## 3. Visibilitas Inventori Multi-Eselon (53.1)
+## 2. Pemisahan Domain Analitis & Prinsip Non-Ledger (`ADR-053` / D98)
 
-Setiap simpul menyimpan empat komponen kuantitas deterministik dalam `sct_echelon_stocks`:
-- `on_hand_qty`: stok fisik yang siap dialokasikan di simpul terkait.
-- `in_transit_qty`: stok dalam perjalanan antar simpul yang telah dikirim.
-- `reserved_qty`: stok yang sudah dikunci untuk janji pesanan ATP terkonfirmasi.
-- `safety_stock_qty`: ambang batas stok pengaman dinamis hasil optimasi ABC/XYZ.
+Sesuai Keputusan Arsitektur `ADR-053`:
+- **RAB Posting Ledger = 0:** Tidak terdapat aliran uang riil yang terbit langsung dari `ControlTower`. Angka nominal pada `sct_sop_cycles` (proyeksi margin kotor & dampak kas), `sct_twin_scenarios` (estimasi delta margin), dan `sct_inventory_health_snapshots` (nilai kapital tertahan & risiko keusangan) dicatat sebagai bilangan bulat minor IDR (`int64` / `bigInteger`) untuk kebutuhan analisis manajemen.
+- **Kepatuhan Boundary Monolit Modular:** Seluruh akses data keluar modul dilakukan melalui antarmuka kontrak eksplisit. Pembacaan langsung tabel `wms_*`, `mfg_*`, `dist_*`, `prc_*`, `store_*`, atau `sup_*` dari dalam `ControlTower` dilarang keras dan diaudit secara otomatis oleh `arch:scan` (`Aturan A1 & A2`).
 
-Invarian wajib:
-- `reserved_qty <= on_hand_qty + in_transit_qty` pada setiap baris.
-- Seluruh nilai kuantitas tidak boleh negatif (`>= 0`).
+---
 
-## 4. Mesin Peramalan Permintaan Multi-Model (53.2)
+## 3. Visibilitas Inventori Multi-Eselon & Kesehatan Persediaan (53.1 & X53-3)
 
-`DemandForecastEngine` menjalankan empat metode proyeksi kuantitatif deterministik dalam aritmetika integer fixed-point (basis points `10_000 = 100%`):
-- **Weighted Moving Average (`MOVING_AVG`)**: memberikan bobot progresif pada tiga periode terakhir (`1:2:3`).
-- **Exponential Smoothing (`EXP_SMOOTHING`)**: pemulusan eksponensial tunggal dengan parameter `alpha_bps`.
-- **Holt-Winters Additive (`HOLT_WINTERS`)**: memodelkan level, tren, dan musiman secara aditif dengan parameter `alpha_bps`, `beta_bps`, dan `gamma_bps`.
-- **Linear Regression (`LINEAR_REGRESSION`)**: regresi kuadrat terkecil deterministik pada deret waktu historis.
+Setiap simpul menyimpan empat variabel dasar pada `sct_echelon_stocks`:
+- `on_hand_qty`: unit fisik tersedia di lokasi.
+- `in_transit_qty`: unit berstatus pengiriman antar-eselon menuju simpul tujuan.
+- `reserved_qty`: unit yang dikunci terhadap janji pesanan ATP aktif.
+- `safety_stock_qty`: ambang batas pengaman dinamis hasil algoritma `MultiEchelonSafetyStock`.
 
-`ForecastModelSelector` mengevaluasi keempat model dan memilih model dengan `mape_bps` terendah, kemudian menyimpan jejak evaluasi (`mape_bps`, `mad_units`, `tracking_signal_bps`) di dalam `ForecastAccuracyCertificate`. Tim penjualan dapat melakukan override kolaboratif melalui `OverrideDemandForecastAction` dengan syarat alasan override wajib diisi dan dicatat di `sct_forecast_overrides`.
+Atas posisi multi-eselon tersebut, `InventoryHealthAnalyzer` (`X53-3`) mengevaluasi efisiensi modal kerja:
+- Memetakan umur lot tertua ke dalam 4 bucket (`0-30`, `31-90`, `91-180`, `>180` hari).
+- Mengklasifikasikan setiap SKU pada setiap eselon ke status `DEAD_STOCK`, `SLOW_MOVING`, `EXCESS`, `SHORTAGE_RISK`, atau `HEALTHY`.
+- Mengukur *Days of Supply* ($DOS = \text{intdiv}(\text{on\_hand}, \max(1, \text{daily\_demand}))$) dan menghitung total modal tertahan maupun eksposur risiko obsolet dalam satuan IDR integer.
 
-## 5. Siklus Bulanan S&OP Kolaboratif (53.3)
+---
 
-Siklus S&OP dikelola oleh `SopCycleStateMachine` dengan tujuh status berurutan:
-1. `draft` — inisiasi rencana awal beserta skenario (`conservative`, `moderate`, `aggressive`).
-2. `demand_review` — tinjauan konsensus permintaan oleh tim penjualan & pemasaran.
-3. `supply_review` — verifikasi kapasitas produksi pabrik dan ketersediaan bahan baku.
-4. `pre_sop_balancing` — penyeimbangan finansial antara margin kotor, biaya simpan, dan dampak modal kerja oleh `SopFinancialBalancer`.
-5. `executive_signoff` — persetujuan eksekutif dengan pencatatan `signed_off_by_user_id` dan stempel waktu dari `ClockInterface`.
-6. `published` — rencana S&OP resmi dipublikasikan sebagai acuan eksekusi bulanan.
-7. `archived` — penutupan siklus setelah periode berjalan selesai.
+## 4. Peramalan Permintaan & Kolaborasi Override Terkendali (53.2 & X53-4)
 
-Setiap perpindahan status wajib melalui `TransitionSopCycleAction` dan tercatat permanen di `sct_sop_events`.
+- **Seleksi Model Otomatis (`ForecastModelSelector` I2):** Mengevaluasi tiga model matematis rasional berpresisi tetap (`scale = 10_000`) yaitu Single Exponential Smoothing (`SES`), Holt Linear Trend (`HOLT`), dan Croston Intermittent (`CROSTON`) menggunakan *walk-forward backtest* hingga 6 periode terakhir. Model dengan `mae_scaled` terendah dipilih secara deterministik (`SES -> HOLT -> CROSTON` saat seri identik).
+- **Override Kolaboratif (`ForecastOverrideService` X53-4):** Perencana penjualan dapat mengusulkan perubahan angka statistik baseline bila terdapat promo, peluncuran produk baru, atau penutupan gerai. Sistem mewajibkan alasan bisnis tertulis, menghitung deviasi dalam basis points (`deviation_bps`), memicu alur persetujuan untuk deviasi signifikan, serta mendukung pengembalian ke baseline (*revert*) kapan saja sebelum publikasi S&OP.
 
-## 6. Mesin Janji Pesanan ATP & CTP (53.4)
+---
 
-Ketika pesanan pelanggan masuk, `EvaluateOrderPromiseAction` dan `AtpCtpCalculator` mengevaluasi:
-1. **ATP (Available-to-Promise)**: menggunakan stok bebas (`on_hand + in_transit - reserved`).
-2. **CTP (Capable-to-Promise)**: jika ATP tidak mencukupi, sistem memeriksa ketersediaan komponen BOM (`bom_component_available_qty`) dan kapasitas bebas pabrik (`plant_free_capacity_units`).
-3. **Status Janji**:
-   - `confirmed`: `atp_confirmed_qty + ctp_manufacturing_qty == requested_qty`
-   - `partial`: `0 < atp_confirmed_qty + ctp_manufacturing_qty < requested_qty`
-   - `rejected`: `atp_confirmed_qty + ctp_manufacturing_qty == 0`
+## 5. Orkestrasi Siklus Bulanan S&OP 7-Status Kolaboratif (53.3)
 
-## 7. Klasifikasi ABC/XYZ & Dynamic Safety Stock (53.5)
+`SopCycleStateMachine` mengorkestrasi siklus S&OP bulanan dengan alur terstruktur serta dukungan kompatibilitas mundur:
 
-`SafetyStockAbcXyzOptimizer` mengklasifikasikan setiap SKU ke dalam matriks 3×3:
-- **Dimensi ABC** (nilai pemakaian tahunan): `A` (`>= 20%`), `B` (`>= 5%`), `C` (`< 5%`).
-- **Dimensi XYZ** (koefisien variasi permintaan): `X` (`CV <= 15%`), `Y` (`CV <= 40%`), `Z` (`CV > 40%`).
-- **Dynamic Safety Stock**: dihitung menggunakan faktor Z (`90% = 1.28`, `95% = 1.65`, `99% = 2.33` dalam skala bps) dan akar kuadrat integer `isqrt`.
-- **Deteksi Slow-Moving & Dead Stock**: `SlowMovingDeadStockDetector` menandai SKU yang tidak bergerak (`>= 60` hari untuk *slow-moving*, `>= 180` hari untuk *dead stock*).
+```mermaid
+flowchart TD
+    DG["1. data_gathering / draft"] -->|advance| DR["2. demand_review (+ TaskInbox)"]
+    DR -->|advance| SR["3. supply_review (+ TaskInbox)"]
+    SR -->|rollback + alasan| DR
+    SR -->|advance| PS["4. pre_sop / pre_sop_balancing (+ TaskInbox)"]
+    PS -->|rollback + alasan| SR
+    PS -->|submit approval| ES["5. exec_sop / executive_signoff (ApprovalEngine)"]
+    ES -->|rollback + alasan| PS
+    ES -->|four-eyes publish| PUB["6. published (Emit tower.sop.published.v1)"]
+    PUB -->|close cycle| CL["7. closed / archived"]
+```
 
-## 8. Analisis Dampak Disrupsi & Digital Twin What-If (53.6 & 53.8)
+Setiap perubahan status wajib melewati `SopPublicationOrchestrator` / `TransitionSopCycleAction`, memicu pencatatan permanen di `sct_sop_events`, menegakkan aturan wajib alasan untuk transisi mundur, membuat tugas kotak masuk di `TaskInboxService` pada tahap tinjauan, serta memverifikasi aturan *four-eyes* melalui `ApprovalEngineInterface` sebelum event `tower.sop.published.v1` dipancarkan ke outbox.
 
-- **Blast Radius Impact Analysis**: `BlastRadiusImpactAnalyzer` menelusuri jalur eselon setiap pesanan terbuka (`echelon_path`) untuk mengidentifikasi daftar pesanan terdampak dan total pendapatan berisiko (`revenue_at_risk_idr`) saat sebuah simpul (mis. `PORT-TANJUNG-PRIOK`) mengalami gangguan.
-- **What-If Digital Twin**: `WhatIfTwinSimulator` dan `ControlTowerTwinTickHandler` (mengimplementasikan `SimTickHandlerInterface` pada sandbox P3) mensimulasikan skenario kejut (`PORT_CLOSURE`, `MATERIAL_INFLATION`, `DEMAND_SURGE`, `PLANT_EXPANSION`) tanpa mengubah data operasional riil.
+---
 
+## 6. Mesin Janji Pesanan ATP/CTP Berbasis Kapasitas Nyata (53.4 & I1)
+
+`PromiseQuoteService` mengimplementasikan `PromiseQuoteInterface` sebagai satu-satunya gerbang eksternal evaluasi janji pesanan:
+1. Membaca ketersediaan bersih melalui `ItemAvailabilityReader`.
+2. Mengambil jadwal `mpsReceipts` dan `cumulativeByPeriod` dari `Manufacturing`.
+3. Mengambil `commitmentsByPeriod` dari `Distribution`.
+4. Menjalankan `AtpCtpNetter` lintas periode `1..T` guna menentukan status `on_time`, `late` (disertai `late_periods`), atau `cannot_promise` beserta kode alasan spesifik (`INSUFFICIENT_CAPACITY`, `INSUFFICIENT_MATERIAL`, `HORIZON_EXCEEDED`).
+5. Memastikan eksekusi atomik idempoten berdasarkan `idempotency_key` (menolak payload berbeda melalui `IdempotencyConflictException`) dan menerbitkan event `tower.promise.made.v1`.
+
+---
+
+## 7. Klasifikasi ABC/XYZ, Safety Stock Dinamis, Risiko & Pemasok (53.5, 53.6, X53-1, X53-2)
+
+- **Multi-Echelon Safety Stock (`MultiEchelonSafetyStock` I3):** Menggabungkan variabilitas permintaan pelanggan dengan ketidakpastian kedatangan pemasok riil (`SupplierLeadTimeStatistics`) untuk menghasilkan kuantitas stok pengaman dan titik pesan ulang (*reorder point*). Pembaruan kebijakan diproses secara terkendali via usulan dan keputusan persetujuan four-eyes (`DecideSafetyStockProposalAction`).
+- **Penilaian Risiko Pesanan (`OrderRiskScorer` X53-1):** Mengagregasi empat sinyal operasional (defisit ATP/CTP, variabilitas pemasok, umur lot tertua, dan pengiriman in-transit terlambat) ke dalam skor `0..1000` dengan kategori `LOW`, `MEDIUM`, `HIGH`, hingga `CRITICAL`.
+- **Alert Disrupsi & Realokasi Terpersetujuan:** `AlertScannerService` men-scan anomali secara idempoten berdasar `dedup_key`, memancarkan `tower.alert.raised.v1`, dan menyusun usulan pemindahan antar-gudang (`proposeReallocation`) yang hanya mengeksekusi mutasi setelah ditinjau oleh operator/planner.
+- **Kartu Skor Pemasok (`SupplierScorecardService` X53-2):** Memadukan ketepatan waktu OTD (45%), konsistensi lead time (30%), dan kecukupan riwayat sampel (25%) untuk mengelompokkan pemasok beserta analisis tren bulanan.
+
+---
+
+## 8. KPI Eksekutif Terukur & Digital Twin Sandbox (53.7 & 53.8)
+
+- **KPI Operasional Nyata:** `ControlTowerKpiDrilldownService` membaca fakta pemenuhan pesanan dari `OpenDemandProvider::fulfillmentLines()` untuk menyajikan `otif_permil`, `fill_rate_permil`, DOS, Cash-to-Cash, serta jumlah stockout secara transparan hingga level pesanan tunggal (`ON_TIME`, `LATE`, `SHORT`, `OPEN`).
+- **Digital Twin Bebas Mutasi (`TwinWhatIfOrchestratorService`):** Mengisolasi skenario kejut (`PORT_CLOSURE`, `MATERIAL_INFLATION`, `SUPPLY_DELAY`, `DEMAND_SPIKE`, `SUPPLIER_LOSS`, `WAREHOUSE_CAPACITY`) menggunakan `ControlTowerTwinTickHandler` dan validasi kesetaraan checksum SHA-256 sebelum vs sesudah eksekusi.
+
+
+---
+
+## 5. Prinsip Konservasi Fisik, Non-Ledger, dan Pemisahan Tugas (`Control Tower`)
+
+### 5.1 Mengapa Control Tower Bersifat Non-Ledger (`RAB = 0`)
+Modul Control Tower bertindak sebagai otak perencanaan (*planning & orchestration layer*) yang membaca kondisi fisik gudang, lini produksi, pesanan distribusi, dan riwayat pembelian tanpa membukukan jurnal akuntansi sendiri. Kejadian uang (*monetary events*) seperti penerimaan barang PO, pencairan upah produksi, penagihan faktur pelanggan, dan penyusutan nilai persediaan tetap menjadi tanggung jawab eksklusif modul `Procurement`, `Wms`, `Manufacturing`, dan `Finance`. Pemisahan ini menjamin dua invarian:
+1. Tidak ada jurnal kembar (*double counting*) antara proyeksi perencanaan dengan buku besar riil.
+2. Seluruh eksperimen simulasi (*what-if sandbox*), skenario S&OP konservatif/moderat/agresif, maupun proposal kebijakan *safety stock* dapat dijalankan dan dibatalkan berkali-kali tanpa meninggalkan jejak koreksi jurnal di buku besar.
+
+### 5.2 Hukum Konservasi dalam Alokasi Kuota & Netting ATP
+Pada setiap SKU di semua eselon berlaku batasan keras:
+
+$$\sum_{p} \text{atp\_confirmed\_qty}_{p} \le \sum_{n \in \{\text{PLANT,DC,OUTLET}\}} (\text{on\_hand\_qty}_n + \text{in\_transit\_qty}_n - \text{quarantine}_n)$$
+
+Aturan turunan:
+- Barang berstatus **karantina / hold** di WMS wajib dikeluarkan dari `nettable_stock` oleh `WmsItemAvailabilityReader` hingga hasil inspeksi QC dilepas di modul WMS.
+- Pemecahan alokasi safety stock total ke `PLANT`, `DC`, dan `OUTLET` via kuota Hamilton menjamin jumlah stok pengaman eselon tidak pernah selisih pembulatan naik/turun (`conservation law`).
+- Apabila *audit* menemukan selisih pada salah satu batasan di atas, `php artisan tower:audit` langsung gagal dengan status `DISCREPANCY` dan kode keluar `1`.
+
+### 5.3 Pemisahan Tugas Empat Mata (*Four-Eyes Segregation*)
+Empat alur persetujuan sensitif di Control Tower diikat dengan pemeriksaan identitas pengaju melawan penyetuju:
+1. **Override Forecast Deviasi Besar (`X53-4`):** Perubahan $> 20\%$ membutuhkan persetujuan berbeda sebelum nilai aktif di `sct_demand_forecasts` diperbarui.
+2. **Proposal Kebijakan Safety Stock (`I3`):** Perubahan target *service level* maupun kuota eselon ditampung pada kolom `proposed_*` sampai penyetuju (`admin` atau `logistics_admin`) menyetujui lewat `DecideSafetyStockProposalAction`.
+3. **Eksekusi Playbook Reallocation Alert:** Proposal realokasi antar eselon dari alert disrupsi dipisahkan menjadi tahap `proposeReallocation()` dan `approveReallocation()`.
+4. **Publikasi Konsensus S&OP:** Transisi ke tahap `consensus` menciptakan tugas lintas fungsi pada `TaskInboxService` dan mencatat approval formal sebelum event `tower.sop.published.v1` dipancarkan ke outbox.
+
+### 5.4 Definisi Matematis KPI Layanan Nyata (`OTIF` & `Fill Rate`)
+`ControlTowerKpiDrilldownService` menghitung KPI riil dalam integer permil (`0..1000`) dari baris `DistributionOpenDemandProvider::fulfillmentLines()`:
+
+$$\text{Fill Rate (permil)} = \left\lfloor \frac{1000 \cdot \sum \min(\text{delivered\_qty}_i, \text{ordered\_qty}_i)}{\sum \text{ordered\_qty}_i} \right\rfloor$$
+
+$$\text{OTIF (permil)} = \left\lfloor \frac{1000 \cdot |\{ i : \text{delivered\_qty}_i \ge \text{ordered\_qty}_i \land \text{delivered\_date}_i \le \text{due\_date}_i \}|}{|\text{total\_lines}|} \right\rfloor$$
+
+Bilangan permil mencegah galat pembulatan biner (`0.1 + 0.2`) sekaligus tetap presisi untuk perbandingan tren harian (`tower:kpi`) maupun drilldown per distributor/SKU.
+
+
+---
+
+## 6. Keterhubungan Siklus Hidup Antar Gelombang Operasi ERP
+
+Supply Chain Control Tower berada di puncak lapisan perencanaan analitis dan mengorkestrasi sinyal dari lima domain eksekusi:
+
+```mermaid
+flowchart TD
+    PRC[Procurement: PO & GRN Lead Time] -->|SupplierLeadTimeStatistics| CT[Control Tower]
+    WMS[WMS: Stok Fisik, Pickable & Karantina] -->|ItemAvailabilityReader| CT
+    MFG[Manufacturing: Work Center & MRP Plans] -->|CapacityAndMaterialProvider| CT
+    DST[Distribution: Open Sales Orders & POD] -->|OpenDemandProvider| CT
+    LGS[Logistics: Tracking Pengapalan Aktif] -->|InTransitShipmentProvider| CT
+    CT -->|tower.promise.made.v1| DST
+    CT -->|tower.sop.published.v1| MFG
+    CT -->|tower.sop.published.v1| PRC
+    CT -->|tower.alert.raised.v1| WMS
+```
+
+Titik rekonsiliasi utama antar gelombang:
+1. **Dari `Procurement` (Fase 33–34) ke `ControlTower` (`X53-2` & `I3`):** Setiap penerimaan GRN yang disetujui memperbarui `mean_days`, `sigma_days`, dan `on_time_permil`, sehingga secara otomatis mengkalibrasi kebutuhan *safety stock* pada siklus mingguan.
+2. **Dari `Wms` (Fase 41) ke `ControlTower` (`I1` & `X53-3`):** Stok yang masuk zona karantina atau *hold* otomatis terpotong dari nettable ATP dan menaikkan eksposur `quarantine_qty` di dashboard kesehatan inventori.
+3. **Dari `Manufacturing` (Fase 35–36) ke `ControlTower` (`I1`):** Jam mesin kosong work-center dan pasokan komponen MRP menyediakan pagar kapasitas riil bagi jalur *Capable-to-Promise* (CTP).
+4. **Dari `Distribution` (Fase 43) ke `ControlTower` (`I1` & `53.7`):** Pesanan terbuka mengurangi saldo ATP per bucket mingguan, sementara tanggal *Proof of Delivery* (`pod_at`) memberi ukuran OTIF & Fill Rate nyata tanpa rekayasa angka statis.

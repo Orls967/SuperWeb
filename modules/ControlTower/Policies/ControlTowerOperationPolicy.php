@@ -27,4 +27,9 @@ final class ControlTowerOperationPolicy
     {
         return in_array($user->role, ['admin', 'logistics_admin', 'planner'], true);
     }
+
+    public function manageAlerts(User $user): bool
+    {
+        return in_array($user->role, ['admin', 'logistics_admin', 'planner'], true);
+    }
 }

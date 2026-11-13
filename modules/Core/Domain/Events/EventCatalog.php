@@ -395,6 +395,49 @@ final class EventCatalog
                 'certificate_hash' => 'string',
             ],
         ],
+        'tower.alert.raised.v1' => [
+            'name' => 'tower.alert.raised.v1',
+            'version' => 1,
+            'producer' => 'ControlTower',
+            'consumers' => ['Logistics', 'Wms', 'Core'],
+            'purpose' => 'Raise a supply chain disruption alert from a versioned rule so logistics and warehouse can react and Tugas Saya items are created',
+            'payload_schema' => [
+                'alert_code' => 'string',
+                'rule_code' => 'string',
+                'object_ref' => 'string',
+                'severity' => 'string',
+                'dedup_key' => 'string',
+            ],
+        ],
+        'tower.sop.published.v1' => [
+            'name' => 'tower.sop.published.v1',
+            'version' => 1,
+            'producer' => 'ControlTower',
+            'consumers' => ['Manufacturing', 'Procurement', 'Distribution'],
+            'purpose' => 'Publish an approved S&OP cycle plan (demand, supply, gaps) to manufacturing, procurement and distribution planners',
+            'payload_schema' => [
+                'cycle_code' => 'string',
+                'period' => 'string',
+                'demand_plan_qty' => 'integer',
+                'supply_plan_qty' => 'integer',
+                'approved_by_user_id' => 'integer',
+            ],
+        ],
+        'tower.promise.made.v1' => [
+            'name' => 'tower.promise.made.v1',
+            'version' => 1,
+            'producer' => 'ControlTower',
+            'consumers' => ['Distribution', 'Logistics', 'Core'],
+            'purpose' => 'Notify order owners of an ATP/CTP order promise (on time, late or cannot promise) with its certificate hash',
+            'payload_schema' => [
+                'promise_code' => 'string',
+                'order_reference' => 'string',
+                'item_code' => 'string',
+                'status' => 'string',
+                'promised_period' => 'integer',
+                'certificate_hash' => 'string',
+            ],
+        ],
     ];
 
     /**
