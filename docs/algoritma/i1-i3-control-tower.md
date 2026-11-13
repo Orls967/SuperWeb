@@ -143,3 +143,135 @@ Empat komponen risiko dihitung integer berbobot penuh tanpa float:
 
 ### 4.4 `ForecastOverrideService` (`X53-4`)
 - Memvalidasi perubahan manual kuantitas permintaan oleh planner (`new_qty >= 0`, `reason >= 5` karakter), menghitung `deviation_bps`, mengarahkan deviasi besar melalui `ApprovalEngineInterface`, serta menyediakan pemulihan deterministik (`revertOverride`) ke nilai proyeksi statistik awal.
+
+
+---
+
+## 4. Contoh Perhitungan Numerik Deterministik (`I1`, `I2`, `I3`)
+
+### 4.1 Contoh Numerik `AtpCtpNetter` (`I1`)
+Misalkan SKU `SP-001` pada `as_of_date = 2026-11-16` memiliki:
+- Stok tersedia WMS = `100` unit, karantina/hold = `20` unit (tidak ikut nettable supply).
+- Open commitments (`DistributionOpenDemandProvider`) per periode mingguan P0..P3 = `[30, 40, 20, 10]`.
+- Jadwal penerimaan MPS + kapasitas manufaktur bebas (`ManufacturingCapacityAndMaterialProvider`) P0..P3 = `[0, 50, 40, 40]`.
+
+Perhitungan netting kumulatif:
+1. Nettable initial supply `P0`: `100 - 30 = 70` unit ATP kumulatif bebas.
+2. `P1`: ATP kumulatif `70 + (0 - 40) = 30`, CTP kumulatif `30 + 50 = 80`.
+3. Jika pesanan baru meminta `60` unit pada `requested_period = 1`:
+   - ATP hanya sanggup `30` unit, sehingga kekurangan `30` unit ditutup dari kapasitas manufaktur CTP (`80 >= 60`).
+   - Output `AtpCtpNetter::evaluate()`: `atp_confirmed_qty = 30`, `ctp_manufacturing_qty = 30`, `promised_period = 1`, `late_periods = 0`, `reason_code = CTP_ON_TIME`.
+4. Jika pesanan meminta `150` unit pada `requested_period = 1`, maka seluruh ATP + CTP sampai P1 (`80`) belum cukup; netter menelusuri hingga `P2` (`80 + 40 = 120`) lalu `P3` (`120 + 40 = 160 >= 150`), menghasilkan `promised_period = 3`, `late_periods = 2`, `reason_code = CTP_LATE`.
+5. Jika total kumulatif horizon 12 periode tetap `< requested_qty`, hasil mengembalikan konfirmasi parsial pada akhir horizon dengan `reason_code = BOTTLENECK_SHORTFALL` dan sertifikat hash deterministik.
+
+### 4.2 Contoh Numerik Rasional `ForecastModelSelector` (`I2`)
+Skala internal `ForecastModelSelector::SCALE = 10_000` menyimpan seluruh bobot dan kesalahan secara eksak sebagai bilangan bulat tanpa `float`:
+- **SES** ($\alpha = 3/10$): $L_t = \lfloor (3 \cdot y_t + 7 \cdot L_{t-1}) / 10 \rfloor$ (dibulatkan setengah ke atas via `(num * 2 + den) / (2 * den)` pada implementasi rasional terskala).
+- **HOLT** ($\alpha = 3/10, \beta = 1/10$): memperbarui komponen level $L_t$ dan tren $T_t = \frac{1}{10}(L_t - L_{t-1}) + \frac{9}{10}T_{t-1}$.
+- **CROSTON** ($\alpha = 2/10$): memisahkan ukuran permintaan tak nol $z_k$ dan interval antarkedatangan $p_k$, sehingga proyeksi per periode adalah $z_k / p_k$ tanpa bias akibat banyaknya angka nol pada seri intermiten.
+
+Validasi *walk-forward* 6 titik terakhir:
+- Untuk seri stasioner (misal `[100, 102, 98, 101, 99, 100, 101, 99]`), tren $T_t \approx 0$ membuat **SES** memperoleh `mae_scaled` terendah.
+- Untuk seri menanjak linier (`[100, 115, 130, 145, 160, 175, 190, 205]`), lag horizontal SES menghasilkan galat besar sehingga **HOLT** menang telak.
+- Untuk seri intermiten dengan $\ge 40\%$ nol (`[0, 0, 50, 0, 0, 48, 0, 0, 52]`), **CROSTON** dipilih karena model smoothing konvensional meremehkan lonjakan permintaan.
+- Jika terdapat seri identik pada titik seri tie, tie-breaker deterministik memakai urutan kanonik `SES < HOLT < CROSTON`.
+
+### 4.3 Contoh Numerik `MultiEchelonSafetyStock` (`I3`) & Alokasi Hamilton
+Misalkan item kelas **AX** ($Z \times 1000 = 2330$ atau sesuai tabel `AX=23300` pada skala `10_000`), permintaan harian rata-rata $\mu_D = 20$, varians permintaan $\sigma_D^2 = 25$, *lead time* pemasok $\mu_L = 5$ hari dan $\sigma_L = 2$ hari (dari `ProcurementSupplierLeadTimeStatistics`):
+
+$$\sigma_{\text{gabungan}} = \left\lfloor \sqrt{\mu_L \cdot \sigma_D^2 + \mu_D^2 \cdot \sigma_L^2} \right\rfloor = \lfloor \sqrt{5 \cdot 25 + 400 \cdot 4} \rfloor = \lfloor \sqrt{1725} \rfloor = 41$$
+
+Stok pengaman total (`safety_stock_qty`) dihitung dengan `BigInteger` agar tidak meluap saat $\mu_D$ bernilai jutaan, lalu didistribusikan ke eselon `PLANT`, `DC`, `OUTLET` berdasarkan bobot stok/permintaan menggunakan metode kuota Hamilton (*largest remainder*):
+1. Hitung kuota bawah $\lfloor \text{total} \cdot w_i / W \rfloor$ untuk setiap eselon.
+2. Hitung sisa pembagian $r_i = (\text{total} \cdot w_i) \bmod W$.
+3. Distribusikan unit tersisa $\text{total} - \sum \text{kuota}_i$ satu per satu kepada eselon dengan sisa $r_i$ terbesar (tie-breaker leksikografis node `DC < OUTLET < PLANT`), menjamin $\sum \text{alokasi}_i \equiv \text{total}$ tanpa hilang 1 unit pun.
+
+---
+
+## 5. Spesifikasi Algoritma Ekstensi Kritis (`X53-1` – `X53-4`)
+
+### 5.1 `X53-1` — `OrderRiskScorer` (Skala `0..1000`)
+Setiap pesanan terbuka dinilai dari empat komponen deterministik berbasis integer:
+- **Shortfall Component (`0..400`):** Proporsi kekurangan stok ATP terhadap `requested_qty`.
+- **Lead-Time Variability Component (`0..250`):** Rasio $\sigma_L / \max(1, \mu_L)$ dari `SupplierLeadTimeStatistics`.
+- **Shelf-Life Component (`0..200`):** Risiko kedaluwarsa batch apabila sisa umur simpan mendekati waktu tempuh pengiriman.
+- **Transit Delay Component (`0..150`):** Keterlambatan estimasi kedatangan dari `InTransitShipmentProvider`.
+
+Tier risiko:
+- `CRITICAL`: skor $\ge 750$
+- `HIGH`: $500 \le \text{skor} < 750$
+- `MEDIUM`: $250 \le \text{skor} < 500$
+- `LOW`: $\text{skor} < 250$
+
+### 5.2 `X53-2` — `SupplierScorecardService` (Skala `0..1000`)
+- Bobot komposit: **45%** *On-Time Delivery* (`on_time_permil`), **30%** konsistensi *lead time* ($\sigma_L$ vs $\mu_L$), **25%** kelengkapan sampel GRN nyata (`prc_receiving_reports`).
+- Klasifikasi tier:
+  - `STRATEGIC`: skor $\ge 850$
+  - `PREFERRED`: $700 \le \text{skor} < 850$
+  - `WATCHLIST`: $500 \le \text{skor} < 700$
+  - `AT_RISK`: $\text{skor} < 500$
+- Saat `samples == 0`, seluruh komponen bernilai aman `0`, tier `AT_RISK`, tren `STABLE`, dengan rekomendasi pengumpulan data GRN awal.
+
+### 5.3 `X53-3` — `InventoryHealthAnalyzer`
+- Aging bucket berdasarkan umur lot tertua: `0-30`, `31-90`, `91-180`, `>180`.
+- Klasifikasi status prioritas:
+  1. `DEAD_STOCK`: lot $> 180$ hari tanpa permintaan aktif atau flag barang usang.
+  2. `SLOW_MOVING`: *Days of Supply* (DOS) tinggi (> 90 hari) dengan umur lot $> 90$ hari.
+  3. `SHORTAGE_RISK`: stok tersedia di bawah cakupan aman (< 7 hari DOS).
+  4. `EXCESS`: DOS melebihi ambang maksimum (> 60 hari) untuk kategori bergerak normal.
+  5. `HEALTHY`: berada dalam pita stok optimal.
+- Valuasi IDR memakai integer `int` / `BigInt`-safe murni (`tied_capital_idr = on_hand_qty * unit_cost_idr` dan `obsolescence_risk_idr`).
+
+
+---
+
+## 6. Spesifikasi Kasus Batas (*Edge Cases*) & Invarian Keamanan Algoritma
+
+### 6.1 Kasus Batas `AtpCtpNetter` (`I1`)
+- **Stok Fisik < Reservasi Terbuka (`initialNettableStock < 0` atau `quarantineHold >= onHand`):** Nilai nettable periode 0 dipotong menjadi `0` (clamp non-negatif) sebelum menghitung komitmen berikutnya agar tidak menciptakan ATP negatif fiktif.
+- **Karantina Gudang (`quarantineHold > 0`):** Stok berstatus QC hold dikeluarkan total pada `WmsItemAvailabilityReader` sehingga tidak pernah dijanjikan kepada pesanan komersial.
+- **Horizon Permintaan Berlebih:** Jika `requestedPeriod >= horizonPeriods`, indeks dijepit atau langsung jatuh ke skenario terlambat eksplisit sesuai panjang horizon (`12` minggu default).
+- **Idempotensi & Konflik Muatan:** Pengulangan panggilan `PromiseQuoteService::quote()` dengan `idempotencyKey` identik namun salah satu parameter berbeda (`quantity`, `requestedPeriod`, `itemCode`, `orderReference`, `asOfDate`) wajib membatalkan transaksi dan melempar `PromiseIdempotencyConflictException`.
+
+### 6.2 Kasus Batas `ForecastModelSelector` (`I2`)
+- **Validasi Input:** Array kosong, panjang `< 3`, atau elemen `< 0` langsung melempar `InvalidArgumentException` tanpa menulis rekaman korup ke `sct_demand_forecasts`.
+- **Seri Pendek (Panjang `3..5`):** Walk-forward tetap berjalan mulai titik indeks `1` dengan kandidat minimal valid untuk semua 3 model, memastikan CLI `tower:forecast-select` tetap berhasil untuk SKU baru.
+- **Seri Nol Konstan (`[0, 0, 0, 0, ...]`)**: `CROSTON` menangani kondisi tanpa permintaan tak-nol dengan keluaran `0` bersih tanpa `DivisionByZeroError`.
+- **Tie-Breaker Leksikografis:** Apabila dua model memiliki `mae_scaled` sama persis, pemenang ditentukan berdasarkan urutan deterministik `SES` -> `HOLT` -> `CROSTON`.
+
+### 6.3 Kasus Batas `MultiEchelonSafetyStock` (`I3`)
+Matriks lengkap faktor Z (`Z_FACTOR_SCALE = 10_000`) untuk ke-9 sel klasifikasi ABC × XYZ:
+
+| Klasifikasi | `X` (Stabil, CV < 0.25) | `Y` (Moderat, 0.25 <= CV <= 0.65) | `Z` (Fluktuatif, CV > 0.65) |
+|---|---|---|---|
+| **A** (80% nilai pakai) | `23300` (Z = 2.33, ~99.0%) | `20500` (Z = 2.05, ~98.0%) | `19600` (Z = 1.96, ~97.5%) |
+| **B** (15% nilai pakai) | `16500` (Z = 1.65, ~95.0%) | `16500` (Z = 1.65, ~95.0%) | `12800` (Z = 1.28, ~90.0%) |
+| **C** (5% nilai pakai) | `12800` (Z = 1.28, ~90.0%) | `10400` (Z = 1.04, ~85.0%) | `8400` (Z = 0.84, ~80.0%) |
+
+Penanganan batas tambahan:
+- **Pemasok Belum Punya GRN (`samples == 0`):** `ProcurementSupplierLeadTimeStatistics` mengembalikan `mean_days = 0, sigma_days = 0, samples = 0, on_time_permil = 0` secara deterministik tanpa eksepsi.
+- **Tie-Breaker Pemilihan Pemasok Utama:** `primarySupplierForItem()` memilih pemasok dengan `samples` terbanyak; bila seri, memilih `supplier_ref` terkecil secara urutan alfabetis.
+- **Konservasi Alokasi Hamilton:** Saat seluruh bobot eselon bernilai `0`, fallback memberikan bobot seragam (`[1, 1, 1]`) ke `DC`, `OUTLET`, `PLANT` sehingga penjumlahan alokasi selalu sama persis dengan `safety_stock_qty`.
+
+
+---
+
+## 7. Kompleksitas Komputasi, Determinisme Lintas Platform, dan Skala Data
+
+| Algoritma / Layanan | Kompleksitas Waktu | Kompleksitas Memori | Determinisme Numerik | Catatan Skala Produksi |
+|---|---|---|---|---|
+| `AtpCtpNetter::evaluate()` | $O(H)$, $H = 12$ periode | $O(H)$ | Integer murni (`int`) | Stabil < 1 ms per kuotasi walaupun open commitment besar (teragregasi per bucket SQL) |
+| `ForecastModelSelector::selectBestModel()` | $O(N)$, $N =$ panjang seri | $O(N)$ | Rasional skala `10_000` (`intdiv` & round-half-up) | Mendukung eksekusi batch seluruh SKU via `tower:forecast-select` tanpa kebocoran memori |
+| `MultiEchelonSafetyStock::calculate()` | $O(E \log E)$, $E = 3$ node | $O(E)$ | `Brick\Math\BigInteger` + `bigIsqrt` + Hamilton | Bebas integer overflow hingga kuadriliun unit; hasil identik arm64 macOS vs x86_64 Linux |
+| `OrderRiskScorer::score()` | $O(1)$ per baris pesanan | $O(1)$ | Integer murni (`0..1000`) | Cocok untuk cron per jam `tower:risk-scan` |
+| `SupplierScorecardService::evaluate()` | $O(M)$, $M \le 12$ bulan | $O(M)$ | Integer permil (`0..1000`) | Memproses 100+ pemasok secara deterministik dengan tie-breaker alfabetis |
+| `InventoryHealthAnalyzer::analyze()` | $O(1)$ per SKU × node | $O(1)$ | Integer / `BigInt`-safe IDR | Menjaga presisi rupiah penuh bahkan pada nilai inventori miliaran IDR |
+| `ControlTowerKpiDrilldownService::summary()` | $O(L \log L)$, $L =$ line distribusi | $O(L)$ | Integer permil (`0..1000`) | Pengurutan deterministik `(due_date, order_ref, item_code)` di seluruh database engine |
+| `TwinWhatIfOrchestratorService::run()` | $O(K)$, $K =$ baris KPI aktif | $O(K)$ | Digest `SHA-256` pra & pasca identik | Verifikasi hash eksplisit menjamin zero-mutation walau database awal kosong |
+
+### 7.1 Prinsip Tie-Breaking Deterministik Global
+Untuk menjamin uji penerimaan dan *reproducibility audit* selalu konsisten:
+1. Seleksi model `I2` saat `mae_scaled` seri: `SES < HOLT < CROSTON`.
+2. Pemilihan pemasok utama `ProcurementSupplierLeadTimeStatistics`: `samples` terbanyak -> `supplier_ref` terkecil leksikografis.
+3. Sisa pembagian kuota Hamilton `MultiEchelonSafetyStock`: sisa terbesar -> nama node terkecil (`DC < OUTLET < PLANT`).
+4. Pengurutan baris drilldown KPI `DistributionOpenDemandProvider`: `due_date` -> `order_ref` -> `item_code`.

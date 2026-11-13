@@ -87,3 +87,83 @@ Seluruh tampilan web di `modules/ControlTower/resources/views/control_tower/` di
 - Grid adaptif `grid-cols-1 md:grid-cols-3` atau `grid-cols-1 md:grid-cols-4` agar kartu metrik tersusun rapi pada viewport mobile `375px` tanpa overflow horizontal.
 - Tabel data dibungkus kontainer `overflow-x-auto` dan dilengkapi formulir aksi interaktif (simulasi, kuotasi ATP, seleksi model, override forecast, transisi S&OP, mitigasi alert, penyegaran skor pemasok/kesehatan stok) serta tautan langsung ekspor `.csv`.
 - Setiap rute terdaftar dalam `tests/Architecture/route-roles.php` sehingga lulus uji matrik otorisasi RBAC maupun `php artisan ui:lint --render --responsive`.
+
+
+---
+
+## 4. Desain Per-Komponen Setiap Irisan (`FIX-2` Slices 1–7)
+
+### 4.1 State Machine & Alur Persetujuan Empat Mata
+Semua perubahan parameter kritis Control Tower memisahkan peran pengaju (*planner*) dari penyetuju (*approver*) memakai `ApprovalEngineInterface`:
+
+```mermaid
+stateDiagram-v2
+    [*] --> proposed: propose / override > 20%
+    proposed --> approved: approve (penyetuju != pengaju)
+    proposed --> rejected: reject (penyetuju != pengaju)
+    approved --> [*]: kebijakan / target aktif diperbarui
+    rejected --> [*]: kondisi aktif lama dipertahankan
+```
+
+Tabel transisi siklus S&OP (`SopCycleStateMachine`):
+
+| Dari Status | Tujuan Maju Valid | Tujuan Mundur (Wajib Alasan) | Efek Samping Orkestrasi |
+|---|---|---|---|
+| `data_gathering` | `demand_review` | — | Membuat rekaman `sct_sop_events` |
+| `demand_review` | `supply_review` | `data_gathering` | Validasi baseline seri permintaan |
+| `supply_review` | `pre_sop` | `demand_review`, `data_gathering` | Sinkronisasi utilisasi kapasitas pabrik |
+| `pre_sop` | `financial_review` | `supply_review`, `demand_review` | Proyeksi estimasi margin & arus kas |
+| `financial_review` | `executive_sop` | `pre_sop`, `supply_review` | Pengajuan antrean konsensus pimpinan |
+| `executive_sop` | `consensus` | `financial_review`, `pre_sop` | Buat tugas `TaskInboxService` + `ApprovalEngineInterface` + event `tower.sop.published.v1` |
+| `consensus` | `closed` | `executive_sop` | Penguncian siklus bulanan & arsip audit |
+| *(legacy)* `draft` | `demand_review` | — | Jalur kompatibilitas mundur (`53.3`) |
+| *(legacy)* `signed_off` | `archived`, `closed` | `executive_sop` | Jalur penutupan siklus historis |
+
+### 4.2 Jaminan Sertifikat Deterministik & Anti-Tampering
+Setiap keluaran algoritmik inti menyertakan sidik jari `SHA-256` deterministik yang dihitung dari parameter masukan dan keluaran kanonik tanpa komponen waktu acak:
+
+1. **Kuotasi ATP/CTP (`PromiseQuoteService`):**
+   - `payload_hash = sha256(json_encode([item_code, quantity, requested_period, order_reference, as_of_date]))`.
+   - `certificate_hash` disusun oleh `AtpCtpNetter` atas `(atp_confirmed_qty, ctp_manufacturing_qty, promised_period, reason_code, horizon_vector)`.
+   - Pengulangan request dengan `idempotency_key` sama tetapi `payload_hash` berbeda melempar `PromiseIdempotencyConflictException` (HTTP `409 Conflict`).
+2. **Seleksi Forecast (`ForecastModelSelector`):**
+   - Menyimpan kandidat seluruh model (`SES`, `HOLT`, `CROSTON`) pada `candidates_json` serta `mae_scaled` dalam bilangan bulat terskala `10_000`.
+   - `certificate_hash` mengikat seri historis, parameter rasional pembilang/penyebut tetap (`3/10`, `3/10+1/10`, `2/10`), serta pemenang terpilih.
+3. **Kebijakan Safety Stock (`MultiEchelonSafetyStock`):**
+   - Menyimpan `certificate_digest` beserta `echelon_breakdown` (`PLANT`, `DC`, `OUTLET`) sebelum disetujui (`proposed_echelon_breakdown`) dan sesudah disetujui empat mata (`echelon_breakdown`).
+   - Memastikan total unit across eselon selalu identik dengan `safety_stock_qty` lewat alokasi Hamilton.
+
+### 4.3 Batas Non-Ledger & Keamanan Numerik (`A3` = `0`)
+- Tidak satu pun layanan pada `modules/ControlTower/` menulis jurnal akuntansi (`JournalEntry`, `LedgerAccount`) atau memanggil `LedgerPostingEngine` (`docs/decisions/ADR-053-control-tower-non-ledger.md`).
+- Seluruh rasio dan skor dinyatakan sebagai bilangan bulat: basis poin (`bps`, 10.000 = 100%) atau permil (`permil`, 1.000 = 100%) dan skala rasional tetap (`SCALE = 10_000`).
+- Perhitungan nilai rupiah modal terkunci dan risiko keusangan pada `InventoryHealthAnalyzer` dan `ControlTowerKpiDrilldownService` memakai aritmetika integer `BigInt`-safe atau `Brick\Math\BigDecimal` tanpa operator floating-point (`float`, `round`, `number_format` uang).
+- Semua kueri pembaca lintas modul di `Procurement`, `Manufacturing`, dan `Distribution` hanya menggunakan model/kontrak antar-modul yang sah atau tabel prefiks modulnya sendiri (`A1 = 0 baru`, `A2 = 0 baru`).
+
+
+---
+
+## 5. Topologi Ketergantungan Bersih (`A1`, `A2`, `A9`) & Kepemilikan Tabel
+
+```mermaid
+flowchart TD
+    CT[ControlTower Application & Domain] --> CTR[ControlTower Contracts]
+    CT --> MC[Manufacturing Contracts]
+    CT --> DC[Distribution Contracts]
+    CT --> PC[Procurement Contracts]
+    CT --> LC[Logistics Contracts]
+    CT --> CC[Core Contracts & Shared Components]
+    MI[ManufacturingCapacityAndMaterialProvider] -. implements .-> MC
+    DI[DistributionOpenDemandProvider] -. implements .-> DC
+    PI[ProcurementSupplierLeadTimeStatistics] -. implements .-> PC
+    WI[WmsItemAvailabilityReader] -. implements .-> CTR
+```
+
+Aturan isolasi arsitektur yang dijaga ketat across seluruh berkas `FIX-2`:
+- **Kernel Independen (`A9 = 0`):** `app/` dan Kernel tidak mengimpor namespace bisnis `Modules\ControlTower\*`.
+- **Prefiks Tabel Tegas (`A2 = 0 baru`):**
+  - `ControlTower` hanya mengakses tabel berprefiks `sct_*` miliknya sendiri.
+  - Tabel `mfg_*` diakses eksklusif di dalam `Modules\Manufacturing\Infrastructure\Adapters\ManufacturingCapacityAndMaterialProvider`.
+  - Tabel `dist_*` diakses eksklusif di dalam `Modules\Distribution\Infrastructure\Adapters\DistributionOpenDemandProvider`.
+  - Tabel `prc_*` diakses eksklusif di dalam `Modules\Procurement\Infrastructure\Adapters\ProcurementSupplierLeadTimeStatistics`.
+- **Impor Domain Terisolasi (`A1 = 0 baru`):** Tidak ada modul yang mengimpor kelas `Domain\*` dari modul bisnis lain atau pengecualian `Core\Domain\*`; setiap pesan bisnis lintas batas berjalan melalui kontrak DTO array / primitif atau `Modules\Core\Contracts\*`.
+- **Higiene Waktu & Pengujian (`A8 = 0`, `TestHygiene`):** Seluruh waktu produksi disuntik via `Modules\Core\Contracts\ClockInterface` (`$this->clock->now()`); seluruh pengujian memverifikasi hasil nyata SQLite & kompatibilitas MySQL 8.4 DDL tanpa memodifikasi pagar baseline.

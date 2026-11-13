@@ -122,3 +122,132 @@
 4. `php artisan arch:scan --json` tidak menambah 1 pun pelanggaran di luar baseline terpasang (`A1`, `A2`, `A12`), dengan `A3=0`, `A6=0`, `A8=0`, `A11=0`.
 5. `php artisan tower:audit` lulus bersih exit code `0` dalam kondisi sehat dan gagal deterministik exit code `1` setelah fixture sabotase disuntikkan.
 
+
+
+---
+
+## 5. Kamus Skema Basis Data Migrasi FIX-2 (`sct_*`)
+
+Semua migrasi menjaga kompatibilitas SQLite pengujian dan MySQL 8.4 produksi (`MysqlSchemaCompatibilityTest` PASS):
+
+| Migrasi | Tabel | Kolom Tambahan / Baru | Indeks & Batasan Integritas |
+|---|---|---|---|
+| `2026_11_14_000001` | `sct_order_promises` | `idempotency_key` (unique), `payload_hash`, `promised_period`, `late_periods`, `reason_code`, `certificate_hash`, `as_of_date`, `atp_cumulative`, `ctp_cumulative` | `unique(idempotency_key)` |
+| `2026_11_14_000002` | `sct_demand_forecasts`, `sct_forecast_overrides` | `mae_scaled`, `candidates_json`, `certificate_hash`, `history_json`; pada overrides: `deviation_bps`, `approval_id`, `status`, `reverted_at`, `reverted_by_user_id` | FK `reverted_by_user_id -> users.id` `nullOnDelete` |
+| `2026_11_13_000002` | `sct_safety_stock_policies` | `status`, `proposed_abc_class`, `proposed_xyz_class`, `proposed_service_level_bps`, `proposed_safety_stock_qty`, `proposed_reorder_point_qty`, `echelon_breakdown`, `proposed_echelon_breakdown`, `supplier_ref`, `lead_time_mean_days`, `lead_time_sigma_days`, `certificate_digest`, `approval_id`, `proposed_by_user_id`, `decided_by_user_id`, `decided_at`, `decision_notes` | FK `proposed_by_user_id`, `decided_by_user_id -> users.id` `nullOnDelete` |
+| `2026_11_14_000003` | `sct_sop_cycles` | `consensus_snapshot_json`, `approval_id`, `published_at`, `published_by_user_id`, `notes`, `created_by_user_id` | FK `published_by_user_id`, `created_by_user_id -> users.id` |
+| `2026_11_14_000004` | `sct_order_risk_scores`, `sct_alert_rules`, `sct_disruption_alerts` | Skor komponen & `factors_json`; aturan `rule_code`, `threshold_bps`; alert `dedup_key` (unique), `mitigation_proposal_json`, `approved_by_user_id` | `index(item_code)`, `index(risk_tier)`, `unique(dedup_key)` |
+| `2026_11_14_000005` | `sct_supplier_scorecards`, `sct_inventory_health_snapshots` | `composite_score`, `otd_score`, `reliability_score`, `volume_score`, `tier`, `trend_json`; health: `health_status`, `aging_bucket`, `dos_days`, `tied_capital_idr`, `obsolescence_risk_idr` | `unique(supplier_ref, period)` (`sct_sc_sup_period_uq`), `unique(item_code, echelon_node, snapshot_date)` (`sct_ih_item_node_date_uq`) |
+
+---
+
+## 6. Matriks Endpoint HTTP, RBAC, dan Kolom Ekspor CSV (`route-roles.php`)
+
+Seluruh endpoint berada di bawah prefix `/control-tower` dan wajib dilindungi middleware `['web', 'auth', 'role:...']`:
+
+| Nama Rute | Method & URI | Role Diizinkan | Respons & Format Ekspor CSV |
+|---|---|---|---|
+| `control_tower.promises.quote` | `POST /promises/quote` | `admin`, `logistics_admin`, `planner` | JSON 200 idempoten atau JSON 409 (`PromiseIdempotencyConflictException`) |
+| `control_tower.promises.export` | `GET /promises/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV UTF-8 (`promise_code,order_reference,item_code,requested_qty,promised_period,late_periods,reason_code,promised_delivery_date`) |
+| `control_tower.forecast.index` | `GET /forecast` | `admin`, `logistics_admin`, `planner`, `auditor` | Halaman Blade `<x-ds.*>` responsif 375px |
+| `control_tower.forecast.select` | `POST /forecast/select` | `admin`, `logistics_admin`, `planner` | Seleksi model walk-forward `I2` |
+| `control_tower.forecast.override` | `POST /forecast/override` | `admin`, `logistics_admin`, `planner` | Override kolaboratif + validasi approval deviasi > 20% |
+| `control_tower.forecast.revert` | `POST /forecast/override/{override}/revert` | `admin`, `logistics_admin`, `planner` | Revert atomik ke `previous_qty` |
+| `control_tower.forecast.export` | `GET /forecast/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV akurasi forecast & status override |
+| `control_tower.safety_stock.propose` | `POST /safety-stock/propose` | `admin`, `logistics_admin`, `planner` | Pengajuan proposal `I3` tanpa mengubah kebijakan aktif |
+| `control_tower.safety_stock.decide` | `POST /safety-stock/{policy}/decide` | `admin`, `logistics_admin` | Keputusan empat mata (`approve`/`reject`) |
+| `control_tower.safety_stock.export` | `GET /safety-stock/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV kebijakan & alokasi eselon |
+| `control_tower.sop.consensus` | `POST /sop/{cycle}/consensus` | `admin`, `logistics_admin`, `planner` | Publikasi konsensus + `TaskInboxService` + `tower.sop.published.v1` |
+| `control_tower.sop.export` | `GET /sop/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV siklus & dampak finansial S&OP |
+| `control_tower.risk.index` | `GET /risk` | `admin`, `logistics_admin`, `planner`, `auditor` | Halaman risiko pesanan `X53-1` |
+| `control_tower.risk.scan` | `POST /risk/scan` | `admin`, `logistics_admin`, `planner` | Eksekusi scan risiko pesanan |
+| `control_tower.risk.export` | `GET /risk/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV skor risiko 4 komponen |
+| `control_tower.alerts.index` | `GET /alerts` | `admin`, `logistics_admin`, `planner`, `auditor` | Halaman alert disrupsi |
+| `control_tower.alerts.scan` | `POST /alerts/scan` | `admin`, `logistics_admin`, `planner` | Pemindaian disrupsi berbasis `dedup_key` |
+| `control_tower.alerts.mitigate` | `POST /alerts/{alert}/mitigate` | `admin`, `logistics_admin`, `planner` | Pengajuan & persetujuan mitigasi alert |
+| `control_tower.alerts.export` | `GET /alerts/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV daftar alert aktif & termitigasi |
+| `control_tower.twin.whatif` | `POST /twin/whatif` | `admin`, `logistics_admin`, `planner` | JSON hasil sandbox zero-mutation + hash integritas |
+| `control_tower.twin.export` | `GET /twin/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV skenario simulasi what-if |
+| `control_tower.kpi.drilldown` | `GET /kpi/drilldown` | `admin`, `logistics_admin`, `planner`, `auditor` | JSON metrik OTIF permil & fill-rate permil dari pesanan nyata |
+| `control_tower.kpi.export` | `GET /kpi/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV detail pemenuhan pesanan riil |
+| `control_tower.suppliers.index` | `GET /suppliers` | `admin`, `logistics_admin`, `planner`, `auditor` | Halaman scorecard pemasok `X53-2` |
+| `control_tower.suppliers.refresh` | `POST /suppliers/refresh` | `admin`, `logistics_admin`, `planner` | Refresh scorecard periodik idempoten |
+| `control_tower.suppliers.export` | `GET /suppliers/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV tier & lead-time pemasok |
+| `control_tower.inventory_health.index` | `GET /inventory-health` | `admin`, `logistics_admin`, `planner`, `auditor` | Halaman kesehatan inventori `X53-3` |
+| `control_tower.inventory_health.refresh` | `POST /inventory-health/refresh` | `admin`, `logistics_admin`, `planner` | Refresh snapshot kesehatan & kapital terkunci IDR |
+| `control_tower.inventory_health.export` | `GET /inventory-health/export.csv` | `admin`, `logistics_admin`, `planner`, `auditor` | CSV aging bucket & risiko keusangan |
+
+---
+
+## 7. Daftar Perintah Artisan CLI & Jadwal Cron Terdaftar
+
+| Perintah CLI | Opsi / Argumen | Jadwal Scheduler | Deskripsi Tugas |
+|---|---|---|---|
+| `tower:atp-refresh` | `{--item=} {--date=}` | On-demand & via action | Menyegarkan snapshot janji ATP/CTP dari WMS + Manufacturing + Distribution |
+| `tower:forecast-select` | `{--item=} {--period=}` | On-demand | Menjalankan seleksi model walk-forward `SES`/`HOLT`/`CROSTON` secara idempoten |
+| `tower:safety-stock` | `{--item=} {--node=}` | On-demand | Mengajukan proposal `MultiEchelonSafetyStock` berdasarkan `SupplierLeadTimeStatistics` |
+| `tower:risk-scan` | `{--as-of=}` | Setiap jam (`hourly`) | Menghitung `OrderRiskScore` deterministik seluruh pesanan terbuka |
+| `tower:alerts-scan` | `{--as-of=}` | Setiap 15 menit | Memindai anomali & menerbitkan `tower.alert.raised.v1` tanpa duplikasi |
+| `tower:whatif` | `{scenario} {--magnitude=} {--days=}` | On-demand | Menjalankan skenario what-if sandbox digital twin tanpa mutasi database |
+| `tower:kpi` | `{--from=} {--to=}` | Harian pukul `02:30` | Mengagregasi snapshot KPI OTIF, DOS, dan cash-to-cash |
+| `tower:supplier-scorecard` | `{--supplier=} {--period=}` | Harian pukul `02:30` | Memperbarui snapshot scorecard pemasok (`X53-2`) |
+| `tower:audit` | — | Quality gate CI | Memverifikasi invarian zero over-promise ATP, reservasi <= supply, dan status S&OP |
+
+
+---
+
+## 8. Spesifikasi Antarmuka Web Responsif (`375px`) & Seeder Data Uji (`T1`)
+
+### 8.1 Komponen UI Design System (`modules/ControlTower/resources/views/control_tower/`)
+Seluruh antarmuka web baru dan pembaruan view lama di Control Tower memenuhi standar aksesibilitas (`ui:lint` = `0 violations` dari `15` view yang dipindai) dan tata letak responsif `375px`:
+
+| Berkas View Blade | Rute Terhubung | Komponen `<x-ds.*>` | Fitur Interaktif Utama |
+|---|---|---|---|
+| `forecast.blade.php` | `control_tower.forecast.index` | `<x-ds.card>`, `<x-ds.stat>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>` | Seleksi model `SES`/`HOLT`/`CROSTON`, form override beralasan audit, tombol revert, ekspor CSV |
+| `risk.blade.php` | `control_tower.risk.index` | `<x-ds.card>`, `<x-ds.stat>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>` | Rincian 4 komponen `OrderRiskScorer` (`shortfall`, `lead_time`, `shelf_life`, `transit`), tombol scan risiko |
+| `alerts.blade.php` | `control_tower.alerts.index` | `<x-ds.card>`, `<x-ds.stat>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>` | Pemindaian disrupsi ber-`dedup_key`, tombol mitigasi, ekspor CSV |
+| `suppliers.blade.php` | `control_tower.suppliers.index` | `<x-ds.card>`, `<x-ds.stat>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>` | Skor komposit `0..1000`, tier `STRATEGIC..AT_RISK`, tren bulanan, refresh scorecard |
+| `inventory_health.blade.php` | `control_tower.inventory_health.index` | `<x-ds.card>`, `<x-ds.stat>`, `<x-ds.table>`, `<x-ds.badge>`, `<x-ds.button>` | Aging bucket (`0-30..>180`), klasifikasi `DEAD_STOCK..HEALTHY`, kapital terkunci IDR |
+| `holt_winters_forecast.blade.php` | `control_tower.autonomous.forecast` | Form `<label for="...">` + `id` eksplisit | Perbaikan aksesibilitas `INPUT_LABEL` pada `item_code`, `period`, dan `alpha` |
+| `autonomous_reallocation.blade.php` | `control_tower.autonomous.reallocate` | Form `<label for="...">` + `id` eksplisit | Perbaikan aksesibilitas `INPUT_LABEL` pada `item_code`, `from_node`, `to_node`, dan `transfer_qty` |
+
+### 8.2 Spesifikasi Seeder Awal Control Tower (`ControlTowerSeeder`)
+`Modules\ControlTower\database\seeders\ControlTowerSeeder` dipanggil dari `DatabaseSeeder` setelah `WmsSeeder` dengan karakter idempoten (`firstOrCreate`) dan bebas `now()` (`A8` bersih):
+- **Stok Multi-Eselon:** 4 entri `EchelonStock` (`SP-001` di `PLANT`/`DC`/`OUTLET` + `SP-004` di `DC`) dengan kapasitas pasokan total melebihi reservasi.
+- **Kebijakan & Forecast:** `SafetyStockPolicy` aktif untuk `SP-001` (`echelon_breakdown: PLANT=50, DC=40, OUTLET=25`) serta `DemandForecast` `FC-2026-11-SP001` (`HOLT`).
+- **Siklus S&OP & Janji ATP:** `SopCycle` `SOP-2026-11` pada status kanonik `consensus` serta `OrderPromise` `PRM-SEED-001` (`ATP_SUFFICIENT_ON_TIME`, `requested_qty = 45`).
+- **Risiko, Alert, Scorecard & Kesehatan:** `AlertRule` `RULE-STOCKOUT-HIGH`, `DisruptionAlert` `ALT-SEED-001`, `OrderRiskScore` `SO-SEED-002`, `SupplierScorecardSnapshot` `SUP-SEED-001` (`STRATEGIC`, skor `865`), `InventoryHealthSnapshot` `SP-001` (`HEALTHY`), `ControlTowerKpiSnapshot`, serta `TwinScenario` `TWIN-SEED-DEMAND15`.
+
+
+---
+
+## 9. Spesifikasi Validasi Request & Skema Ekspor CSV Terperinci
+
+### 9.1 Aturan Validasi Input HTTP (`FormRequest`)
+
+| Kelas Request | Field Wajib | Aturan Batas Numerik / String | Penolakan / Pesan |
+|---|---|---|---|
+| `QuotePromiseRequest` | `item_code`, `quantity`, `requested_period` | `quantity`: integer `>= 1`; `requested_period`: integer `0..11`; `as_of_date`: tanggal ISO opsional | `422 Unprocessable` bila `quantity <= 0` atau periode negatif |
+| `StoreForecastOverrideRequest` | `demand_forecast_id` / `item_code`, `new_qty`, `reason` | `new_qty`: integer `>= 0`; `reason`: string `min:5`, `max:255` | `422 Unprocessable` bila alasan `< 5` karakter atau `new_qty < 0` |
+| `SafetyStockProposalRequest` | `item_code`, `node_weights` (atau `decision`) | `node_weights.*`: integer `>= 0`; `decision`: enum `approve` / `reject` | `422` pada bobot negatif atau keputusan tidak valid |
+| `PublishSopCycleRequest` | `demand_plan_qty`, `supply_plan_qty`, `capacity_utilization_bps` | Semua qty integer `>= 0`; `capacity_utilization_bps`: `0..15000`; `notes` opsional | Memicu transisi ke `consensus` + `TaskInboxService` |
+
+### 9.2 Kamus Kolom Ekspor CSV (`UTF-8`, Streamed)
+
+1. **`GET /control-tower/promises/export.csv`** (`control_tower.promises.export`):
+   - Kolom: `promise_code`, `order_reference`, `item_code`, `requested_qty`, `atp_confirmed_qty`, `ctp_manufacturing_qty`, `promised_period`, `late_periods`, `reason_code`, `promised_delivery_date`.
+2. **`GET /control-tower/forecast/export.csv`** (`control_tower.forecast.export`):
+   - Kolom: `forecast_code`, `item_code`, `period`, `algorithm_model`, `forecast_qty`, `actual_qty`, `mae_scaled`, `is_overridden`, `override_reason`.
+3. **`GET /control-tower/safety-stock/export.csv`** (`control_tower.safety_stock.export`):
+   - Kolom: `item_code`, `abc_class`, `xyz_class`, `service_level_bps`, `safety_stock_qty`, `reorder_point_qty`, `status`, `supplier_ref`, `lead_time_mean_days`, `lead_time_sigma_days`.
+4. **`GET /control-tower/sop/export.csv`** (`control_tower.sop.export`):
+   - Kolom: `cycle_code`, `period`, `status`, `scenario_type`, `demand_plan_qty`, `supply_plan_qty`, `capacity_utilization_bps`, `gross_margin_est_idr`, `cash_impact_est_idr`, `published_at`.
+5. **`GET /control-tower/risk/export.csv`** & **`/alerts/export.csv`**:
+   - Risiko: `item_code`, `order_reference`, `risk_score`, `risk_tier`, `shortfall_component`, `lead_time_component`, `shelf_life_component`, `transit_component`, `scored_at`.
+   - Alert: `alert_code`, `dedup_key`, `severity`, `category`, `title`, `affected_orders_count`, `status`.
+6. **`GET /control-tower/twin/export.csv`** & **`/kpi/export.csv`**:
+   - Twin: `scenario_code`, `name`, `shock_type`, `shock_magnitude_bps`, `duration_days`, `baseline_otif_bps`, `simulated_otif_bps`, `at_risk_orders_count`, `estimated_margin_delta_idr`.
+   - KPI Drilldown: `order_ref`, `customer_ref`, `item_code`, `ordered_qty`, `delivered_qty`, `due_date`, `delivered_date`, `on_time`, `in_full`.
+7. **`GET /control-tower/suppliers/export.csv`** & **`/inventory-health/export.csv`**:
+   - Pemasok: `supplier_ref`, `supplier_name`, `period`, `composite_score`, `otd_score`, `reliability_score`, `volume_score`, `on_time_permil`, `mean_lead_time_days`, `sigma_lead_time_days`, `samples_count`, `tier`.
+   - Kesehatan Inventori: `item_code`, `echelon_node`, `health_status`, `aging_bucket`, `on_hand_qty`, `quarantine_qty`, `available_qty`, `daily_demand_qty`, `dos_days`, `oldest_lot_age_days`, `tied_capital_idr`, `obsolescence_risk_idr`.

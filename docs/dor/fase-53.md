@@ -68,3 +68,37 @@ Modul `ControlTower` (`sct_`) adalah lapisan orkestrasi perencanaan rantai pasok
 2. **Determinisme Waktu (Aturan A8):** Tidak ada panggilan `now()`, `Carbon::now()`, atau `date()` di dalam lapisan Domain dan Application; seluruh stempel waktu memakai `Modules\Core\Contracts\ClockInterface`.
 3. **Strict Types & FK Eksplisit (A11 & A12):** Setiap berkas PHP memakai `declare(strict_types=1);` dan setiap kolom `*_id` di migrasi MySQL/SQLite wajib bertipe identik dengan kolom target disertai constraint *foreign key* eksplisit.
 4. **Kompatibilitas Skema Dua Mesin Database:** Seluruh migrasi `sct_*` berjalan deterministik baik di SQLite (unit/feature suite) maupun MySQL 8.4 (DB Portability Gate).
+
+
+---
+
+## 5. Matriks Penerimaan `X53-1` – `X53-4`, `D53-1` – `D53-10`, dan Kriteria `T-1b`/`T-1c`
+
+### 5.1 Alasan Tertulis Non-Ledger (`RAB = 0`)
+Sesuai aturan tata kelola Gelombang 8:
+- **Fase 53 (Control Tower & S&OP)** membaca posisi inventori (`Wms`), kapasitas & material MRP (`Manufacturing`), pesanan distribusi (`Distribution`), histori PO/GRN (`Procurement`), dan transit logistik (`Logistics`), serta menerbitkan event domain perencanaan (`tower.promise.made.v1`, `tower.sop.published.v1`, `tower.alert.raised.v1`).
+- **RAB Posting Ledger = 0**: Tidak ada kejadian uang (*monetary transaction*) di Control Tower; pencatatan persediaan finansial tetap berlangsung di WMS (`Purchase`/`Adjustment`) dan `Finance` / `Ledger`.
+
+### 5.2 Daftar Periksa Definisi Siap & Selesai (`DoR` & `DoD` Terverifikasi)
+
+| Kode Syarat | Kriteria Penerimaan Konkret | Status Implementasi | Bukti Pengujian / Berkas |
+|---|---|---|---|
+| `X53-1` | `OrderRiskScorer` menghitung 4 faktor deterministik (`0..1000`), scanner alert memakai `dedup_key`, outbox `tower.alert.raised.v1`, proposal + persetujuan mitigasi | TERPENUHI | `OrderRiskScorer.php`, `AlertScannerService.php`, `Slice5RiskAndAlertsTest.php` |
+| `X53-2` | `SupplierScorecardService` menghitung skor `0..1000` (OTD 45%, konsistensi 30%, volume 25%), tier `STRATEGIC..AT_RISK`, tren bulanan & fallback 0 sampel | TERPENUHI | `SupplierScorecardService.php`, `ScorecardAndHealthController.php`, `Slice7ScorecardAndHealthTest.php` |
+| `X53-3` | `InventoryHealthAnalyzer` mengelompokkan aging `0-30`, `31-90`, `91-180`, `>180`, status 5 kategori, kapital & keusangan `BigInt`-safe IDR | TERPENUHI | `InventoryHealthAnalyzer.php`, `InventoryHealthOrchestratorService.php`, `Slice7ScorecardAndHealthTest.php` |
+| `X53-4` | `ForecastOverrideService` mewajibkan alasan audit `>= 5` karakter, memicu approval empat mata saat deviasi `> 20%`, serta mendukung revert penuh | TERPENUHI | `ForecastOverrideService.php`, `ForecastController.php`, `Slice2ForecastSelectionAndOverrideTest.php` |
+| `D53-1` | Visibilitas multi-eselon (`PLANT`, `DC`, `OUTLET`) memisahkan `on_hand`, `in_transit`, `reserved`, `quarantine` | TERPENUHI | `WmsItemAvailabilityReader.php`, `EchelonStock.php`, `ControlTowerTest.php` |
+| `D53-2` | `I2` seleksi walk-forward integer rasional (`SES`, `HOLT`, `CROSTON`), tanpa float | TERPENUHI | `ForecastModelSelector.php`, `SelectForecastModelCommand.php` |
+| `D53-3` | Siklus S&OP 7-tahap kanonik + alasan wajib transisi mundur + `TaskInboxService` + `tower.sop.published.v1` | TERPENUHI | `SopCycleStateMachine.php`, `SopPublicationOrchestrator.php`, `Slice4SopCycleWorkflowTest.php` |
+| `D53-4` | `I1` `AtpCtpNetter` lintas `Wms` + `Manufacturing` + `Distribution` + kuotasi idempoten 409 conflict | TERPENUHI | `AtpCtpNetter.php`, `PromiseQuoteService.php`, `Slice1AtpCtpPromiseTest.php` |
+| `D53-5` | `I3` `MultiEchelonSafetyStock` + `ProcurementSupplierLeadTimeStatistics` nyata + Hamilton + empat mata | TERPENUHI | `MultiEchelonSafetyStock.php`, `ProcurementSupplierLeadTimeStatistics.php`, `Slice3MultiEchelonSafetyStockTest.php` |
+| `D53-6` | Peringatan disrupsi terdeduplikasi & playbook realokasi empat mata | TERPENUHI | `AlertScannerService.php`, `ExecuteAutonomousReallocationPlaybookAction.php` |
+| `D53-7` | Dashboard KPI eksekutif OTIF permil & Fill Rate permil dari data fulfillment nyata + ekspor CSV | TERPENUHI | `ControlTowerKpiDrilldownService.php`, `TwinAndKpiController.php` |
+| `D53-8` | Digital Twin What-If zero-mutation (`before_hash === after_hash`), 6 tipe shock & komparasi | TERPENUHI | `TwinWhatIfOrchestratorService.php`, `RunWhatIfTwinCommand.php`, `Slice6TwinAndKpiTest.php` |
+| `D53-9` | `tower:audit` exit `0` sehat, exit `1` pada injeksi sabotase over-promise / reservasi invalid | TERPENUHI | `AuditControlTowerCommand.php`, `ControlTowerAuditCorruptionFixture.php` |
+| `D53-10` | Quality gate `arch:scan` 0 baru, `ui:lint` 0 pelanggaran, Pint, `MysqlSchemaCompatibilityTest`, `RouteAuthorizationMatrixTest` | TERPENUHI | `docs/gates/fase-53.md`, `tests/Architecture/route-roles.php` |
+| `D98` | Seluruh endpoint view HTML memakai komponen `<x-ds.*>`, bebas overflow `375px`, `INPUT_LABEL` bersih | TERPENUHI | `modules/ControlTower/resources/views/control_tower/*.blade.php` |
+
+### 5.3 Kriteria Seeder Tingkat-1 (`ControlTowerSeeder`)
+- Menyediakan data awal realistis minimal untuk `EchelonStock`, `SafetyStockPolicy`, `SopCycle`, `DemandForecast`, `OrderPromise`, `AlertRule`, `DisruptionAlert`, `OrderRiskScore`, `SupplierScorecardSnapshot`, `InventoryHealthSnapshot`, `ControlTowerKpiSnapshot`, dan `TwinScenario`.
+- Seluruh record terhubung idempoten memakai `firstOrCreate` serta memenuhi invarian `reserved_qty <= on_hand_qty + in_transit_qty` dan `SUM(atp_confirmed_qty) <= total_supply` agar `php artisan tower:audit` lulus pada lingkungan baru.

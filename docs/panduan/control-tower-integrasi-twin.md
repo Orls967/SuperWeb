@@ -67,3 +67,35 @@ Dalam `ControlTowerServiceProvider::boot()`, penjadwalan harian/periodik diikat 
 - Pemindaian risiko & disrupsi berkala (`tower:risk-scan`, `tower:alerts-scan`) dengan deduplikasi `dedup_key` agar pengulangan jadwal tidak membanjiri tabel alert maupun duplikasi event outbox.
 - Pengambilan KPI eksekutif (`tower:kpi`) berbasis `ClockInterface` sehingga pencatatan snapshot harian selalu idempoten per `snapshot_date`.
 - Pembaruan skor pemasok berkala (`tower:supplier-scorecard`) mengikuti data penerimaan barang terbaru.
+
+
+---
+
+## 4. Integrasi Lintas Modul & Spesifikasi Digital Twin What-If (`Slice 1`, `3`, `6`, `7`)
+
+### 4.1 Kontrak & Adaptor Lintas Modul (Bebas `A1`/`A2`)
+Control Tower berkomunikasi dengan modul operasional lain semata melalui interface di namespace `Contracts`:
+
+| Kontrak Interface | Modul Penyedia | Implementasi Konkret | Tabel / Sumber Nyata | Data Yang Disajikan |
+|---|---|---|---|---|
+| `ItemAvailabilityReader` | `ControlTower` -> `Wms` | `WmsItemAvailabilityReader` (cadangan `EchelonItemAvailabilityReader`) | `wms_stock_balances`, `StockAvailabilityReader` | `on_hand`, `quarantine_hold`, `in_transit`, `reserved` per SKU & node |
+| `CapacityAndMaterialProvider` | `Manufacturing` | `ManufacturingCapacityAndMaterialProvider` | `mfg_work_centers`, `mfg_production_orders`, `mfg_mrp_plans` | Kapasitas mesin bebas & ketersediaan bahan baku MRP per periode mingguan (`ctp_cap`) + `mps_receipts` |
+| `OpenDemandProvider` | `Distribution` | `DistributionOpenDemandProvider` | `dist_orders`, `dist_order_lines`, `dist_shipments` | Komitmen open orders per bucket 7 hari (`commitmentsByPeriod`) & histori fulfillment (`fulfillmentLines`) memakai `BigDecimal` |
+| `SupplierLeadTimeStatistics` | `Procurement` | `ProcurementSupplierLeadTimeStatistics` | `prc_purchase_orders`, `prc_po_lines`, `prc_receiving_reports`, `prc_receiving_lines` | `mean_days`, `sigma_days` (integer `isqrt`), `samples`, `on_time_permil`, `primarySupplierForItem`, `monthlyHistory` |
+| `InTransitShipmentProvider` | `Logistics` | Binding standar modul `Logistics` | `log_shipments` | Status keterlambatan pengapalan berjalan untuk input `OrderRiskScorer` |
+
+### 4.2 Spesifikasi 6 Skenario Digital Twin What-If (`TwinWhatIfOrchestratorService`)
+Setiap eksekusi what-if menjalankan sandbox terisolasi (`zero-mutation`): sistem mengambil digest `SHA-256` seluruh baris aktif `sct_echelon_stocks`, `sct_order_promises`, `sct_demand_forecasts`, dan `sct_safety_stock_policies` sebelum serta sesudah eksekusi dan memverifikasi `before_hash === after_hash`.
+
+| `shock_type` | Dampak ke Kapasitas / Lead Time | Dampak ke Permintaan / Harga | Output Kritis yang Dihitung |
+|---|---|---|---|
+| `PORT_CLOSURE` | Menunda suplai impor & in-transit selama `duration_days` berdasarkan bobot `shock_magnitude_bps` | Pesanan bergantung stok impor masuk bucket terlambat | `simulated_otif_bps`, `at_risk_orders_count`, `estimated_margin_delta_idr` |
+| `MATERIAL_INFLATION` | Tidak mengubah kapasitas fisik secara langsung | Mengerek HPP komponen sesuai `shock_magnitude_bps` | Penurunan margin kotor grup (`estimated_margin_delta_idr < 0`) |
+| `PLANT_EXPANSION` | Menambah kapasitas manufaktur harian & suplai MPS periodik | Menurunkan ketergantungan lembur/subkontrak | Peningkatan OTIF simulasi & pengurangan order berisiko |
+| `DEMAND_SURGE` | Mempercepat konsumsi ATP buffer pada 4 periode pertama | Mengalikan open demand efektif sebesar `(10000 + magnitude) / 10000` | Identifikasi SKU pertama yang menembus `BOTTLENECK_SHORTFALL` |
+| `SUPPLIER_OUTAGE` | Memutus suplai pemasok terdampak selama durasi skenario | Memicu pengalihan ke stok pengaman eselon `DC`/`PLANT` | Jumlah hari bertahan sebelum stockout (DOS efektif) |
+| `LEAD_TIME_SPIKE` | Memperlebar $\mu_L$ dan $\sigma_L$ pemasok proporsional terhadap magnitudo | Meningkatkan kebutuhan `SafetyStock` `I3` & skor risiko `X53-1` | Kenaikan `safety_stock_delta` dan penurunan `simulated_otif_bps` |
+
+### 4.3 Perbandingan Skenario & Portabilitas SQLite / MySQL 8.4
+- `TwinWhatIfOrchestratorService::compareScenarios()` menerima daftar skenario dan mengembalikan perbandingan berdampingan (`baseline_otif_bps`, `simulated_otif_bps`, `otif_delta_bps`, `at_risk_orders_count`, `estimated_margin_delta_idr`, ranking ketahanan).
+- Semua kueri tanggal pada `InventoryHealthOrchestratorService`, `ProcurementSupplierLeadTimeStatistics`, dan `DistributionOpenDemandProvider` menghindari fungsi dialek khusus SQLite (`strftime`) maupun fungsi khusus MySQL (`DATE_FORMAT`) dengan memakai `whereDate`, `whereBetween`, dan agregasi PHP `CarbonImmutable` agar perilaku identik di SQLite maupun MySQL 8.4.

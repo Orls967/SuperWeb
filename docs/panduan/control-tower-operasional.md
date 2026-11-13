@@ -79,3 +79,83 @@ Seluruh rute dilindungi autentikasi `web`, `auth`, serta pemetaan otorisasi di `
 2. **Minggu 2 (`supply_review`):** Planner meninjau laporan `tower:safety-stock`, kapasitas pabrik (`CapacityAndMaterialProvider`), dan kartu skor pemasok (`/control-tower/suppliers`). Bila ditemukan selisih besar yang tidak dapat ditangani, lakukan *rollback* ke `demand_review` dengan alasan terdokumentasi.
 3. **Minggu 3 (`pre_sop -> exec_sop`):** Uji kejut kapasitas maupun penutupan pelabuhan di `/control-tower/twin`, evaluasi eksposur dead-stock di `/control-tower/inventory-health`, lalu kirim paket konsensus ke `ApprovalEngineInterface`.
 4. **Minggu 4 (`published -> closed`):** Penyetuju eksekutif (berbeda dari pembuat siklus) mempublikasikan rencana final, menerbitkan event `tower.sop.published.v1`, lalu menutup siklus setelah bulan berjalan usai.
+
+
+---
+
+## 4. Playbook Operasional Harian, Mingguan, dan Bulanan
+
+### 4.1 Siklus Harian (Perencana & Operator Logistik)
+1. **02:30 WIB (Otomatis Scheduler):** `tower:kpi` dan `tower:supplier-scorecard` memperbarui metrik OTIF/Fill-Rate nyata dari `Distribution` serta meranking pemasok di `/control-tower/suppliers`.
+2. **Setiap 15 Menit (`tower:alerts-scan`):** Sistem mengevaluasi keterlambatan transit dari `Logistics`, deviasi lead-time dari `Procurement`, dan shortfall `ATP`. Planner memantau tab `/control-tower/alerts` dan `/control-tower/risk`.
+3. **Sepanjang Jam Kerja (Kuotasi Pesanan):** Tim Sales/Order Management memanggil `POST /control-tower/promises/quote` dengan header `Idempotency-Key` unik per permintaan pesanan; pengulangan permintaan dengan key & payload identik membalas respons asli tanpa menggandakan pengurangan kuota ATP.
+
+### 4.2 Siklus Mingguan (Evaluasi Stok Pengaman & Kesehatan Inventori)
+1. Buka `/control-tower/inventory-health` dan klik **Refresh Analisis** (atau `POST /control-tower/inventory-health/refresh`) untuk memetakan modal kerja terkunci pada item `DEAD_STOCK`, `SLOW_MOVING`, dan `SHORTAGE_RISK`.
+2. Jalankan `php artisan tower:safety-stock` atau ajukan pembaruan kebijakan via `POST /control-tower/safety-stock/propose` agar algoritma `I3` menyesuaikan penyangga eselon terhadap pergeseran variabilitas pemasok (`sigma_days`).
+3. Admin logistik independen meninjau `proposed_echelon_breakdown` dan memutuskan lewat `POST /control-tower/safety-stock/{policy}/decide` (**pembuat proposal dilarang menyetujui proposalnya sendiri**).
+
+### 4.3 Siklus Bulanan S&OP Kolaboratif (7 Tahap Kanonik)
+1. `data_gathering`: Jalankan `php artisan tower:forecast-select` agar `I2` menentukan model terbaik (`SES`, `HOLT`, `CROSTON`) per SKU aktif.
+2. `demand_review`: Kumpulkan penyesuaian komersial melalui `/control-tower/forecast` dengan alasan minimal 5 karakter (`X53-4`).
+3. `supply_review`: Uji kelayakan pasokan & kapasitas pabrik dengan membandingkan metrik dari `ManufacturingCapacityAndMaterialProvider`.
+4. `pre_sop`: Jalankan skenario `PORT_CLOSURE` / `DEMAND_SURGE` pada `/control-tower/twin` untuk memverifikasi ketahanan margin sebelum konsensus.
+5. `executive_sop` -> `consensus`: Panggil `POST /control-tower/sop/{cycle}/consensus` yang menciptakan tugas di `TaskInboxService`, melewati `ApprovalEngineInterface`, dan menerbitkan `tower.sop.published.v1`.
+6. `closed`: Arsip siklus serta unduh bukti laporan CSV untuk keperluan audit internal.
+
+
+---
+
+## 5. Panduan Penggunaan Per Peran & Contoh Payload API/CLI
+
+### 5.1 Matriks Hak Akses per Peran (`RBAC`)
+
+| Peran Pengguna | Akses Baca & Ekspor CSV | Aksi Operasional (Quote, Select, Scan, What-If, Consensus) | Persetujuan Empat Mata (`safety_stock.decide`) | Audit & Kesehatan |
+|---|---|---|---|---|
+| `admin` | Penuh seluruh rute GET & CSV | Penuh semua POST operasional | Diizinkan (kecuali pengaju sendiri) | `tower:audit` & UI |
+| `logistics_admin` | Penuh seluruh rute GET & CSV | Penuh semua POST operasional | Diizinkan (kecuali pengaju sendiri) | Pemantauan UI & CSV |
+| `planner` | Penuh seluruh rute GET & CSV | Kuotasi ATP/CTP, forecast select/override, propose SS, scan alert/risk, S&OP consensus, twin what-if | Diblokir (`403 Forbidden`) | Pemantauan UI & CSV |
+| `auditor` | Penuh seluruh rute GET & CSV | Diblokir total (`403 Forbidden`) — hanya baca (*read-only*) | Diblokir (`403 Forbidden`) | Audit & download CSV |
+
+### 5.2 Contoh Payload Request & Respons JSON
+
+1. **Kuotasi Janji Pesanan Idempoten (`POST /control-tower/promises/quote`):**
+   - Header: `Idempotency-Key: QUOTE-SO-2026-0091`
+   - Body JSON:
+     ```json
+     {
+       "item_code": "SP-001",
+       "quantity": 60,
+       "requested_period": 1,
+       "order_reference": "SO-2026-0091",
+       "as_of_date": "2026-11-16"
+     }
+     ```
+   - Respons `200 OK`: mengembalikan `promise_code`, `atp_confirmed_qty`, `ctp_manufacturing_qty`, `promised_period`, `late_periods`, `reason_code`, `certificate_hash`.
+   - Pengiriman ulang `Idempotency-Key` sama dengan `quantity: 80` mengembalikan `409 Conflict` (`PromiseIdempotencyConflictException`).
+
+2. **Simulasi What-If Digital Twin (`POST /control-tower/twin/whatif`):**
+   - Body JSON:
+     ```json
+     {
+       "scenario_code": "WIF-PORT-14D",
+       "name": "Penutupan Pelabuhan 14 Hari",
+       "shock_type": "PORT_CLOSURE",
+       "shock_magnitude_bps": 2500,
+       "duration_days": 14
+     }
+     ```
+   - Respons `200 OK`: menyertakan `before_hash` dan `after_hash` yang identik (bukti nol mutasi tabel produksi Control Tower) bersama `baseline_otif_bps`, `simulated_otif_bps`, `at_risk_orders_count`, serta `estimated_margin_delta_idr`.
+
+3. **Pengajuan & Keputusan Safety Stock Empat Mata:**
+   - Tahap 1 (`planner`): `POST /control-tower/safety-stock/propose` dengan `{ "item_code": "SP-001", "node_weights": { "PLANT": 5, "DC": 3, "OUTLET": 2 } }`. Kebijakan aktif tidak berubah; baris menyimpan `proposed_safety_stock_qty` & `status = "proposed"`.
+   - Tahap 2 (`logistics_admin` berbeda): `POST /control-tower/safety-stock/{policy}/decide` dengan `{ "decision": "approve", "decision_notes": "Disetujui sesuai variabilitas GRN Q4" }`. Nilai aktif dan `EchelonStock` ikut diperbarui sekaligus secara transaksional.
+
+4. **Perintah CLI Operasional Cepat:**
+   - `php artisan tower:forecast-select --item=SP-001 --period=2026-11`
+   - `php artisan tower:atp-refresh --item=SP-001 --date=2026-11-14`
+   - `php artisan tower:risk-scan --as-of=2026-11-14`
+   - `php artisan tower:alerts-scan --as-of=2026-11-14`
+   - `php artisan tower:supplier-scorecard --period=2026-11`
+   - `php artisan tower:kpi --from=2026-10-01 --to=2026-11-14`
+   - `php artisan tower:audit`

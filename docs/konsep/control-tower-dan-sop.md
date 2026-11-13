@@ -97,3 +97,65 @@ Setiap perubahan status wajib melewati `SopPublicationOrchestrator` / `Transitio
 
 - **KPI Operasional Nyata:** `ControlTowerKpiDrilldownService` membaca fakta pemenuhan pesanan dari `OpenDemandProvider::fulfillmentLines()` untuk menyajikan `otif_permil`, `fill_rate_permil`, DOS, Cash-to-Cash, serta jumlah stockout secara transparan hingga level pesanan tunggal (`ON_TIME`, `LATE`, `SHORT`, `OPEN`).
 - **Digital Twin Bebas Mutasi (`TwinWhatIfOrchestratorService`):** Mengisolasi skenario kejut (`PORT_CLOSURE`, `MATERIAL_INFLATION`, `SUPPLY_DELAY`, `DEMAND_SPIKE`, `SUPPLIER_LOSS`, `WAREHOUSE_CAPACITY`) menggunakan `ControlTowerTwinTickHandler` dan validasi kesetaraan checksum SHA-256 sebelum vs sesudah eksekusi.
+
+
+---
+
+## 5. Prinsip Konservasi Fisik, Non-Ledger, dan Pemisahan Tugas (`Control Tower`)
+
+### 5.1 Mengapa Control Tower Bersifat Non-Ledger (`RAB = 0`)
+Modul Control Tower bertindak sebagai otak perencanaan (*planning & orchestration layer*) yang membaca kondisi fisik gudang, lini produksi, pesanan distribusi, dan riwayat pembelian tanpa membukukan jurnal akuntansi sendiri. Kejadian uang (*monetary events*) seperti penerimaan barang PO, pencairan upah produksi, penagihan faktur pelanggan, dan penyusutan nilai persediaan tetap menjadi tanggung jawab eksklusif modul `Procurement`, `Wms`, `Manufacturing`, dan `Finance`. Pemisahan ini menjamin dua invarian:
+1. Tidak ada jurnal kembar (*double counting*) antara proyeksi perencanaan dengan buku besar riil.
+2. Seluruh eksperimen simulasi (*what-if sandbox*), skenario S&OP konservatif/moderat/agresif, maupun proposal kebijakan *safety stock* dapat dijalankan dan dibatalkan berkali-kali tanpa meninggalkan jejak koreksi jurnal di buku besar.
+
+### 5.2 Hukum Konservasi dalam Alokasi Kuota & Netting ATP
+Pada setiap SKU di semua eselon berlaku batasan keras:
+
+$$\sum_{p} \text{atp\_confirmed\_qty}_{p} \le \sum_{n \in \{\text{PLANT,DC,OUTLET}\}} (\text{on\_hand\_qty}_n + \text{in\_transit\_qty}_n - \text{quarantine}_n)$$
+
+Aturan turunan:
+- Barang berstatus **karantina / hold** di WMS wajib dikeluarkan dari `nettable_stock` oleh `WmsItemAvailabilityReader` hingga hasil inspeksi QC dilepas di modul WMS.
+- Pemecahan alokasi safety stock total ke `PLANT`, `DC`, dan `OUTLET` via kuota Hamilton menjamin jumlah stok pengaman eselon tidak pernah selisih pembulatan naik/turun (`conservation law`).
+- Apabila *audit* menemukan selisih pada salah satu batasan di atas, `php artisan tower:audit` langsung gagal dengan status `DISCREPANCY` dan kode keluar `1`.
+
+### 5.3 Pemisahan Tugas Empat Mata (*Four-Eyes Segregation*)
+Empat alur persetujuan sensitif di Control Tower diikat dengan pemeriksaan identitas pengaju melawan penyetuju:
+1. **Override Forecast Deviasi Besar (`X53-4`):** Perubahan $> 20\%$ membutuhkan persetujuan berbeda sebelum nilai aktif di `sct_demand_forecasts` diperbarui.
+2. **Proposal Kebijakan Safety Stock (`I3`):** Perubahan target *service level* maupun kuota eselon ditampung pada kolom `proposed_*` sampai penyetuju (`admin` atau `logistics_admin`) menyetujui lewat `DecideSafetyStockProposalAction`.
+3. **Eksekusi Playbook Reallocation Alert:** Proposal realokasi antar eselon dari alert disrupsi dipisahkan menjadi tahap `proposeReallocation()` dan `approveReallocation()`.
+4. **Publikasi Konsensus S&OP:** Transisi ke tahap `consensus` menciptakan tugas lintas fungsi pada `TaskInboxService` dan mencatat approval formal sebelum event `tower.sop.published.v1` dipancarkan ke outbox.
+
+### 5.4 Definisi Matematis KPI Layanan Nyata (`OTIF` & `Fill Rate`)
+`ControlTowerKpiDrilldownService` menghitung KPI riil dalam integer permil (`0..1000`) dari baris `DistributionOpenDemandProvider::fulfillmentLines()`:
+
+$$\text{Fill Rate (permil)} = \left\lfloor \frac{1000 \cdot \sum \min(\text{delivered\_qty}_i, \text{ordered\_qty}_i)}{\sum \text{ordered\_qty}_i} \right\rfloor$$
+
+$$\text{OTIF (permil)} = \left\lfloor \frac{1000 \cdot |\{ i : \text{delivered\_qty}_i \ge \text{ordered\_qty}_i \land \text{delivered\_date}_i \le \text{due\_date}_i \}|}{|\text{total\_lines}|} \right\rfloor$$
+
+Bilangan permil mencegah galat pembulatan biner (`0.1 + 0.2`) sekaligus tetap presisi untuk perbandingan tren harian (`tower:kpi`) maupun drilldown per distributor/SKU.
+
+
+---
+
+## 6. Keterhubungan Siklus Hidup Antar Gelombang Operasi ERP
+
+Supply Chain Control Tower berada di puncak lapisan perencanaan analitis dan mengorkestrasi sinyal dari lima domain eksekusi:
+
+```mermaid
+flowchart TD
+    PRC[Procurement: PO & GRN Lead Time] -->|SupplierLeadTimeStatistics| CT[Control Tower]
+    WMS[WMS: Stok Fisik, Pickable & Karantina] -->|ItemAvailabilityReader| CT
+    MFG[Manufacturing: Work Center & MRP Plans] -->|CapacityAndMaterialProvider| CT
+    DST[Distribution: Open Sales Orders & POD] -->|OpenDemandProvider| CT
+    LGS[Logistics: Tracking Pengapalan Aktif] -->|InTransitShipmentProvider| CT
+    CT -->|tower.promise.made.v1| DST
+    CT -->|tower.sop.published.v1| MFG
+    CT -->|tower.sop.published.v1| PRC
+    CT -->|tower.alert.raised.v1| WMS
+```
+
+Titik rekonsiliasi utama antar gelombang:
+1. **Dari `Procurement` (Fase 33–34) ke `ControlTower` (`X53-2` & `I3`):** Setiap penerimaan GRN yang disetujui memperbarui `mean_days`, `sigma_days`, dan `on_time_permil`, sehingga secara otomatis mengkalibrasi kebutuhan *safety stock* pada siklus mingguan.
+2. **Dari `Wms` (Fase 41) ke `ControlTower` (`I1` & `X53-3`):** Stok yang masuk zona karantina atau *hold* otomatis terpotong dari nettable ATP dan menaikkan eksposur `quarantine_qty` di dashboard kesehatan inventori.
+3. **Dari `Manufacturing` (Fase 35–36) ke `ControlTower` (`I1`):** Jam mesin kosong work-center dan pasokan komponen MRP menyediakan pagar kapasitas riil bagi jalur *Capable-to-Promise* (CTP).
+4. **Dari `Distribution` (Fase 43) ke `ControlTower` (`I1` & `53.7`):** Pesanan terbuka mengurangi saldo ATP per bucket mingguan, sementara tanggal *Proof of Delivery* (`pod_at`) memberi ukuran OTIF & Fill Rate nyata tanpa rekayasa angka statis.

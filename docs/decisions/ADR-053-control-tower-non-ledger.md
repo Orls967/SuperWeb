@@ -57,3 +57,50 @@ Rekomendasi realokasi stok antar-simpul (`ExecuteAutonomousReallocationPlaybookA
 - Matriks Kontrak & Algoritma: `docs/matriks/fase-53.md`
 - Spesifikasi Algoritma Deterministik: `docs/algoritma/i1-i3-control-tower.md`
 - Prosedur Audit & Pemulihan: `docs/runbooks/control-tower-audit-dan-pemulihan.md`
+
+
+---
+
+## 5. Pendalaman Keputusan Teknis (`ADR-053` Lanjutan untuk `FIX-2`)
+
+### 5.1 Pemilihan Aritmetika Rasional Eksak Dibanding Floating-Point (`A3`)
+**Konteks:** Algoritma forecasting (`SES`, `HOLT`, `CROSTON`), perhitungan simpangan baku *lead time* (`sigma_days`), dan pembobotan *scorecard* sering memicu nondeterminisme lintas CPU/ARSITEKTUR PHP saat memakai `float` IEEE-754.
+**Keputusan:**
+1. `ForecastModelSelector` menetapkan konstanta tetap `SCALE = 10_000` dengan koefisien rasional integer (`3/10`, `1/10`, `2/10`) serta pembulatan *half-up* eksplisit.
+2. `ProcurementSupplierLeadTimeStatistics` menghitung `sigma_days` memakai fungsi integer `isqrt()` sehingga bebas pembulatan floating-point.
+3. `MultiEchelonSafetyStock` memproses varian permintaan dan deviasi gabungan di dalam `Brick\Math\BigInteger` plus alokasi Hamilton (*largest remainder*) agar hasil pembagian ke eselon `PLANT`, `DC`, `OUTLET` selalu berjumlah tepat sama.
+4. `DistributionOpenDemandProvider` mengonversi kolom desimal pesanan distribusi via `Brick\Math\BigDecimal` alih-alih `(float)` casting.
+
+**Konsekuensi:**
+- Nol pelanggaran `A3` (`FloatMoneyRule`) pada seluruh file `ControlTower`, `Procurement`, `Manufacturing`, dan `Distribution`.
+- Sertifikat `SHA-256` bersifat deterministik mutlak antara environment macOS arm64 lokal dan runner Linux x86_64 CI GitHub.
+
+### 5.2 Pemisahan Pengecualian Domain per Modul (`A1` Boundary)
+**Konteks:** Semula kuotasi janji pesanan melempar `Modules\Core\Domain\Exceptions\ApiIdempotencyConflictException` secara langsung dari namespace `Core\Domain`. Pemeriksaan arsitektur `A1` melarang import `Domain\*` antar modul.
+**Keputusan:** Didefinisikan pengecualian lokal `Modules\ControlTower\Domain\Exceptions\PromiseIdempotencyConflictException` (`extends RuntimeException`) beserta factory `forKey(string $key)` yang ditangkap controller untuk respons HTTP `409 Conflict`.
+**Konsekuensi:** `arch:scan` melaporkan **`0` pelanggaran baru** (`new: []`) pada aturan `A1` hingga `A13`.
+
+### 5.3 Pemetaan Kontrak & Rute Terfragmentasi Per-Irisan (`routes/slice_*.php`)
+**Keputusan:** Setiap irisan fungsional (`slice_s1_promise.php` s/d `slice_s7_scorecard_health.php`) diisolasi dalam berkas rute khusus dan dimuat berurutan oleh `ControlTowerServiceProvider::boot()`, dipasangkan 1-ke-1 dengan entri eksplisit di `tests/Architecture/route-roles.php`.
+**Konsekuensi:** `RouteAuthorizationMatrixTest` memverifikasi 100% rute terproteksi RBAC (`admin`, `logistics_admin`, `planner`, `auditor` untuk GET/export; pembatasan `admin`, `logistics_admin` pada keputusan empat mata `safety_stock.decide`).
+
+
+---
+
+## 6. Alternatif yang Ditolak & Konsekuensi Verifikasi (`ADR-053` Bagian II)
+
+| Topik Desain | Alternatif yang Ditolak | Alasan Penolakan | Keputusan Final `FIX-2` |
+|---|---|---|---|
+| Penyimpanan Status S&OP | Mempertahankan 4 status warisan saja (`draft..archived`) | Tidak memenuhi 7 tahap standar enterprise dan menyulitkan audit konsensus eksekutif | 7 tahap kanonik (`data_gathering..closed`) + kompatibilitas mundur state warisan di `SopCycleStateMachine` |
+| Metrik OTIF & Fill Rate | Membaca angka contoh/statis atau `ControlTowerKpiAggregatorService` tanpa bukti pemenuhan | Menghasilkan KPI artifisial yang terputus dari `Distribution` (`dist_orders`) | `ControlTowerKpiDrilldownService` membaca riil via `OpenDemandProvider::fulfillmentLines()` |
+| Kuotasi ATP/CTP | Mengizinkan pengulangan request memodifikasi janji eksisting tanpa `Idempotency-Key` | Rentan double allocation stok fisik ketika client melakukan retry jaringan | `idempotency_key` + `payload_hash` (`SHA-256`) & `409 Conflict` via `PromiseIdempotencyConflictException` |
+| Digital Twin Simulation | Mengandalkan tabel `sim_runs` wajib ada dan berpotensi menulis mutasi sementara tanpa hash check | Gagal pada instalasi bersih tanpa seeder simulasi serta tidak membuktikan zero-mutation secara kriptografis | Sandbox in-memory + DB snapshot hash SHA-256 pra/pasca (`before_hash === after_hash`), berjalan meski tabel simulasi kosong |
+| Skor Risiko & Pemasok | Menggunakan `float` persentase (`0.0..1.0`) untuk skor dan bobot | Rentan selisih pembulatan lintas arsitektur & melanggar pagar `A3` | Skala integer murni `0..1000` dan permil/bps dengan `isqrt` dan pembagian bulat eksplisit |
+| Perubahan Kebijakan Safety Stock | Pembaruan langsung `SafetyStockPolicy` oleh 1 pengguna | Melanggar tata kelola perubahan parameter stok pengaman strategis | Proposal eksplisit (`status = 'proposed'`) dan persetujuan empat mata wajib berbeda pengguna (`DecideSafetyStockProposalAction`) |
+
+---
+
+## 7. Ringkasan Dampak Non-Ledger pada Audit Kepatuhan Keuangan
+- Modul `ControlTower` dinyatakan bersih dari ketergantungan `LedgerAccount` dan tidak terdaftar dalam daftar penghasil jurnal otomatis (`RAB = 0`).
+- Seluruh pengujian akurasi nilai uang (`tied_capital_idr`, `obsolescence_risk_idr`, `estimated_margin_delta_idr`) diverifikasi menghasilkan bilangan bulat rupiah penuh dan dilindungi oleh `FloatMoneyRule` (`A3 = 0`).
+- Laporan audit periodik `tower:audit` berfungsi berdampingan dengan `chain:audit-all` tanpa tumpang tindih tanggung jawab dengan `Wms` maupun `Finance`.
