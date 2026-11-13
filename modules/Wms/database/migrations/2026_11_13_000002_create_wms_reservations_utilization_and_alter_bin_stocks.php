@@ -44,7 +44,7 @@ return new class extends Migration
                 $table->id();
                 $table->string('warehouse_id', 64)->index();
                 $table->unsignedBigInteger('product_id')->index();
-                $table->string('bin_id', 64)->nullable()->index();
+                $table->unsignedBigInteger('bin_id')->nullable()->index();
                 $table->string('lot_number', 64)->nullable();
                 $table->unsignedBigInteger('qty_base');
                 $table->string('reference_type', 64);
@@ -88,7 +88,7 @@ return new class extends Migration
             Schema::create('wms_utilization_snapshots', function (Blueprint $table) {
                 $table->id();
                 $table->string('warehouse_id', 64)->index();
-                $table->string('zone_id', 64)->nullable()->index();
+                $table->unsignedBigInteger('zone_id')->nullable()->index();
                 $table->date('snapshot_date')->index();
                 $table->unsignedInteger('total_bins');
                 $table->unsignedInteger('occupied_bins');

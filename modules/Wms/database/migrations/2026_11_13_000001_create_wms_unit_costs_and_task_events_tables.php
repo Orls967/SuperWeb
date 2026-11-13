@@ -30,7 +30,7 @@ return new class extends Migration
         if (! Schema::hasTable('wms_task_events')) {
             Schema::create('wms_task_events', function (Blueprint $table) {
                 $table->id();
-                $table->string('task_id', 64)->index();
+                $table->unsignedBigInteger('task_id')->index();
                 $table->string('from_status', 32);
                 $table->string('to_status', 32);
                 $table->string('action', 48);
