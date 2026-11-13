@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 use Modules\Shared\Domain\Algorithms\Assignment\HungarianSolver;
 use Modules\Wms\Domain\Algorithms\AutomationNpvCalculator;
+use Modules\Wms\Domain\Algorithms\RobotBatteryDegradationTracker;
 use Modules\Wms\Domain\Algorithms\RobotEnergyConsumptionEstimator;
 use Modules\Wms\Domain\Algorithms\RobotFleetDispatchOptimizer;
 use Modules\Wms\Domain\Algorithms\TrafficDeadlockDetector;
 use Modules\Wms\Domain\Algorithms\WaveBinPacker;
+use Modules\Wms\Domain\Algorithms\WaveCutoffSlackCalculator;
 use Modules\Wms\Domain\Algorithms\ZoneReservationScheduler;
 use Modules\Wms\Domain\Certificates\AutomationNpvCertificate;
+use Modules\Wms\Domain\Certificates\BatteryDegradationCertificate;
 use Modules\Wms\Domain\Certificates\RobotEnergyCertificate;
 use Modules\Wms\Domain\Certificates\TrafficDeadlockCertificate;
 use Modules\Wms\Domain\Certificates\WaveBinPackerCertificate;
 use Modules\Wms\Domain\Certificates\ZoneReservationCertificate;
+use Modules\Wms\Domain\Services\RoboticsMissionPriorityPolicy;
 use Modules\Wms\Domain\Services\RoboticsZoneInterlockEvaluator;
 use Modules\Wms\Domain\ValueObjects\IntervalWindow;
 
@@ -185,4 +189,24 @@ test('sertifikat rusak J1 J2 J3 dan Deadlock melempar exception', function (): v
     expect(count($optPlan['assignments']))->toBe(1)
         ->and($optPlan['assignments'][0]['mission_id'])->toBe(1)
         ->and($optPlan['unassigned_mission_ids'])->toBe([2]);
+
+    $batteryTracker = new RobotBatteryDegradationTracker;
+    $batCert = $batteryTracker->evaluateFleet([
+        ['robot_id' => 1, 'cycle_count' => 1200, 'deep_discharge_events' => 5],
+        ['robot_id' => 2, 'cycle_count' => 2600, 'deep_discharge_events' => 2],
+    ]);
+    expect($batCert->replacementCount)->toBe(1)
+        ->and($batCert->fleetAvgHealthPermil)->toBe(799);
+    $tamperedBat = new BatteryDegradationCertificate($batCert->totalRobots, 0, $batCert->fleetAvgHealthPermil, $batCert->robots, $batCert->signatureHash);
+    expect(fn () => $tamperedBat->verify())->toThrow(InvalidArgumentException::class);
+
+    $slackCalc = new WaveCutoffSlackCalculator;
+    $slacks = $slackCalc->evaluate([
+        ['wave_id' => 10, 'carrier_code' => 'JNE', 'cutoff_hhmm' => 1700, 'estimated_pick_min' => 40],
+    ], 1600);
+    expect($slacks[0]['slack_minutes'])->toBe(20)->and($slacks[0]['urgency'])->toBe('CRITICAL');
+
+    $prioPolicy = new RoboticsMissionPriorityPolicy;
+    expect($prioPolicy->computeEffectivePriority(50, 25, 1, true))->toBe(78)
+        ->and($prioPolicy->shouldEscalate('queued', 50, 0))->toBeTrue();
 });

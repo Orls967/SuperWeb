@@ -8,14 +8,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Domain\Models\Role;
 use Modules\Wms\Application\Actions\AllocateRobotMissionsAction;
+use Modules\Wms\Application\Actions\EscalateOverdueMissionsAction;
 use Modules\Wms\Application\Actions\EvaluateRoboticsRoiProposalAction;
 use Modules\Wms\Application\Actions\IngestSimulatedTelemetryBatchAction;
 use Modules\Wms\Application\Actions\PlanRoboticsWaveAction;
 use Modules\Wms\Application\Actions\ReserveZoneForMissionAction;
 use Modules\Wms\Application\Actions\RetryOrFallbackRobotMissionAction;
+use Modules\Wms\Application\Services\RoboticsFleetReadinessService;
 use Modules\Wms\Application\Services\RoboticsSimulationScenarioRunner;
 use Modules\Wms\Application\Services\RoboticsT1SimulationReportService;
 use Modules\Wms\Application\Services\RoboticsTwoSourceAuditService;
+use Modules\Wms\Application\Services\RoboticsWaveReconciliationService;
 use Modules\Wms\Application\Services\RobotMissionTransitionService;
 use Modules\Wms\database\seeders\RoboticsT1Seeder;
 use Modules\Wms\Domain\Exceptions\RobotMissionTransitionException;
@@ -199,6 +202,15 @@ test('5. robotics:audit bersih deterministik exit 0 dan fixture korupsi exit non
     $t1Report = app(RoboticsT1SimulationReportService::class)->buildReport($whId);
     expect($t1Report['audit_status']['passed'])->toBeTrue()
         ->and($t1Report['roi_portfolio']['negative_npv_count'])->toBeGreaterThanOrEqual(1);
+
+    $readiness = app(RoboticsFleetReadinessService::class)->evaluateReadiness($whId);
+    expect($readiness['unblocked_zones'])->toBeGreaterThanOrEqual(1);
+
+    $escalated = app(EscalateOverdueMissionsAction::class)->execute($whId, 0);
+    expect($escalated['scanned'])->toBeGreaterThan(0);
+
+    $reconciled = app(RoboticsWaveReconciliationService::class)->reconcileBatch($whId, 'NONEXISTENT', []);
+    expect($reconciled['conserved'])->toBeTrue();
 
     $exitClean = Artisan::call('robotics:audit');
     expect($exitClean)->toBe(0);
