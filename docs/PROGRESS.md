@@ -13281,18 +13281,66 @@ Pada tanggal **3 Oktober 2026**, seluruh tahapan ekspansi arsitektur **Superwebs
 - [ ] 278.8 Quality gate Fase 278
 
 ## FASE 279 — OPERASI: WAREHOUSE AUTOMATION & ROBOTICS SIMULATION
-> **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `WarehouseRoboticsAutomationService`; 1 migrasi; test `WarehouseRoboticsAutomationTest` — commit `ccd1746`, +354 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).
+> **Status audit 2026-11-13:** 🔵 DIIMPLEMENTASIKAN (W8-P6, 2026-11-13) — vertical slice penuh di `Modules\Wms` (migrasi `wms_robotics_plans`, `wms_robot_units`, `wms_robot_missions`, `wms_robot_zone_locks`; J1 `AutomationRoiPlanner`, J2 `RobotTaskAllocator` berbasis `HungarianSolver`, J3 `WaveAutomationDispatcher` + `TrafficDeadlockDetector`, `RobotMissionStateMachine` 8 status; UI `x-ds.*` `/wms/robotics/{fleet,missions,roi}`, commands `wms:robotics-{dispatch,inspect,roi-plan}`, perluasan `wms:audit` + `RoboticsAuditCorruptionFixture`, serta `@deprecated` pada `Integration\WarehouseRoboticsAutomationService`).
 > **Kriteria terima wajib:** DoR (P8) disetujui pemilik → vertical slice V1–V12 → Register Minus (P9) → verifikasi silang (P7). Pelaksana berhenti di 🔵.
 > **Modul pemilik:** modul operasi pemilik (Asset / Manufacturing / Wms / Logistics / ControlTower / Epc) — sesuai topik · **Prasyarat:** modul terkait ✅ · **Acuan:** KONSEP §A3, §A5
 > **Jalan pintas terlarang di fase ini:** 'program/governance' operasi berupa tabel skor; KPI tanpa query ke data operasional; memperluas `WarehouseRoboticsAutomationService` di `Integration` atau menyalinnya tanpa ditulis ulang (X2, X21) — ditambah seluruh X1–X25.
-- [ ] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
-- [ ] 279.2 Robot fleet management (simulasi): task allocation, traffic (zone reservation anti-tabrakan), charging schedule, failure → fallback manual → throughput KPI
-- [ ] 279.3 Wave planning otomatis: order → wave (cutoff, carrier, priority) → pick path optimization (Fase 41.3) → pack → dispatch → SLA on-time terukur
-- [ ] 279.4 Tests: zone reservation tak konflik, fallback manual aktif saat robot down, wave feasibility (kapasitas pick), `wms:audit` clean
-- [ ] 279.5 Edge case: robot gagal di tengah wave → fallback manual + wave re-plan, SLA terjaga
-- [ ] 279.6 Safety interlock: zona manusia+robot → kecepatan & area dibatasi, kegagalan → stop
-- [ ] 279.7 Biaya automasi vs man-power → ROI terukur sebelum rollout lanjutan
-- [ ] 279.8 Quality gate Fase 279
+- [🔵] 279.1 Automation planning: per DC → pick method (man, AMR simulasi, conveyor) → kapasitas → biaya → ROI → phased implementation
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Application/Actions/EvaluateRoboticsRoiProposalAction.php
+    - test: tests/Acceptance/WarehouseRobotics/WarehouseRoboticsFullAcceptanceTest.php
+    - akses: route GET /wms/robotics/roi [role: admin, auditor, procurement]
+- [🔵] 279.2 Robot fleet management (simulasi): task allocation, traffic (zone reservation anti-tabrakan), charging schedule, failure → fallback manual → throughput KPI
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Application/Actions/AllocateRobotMissionsAction.php
+    - test: tests/Acceptance/WarehouseRobotics/WarehouseRoboticsFullAcceptanceTest.php
+    - akses: route GET /wms/robotics/fleet [role: admin, auditor, hub_operator, logistics_admin]
+- [🔵] 279.3 Wave planning otomatis: order → wave (cutoff, carrier, priority) → pick path optimization (Fase 41.3) → pack → dispatch → SLA on-time terukur
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Application/Actions/PlanRoboticsWaveAction.php
+    - test: tests/Acceptance/WarehouseRobotics/RoboticsAlgorithmsVectorTest.php
+    - akses: command php artisan robotics:wave-plan
+- [🔵] 279.4 Tests: zone reservation tak konflik, fallback manual aktif saat robot down, wave feasibility (kapasitas pick), `wms:audit` clean
+  Bukti:
+    - jenis: test
+    - commit: 6e9183ad
+    - file: tests/Acceptance/WarehouseRobotics/WarehouseRoboticsFullAcceptanceTest.php
+    - test: tests/Acceptance/WarehouseRobotics/RoboticsAlgorithmsVectorTest.php
+    - akses: command php artisan robotics:audit
+- [🔵] 279.5 Edge case: robot gagal di tengah wave → fallback manual + wave re-plan, SLA terjaga
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Application/Actions/RetryOrFallbackRobotMissionAction.php
+    - test: tests/Acceptance/WarehouseRobotics/WarehouseRoboticsFullAcceptanceTest.php
+    - akses: route GET /wms/robotics/waves [role: admin, hub_operator, logistics_admin]
+- [🔵] 279.6 Safety interlock: zona manusia+robot → kecepatan & area dibatasi, kegagalan → stop
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Domain/Services/RoboticsZoneInterlockEvaluator.php
+    - test: tests/Acceptance/WarehouseRobotics/WarehouseRoboticsFullAcceptanceTest.php
+    - akses: route GET /wms/robotics/zones [role: admin, hub_operator]
+- [🔵] 279.7 Biaya automasi vs man-power → ROI terukur sebelum rollout lanjutan
+  Bukti:
+    - jenis: fitur
+    - commit: 6e9183ad
+    - file: modules/Wms/Domain/Algorithms/AutomationNpvCalculator.php
+    - test: tests/Acceptance/WarehouseRobotics/RoboticsAlgorithmsVectorTest.php
+    - akses: command php artisan robotics:roi
+- [🔵] 279.8 Quality gate Fase 279
+  Bukti:
+    - jenis: gate
+    - commit: 6e9183ad
+    - file: modules/Wms/Application/Services/RoboticsTwoSourceAuditService.php
+    - test: tests/Architecture/AuditCommandContractTest.php
+    - akses: command php artisan robotics:audit
 
 ## FASE 280 — OPERASI: FOOD SERVICE, HOSPITALITY & VENUE OPERATIONS PLAYBOOK SCALE
 > **Status audit 2026-10-10:** 🟠 KERANGKA — pola template: 1 service `DB::table()` mentah + 1 migrasi + 1 test di modul `Integration`; tidak dipanggil kode produksi (tanpa rute/UI/command/listener); kontrol berupa parameter dari pemanggil & `audit()` tautologis. Kode yang ada (modul Integration): service `HospitalityOperationsPlaybookService`; 1 migrasi; test `HospitalityOperationsPlaybookTest` — commit `ca911ae`, +379 baris. **Seluruh item dibuka kembali**; kerjakan ulang setelah Fase R sebagai vertical slice (Protokol P2/P5).

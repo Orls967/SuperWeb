@@ -6,7 +6,9 @@ namespace Modules\Wms\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Modules\Store\Contracts\StoreProductStockPort;
+use Modules\Wms\Application\Services\RoboticsAuditService;
 use Modules\Wms\Contracts\WarehouseValuationReader;
 
 /**
@@ -84,6 +86,15 @@ class AuditWmsCommand extends Command
                     (string) $val['discrepancy_idr'],
                     'SELISIH',
                 ];
+            }
+        }
+
+        // 5. Integritas robotika gudang (Fase 279): dual active zone lock & orphan missions.
+        if (Schema::hasTable('wms_robot_zone_locks')) {
+            $roboticsViolations = app(RoboticsAuditService::class)->findViolations();
+            foreach ($roboticsViolations as $idx => $violation) {
+                $hasDiscrepancy = true;
+                $rows[] = ['robotics:#'.($idx + 1), '0', '1', $violation, 'SELISIH'];
             }
         }
 

@@ -75,6 +75,7 @@ use App\Quality\Audit\Fixtures\PrtFleetAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\PtnAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\ReinsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RetAuditCorruptionFixture;
+use App\Quality\Audit\Fixtures\RoboticsAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\RwaAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SearchAuditCorruptionFixture;
 use App\Quality\Audit\Fixtures\SecurityAuditCorruptionFixture;
@@ -185,6 +186,7 @@ final class AuditCommandRegistry
             'prt:fleet-audit' => new PrtFleetAuditCorruptionFixture,
             'ptn:audit' => new PtnAuditCorruptionFixture,
             'ret:audit' => new RetAuditCorruptionFixture,
+            'robotics:audit' => new RoboticsAuditCorruptionFixture,
             'rwa:audit' => new RwaAuditCorruptionFixture,
             'search:audit' => new SearchAuditCorruptionFixture,
             'task:sla-audit' => new TaskSlaAuditCorruptionFixture,
